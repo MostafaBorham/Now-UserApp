@@ -1,0 +1,5 @@
+This layer that called (Data Layer) : is responsible for all things related to data processing
+
+#Layer sub folders#
+1) data sources : is used for call raw data (either json or any other format) form its sources like backend apis .
+2) repos : is used for data processing like (data parsing to dart objects , error data handling) that coming from data sources layer .

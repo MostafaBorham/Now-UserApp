@@ -1,0 +1,1 @@
+This layer that called common layer is used for any files or features is shared between more than one main layer like(data , view model or view)
