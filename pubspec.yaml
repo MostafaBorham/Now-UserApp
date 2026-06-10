@@ -10,12 +10,34 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+  dartz: ^0.10.1
+  equatable: ^2.0.8
+  dio: ^5.9.2
+  flutter_screenutil: ^5.9.3
+  flutter_riverpod: ^3.3.1
+  shared_preferences: ^2.5.5
+  pretty_dio_logger: ^1.4.0
+  lottie: ^3.3.3
+  flutter_svg: ^2.3.0
+  internet_connection_checker: ^3.0.1
+  connectivity_plus: ^6.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  flutter_gen_runner: ^5.14.1
+  build_runner: ^2.15.0
+flutter_gen:
+  output: lib/view/assets/
+
+  # Optional
+  integrations:
+    image: true
+    flutter_svg: true
+    rive: true
+    lottie: true
 
 flutter:
 
@@ -23,7 +45,7 @@ flutter:
 
   assets:
     - assets/fonts/roboto/
-    - assets/json/
+    - assets/json/splash.json
     - assets/media/images/png/
     - assets/media/images/svg/
     - assets/media/sounds/
