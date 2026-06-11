@@ -11,6 +11,9 @@
 class FontFamily {
   FontFamily._();
 
+  /// Font family: IbmPlexSans
+  static const String ibmPlexSans = 'IbmPlexSans';
+
   /// Font family: Roboto
   static const String roboto = 'Roboto';
 }

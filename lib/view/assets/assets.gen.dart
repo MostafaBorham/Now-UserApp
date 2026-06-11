@@ -25,11 +25,17 @@ class $AssetsFontsGen {
 class $AssetsJsonGen {
   const $AssetsJsonGen();
 
+  /// Directory path: assets/json/lang
+  $AssetsJsonLangGen get lang => const $AssetsJsonLangGen();
+
   /// File path: assets/json/splash.json
   LottieGenImage get splash => const LottieGenImage('assets/json/splash.json');
 
+  /// File path: assets/json/test.json
+  String get test => 'assets/json/test.json';
+
   /// List of all assets
-  List<LottieGenImage> get values => [splash];
+  List<dynamic> get values => [splash, test];
 }
 
 class $AssetsMediaGen {
@@ -53,6 +59,19 @@ class $AssetsFontsRobotoGen {
 
   /// List of all assets
   List<String> get values => [robotoLight];
+}
+
+class $AssetsJsonLangGen {
+  const $AssetsJsonLangGen();
+
+  /// File path: assets/json/lang/ar-EG.json
+  String get arEG => 'assets/json/lang/ar-EG.json';
+
+  /// File path: assets/json/lang/en-US.json
+  String get enUS => 'assets/json/lang/en-US.json';
+
+  /// List of all assets
+  List<String> get values => [arEG, enUS];
 }
 
 class $AssetsMediaImagesGen {
@@ -96,23 +115,54 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get onboardingImg =>
       const AssetGenImage('assets/media/images/png/onboarding_img.png');
 
+  /// File path: assets/media/images/png/profile-img-placholder.png
+  AssetGenImage get profileImgPlacholder =>
+      const AssetGenImage('assets/media/images/png/profile-img-placholder.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [appLogo, onboardingImg];
+  List<AssetGenImage> get values => [
+    appLogo,
+    onboardingImg,
+    profileImgPlacholder,
+  ];
 }
 
 class $AssetsMediaImagesSvgGen {
   const $AssetsMediaImagesSvgGen();
 
+  /// File path: assets/media/images/svg/alert-icon.svg
+  SvgGenImage get alertIcon =>
+      const SvgGenImage('assets/media/images/svg/alert-icon.svg');
+
   /// File path: assets/media/images/svg/app_logo.svg
   SvgGenImage get appLogo =>
       const SvgGenImage('assets/media/images/svg/app_logo.svg');
+
+  /// File path: assets/media/images/svg/location-icon.svg
+  SvgGenImage get locationIcon =>
+      const SvgGenImage('assets/media/images/svg/location-icon.svg');
+
+  /// File path: assets/media/images/svg/on-boarding-logo.svg
+  SvgGenImage get onBoardingLogo =>
+      const SvgGenImage('assets/media/images/svg/on-boarding-logo.svg');
 
   /// File path: assets/media/images/svg/onboarding_background.svg
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
 
+  /// File path: assets/media/images/svg/search-icon.svg
+  SvgGenImage get searchIcon =>
+      const SvgGenImage('assets/media/images/svg/search-icon.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [appLogo, onboardingBackground];
+  List<SvgGenImage> get values => [
+    alertIcon,
+    appLogo,
+    locationIcon,
+    onBoardingLogo,
+    onboardingBackground,
+    searchIcon,
+  ];
 }
 
 class Assets {
