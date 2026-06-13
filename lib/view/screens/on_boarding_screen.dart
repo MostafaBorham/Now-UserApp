@@ -41,9 +41,9 @@ class OnBoardingScreen extends StatelessWidget {
           Align(
             alignment: AlignmentDirectional.bottomCenter,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 33, horizontal: 24),
+              padding: EdgeInsets.symmetric(vertical: 33, horizontal: 24).copyWith(bottom: 0),
               width: double.infinity,
-              height: 450.h,
+              height: 500.h,
               decoration: BoxDecoration(
                 color: colors.onPrimary,
                 borderRadius: const BorderRadius.vertical(
@@ -59,7 +59,7 @@ class OnBoardingScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
                 children: [
-                  AppLogo(size: 200.sp),
+                  AppLogo(size: 150.sp),
                   20.hSpace,
                   AutoSizeText(
                     LangKeys.onBoardingTitleKey.tr(),
@@ -87,9 +87,9 @@ class OnBoardingScreen extends StatelessWidget {
                     title: LangKeys.loginKey.tr(),
                     isFilled: true,
                   ),
-                  7.hSpace,
+                  3.hSpace,
                   OrDivider(),
-                  7.hSpace,
+                  3.hSpace,
                   PrimaryAppButton(
                     title: LangKeys.loginAsGuestKey.tr(),
                     isFilled: false,

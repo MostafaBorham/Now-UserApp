@@ -5,5 +5,11 @@
   "or" : "or",
   "onBoardingTitle" : "Shop for everything you need, the way that suits you",
   "onBoardingSubTitle" : "Get everything you need quickly and easily through a single app",
-  "searchNow" : "Search now"
+  "searchNow" : "Search now",
+  "categories": "Categories",
+  "discountUpTo": "Discount up to",
+  "showMore": "Show more",
+  "offers": "Offers",
+  "topBrands": "Top Brands",
+  "mostPopular": "Most Popular"
 }

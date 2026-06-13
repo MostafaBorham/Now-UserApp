@@ -6,4 +6,10 @@ abstract class LangKeys{
   static const String onBoardingTitleKey = 'onBoardingTitle';
   static const String onBoardingSubTitleKey = 'onBoardingSubTitle';
   static const String searchNowKey = 'searchNow';
+  static const String categoriesKey = 'categories';
+  static const String discountUpToKey = 'discountUpTo';
+  static const String showMoreKey = 'showMore';
+  static const String offersKey = 'offers';
+  static const String topBrandsKey = 'topBrands';
+  static const String mostPopularKey = 'mostPopular';
 }

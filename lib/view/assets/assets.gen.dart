@@ -119,11 +119,16 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get profileImgPlacholder =>
       const AssetGenImage('assets/media/images/png/profile-img-placholder.png');
 
+  /// File path: assets/media/images/png/real-saudi-currency.png
+  AssetGenImage get realSaudiCurrency =>
+      const AssetGenImage('assets/media/images/png/real-saudi-currency.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
     appLogo,
     onboardingImg,
     profileImgPlacholder,
+    realSaudiCurrency,
   ];
 }
 
@@ -138,9 +143,17 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get appLogo =>
       const SvgGenImage('assets/media/images/svg/app_logo.svg');
 
+  /// File path: assets/media/images/svg/categories-up-arrow.svg
+  SvgGenImage get categoriesUpArrow =>
+      const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
+
   /// File path: assets/media/images/svg/location-icon.svg
   SvgGenImage get locationIcon =>
       const SvgGenImage('assets/media/images/svg/location-icon.svg');
+
+  /// File path: assets/media/images/svg/now-offers-ar.svg
+  SvgGenImage get nowOffersAr =>
+      const SvgGenImage('assets/media/images/svg/now-offers-ar.svg');
 
   /// File path: assets/media/images/svg/on-boarding-logo.svg
   SvgGenImage get onBoardingLogo =>
@@ -150,18 +163,35 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
 
+  /// File path: assets/media/images/svg/real-saudi-currency.svg
+  SvgGenImage get realSaudiCurrency =>
+      const SvgGenImage('assets/media/images/svg/real-saudi-currency.svg');
+
   /// File path: assets/media/images/svg/search-icon.svg
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/media/images/svg/search-icon.svg');
+
+  /// File path: assets/media/images/svg/white-app-logo.svg
+  SvgGenImage get whiteAppLogo =>
+      const SvgGenImage('assets/media/images/svg/white-app-logo.svg');
+
+  /// File path: assets/media/images/svg/white-wave-background.svg
+  SvgGenImage get whiteWaveBackground =>
+      const SvgGenImage('assets/media/images/svg/white-wave-background.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
     alertIcon,
     appLogo,
+    categoriesUpArrow,
     locationIcon,
+    nowOffersAr,
     onBoardingLogo,
     onboardingBackground,
+    realSaudiCurrency,
     searchIcon,
+    whiteAppLogo,
+    whiteWaveBackground,
   ];
 }
 

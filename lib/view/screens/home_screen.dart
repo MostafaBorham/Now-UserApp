@@ -6,8 +6,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/components/field_input_borders.dart';
+import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/app_logo.dart';
+import 'package:nowdelivery_user_app/view/widgets/home_banner_slider.dart';
+import 'package:nowdelivery_user_app/view/widgets/home_categories_section.dart';
+import 'package:nowdelivery_user_app/view/widgets/home_search_field.dart';
+import 'package:nowdelivery_user_app/view/widgets/show_more_items_header.dart';
+import 'package:nowdelivery_user_app/view/widgets/top_brands_section.dart';
+import 'package:nowdelivery_user_app/view/widgets/white_app_logo.dart';
+
+import '../widgets/most_popular_item.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,14 +30,15 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Column(
-                spacing: 15,
-                children: [
-                  AppLogo(size: 134.sp),
-                  Column(
+            child: Column(
+              spacing: 5,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    spacing: 20,
                     children: [
+                      WhiteAppLogo(size: 134.sp),
                       Row(
                         spacing: 10,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,8 +67,10 @@ class HomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AutoSizeText(
-                                'guest 123',
-                                style: AppTextStyles.style20SemiBold,
+                                'Guest 123',
+                                style: AppTextStyles.style20SemiBold.copyWith(
+                                  color: colors.onSecondary
+                                ),
                                 maxLines: 1,
                               ),
                               Row(
@@ -66,11 +78,15 @@ class HomeScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Assets.media.images.svg.locationIcon.svg(
-                                    width: 15.w,
+                                    width: 16.w,
+                                    height: 16.w,
+                                    colorFilter: ColorFilter.mode(colors.onSecondary, BlendMode.srcIn)
                                   ),
                                   AutoSizeText(
                                     'gada, saudia 23 st',
-                                    style: AppTextStyles.style12Regular,
+                                    style: AppTextStyles.style12Regular.copyWith(
+                                      color: colors.onSecondary
+                                    ),
                                     maxLines: 1,
                                   ),
                                 ],
@@ -80,39 +96,66 @@ class HomeScreen extends StatelessWidget {
                           Spacer(),
                           Badge.count(
                             count: 2,
-                            padding: EdgeInsets.all(5),
+                            offset: Offset(1,1),
+                            textStyle: AppTextStyles.style10Bold,
+                            padding: EdgeInsets.all(3),
+                            backgroundColor: colors.errorContainer,
                             child: Assets.media.images.svg.alertIcon.svg(
-                              width: 30.sp,
+                              width: 35.sp,
                             ),
                           ),
                         ],
                       ),
+                      HomeSearchField(),
+                      HomeBannerSlider(),
                     ],
                   ),
-                  Material(
-                    elevation: 2,
-                    borderRadius: BorderRadius.circular(25),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                        filled: true,
-                        fillColor: colors.onPrimary,
-                        prefixIconConstraints:BoxConstraints(
-                          maxWidth: 50,
-                          maxHeight: 50,
-                          minHeight: 30,
-                          minWidth: 30
-                        ),
-                        prefixIcon: Assets.media.images.svg.searchIcon.svg(),
-                        hintText: LangKeys.searchNowKey.tr(),
-                        hintStyle: AppTextStyles.style16Regular,
-                        enabledBorder: customInputBorder1,
-                        focusedBorder: customInputBorder1,
+                ),
+                Stack(
+                  children: [
+                    Assets.media.images.svg.whiteWaveBackground.svg(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 30),
+                      child: Column(
+                        spacing: 10,
+                        children: [
+                          HomeCategoriesSection(),
+                          SizedBox(
+                              height: 200,
+                              child: TopBrandsSection()),
+                          Container(
+                            width: double.infinity,
+                            height: 250.h,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft,
+                                colors: [
+                                  colors.tertiary.withValues(alpha: 0.2),
+                                  colors.onPrimary,
+                                ],
+                              ),
+                            ),
+                            child: Column(
+                              spacing: 15,
+                              children: [
+                                ShowMoreItemsHeader(headerTitle: LangKeys.mostPopularKey.tr(),),
+                                Expanded(
+                                  child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) => MostPopularItem(
+                                      ), separatorBuilder: (context, index) => 5.wSpace, itemCount: 5),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+
+              ],
             ),
           ),
         ),

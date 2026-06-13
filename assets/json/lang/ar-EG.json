@@ -5,5 +5,11 @@
   "or" : "أو",
   "onBoardingTitle" : "تسوّق كل ما تحتاجه بالطريقة التي تناسبك",
   "onBoardingSubTitle" : "احصل على كل ما تحتاجه بسهولة وسرعة، من خلال تطبيق واحد",
-  "searchNow" : "ابحث الان"
+  "searchNow" : "ابحث الان",
+  "categories": "الفئات",
+  "discountUpTo": "خصم يصل إلى",
+  "showMore": "عرض المزيد",
+  "offers": "عروض",
+  "topBrands": "أفضل العلامات التجارية",
+  "mostPopular": "الأكثر شعبية"
 }

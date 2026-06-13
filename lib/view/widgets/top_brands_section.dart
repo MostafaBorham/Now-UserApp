@@ -1,0 +1,32 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/view/widgets/circular_brand_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/show_more_items_header.dart';
+
+class TopBrandsSection extends StatelessWidget {
+  const TopBrandsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final TextTheme textThemes = Theme.of(context).textTheme;
+    return Column(
+      spacing: 15,
+      children: [
+        ShowMoreItemsHeader(headerTitle: LangKeys.topBrandsKey.tr(),),
+        Expanded(
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => CircularBrandItem(),
+            separatorBuilder: (context, index) => 12.wSpace,
+            itemCount: 6,
+          ),
+        ),
+      ],
+    );
+  }
+}
