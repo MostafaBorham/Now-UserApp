@@ -13,7 +13,7 @@ class PriceCancelLine extends StatelessWidget {
         child,
         Transform.rotate(
           angle: -0.3,
-          child: Container(width: 30, height: 1, color: colors.inversePrimary),
+          child: Container(width: 40, height: 1.5, color: colors.inversePrimary),
         ),
       ],
     );

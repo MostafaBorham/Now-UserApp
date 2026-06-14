@@ -16,7 +16,7 @@ class CircularBrandLogo extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundColor: colors.onPrimaryContainer,
-      child: Center(child: CachedNetworkImage(height: 70.w,imageUrl: logoUrl,fit: BoxFit.contain,)),
+      child: Center(child: CachedNetworkImage(height: radius*1.5,imageUrl: logoUrl,fit: BoxFit.contain,)),
     );
   }
 }

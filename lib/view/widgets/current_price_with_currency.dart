@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../assets/assets.gen.dart';
 import '../styles/text_styles.dart';
@@ -18,12 +19,12 @@ class CurrentPriceWithCurrency extends StatelessWidget {
     return Row(
       spacing: 5,
       children: [
-        AutoSizeText('20',style: AppTextStyles.style14Regular.copyWith(
+        AutoSizeText('20',style: AppTextStyles.style16SemiBold.copyWith(
             color: color
         ),),
         Assets.media.images.svg.realSaudiCurrency.svg(
-          width: 8,
-          height: 8,
+          width: 14.sp,
+          height: 14.sp,
           fit: BoxFit.contain,
           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),
