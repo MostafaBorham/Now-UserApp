@@ -1,8 +1,14 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:motion_tab_bar_v2/motion-badge.widget.dart';
+import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
+import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/components/field_input_borders.dart';
@@ -22,11 +28,39 @@ import 'package:nowdelivery_user_app/view/widgets/show_more_items_header.dart';
 import 'package:nowdelivery_user_app/view/widgets/top_brands_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/white_app_logo.dart';
 
-import '../widgets/most_popular_item.dart';
+import '../widgets/shared/app_bottom_nav_bar_widget.dart';
+import '../widgets/shared/card_clipper.dart';
+import '../widgets/shared/custom_nav_bar.dart';
 
-class HomeScreen extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
+
+  MotionTabBarController? _motionTabBarController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    //// use "MotionTabBarController" to replace with "TabController", if you need to programmatically change the tab
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _motionTabBarController!.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -40,12 +74,22 @@ class HomeScreen extends StatelessWidget {
             spacing: 10,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(
-                    top: 15
-                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                ).copyWith(top: 15),
                 child: Column(
                   spacing: 20,
                   children: [
+
+                    /*Container(
+                      width: 200,
+                      height: 200,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: Svg(Assets.media.images.svg.clipper.path))
+                      ),
+                      child: CachedNetworkImage(imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg'),
+                    ),*/
                     WhiteAppLogo(size: 134.sp),
                     Row(
                       spacing: 10,
@@ -56,11 +100,12 @@ class HomeScreen extends StatelessWidget {
                           backgroundColor: Colors.transparent,
                           child: CachedNetworkImage(
                             imageUrl: '',
-                            placeholder: (context, url) => CircularProgressIndicator(
-                              padding: EdgeInsets.all(10),
-                              backgroundColor: colors.onPrimary,
-                              color: colors.primary,
-                            ),
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(
+                                  padding: EdgeInsets.all(10),
+                                  backgroundColor: colors.onPrimary,
+                                  color: colors.primary,
+                                ),
                             errorWidget: (context, url, error) => Assets
                                 .media
                                 .images
@@ -110,7 +155,9 @@ class HomeScreen extends StatelessWidget {
                           textStyle: AppTextStyles.style10Bold,
                           padding: EdgeInsets.all(3),
                           backgroundColor: colors.errorContainer,
-                          child: Assets.media.images.svg.alertIcon.svg(width: 35.sp),
+                          child: Assets.media.images.svg.alertIcon.svg(
+                            width: 35.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -124,11 +171,13 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: Assets.media.images.svg.whiteWaveBackground.svg(
-                      fit: BoxFit.fill
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
+                  Container(
+                    color: colors.onPrimary,
+
+                    margin: const EdgeInsets.only(top: 50.0),
                     child: Column(
                       spacing: 20,
                       children: [
@@ -141,8 +190,11 @@ class HomeScreen extends StatelessWidget {
                           child: TopBrandsSection(),
                         ),
                         SizedBox(height: 350.h, child: MostPopularSection()),
-                        SizedBox(height: 200.h, child: BestNearbyStoresSection()),
-                        SizedBox(height: 300.h, child: HomeOffersSection()),
+                        SizedBox(
+                          height: 240.h,
+                          child: BestNearbyStoresSection(),
+                        ),
+                        SizedBox(height: 350.h, child: HomeOffersSection()),
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(16),
@@ -172,13 +224,17 @@ class HomeScreen extends StatelessWidget {
                                         AutoSizeText(
                                           'Guest 123',
                                           style: AppTextStyles.style20Bold
-                                              .copyWith(color: colors.onPrimary),
+                                              .copyWith(
+                                                color: colors.onPrimary,
+                                              ),
                                           maxLines: 1,
                                         ),
                                         AutoSizeText(
                                           'Guest 123',
                                           style: AppTextStyles.style12Medium
-                                              .copyWith(color: colors.onPrimary),
+                                              .copyWith(
+                                                color: colors.onPrimary,
+                                              ),
                                           maxLines: 1,
                                         ),
                                       ],
@@ -201,9 +257,8 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   child: AutoSizeText(
                                     'Shop Now',
-                                    style: AppTextStyles.style16SemiBold.copyWith(
-                                      color: colors.onSecondary,
-                                    ),
+                                    style: AppTextStyles.style16SemiBold
+                                        .copyWith(color: colors.onSecondary),
                                     maxLines: 1,
                                   ),
                                 ),
@@ -221,6 +276,65 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: AppBottomNavBar(
+        currentIndex: 0,
+        onTap: (i) {},
+        barColor: colors.onPrimary,
+        onCartTap: () => Navigator.pushNamed(context, '/cart'),
+      ),
+/*        bottomNavigationBar: AnimatedBottomNavigationBar(
+          icons: const [
+            Icons.person_outline,
+            Icons.receipt_long_outlined,
+            Icons.favorite_border,
+            Icons.home_outlined,
+          ],
+          activeIndex: 0,
+          gapLocation: GapLocation.center,
+          notchSmoothness: NotchSmoothness.softEdge,
+          leftCornerRadius: 24,
+          rightCornerRadius: 24,
+          onTap: (index) {
+
+          },
+        )*/
+/*      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.blueAccent,
+        items: <Widget>[
+          Icon(Icons.add, size: 30),
+          Icon(Icons.list, size: 30),
+          Icon(Icons.compare_arrows, size: 30),
+        ],
+        onTap: (index) {
+          //Handle button tap
+        },
+      ),*/
+      /*bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController, // ADD THIS if you need to change your tab programmatically
+        initialSelectedTab: "Home",
+        useSafeArea: true, // default: true, apply safe area wrapper
+        labelAlwaysVisible: true, // default: false, set to "true" if you need to always show labels
+        labels: const ["Home","Settings"],
+        iconWidgets: [
+          Icon(Icons.home),
+          Icon(Icons.settings),
+        ],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        // tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 32.0,
+        tabSelectedColor: Colors.white,
+        tabIconSelectedColor: Colors.black,
+        tabBarColor: colors.onPrimary,
+        onTabItemSelected: (int value) {
+        },
+      ),*/
     );
   }
 }

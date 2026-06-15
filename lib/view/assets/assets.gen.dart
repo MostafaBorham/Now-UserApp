@@ -111,9 +111,17 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get appLogo =>
       const AssetGenImage('assets/media/images/png/app_logo.png');
 
+  /// File path: assets/media/images/png/decrement-icon.png
+  AssetGenImage get decrementIcon =>
+      const AssetGenImage('assets/media/images/png/decrement-icon.png');
+
   /// File path: assets/media/images/png/home-offers-background.jpg
   AssetGenImage get homeOffersBackground =>
       const AssetGenImage('assets/media/images/png/home-offers-background.jpg');
+
+  /// File path: assets/media/images/png/increament-icon.png
+  AssetGenImage get increamentIcon =>
+      const AssetGenImage('assets/media/images/png/increament-icon.png');
 
   /// File path: assets/media/images/png/onboarding_img.png
   AssetGenImage get onboardingImg =>
@@ -127,6 +135,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get realSaudiCurrency =>
       const AssetGenImage('assets/media/images/png/real-saudi-currency.png');
 
+  /// File path: assets/media/images/png/remove-icon.png
+  AssetGenImage get removeIcon =>
+      const AssetGenImage('assets/media/images/png/remove-icon.png');
+
   /// File path: assets/media/images/png/white-wave-background.png
   AssetGenImage get whiteWaveBackground =>
       const AssetGenImage('assets/media/images/png/white-wave-background.png');
@@ -134,10 +146,13 @@ class $AssetsMediaImagesPngGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     appLogo,
+    decrementIcon,
     homeOffersBackground,
+    increamentIcon,
     onboardingImg,
     profileImgPlacholder,
     realSaudiCurrency,
+    removeIcon,
     whiteWaveBackground,
   ];
 }
@@ -161,9 +176,21 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
 
+  /// File path: assets/media/images/svg/clipper.svg
+  SvgGenImage get clipper =>
+      const SvgGenImage('assets/media/images/svg/clipper.svg');
+
+  /// File path: assets/media/images/svg/empty-add-to-cart.svg
+  SvgGenImage get emptyAddToCart =>
+      const SvgGenImage('assets/media/images/svg/empty-add-to-cart.svg');
+
   /// File path: assets/media/images/svg/favourite-icon.svg
   SvgGenImage get favouriteIcon =>
       const SvgGenImage('assets/media/images/svg/favourite-icon.svg');
+
+  /// File path: assets/media/images/svg/filled-favourite-icon.svg
+  SvgGenImage get filledFavouriteIcon =>
+      const SvgGenImage('assets/media/images/svg/filled-favourite-icon.svg');
 
   /// File path: assets/media/images/svg/filter-icon.svg
   SvgGenImage get filterIcon =>
@@ -223,7 +250,10 @@ class $AssetsMediaImagesSvgGen {
     alertIcon,
     appLogo,
     categoriesUpArrow,
+    clipper,
+    emptyAddToCart,
     favouriteIcon,
+    filledFavouriteIcon,
     filterIcon,
     homeOffersBackground,
     locationIcon,

@@ -8,23 +8,34 @@ import '../styles/app_border_radius.dart';
 import '../styles/text_styles.dart';
 import 'circular_brand_logo.dart';
 
-class BestNearbyStoresListItem extends StatelessWidget {
+class BestNearbyStoresListItem extends StatefulWidget {
   const BestNearbyStoresListItem({super.key});
+
+  @override
+  State<BestNearbyStoresListItem> createState() =>
+      _BestNearbyStoresListItemState();
+}
+
+class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return LayoutBuilder(
-      builder: (context,constrains) {
+      builder: (context, constrains) {
         return SizedBox(
           width: 280.w,
           child: Card(
-            elevation: 3,
+            elevation: 2,
+            shadowColor: colors.onTertiaryContainer.withValues(alpha: 0.4),
             color: colors.onPrimary,
-            shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.brCircular18),
+            shape: RoundedRectangleBorder(
+              borderRadius: AppBorderRadius.brCircular18,
+            ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Column(
-              spacing: 10,
+              spacing: 8,
               children: [
                 Expanded(
                   child: Stack(
@@ -39,21 +50,44 @@ class BestNearbyStoresListItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.center,
                         child: CircularBrandLogo(
-                          radius: constrains.maxHeight*0.1,
+                          radius: 24.r,
                           logoUrl:
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                       ),
-                      Align(
-                        alignment: AlignmentDirectional.topStart,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            radius: constrains.maxHeight*0.08,
-                            backgroundColor: colors.onPrimary,
-                            child: Assets.media.images.svg.favouriteIcon.svg(
-                              width: constrains.maxHeight*0.08,
-                              colorFilter : ColorFilter.mode(colors.onTertiaryFixed,BlendMode.srcIn)
+                      InkWell(
+                        onTap: () {
+                          isFavorite = !isFavorite;
+                          setState(() {});
+                        },
+                        child: Align(
+                          alignment: AlignmentDirectional.topStart,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              radius: constrains.maxHeight * 0.08,
+                              backgroundColor: colors.onPrimary,
+                              child:
+                                  (isFavorite
+                                          ? Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .filledFavouriteIcon
+                                          : Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .favouriteIcon)
+                                      .svg(
+                                        width: constrains.maxHeight * 0.08,
+                                        colorFilter: ColorFilter.mode(
+                                          isFavorite
+                                              ? colors.errorContainer
+                                              : colors.onTertiaryFixed,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
                             ),
                           ),
                         ),
@@ -62,11 +96,9 @@ class BestNearbyStoresListItem extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0).copyWith(
-                    top: 0
-                  ),
+                  padding: const EdgeInsets.all(8.0).copyWith(top: 0),
                   child: Column(
-                    spacing: 12,
+                    spacing: 3,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AutoSizeText(
@@ -75,24 +107,40 @@ class BestNearbyStoresListItem extends StatelessWidget {
                           color: colors.onSecondary,
                         ),
                       ),
+                      2.hSpace,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         spacing: 5.w,
                         children: [
-                          Assets.media.images.svg.shippingIcon.svg(width: 16.sp,colorFilter: ColorFilter.mode(colors.onSurface, BlendMode.srcIn)),
+                          Assets.media.images.svg.shippingIcon.svg(
+                            width: 16.sp,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSurface,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style14SemiBold.copyWith(
                               color: colors.onSecondary,
                             ),
                           ),
-                          Assets.media.images.svg.realSaudiCurrency.svg(width: 15.sp,colorFilter: ColorFilter.mode(colors.onSecondary, BlendMode.srcIn)),
+                          Assets.media.images.svg.realSaudiCurrency.svg(
+                            width: 15.sp,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSecondary,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           5.wSpace,
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: colors.tertiaryFixed,
-                              borderRadius: AppBorderRadius.brCircular20.r
+                              borderRadius: AppBorderRadius.brCircular20.r,
                             ),
                             child: Row(
                               spacing: 5,
@@ -106,14 +154,20 @@ class BestNearbyStoresListItem extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         spacing: 5.w,
                         children: [
-                          Assets.media.images.svg.timeIcon.svg(width: 16.sp,colorFilter: ColorFilter.mode(colors.onSurface, BlendMode.srcIn)),
+                          Assets.media.images.svg.timeIcon.svg(
+                            width: 16.sp,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSurface,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style12Medium.copyWith(
@@ -121,7 +175,13 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                           5.wSpace,
-                          Assets.media.images.svg.locationIcon.svg(width: 14.sp,colorFilter: ColorFilter.mode(colors.onSurface, BlendMode.srcIn)),
+                          Assets.media.images.svg.locationIcon.svg(
+                            width: 14.sp,
+                            colorFilter: ColorFilter.mode(
+                              colors.onSurface,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style12Medium.copyWith(
@@ -129,7 +189,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -137,7 +197,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 }

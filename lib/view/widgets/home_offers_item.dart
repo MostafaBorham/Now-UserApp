@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -10,11 +11,34 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
+import 'add_to_cart_button.dart';
+import 'add_to_cart_counter_widget.dart';
 import 'current_price_with_currency.dart';
 import 'previous_price_with_currency.dart';
 
-class HomeOffersItem extends StatelessWidget {
+class HomeOffersItem extends StatefulWidget {
   const HomeOffersItem({super.key});
+
+  @override
+  State<HomeOffersItem> createState() => _HomeOffersItemState();
+}
+
+class _HomeOffersItemState extends State<HomeOffersItem> {
+  bool isFavorite = false;
+  bool isRotate = false;
+  bool showAddToCartCounter = false;
+  int counter = 0;
+  Timer? _timer;
+
+  void startTimer() {
+    _timer?.cancel();
+
+    _timer = Timer(const Duration(seconds: 2), () {
+      showAddToCartCounter = false;
+      isRotate = false;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,7 @@ class HomeOffersItem extends StatelessWidget {
         borderRadius: AppBorderRadius.brCircular16,
       ),
       child: Container(
-        width: 180.w,
+        width: 190.w,
         padding: EdgeInsets.symmetric(vertical: 12,horizontal: 12),
         child: Column(
           spacing: 15,
@@ -95,22 +119,29 @@ class HomeOffersItem extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.only(end: 8.0),
-                              child: Material(
-                                elevation: 1,
-                                shape: const CircleBorder(),
-                                child: CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: colors.onPrimary,
-                                  child: Assets.media.images.svg.favouriteIcon
-                                      .svg(
-                                        width: 16.sp,
-                                        colorFilter: ColorFilter.mode(
-                                          colors.onTertiaryFixed,
-                                          BlendMode.srcIn,
+                            InkWell(
+                              onTap: () {
+                                isFavorite = !isFavorite;
+                                setState(() {
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.only(end: 8.0),
+                                child: Material(
+                                  elevation: 1,
+                                  shape: const CircleBorder(),
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: colors.onPrimary,
+                                    child: (isFavorite? Assets.media.images.svg.filledFavouriteIcon : Assets.media.images.svg.favouriteIcon)
+                                        .svg(
+                                          width: 16.sp,
+                                          colorFilter: ColorFilter.mode(
+                                            isFavorite ? colors.errorContainer : colors.onTertiaryFixed,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
-                                      ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -151,7 +182,49 @@ class HomeOffersItem extends StatelessWidget {
 
                   ],
                 ),
-                ReverseWidget(child: Assets.media.images.svg.addToCartBtn.svg())
+                // ReverseWidget(child: Assets.media.images.svg.addToCartBtn.svg())
+                showAddToCartCounter
+                    ? AnimatedScale(
+                  scale: showAddToCartCounter ? 1 : 0,
+                  duration: const Duration(seconds: 2),
+                  curve: Curves.linear,
+                  onEnd: () {},
+                  child: AddToCartCounterWidget(
+                    counter: counter,
+                    onInc: () {
+                      startTimer();
+                      counter++;
+                      setState(() {});
+                    },
+                    onDec: () {
+                      startTimer();
+                      counter--;
+                      setState(() {});
+                    },
+                    onDelete: () {
+                      showAddToCartCounter = false;
+                      counter--;
+                      isRotate = false;
+                      setState(() {});
+                    },
+                  ),
+                )
+                    : InkWell(
+                  onTap: () {
+                    isRotate = !isRotate;
+                    setState(() {});
+                  },
+                  child: AddToCartButton(
+                    text: counter < 1 ? '+' : counter.toString(),
+                    onEnd: () {
+                      startTimer();
+                      if(counter<1) counter++ ;
+                      showAddToCartCounter = true;
+                      setState(() {});
+                    },
+                    isRotate: isRotate,
+                  ),
+                ),
               ],
             ),
           ],

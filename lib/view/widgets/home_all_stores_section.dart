@@ -3,6 +3,7 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/widgets/home_store_list_item.dart';
@@ -20,6 +21,7 @@ class HomeAllStoresSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Column(
+        spacing: 16,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,22 +45,47 @@ class HomeAllStoresSection extends StatelessWidget {
           ),
           Expanded(
             child: CustomButtonTabBar(
-              tabs: ['ALL','Clothes','Shoes'],
+              filterWidget: CircleAvatar(
+                backgroundColor: colors.tertiary.withValues(alpha: 0.3),
+                radius: 20.r,
+                child: Assets.media.images.svg.filterIcon.svg(
+                  width: 20.w
+                ),
+              ),
+              tabs: ['ALL','Clothes','Other'],
               views: [
-                ListView.separated(
-                  itemBuilder: (context, index) => HomeStoreListItem(),
-                  separatorBuilder: (context, index) => 20.hSpace,
-                  itemCount: 3,
+                LayoutBuilder(
+                  builder: (context,con) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) => SizedBox(
+                          height: con.maxHeight*0.6,
+                          child: HomeStoreListItem()),
+                      separatorBuilder: (context, index) => 20.hSpace,
+                      itemCount: 3,
+                    );
+                  }
                 ),
-                ListView.separated(
-                  itemBuilder: (context, index) => HomeStoreListItem(),
-                  separatorBuilder: (context, index) => 20.hSpace,
-                  itemCount: 3,
+                LayoutBuilder(
+                  builder: (context,con) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) => SizedBox(
+                          height: con.maxHeight*0.6,
+                          child: HomeStoreListItem()),
+                      separatorBuilder: (context, index) => 20.hSpace,
+                      itemCount: 3,
+                    );
+                  }
                 ),
-                ListView.separated(
-                  itemBuilder: (context, index) => HomeStoreListItem(),
-                  separatorBuilder: (context, index) => 20.hSpace,
-                  itemCount: 3,
+                LayoutBuilder(
+                  builder: (context,con) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) => SizedBox(
+                          height: con.maxHeight*0.6,
+                          child: HomeStoreListItem()),
+                      separatorBuilder: (context, index) => 20.hSpace,
+                      itemCount: 3,
+                    );
+                  }
                 ),
               ],
               selectedTabColor: colors.tertiaryContainer,

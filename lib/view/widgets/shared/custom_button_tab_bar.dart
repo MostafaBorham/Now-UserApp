@@ -11,7 +11,7 @@ class CustomButtonTabBar extends StatefulWidget {
     required this.tabs,
     required this.views,
     required this.selectedTabColor,
-    required this.unSelectedTabColor,
+    required this.unSelectedTabColor, this.filterWidget,
   }) : assert(tabs.length == views.length, 'Tabs count must equal views count');
 
   final List<String> tabs;
@@ -19,6 +19,7 @@ class CustomButtonTabBar extends StatefulWidget {
 
   final Color selectedTabColor;
   final Color unSelectedTabColor;
+  final Widget? filterWidget;
 
   @override
   State<CustomButtonTabBar> createState() => _CustomButtonTabBarState();
@@ -48,45 +49,56 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-
     return Column(
+      spacing: 16,
       children: [
-        TabBar(
-          controller: _controller,
-          isScrollable: true,
-          tabAlignment: TabAlignment.start,
-          indicator: const BoxDecoration(),
-          dividerHeight: 0,
-          labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
-          tabs: List.generate(widget.tabs.length, (index) {
-            final isSelected = _controller.index == index;
-
-            return Tab(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  borderRadius: AppBorderRadius.brCircular20.r,
-                  color: isSelected
-                      ? widget.selectedTabColor
-                      : widget.unSelectedTabColor,
-                ),
-                child: Text(
-                  widget.tabs[index],
-                  maxLines: 1,
-                  style: AppTextStyles.style16Regular.copyWith(
-                    color: isSelected ? colors.onPrimary : colors.onSecondary,
-                  ),
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 5,
+          children: [
+            TabBar(
+              controller: _controller,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              indicator: const BoxDecoration(),
+              dividerHeight: 0,
+              splashFactory: NoSplash.splashFactory,
+              dividerColor: Colors.transparent,
+              overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => Colors.transparent,
               ),
-            );
-          }),
+              labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+              tabs: List.generate(widget.tabs.length, (index) {
+                final isSelected = _controller.index == index;
+
+                return Tab(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      borderRadius: AppBorderRadius.brCircular20.r,
+                      color: isSelected
+                          ? widget.selectedTabColor
+                          : widget.unSelectedTabColor,
+                    ),
+                    child: Text(
+                      widget.tabs[index],
+                      maxLines: 1,
+                      style: AppTextStyles.style16Regular.copyWith(
+                        color: isSelected ? colors.onPrimary : colors.onSecondary,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+            widget.filterWidget??0.wSpace,
+          ],
         ),
-
-        16.hSpace,
-
         Expanded(
-          child: TabBarView(controller: _controller, children: widget.views),
+          child: TabBarView(
+            controller: _controller, children: widget.views,),
         ),
       ],
     );

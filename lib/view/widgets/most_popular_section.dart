@@ -19,7 +19,7 @@ class MostPopularSection extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [colors.tertiary, colors.onPrimary],
+          colors: [colors.tertiary.withValues(alpha: 0.4), colors.onPrimary],
           begin: AlignmentDirectional.centerStart,
           end: AlignmentDirectional.centerEnd,
         ),
