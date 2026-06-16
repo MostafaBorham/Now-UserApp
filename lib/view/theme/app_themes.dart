@@ -4,6 +4,9 @@ import 'package:nowdelivery_user_app/view/assets/fonts.gen.dart';
 abstract class AppThemes {
   static ThemeData getLightModeTheme() => ThemeData(
     fontFamily: FontFamily.ibmPlexSans,
+    primaryTextTheme: TextTheme(
+
+    ),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Color(0xff4BB749),
@@ -22,10 +25,12 @@ abstract class AppThemes {
       onTertiary: Color(0xffE9C600),
       onTertiaryFixed: Color(0xff030303),
       onPrimaryFixedVariant: Color(0xff378836),
+      onSecondaryFixedVariant: Color(0xffFCCD41),
       tertiaryFixed: Color(0xffFEF2C7),
       primaryFixed: Color(0xffFAFAFA),
       tertiary: Color(0xffB7E2B6),
       onTertiaryContainer: Color(0xffF8F8F8),
+      onErrorContainer: Color(0xff923E0E),
       tertiaryContainer: Color(0xff262626),
       onInverseSurface: Colors.orange,
     ),
@@ -37,7 +42,9 @@ abstract class AppThemes {
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),
       onPrimary: Colors.black,
+      onErrorContainer: Color(0xff923E0E),
       onSecondary: Colors.white,
+      onSecondaryFixedVariant: Color(0xffFCCD41),
       onSecondaryFixed: Color(0xffFCE041),
       error: Colors.red,
       tertiaryFixed: Color(0xffFEF2C7),

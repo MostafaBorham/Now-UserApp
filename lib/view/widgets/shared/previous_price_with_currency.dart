@@ -1,0 +1,34 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../assets/assets.gen.dart';
+import '../../styles/text_styles.dart';
+import 'price_cancel_line.dart';
+
+class PreviousPriceWithCurrency extends StatelessWidget {
+  const PreviousPriceWithCurrency({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final TextTheme textThemes = Theme.of(context).textTheme;
+    return PriceCancelLine(
+      child: Row(
+        spacing: 5,
+        children: [
+          AutoSizeText('10',style: AppTextStyles.style16SemiBold.copyWith(
+              color: colors.inversePrimary
+          ),),
+          Assets.media.images.svg.realSaudiCurrency.svg(
+            width: 14.sp,
+            height: 14.sp,
+            fit: BoxFit.contain,
+            colorFilter: ColorFilter.mode(colors.inversePrimary, BlendMode.srcIn),
+          ),
+        ],
+      ),
+    );
+  }
+}

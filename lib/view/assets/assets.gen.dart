@@ -172,6 +172,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get appLogo =>
       const SvgGenImage('assets/media/images/svg/app_logo.svg');
 
+  /// File path: assets/media/images/svg/arrow-broken-icon.svg
+  SvgGenImage get arrowBrokenIcon =>
+      const SvgGenImage('assets/media/images/svg/arrow-broken-icon.svg');
+
   /// File path: assets/media/images/svg/categories-up-arrow.svg
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
@@ -204,6 +208,14 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get locationIcon =>
       const SvgGenImage('assets/media/images/svg/location-icon.svg');
 
+  /// File path: assets/media/images/svg/market-icon.svg
+  SvgGenImage get marketIcon =>
+      const SvgGenImage('assets/media/images/svg/market-icon.svg');
+
+  /// File path: assets/media/images/svg/message-icon.svg
+  SvgGenImage get messageIcon =>
+      const SvgGenImage('assets/media/images/svg/message-icon.svg');
+
   /// File path: assets/media/images/svg/now-offers-ar.svg
   SvgGenImage get nowOffersAr =>
       const SvgGenImage('assets/media/images/svg/now-offers-ar.svg');
@@ -215,6 +227,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/onboarding_background.svg
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
+
+  /// File path: assets/media/images/svg/order-icon.svg
+  SvgGenImage get orderIcon =>
+      const SvgGenImage('assets/media/images/svg/order-icon.svg');
 
   /// File path: assets/media/images/svg/real-saudi-currency.svg
   SvgGenImage get realSaudiCurrency =>
@@ -249,6 +265,7 @@ class $AssetsMediaImagesSvgGen {
     addToCartBtn,
     alertIcon,
     appLogo,
+    arrowBrokenIcon,
     categoriesUpArrow,
     clipper,
     emptyAddToCart,
@@ -257,9 +274,12 @@ class $AssetsMediaImagesSvgGen {
     filterIcon,
     homeOffersBackground,
     locationIcon,
+    marketIcon,
+    messageIcon,
     nowOffersAr,
     onBoardingLogo,
     onboardingBackground,
+    orderIcon,
     realSaudiCurrency,
     searchIcon,
     shippingIcon,
