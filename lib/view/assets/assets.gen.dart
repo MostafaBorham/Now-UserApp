@@ -176,6 +176,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get arrowBrokenIcon =>
       const SvgGenImage('assets/media/images/svg/arrow-broken-icon.svg');
 
+  /// File path: assets/media/images/svg/categories-header-wave.svg
+  SvgGenImage get categoriesHeaderWave =>
+      const SvgGenImage('assets/media/images/svg/categories-header-wave.svg');
+
   /// File path: assets/media/images/svg/categories-up-arrow.svg
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
@@ -266,6 +270,7 @@ class $AssetsMediaImagesSvgGen {
     alertIcon,
     appLogo,
     arrowBrokenIcon,
+    categoriesHeaderWave,
     categoriesUpArrow,
     clipper,
     emptyAddToCart,

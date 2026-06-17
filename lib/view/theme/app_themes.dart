@@ -33,6 +33,10 @@ abstract class AppThemes {
       onErrorContainer: Color(0xff923E0E),
       tertiaryContainer: Color(0xff262626),
       onInverseSurface: Colors.orange,
+      surface: Color(0xffFBBB24),
+      surfaceContainerHigh: Color(0xffFEE86A),
+      surfaceContainerHighest: Color(0xffFFED89),
+      surfaceContainer: Color(0xffFEE765),
     ),
   );
   //////////////////////////////////////////////////////////////////////////////
@@ -64,6 +68,10 @@ abstract class AppThemes {
       onSurface: Color(0xffA1A1A1),
       onTertiary: Color(0xffE9C600),
       onTertiaryFixed: Color(0xff030303),
+      surface: Color(0xffFBBB24),
+      surfaceContainerHigh: Color(0xffFEE86A),
+      surfaceContainerHighest: Color(0xffFFED89),
+      surfaceContainer: Color(0xffFEE765),
     ),
   );
 }

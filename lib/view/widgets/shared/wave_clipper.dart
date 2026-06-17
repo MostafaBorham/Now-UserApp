@@ -1,38 +1,74 @@
 import 'package:flutter/material.dart';
 
-class TopWaveClipper extends CustomClipper<Path> {
+class WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
 
-    path.moveTo(0, 40);
+    path.lineTo(0, 15);
 
+    // Wave 1
     path.quadraticBezierTo(
+      size.width * 0.06,
+      -8,
       size.width * 0.125,
-      0,
+      10,
+    );
+
+    // Wave 2
+    path.quadraticBezierTo(
+      size.width * 0.19,
+      28,
       size.width * 0.25,
-      40,
+      10,
     );
 
+    // Wave 3
     path.quadraticBezierTo(
+      size.width * 0.31,
+      -8,
       size.width * 0.375,
-      80,
-      size.width * 0.5,
-      40,
+      10,
     );
 
+    // Wave 4
     path.quadraticBezierTo(
+      size.width * 0.44,
+      28,
+      size.width * 0.50,
+      10,
+    );
+
+    // Wave 5
+    path.quadraticBezierTo(
+      size.width * 0.56,
+      -8,
       size.width * 0.625,
-      0,
-      size.width * 0.75,
-      40,
+      10,
     );
 
+    // Wave 6
     path.quadraticBezierTo(
+      size.width * 0.69,
+      28,
+      size.width * 0.75,
+      10,
+    );
+
+    // Wave 7
+    path.quadraticBezierTo(
+      size.width * 0.81,
+      -8,
       size.width * 0.875,
-      80,
+      10,
+    );
+
+    // Wave 8
+    path.quadraticBezierTo(
+      size.width * 0.94,
+      28,
       size.width,
-      40,
+      10,
     );
 
     path.lineTo(size.width, size.height);
@@ -43,5 +79,5 @@ class TopWaveClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

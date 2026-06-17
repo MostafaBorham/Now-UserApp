@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
@@ -11,6 +12,7 @@ import 'package:nowdelivery_user_app/view/theme/app_gradient_colors.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/order/order_list_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/primary_app_button.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
 class OrderDetailsScreen extends ConsumerStatefulWidget {
   const OrderDetailsScreen({super.key});
@@ -51,13 +53,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  15.wSpace,
-                  AutoSizeText(
-                    'Order Details',
-                    style: AppTextStyles.style24SemiBold.copyWith(
-                      color: colors.onSecondary,
-                    ),
-                  ),
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
@@ -65,9 +60,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     child: CircleAvatar(
                       backgroundColor: colors.onPrimary,
                       radius: 20.r,
-                      child: Assets.media.images.svg.arrowBrokenIcon.svg(),
+                      child: ReverseWidget(child: Assets.media.images.svg.arrowBrokenIcon.svg()),
                     ),
                   ),
+                  AutoSizeText(
+                    'Order Details',
+                    style: AppTextStyles.style24SemiBold.copyWith(
+                      color: colors.onSecondary,
+                    ),
+                  ),
+                  20.wSpace
                 ],
               ),
             ),
@@ -296,7 +298,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     borderRadius: AppBorderRadius.brCircular8.r,
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     spacing: 10,
                                     children: [
                                       ClipRRect(
@@ -312,8 +315,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                       ),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             AutoSizeText(
                                               'Orange',
@@ -330,7 +335,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   style: AppTextStyles
                                                       .style14Regular
                                                       .copyWith(
-                                                        color: colors.onSecondary,
+                                                        color:
+                                                            colors.onSecondary,
                                                       ),
                                                 ),
                                                 Assets
@@ -359,8 +365,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           'x3',
                                           style: AppTextStyles.style16Medium
                                               .copyWith(
-                                            color: colors.onSecondary,
-                                          ),
+                                                color: colors.onSecondary,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -396,7 +402,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     borderRadius: AppBorderRadius.brCircular8.r,
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -408,33 +415,45 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                               shape: BoxShape.circle,
                                             ),
                                             child: Center(
-                                              child: Assets.media.images.svg.marketIcon.svg(
-                                                width: 20.w,
-                                                height: 20.w,
-                                                colorFilter: ColorFilter.mode(
-                                                  colors.onPrimary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                              child: Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .marketIcon
+                                                  .svg(
+                                                    width: 20.w,
+                                                    height: 20.w,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.onPrimary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ),
                                           ),
                                           12.wSpace,
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   'From',
-                                                  style: AppTextStyles.style12Medium.copyWith(
-                                                    color: colors.onSecondary,
-                                                  ),
+                                                  style: AppTextStyles
+                                                      .style12Medium
+                                                      .copyWith(
+                                                        color:
+                                                            colors.onSecondary,
+                                                      ),
                                                 ),
                                                 2.hSpace,
                                                 Text(
                                                   'Panda Store',
-                                                  style: AppTextStyles.style14Medium.copyWith(
-                                                    color: colors.onSurface,
-                                                  ),
+                                                  style: AppTextStyles
+                                                      .style14Medium
+                                                      .copyWith(
+                                                        color: colors.onSurface,
+                                                      ),
                                                 ),
                                               ],
                                             ),
@@ -447,7 +466,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                         color: colors.onSurface,
                                         margin: EdgeInsetsDirectional.symmetric(
                                           horizontal: 25,
-                                          vertical: 5
+                                          vertical: 5,
                                         ),
                                       ),
                                       Row(
@@ -456,39 +475,53 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             width: 44.w,
                                             height: 44.w,
                                             decoration: BoxDecoration(
-                                              color: colors.onSecondaryFixedVariant,
+                                              color: colors
+                                                  .onSecondaryFixedVariant,
                                               shape: BoxShape.circle,
                                             ),
                                             child: Center(
-                                              child: Assets.media.images.svg.locationIcon.svg(
-                                                width: 20.w,
-                                                height: 20.w,
-                                                colorFilter: ColorFilter.mode(
-                                                  colors.onSecondary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                              child: Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .locationIcon
+                                                  .svg(
+                                                    width: 20.w,
+                                                    height: 20.w,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.onSecondary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ),
                                           ),
                                           12.wSpace,
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   'To',
-                                                  style: AppTextStyles.style12Medium.copyWith(
-                                                    color: colors.onSecondary,
-                                                  ),
+                                                  style: AppTextStyles
+                                                      .style12Medium
+                                                      .copyWith(
+                                                        color:
+                                                            colors.onSecondary,
+                                                      ),
                                                 ),
                                                 2.hSpace,
                                                 Text(
                                                   '7468 Al Olaya, Riyadh',
-                                                  style: AppTextStyles.style14Medium.copyWith(
-                                                    color: colors.onSurface,
-                                                  ),
+                                                  style: AppTextStyles
+                                                      .style14Medium
+                                                      .copyWith(
+                                                        color: colors.onSurface,
+                                                      ),
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ],
                                             ),
@@ -536,56 +569,88 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           CircularBrandLogo(
                                             radius: 25.sp,
                                             logoUrl:
-                                            'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                                                'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                                           ),
                                           Column(
                                             spacing: 5,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               AutoSizeText(
                                                 'Panda Store',
-                                                style: AppTextStyles.style16Medium.copyWith(
-                                                  color: colors.onSecondary,
-                                                ),
+                                                style: AppTextStyles
+                                                    .style16Medium
+                                                    .copyWith(
+                                                      color: colors.onSecondary,
+                                                    ),
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 spacing: 5.w,
                                                 children: [
-                                                  Assets.media.images.svg.timeIcon.svg(
-                                                    width: 16.sp,
-                                                    colorFilter: ColorFilter.mode(
-                                                      colors.onSurface,
-                                                      BlendMode.srcIn,
-                                                    ),
-                                                  ),
+                                                  Assets
+                                                      .media
+                                                      .images
+                                                      .svg
+                                                      .timeIcon
+                                                      .svg(
+                                                        width: 16.sp,
+                                                        colorFilter:
+                                                            ColorFilter.mode(
+                                                              colors.onSurface,
+                                                              BlendMode.srcIn,
+                                                            ),
+                                                      ),
                                                   AutoSizeText(
                                                     '٤٠-٥٠ دقيقة',
-                                                    style: AppTextStyles.style12Medium.copyWith(
-                                                      color: colors.onSurface,
-                                                    ),
+                                                    style: AppTextStyles
+                                                        .style12Medium
+                                                        .copyWith(
+                                                          color:
+                                                              colors.onSurface,
+                                                        ),
                                                   ),
                                                   5.wSpace,
-                                                  Assets.media.images.svg.locationIcon.svg(
-                                                    width: 14.sp,
-                                                    colorFilter: ColorFilter.mode(
-                                                      colors.onSurface,
-                                                      BlendMode.srcIn,
-                                                    ),
-                                                  ),
+                                                  Assets
+                                                      .media
+                                                      .images
+                                                      .svg
+                                                      .locationIcon
+                                                      .svg(
+                                                        width: 14.sp,
+                                                        colorFilter:
+                                                            ColorFilter.mode(
+                                                              colors.onSurface,
+                                                              BlendMode.srcIn,
+                                                            ),
+                                                      ),
                                                   AutoSizeText(
                                                     '٤٠ - ٥٠ كم',
-                                                    style: AppTextStyles.style12Medium.copyWith(
-                                                      color: colors.onSurface,
-                                                    ),
+                                                    style: AppTextStyles
+                                                        .style12Medium
+                                                        .copyWith(
+                                                          color:
+                                                              colors.onSurface,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
                                             ],
-                                          )
+                                          ),
                                         ],
                                       ),
-                                      PrimaryAppButton(isFilled: true, title: 'message',prefixIcon: Assets.media.images.svg.messageIcon.svg(),buttonPadding: 8,)
+                                      PrimaryAppButton(
+                                        isFilled: true,
+                                        title: 'message',
+                                        prefixIcon: Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .messageIcon
+                                            .svg(),
+                                        buttonPadding: 8,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -619,33 +684,37 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     borderRadius: AppBorderRadius.brCircular8.r,
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     spacing: 10,
                                     children: [
                                       Container(
                                         child: CachedNetworkImage(
                                           imageUrl:
-                                          'https://cdn-icons-png.flaticon.com/512/5968/5968601.png',
+                                              'https://cdn-icons-png.flaticon.com/512/5968/5968601.png',
                                           width: 44.w,
                                           height: 44.w,
                                           fit: BoxFit.cover,
                                         ),
                                         decoration: BoxDecoration(
-                                          shape: BoxShape.circle
+                                          shape: BoxShape.circle,
                                         ),
-                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
                                       ),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             AutoSizeText(
                                               'Apple Pay',
                                               style: AppTextStyles.style16Medium
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                             Row(
                                               spacing: 5,
@@ -655,8 +724,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   style: AppTextStyles
                                                       .style14Regular
                                                       .copyWith(
-                                                    color: colors.onSurface,
-                                                  ),
+                                                        color: colors.onSurface,
+                                                      ),
                                                 ),
                                                 Assets
                                                     .media
@@ -664,15 +733,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                     .svg
                                                     .realSaudiCurrency
                                                     .svg(
-                                                  width: 12.sp,
-                                                  height: 12.sp,
-                                                  fit: BoxFit.contain,
-                                                  colorFilter:
-                                                  ColorFilter.mode(
-                                                    colors.onSurface,
-                                                    BlendMode.srcIn,
-                                                  ),
-                                                ),
+                                                      width: 12.sp,
+                                                      height: 12.sp,
+                                                      fit: BoxFit.contain,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                            colors.onSurface,
+                                                            BlendMode.srcIn,
+                                                          ),
+                                                    ),
                                               ],
                                             ),
                                           ],
@@ -718,11 +787,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           Expanded(
                                             child: Text(
                                               'Subtotal',
-                                              style: AppTextStyles
-                                                  .style14Medium
+                                              style: AppTextStyles.style14Medium
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                           ),
                                           Row(
@@ -730,11 +798,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             children: [
                                               AutoSizeText(
                                                 '10.00',
-                                                style: AppTextStyles
-                                                    .style14Bold
+                                                style: AppTextStyles.style14Bold
                                                     .copyWith(
-                                                  color: colors.onSecondary,
-                                                ),
+                                                      color: colors.onSecondary,
+                                                    ),
                                               ),
                                               Assets
                                                   .media
@@ -742,15 +809,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   .svg
                                                   .realSaudiCurrency
                                                   .svg(
-                                                width: 15.sp,
-                                                height: 15.sp,
-                                                fit: BoxFit.contain,
-                                                colorFilter:
-                                                ColorFilter.mode(
-                                                  colors.onSecondary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                                    width: 15.sp,
+                                                    height: 15.sp,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.onSecondary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ],
                                           ),
                                         ],
@@ -760,11 +827,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           Expanded(
                                             child: Text(
                                               'Value Added Tax (VAT) (5%)',
-                                              style: AppTextStyles
-                                                  .style14Medium
+                                              style: AppTextStyles.style14Medium
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                           ),
                                           Row(
@@ -772,11 +838,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             children: [
                                               AutoSizeText(
                                                 '10.00',
-                                                style: AppTextStyles
-                                                    .style14Bold
+                                                style: AppTextStyles.style14Bold
                                                     .copyWith(
-                                                  color: colors.onSecondary,
-                                                ),
+                                                      color: colors.onSecondary,
+                                                    ),
                                               ),
                                               Assets
                                                   .media
@@ -784,15 +849,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   .svg
                                                   .realSaudiCurrency
                                                   .svg(
-                                                width: 15.sp,
-                                                height: 15.sp,
-                                                fit: BoxFit.contain,
-                                                colorFilter:
-                                                ColorFilter.mode(
-                                                  colors.onSecondary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                                    width: 15.sp,
+                                                    height: 15.sp,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.onSecondary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ],
                                           ),
                                         ],
@@ -802,11 +867,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           Expanded(
                                             child: Text(
                                               'Shipping Fees',
-                                              style: AppTextStyles
-                                                  .style14Medium
+                                              style: AppTextStyles.style14Medium
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                           ),
                                           Row(
@@ -814,11 +878,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             children: [
                                               AutoSizeText(
                                                 '10.00',
-                                                style: AppTextStyles
-                                                    .style14Bold
+                                                style: AppTextStyles.style14Bold
                                                     .copyWith(
-                                                  color: colors.onSecondary,
-                                                ),
+                                                      color: colors.onSecondary,
+                                                    ),
                                               ),
                                               Assets
                                                   .media
@@ -826,15 +889,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   .svg
                                                   .realSaudiCurrency
                                                   .svg(
-                                                width: 15.sp,
-                                                height: 15.sp,
-                                                fit: BoxFit.contain,
-                                                colorFilter:
-                                                ColorFilter.mode(
-                                                  colors.onSecondary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                                    width: 15.sp,
+                                                    height: 15.sp,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.onSecondary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ],
                                           ),
                                         ],
@@ -844,11 +907,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           Expanded(
                                             child: Text(
                                               'Discount',
-                                              style: AppTextStyles
-                                                  .style14Medium
+                                              style: AppTextStyles.style14Medium
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                           ),
                                           Row(
@@ -856,11 +918,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             children: [
                                               AutoSizeText(
                                                 '10.00',
-                                                style: AppTextStyles
-                                                    .style14Bold
+                                                style: AppTextStyles.style14Bold
                                                     .copyWith(
-                                                  color: colors.errorContainer,
-                                                ),
+                                                      color:
+                                                          colors.errorContainer,
+                                                    ),
                                               ),
                                               Assets
                                                   .media
@@ -868,15 +930,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   .svg
                                                   .realSaudiCurrency
                                                   .svg(
-                                                width: 15.sp,
-                                                height: 15.sp,
-                                                fit: BoxFit.contain,
-                                                colorFilter:
-                                                ColorFilter.mode(
-                                                  colors.errorContainer,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                                    width: 15.sp,
+                                                    height: 15.sp,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.errorContainer,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ],
                                           ),
                                         ],
@@ -893,8 +955,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                               style: AppTextStyles
                                                   .style14SemiBold
                                                   .copyWith(
-                                                color: colors.onSecondary,
-                                              ),
+                                                    color: colors.onSecondary,
+                                                  ),
                                             ),
                                           ),
                                           Row(
@@ -902,11 +964,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             children: [
                                               AutoSizeText(
                                                 '10.00',
-                                                style: AppTextStyles
-                                                    .style14Bold
+                                                style: AppTextStyles.style14Bold
                                                     .copyWith(
-                                                  color: colors.primary,
-                                                ),
+                                                      color: colors.primary,
+                                                    ),
                                               ),
                                               Assets
                                                   .media
@@ -914,15 +975,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                   .svg
                                                   .realSaudiCurrency
                                                   .svg(
-                                                width: 15.sp,
-                                                height: 15.sp,
-                                                fit: BoxFit.contain,
-                                                colorFilter:
-                                                ColorFilter.mode(
-                                                  colors.primary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                              ),
+                                                    width: 15.sp,
+                                                    height: 15.sp,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.primary,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
                                             ],
                                           ),
                                         ],

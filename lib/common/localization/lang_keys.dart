@@ -12,4 +12,6 @@ abstract class LangKeys{
   static const String offersKey = 'offers';
   static const String topBrandsKey = 'topBrands';
   static const String mostPopularKey = 'mostPopular';
+  static const String categoriesTitleKey = 'categoriesTitle';
+  static const String discountKey = 'discount';
 }
