@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../responsive/spacing_extension.dart';
-import '../../styles/app_border_radius.dart';
-import '../../styles/text_styles.dart';
+import '../../../responsive/spacing_extension.dart';
+import '../../../styles/app_border_radius.dart';
+import '../../../styles/text_styles.dart';
 
 class CustomButtonTabBar extends StatefulWidget {
   const CustomButtonTabBar({
@@ -11,13 +11,15 @@ class CustomButtonTabBar extends StatefulWidget {
     required this.tabs,
     required this.views,
     required this.selectedTabColor,
-    required this.unSelectedTabColor, this.filterWidget,
+    required this.unSelectedTabColor, this.filterWidget, this.selectedLabelColor, this.unSelectedLabelColor,
   }) : assert(tabs.length == views.length, 'Tabs count must equal views count');
 
   final List<String> tabs;
   final List<Widget> views;
 
   final Color selectedTabColor;
+  final Color? selectedLabelColor;
+  final Color? unSelectedLabelColor;
   final Color unSelectedTabColor;
   final Widget? filterWidget;
 
@@ -85,8 +87,8 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     child: Text(
                       widget.tabs[index],
                       maxLines: 1,
-                      style: AppTextStyles.style16Regular.copyWith(
-                        color: isSelected ? colors.onPrimary : colors.onSecondary,
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: isSelected ? widget.selectedLabelColor?? colors.onPrimary : widget.unSelectedLabelColor?? colors.onSecondary,
                       ),
                     ),
                   ),

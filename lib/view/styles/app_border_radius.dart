@@ -5,6 +5,7 @@ class AppBorderRadius {
   static final BorderRadius brCircular2 = BorderRadius.circular(2);
   static final BorderRadius brCircular4 = BorderRadius.circular(4);
   static final BorderRadius brCircular6 = BorderRadius.circular(6);
+  static final BorderRadius brCircular7 = BorderRadius.circular(7);
   static final BorderRadius brCircular8 = BorderRadius.circular(8);
   static final BorderRadius brCircular10 = BorderRadius.circular(10);
   static final BorderRadius brCircular12 = BorderRadius.circular(12);
