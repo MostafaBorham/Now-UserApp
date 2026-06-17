@@ -58,10 +58,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       color: colors.onSecondary,
                     ),
                   ),
-                  CircleAvatar(
-                    backgroundColor: colors.onPrimary,
-                    radius: 20.r,
-                    child: Assets.media.images.svg.arrowBrokenIcon.svg(),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: colors.onPrimary,
+                      radius: 20.r,
+                      child: Assets.media.images.svg.arrowBrokenIcon.svg(),
+                    ),
                   ),
                 ],
               ),

@@ -18,57 +18,58 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 70),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              colors.onSecondaryFixed,
-              colors.onPrimary,
-              colors.onPrimary,
-            ],
-          ),
-        ),
-        child: Column(
-          spacing: 20,
-          children: [
-            AutoSizeText(
-              'My Orders',
-              style: AppTextStyles.style24SemiBold.copyWith(
-                color: colors.onSecondary,
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Assets.media.images.svg.whiteWaveBackground.svg(
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 50.0),
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        return OrderListItem();
-                      },
-                      separatorBuilder: (context, index) {
-                        return 20.hSpace;
-                      },
-                      itemCount: 5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 70),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colors.onSecondaryFixed,
+            colors.onPrimary,
+            colors.onPrimary,
           ],
         ),
+      ),
+      child: Column(
+        spacing: 20,
+        children: [
+          AutoSizeText(
+            'My Orders',
+            style: AppTextStyles.style24SemiBold.copyWith(
+              color: colors.onSecondary,
+            ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Assets.media.images.svg.whiteWaveBackground.svg(
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 50.0,
+                  ),
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      return OrderListItem();
+                    },
+                    separatorBuilder: (context, index) {
+                      return 20.hSpace;
+                    },
+                    itemCount: 5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/view/screens/home/home_screen.dart';
+import 'package:nowdelivery_user_app/view/screens/main/main_layout_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/onboarding/on_boarding_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/my_order_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/order_details_screen.dart';
@@ -18,18 +19,13 @@ abstract class AppRouter {
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const OnBoardingScreen());
     ////////////////////////////////////////////////////////////////
-      case AppRoutes.homeScreen:
+      case AppRoutes.mainLayoutScreen:
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  const HomeScreen());
-    ////////////////////////////////////////////////////////////////
-      case AppRoutes.myOrderScreen:
-        return MaterialPageRoute(
-            settings: settings, builder: (_) =>  const MyOrderScreen());
+            settings: settings, builder: (_) =>  const MainLayoutScreen());
     ////////////////////////////////////////////////////////////////
       case AppRoutes.orderDetailsScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const OrderDetailsScreen());
-    ////////////////////////////////////////////////////////////////
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

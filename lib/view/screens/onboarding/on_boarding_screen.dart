@@ -96,7 +96,7 @@ class OnBoardingScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.pushReplacementNamed(
                         context,
-                        AppRoutes.homeScreen,
+                        AppRoutes.mainLayoutScreen,
                       );
                     },
                   ),
