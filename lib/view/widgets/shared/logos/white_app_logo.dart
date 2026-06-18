@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../assets/assets.gen.dart';
+import '../../../assets/assets.gen.dart';
 
 class WhiteAppLogo extends StatelessWidget {
   const WhiteAppLogo({super.key, required this.size});

@@ -9,8 +9,8 @@ import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
 class AppSearchField extends StatelessWidget {
-  const AppSearchField({super.key});
-
+  const AppSearchField({super.key, this.hintText});
+  final String? hintText;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -23,7 +23,7 @@ class AppSearchField extends StatelessWidget {
       ),
       child: TextField(
         decoration: InputDecoration(
-          hintText: LangKeys.searchNowKey.tr(),
+          hintText: hintText?? LangKeys.searchNowKey.tr(),
           hintStyle: AppTextStyles.style16Regular.copyWith(
             color:colors.onPrimaryFixed
           ),

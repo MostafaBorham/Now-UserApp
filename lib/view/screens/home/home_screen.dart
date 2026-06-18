@@ -15,22 +15,19 @@ import 'package:nowdelivery_user_app/view/components/field_input_borders.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_logo.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/logos/app_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_all_stores_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_banner_slider.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_categories_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_offers_section.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_search_field.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/most_popular_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/top_brands_section.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/white_app_logo.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/logos/white_app_logo.dart';
 
-import '../../widgets/shared/app_bottom_nav_bar_widget.dart';
-import '../../widgets/shared/card_clipper.dart';
-import '../../widgets/shared/custom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

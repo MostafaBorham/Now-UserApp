@@ -2,14 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
-class PrimaryAppButton extends StatelessWidget {
-  const PrimaryAppButton({super.key, required this.isFilled, required this.title, this.onTap, this.buttonPadding = 12, this.prefixIcon,});
+class PrimaryAppPostfixIconButton extends StatelessWidget {
+  const PrimaryAppPostfixIconButton({super.key, required this.title, this.onTap, this.buttonPadding = 12, this.postfixIcon,});
 
-  final bool isFilled;
   final String title;
   final GestureTapCallback? onTap;
   final double? buttonPadding;
-  final Widget? prefixIcon;
+  final Widget? postfixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +19,10 @@ class PrimaryAppButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-            color: isFilled ? colors.primary : Colors.transparent,
+            color: colors.primary,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-                color: !isFilled ? colors.primary : Colors.transparent,
+                color:  Colors.transparent,
                 width: 2
             )
         ),
@@ -31,15 +30,15 @@ class PrimaryAppButton extends StatelessWidget {
           spacing: 5,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            prefixIcon??SizedBox.shrink(),
             AutoSizeText(
               title,
               textAlign: TextAlign.center,
               minFontSize: 10,
               style: AppTextStyles.style14Medium.copyWith(
-                color: isFilled ? colors.onPrimary : colors.primary,
+                color: colors.onPrimary,
               ),
             ),
+            postfixIcon??SizedBox.shrink(),
           ],
         ),
       ),

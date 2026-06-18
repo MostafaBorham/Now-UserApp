@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/view/screens/categories/category_details_screen.dart';
+import 'package:nowdelivery_user_app/view/screens/favourites/favourites_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/home/home_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/main/main_layout_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/onboarding/on_boarding_screen.dart';
@@ -36,6 +37,10 @@ abstract class AppRouter {
       case AppRoutes.categoryDetailsScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const CategoryDetailsScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.favouritesScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const FavouritesScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/current_price_with_currency.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/primary_app_button.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
 
 class OrderListItem extends ConsumerWidget {
   const OrderListItem({super.key});
@@ -137,7 +137,7 @@ class OrderListItem extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: PrimaryAppButton(isFilled: true, title: 'عرض التفاصيل',onTap: () {
+                child: PrimaryAppButton( title: 'عرض التفاصيل',onTap: () {
                   Navigator.pushNamed(context, AppRoutes.orderDetailsScreen);
                 },),
               ),

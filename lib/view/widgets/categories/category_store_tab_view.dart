@@ -8,8 +8,8 @@ import 'package:nowdelivery_user_app/view/widgets/home/home_offers_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_store_list_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
 
-class StoreTabView extends StatelessWidget {
-  const StoreTabView({super.key});
+class CategoryStoreTabView extends StatelessWidget {
+  const CategoryStoreTabView({super.key});
 
   @override
   Widget build(BuildContext context) {

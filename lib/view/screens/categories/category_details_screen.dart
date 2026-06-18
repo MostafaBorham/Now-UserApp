@@ -8,9 +8,11 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_card.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/product_tab_view.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/store_tab_view.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_search_field.dart';
+import 'package:nowdelivery_user_app/view/widgets/categories/category_product_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/categories/category_store_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_product_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_store_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_tab_bar_with_fixed_widget.dart';
 
@@ -83,8 +85,8 @@ class CategoryDetailsScreen extends StatelessWidget {
                     child: CustomTabBarWithFixedWidget(
                       tabs: ['Products', 'Stores'],
                       views: [
-                        ProductTabView(),
-                        StoreTabView(),
+                        CategoryProductTabView(),
+                        CategoryStoreTabView(),
                       ],
                       selectedTabColor: colors.primary,
                       fixedWidget: AppSearchField(),

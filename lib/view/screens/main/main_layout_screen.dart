@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/view/controllers/main/main_pages_controller.dart';
 import 'package:nowdelivery_user_app/view/screens/home/home_screen.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_bottom_nav_bar.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/bottom_nav_bars/app_bottom_nav_bar.dart';
 
 class MainLayoutScreen extends ConsumerWidget {
   const MainLayoutScreen({super.key});

@@ -139,6 +139,14 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get removeIcon =>
       const AssetGenImage('assets/media/images/png/remove-icon.png');
 
+  /// File path: assets/media/images/png/wave-clip-background.png
+  AssetGenImage get waveClipBackground =>
+      const AssetGenImage('assets/media/images/png/wave-clip-background.png');
+
+  /// File path: assets/media/images/png/white-app-logo.png
+  AssetGenImage get whiteAppLogo =>
+      const AssetGenImage('assets/media/images/png/white-app-logo.png');
+
   /// File path: assets/media/images/png/white-wave-background.png
   AssetGenImage get whiteWaveBackground =>
       const AssetGenImage('assets/media/images/png/white-wave-background.png');
@@ -153,6 +161,8 @@ class $AssetsMediaImagesPngGen {
     profileImgPlacholder,
     realSaudiCurrency,
     removeIcon,
+    waveClipBackground,
+    whiteAppLogo,
     whiteWaveBackground,
   ];
 }

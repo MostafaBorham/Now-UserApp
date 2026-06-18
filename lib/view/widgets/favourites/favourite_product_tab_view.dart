@@ -1,0 +1,42 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/view/widgets/categories/category_product_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
+class FavouriteProductTabView extends StatelessWidget {
+  const FavouriteProductTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return CustomButtonTabBar(
+      filterWidget: CircleAvatar(
+        backgroundColor: colors.tertiary.withValues(alpha: 0.3),
+        radius: 20.r,
+        child: Assets.media.images.svg.filterIcon.svg(width: 20.w),
+      ),
+      tabs: ['ALL', 'Men'],
+      views: ['', '']
+          .map(
+            (e) => GridView.builder(
+          padding: EdgeInsets.zero,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 20,
+            mainAxisExtent: 250,
+          ),
+          itemCount: 6,
+          itemBuilder: (BuildContext context, int index) =>
+              CategoryProductItem(),
+        ),
+      )
+          .toList(),
+      selectedLabelColor: colors.onPrimary,
+      selectedTabColor: colors.tertiaryContainer,
+      unSelectedTabColor: colors.primaryFixed,
+    );
+  }
+}

@@ -6,4 +6,5 @@ abstract class AppRoutes {
   static const String mainLayoutScreen = 'main layout';
   static const String categoriesScreen = 'categories';
   static const String categoryDetailsScreen = 'category details';
+  static const String favouritesScreen = 'favourites screen';
 }
