@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nowdelivery_user_app/common/route/app_routes.dart';
-import 'package:nowdelivery_user_app/common/route/route_manager.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,11 +16,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _logoController = AnimationController(
-      vsync: this,
-    );
+    _logoController = AnimationController(vsync: this);
     _logoController.addStatusListener(_logoAnimationListener);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,5 +60,4 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.pushReplacementNamed(context, AppRoutes.onBoardingScreen);
     }
   }
-
 }

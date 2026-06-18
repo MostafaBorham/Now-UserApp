@@ -7,7 +7,6 @@ import 'package:nowdelivery_user_app/common/models/category_model.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/categories_header.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/product_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/store_tab_view.dart';
