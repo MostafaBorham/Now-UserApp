@@ -7,7 +7,7 @@ import '../../responsive/spacing_extension.dart';
 import '../../styles/app_border_radius.dart';
 import '../../styles/text_styles.dart';
 import 'circular_brand_logo.dart';
-import '../shared/current_price_with_currency.dart';
+import '../shared/price_with_currency.dart';
 import '../shared/previous_price_with_currency.dart';
 import '../shared/reverse_widget.dart';
 

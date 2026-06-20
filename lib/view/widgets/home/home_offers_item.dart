@@ -13,7 +13,7 @@ import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
 import 'add_to_cart_button.dart';
 import 'add_to_cart_counter_widget.dart';
-import '../shared/current_price_with_currency.dart';
+import '../shared/price_with_currency.dart';
 import '../shared/previous_price_with_currency.dart';
 
 class HomeOffersItem extends StatefulWidget {
@@ -175,7 +175,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        CurrentPriceWithCurrency(color: colors.onPrimaryFixedVariant,price: '20',),
+                        PriceWithCurrency(color: colors.onPrimaryFixedVariant,price: '20',),
                         PreviousPriceWithCurrency(),
                       ],
                     ),

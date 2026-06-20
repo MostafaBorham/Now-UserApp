@@ -23,7 +23,7 @@ class NowUserApp extends StatelessWidget {
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       onGenerateRoute: AppRouter.onGenerate,
-      initialRoute: AppRoutes.favouritesScreen,
+      initialRoute: AppRoutes.walletScreen,
     );
   }
 }

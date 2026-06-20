@@ -123,6 +123,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
 
+  /// File path: assets/media/images/png/master-card-logo.png
+  AssetGenImage get masterCardLogo =>
+      const AssetGenImage('assets/media/images/png/master-card-logo.png');
+
   /// File path: assets/media/images/png/onboarding_img.png
   AssetGenImage get onboardingImg =>
       const AssetGenImage('assets/media/images/png/onboarding_img.png');
@@ -157,6 +161,7 @@ class $AssetsMediaImagesPngGen {
     decrementIcon,
     homeOffersBackground,
     increamentIcon,
+    masterCardLogo,
     onboardingImg,
     profileImgPlacholder,
     realSaudiCurrency,
@@ -174,9 +179,21 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get addToCartBtn =>
       const SvgGenImage('assets/media/images/svg/add-to-cart-btn.svg');
 
+  /// File path: assets/media/images/svg/alert-error-icon.svg
+  SvgGenImage get alertErrorIcon =>
+      const SvgGenImage('assets/media/images/svg/alert-error-icon.svg');
+
   /// File path: assets/media/images/svg/alert-icon.svg
   SvgGenImage get alertIcon =>
       const SvgGenImage('assets/media/images/svg/alert-icon.svg');
+
+  /// File path: assets/media/images/svg/app-orange-logo.svg
+  SvgGenImage get appOrangeLogo =>
+      const SvgGenImage('assets/media/images/svg/app-orange-logo.svg');
+
+  /// File path: assets/media/images/svg/app-under-maintain-icon.svg
+  SvgGenImage get appUnderMaintainIcon =>
+      const SvgGenImage('assets/media/images/svg/app-under-maintain-icon.svg');
 
   /// File path: assets/media/images/svg/app_logo.svg
   SvgGenImage get appLogo =>
@@ -222,13 +239,25 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get marketIcon =>
       const SvgGenImage('assets/media/images/svg/market-icon.svg');
 
+  /// File path: assets/media/images/svg/master-card-logo.svg
+  SvgGenImage get masterCardLogo =>
+      const SvgGenImage('assets/media/images/svg/master-card-logo.svg');
+
   /// File path: assets/media/images/svg/message-icon.svg
   SvgGenImage get messageIcon =>
       const SvgGenImage('assets/media/images/svg/message-icon.svg');
 
+  /// File path: assets/media/images/svg/no-items-icon.svg
+  SvgGenImage get noItemsIcon =>
+      const SvgGenImage('assets/media/images/svg/no-items-icon.svg');
+
   /// File path: assets/media/images/svg/now-offers-ar.svg
   SvgGenImage get nowOffersAr =>
       const SvgGenImage('assets/media/images/svg/now-offers-ar.svg');
+
+  /// File path: assets/media/images/svg/now-wallet-card.svg
+  SvgGenImage get nowWalletCard =>
+      const SvgGenImage('assets/media/images/svg/now-wallet-card.svg');
 
   /// File path: assets/media/images/svg/on-boarding-logo.svg
   SvgGenImage get onBoardingLogo =>
@@ -242,21 +271,41 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get orderIcon =>
       const SvgGenImage('assets/media/images/svg/order-icon.svg');
 
+  /// File path: assets/media/images/svg/order-star-rate.svg
+  SvgGenImage get orderStarRate =>
+      const SvgGenImage('assets/media/images/svg/order-star-rate.svg');
+
   /// File path: assets/media/images/svg/real-saudi-currency.svg
   SvgGenImage get realSaudiCurrency =>
       const SvgGenImage('assets/media/images/svg/real-saudi-currency.svg');
+
+  /// File path: assets/media/images/svg/retry-icon.svg
+  SvgGenImage get retryIcon =>
+      const SvgGenImage('assets/media/images/svg/retry-icon.svg');
 
   /// File path: assets/media/images/svg/search-icon.svg
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/media/images/svg/search-icon.svg');
 
+  /// File path: assets/media/images/svg/server-fail-icon.svg
+  SvgGenImage get serverFailIcon =>
+      const SvgGenImage('assets/media/images/svg/server-fail-icon.svg');
+
   /// File path: assets/media/images/svg/shipping-icon.svg
   SvgGenImage get shippingIcon =>
       const SvgGenImage('assets/media/images/svg/shipping-icon.svg');
 
+  /// File path: assets/media/images/svg/star-outline-icon.svg
+  SvgGenImage get starOutlineIcon =>
+      const SvgGenImage('assets/media/images/svg/star-outline-icon.svg');
+
   /// File path: assets/media/images/svg/star-rate.svg
   SvgGenImage get starRate =>
       const SvgGenImage('assets/media/images/svg/star-rate.svg');
+
+  /// File path: assets/media/images/svg/support-call-icon.svg
+  SvgGenImage get supportCallIcon =>
+      const SvgGenImage('assets/media/images/svg/support-call-icon.svg');
 
   /// File path: assets/media/images/svg/time-icon.svg
   SvgGenImage get timeIcon =>
@@ -273,7 +322,10 @@ class $AssetsMediaImagesSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     addToCartBtn,
+    alertErrorIcon,
     alertIcon,
+    appOrangeLogo,
+    appUnderMaintainIcon,
     appLogo,
     arrowBrokenIcon,
     categoriesUpArrow,
@@ -285,15 +337,23 @@ class $AssetsMediaImagesSvgGen {
     homeOffersBackground,
     locationIcon,
     marketIcon,
+    masterCardLogo,
     messageIcon,
+    noItemsIcon,
     nowOffersAr,
+    nowWalletCard,
     onBoardingLogo,
     onboardingBackground,
     orderIcon,
+    orderStarRate,
     realSaudiCurrency,
+    retryIcon,
     searchIcon,
+    serverFailIcon,
     shippingIcon,
+    starOutlineIcon,
     starRate,
+    supportCallIcon,
     timeIcon,
     whiteAppLogo,
     whiteWaveBackground,

@@ -27,7 +27,7 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
             )
         ),
         child: Row(
-          spacing: 5,
+          spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             prefixIcon??SizedBox.shrink(),

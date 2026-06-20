@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/current_price_with_currency.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
 
 class OrderListItem extends ConsumerWidget {

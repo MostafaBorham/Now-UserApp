@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/price_cancel_line.dart';
 
-import '../shared/current_price_with_currency.dart';
+import '../shared/price_with_currency.dart';
 
 class HomeProductItem extends StatelessWidget {
   const HomeProductItem({super.key});
@@ -36,7 +36,7 @@ class HomeProductItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: 10,
           children: [
-            CurrentPriceWithCurrency(color: colors.tertiaryFixed,price: '20',),
+            PriceWithCurrency(color: colors.tertiaryFixed,price: '20',),
             PreviousPriceWithCurrency(),
           ],
         )

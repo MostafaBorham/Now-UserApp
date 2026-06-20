@@ -11,10 +11,10 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/clippers/card_clipper.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
 import 'add_to_cart_counter_widget.dart';
-import '../shared/current_price_with_currency.dart';
 import '../shared/previous_price_with_currency.dart';
 
 class MostPopularItem extends StatefulWidget {
@@ -242,7 +242,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                           mainAxisSize: MainAxisSize.min,
                           spacing: 10,
                           children: [
-                            CurrentPriceWithCurrency(
+                            PriceWithCurrency(
                               color: colors.onPrimaryFixedVariant,
                               price: '20',
                             ),

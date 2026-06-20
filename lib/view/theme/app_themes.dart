@@ -10,6 +10,7 @@ abstract class AppThemes {
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Color(0xff4BB749),
+      primaryContainer: Color(0xff255625),
       onPrimary: Colors.white,
       onSecondary: Colors.black,
       error: Colors.red,
@@ -45,6 +46,7 @@ abstract class AppThemes {
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),
+      primaryContainer: Color(0xff255625),
       onPrimary: Colors.black,
       onErrorContainer: Color(0xff923E0E),
       onSecondary: Colors.white,

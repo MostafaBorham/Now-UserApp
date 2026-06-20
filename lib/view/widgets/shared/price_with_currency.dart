@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../assets/assets.gen.dart';
 import '../../styles/text_styles.dart';
 
-class CurrentPriceWithCurrency extends StatelessWidget {
-  const CurrentPriceWithCurrency({
+class PriceWithCurrency extends StatelessWidget {
+  const PriceWithCurrency({
     super.key,
     required this.color, required this.price,
   });
@@ -19,12 +19,12 @@ class CurrentPriceWithCurrency extends StatelessWidget {
     return Row(
       spacing: 5,
       children: [
-        AutoSizeText('20',style: AppTextStyles.style16SemiBold.copyWith(
+        AutoSizeText(price,style: AppTextStyles.style14SemiBold.copyWith(
             color: color
         ),),
         Assets.media.images.svg.realSaudiCurrency.svg(
-          width: 14.sp,
-          height: 14.sp,
+          width: 12.sp,
+          height: 12.sp,
           fit: BoxFit.contain,
           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),

@@ -18,13 +18,13 @@ class ShowMoreItemsHeader extends StatelessWidget {
       children: [
         AutoSizeText(
           headerTitle,
-          style: AppTextStyles.style20SemiBold.copyWith(
+          style: AppTextStyles.style18SemiBold.copyWith(
             color: colors.onSecondary,
           ),
         ),
         AutoSizeText(
           LangKeys.showMoreKey.tr(),
-          style: AppTextStyles.style12SemiBold.copyWith(
+          style: AppTextStyles.style14SemiBold.copyWith(
             color: colors.primary,
           ),
         ),

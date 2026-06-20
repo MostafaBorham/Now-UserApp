@@ -10,13 +10,17 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_store_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/errors/app_under_maintain_error_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_tab_bar_with_fixed_widget.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
-
+  final bool isProductsEmpty = true;
+  final bool isStoresEmpty = false;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -83,11 +87,13 @@ class FavouritesScreen extends StatelessWidget {
                     child: CustomTabBarWithFixedWidget(
                       tabs: ['Products', 'Stores'],
                       views: [
-                        FavouriteProductTabView(),
-                        FavouriteStoreTabView(),
+                        isProductsEmpty ? ServerConnectionErrorWidget() : FavouriteProductTabView(),
+                        isStoresEmpty? NoItemsWidget() : FavouriteStoreTabView(),
                       ],
                       selectedTabColor: colors.primary,
-                      fixedWidget: AppSearchField(hintText: 'Search for products',),
+                      fixedWidget: AppSearchField(
+                        hintText: 'Search for products',
+                      ),
                     ),
                   ),
                 ],

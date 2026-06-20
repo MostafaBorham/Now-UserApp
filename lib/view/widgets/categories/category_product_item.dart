@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_counter_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/clippers/diognal_clipper.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/current_price_with_currency.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
 
 import '../../assets/assets.gen.dart';
@@ -209,7 +209,7 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
                           mainAxisSize: MainAxisSize.min,
                           spacing: 10,
                           children: [
-                            CurrentPriceWithCurrency(
+                            PriceWithCurrency(
                               color: colors.onSecondary,
                               price: '10',
                             ),
