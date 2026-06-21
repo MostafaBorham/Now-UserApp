@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/order/order_list_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 
 class MyOrderScreen extends ConsumerStatefulWidget {
   const MyOrderScreen({super.key});
@@ -18,6 +19,16 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    return AppWavedScaffold(body: ListView.separated(
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) {
+        return OrderListItem();
+      },
+      separatorBuilder: (context, index) {
+        return 20.hSpace;
+      },
+      itemCount: 5,
+    ), appBarTitle: 'My Orders',);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 70),

@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/view/widgets/categories/category_product_ta
 import 'package:nowdelivery_user_app/view/widgets/categories/category_store_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_store_tab_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_tab_bar_with_fixed_widget.dart';
@@ -22,6 +23,21 @@ class CategoryDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    return Scaffold(
+      body: AppWavedScaffold(
+        body: CustomTabBarWithFixedWidget(
+          tabs: ['Products', 'Stores'],
+          views: [
+            CategoryProductTabView(),
+            CategoryStoreTabView(),
+          ],
+          selectedTabColor: colors.primary,
+          fixedWidget: AppSearchField(),
+        ),
+        appBarTitle: 'Offers',
+        canPop: Navigator.canPop(context),
+      ),
+    );
     return Scaffold(
       backgroundColor: colors.onPrimary,
       body: Container(

@@ -22,76 +22,53 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return AppWavedScaffold(
-      appBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      body: AppWavedScaffold(
+        appBarTitle: 'Wallet',
+        canPop: true,
+        body: Column(
+          spacing: 16,
           children: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: CircleAvatar(
-                backgroundColor: colors.onPrimary,
-                radius: 20.r,
-                child: ReverseWidget(
-                  child: Assets.media.images.svg.arrowBrokenIcon.svg(),
-                ),
+            WalletCardWidget(),
+            Row(
+              spacing: 5,
+              children: [
+                Expanded(child: WalletActionButton(actionName: 'Add Money',onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: colors.onPrimary,
+                    builder: (context) => AddMoneyView(),
+                  );
+                })),
+                Expanded(child: WalletActionButton(actionName: 'My Cards',onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: colors.onPrimary,
+                    builder: (context) => MyCardsView(),
+                  );
+                })),
+                Expanded(child: WalletActionButton(actionName: 'Add Card',onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: colors.onPrimary,
+                    builder: (context) => AddCardView(),
+                  );
+                })),
+              ],
+            ),
+            10.hSpace,
+            ShowMoreItemsHeader(headerTitle: 'Wallet History'),
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) => WalletHistoryItem(),
+                separatorBuilder: (context, index) => 12.hSpace,
+                itemCount: 10,
               ),
             ),
-            AutoSizeText(
-              'Wallet',
-              style: AppTextStyles.style24SemiBold.copyWith(
-                color: colors.onSecondary,
-              ),
-            ),
-            20.wSpace,
           ],
         ),
-      ),
-      body: Column(
-        spacing: 16,
-        children: [
-          WalletCardWidget(),
-          Row(
-            spacing: 5,
-            children: [
-              Expanded(child: WalletActionButton(actionName: 'Add Money',onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: colors.onPrimary,
-                  builder: (context) => AddMoneyView(),
-                );
-              })),
-              Expanded(child: WalletActionButton(actionName: 'My Cards',onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: colors.onPrimary,
-                  builder: (context) => MyCardsView(),
-                );
-              })),
-              Expanded(child: WalletActionButton(actionName: 'Add Card',onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: colors.onPrimary,
-                  builder: (context) => AddCardView(),
-                );
-              })),
-            ],
-          ),
-          10.hSpace,
-          ShowMoreItemsHeader(headerTitle: 'Wallet History'),
-          Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) => WalletHistoryItem(),
-              separatorBuilder: (context, index) => 12.hSpace,
-              itemCount: 10,
-            ),
-          ),
-        ],
       ),
     );
   }

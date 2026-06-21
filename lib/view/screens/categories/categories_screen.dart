@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/common/models/category_model.dart';
+import 'package:nowdelivery_user_app/common/route/app_routes.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_card.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
 class CategoriesScreen extends StatelessWidget {
@@ -69,7 +71,27 @@ class CategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: colors.onPrimary,
+      body: AppWavedScaffold(
+        body: GridView.builder(
+          padding: EdgeInsets.zero,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 20,
+            mainAxisExtent: 220,
+          ),
+          itemCount: _sampleCategories.length,
+          itemBuilder: (BuildContext context, int index) => CategoryCard(
+            category: _sampleCategories.elementAt(index),
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoutes.categoryDetailsScreen),
+          ),
+        ),
+        appBarTitle: LangKeys.categoriesTitleKey.tr(),
+        canPop: Navigator.canPop(context),
+      ),
+    );
+    return Scaffold(
       body: Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 70),
@@ -99,7 +121,9 @@ class CategoriesScreen extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: colors.onPrimary,
                       radius: 20.r,
-                      child: ReverseWidget(child: Assets.media.images.svg.arrowBrokenIcon.svg()),
+                      child: ReverseWidget(
+                        child: Assets.media.images.svg.arrowBrokenIcon.svg(),
+                      ),
                     ),
                   ),
                   AutoSizeText(
@@ -108,7 +132,7 @@ class CategoriesScreen extends StatelessWidget {
                       color: colors.onSecondary,
                     ),
                   ),
-                  20.wSpace
+                  20.wSpace,
                 ],
               ),
             ),
@@ -132,10 +156,13 @@ class CategoriesScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 20,
-                        mainAxisExtent: 220
+                        mainAxisExtent: 220,
                       ),
-                      itemCount: _sampleCategories.length
-                      , itemBuilder: (BuildContext context, int index) =>CategoryCard(category: _sampleCategories.elementAt(index),),
+                      itemCount: _sampleCategories.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          CategoryCard(
+                            category: _sampleCategories.elementAt(index),
+                          ),
                     ),
                   ),
                 ],
