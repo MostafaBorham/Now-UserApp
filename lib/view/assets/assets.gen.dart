@@ -243,6 +243,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get masterCardLogo =>
       const SvgGenImage('assets/media/images/svg/master-card-logo.svg');
 
+  /// File path: assets/media/images/svg/master-logo.svg
+  SvgGenImage get masterLogo =>
+      const SvgGenImage('assets/media/images/svg/master-logo.svg');
+
   /// File path: assets/media/images/svg/message-icon.svg
   SvgGenImage get messageIcon =>
       const SvgGenImage('assets/media/images/svg/message-icon.svg');
@@ -311,6 +315,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get timeIcon =>
       const SvgGenImage('assets/media/images/svg/time-icon.svg');
 
+  /// File path: assets/media/images/svg/visa-logo.svg
+  SvgGenImage get visaLogo =>
+      const SvgGenImage('assets/media/images/svg/visa-logo.svg');
+
   /// File path: assets/media/images/svg/white-app-logo.svg
   SvgGenImage get whiteAppLogo =>
       const SvgGenImage('assets/media/images/svg/white-app-logo.svg');
@@ -338,6 +346,7 @@ class $AssetsMediaImagesSvgGen {
     locationIcon,
     marketIcon,
     masterCardLogo,
+    masterLogo,
     messageIcon,
     noItemsIcon,
     nowOffersAr,
@@ -355,6 +364,7 @@ class $AssetsMediaImagesSvgGen {
     starRate,
     supportCallIcon,
     timeIcon,
+    visaLogo,
     whiteAppLogo,
     whiteWaveBackground,
   ];

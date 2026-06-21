@@ -1,0 +1,4 @@
+enum OnlineCardTypes {
+  visa,
+  master
+}

@@ -9,6 +9,9 @@ import 'package:nowdelivery_user_app/view/theme/app_gradient_colors.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
+import 'package:nowdelivery_user_app/view/widgets/wallet/add_card_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/wallet/add_money_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/wallet/my_cards_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_action_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_card_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_history_item.dart';
@@ -54,9 +57,28 @@ class WalletScreen extends StatelessWidget {
           Row(
             spacing: 5,
             children: [
-              Expanded(child: WalletActionButton(actionName: 'Add Money')),
-              Expanded(child: WalletActionButton(actionName: 'My Cards')),
-              Expanded(child: WalletActionButton(actionName: 'Add Card')),
+              Expanded(child: WalletActionButton(actionName: 'Add Money',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => AddMoneyView(),
+                );
+              })),
+              Expanded(child: WalletActionButton(actionName: 'My Cards',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => MyCardsView(),
+                );
+              })),
+              Expanded(child: WalletActionButton(actionName: 'Add Card',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => AddCardView(),
+                );
+              })),
             ],
           ),
           10.hSpace,

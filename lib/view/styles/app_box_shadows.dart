@@ -20,4 +20,13 @@ class AppBoxShadows {
       offset: const Offset(0, 1),
     ),
   ];
+
+  static final List<BoxShadow> blackElevation1 = [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.4),
+      blurRadius: 1,
+      spreadRadius: 0.5,
+      offset: const Offset(0, 0),
+    ),
+  ];
 }
