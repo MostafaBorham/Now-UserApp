@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_product_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
+
 class FavouriteProductTabView extends StatelessWidget {
   const FavouriteProductTabView({super.key});
 
@@ -21,18 +22,21 @@ class FavouriteProductTabView extends StatelessWidget {
       views: ['', '']
           .map(
             (e) => GridView.builder(
-          padding: EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 20,
-            mainAxisExtent: 250,
-          ),
-          itemCount: 6,
-          itemBuilder: (BuildContext context, int index) =>
-              CategoryProductItem(),
-        ),
-      )
+              padding: EdgeInsets.all(4),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 20,
+                childAspectRatio: 0.75,
+              ),
+              itemCount: 6,
+              itemBuilder:
+                  (BuildContext context, int index) => /*Container(
+            color: colors.secondary,
+          )*/
+                      CategoryProductItem(),
+            ),
+          )
           .toList(),
       selectedLabelColor: colors.onPrimary,
       selectedTabColor: colors.tertiaryContainer,

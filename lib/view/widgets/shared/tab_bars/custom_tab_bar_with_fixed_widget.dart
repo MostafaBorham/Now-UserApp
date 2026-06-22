@@ -22,6 +22,7 @@ class CustomTabBarWithFixedWidget extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Column(
+        spacing: 16,
         children: [
           Container(
             height: 58,
@@ -47,14 +48,7 @@ class CustomTabBarWithFixedWidget extends StatelessWidget {
               tabs: tabs.map((e) => Tab(text: e,),).toList(),
             ),
           ),
-
-          SizedBox(height: 16),
-
-          // Static Widget
           fixedWidget,
-
-          SizedBox(height: 16),
-
           Expanded(
             child: TabBarView(
               children: views,

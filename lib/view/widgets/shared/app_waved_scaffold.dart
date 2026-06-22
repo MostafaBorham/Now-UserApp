@@ -99,6 +99,8 @@ class AppWavedScaffold extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 50.0,
+                  ).copyWith(
+                    bottom: 0
                   ),
                   child: body,
                 ),

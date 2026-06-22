@@ -1,4 +1,6 @@
+import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,11 +24,14 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]).then(
     (_) => runApp(
-      LocalizationInit(
-        child: ProviderScope(
-          child: ScreenUtilInit(
-            designSize: const Size(390, 844),
-            builder: (context, child) => NowUserApp(),
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => LocalizationInit(
+          child: ProviderScope(
+            child: ScreenUtilInit(
+              designSize: const Size(390, 844),
+              builder: (context, child) => NowUserApp(),
+            ),
           ),
         ),
       ),

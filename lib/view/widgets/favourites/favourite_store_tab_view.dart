@@ -25,18 +25,13 @@ class FavouriteStoreTabView extends StatelessWidget {
       tabs: ['ALL', 'Men'],
       views: ['', '']
           .map(
-            (e) => LayoutBuilder(
-              builder: (context, con) {
-                return ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) => SizedBox(
-                    height: con.maxHeight * 0.43,
-                    child: CategoryStoreItem(),
-                  ),
-                  separatorBuilder: (context, index) => 20.hSpace,
-                  itemCount: 3,
-                );
-              },
+            (e) => ListView.separated(
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) => AspectRatio(
+                  aspectRatio: 2,
+                  child: CategoryStoreItem()),
+              separatorBuilder: (context, index) => 20.hSpace,
+              itemCount: 3,
             ),
       )
           .toList(),

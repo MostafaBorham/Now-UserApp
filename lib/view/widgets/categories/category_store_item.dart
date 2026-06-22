@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
 
 class CategoryStoreItem extends StatefulWidget {
   const CategoryStoreItem({super.key});
@@ -27,7 +28,208 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: AppBorderRadius.brCircular20,
-        boxShadow: AppBoxShadows.blackBottomShadow2
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            spreadRadius: 0,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 5,
+            child: LayoutBuilder(
+              builder: (context,stackCon) {
+                return Stack(
+                  children: [
+                    Padding(
+                      padding:  EdgeInsets.only(bottom: stackCon.maxHeight*0.1),
+                      child: AppCachedNetworkImage(
+                        imageUrl:
+                        'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
+                        width: double.infinity,
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: InkWell(
+                        onTap: () {
+                          isFavorite = !isFavorite;
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Material(
+                            elevation: 1,
+                            shape: const CircleBorder(),
+                            child: CircleAvatar(
+                              radius: stackCon.maxHeight*0.12,
+                              backgroundColor: colors.onPrimary,
+                              child:
+                              (isFavorite
+                                  ? Assets.media.images.svg.filledFavouriteIcon
+                                  : Assets.media.images.svg.favouriteIcon)
+                                  .svg(
+                                width: stackCon.maxHeight*0.12,
+                                colorFilter: ColorFilter.mode(
+                                  isFavorite
+                                      ? colors.errorContainer
+                                      : colors.onTertiaryFixed,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      child: Material(
+                        shape: CircleBorder(),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        elevation : 1,
+                        child: CircularBrandLogo(
+                          radius: stackCon.maxHeight*0.25,
+                          backgroundColor: colors.onPrimary,
+                          logoUrl:
+                          'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                        ),
+                        shadowColor: colors.onSurface.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: LayoutBuilder(
+              builder: (context,categoryDetailsCon) {
+                return Padding(
+                  padding: EdgeInsets.all(categoryDetailsCon.maxHeight*0.08),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: AutoSizeText(
+                          'Panda',
+                          style: AppTextStyles.style18Bold.copyWith(
+                            color: colors.onSecondary,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: AutoSizeText(
+                          'Panda is supermarket contain everything',
+                          maxLines: 2,
+                          style: AppTextStyles.style14Regular.copyWith(
+                            color: colors.onSurface,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              spacing: 5,
+                              children: [
+                                Assets.media.images.svg.shippingIcon.svg(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSurface,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                AutoSizeText(
+                                  '10',
+                                  style: AppTextStyles.style14SemiBold.copyWith(
+                                    color: colors.onSecondary,
+                                  ),
+                                ),
+                                Assets.media.images.svg.realSaudiCurrency.svg(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSecondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                5.wSpace,
+                                Assets.media.images.svg.timeIcon.svg(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSurface,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                AutoSizeText(
+                                  '10',
+                                  style: AppTextStyles.style12Medium.copyWith(
+                                    color: colors.onSecondary,
+                                  ),
+                                ),
+                                5.wSpace,
+                                Assets.media.images.svg.locationIcon.svg(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSurface,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                AutoSizeText(
+                                  '10',
+                                  style: AppTextStyles.style12Medium.copyWith(
+                                    color: colors.onSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: categoryDetailsCon.maxHeight*0.1,
+                                vertical:categoryDetailsCon.maxHeight*0.05,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colors.tertiaryFixed,
+                                borderRadius: AppBorderRadius.brCircular20,
+                              ),
+                              child: FittedBox(
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    Assets.media.images.svg.starRate.svg(
+                                    ),
+                                    AutoSizeText(
+                                      '4.5 (12)',
+                                      style: AppTextStyles.style14Medium.copyWith(
+                                          color: colors.onSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            ),
+          )
+        ],
+      ),
+    );
+    return Container(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      decoration: BoxDecoration(
+        color: colors.onPrimary,
+        borderRadius: AppBorderRadius.brCircular20,
+        boxShadow: AppBoxShadows.blackBottomShadow2,
       ),
       child: Stack(
         children: [
@@ -35,11 +237,10 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: CachedNetworkImage(
-                  width: double.infinity,
+                child: AppCachedNetworkImage(
                   imageUrl:
-                  'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
-                  fit: BoxFit.cover,
+                      'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
+                  width: double.infinity,
                 ),
               ),
               Expanded(
@@ -135,7 +336,7 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],
@@ -149,8 +350,7 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
             child: InkWell(
               onTap: () {
                 isFavorite = !isFavorite;
-                setState(() {
-                });
+                setState(() {});
               },
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -160,13 +360,19 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                   child: CircleAvatar(
                     radius: 15,
                     backgroundColor: colors.onPrimary,
-                    child: (isFavorite? Assets.media.images.svg.filledFavouriteIcon : Assets.media.images.svg.favouriteIcon).svg(
-                      width: 16.sp,
-                      colorFilter: ColorFilter.mode(
-                        isFavorite ? colors.errorContainer : colors.onTertiaryFixed,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                    child:
+                        (isFavorite
+                                ? Assets.media.images.svg.filledFavouriteIcon
+                                : Assets.media.images.svg.favouriteIcon)
+                            .svg(
+                              width: 16.sp,
+                              colorFilter: ColorFilter.mode(
+                                isFavorite
+                                    ? colors.errorContainer
+                                    : colors.onTertiaryFixed,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                   ),
                 ),
               ),
@@ -179,7 +385,7 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
               child: CircularBrandLogo(
                 radius: 30.r,
                 logoUrl:
-                'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
               ),
             ),
           ),

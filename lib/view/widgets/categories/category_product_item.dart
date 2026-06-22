@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
@@ -8,6 +9,7 @@ import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_counter_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/clippers/diognal_clipper.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
 
@@ -57,84 +59,95 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                child: ClipPath(
-                  clipper: DiagonalClipper(),
-                  child: Image.network(
-                    'https://picsum.photos/300/300',
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {
-                    isFavorite = !isFavorite;
-                    setState(() {});
-                  },
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 8.0),
-                    child: Material(
-                      elevation: 1,
-                      shape: const CircleBorder(),
-                      child: CircleAvatar(
-                        radius: 13.sp,
-                        backgroundColor: colors.onPrimary,
-                        child:
-                            (isFavorite
-                                    ? Assets
-                                          .media
-                                          .images
-                                          .svg
-                                          .filledFavouriteIcon
-                                    : Assets.media.images.svg.favouriteIcon)
-                                .svg(
-                                  width: 15.sp,
-                                  colorFilter: ColorFilter.mode(
-                                    isFavorite
-                                        ? colors.errorContainer
-                                        : colors.onTertiaryFixed,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context,con) {
+                print('con ===== ${con.maxHeight}===${con.maxWidth}');
+                return Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                      child: ClipPath(
+                        clipper: DiagonalClipper(),
+                        child: AppCachedNetworkImage(
+                          imageUrl:
+                              'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQRyOwZjDuvOeu-8rzp-El9jt8yHqo1Jm9qDZdB4U3cSwUGpgNJ4kT02s1fdP7t01xMaTKz7z4RvwRMKPsQwwzeP5ttdeFpy4--1ZD47M5UQwzX9-A1xSPn&usqp=CAc',
+                          width: double.infinity,
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 10,
-                top: 140 * .57,
-                child: Transform.rotate(
-                  angle: -0.2,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF4A90E2),
-                      borderRadius: AppBorderRadius.brCircular8,
-                    ),
-                    child: AutoSizeText(
-                      'أطفال',
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: colors.onPrimary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          isFavorite = !isFavorite;
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(end: 8.0),
+                          child: Material(
+                            elevation: 1,
+                            shape: const CircleBorder(),
+                            child: CircleAvatar(
+                              radius: 13.sp,
+                              backgroundColor: colors.onPrimary,
+                              child:
+                                  (isFavorite
+                                          ? Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .filledFavouriteIcon
+                                          : Assets.media.images.svg.favouriteIcon)
+                                      .svg(
+                                        width: 15.sp,
+                                        colorFilter: ColorFilter.mode(
+                                          isFavorite
+                                              ? colors.errorContainer
+                                              : colors.onTertiaryFixed,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ],
+                    Align(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.only(bottom: con.maxHeight*0.25,end: con.maxWidth*0.03),
+                        child: Transform.rotate(
+                          angle: -0.2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF4A90E2),
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: AutoSizeText(
+                              'أطفال',
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: colors.onPrimary,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -224,7 +237,11 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
                         ),
                       ],
                     ),
-                    CircularBrandLogo(radius: 20.r, logoUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png')
+                    CircularBrandLogo(
+                      radius: 20.r,
+                      logoUrl:
+                          'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                    ),
                   ],
                 ),
               ],

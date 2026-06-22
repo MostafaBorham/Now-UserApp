@@ -15,7 +15,9 @@ class AppDescriptionField extends StatelessWidget {
         filled: true,
         fillColor: colors.onPrimaryContainer,
         hintText: hintTxt,
-        hintStyle: AppTextStyles.style14Regular,
+        hintStyle: AppTextStyles.style14Regular.copyWith(
+          color: colors.onPrimaryFixed
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 16,

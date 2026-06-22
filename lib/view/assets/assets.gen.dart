@@ -251,6 +251,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get messageIcon =>
       const SvgGenImage('assets/media/images/svg/message-icon.svg');
 
+  /// File path: assets/media/images/svg/no-Image-placeholder.svg
+  SvgGenImage get noImagePlaceholder =>
+      const SvgGenImage('assets/media/images/svg/no-Image-placeholder.svg');
+
   /// File path: assets/media/images/svg/no-items-icon.svg
   SvgGenImage get noItemsIcon =>
       const SvgGenImage('assets/media/images/svg/no-items-icon.svg');
@@ -348,6 +352,7 @@ class $AssetsMediaImagesSvgGen {
     masterCardLogo,
     masterLogo,
     messageIcon,
+    noImagePlaceholder,
     noItemsIcon,
     nowOffersAr,
     nowWalletCard,
