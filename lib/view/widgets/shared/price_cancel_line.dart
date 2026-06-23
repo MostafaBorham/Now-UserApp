@@ -10,11 +10,29 @@ class PriceCancelLine extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        child,
-        Transform.rotate(
-          angle: -0.3,
-          child: Container(width: 40, height: 1.5, color: colors.inversePrimary),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: child,
         ),
+        /// الخط المائل
+        Positioned.fill(
+          child: IgnorePointer(
+            child: Center(
+              child: Transform.rotate(
+                angle: -0.3,
+                child: Container(
+                  width: double.infinity,
+                  height: 2,
+                  color: colors.inversePrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+/*        Transform.rotate(
+          angle: -0.3,
+          child: Container(width: 60, height: 1.5, color: colors.inversePrimary),
+        ),*/
       ],
     );
   }

@@ -43,14 +43,16 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
           Expanded(
             flex: 5,
             child: LayoutBuilder(
-              builder: (context,stackCon) {
+              builder: (context, stackCon) {
                 return Stack(
                   children: [
                     Padding(
-                      padding:  EdgeInsets.only(bottom: stackCon.maxHeight*0.1),
+                      padding: EdgeInsets.only(
+                        bottom: stackCon.maxHeight * 0.1,
+                      ),
                       child: AppCachedNetworkImage(
                         imageUrl:
-                        'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
+                            'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
                         width: double.infinity,
                       ),
                     ),
@@ -67,21 +69,29 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                             elevation: 1,
                             shape: const CircleBorder(),
                             child: CircleAvatar(
-                              radius: stackCon.maxHeight*0.12,
+                              radius: stackCon.maxHeight * 0.12,
                               backgroundColor: colors.onPrimary,
                               child:
-                              (isFavorite
-                                  ? Assets.media.images.svg.filledFavouriteIcon
-                                  : Assets.media.images.svg.favouriteIcon)
-                                  .svg(
-                                width: stackCon.maxHeight*0.12,
-                                colorFilter: ColorFilter.mode(
-                                  isFavorite
-                                      ? colors.errorContainer
-                                      : colors.onTertiaryFixed,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
+                                  (isFavorite
+                                          ? Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .filledFavouriteIcon
+                                          : Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .favouriteIcon)
+                                      .svg(
+                                        width: stackCon.maxHeight * 0.12,
+                                        colorFilter: ColorFilter.mode(
+                                          isFavorite
+                                              ? colors.errorContainer
+                                              : colors.onTertiaryFixed,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
                             ),
                           ),
                         ),
@@ -92,27 +102,29 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                       child: Material(
                         shape: CircleBorder(),
                         clipBehavior: Clip.antiAliasWithSaveLayer,
-                        elevation : 1,
+                        elevation: 1,
                         child: CircularBrandLogo(
-                          radius: stackCon.maxHeight*0.25,
+                          radius: stackCon.maxHeight * 0.25,
                           backgroundColor: colors.onPrimary,
                           logoUrl:
-                          'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                         shadowColor: colors.onSurface.withValues(alpha: 0.5),
                       ),
                     ),
                   ],
                 );
-              }
+              },
             ),
           ),
           Expanded(
             flex: 4,
             child: LayoutBuilder(
-              builder: (context,categoryDetailsCon) {
+              builder: (context, categoryDetailsCon) {
                 return Padding(
-                  padding: EdgeInsets.all(categoryDetailsCon.maxHeight*0.08),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: categoryDetailsCon.maxHeight * 0.1,
+                  ).copyWith(bottom: categoryDetailsCon.maxHeight * 0.12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,13 +141,15 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                         child: AutoSizeText(
                           'Panda is supermarket contain everything',
                           maxLines: 2,
-                          style: AppTextStyles.style14Regular.copyWith(
-                            color: colors.onSurface,
+                          style: AppTextStyles.style12Medium.copyWith(
+                            color: colors.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
                       ),
-                      Flexible(
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
                         child: Row(
+                          spacing: 10,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
@@ -146,6 +160,14 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
+                                  width: 15
+                                ),
+                                Assets.media.images.svg.realSaudiCurrency.svg(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.onSecondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                  width: 15
                                 ),
                                 AutoSizeText(
                                   '10',
@@ -153,21 +175,17 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                                     color: colors.onSecondary,
                                   ),
                                 ),
-                                Assets.media.images.svg.realSaudiCurrency.svg(
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSecondary,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
+
                                 5.wSpace,
                                 Assets.media.images.svg.timeIcon.svg(
                                   colorFilter: ColorFilter.mode(
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
+                                  width: 15
                                 ),
                                 AutoSizeText(
-                                  '10',
+                                  '40-50 minutes',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -178,9 +196,10 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
+                                  width: 13
                                 ),
                                 AutoSizeText(
-                                  '10',
+                                  '40 - 50 km',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -189,8 +208,8 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: categoryDetailsCon.maxHeight*0.1,
-                                vertical:categoryDetailsCon.maxHeight*0.05,
+                                horizontal: categoryDetailsCon.maxHeight * 0.1,
+                                vertical: categoryDetailsCon.maxHeight * 0.05,
                               ),
                               decoration: BoxDecoration(
                                 color: colors.tertiaryFixed,
@@ -200,27 +219,28 @@ class _CategoryStoreItemState extends State<CategoryStoreItem> {
                                 child: Row(
                                   spacing: 5,
                                   children: [
-                                    Assets.media.images.svg.starRate.svg(
+                                    Assets.media.images.svg.starIcon.svg(
+                                      width: 17,
+                                      colorFilter: ColorFilter.mode(colors.surface, BlendMode.srcIn)
                                     ),
                                     AutoSizeText(
                                       '4.5 (12)',
-                                      style: AppTextStyles.style14Medium.copyWith(
-                                          color: colors.onSecondary,
-                                      ),
+                                      style: AppTextStyles.style14Medium
+                                          .copyWith(color: colors.onSecondary),
                                     ),
                                   ],
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
                     ],
                   ),
                 );
-              }
+              },
             ),
-          )
+          ),
         ],
       ),
     );

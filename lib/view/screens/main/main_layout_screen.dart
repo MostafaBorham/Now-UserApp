@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/common/route/app_routes.dart';
 import 'package:nowdelivery_user_app/view/controllers/main/main_pages_controller.dart';
 
 import '../../widgets/main/app_bottom_nav_bar.dart';
@@ -14,43 +15,13 @@ class MainLayoutScreen extends ConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      extendBody: true,
+      extendBody: false,
       body: ref.read(mainPagesProvider).elementAt(currentPageIndex),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: currentPageIndex,
-        onItemSelected: (newPageIndex) {
-          ref.read(currentPageIndexProvider.notifier).state = newPageIndex;
-        },
-        onCenterTap: () {
-          // TODO: open cart
-        },
-        backgroundColor: colors.onPrimary,
-        selectedColor: colors.secondary,
-        unselectedColor: colors.onPrimaryFixed,
-        centerButtonColor: colors.primary,
-        centerIconColor: colors.onPrimary,
-        items: const [
-          BottomNavItemData(
-            icon: Icons.home_outlined,
-            activeIcon: Icons.home_rounded,
-            label: 'الرئيسية',
-          ),
-          BottomNavItemData(
-            icon: Icons.favorite_border,
-            activeIcon: Icons.favorite_rounded,
-            label: 'المفضلة',
-          ),
-          BottomNavItemData(
-            icon: Icons.shopping_basket_outlined,
-            activeIcon: Icons.shopping_basket_rounded,
-            label: 'الطلبات',
-          ),
-          BottomNavItemData(
-            icon: Icons.person_outline,
-            activeIcon: Icons.person_rounded,
-            label: 'الحساب',
-          ),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: AppBottomNavBar(currentIndex: currentPageIndex, onIndexChanged: (int value) {
+          ref.read(currentPageIndexProvider.notifier).state = value;
+        },onCenterTap: () => Navigator.pushNamed(context, AppRoutes.categoriesScreen),),
       ),
     );
   }

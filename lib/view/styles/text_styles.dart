@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/view/assets/fonts.gen.dart';
 
 class AppTextStyles {
   AppTextStyles._();
@@ -119,6 +120,7 @@ class AppTextStyles {
 
   static TextStyle get style24SemiBold => TextStyle(
     fontSize: 24.sp,
+    fontFamily: FontFamily.ibmPlexSans,
     fontWeight: FontWeight.w600,
     overflow: TextOverflow.ellipsis,
   );

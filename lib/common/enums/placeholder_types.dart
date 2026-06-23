@@ -1,0 +1,4 @@
+enum PlaceholderTypes {
+  circular,
+  shimmer
+}

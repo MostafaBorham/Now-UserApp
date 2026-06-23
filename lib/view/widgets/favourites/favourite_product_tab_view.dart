@@ -4,43 +4,53 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/category_product_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 
 class FavouriteProductTabView extends StatelessWidget {
   const FavouriteProductTabView({super.key});
-
+  final bool isProductsEmpty = true;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return CustomButtonTabBar(
-      filterWidget: CircleAvatar(
-        backgroundColor: colors.tertiary.withValues(alpha: 0.3),
-        radius: 20.r,
-        child: Assets.media.images.svg.filterIcon.svg(width: 20.w),
-      ),
-      tabs: ['ALL', 'Men'],
-      views: ['', '']
-          .map(
-            (e) => GridView.builder(
-              padding: EdgeInsets.all(4),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 20,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: 6,
-              itemBuilder:
-                  (BuildContext context, int index) => /*Container(
-            color: colors.secondary,
-          )*/
-                      CategoryProductItem(),
+    return Column(
+      spacing: 16,
+      children: [
+        AppSearchField(hintText: 'Search For A Product',),
+        Expanded(
+          child: isProductsEmpty? NoItemsWidget() : CustomButtonTabBar(
+            filterWidget: CircleAvatar(
+              backgroundColor: colors.tertiary.withValues(alpha: 0.3),
+              radius: 20.r,
+              child: Assets.media.images.svg.filterIcon.svg(width: 20.w),
             ),
-          )
-          .toList(),
-      selectedLabelColor: colors.onPrimary,
-      selectedTabColor: colors.tertiaryContainer,
-      unSelectedTabColor: colors.primaryFixed,
+            tabs: ['ALL', 'Men'],
+            views: ['', '']
+                .map(
+                  (e) => GridView.builder(
+                    padding: EdgeInsets.all(4),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemCount: 6,
+                    itemBuilder:
+                        (BuildContext context, int index) => /*Container(
+                  color: colors.secondary,
+                )*/
+                            CategoryProductItem(),
+                  ),
+                )
+                .toList(),
+            selectedLabelColor: colors.onPrimary,
+            selectedTabColor: colors.tertiaryContainer,
+            unSelectedTabColor: colors.primaryFixed,
+          ),
+        ),
+      ],
     );
   }
 }

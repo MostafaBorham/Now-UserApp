@@ -79,15 +79,15 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
                       child: InkWell(
                         onTap: () {
                           isFavorite = !isFavorite;
                           setState(() {});
                         },
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 8.0),
+                          padding: EdgeInsetsDirectional.all(con.maxWidth*0.05),
                           child: Material(
                             elevation: 1,
                             shape: const CircleBorder(),
@@ -128,8 +128,8 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Color(0xFF4A90E2),
-                              borderRadius: AppBorderRadius.brCircular8,
+                              color: colors.secondaryContainer.withValues(alpha: 0.8),
+                              borderRadius: AppBorderRadius.brCircular6,
                             ),
                             child: AutoSizeText(
                               'أطفال',
@@ -151,100 +151,124 @@ class _CategoryProductItemState extends State<CategoryProductItem> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              spacing: 10,
-              children: [
-                Row(
-                  spacing: 7,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            child: LayoutBuilder(
+              builder: (context,con) {
+                final widthCon = con.maxWidth;
+                final heightCon = con.maxHeight;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 10,
                   children: [
-                    Assets.media.images.svg.starRate.svg(width: 20.sp),
-                    Expanded(
-                      child: AutoSizeText(
-                        '4',
-                        style: AppTextStyles.style14Medium.copyWith(
-                          color: colors.onSecondary,
-                        ),
-                      ),
-                    ),
-                    showAddToCartCounter
-                        ? AnimatedScale(
-                            scale: showAddToCartCounter ? 1 : 0,
-                            duration: const Duration(seconds: 2),
-                            curve: Curves.linear,
-                            onEnd: () {},
-                            child: AddToCartCounterWidget(
-                              counter: counter,
-                              onInc: () {
-                                startTimer();
-                                counter++;
-                                setState(() {});
-                              },
-                              onDec: () {
-                                startTimer();
-                                counter--;
-                                setState(() {});
-                              },
-                              onDelete: () {
-                                showAddToCartCounter = false;
-                                counter--;
-                                isRotate = false;
-                                setState(() {});
-                              },
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              isRotate = !isRotate;
-                              setState(() {});
-                            },
-                            child: AddToCartButton(
-                              text: counter < 1 ? '+' : counter.toString(),
-                              onEnd: () {
-                                startTimer();
-                                if (counter < 1) counter++;
-                                showAddToCartCounter = true;
-                                setState(() {});
-                              },
-                              isRotate: isRotate,
-                            ),
-                          ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      spacing: widthCon*0.02,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 10,
-                          children: [
-                            PriceWithCurrency(
+                        Assets.media.images.svg.starRate.svg(width: widthCon*0.1),
+                        Expanded(
+                          child: AutoSizeText(
+                            '4.7',
+                            style: AppTextStyles.style14Medium.copyWith(
                               color: colors.onSecondary,
-                              price: '10',
+                              fontSize: widthCon*0.1
                             ),
-                            PreviousPriceWithCurrency(),
-                          ],
-                        ),
-                        AutoSizeText(
-                          't-shirt',
-                          style: AppTextStyles.style14Medium.copyWith(
-                            color: colors.onSecondary,
                           ),
+                        ),
+                        showAddToCartCounter
+                            ? AnimatedScale(
+                                scale: showAddToCartCounter ? 1 : 0,
+                                duration: const Duration(seconds: 2),
+                                curve: Curves.linear,
+                                onEnd: () {},
+                                child: SizedBox(
+                                  width: widthCon*0.6,
+                                  height: widthCon*0.2,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: AddToCartCounterWidget(
+                                      counter: counter,
+                                      onInc: () {
+                                        startTimer();
+                                        counter++;
+                                        setState(() {});
+                                      },
+                                      onDec: () {
+                                        startTimer();
+                                        counter--;
+                                        setState(() {});
+                                      },
+                                      onDelete: () {
+                                        showAddToCartCounter = false;
+                                        counter--;
+                                        isRotate = false;
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  isRotate = !isRotate;
+                                  setState(() {});
+                                },
+                                child: FittedBox(
+                                  fit : BoxFit.scaleDown,
+                                  child: AddToCartButton(
+                                    text: counter < 1 ? '+' : counter.toString(),
+                                    onEnd: () {
+                                      startTimer();
+                                      if (counter < 1) counter++;
+                                      showAddToCartCounter = true;
+                                      setState(() {});
+                                    },
+                                    isRotate: isRotate,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      spacing: widthCon*0.2,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 10,
+                                  children: [
+                                    PreviousPriceWithCurrency(),
+                                    PriceWithCurrency(
+                                      color: colors.onSecondary,
+                                      price: '1000',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              AutoSizeText(
+                                't-shirt',
+                                style: AppTextStyles.style12SemiBold.copyWith(
+                                  color: colors.onSecondary,
+                                  fontSize: widthCon*0.1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        CircularBrandLogo(
+                          radius: widthCon*0.12,
+                          logoUrl:
+                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                       ],
                     ),
-                    CircularBrandLogo(
-                      radius: 20.r,
-                      logoUrl:
-                          'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                    ),
                   ],
-                ),
-              ],
+                );
+              }
             ),
           ),
         ],

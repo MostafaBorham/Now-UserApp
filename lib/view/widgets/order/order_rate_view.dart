@@ -13,41 +13,48 @@ class OrderRateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 16 ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return LayoutBuilder(
+      builder: (context,rateConstraints) {
+        return Container(
+          height: rateConstraints.maxHeight*0.7,
+          padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 16 ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             spacing: 10,
             children: [
-              AutoSizeText(
-                'Rate',
-                style: AppTextStyles.style18Medium.copyWith(
-                  color: colors.onSecondary,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 10,
+                children: [
+                  AutoSizeText(
+                    'Rate',
+                    style: AppTextStyles.style18Medium.copyWith(
+                      color: colors.onSecondary,
+                    ),
+                  ),
+                  IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
+                    Navigator.pop(context);
+                  }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
+                ],
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    spacing: 15,
+                    children: [
+                      RatingCard(title: 'How evaluate store?'),
+                      RatingCard(title: 'How evaluate delivery?',),
+                      AppDescriptionField(hintTxt: 'Tell us more ...'),
+                    ],
+                  ),
                 ),
               ),
-              IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
-                Navigator.pop(context);
-              }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
+              5.hSpace,
+              PrimaryAppButton(title: 'Send Rate')
             ],
           ),
-          SingleChildScrollView(
-            child: Column(
-              spacing: 15,
-              children: [
-                RatingCard(title: 'How evaluate store?'),
-                RatingCard(title: 'How evaluate delivery?',),
-                AppDescriptionField(hintTxt: 'Tell us more ...'),
-              ],
-            ),
-          ),
-          5.hSpace,
-          PrimaryAppButton(title: 'Send Rate')
-        ],
-      ),
+        );
+      }
     );
   }
 }

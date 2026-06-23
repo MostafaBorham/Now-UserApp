@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
 class NoItemsWidget extends StatelessWidget {
@@ -12,12 +13,13 @@ class NoItemsWidget extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Center(
       child: Column(
+        spacing: 20,
         mainAxisSize: MainAxisSize.min,
-        spacing: 25,
         children: [
-          Assets.media.images.svg.noItemsIcon.svg(width: 300.w),
-          AutoSizeText('No Items Found Yet',style: AppTextStyles.style24SemiBold.copyWith(
-            color: colors.onSecondary
+          Assets.media.images.svg.noItemsIcon.svg(fit: BoxFit.contain,width: MediaQuery.sizeOf(context).width*0.5),
+          Text('No Items Yet',style: AppTextStyles.style24SemiBold.copyWith(
+            color: colors.onSecondary,
+            fontSize: MediaQuery.sizeOf(context).width*0.04
           ),)
         ],
       ),

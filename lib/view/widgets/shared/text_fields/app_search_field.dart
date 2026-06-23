@@ -1,18 +1,21 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/common/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/app_borders.dart';
 import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
-class AppSearchField extends StatelessWidget {
+class AppSearchField extends ConsumerWidget {
   const AppSearchField({super.key, this.hintText});
   final String? hintText;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textThemes = Theme.of(context).textTheme;
     return Container(
@@ -29,7 +32,10 @@ class AppSearchField extends StatelessWidget {
           ),
           prefixIcon: Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
-            child: Assets.media.images.svg.searchIcon.svg(
+            child: ReverseWidget(
+              applyReverse: ref.read(localeProvider.notifier).isArabic(),
+              child: Assets.media.images.svg.searchIcon.svg(
+              ),
             ),
           ),
           prefixIconConstraints: BoxConstraints(

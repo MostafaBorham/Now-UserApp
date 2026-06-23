@@ -8,6 +8,10 @@ class LocalController extends StateNotifier<Locale>{
   void changeAppLocale(Locale locale){
     state = locale;
   }
+
+  bool isArabic(){
+    return state == LocalizationConstants.arabicLocale;
+  }
 }
 
 final localeProvider =

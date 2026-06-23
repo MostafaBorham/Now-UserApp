@@ -19,15 +19,15 @@ class PriceWithCurrency extends StatelessWidget {
     return Row(
       spacing: 5,
       children: [
-        AutoSizeText(price,style: AppTextStyles.style14SemiBold.copyWith(
-            color: color
-        ),),
         Assets.media.images.svg.realSaudiCurrency.svg(
-          width: 12.sp,
-          height: 12.sp,
+          width: 30,
+          height: 20,
           fit: BoxFit.contain,
           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),
+        AutoSizeText(price,style: AppTextStyles.style16SemiBold.copyWith(
+            color: color
+        ),),
       ],
     );
   }

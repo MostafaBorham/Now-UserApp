@@ -15,6 +15,7 @@ abstract class AppThemes {
       onSecondary: Colors.black,
       error: Colors.red,
       onSecondaryFixed: Color(0xffFCE041),
+      secondaryContainer: Color(0xff4A90E2),
       onPrimaryContainer: Color(0xffF5F5F5),
       secondary: Color(0xffEAD800),
       inversePrimary: Color(0xffB8B8B8),
@@ -49,6 +50,7 @@ abstract class AppThemes {
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),
       primaryContainer: Color(0xff255625),
+      secondaryContainer: Color(0xff4A90E2),
       onPrimary: Colors.black,
       onSurfaceVariant: Color(0xffDBF1DB),
       onTertiaryFixedVariant: Color(0xffFFFDE6),

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../assets/assets.gen.dart';
 import '../../styles/text_styles.dart';
@@ -23,14 +24,17 @@ class AddToCartButton extends StatelessWidget {
             onEnd: onEnd,
             curve: Curves.easeInOut,
             turns: isRotate!? -0.125 : 0,
-            child: Assets.media.images.svg.emptyAddToCart.svg(),
+            child: Assets.media.images.svg.emptyAddToCart.svg(
+              width: MediaQuery.sizeOf(context).width*0.075
+            ),
           ),
         ),
         AutoSizeText(
           '$text',
           textAlign: TextAlign.center,
-          style: AppTextStyles.style18Bold.copyWith(
+          style: AppTextStyles.style12SemiBold.copyWith(
             color: colors.onPrimary,
+            fontSize: MediaQuery.sizeOf(context).width*0.045
           ),
         ),
       ],

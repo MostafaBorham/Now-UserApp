@@ -111,6 +111,11 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get appLogo =>
       const AssetGenImage('assets/media/images/png/app_logo.png');
 
+  /// File path: assets/media/images/png/bottom-nav-bar-background.png
+  AssetGenImage get bottomNavBarBackground => const AssetGenImage(
+    'assets/media/images/png/bottom-nav-bar-background.png',
+  );
+
   /// File path: assets/media/images/png/decrement-icon.png
   AssetGenImage get decrementIcon =>
       const AssetGenImage('assets/media/images/png/decrement-icon.png');
@@ -147,6 +152,11 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get waveClipBackground =>
       const AssetGenImage('assets/media/images/png/wave-clip-background.png');
 
+  /// File path: assets/media/images/png/white-app-logo-android12.png
+  AssetGenImage get whiteAppLogoAndroid12 => const AssetGenImage(
+    'assets/media/images/png/white-app-logo-android12.png',
+  );
+
   /// File path: assets/media/images/png/white-app-logo.png
   AssetGenImage get whiteAppLogo =>
       const AssetGenImage('assets/media/images/png/white-app-logo.png');
@@ -158,6 +168,7 @@ class $AssetsMediaImagesPngGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     appLogo,
+    bottomNavBarBackground,
     decrementIcon,
     homeOffersBackground,
     increamentIcon,
@@ -167,6 +178,7 @@ class $AssetsMediaImagesPngGen {
     realSaudiCurrency,
     removeIcon,
     waveClipBackground,
+    whiteAppLogoAndroid12,
     whiteAppLogo,
     whiteWaveBackground,
   ];
@@ -203,6 +215,19 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get arrowBrokenIcon =>
       const SvgGenImage('assets/media/images/svg/arrow-broken-icon.svg');
 
+  /// File path: assets/media/images/svg/borderd-account-icon.svg
+  SvgGenImage get borderdAccountIcon =>
+      const SvgGenImage('assets/media/images/svg/borderd-account-icon.svg');
+
+  /// File path: assets/media/images/svg/borderd-home-icon.svg
+  SvgGenImage get borderdHomeIcon =>
+      const SvgGenImage('assets/media/images/svg/borderd-home-icon.svg');
+
+  /// File path: assets/media/images/svg/bottom-nav-bar-background.svg
+  SvgGenImage get bottomNavBarBackground => const SvgGenImage(
+    'assets/media/images/svg/bottom-nav-bar-background.svg',
+  );
+
   /// File path: assets/media/images/svg/categories-up-arrow.svg
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
@@ -219,9 +244,21 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get favouriteIcon =>
       const SvgGenImage('assets/media/images/svg/favourite-icon.svg');
 
+  /// File path: assets/media/images/svg/filled-account-icon.svg
+  SvgGenImage get filledAccountIcon =>
+      const SvgGenImage('assets/media/images/svg/filled-account-icon.svg');
+
   /// File path: assets/media/images/svg/filled-favourite-icon.svg
   SvgGenImage get filledFavouriteIcon =>
       const SvgGenImage('assets/media/images/svg/filled-favourite-icon.svg');
+
+  /// File path: assets/media/images/svg/filled-home-icon.svg
+  SvgGenImage get filledHomeIcon =>
+      const SvgGenImage('assets/media/images/svg/filled-home-icon.svg');
+
+  /// File path: assets/media/images/svg/filled-orders-icon.svg
+  SvgGenImage get filledOrdersIcon =>
+      const SvgGenImage('assets/media/images/svg/filled-orders-icon.svg');
 
   /// File path: assets/media/images/svg/filter-icon.svg
   SvgGenImage get filterIcon =>
@@ -283,6 +320,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get orderStarRate =>
       const SvgGenImage('assets/media/images/svg/order-star-rate.svg');
 
+  /// File path: assets/media/images/svg/orders-icon.svg
+  SvgGenImage get ordersIcon =>
+      const SvgGenImage('assets/media/images/svg/orders-icon.svg');
+
   /// File path: assets/media/images/svg/real-saudi-currency.svg
   SvgGenImage get realSaudiCurrency =>
       const SvgGenImage('assets/media/images/svg/real-saudi-currency.svg');
@@ -302,6 +343,14 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/shipping-icon.svg
   SvgGenImage get shippingIcon =>
       const SvgGenImage('assets/media/images/svg/shipping-icon.svg');
+
+  /// File path: assets/media/images/svg/shopping-cart-icon.svg
+  SvgGenImage get shoppingCartIcon =>
+      const SvgGenImage('assets/media/images/svg/shopping-cart-icon.svg');
+
+  /// File path: assets/media/images/svg/star-icon.svg
+  SvgGenImage get starIcon =>
+      const SvgGenImage('assets/media/images/svg/star-icon.svg');
 
   /// File path: assets/media/images/svg/star-outline-icon.svg
   SvgGenImage get starOutlineIcon =>
@@ -340,11 +389,17 @@ class $AssetsMediaImagesSvgGen {
     appUnderMaintainIcon,
     appLogo,
     arrowBrokenIcon,
+    borderdAccountIcon,
+    borderdHomeIcon,
+    bottomNavBarBackground,
     categoriesUpArrow,
     clipper,
     emptyAddToCart,
     favouriteIcon,
+    filledAccountIcon,
     filledFavouriteIcon,
+    filledHomeIcon,
+    filledOrdersIcon,
     filterIcon,
     homeOffersBackground,
     locationIcon,
@@ -360,11 +415,14 @@ class $AssetsMediaImagesSvgGen {
     onboardingBackground,
     orderIcon,
     orderStarRate,
+    ordersIcon,
     realSaudiCurrency,
     retryIcon,
     searchIcon,
     serverFailIcon,
     shippingIcon,
+    shoppingCartIcon,
+    starIcon,
     starOutlineIcon,
     starRate,
     supportCallIcon,

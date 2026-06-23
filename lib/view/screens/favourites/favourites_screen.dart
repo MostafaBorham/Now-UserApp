@@ -14,29 +14,23 @@ import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart
 import 'package:nowdelivery_user_app/view/widgets/shared/errors/app_under_maintain_error_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/app_tab_bar.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_tab_bar_with_fixed_widget.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
-  final bool isProductsEmpty = false;
-  final bool isStoresEmpty = false;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return AppWavedScaffold(body: CustomTabBarWithFixedWidget(
+    return AppWavedScaffold(body: AppTabBar(
       tabs: ['Products', 'Stores'],
       views: [
-        isProductsEmpty
-            ? ServerConnectionErrorWidget()
-            : FavouriteProductTabView(),
-        isStoresEmpty ? NoItemsWidget() : FavouriteStoreTabView(),
+        FavouriteProductTabView(),
+        FavouriteStoreTabView(),
       ],
       selectedTabColor: colors.primary,
-      fixedWidget: AppSearchField(
-        hintText: 'Search for products',
-      ),
     ), appBarTitle: 'Favourite',);
   }
 }

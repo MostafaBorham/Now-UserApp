@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/enums/placeholder_types.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -11,12 +12,14 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
+    this.placeholderType = PlaceholderTypes.shimmer,
   });
 
   final String imageUrl;
   final double? width;
   final double? height;
   final BoxFit fit;
+  final PlaceholderTypes? placeholderType;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +30,18 @@ class AppCachedNetworkImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
-      placeholder: (context, url) => Shimmer.fromColors(
-        baseColor: colors.onSurface.withValues(alpha: 0.6),
-        highlightColor: colors.onSurface.withValues(alpha: 0.3),
-        child: Container(
-          width: double.infinity,
-          color: colors.onPrimary,
-        ),
-      ),
+      placeholder: (context, url) {
+        switch (placeholderType) {
+          case PlaceholderTypes.circular:
+            return Center(child: CircularProgressIndicator(color: colors.primary));
+          case PlaceholderTypes.shimmer || null:
+            return Shimmer.fromColors(
+              baseColor: colors.onSurface.withValues(alpha: 0.6),
+              highlightColor: colors.onSurface.withValues(alpha: 0.3),
+              child: Container(width: double.infinity, color: colors.onPrimary),
+            );
+        }
+      },
       errorWidget: (_, _, _) =>
           Assets.media.images.svg.noImagePlaceholder.svg(fit: BoxFit.cover),
     );

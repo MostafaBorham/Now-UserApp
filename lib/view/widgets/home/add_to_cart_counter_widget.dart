@@ -24,6 +24,7 @@ class AddToCartCounterWidget extends StatelessWidget {
       child: Row(
         spacing: 15,
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           InkWell(
             onTap:onInc ,

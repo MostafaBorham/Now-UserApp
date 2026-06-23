@@ -18,15 +18,16 @@ class PreviousPriceWithCurrency extends StatelessWidget {
       child: Row(
         spacing: 5,
         children: [
-          AutoSizeText('10',style: AppTextStyles.style16SemiBold.copyWith(
-              color: colors.inversePrimary
-          ),),
           Assets.media.images.svg.realSaudiCurrency.svg(
-            width: 14.sp,
-            height: 14.sp,
+            width: 14,
+            height: 14,
             fit: BoxFit.contain,
             colorFilter: ColorFilter.mode(colors.inversePrimary, BlendMode.srcIn),
           ),
+          AutoSizeText('10',style: AppTextStyles.style14Medium.copyWith(
+              color: colors.inversePrimary
+          ),),
+
         ],
       ),
     );
