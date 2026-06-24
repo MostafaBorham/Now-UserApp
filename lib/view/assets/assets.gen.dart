@@ -207,6 +207,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get appUnderMaintainIcon =>
       const SvgGenImage('assets/media/images/svg/app-under-maintain-icon.svg');
 
+  /// File path: assets/media/images/svg/app_back_arrow.svg
+  SvgGenImage get appBackArrow =>
+      const SvgGenImage('assets/media/images/svg/app_back_arrow.svg');
+
   /// File path: assets/media/images/svg/app_logo.svg
   SvgGenImage get appLogo =>
       const SvgGenImage('assets/media/images/svg/app_logo.svg');
@@ -387,6 +391,7 @@ class $AssetsMediaImagesSvgGen {
     alertIcon,
     appOrangeLogo,
     appUnderMaintainIcon,
+    appBackArrow,
     appLogo,
     arrowBrokenIcon,
     borderdAccountIcon,

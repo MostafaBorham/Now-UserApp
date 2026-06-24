@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/category_product_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/product_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
 
 class FavouriteProductTabView extends StatelessWidget {
   const FavouriteProductTabView({super.key});
-  final bool isProductsEmpty = true;
+  final bool isProductsEmpty = false;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -38,10 +38,8 @@ class FavouriteProductTabView extends StatelessWidget {
                     ),
                     itemCount: 6,
                     itemBuilder:
-                        (BuildContext context, int index) => /*Container(
-                  color: colors.secondary,
-                )*/
-                            CategoryProductItem(),
+                        (BuildContext context, int index) =>
+                            ProductItem(),
                   ),
                 )
                 .toList(),

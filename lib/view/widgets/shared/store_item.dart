@@ -10,14 +10,14 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
 
-class CategoryStoreItem extends StatefulWidget {
-  const CategoryStoreItem({super.key});
+class StoreItem extends StatefulWidget {
+  const StoreItem({super.key});
 
   @override
-  State<CategoryStoreItem> createState() => _CategoryStoreItemState();
+  State<StoreItem> createState() => _StoreItemState();
 }
 
-class _CategoryStoreItemState extends State<CategoryStoreItem> {
+class _StoreItemState extends State<StoreItem> {
   bool isFavorite = false;
 
   @override

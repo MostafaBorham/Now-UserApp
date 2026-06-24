@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/category_product_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/categories/category_store_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/product_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/store_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_offers_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_store_list_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
@@ -14,7 +14,7 @@ import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_
 
 class FavouriteStoreTabView extends StatelessWidget {
   const FavouriteStoreTabView({super.key});
-  final bool isStoresEmpty = true;
+  final bool isStoresEmpty = false;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -36,7 +36,7 @@ class FavouriteStoreTabView extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     itemBuilder: (context, index) => AspectRatio(
                         aspectRatio: 2,
-                        child: CategoryStoreItem()),
+                        child: StoreItem()),
                     separatorBuilder: (context, index) => 20.hSpace,
                     itemCount: 3,
                   ),

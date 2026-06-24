@@ -5,7 +5,6 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/theme/app_gradient_colors.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
@@ -22,53 +21,51 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: AppWavedScaffold(
-        appBarTitle: 'Wallet',
-        canPop: true,
-        body: Column(
-          spacing: 16,
-          children: [
-            WalletCardWidget(),
-            Row(
-              spacing: 5,
-              children: [
-                Expanded(child: WalletActionButton(actionName: 'Add Money',onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: colors.onPrimary,
-                    builder: (context) => AddMoneyView(),
-                  );
-                })),
-                Expanded(child: WalletActionButton(actionName: 'My Cards',onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: colors.onPrimary,
-                    builder: (context) => MyCardsView(),
-                  );
-                })),
-                Expanded(child: WalletActionButton(actionName: 'Add Card',onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: colors.onPrimary,
-                    builder: (context) => AddCardView(),
-                  );
-                })),
-              ],
+    return AppWavedScaffold(
+      appBarTitle: 'Wallet',
+      canPop: Navigator.canPop(context),
+      body: Column(
+        spacing: 16,
+        children: [
+          WalletCardWidget(),
+          Row(
+            spacing: 5,
+            children: [
+              Expanded(child: WalletActionButton(actionName: 'Add Money',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => AddMoneyView(),
+                );
+              })),
+              Expanded(child: WalletActionButton(actionName: 'My Cards',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => MyCardsView(),
+                );
+              })),
+              Expanded(child: WalletActionButton(actionName: 'Add Card',onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: colors.onPrimary,
+                  builder: (context) => AddCardView(),
+                );
+              })),
+            ],
+          ),
+          10.hSpace,
+          ShowMoreItemsHeader(headerTitle: 'Wallet History'),
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) => WalletHistoryItem(),
+              separatorBuilder: (context, index) => 12.hSpace,
+              itemCount: 10,
             ),
-            10.hSpace,
-            ShowMoreItemsHeader(headerTitle: 'Wallet History'),
-            Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) => WalletHistoryItem(),
-                separatorBuilder: (context, index) => 12.hSpace,
-                itemCount: 10,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

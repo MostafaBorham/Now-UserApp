@@ -1,25 +1,55 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/common/route/app_routes.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/view/widgets/onboarding/app_language_toggle_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/onboarding/onboarding_login_navigator_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/logos/app_logo.dart';
 
-import '../../widgets/onboarding/or_divider.dart';
-import '../../widgets/shared/buttons/primary_app_button.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(image: Svg(Assets.media.images.svg.onboardingBackground.path),fit: BoxFit.cover)
+        ),
+        child: SafeArea(
+          bottom: false,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Assets.media.images.png.onboardingImg.image(
+                    width: screenWidth*0.9
+                  ),
+                  Expanded(child: OnBoardingLoginNavigatorWidget())
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: AppLanguageToggleWidget(
+                  initialLanguage: AppLanguage.en,
+                  onChanged: (lang) {
+                    if (lang == AppLanguage.en) {
+                      // English selected
+                    } else {
+                      // Arabic selected
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
     return Scaffold(
       body: Stack(
         children: [

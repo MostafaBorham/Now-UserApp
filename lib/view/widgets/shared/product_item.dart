@@ -16,14 +16,14 @@ import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_cur
 import '../../assets/assets.gen.dart';
 import '../../styles/text_styles.dart';
 
-class CategoryProductItem extends StatefulWidget {
-  const CategoryProductItem({super.key});
+class ProductItem extends StatefulWidget {
+  const ProductItem({super.key});
 
   @override
-  State<CategoryProductItem> createState() => _CategoryProductItemState();
+  State<ProductItem> createState() => _ProductItemState();
 }
 
-class _CategoryProductItemState extends State<CategoryProductItem> {
+class _ProductItemState extends State<ProductItem> {
   bool isRotate = false;
   bool showAddToCartCounter = false;
   int counter = 0;

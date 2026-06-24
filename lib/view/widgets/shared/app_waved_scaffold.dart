@@ -26,6 +26,7 @@ class AppWavedScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 70),
@@ -42,27 +43,37 @@ class AppWavedScaffold extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 48.w,
-                  child: canPop == true
-                      ? InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: CircleAvatar(
-                            backgroundColor: colors.onPrimary,
-                            radius: 20.r,
-                            child: ReverseWidget(
-                              child: Assets.media.images.svg.arrowBrokenIcon
-                                  .svg(),
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-
                 Expanded(
-                  child: Center(
-                    child: AutoSizeText(
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: canPop == true
+                          ? InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: CircleAvatar(
+                                backgroundColor: colors.onPrimary,
+                                radius: 20,
+                                child: Center(
+                                  child: Assets.media.images.svg.appBackArrow
+                                      .svg(
+                                    fit: BoxFit.contain,
+                                    width: 20
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       appBarTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -72,16 +83,20 @@ class AppWavedScaffold extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                SizedBox(
-                  width: 48.w,
-                  child: appBarActions != null && appBarActions!.isNotEmpty
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: appBarActions!,
-                        )
-                      : const SizedBox.shrink(),
+                Expanded(
+                  child: Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: appBarActions != null && appBarActions!.isNotEmpty
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: appBarActions!,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
                 ),
               ],
             ),

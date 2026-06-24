@@ -9,7 +9,7 @@ class AppDescriptionField extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return TextFormField(
-      maxLines: 5,
+      maxLines: 4,
       style: AppTextStyles.style14Regular.copyWith(color: colors.onSecondary),
       decoration: InputDecoration(
         filled: true,

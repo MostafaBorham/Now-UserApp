@@ -8,4 +8,5 @@ abstract class AppRoutes {
   static const String categoryDetailsScreen = 'category details';
   static const String favouritesScreen = 'favourites screen';
   static const String walletScreen = 'wallet screen';
+  static const String fileComplaintScreen = 'file complaint screen';
 }

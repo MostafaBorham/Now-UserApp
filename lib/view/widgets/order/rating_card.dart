@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/theme/app_gradient_colors.dart';
 import 'package:simple_animated_rating_bar/simple_animated_rating_bar.dart';
 import 'package:simple_animated_rating_bar/utils/arb_type.dart';
 
@@ -33,7 +32,7 @@ class RatingCard extends StatelessWidget {
             ),
           ),
           Text(
-            'Your rate help us for enhance our service',
+            'Your rating helps us improve our service',
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
             style: AppTextStyles.style14Regular.copyWith(
@@ -44,7 +43,11 @@ class RatingCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              gradient: AppGradientColors.gradient1,
+              gradient: LinearGradient(
+                begin: AlignmentDirectional.centerStart,
+                end: AlignmentDirectional.centerEnd,
+                colors: [ colors.onTertiaryFixedVariant,colors.onSurfaceVariant,],
+              ),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(

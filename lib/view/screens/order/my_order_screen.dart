@@ -19,16 +19,21 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return AppWavedScaffold(body: ListView.separated(
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        return OrderListItem();
-      },
-      separatorBuilder: (context, index) {
-        return 20.hSpace;
-      },
-      itemCount: 5,
-    ), appBarTitle: 'My Orders',);
+    return AppWavedScaffold(
+      body: ListView.separated(
+        padding: EdgeInsets.all(3),
+        itemBuilder: (context, index) {
+          return AspectRatio(
+              aspectRatio: 2,
+              child: OrderListItem());
+        },
+        separatorBuilder: (context, index) {
+          return 20.hSpace;
+        },
+        itemCount: 5,
+      ),
+      appBarTitle: 'My Orders',
+    );
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 70),
@@ -36,11 +41,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            colors.onSecondaryFixed,
-            colors.onPrimary,
-            colors.onPrimary,
-          ],
+          colors: [colors.onSecondaryFixed, colors.onPrimary, colors.onPrimary],
         ),
       ),
       child: Column(

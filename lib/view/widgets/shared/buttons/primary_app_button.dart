@@ -28,11 +28,11 @@ class PrimaryAppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
-        child: Center(
-          child: AutoSizeText(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
             title,
             textAlign: TextAlign.center,
-            minFontSize: 10,
             style: AppTextStyles.style14Medium.copyWith(color: colors.onPrimary),
           ),
         ),

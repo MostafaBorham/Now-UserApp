@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
 
@@ -19,7 +20,7 @@ class OrderListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colors.onPrimaryContainer,
         borderRadius: AppBorderRadius.brCircular16.r,
@@ -32,23 +33,26 @@ class OrderListItem extends ConsumerWidget {
         ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 10,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: AppBorderRadius.brCircular12.r,
-                child: CachedNetworkImage(
-                  imageUrl:
-                      'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
-                  width: 88.w,
-                  height: 88.w,
-                  fit: BoxFit.cover,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: AppBorderRadius.brCircular12.r,
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
+                    width: 88.w,
+                    height: 88.w,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              12.wSpace,
-              Expanded(
-                child: Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
@@ -59,7 +63,7 @@ class OrderListItem extends ConsumerWidget {
                     ),
                     4.hSpace,
                     AutoSizeText(
-                      'تم التسليم في 12 مارس 2026',
+                      'Delivered on March 12, 2026',
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSurface,
                       ),
@@ -110,61 +114,45 @@ class OrderListItem extends ConsumerWidget {
                     ),
                   ],
                 ),
-              ),
-              Row(
-                spacing: 5,
-                children: [
-                  AutoSizeText(
-                    '20.00',
-                    style: AppTextStyles.style16SemiBold.copyWith(
-                      color: colors.primary,
+                Row(
+                  spacing: 5,
+                  children: [
+                    Assets.media.images.svg.realSaudiCurrency.svg(
+                      width: 12.sp,
+                      height: 12.sp,
+                      fit: BoxFit.contain,
+                      colorFilter: ColorFilter.mode(
+                        colors.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
-                  Assets.media.images.svg.realSaudiCurrency.svg(
-                    width: 14.sp,
-                    height: 14.sp,
-                    fit: BoxFit.contain,
-                    colorFilter: ColorFilter.mode(
-                      colors.primary,
-                      BlendMode.srcIn,
+                    Text(
+                      '20.00',
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.primary,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-          14.hSpace,
           Row(
             children: [
               Expanded(
-                child: PrimaryAppButton( title: 'عرض التفاصيل',onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.orderDetailsScreen);
-                },),
+                child: AspectRatio(
+                  aspectRatio: 4.3,
+                  child: PrimaryAppButton( title: 'View Details',buttonPadding : 8, onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.orderDetailsScreen);
+                  },),
+                ),
               ),
               12.wSpace,
               Expanded(
-                child: InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: colors.onSurface.withValues(alpha: 0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: AutoSizeText(
-                      'تتبع الطلب',
-                      textAlign: TextAlign.center,
-                      minFontSize: 10,
-                      style: AppTextStyles.style14Medium.copyWith(
-                        color: colors.onSecondary,
-                      ),
-                    ),
-                  ),
+                child: AspectRatio(
+                  aspectRatio: 4.3,
+                  child: UnPrimaryButton( title: 'Track Order',buttonPadding : 8, onTap: () {
+                  },),
                 ),
               ),
             ],

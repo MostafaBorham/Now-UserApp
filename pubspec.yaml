@@ -37,6 +37,7 @@ dependencies:
   simple_animated_rating_bar: ^2.0.1
   device_preview_plus: ^2.8.1
   shimmer: ^3.0.0
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:

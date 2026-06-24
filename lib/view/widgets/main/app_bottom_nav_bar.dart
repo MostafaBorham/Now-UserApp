@@ -62,82 +62,85 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
             ),
 
             Positioned.fill(
-              top: 20,
+              top: stackCon.maxHeight*0.022,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _NavItem(
-                    isSelected: _currentIndex == 0,
-                    label: 'Home',
-                    selectedColor: colors.primary,
-                    unselectedColor: colors.tertiaryContainer,
-                    onTap: () => _changeIndex(0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _currentIndex == 0
-                            ? Assets.media.images.svg.filledHomeIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.secondary,
-                                  BlendMode.srcIn,
+                  Expanded(
+                    child: _NavItem(
+                      isSelected: _currentIndex == 0,
+                      label: 'Home',
+                      selectedColor: colors.primary,
+                      unselectedColor: colors.tertiaryContainer,
+                      onTap: () => _changeIndex(0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _currentIndex == 0
+                              ? Assets.media.images.svg.filledHomeIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.secondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                )
+                              : Assets.media.images.svg.borderdHomeIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.tertiaryContainer,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              )
-                            : Assets.media.images.svg.borderdHomeIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.tertiaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Home',
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: _currentIndex == 0
-                                ? colors.secondary
-                                : colors.tertiaryContainer,
+                          const SizedBox(height: 5),
+                          Text(
+                            'Home',
+                            style: AppTextStyles.style12Medium.copyWith(
+                              color: _currentIndex == 0
+                                  ? colors.secondary
+                                  : colors.tertiaryContainer,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
-                  _NavItem(
-                    isSelected: _currentIndex == 1,
-                    label: 'Favourite',
-                    selectedColor: colors.primary,
-                    unselectedColor: colors.tertiaryContainer,
-                    onTap: () => _changeIndex(1),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _currentIndex == 1
-                            ? Assets.media.images.svg.filledFavouriteIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.secondary,
-                                  BlendMode.srcIn,
+                  Expanded(
+                    child: _NavItem(
+                      isSelected: _currentIndex == 1,
+                      label: 'Favourite',
+                      selectedColor: colors.primary,
+                      unselectedColor: colors.tertiaryContainer,
+                      onTap: () => _changeIndex(1),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _currentIndex == 1
+                              ? Assets.media.images.svg.filledFavouriteIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.secondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                )
+                              : Assets.media.images.svg.favouriteIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.tertiaryContainer,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              )
-                            : Assets.media.images.svg.favouriteIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.tertiaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Favourite',
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: _currentIndex == 1
-                                ? colors.secondary
-                                : colors.tertiaryContainer,
+                          const SizedBox(height: 5),
+                          Text(
+                            'Favourite',
+                            style: AppTextStyles.style12Medium.copyWith(
+                              color: _currentIndex == 1
+                                  ? colors.secondary
+                                  : colors.tertiaryContainer,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
@@ -153,8 +156,8 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                             color: colors.primary,
                             shape: BoxShape.circle,
                             boxShadow: [BoxShadow(
-                              color: colors.onSurface.withValues(alpha: 0.4),
-                              spreadRadius: 2,
+                              color: colors.onSurface.withValues(alpha: 0.3),
+                              spreadRadius: 5,
                               blurRadius: 6
                             )]
                           ),
@@ -169,77 +172,81 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                     ),
                   ),
 
-                  _NavItem(
-                    isSelected: _currentIndex == 2,
-                    label: 'Orders',
-                    selectedColor: colors.secondary,
-                    unselectedColor: colors.tertiaryContainer,
-                    onTap: () => _changeIndex(2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _currentIndex == 2
-                            ? Assets.media.images.svg.filledOrdersIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.secondary,
-                                  BlendMode.srcIn,
+                  Expanded(
+                    child: _NavItem(
+                      isSelected: _currentIndex == 2,
+                      label: 'Orders',
+                      selectedColor: colors.secondary,
+                      unselectedColor: colors.tertiaryContainer,
+                      onTap: () => _changeIndex(2),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _currentIndex == 2
+                              ? Assets.media.images.svg.filledOrdersIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.secondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                )
+                              : Assets.media.images.svg.ordersIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.tertiaryContainer,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              )
-                            : Assets.media.images.svg.ordersIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.tertiaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Orders',
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: _currentIndex == 2
-                                ? colors.secondary
-                                : colors.tertiaryContainer,
+                          const SizedBox(height: 5),
+                          Text(
+                            'Orders',
+                            style: AppTextStyles.style12Medium.copyWith(
+                              color: _currentIndex == 2
+                                  ? colors.secondary
+                                  : colors.tertiaryContainer,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
-                  _NavItem(
-                    isSelected: _currentIndex == 3,
-                    label: 'Account',
-                    selectedColor: colors.secondary,
-                    unselectedColor: colors.tertiaryContainer,
-                    onTap: () => _changeIndex(3),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _currentIndex == 3
-                            ? Assets.media.images.svg.filledAccountIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.secondary,
-                                  BlendMode.srcIn,
+                  Expanded(
+                    child: _NavItem(
+                      isSelected: _currentIndex == 3,
+                      label: 'Profile',
+                      selectedColor: colors.secondary,
+                      unselectedColor: colors.tertiaryContainer,
+                      onTap: () => _changeIndex(3),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _currentIndex == 3
+                              ? Assets.media.images.svg.filledAccountIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.secondary,
+                                    BlendMode.srcIn,
+                                  ),
+                                )
+                              : Assets.media.images.svg.borderdAccountIcon.svg(
+                                  width: stackCon.maxWidth * 0.05,
+                                  colorFilter: ColorFilter.mode(
+                                    colors.tertiaryContainer,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              )
-                            : Assets.media.images.svg.borderdAccountIcon.svg(
-                                width: stackCon.maxWidth * 0.05,
-                                colorFilter: ColorFilter.mode(
-                                  colors.tertiaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Account',
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: _currentIndex == 3
-                                ? colors.secondary
-                                : colors.tertiaryContainer,
+                          const SizedBox(height: 5),
+                          Text(
+                            'Profile',
+                            style: AppTextStyles.style12Medium.copyWith(
+                              color: _currentIndex == 3
+                                  ? colors.secondary
+                                  : colors.tertiaryContainer,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
