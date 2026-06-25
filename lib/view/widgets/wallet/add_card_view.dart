@@ -45,9 +45,9 @@ class _AddCardViewState extends State<AddCardView> {
               }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
             ],
           ),
-          AddCardForm(),
+          Expanded(child: AddCardForm()),
           2.hSpace,
-          PrimaryAppButton(title: 'Add',)
+          PrimaryAppButton(title: 'Add New Card',)
         ],
       ),
     );

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
+
+import 'package:flutter/material.dart';
+import 'package:liquid_glass_easy/liquid_glass_easy.dart';
+import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
 enum AppLanguage { en, ar }
 
@@ -32,7 +37,6 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
 
   void _selectLanguage(AppLanguage language) {
     if (_selectedLanguage == language) return;
-
     setState(() => _selectedLanguage = language);
     widget.onChanged?.call(language);
   }
@@ -41,85 +45,84 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
   Widget build(BuildContext context) {
     final bool isEnglish = _selectedLanguage == AppLanguage.en;
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final Gradient screenGradient = LinearGradient(
-      colors: [
-        colors.secondaryFixed,
-        colors.primary,
-      ],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      stops: const [0, 1],
-    );
-    return Container(
+    final borderRadius = BorderRadius.circular(999);
+
+    return SizedBox(
       width: widget.width,
       height: widget.height,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: AppBorderRadius.brCircular30,
-        border: Border.all(
-          color: colors.onPrimary
-        )
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 28,
-            child: Center(
-              child: Icon(
-                Icons.language,
-                size: 18,
-                color: colors.primary,
+      child: LiquidGlassLens(
+        style: const LiquidGlassStyle(
+          shape: LiquidGlassShape.squircle(cornerRadius: 36,),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 28,
+                child: Center(
+                  child: Assets.media.images.svg.languageIcon.svg(
+                    colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn)
+                  ),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final double toggleWidth = constraints.maxWidth;
-                final double thumbWidth = toggleWidth / 2;
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double toggleWidth = constraints.maxWidth;
+                    final double thumbWidth = toggleWidth / 2;
 
-                return Stack(
-                  children: [
-                    AnimatedAlign(
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeInOut,
-                      alignment: isEnglish
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: Container(
-                        width: thumbWidth,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: screenGradient,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      ),
-                    ),
-                    Row(
+                    return Stack(
                       children: [
-                        Expanded(
-                          child: _LanguageItem(
-                            title: 'EN',
-                            selected: isEnglish,
-                            onTap: () => _selectLanguage(AppLanguage.en),
+                        AnimatedAlign(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                          alignment: isEnglish
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
+                          child: Container(
+                            width: thumbWidth,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  colors.secondaryFixed,
+                                  colors.primary,
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                stops: const [0, 0.8],
+                              ),
+                              borderRadius: borderRadius,
+                            ),
                           ),
                         ),
-                        Expanded(
-                          child: _LanguageItem(
-                            title: 'AR',
-                            selected: !isEnglish,
-                            onTap: () => _selectLanguage(AppLanguage.ar),
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _LanguageItem(
+                                title: 'EN',
+                                selected: isEnglish,
+                                onTap: () => _selectLanguage(AppLanguage.en),
+                              ),
+                            ),
+                            Expanded(
+                              child: _LanguageItem(
+                                title: 'AR',
+                                selected: !isEnglish,
+                                onTap: () => _selectLanguage(AppLanguage.ar),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -138,6 +141,7 @@ class _LanguageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -147,10 +151,8 @@ class _LanguageItem extends StatelessWidget {
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: selected ? Colors.white : const Color(0xFF1F2A1F),
+            style: AppTextStyles.style12Medium.copyWith(
+              color: selected ? colors.onPrimary : colors.tertiaryContainer,
             ),
             child: Text(title),
           ),

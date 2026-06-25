@@ -60,8 +60,8 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AutoSizeText(
-          'Funds amount',
+        Text(
+          'Top-up Amount',
           style: AppTextStyles.style14Medium.copyWith(
             color: colors.onSecondary,
           ),
@@ -101,7 +101,12 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                     child: Row(
                       spacing: 5,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
+                      children: [  Assets.media.images.svg.realSaudiCurrency.svg(
+                        width: 10.w,
+                        color: isSelected
+                            ? colors.onPrimary
+                            : colors.onSecondary,
+                      ),
                         Text(
                           item,
                           style: AppTextStyles.style12Regular.copyWith(
@@ -110,12 +115,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                                 : colors.onSecondary,
                           ),
                         ),
-                        Assets.media.images.svg.realSaudiCurrency.svg(
-                          width: 10.w,
-                          color: isSelected
-                              ? colors.onPrimary
-                              : colors.onSecondary,
-                        ),
+
                       ],
                     ),
                   ),
@@ -193,7 +193,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Maximum amount',
+                          'Maximum',
                           style: AppTextStyles.style14Regular.copyWith(
                             color: colors.onSurface,
                           ),

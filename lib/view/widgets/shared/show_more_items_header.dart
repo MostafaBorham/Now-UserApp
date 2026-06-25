@@ -13,22 +13,29 @@ class ShowMoreItemsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textThemes = Theme.of(context).textTheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        AutoSizeText(
-          headerTitle,
-          style: AppTextStyles.style18SemiBold.copyWith(
-            color: colors.onSecondary,
-          ),
-        ),
-        AutoSizeText(
-          LangKeys.showMoreKey.tr(),
-          style: AppTextStyles.style14SemiBold.copyWith(
-            color: colors.primary,
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context,con) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              headerTitle,
+              style: AppTextStyles.style18SemiBold.copyWith(
+                color: colors.onSecondary,
+                fontSize: con.maxWidth*0.05
+              ),
+            ),
+            Text(
+              LangKeys.showMoreKey.tr(),
+              style: AppTextStyles.style14SemiBold.copyWith(
+                color: colors.primary,
+                  fontSize: con.maxWidth*0.035
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }

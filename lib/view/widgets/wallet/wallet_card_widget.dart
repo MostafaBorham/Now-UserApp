@@ -11,32 +11,32 @@ class WalletCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return AspectRatio(
-      aspectRatio: 1.8,
-      child: Container(
-        padding: EdgeInsets.all(30),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: AlignmentDirectional.centerStart,
-            end: AlignmentDirectional.centerEnd,
-            colors: [colors.primary, colors.primaryContainer],
-          ),
-          borderRadius: AppBorderRadius.brCircular16,
+    return Container(
+      padding: EdgeInsets.all(20),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.centerStart,
+          end: AlignmentDirectional.centerEnd,
+          colors: [colors.primary, colors.primaryContainer],
         ),
-        child: Stack(
-          children: [
-            Assets.media.images.svg.nowWalletCard.svg(
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                colors.primary,
-                BlendMode.srcIn,
-              ),
+        borderRadius: AppBorderRadius.brCircular16,
+      ),
+      child: Stack(
+        children: [
+          Assets.media.images.svg.nowWalletCard.svg(
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              colors.primary,
+              BlendMode.srcIn,
             ),
-            Column(
-              spacing: 15,
-              children: [
-                Row(
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AspectRatio(
+                aspectRatio: 11 ,
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
@@ -55,40 +55,39 @@ class WalletCardWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    AutoSizeText(
-                      'Now Credit',
-                      style: AppTextStyles.style14Medium.copyWith(
-                        color: colors.onPrimary,
+                    FittedBox(
+                      child: Text(
+                        'Now Credit',
+                        style: AppTextStyles.style14Medium.copyWith(
+                          color: colors.onPrimary,
+                        ),
                       ),
                     ),
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
-                Spacer(),
-                Container(
-                  width: double.infinity,
-                  height: 3,
-                  color: colors.onSecondaryFixed,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 10,
+              ),
+              AspectRatio(
+                aspectRatio: 9,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    /*AutoSizeText(
-                      '1213 1231 1232',
-                      style: AppTextStyles.style18Medium.copyWith(
-                        color: colors.onPrimary,
+                    Container(
+                      width: double.infinity,
+                      height: 2.5,
+                      color: colors.onSecondaryFixed,
+                    ),
+                    AspectRatio(
+                      aspectRatio: 15,
+                      child: Assets.media.images.svg.appOrangeLogo.svg(
                       ),
-                    ),*/
-                    Assets.media.images.svg.appOrangeLogo.svg(
-                        width: 85.sp
                     ),
                   ],
-                )
-              ],
-            ),
-          ],
-        ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

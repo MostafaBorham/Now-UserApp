@@ -9,14 +9,14 @@ import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_app_b
 import 'package:nowdelivery_user_app/view/widgets/wallet/payment_method_selector.dart';import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/money_amount_picker.dart';
 
-class AddMoneyView extends StatefulWidget {
-  const AddMoneyView({super.key});
+class AddBalanceView extends StatefulWidget {
+  const AddBalanceView({super.key});
 
   @override
-  State<AddMoneyView> createState() => _AddMoneyViewState();
+  State<AddBalanceView> createState() => _AddBalanceViewState();
 }
 
-class _AddMoneyViewState extends State<AddMoneyView> {
+class _AddBalanceViewState extends State<AddBalanceView> {
   String? moneyAmount;
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _AddMoneyViewState extends State<AddMoneyView> {
             spacing: 10,
             children: [
               AutoSizeText(
-                'Add Money',
+                'Add Balance',
                 style: AppTextStyles.style18Medium.copyWith(
                   color: colors.onSecondary,
                 ),
@@ -42,26 +42,28 @@ class _AddMoneyViewState extends State<AddMoneyView> {
               }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
             ],
           ),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
-              children: [
-                PaymentMethodSelector(
-                  initialIndex: 0,
-                  onChanged: (i) => debugPrint('selected $i'),
-                ),
-                MoneyAmountPicker(
-                  maxAmount: 5000,
-                  onAmountChanged: (amount) {
-                    moneyAmount = amount;
-                    setState(() {
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  PaymentMethodSelector(
+                    initialIndex: 0,
+                    onChanged: (i) => debugPrint('selected $i'),
+                  ),
+                  MoneyAmountPicker(
+                    maxAmount: 5000,
+                    onAmountChanged: (amount) {
+                      moneyAmount = amount;
+                      setState(() {
 
-                    });
-                    debugPrint('selected amount ==== $amount');
-                  },
-                ),
-              ],
+                      });
+                      debugPrint('selected amount ==== $amount');
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           5.hSpace,

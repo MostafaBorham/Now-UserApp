@@ -44,13 +44,15 @@ class _MyCardsViewState extends State<MyCardsView> {
               }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
             ],
           ),
-          OnlineCardRadioSelector(cards: [
-            OnlineCardParams(cardHolder: 'Mostafa Borham', cardNumber: '4701 1221 1212 12212', cardType: OnlineCardTypes.visa),
-            OnlineCardParams(cardHolder: 'Basem ahmed', cardNumber: '5201 1221 1212 12212', cardType: OnlineCardTypes.master),
-          ],
-            onAmountChanged: (card) {
+          Expanded(
+            child: OnlineCardRadioSelector(cards: [
+              OnlineCardParams(cardHolder: 'Mostafa Borham', cardNumber: '4701 1221 1212 12212', cardType: OnlineCardTypes.visa),
+              OnlineCardParams(cardHolder: 'Basem ahmed', cardNumber: '5201 1221 1212 12212', cardType: OnlineCardTypes.master),
+            ],
+              onAmountChanged: (card) {
 
-            },),
+              },),
+          ),
           5.hSpace,
           PrimaryAppButton(title: 'Add new card',)
         ],

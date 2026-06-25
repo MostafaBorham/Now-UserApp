@@ -876,9 +876,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         appBarActions: [
           CircleAvatar(
             backgroundColor: colors.onPrimary,
-            radius: 20.r,
+            radius: MediaQuery.sizeOf(context).width*0.05,
             child: Assets.media.images.svg.supportCallIcon.svg(
-              width: 20.sp,
+              width: MediaQuery.sizeOf(context).width*0.05,
               colorFilter: ColorFilter.mode(
                 colors.onSecondary,
                 BlendMode.srcIn,

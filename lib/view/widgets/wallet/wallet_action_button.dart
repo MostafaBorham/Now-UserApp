@@ -20,7 +20,7 @@ class WalletActionButton extends StatelessWidget {
           color: colors.onSurface.withValues(alpha: 0.1),
           borderRadius: AppBorderRadius.brCircular30.r
         ),
-        child: Center(child: AutoSizeText(actionName,style: AppTextStyles.style14Medium.copyWith(color: colors.onSecondary),)),
+        child: Center(child: FittedBox(child: Text(actionName,style: AppTextStyles.style14Medium.copyWith(color: colors.onSecondary),))),
       ),
     );
   }

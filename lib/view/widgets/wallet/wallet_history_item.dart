@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
@@ -12,51 +13,80 @@ class WalletHistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12,horizontal: 20),
-      decoration: BoxDecoration(
-        color: colors.onSurface.withValues(alpha: 0.05),
-        borderRadius: AppBorderRadius.brCircular30,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        spacing: 12,
-        children: [
-          Row(
-            spacing: 12,
+    return LayoutBuilder(
+      builder: (context,con) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 12,horizontal: 15),
+          decoration: BoxDecoration(
+            color: colors.onSurface.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(con.maxWidth*0.1),
+          ),
+          child: Row(
+            spacing: 15,
             children: [
-              CircularBrandLogo(radius: 20.sp, logoUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText(
-                    'Shaworma',
-                    style: AppTextStyles.style14SemiBold.copyWith(
-                      color: colors.onSecondary,
+              Expanded(
+                flex: 3,
+                child: Row(
+                  spacing: 12,
+                  children: [
+                    CircularBrandLogo(radius: con.maxWidth*0.07, logoUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',backgroundColor: colors.onPrimary,),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Shaworma',
+                            style: AppTextStyles.style14SemiBold.copyWith(
+                              color: colors.onSecondary,
+                              fontSize: con.maxWidth*0.04
+                            ),
+                          ),
+                          Text(
+                            'Expired 26-04-2026',
+                            style: AppTextStyles.style12Regular.copyWith(
+                              color: colors.onPrimaryFixed.withValues(alpha: 0.7),
+                                fontSize: con.maxWidth*0.03
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  AutoSizeText(
-                    'end in 26-04-2026',
-                    style: AppTextStyles.style12Medium.copyWith(
-                      color: colors.onPrimaryFixed.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              Expanded(
+                flex: 2,
+                child: AspectRatio(
+                  aspectRatio: 3.5,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
+                    decoration: BoxDecoration(
+                        color: colors.errorContainer.withValues(alpha: 0.1),
+                        borderRadius: AppBorderRadius.brCircular30.r
+                    ),
+                    child: Center(child: Text('Refunded',textAlign: TextAlign.center,style: AppTextStyles.style12Medium.copyWith(color: colors.errorContainer,),)),
+                  ),
+                ),
+              ),
+              Expanded(child: Row(
+                spacing: 5,
+                children: [
+                  Assets.media.images.svg.realSaudiCurrency.svg(
+                    fit: BoxFit.contain,
+                    width: con.maxWidth*0.04,
+                    colorFilter: ColorFilter.mode(colors.error, BlendMode.srcIn),
+                  ),
+                  Text('-10',style: AppTextStyles.style16SemiBold.copyWith(
+                      color: colors.error,
+                    fontSize: con.maxWidth*0.04
+                  ),),
+                ],
+              )),
             ],
           ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
-            decoration: BoxDecoration(
-                color: colors.errorContainer.withValues(alpha: 0.1),
-                borderRadius: AppBorderRadius.brCircular30.r
-            ),
-            child: Center(child: AutoSizeText('Refunded',style: AppTextStyles.style12Medium.copyWith(color: colors.errorContainer),)),
-          ),
-          PriceWithCurrency(color: colors.error, price: '-10'),
-        ],
-      ),
+        );
+      }
     );
   }
 }

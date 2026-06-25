@@ -55,16 +55,16 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           ),
         ),
         NowRadioTile(
-          label: 'Online Payment',
+          label: 'Electronic Payment',
           selected: _selected == 0,
           onTap: () => _select(0),
         ),
         const _OrDivider(),
         NowRadioTile(
-          label: 'Voucher points',
+          label: 'Reward Points',
           selected: _selected == 1,
           onTap: () => _select(1),
-          badge: 'mostafa',
+          badge: 'Mustafa',
         ),
       ],
     );

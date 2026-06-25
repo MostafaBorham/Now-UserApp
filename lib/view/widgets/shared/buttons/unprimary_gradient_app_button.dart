@@ -36,14 +36,17 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
             // borderRadius: BorderRadius.circular(8),
             // border: Border.all(color: colors.primary, width: 2),
           ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.style16Medium.copyWith(
-              foreground: Paint()
-                ..shader = buttonGradient.createShader(
-                  const Rect.fromLTWH(0, 0, 300, 70),
-                ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.style16Medium.copyWith(
+                foreground: Paint()
+                  ..shader = buttonGradient.createShader(
+                    const Rect.fromLTWH(0, 0, 300, 70),
+                  ),
+              ),
             ),
           ),
         ),

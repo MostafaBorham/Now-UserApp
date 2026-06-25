@@ -272,6 +272,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get homeOffersBackground =>
       const SvgGenImage('assets/media/images/svg/home-offers-background.svg');
 
+  /// File path: assets/media/images/svg/language-icon.svg
+  SvgGenImage get languageIcon =>
+      const SvgGenImage('assets/media/images/svg/language-icon.svg');
+
   /// File path: assets/media/images/svg/location-icon.svg
   SvgGenImage get locationIcon =>
       const SvgGenImage('assets/media/images/svg/location-icon.svg');
@@ -407,6 +411,7 @@ class $AssetsMediaImagesSvgGen {
     filledOrdersIcon,
     filterIcon,
     homeOffersBackground,
+    languageIcon,
     locationIcon,
     marketIcon,
     masterCardLogo,
