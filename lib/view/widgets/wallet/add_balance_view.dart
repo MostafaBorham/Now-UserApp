@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 
@@ -32,7 +34,7 @@ class _AddBalanceViewState extends State<AddBalanceView> {
             spacing: 10,
             children: [
               AutoSizeText(
-                'Add Balance',
+                LangKeys.addBalanceKey.tr(),
                 style: AppTextStyles.style18Medium.copyWith(
                   color: colors.onSecondary,
                 ),
@@ -67,7 +69,7 @@ class _AddBalanceViewState extends State<AddBalanceView> {
             ),
           ),
           5.hSpace,
-          (moneyAmount!=null && moneyAmount!.isNotEmpty) ? PrimaryAppButton(title: 'Continue',) : PrimaryAppDisabledButton(title: 'Continue')
+          (moneyAmount!=null && moneyAmount!.isNotEmpty) ? PrimaryAppButton(title: LangKeys.continueKey.tr(),) : PrimaryAppDisabledButton(title: LangKeys.continueKey.tr())
         ],
       ),
     );

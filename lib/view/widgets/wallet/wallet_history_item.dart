@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
@@ -65,7 +67,7 @@ class WalletHistoryItem extends StatelessWidget {
                         color: colors.errorContainer.withValues(alpha: 0.1),
                         borderRadius: AppBorderRadius.brCircular30.r
                     ),
-                    child: Center(child: Text('Refunded',textAlign: TextAlign.center,style: AppTextStyles.style12Medium.copyWith(color: colors.errorContainer,),)),
+                    child: Center(child: Text(LangKeys.refundedKey.tr(),textAlign: TextAlign.center,style: AppTextStyles.style12Medium.copyWith(color: colors.errorContainer,),)),
                   ),
                 ),
               ),

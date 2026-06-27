@@ -33,7 +33,7 @@ class HomeOffersSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AutoSizeText(
-                  'Don\'t Miss These Offers',
+                  LangKeys.dontMissTheseOffersKey.tr(),
                   style: AppTextStyles.style20SemiBold.copyWith(
                     color: colors.onSecondary,
                   ),

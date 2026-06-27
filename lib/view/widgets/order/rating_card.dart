@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
@@ -32,7 +34,7 @@ class RatingCard extends StatelessWidget {
             ),
           ),
           Text(
-            'Your rating helps us improve our service',
+            LangKeys.ratingHelpsImproveServiceKey.tr(),
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
             style: AppTextStyles.style14Regular.copyWith(
@@ -51,7 +53,7 @@ class RatingCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
-            'Good 😍',
+            LangKeys.ratingGoodKey.tr(),
               textDirection: TextDirection.rtl,
               style: AppTextStyles.style14Regular.copyWith(
                 color: colors.onSecondary

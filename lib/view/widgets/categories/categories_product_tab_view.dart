@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/product_item.dart';
@@ -17,13 +19,13 @@ class CategoriesProductTabView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        AppSearchField(hintText: 'Search For A Product',),
-        Text('Filters',style: AppTextStyles.style14SemiBold.copyWith(
+        AppSearchField(hintText: LangKeys.searchForAProductKey.tr(),),
+        Text(LangKeys.filtersKey.tr(),style: AppTextStyles.style14SemiBold.copyWith(
           color: colors.onSecondary
         ),),
         Expanded(
           child: isProductsEmpty? NoItemsWidget() : CustomButtonTabBar(
-            tabs: ['ALL', 'Men'],
+            tabs: [LangKeys.allKey.tr(), LangKeys.menKey.tr()],
             views: ['', '']
                 .map(
                   (e) => GridView.builder(

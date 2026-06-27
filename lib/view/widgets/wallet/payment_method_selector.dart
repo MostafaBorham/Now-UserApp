@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
@@ -48,20 +50,20 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         Padding(
           padding: EdgeInsets.only(right: 4, bottom: 16),
           child: Text(
-            'Payment Method',
+            LangKeys.paymentMethodKey.tr(),
             style: AppTextStyles.style14Medium.copyWith(
               color: colors.onSecondary,
             ),
           ),
         ),
         NowRadioTile(
-          label: 'Electronic Payment',
+          label: LangKeys.electronicPaymentKey.tr(),
           selected: _selected == 0,
           onTap: () => _select(0),
         ),
         const _OrDivider(),
         NowRadioTile(
-          label: 'Reward Points',
+          label: LangKeys.rewardPointsKey.tr(),
           selected: _selected == 1,
           onTap: () => _select(1),
           badge: 'Mustafa',
@@ -199,10 +201,10 @@ class _OrDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Text(
-        '- Or -',
+        LangKeys.orDividerKey.tr(),
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 13,

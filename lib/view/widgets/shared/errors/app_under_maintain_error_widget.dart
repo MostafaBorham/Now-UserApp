@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
@@ -21,7 +23,7 @@ class AppUnderMaintainErrorWidget extends StatelessWidget {
           Assets.media.images.svg.appUnderMaintainIcon.svg(width: 300.w),
           10.hSpace,
           AutoSizeText(
-            'App is under maintenance',
+            LangKeys.appUnderMaintenanceKey.tr(),
             maxLines: 2,
             textAlign: TextAlign.center,
             style: AppTextStyles.style24Bold.copyWith(
@@ -29,13 +31,13 @@ class AppUnderMaintainErrorWidget extends StatelessWidget {
             ),
           ),
           AutoSizeText(
-            'We’re working to improve your experience. We’ll be back soon. Thank you for your patience.',
+            LangKeys.appUnderMaintenanceSubtitleKey.tr(),
             textAlign: TextAlign.center,
             maxLines: 2,
             style: AppTextStyles.style16Regular,
           ),
           15.hSpace,
-          PrimaryAppPostfixIconButton(title: 'Notify me when it’s done',onTap: () {
+          PrimaryAppPostfixIconButton(title: LangKeys.notifyMeWhenDoneKey.tr(),onTap: () {
 
           },postfixIcon: Assets.media.images.svg.alertErrorIcon.svg(colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn)),)
         ],

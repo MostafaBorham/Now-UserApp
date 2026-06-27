@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   borderRadius: AppBorderRadius.brCircular8,
                                 ),
                                 child: AutoSizeText(
-                                  'Shop Now',
+                                  LangKeys.shopNowKey.tr(),
                                   style: AppTextStyles.style16SemiBold
                                       .copyWith(color: colors.onSecondary),
                                   maxLines: 1,

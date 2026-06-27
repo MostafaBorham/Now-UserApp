@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/widgets/order/complaint_photos_picker.dart';
 import 'package:nowdelivery_user_app/view/widgets/order/rating_card.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
@@ -40,18 +42,18 @@ class FileComplaintScreen extends StatelessWidget {
                         onChanged: (currentImages) {
                         },
                       ),
-                      AppDescriptionField(hintTxt: 'Tell us more ...'),
-                      RatingCard(title: 'How do you rate the store?'),
-                      RatingCard(title: 'How do you rate the delivery person?'),
+                      AppDescriptionField(hintTxt: LangKeys.tellUsMoreKey.tr()),
+                      RatingCard(title: LangKeys.rateStoreQuestionKey.tr()),
+                      RatingCard(title: LangKeys.rateDeliveryPersonQuestionKey.tr()),
                     ],
                   ),
                 ),
               ),
-              PrimaryAppButton(title: 'Submit Complaint'),
+              PrimaryAppButton(title: LangKeys.submitComplaintKey.tr()),
             ],
           ),
         ),
-        appBarTitle: 'File a Complaint',
+        appBarTitle: LangKeys.fileComplaintKey.tr(),
         canPop: Navigator.canPop(context),
       ),
     );

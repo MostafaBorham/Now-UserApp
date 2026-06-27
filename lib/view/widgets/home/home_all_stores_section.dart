@@ -27,7 +27,7 @@ class HomeAllStoresSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AutoSizeText(
-                'Don\'t Miss These Offers',
+                LangKeys.dontMissTheseOffersKey.tr(),
                 style: AppTextStyles.style20SemiBold.copyWith(
                   color: colors.onSecondary,
                 ),
@@ -50,7 +50,7 @@ class HomeAllStoresSection extends StatelessWidget {
                 radius: 20.r,
                 child: Assets.media.images.svg.filterIcon.svg(width: 20.w),
               ),
-              tabs: ['ALL', 'Clothes', 'Other'],
+              tabs: [LangKeys.allKey.tr(), LangKeys.clothesKey.tr(), LangKeys.otherKey.tr()],
               views: [
                 LayoutBuilder(
                   builder: (context, con) {

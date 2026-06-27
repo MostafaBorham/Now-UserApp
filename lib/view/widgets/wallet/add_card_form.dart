@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
@@ -15,15 +17,15 @@ class AddCardForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _FieldLabel('Cardholder Name'),
+            _FieldLabel(LangKeys.cardholderNameKey.tr()),
             const SizedBox(height: 10),
-            const _CardInputField(
-              hintText: 'Name ...',
+            _CardInputField(
+              hintText: LangKeys.nameHintKey.tr(),
             ),
         
             const SizedBox(height: 18),
         
-            const _FieldLabel('Card Number'),
+            _FieldLabel(LangKeys.cardNumberKey.tr()),
             const SizedBox(height: 10),
             const _CardInputField(
               hintText: '1111-1111-1111-1111',
@@ -34,15 +36,15 @@ class AddCardForm extends StatelessWidget {
         
             Row(
               spacing: 12,
-              children: const [ Expanded(
+              children: [ Expanded(
                 child: _CardFieldColumn(
-                  label: 'Expiration Date',
+                  label: LangKeys.expirationDateKey.tr(),
                   hint: 'MM/YY',
                   keyboardType: TextInputType.datetime,
                 ),
               ),
-        
-                Expanded(
+
+                const Expanded(
                   child: _CardFieldColumn(
                     label: 'CVV',
                     hint: '1**',
