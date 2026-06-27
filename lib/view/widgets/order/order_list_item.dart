@@ -64,7 +64,7 @@ class OrderListItem extends ConsumerWidget {
                     ),
                     4.hSpace,
                     AutoSizeText(
-                      'Delivered on March 12, 2026',
+                      '${LangKeys.deliveredOnKey.tr()} March 12, 2026',
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSurface,
                       ),
@@ -84,7 +84,7 @@ class OrderListItem extends ConsumerWidget {
                             borderRadius: AppBorderRadius.brCircular20.r,
                           ),
                           child: AutoSizeText(
-                            '5 items',
+                            '5 ${LangKeys.itemsKey.tr()}',
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.onSecondary,
                             ),

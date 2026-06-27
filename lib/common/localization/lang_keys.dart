@@ -27,11 +27,19 @@ abstract class LangKeys {
   static const String filtersKey = 'filters';
   static const String searchForAProductKey = 'searchForAProduct';
   static const String searchForAStoreKey = 'searchForAStore';
+  static const String cashOnDeliveryKey = 'cashOnDeliveryKey';
+  static const String rateKey = 'rateKey';
 
   // Bottom navigation
   static const String homeKey = 'home';
   static const String ordersKey = 'orders';
+  static const String expiryDateHintKey = 'expiryDateHintKey';
+  static const String expiredKey = 'expiredKey';
+  static const String orderKey = 'order';
   static const String profileKey = 'profile';
+  static const String deliveredOnKey = 'deliveredOnKey';
+  static const String itemsKey = 'itemsKey';
+  static const String imagePickingErrorKey = 'imagePickingErrorKey';
 
   // Home
   static const String shopNowKey = 'shopNow';

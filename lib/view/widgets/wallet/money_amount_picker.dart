@@ -20,9 +20,6 @@ class MoneyAmountPicker extends StatefulWidget {
   final int maxAmount;
   final List<String> options;
 
-  /// يرجع المبلغ المختار النهائي:
-  /// - لو اختار مبلغ جاهز => "300" مثلا
-  /// - لو اختار "أخرى" وكتب قيمة => القيمة المكتوبة
   final ValueChanged<String?>? onAmountChanged;
 
   @override

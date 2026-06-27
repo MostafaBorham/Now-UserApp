@@ -14,7 +14,8 @@
   "mostPopular": "الأكثر شعبية",
   "categoriesTitle": "الفئات",
   "discount": "خصم",
-
+  "cashOnDeliveryKey": "الدفع عند الاستلام",
+  "rateKey": "قيّم",
   "products": "المنتجات",
   "stores": "المتاجر",
   "favourite": "المفضلة",
@@ -28,6 +29,12 @@
 
   "home": "الرئيسية",
   "orders": "الطلبات",
+  "deliveredOnKey": "تم التسليم في",
+  "itemsKey": "منتجات",
+  "expiredKey": "منتهي الصلاحية",
+  "expiryDateHintKey": "السنة/ الشهر",
+  "imagePickingErrorKey": "حدث خطأ أثناء اختيار الصورة",
+  "order": "طلب",
   "profile": "الحساب",
 
   "shopNow": "تسوّق الآن",

@@ -11,7 +11,8 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/online_card_radio_selector.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/payment_method_selector.dart';import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/view/widgets/wallet/payment_method_selector.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/wallet/money_amount_picker.dart';
 
 class MyCardsView extends StatefulWidget {
@@ -26,7 +27,7 @@ class _MyCardsViewState extends State<MyCardsView> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 16 ),
+      padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 10,
@@ -41,22 +42,35 @@ class _MyCardsViewState extends State<MyCardsView> {
                   color: colors.onSecondary,
                 ),
               ),
-              IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
-                Navigator.pop(context);
-              }, icon: Icon(Icons.clear,size: 20.sp,color: colors.onSecondary,))
+              IconButton(
+                padding: EdgeInsetsGeometry.zero,
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.clear, size: 20.sp, color: colors.onSecondary),
+              ),
             ],
           ),
           Expanded(
-            child: OnlineCardRadioSelector(cards: [
-              OnlineCardParams(cardHolder: 'Mostafa Borham', cardNumber: '4701 1221 1212 12212', cardType: OnlineCardTypes.visa),
-              OnlineCardParams(cardHolder: 'Basem ahmed', cardNumber: '5201 1221 1212 12212', cardType: OnlineCardTypes.master),
-            ],
-              onAmountChanged: (card) {
-
-              },),
+            child: OnlineCardRadioSelector(
+              cards: [
+                OnlineCardParams(
+                  cardHolder: 'Mostafa Borham',
+                  cardNumber: '4701 1221 1212 12212',
+                  cardType: OnlineCardTypes.visa,
+                ),
+                OnlineCardParams(
+                  cardHolder: 'Basem ahmed',
+                  cardNumber: '5201 1221 1212 12212',
+                  cardType: OnlineCardTypes.master,
+                ),
+              ],
+              onAmountChanged: (card) {},
+            ),
           ),
           5.hSpace,
-          PrimaryAppButton(title: LangKeys.addNewCardKey.tr(),)
+          PrimaryAppButton(title: LangKeys.addNewCardKey.tr()),
         ],
       ),
     );

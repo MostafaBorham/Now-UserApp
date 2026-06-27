@@ -47,82 +47,85 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final borderRadius = BorderRadius.circular(999);
 
-    return SizedBox(
-      width: widget.width,
-      height: widget.height,
-      child: LiquidGlassLens(
-        style: LiquidGlassStyle(
-          shape: LiquidGlassShape.squircle(cornerRadius: 36,borderType: OpticalBorder(
-            borderSolidity: 5,
-          ),lightDirection: 20,lightColor: colors.onPrimary),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          child: Row(
-            children: [
-              SizedBox(
-                width: widget.width*0.2,
-                child: Center(
-                  child: Assets.media.images.svg.languageIcon.svg(
-                    colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn)
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: LiquidGlassLens(
+          style: LiquidGlassStyle(
+            shape: LiquidGlassShape.squircle(cornerRadius: 36,borderType: OpticalBorder(
+              borderSolidity: 5,
+            ),lightDirection: 20,lightColor: colors.onPrimary),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: widget.width*0.2,
+                  child: Center(
+                    child: Assets.media.images.svg.languageIcon.svg(
+                      colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn)
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final double toggleWidth = constraints.maxWidth;
-                    final double thumbWidth = toggleWidth / 2;
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final double toggleWidth = constraints.maxWidth;
+                      final double thumbWidth = toggleWidth / 2;
 
-                    return Stack(
-                      children: [
-                        AnimatedAlign(
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeInOut,
-                          alignment: isEnglish
-                              ? Alignment.centerLeft
-                              : Alignment.centerRight,
-                          child: Container(
-                            width: thumbWidth,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  colors.secondaryFixed,
-                                  colors.primary,
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                stops: const [0, 0.8],
+                      return Stack(
+                        children: [
+                          AnimatedAlign(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                            alignment: isEnglish
+                                ? AlignmentDirectional.centerStart
+                                : AlignmentDirectional.centerEnd,
+                            child: Container(
+                              width: thumbWidth,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    colors.secondaryFixed,
+                                    colors.primary,
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  stops: const [0, 0.8],
+                                ),
+                                borderRadius: borderRadius,
                               ),
-                              borderRadius: borderRadius,
                             ),
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _LanguageItem(
-                                title: 'EN',
-                                selected: isEnglish,
-                                onTap: () => _selectLanguage(AppLanguage.en),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _LanguageItem(
+                                  title: 'EN',
+                                  selected: _selectedLanguage == AppLanguage.en,
+                                  onTap: () => _selectLanguage(AppLanguage.en),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: _LanguageItem(
-                                title: 'AR',
-                                selected: !isEnglish,
-                                onTap: () => _selectLanguage(AppLanguage.ar),
+                              Expanded(
+                                child: _LanguageItem(
+                                  title: 'AR',
+                                  selected: _selectedLanguage == AppLanguage.ar,
+                                  onTap: () => _selectLanguage(AppLanguage.ar),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -148,7 +151,7 @@ class _LanguageItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
+        onTap: selected ? null : onTap,
         child: Center(
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),

@@ -240,7 +240,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 ),
                               ),
                               Text(
-                                'Cash on Delivery',
+                                LangKeys.cashOnDeliveryKey.tr(),
                                 style: AppTextStyles.style14Medium.copyWith(
                                   color: colors.primary,
                                 ),
@@ -495,102 +495,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 onTap: () =>
                     Navigator.pushNamed(context, AppRoutes.fileComplaintScreen),
               ),
-              /*Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  */
-              /*    color: colors.secondary.withValues(
-                                alpha: 0.1,
-                              ),*/
-              /*
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Store Details',
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
-                      ),
-                    ),
-                    12.hSpace,
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
-                      ),
-                      child: Column(
-                        spacing: 16,
-                        children: [
-                          Row(
-                            spacing: 10,
-                            children: [
-                              CircularBrandLogo(
-                                radius: 25.sp,
-                                logoUrl:
-                                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                              ),
-                              Column(
-                                spacing: 5,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AutoSizeText(
-                                    'Panda Store',
-                                    style: AppTextStyles.style16Medium.copyWith(
-                                      color: colors.onSecondary,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    spacing: 5.w,
-                                    children: [
-                                      Assets.media.images.svg.timeIcon.svg(
-                                        width: 16.sp,
-                                        colorFilter: ColorFilter.mode(
-                                          colors.onSurface,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        '٤٠-٥٠ دقيقة',
-                                        style: AppTextStyles.style12Medium
-                                            .copyWith(color: colors.onSurface),
-                                      ),
-                                      5.wSpace,
-                                      Assets.media.images.svg.locationIcon.svg(
-                                        width: 14.sp,
-                                        colorFilter: ColorFilter.mode(
-                                          colors.onSurface,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        '٤٠ - ٥٠ كم',
-                                        style: AppTextStyles.style12Medium
-                                            .copyWith(color: colors.onSurface),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          PrimaryAppPrefixIconButton(
-                            title: 'message',
-                            prefixIcon: Assets.media.images.svg.messageIcon
-                                .svg(),
-                            buttonPadding: 8,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),*/
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(

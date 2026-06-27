@@ -4,16 +4,7 @@ import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
-/// A titled group of selectable payment-method options that matches the
-/// provided design: an "الدفع الإلكتروني" (electronic payment) option and a
-/// "نقاط المكافأة" (reward points) option separated by an "أو" divider.
-///
-/// Selection state is managed internally — tapping an option switches the
-/// active choice and reports the new index through [onChanged].
-///
-/// The widget is fully self-contained (no theme/design-system dependencies)
-/// so it can be dropped anywhere. Wrap it in your own padding to control the
-/// outer margins.
+
 class PaymentMethodSelector extends StatefulWidget {
   const PaymentMethodSelector({
     super.key,
@@ -21,10 +12,9 @@ class PaymentMethodSelector extends StatefulWidget {
     this.onChanged,
   });
 
-  /// Index of the option selected on first build (0 = electronic, 1 = points).
   final int initialIndex;
 
-  /// Called with the newly selected index whenever the choice changes.
+
   final ValueChanged<int>? onChanged;
 
   @override

@@ -58,7 +58,7 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
         }
       }
     } catch (e) {
-      debugPrint('Image picking error: $e');
+      debugPrint('${LangKeys.imagePickingErrorKey.tr()}: $e');
     } finally {
       if (mounted) {
         setState(() {

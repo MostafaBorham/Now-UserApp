@@ -12,7 +12,7 @@ class CustomButtonTabBar extends StatefulWidget {
     required this.views,
     required this.selectedTabColor,
     required this.unSelectedTabColor, this.filterWidget, this.selectedLabelColor, this.unSelectedLabelColor,
-  }) : assert(tabs.length == views.length, 'Tabs count must equal views count');
+  });
 
   final List<String> tabs;
   final List<Widget> views;

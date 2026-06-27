@@ -39,7 +39,7 @@ class AddCardForm extends StatelessWidget {
               children: [ Expanded(
                 child: _CardFieldColumn(
                   label: LangKeys.expirationDateKey.tr(),
-                  hint: 'MM/YY',
+                  hint: LangKeys.expiryDateHintKey.tr(),
                   keyboardType: TextInputType.datetime,
                 ),
               ),

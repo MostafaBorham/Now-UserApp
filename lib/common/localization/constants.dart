@@ -5,6 +5,7 @@ abstract class LocalizationConstants {
   static const String englishLangCode = 'en';
   static const String arabicCountryCode = 'EG';
   static const String englishCountryCode = 'US';
+  static const String langCacheKey = 'current lang';
   static const String languagesPath = 'assets/json/lang';
   static const Locale arabicLocale = Locale(arabicLangCode, arabicCountryCode);
   static const Locale englishLocale = Locale(englishLangCode, englishCountryCode);

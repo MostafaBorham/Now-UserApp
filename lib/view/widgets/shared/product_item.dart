@@ -61,7 +61,7 @@ class _ProductItemState extends State<ProductItem> {
         children: [
           Expanded(
             child: LayoutBuilder(
-              builder: (context,con) {
+              builder: (context, con) {
                 print('con ===== ${con.maxHeight}===${con.maxWidth}');
                 return Stack(
                   children: [
@@ -87,7 +87,9 @@ class _ProductItemState extends State<ProductItem> {
                           setState(() {});
                         },
                         child: Padding(
-                          padding: EdgeInsetsDirectional.all(con.maxWidth*0.05),
+                          padding: EdgeInsetsDirectional.all(
+                            con.maxWidth * 0.05,
+                          ),
                           child: Material(
                             elevation: 1,
                             shape: const CircleBorder(),
@@ -101,7 +103,11 @@ class _ProductItemState extends State<ProductItem> {
                                                 .images
                                                 .svg
                                                 .filledFavouriteIcon
-                                          : Assets.media.images.svg.favouriteIcon)
+                                          : Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .favouriteIcon)
                                       .svg(
                                         width: 15.sp,
                                         colorFilter: ColorFilter.mode(
@@ -119,7 +125,10 @@ class _ProductItemState extends State<ProductItem> {
                     Align(
                       alignment: AlignmentDirectional.bottomEnd,
                       child: Padding(
-                        padding: EdgeInsetsDirectional.only(bottom: con.maxHeight*0.25,end: con.maxWidth*0.03),
+                        padding: EdgeInsetsDirectional.only(
+                          bottom: con.maxHeight * 0.25,
+                          end: con.maxWidth * 0.03,
+                        ),
                         child: Transform.rotate(
                           angle: -0.2,
                           child: Container(
@@ -128,7 +137,9 @@ class _ProductItemState extends State<ProductItem> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: colors.secondaryContainer.withValues(alpha: 0.8),
+                              color: colors.secondaryContainer.withValues(
+                                alpha: 0.8,
+                              ),
                               borderRadius: AppBorderRadius.brCircular6,
                             ),
                             child: AutoSizeText(
@@ -146,13 +157,13 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ],
                 );
-              }
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: LayoutBuilder(
-              builder: (context,con) {
+              builder: (context, con) {
                 final widthCon = con.maxWidth;
                 final heightCon = con.maxHeight;
                 return Column(
@@ -160,16 +171,18 @@ class _ProductItemState extends State<ProductItem> {
                   spacing: 10,
                   children: [
                     Row(
-                      spacing: widthCon*0.02,
+                      spacing: widthCon * 0.02,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Assets.media.images.svg.starRate.svg(width: widthCon*0.1),
+                        Assets.media.images.svg.starRate.svg(
+                          width: widthCon * 0.1,
+                        ),
                         Expanded(
                           child: AutoSizeText(
                             '4.7',
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.onSecondary,
-                              fontSize: widthCon*0.1
+                              fontSize: widthCon * 0.1,
                             ),
                           ),
                         ),
@@ -180,8 +193,8 @@ class _ProductItemState extends State<ProductItem> {
                                 curve: Curves.linear,
                                 onEnd: () {},
                                 child: SizedBox(
-                                  width: widthCon*0.6,
-                                  height: widthCon*0.2,
+                                  width: widthCon * 0.6,
+                                  height: widthCon * 0.2,
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: AddToCartCounterWidget(
@@ -212,9 +225,11 @@ class _ProductItemState extends State<ProductItem> {
                                   setState(() {});
                                 },
                                 child: FittedBox(
-                                  fit : BoxFit.scaleDown,
+                                  fit: BoxFit.scaleDown,
                                   child: AddToCartButton(
-                                    text: counter < 1 ? '+' : counter.toString(),
+                                    text: counter < 1
+                                        ? '+'
+                                        : counter.toString(),
                                     onEnd: () {
                                       startTimer();
                                       if (counter < 1) counter++;
@@ -228,7 +243,7 @@ class _ProductItemState extends State<ProductItem> {
                       ],
                     ),
                     Row(
-                      spacing: widthCon*0.2,
+                      spacing: widthCon * 0.2,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
@@ -253,14 +268,14 @@ class _ProductItemState extends State<ProductItem> {
                                 't-shirt',
                                 style: AppTextStyles.style12SemiBold.copyWith(
                                   color: colors.onSecondary,
-                                  fontSize: widthCon*0.1,
+                                  fontSize: widthCon * 0.1,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         CircularBrandLogo(
-                          radius: widthCon*0.12,
+                          radius: widthCon * 0.12,
                           logoUrl:
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
@@ -268,7 +283,7 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ],
                 );
-              }
+              },
             ),
           ),
         ],
