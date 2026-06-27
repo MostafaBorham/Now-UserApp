@@ -17,7 +17,7 @@ class AppWavedScaffold extends StatelessWidget {
     required this.body,
     required this.appBarTitle,
     this.appBarActions,
-    this.canPop = false,
+    this.canPop,
   });
   final String appBarTitle;
   final List<Widget>? appBarActions;
@@ -49,7 +49,7 @@ class AppWavedScaffold extends StatelessWidget {
                   Expanded(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: canPop == true
+                      child: canPop?? Navigator.canPop(context)
                           ? InkWell(
                               onTap: () => Navigator.pop(context),
                               child: CircleAvatar(
@@ -69,14 +69,16 @@ class AppWavedScaffold extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text(
-                      appBarTitle,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.style24SemiBold.copyWith(
-                        color: colors.onSecondary,
-                        fontSize: screenSize.width*0.06
+                    child: FittedBox(
+                      child: Text(
+                        appBarTitle,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.style24SemiBold.copyWith(
+                          color: colors.onSecondary,
+                          // fontSize: screenSize.width*0.06
+                        ),
                       ),
                     ),
                   ),

@@ -33,6 +33,7 @@
   "itemsKey": "منتجات",
   "expiredKey": "منتهي الصلاحية",
   "expiryDateHintKey": "السنة/ الشهر",
+  "searchForBrandKey": "ابحث عن علامة تجارية",
   "imagePickingErrorKey": "حدث خطأ أثناء اختيار الصورة",
   "order": "طلب",
   "profile": "الحساب",

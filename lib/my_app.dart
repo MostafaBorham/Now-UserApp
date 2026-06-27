@@ -25,11 +25,11 @@ class NowUserApp extends StatelessWidget {
       darkTheme: AppThemes.getDarkModeTheme(),
       // locale: ref.watch(localeProvider),
       locale: context.locale,
-      // builder: DevicePreview.appBuilder,
+      builder: DevicePreview.appBuilder,
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       onGenerateRoute: AppRouter.onGenerate,
-      initialRoute: AppRoutes.splashScreen,
+      initialRoute: AppRoutes.topBrandsScreen,
     );
   }
 }

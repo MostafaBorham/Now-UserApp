@@ -18,34 +18,43 @@ class AppSearchField extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textThemes = Theme.of(context).textTheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: AppBorderRadius.brCircular30,
-        boxShadow: AppBoxShadows.blackBottomShadow1,
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: hintText?? LangKeys.searchNowKey.tr(),
-          hintStyle: AppTextStyles.style16Regular.copyWith(
-            color:colors.onPrimaryFixed
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16),
-            child: ReverseWidget(
-              applyReverse: ref.read(localeProvider.notifier).isArabic(),
-              child: Assets.media.images.svg.searchIcon.svg(
+    return AspectRatio(
+      aspectRatio: 7.5,
+      child: LayoutBuilder(
+        builder: (context,con) {
+          return Container(
+            decoration: BoxDecoration(
+              color: colors.onPrimary,
+              borderRadius: AppBorderRadius.brCircular30,
+              boxShadow: AppBoxShadows.blackBottomShadow1,
+            ),
+            child: Center(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: hintText?? LangKeys.searchNowKey.tr(),
+                  hintStyle: AppTextStyles.style16Regular.copyWith(
+                    color:colors.onPrimaryFixed,
+                    fontSize: con.maxWidth*0.05
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 16),
+                    child: ReverseWidget(
+                      child: Assets.media.images.svg.searchIcon.svg(
+                      ),
+                    ),
+                  ),
+                  prefixIconConstraints: BoxConstraints(
+                    maxHeight: 25.w,
+                    minWidth: 25.w,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(8
+                  ),
+                ),
               ),
             ),
-          ),
-          prefixIconConstraints: BoxConstraints(
-            maxHeight: 25.w,
-            minWidth: 25.w,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.all(8
-          ),
-        ),
+          );
+        }
       ),
     );
   }

@@ -30,6 +30,7 @@
   "expiryDateHintKey": "MM/YY",
   "expiredKey": "Expired",
   "searchForAStore": "Search For A Store",
+  "searchForBrandKey": "Search for a brand",
   "home": "Home",
   "orders": "Orders",
   "order": "Order",

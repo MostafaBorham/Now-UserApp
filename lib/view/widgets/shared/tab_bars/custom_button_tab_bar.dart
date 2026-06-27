@@ -51,58 +51,65 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Column(
-      spacing: 16,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 5,
+    return LayoutBuilder(
+      builder: (context,con) {
+        return Column(
+          spacing: 16,
           children: [
-            TabBar(
-              controller: _controller,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              indicator: const BoxDecoration(),
-              dividerHeight: 0,
-              splashFactory: NoSplash.splashFactory,
-              dividerColor: Colors.transparent,
-              overlayColor: WidgetStateProperty.resolveWith(
-                    (states) => Colors.transparent,
-              ),
-              labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
-              tabs: List.generate(widget.tabs.length, (index) {
-                final isSelected = _controller.index == index;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 5,
+              children: [
+                Flexible(
+                  child: TabBar(
+                    controller: _controller,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    indicator: const BoxDecoration(),
+                    dividerHeight: 0,
+                    splashFactory: NoSplash.splashFactory,
+                    dividerColor: Colors.transparent,
+                    overlayColor: WidgetStateProperty.resolveWith(
+                          (states) => Colors.transparent,
+                    ),
+                    labelPadding: EdgeInsets.symmetric(horizontal: 6),
+                    tabs: List.generate(widget.tabs.length, (index) {
+                      final isSelected = _controller.index == index;
 
-                return Tab(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
-                    decoration: BoxDecoration(
-                      borderRadius: AppBorderRadius.brCircular20.r,
-                      color: isSelected
-                          ? widget.selectedTabColor
-                          : widget.unSelectedTabColor,
-                    ),
-                    child: Text(
-                      widget.tabs[index],
-                      maxLines: 1,
-                      style: AppTextStyles.style16Medium.copyWith(
-                        color: isSelected ? widget.selectedLabelColor?? colors.onPrimary : widget.unSelectedLabelColor?? colors.onSecondary,
-                      ),
-                    ),
+                      return Tab(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: AppBorderRadius.brCircular20,
+                            color: isSelected
+                                ? widget.selectedTabColor
+                                : widget.unSelectedTabColor,
+                          ),
+                          child: Text(
+                            widget.tabs[index],
+                            maxLines: 1,
+                            style: AppTextStyles.style16Medium.copyWith(
+                              fontSize: con.maxWidth*0.04,
+                              color: isSelected ? widget.selectedLabelColor?? colors.onPrimary : widget.unSelectedLabelColor?? colors.onSecondary,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                   ),
-                );
-              }),
+                ),
+                widget.filterWidget??0.wSpace,
+              ],
             ),
-            widget.filterWidget??0.wSpace,
+            Expanded(
+              child: TabBarView(
+                controller: _controller, children: widget.views,),
+            ),
           ],
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _controller, children: widget.views,),
-        ),
-      ],
+        );
+      }
     );
   }
 }

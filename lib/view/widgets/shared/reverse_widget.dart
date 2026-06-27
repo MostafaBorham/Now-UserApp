@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/local_controller.dart';
 
 class ReverseWidget extends StatelessWidget {
   const ReverseWidget({
@@ -11,7 +12,7 @@ class ReverseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return applyReverse!? Transform(
+    return applyReverse??context.isRTL? Transform(
       alignment: Alignment.center,
       transform: Matrix4.identity()..scale(-1.0, 1.0),
       child: child,

@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/view/screens/order/file_complaint_screen.da
 import 'package:nowdelivery_user_app/view/screens/order/my_order_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/order_details_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/categories/categories_screen.dart';
+import 'package:nowdelivery_user_app/view/screens/top_brands/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/wallet/wallet_screen.dart';
 
 import '../../view/screens/splash/splash_screen.dart';
@@ -51,6 +52,10 @@ abstract class AppRouter {
       case AppRoutes.fileComplaintScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const FileComplaintScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.topBrandsScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const TopBrandsScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

@@ -40,6 +40,7 @@ abstract class LangKeys {
   static const String deliveredOnKey = 'deliveredOnKey';
   static const String itemsKey = 'itemsKey';
   static const String imagePickingErrorKey = 'imagePickingErrorKey';
+  static const String searchForBrandKey = 'searchForBrandKey';
 
   // Home
   static const String shopNowKey = 'shopNow';
