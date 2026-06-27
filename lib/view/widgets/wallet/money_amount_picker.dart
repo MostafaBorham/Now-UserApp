@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
@@ -61,7 +63,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Top-up Amount',
+          LangKeys.topUpAmountKey.tr(),
           style: AppTextStyles.style14Medium.copyWith(
             color: colors.onSecondary,
           ),
@@ -141,7 +143,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                   borderRadius: AppBorderRadius.brCircular20,
                 ),
                 child: Text(
-                  'Other',
+                  LangKeys.otherKey.tr(),
                   style: AppTextStyles.style12Regular.copyWith(
                     color: isOtherSelected
                         ? colors.onPrimary
@@ -174,7 +176,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                           _updateSelectedValue(newValue);
                         },
                         decoration: InputDecoration(
-                          hintText: 'Enter amount',
+                          hintText: LangKeys.enterAmountKey.tr(),
                           hintStyle: AppTextStyles.style14Regular.copyWith(
                             color: colors.onSurface.withValues(alpha: 0.3),
                           ),
@@ -193,7 +195,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Maximum',
+                          LangKeys.maximumKey.tr(),
                           style: AppTextStyles.style14Regular.copyWith(
                             color: colors.onSurface,
                           ),

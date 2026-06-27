@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
@@ -19,18 +21,18 @@ class ServerConnectionErrorWidget extends StatelessWidget {
         children: [
           Assets.media.images.svg.serverFailIcon.svg(width: 300.w),
           AutoSizeText(
-            'Server connection failed',
+            LangKeys.serverConnectionFailedKey.tr(),
             style: AppTextStyles.style24Bold.copyWith(
               color: colors.onSecondary,
             ),
           ),
           AutoSizeText(
-            'Unable to reach the servers. Please check your internet connection and try again.',
+            LangKeys.unableToReachServersKey.tr(),
             textAlign: TextAlign.center,
             style: AppTextStyles.style16Regular,
           ),
                 15.hSpace,
-                PrimaryAppPrefixIconButton(title: 'Retry',onTap: () {
+                PrimaryAppPrefixIconButton(title: LangKeys.retryKey.tr(),onTap: () {
 
           },prefixIcon: Assets.media.images.svg.retryIcon.svg(colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn)),)
         ],

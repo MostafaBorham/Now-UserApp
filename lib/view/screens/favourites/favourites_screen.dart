@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/favourites/favourite_store_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
@@ -11,11 +13,11 @@ class FavouritesScreen extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return AppWavedScaffold(
       body: AppTabBar(
-        tabs: ['Products', 'Stores'],
+        tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
         views: [FavouriteProductTabView(), FavouriteStoreTabView()],
         selectedTabColor: colors.primary,
       ),
-      appBarTitle: 'Favourite',
+      appBarTitle: LangKeys.favouriteKey.tr(),
       canPop: Navigator.canPop(context),
     );
   }

@@ -75,7 +75,7 @@ class OnBoardingContentView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'That suit',
+                            LangKeys.thatSuitKey.tr(),
                             style: AppTextStyles.style24SemiBold.copyWith(
                               height: 1,
                               foreground: Paint()
@@ -104,7 +104,7 @@ class OnBoardingContentView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'you',
+                            LangKeys.youKey.tr(),
                             style: AppTextStyles.style24SemiBold.copyWith(
                               height: 1,
                               color: colors.primary,
@@ -150,7 +150,7 @@ class OnBoardingContentView extends StatelessWidget {
           AspectRatio(
             aspectRatio: 7.5,
             child: UnPrimaryGradientAppButton(
-              title: 'Continue as Guest',
+              title: LangKeys.continueAsGuestKey.tr(),
               onTap: () {
                 Navigator.pushReplacementNamed(
                   context,

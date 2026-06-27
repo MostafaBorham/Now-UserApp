@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/best_nearby_stores_list_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
@@ -22,7 +24,7 @@ class BestNearbyStoresSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
-          AutoSizeText('Top Nearby Stores',style: AppTextStyles.style20SemiBold.copyWith(
+          AutoSizeText(LangKeys.topNearbyStoresKey.tr(),style: AppTextStyles.style20SemiBold.copyWith(
               color: colors.onTertiaryFixed
           ),),
           Expanded(

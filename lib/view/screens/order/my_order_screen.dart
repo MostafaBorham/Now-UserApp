@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
@@ -32,7 +34,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         },
         itemCount: 5,
       ),
-      appBarTitle: 'My Orders',
+      appBarTitle: LangKeys.myOrdersKey.tr(),
     );
     return Container(
       width: double.infinity,
@@ -48,7 +50,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         spacing: 20,
         children: [
           AutoSizeText(
-            'My Orders',
+            LangKeys.myOrdersKey.tr(),
             style: AppTextStyles.style24SemiBold.copyWith(
               color: colors.onSecondary,
             ),

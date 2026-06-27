@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
@@ -69,7 +71,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                   Expanded(
                     child: _NavItem(
                       isSelected: _currentIndex == 0,
-                      label: 'Home',
+                      label: LangKeys.homeKey.tr(),
                       selectedColor: colors.primary,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(0),
@@ -93,7 +95,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                                 ),
                           const SizedBox(height: 5),
                           Text(
-                            'Home',
+                            LangKeys.homeKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: _currentIndex == 0
                                   ? colors.secondary
@@ -108,7 +110,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                   Expanded(
                     child: _NavItem(
                       isSelected: _currentIndex == 1,
-                      label: 'Favourite',
+                      label: LangKeys.favouriteKey.tr(),
                       selectedColor: colors.primary,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(1),
@@ -132,7 +134,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                                 ),
                           const SizedBox(height: 5),
                           Text(
-                            'Favourite',
+                            LangKeys.favouriteKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: _currentIndex == 1
                                   ? colors.secondary
@@ -175,7 +177,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                   Expanded(
                     child: _NavItem(
                       isSelected: _currentIndex == 2,
-                      label: 'Orders',
+                      label: LangKeys.ordersKey.tr(),
                       selectedColor: colors.secondary,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(2),
@@ -199,7 +201,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                                 ),
                           const SizedBox(height: 5),
                           Text(
-                            'Orders',
+                            LangKeys.ordersKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: _currentIndex == 2
                                   ? colors.secondary
@@ -214,7 +216,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                   Expanded(
                     child: _NavItem(
                       isSelected: _currentIndex == 3,
-                      label: 'Profile',
+                      label: LangKeys.profileKey.tr(),
                       selectedColor: colors.secondary,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(3),
@@ -238,7 +240,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                                 ),
                           const SizedBox(height: 5),
                           Text(
-                            'Profile',
+                            LangKeys.profileKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: _currentIndex == 3
                                   ? colors.secondary

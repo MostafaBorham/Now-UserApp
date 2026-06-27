@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
@@ -57,7 +59,7 @@ class WalletCardWidget extends StatelessWidget {
                     ),
                     FittedBox(
                       child: Text(
-                        'Now Credit',
+                        LangKeys.nowCreditKey.tr(),
                         style: AppTextStyles.style14Medium.copyWith(
                           color: colors.onPrimary,
                         ),

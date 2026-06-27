@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Order Number',
+                          LangKeys.orderNumberKey.tr(),
                           style: AppTextStyles.style12Medium.copyWith(
                             color: colors.onSurface,
                           ),
@@ -95,7 +96,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       borderRadius: AppBorderRadius.brCircular20.r,
                     ),
                     child: Text(
-                      'Delivered',
+                      LangKeys.deliveredKey.tr(),
                       style: AppTextStyles.style12Medium.copyWith(
                         color: colors.primary,
                       ),
@@ -175,7 +176,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'General Information',
+                      LangKeys.generalInformationKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -194,7 +195,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Order Number',
+                                  LangKeys.orderNumberKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSurface,
                                   ),
@@ -213,7 +214,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Order Date',
+                                  LangKeys.orderDateKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSurface,
                                   ),
@@ -232,7 +233,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Payment Method',
+                                  LangKeys.paymentMethodKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSurface,
                                   ),
@@ -251,7 +252,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Product',
+                                  LangKeys.productKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSurface,
                                   ),
@@ -284,7 +285,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Item Information',
+                      LangKeys.itemInformationKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -373,7 +374,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Delivery Details',
+                      LangKeys.deliveryDetailsKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -415,7 +416,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'From',
+                                      LangKeys.fromKey.tr(),
                                       style: AppTextStyles.style12Medium
                                           .copyWith(color: colors.onSecondary),
                                     ),
@@ -466,7 +467,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'To',
+                                      LangKeys.toKey.tr(),
                                       style: AppTextStyles.style12Medium
                                           .copyWith(color: colors.onSecondary),
                                     ),
@@ -490,7 +491,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               PrimaryButton(
-                title: 'Submit a complaint',
+                title: LangKeys.submitAComplaintKey.tr(),
                 onTap: () =>
                     Navigator.pushNamed(context, AppRoutes.fileComplaintScreen),
               ),
@@ -603,7 +604,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Payment Method',
+                      LangKeys.paymentMethodKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -685,7 +686,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   spacing: 12,
                   children: [
                     Text(
-                      'Invoice Summary',
+                      LangKeys.invoiceSummaryKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -704,7 +705,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Subtotal',
+                                  LangKeys.subtotalKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -736,7 +737,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'VAT (5%)',
+                                  LangKeys.vatFivePercentKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -768,7 +769,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Delivery Fees',
+                                  LangKeys.deliveryFeesKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -800,7 +801,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Discount',
+                                  LangKeys.discountLabelKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -833,7 +834,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Total',
+                                  LangKeys.totalKey.tr(),
                                   style: AppTextStyles.style14SemiBold.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -864,14 +865,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         ],
                       ),
                     ),
-                    PrimaryAppButton(title: 'Print Invoice'),
+                    PrimaryAppButton(title: LangKeys.printInvoiceKey.tr()),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        appBarTitle: 'Order Details',
+        appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
         appBarActions: [
           CircleAvatar(

@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/enums/online_card_types.dart';
 import 'package:nowdelivery_user_app/common/params/online_card_params.dart';
@@ -35,7 +37,7 @@ class _AddCardViewState extends State<AddCardView> {
             spacing: 10,
             children: [
               AutoSizeText(
-                'Add Card',
+                LangKeys.addCardKey.tr(),
                 style: AppTextStyles.style18Medium.copyWith(
                   color: colors.onSecondary,
                 ),
@@ -47,7 +49,7 @@ class _AddCardViewState extends State<AddCardView> {
           ),
           Expanded(child: AddCardForm()),
           2.hSpace,
-          PrimaryAppButton(title: 'Add New Card',)
+          PrimaryAppButton(title: LangKeys.addNewCardKey.tr(),)
         ],
       ),
     );

@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/categories_product_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/categories/categories_store_tab_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
@@ -15,11 +17,11 @@ class CategoryDetailsScreen extends StatelessWidget {
     return Scaffold(
       body: AppWavedScaffold(
         body: AppTabBar(
-          tabs: ['Products', 'Stores'],
+          tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
           views: [CategoriesProductTabView(), CategoriesStoreTabView()],
           selectedTabColor: colors.primary,
         ),
-        appBarTitle: 'Offers',
+        appBarTitle: LangKeys.offersKey.tr(),
         canPop: Navigator.canPop(context),
       ),
     );
