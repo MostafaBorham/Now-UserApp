@@ -51,15 +51,17 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
       width: widget.width,
       height: widget.height,
       child: LiquidGlassLens(
-        style: const LiquidGlassStyle(
-          shape: LiquidGlassShape.squircle(cornerRadius: 36,),
+        style: LiquidGlassStyle(
+          shape: LiquidGlassShape.squircle(cornerRadius: 36,borderType: OpticalBorder(
+            borderSolidity: 5,
+          ),lightDirection: 20,lightColor: colors.onPrimary),
         ),
         child: Container(
           padding: const EdgeInsets.all(4),
           child: Row(
             children: [
               SizedBox(
-                width: 28,
+                width: widget.width*0.2,
                 child: Center(
                   child: Assets.media.images.svg.languageIcon.svg(
                     colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn)

@@ -7,7 +7,6 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/widgets/onboarding/app_language_toggle_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/onboarding/onboarding_content_view.dart';
 
-
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
 
@@ -19,7 +18,10 @@ class OnBoardingScreen extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          image: DecorationImage(image: Svg(Assets.media.images.svg.onboardingBackground.path),fit: BoxFit.cover)
+          image: DecorationImage(
+            image: Svg(Assets.media.images.svg.onboardingBackground.path),
+            fit: BoxFit.cover,
+          ),
         ),
         child: SafeArea(
           bottom: false,
@@ -29,16 +31,15 @@ class OnBoardingScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Center(
-                      child: Assets.media.images.png.onboardingImg.image(
-                      ),
+                      child: Assets.media.images.png.onboardingImg.image(),
                     ),
                   ),
-                  OnBoardingContentView()
+                  OnBoardingContentView(),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-               /*child: LiquidGlassLens(
+                /*child: LiquidGlassLens(
                  style: const LiquidGlassStyle(
                    shape: LiquidGlassShape.squircle(cornerRadius: 44),
                    refraction: LiquidGlassRefraction(
@@ -48,7 +49,7 @@ class OnBoardingScreen extends StatelessWidget {
                  ),
                  child: const Center(child: Text('Liquid Glass')),
                ),*/
-               /* child: SizedBox(
+                /* child: SizedBox(
                   width: MediaQuery.sizeOf(context).width*0.4,
                   height: MediaQuery.sizeOf(context).width*0.1,
                   child: LiquidGlassLens(
@@ -59,6 +60,8 @@ class OnBoardingScreen extends StatelessWidget {
                   ),
                 ),*/
                 child: AppLanguageToggleWidget(
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  height: MediaQuery.of(context).size.width * 0.1,
                   initialLanguage: AppLanguage.en,
                   onChanged: (lang) {
                     if (lang == AppLanguage.en) {
@@ -68,7 +71,7 @@ class OnBoardingScreen extends StatelessWidget {
                     }
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
