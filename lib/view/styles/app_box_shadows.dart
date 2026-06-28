@@ -36,4 +36,11 @@ class AppBoxShadows {
     blurRadius: 16,
     spreadRadius: 0,
   )];
+
+  static final List<BoxShadow> greyElevation3 = [BoxShadow(
+    color: const Color(0x0F000000), // #0000000F (black 6%)
+    offset: const Offset(0, 2),
+    blurRadius: 8,
+    spreadRadius: 0,
+  )];
 }

@@ -4,9 +4,6 @@ import 'package:nowdelivery_user_app/view/assets/fonts.gen.dart';
 abstract class AppThemes {
   static ThemeData getLightModeTheme() => ThemeData(
     fontFamily: FontFamily.ibmPlexSans,
-    primaryTextTheme: TextTheme(
-
-    ),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Color(0xff4BB749),

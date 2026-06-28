@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/view/widgets/most_popular/all_most_popular_filter_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/most_popular/most_popular_filter_view.dart';
 import 'package:nowdelivery_user_app/view/widgets/most_popular/most_popular_slider_item.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/sliders/app_slider.dart';
@@ -23,12 +25,12 @@ class MostPopularScreen extends StatelessWidget {
           spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSlider(
+          /*  AppSlider(
               itemAspectRatio: 0.9,
               sliderItem: MostPopularSliderItem(),
               activeDotColor: colors.primaryFixedDim,
               dotColor: colors.inversePrimary.withValues(alpha: 0.5),
-            ),
+            ),*/
             Text(
               context.tr(LangKeys.filtersKey),
               style: AppTextStyles.style14SemiBold.copyWith(
@@ -37,12 +39,12 @@ class MostPopularScreen extends StatelessWidget {
             ),
             Expanded(
               child: CustomButtonTabBar(
-                tabs: ['All', 'Devices','sddssdsd','aaaaaaa'],
+                tabs: ['All', 'Perfumes','Shoes','Devices'],
                 views: [
-                  TopBrandsView(),
-                  TopBrandsView(),
-                  TopBrandsView(),
-                  TopBrandsView(),
+                  AllMostPopularFilterView(),
+                  MostPopularFilterView(filterName: 'Perfumes'),
+                  MostPopularFilterView(filterName: 'Shoes'),
+                  MostPopularFilterView(filterName: 'Devices'),
                 ],
                 selectedTabColor: colors.secondary.withValues(alpha: 0.8),
                 unSelectedTabColor: colors.inversePrimary.withValues(alpha: 0.2),

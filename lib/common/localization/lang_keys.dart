@@ -20,6 +20,7 @@ abstract class LangKeys {
   static const String exclusiveKey = 'exclusive';
   static const String addToCartKey = 'addToCart';
   static const String soldKey = 'sold';
+  static const String hotKey = 'hot';
 
   // Categories & favourites
   static const String productsKey = 'products';
