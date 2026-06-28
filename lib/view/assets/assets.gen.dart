@@ -191,6 +191,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get addToCartBtn =>
       const SvgGenImage('assets/media/images/svg/add-to-cart-btn.svg');
 
+  /// File path: assets/media/images/svg/add-to-cart-icon.svg
+  SvgGenImage get addToCartIcon =>
+      const SvgGenImage('assets/media/images/svg/add-to-cart-icon.svg');
+
   /// File path: assets/media/images/svg/alert-error-icon.svg
   SvgGenImage get alertErrorIcon =>
       const SvgGenImage('assets/media/images/svg/alert-error-icon.svg');
@@ -332,6 +336,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get ordersIcon =>
       const SvgGenImage('assets/media/images/svg/orders-icon.svg');
 
+  /// File path: assets/media/images/svg/rank-icon.svg
+  SvgGenImage get rankIcon =>
+      const SvgGenImage('assets/media/images/svg/rank-icon.svg');
+
   /// File path: assets/media/images/svg/real-saudi-currency.svg
   SvgGenImage get realSaudiCurrency =>
       const SvgGenImage('assets/media/images/svg/real-saudi-currency.svg');
@@ -391,6 +399,7 @@ class $AssetsMediaImagesSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     addToCartBtn,
+    addToCartIcon,
     alertErrorIcon,
     alertIcon,
     appOrangeLogo,
@@ -426,6 +435,7 @@ class $AssetsMediaImagesSvgGen {
     orderIcon,
     orderStarRate,
     ordersIcon,
+    rankIcon,
     realSaudiCurrency,
     retryIcon,
     searchIcon,

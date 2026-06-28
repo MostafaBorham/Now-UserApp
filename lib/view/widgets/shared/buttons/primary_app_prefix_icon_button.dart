@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 
 class PrimaryAppPrefixIconButton extends StatelessWidget {
-  const PrimaryAppPrefixIconButton({super.key, required this.title, this.onTap, this.buttonPadding = 12, this.prefixIcon,});
+  const PrimaryAppPrefixIconButton({super.key, required this.title, this.onTap, this.buttonPadding = 12, this.prefixIcon, this.buttonColor, this.buttonRadius,});
 
   final String title;
   final GestureTapCallback? onTap;
   final double? buttonPadding;
+  final double? buttonRadius;
   final Widget? prefixIcon;
+  final Color? buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,8 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-            color: colors.primary,
-            borderRadius: BorderRadius.circular(8),
+            color: buttonColor?? colors.primary,
+            borderRadius: BorderRadius.circular(buttonRadius??8),
             border: Border.all(
                 color:  Colors.transparent,
                 width: 2

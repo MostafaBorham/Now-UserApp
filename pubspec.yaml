@@ -39,6 +39,7 @@ dependencies:
   shimmer: ^3.0.0
   image_picker: ^1.2.2
   liquid_glass_easy: ^3.0.0
+  font_awesome_flutter: ^11.0.0
 
 dev_dependencies:
   flutter_test:

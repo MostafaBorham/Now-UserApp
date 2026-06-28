@@ -9,10 +9,12 @@ import 'package:nowdelivery_user_app/view/styles/app_borders.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class AppSlider extends ConsumerWidget {
-  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItem});
+  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItem, this.sliderSpace = 8, this.itemAspectRatio =1});
   final Color? activeDotColor;
   final Color? dotColor;
   final Widget sliderItem;
+  final double? sliderSpace;
+  final double? itemAspectRatio;
   final HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -24,14 +26,17 @@ class AppSlider extends ConsumerWidget {
         CarouselSlider.builder(
           itemCount: 4,
           itemBuilder: (_, index, _) {
-            return sliderItem;
+            return Padding(
+              padding: EdgeInsets.all(sliderSpace!),
+              child: sliderItem,
+            );
           },
           options: CarouselOptions(
-            height: 150.h,
-            viewportFraction: 0.9,
+            // height: 150.h,
             enlargeCenterPage: false,
             autoPlay: true,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
+            aspectRatio: itemAspectRatio!,
+            viewportFraction: 0.9,
             onPageChanged: (index, _) {
               ref.read(_homeController.sliderIndexProvider.notifier).state = index;
             },

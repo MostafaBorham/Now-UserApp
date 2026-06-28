@@ -77,7 +77,7 @@ class AppCachedNetworkImage extends StatelessWidget {
           height: height,
           child: Image(
             image: imageProvider,
-            fit: BoxFit.contain,
+            fit: fit,
           ),
         ),
       ),
@@ -89,12 +89,12 @@ class AppCachedNetworkImage extends StatelessWidget {
             return Shimmer.fromColors(
               baseColor: colors.onSurface.withValues(alpha: 0.6),
               highlightColor: colors.onSurface.withValues(alpha: 0.3),
-              child: Container(width: double.infinity, color: colors.onPrimary),
+              child: Container(width: double.infinity,height: double.infinity, color: colors.onPrimary),
             );
         }
       },
       errorWidget: (_, _, _) =>
-          Assets.media.images.svg.noImagePlaceholder.svg(fit: BoxFit.cover),
+          Assets.media.images.svg.noImagePlaceholder.svg(fit: BoxFit.cover,height: double.infinity,width: double.infinity),
     );
   }
 }
