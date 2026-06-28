@@ -14,12 +14,13 @@ import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/components/field_input_borders.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/view/styles/app_borders.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/logos/app_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_all_stores_section.dart';
-import 'package:nowdelivery_user_app/view/widgets/home/home_banner_slider.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_categories_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/home_offers_section.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
@@ -155,7 +156,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ],
                   ),
                   AppSearchField(),
-                  HomeBannerSlider(),
+                  AppSlider(sliderItem: Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    height: 100.h,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    decoration: BoxDecoration(
+                        borderRadius: AppBorderRadius.brCircular16
+                    ),
+                    child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          width: double.infinity,
+                          height: 100.h,
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          decoration: BoxDecoration(
+                              borderRadius: AppBorderRadius.brCircular16,
+                              color: colors.onPrimary,
+                              border: AppBorders.b1(colors.inversePrimary)
+                          ),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: colors.primary,
+                            ),
+                          ),
+                        ),
+                        imageUrl: 'https://img.magnific.com/free-vector/stylish-big-sale-event-banner-buy-save-upto-50-percent_1017-59087.jpg?semt=ais_hybrid&w=740&q=80'),
+                  ),),
                 ],
               ),
             ),

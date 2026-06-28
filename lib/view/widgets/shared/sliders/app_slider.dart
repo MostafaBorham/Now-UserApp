@@ -8,9 +8,11 @@ import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/app_borders.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomeBannerSlider extends ConsumerWidget {
-  HomeBannerSlider({super.key});
-
+class AppSlider extends ConsumerWidget {
+  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItem});
+  final Color? activeDotColor;
+  final Color? dotColor;
+  final Widget sliderItem;
   final HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -22,33 +24,7 @@ class HomeBannerSlider extends ConsumerWidget {
         CarouselSlider.builder(
           itemCount: 4,
           itemBuilder: (_, index, _) {
-            return Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              height: 100.h,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              decoration: BoxDecoration(
-                borderRadius: AppBorderRadius.brCircular16
-              ),
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    width: double.infinity,
-                    height: 100.h,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    decoration: BoxDecoration(
-                        borderRadius: AppBorderRadius.brCircular16,
-                      color: colors.onPrimary,
-                      border: AppBorders.b1(colors.inversePrimary)
-                    ),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: colors.primary,
-                      ),
-                    ),
-                  ),
-                  imageUrl: 'https://img.magnific.com/free-vector/stylish-big-sale-event-banner-buy-save-upto-50-percent_1017-59087.jpg?semt=ais_hybrid&w=740&q=80'),
-            );
+            return sliderItem;
           },
           options: CarouselOptions(
             height: 150.h,
@@ -67,8 +43,8 @@ class HomeBannerSlider extends ConsumerWidget {
           effect: WormEffect(
             dotHeight: 10.h,
             dotWidth: 10.w,
-            activeDotColor: colors.primary,
-            dotColor: colors.onTertiary,
+            activeDotColor: activeDotColor?? colors.primary,
+            dotColor: dotColor?? colors.onTertiary,
           ),
         )
       ],
