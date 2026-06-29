@@ -52,6 +52,7 @@ abstract class LangKeys {
   static const String shopNowKey = 'shopNow';
   static const String topNearbyStoresKey = 'topNearbyStores';
   static const String dontMissTheseOffersKey = 'dontMissTheseOffers';
+  static const String offersYouCannotWaitForKey = 'offersYouCannotWaitFor';
 
   // Onboarding
   static const String thatSuitKey = 'thatSuit';

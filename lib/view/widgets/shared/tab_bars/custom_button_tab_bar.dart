@@ -66,6 +66,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     controller: _controller,
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
+                    padding: EdgeInsets.zero,
                     indicator: const BoxDecoration(),
                     dividerHeight: 0,
                     splashFactory: NoSplash.splashFactory,

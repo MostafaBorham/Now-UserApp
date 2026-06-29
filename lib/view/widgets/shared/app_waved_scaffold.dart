@@ -70,6 +70,7 @@ class AppWavedScaffold extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Text(
                         appBarTitle,
                         textAlign: TextAlign.center,
@@ -111,7 +112,7 @@ class AppWavedScaffold extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
+                      horizontal: 16,
                       vertical: 50.0,
                     ).copyWith(
                       bottom: 0

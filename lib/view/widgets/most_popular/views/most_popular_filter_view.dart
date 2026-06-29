@@ -24,7 +24,7 @@ class MostPopularFilterView extends StatelessWidget {
         SliverList.separated(
           itemCount: 4,
           itemBuilder: (context, index) => AspectRatio(
-              aspectRatio: 2.2,
+              aspectRatio: 2.1,
               child: const MostPopularItemCard()),
           separatorBuilder: (context, index) => 10.hSpace,
         ),

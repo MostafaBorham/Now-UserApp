@@ -2,9 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../assets/assets.gen.dart';
-import '../../styles/app_border_radius.dart';
-import '../../styles/text_styles.dart';
+import '../../../../assets/assets.gen.dart';
+import '../../../../styles/app_border_radius.dart';
+import '../../../../styles/text_styles.dart';
 
 class AddToCartCounterWidget extends StatelessWidget {
   const AddToCartCounterWidget({super.key, required this.counter, this.onInc, this.onDec, this.onDelete});

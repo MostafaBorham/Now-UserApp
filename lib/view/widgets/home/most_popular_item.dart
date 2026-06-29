@@ -8,13 +8,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/home/add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/clippers/card_clipper.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
-import 'add_to_cart_counter_widget.dart';
+import '../shared/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
 import '../shared/previous_price_with_currency.dart';
 
 class MostPopularItem extends StatefulWidget {

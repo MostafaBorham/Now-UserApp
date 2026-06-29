@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/view/screens/favourites/favourites_screen.d
 import 'package:nowdelivery_user_app/view/screens/home/home_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/main/main_layout_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/most_popular/most_popular_screen.dart';
+import 'package:nowdelivery_user_app/view/screens/offers_cannot_wait/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/onboarding/on_boarding_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/file_complaint_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/my_order_screen.dart';
@@ -61,6 +62,10 @@ abstract class AppRouter {
       case AppRoutes.mostPopularScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const MostPopularScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.offersCannotWaitScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const OffersCannotWaitScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

@@ -2,9 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../assets/assets.gen.dart';
-import '../../styles/text_styles.dart';
-import '../shared/reverse_widget.dart';
+import '../../../../assets/assets.gen.dart';
+import '../../../../styles/text_styles.dart';
+import '../../reverse_widget.dart';
 
 class AddToCartButton extends StatelessWidget {
   const AddToCartButton({super.key, this.onEnd, this.isRotate = false, this.text = '+'});

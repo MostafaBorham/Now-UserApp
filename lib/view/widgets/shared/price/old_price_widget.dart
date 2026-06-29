@@ -16,45 +16,46 @@ class OldPriceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textThemes = Theme.of(context).textTheme;
-    return SizedBox(
-      width: (size??14)*3,
-      child: Stack(
-        children: [
-          Row(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             textDirection: TextDirection.ltr,
-            spacing: 5,
-            mainAxisSize: .min,
+            spacing: 3,
             children: [
               Assets.media.images.svg.realSaudiCurrency.svg(
-                width: size?? 14,
-                height: size?? 14,
+                width: size ?? 14,
+                height: size ?? 14,
                 fit: BoxFit.contain,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
-              AutoSizeText(price,style: AppTextStyles.style14Medium.copyWith(
+              AutoSizeText(
+                price,
+                style: AppTextStyles.style14Medium.copyWith(
                   color: color,
                   height: 1,
-              ),),
-
-            ],
-          ),
-
-
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Center(
-                child: Transform.rotate(
-                  angle: -0.3,
-                  child: Container(
-                    height: 2,
-                    color: colors.inversePrimary,
-                  ),
+                  fontSize: size,
                 ),
               ),
+            ],
+          ),
+        ),
+
+        Positioned.fill(
+          child: Center(
+            child: Transform.rotate(
+              angle: -0.3,
+              child: Container(
+                height: 2,
+                color: colors.inversePrimary,
+              ),
             ),
-          )
-       ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -29,6 +29,7 @@ class NewPriceWidget extends StatelessWidget {
         ),
         AutoSizeText(price,style: AppTextStyles.style28SemiBold.copyWith(
           color: color,
+          fontSize: size,
           height: 1,
         ),),
 

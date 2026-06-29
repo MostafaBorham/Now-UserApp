@@ -42,7 +42,7 @@ class MostPopularScreen extends StatelessWidget {
               ),
               Expanded(
                 child: CustomButtonTabBar(
-                  tabs: [LangKeys.allKey.tr(), 'Perfumes','Shoes','Devices'],
+                  tabs: [LangKeys.allKey.tr(), 'Perfumes', 'Shoes', 'Devices'],
                   views: [
                     AllMostPopularFilterView(),
                     MostPopularFilterView(filterName: 'Perfumes'),
@@ -50,7 +50,9 @@ class MostPopularScreen extends StatelessWidget {
                     MostPopularFilterView(filterName: 'Devices'),
                   ],
                   selectedTabColor: colors.secondary.withValues(alpha: 0.8),
-                  unSelectedTabColor: colors.inversePrimary.withValues(alpha: 0.2),
+                  unSelectedTabColor: colors.inversePrimary.withValues(
+                    alpha: 0.2,
+                  ),
                   selectedLabelColor: colors.onSecondary,
                   unSelectedLabelColor: colors.onSecondary,
                 ),

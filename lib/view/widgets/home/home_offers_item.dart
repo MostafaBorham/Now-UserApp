@@ -11,8 +11,8 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
 
-import 'add_to_cart_button.dart';
-import 'add_to_cart_counter_widget.dart';
+import '../shared/buttons/primary_item_quantity_button/add_to_cart_button.dart';
+import '../shared/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
 import '../shared/price_with_currency.dart';
 import '../shared/previous_price_with_currency.dart';
 
