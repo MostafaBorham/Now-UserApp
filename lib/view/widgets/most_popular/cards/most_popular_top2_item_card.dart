@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
@@ -9,7 +9,8 @@ import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/effects/white_gradient_overlay_effect.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/old_price_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
 
 /// A compact horizontal product card used inside the "Most Popular" filters list.
@@ -63,27 +64,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Assets.media.images.svg.realSaudiCurrency.svg(
-                                fit: BoxFit.contain,
-                                width: 16,
-                                colorFilter: ColorFilter.mode(
-                                  colors.onSecondaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              4.wSpace,
-                              Text(
-                                '10',
-                                style: AppTextStyles.style24Bold.copyWith(
-                                  color: colors.onSecondaryContainer,
-                                  height: 1,
-                                ),
-                              ),
-                            ],
-                          ),
+                          NewPriceWidget(color: colors.onSecondaryContainer, price: '10'),
                           OldPriceWidget(color: colors.onSurface, price: '10'),
                         ],
                       ),
@@ -155,6 +136,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
             ),
             child: Text(
+              textDirection: TextDirection.ltr,
               '-22%',
               style: AppTextStyles.style10Medium.copyWith(
                 color: colors.onSecondaryContainer,

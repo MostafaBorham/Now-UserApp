@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as easy;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +10,8 @@ import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/old_price_widget.dart';
 
 /// A compact horizontal product card used inside the "Most Popular" filters list.
 ///
@@ -43,7 +45,7 @@ class MostPopularItemCard extends StatelessWidget {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               child: AppCachedNetworkImage(
                 imageUrl:
-                'https://i.pinimg.com/236x/ea/a7/7c/eaa77cb87594418722bf12af28481fdb.jpg',
+                    'https://i.pinimg.com/236x/ea/a7/7c/eaa77cb87594418722bf12af28481fdb.jpg',
                 fit: BoxFit.cover,
                 height: double.infinity,
                 width: double.infinity,
@@ -128,6 +130,7 @@ class MostPopularItemCard extends StatelessWidget {
                               ),
                             ),
                             Text(
+                              textDirection: TextDirection.ltr,
                               '· 12.4k ${LangKeys.soldKey.tr()}',
                               maxLines: 1,
                               style: AppTextStyles.style12Regular.copyWith(
@@ -137,25 +140,18 @@ class MostPopularItemCard extends StatelessWidget {
                           ],
                         ),
                         Row(
+                          mainAxisSize: .min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          spacing: 5,
                           children: [
-                            Assets.media.images.svg.realSaudiCurrency.svg(
-                              height: 25,
-                              fit: BoxFit.contain,
-                              colorFilter: ColorFilter.mode(
-                                colors.primaryFixedDim,
-                                BlendMode.srcIn,
-                              ),
+                            NewPriceWidget(
+                              color: colors.primaryFixedDim,
+                              price: '10',
                             ),
-                            4.wSpace,
-                            Text(
-                              '10',
-                              style: AppTextStyles.style32SemiBold.copyWith(
-                                color: colors.primaryFixedDim,
-                                height: 1,
-                              ),
+                            OldPriceWidget(
+                              color: colors.onSurface,
+                              price: '10',
                             ),
-                            8.wSpace,
-                            const PreviousPriceWithCurrency(),
                           ],
                         ),
                       ],

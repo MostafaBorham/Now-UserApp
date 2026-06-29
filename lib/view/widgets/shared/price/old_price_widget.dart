@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../assets/assets.gen.dart';
-import '../../styles/text_styles.dart';
-import 'price_cancel_line.dart';
+import '../../../assets/assets.gen.dart';
+import '../../../styles/text_styles.dart';
+import '../price_cancel_line.dart';
 
 class OldPriceWidget extends StatelessWidget {
   const OldPriceWidget({super.key, required this.color, this.size, required this.price});
@@ -21,6 +21,7 @@ class OldPriceWidget extends StatelessWidget {
       child: Stack(
         children: [
           Row(
+            textDirection: TextDirection.ltr,
             spacing: 5,
             mainAxisSize: .min,
             children: [

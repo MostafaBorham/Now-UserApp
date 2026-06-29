@@ -42,7 +42,7 @@ class MostPopularScreen extends StatelessWidget {
               ),
               Expanded(
                 child: CustomButtonTabBar(
-                  tabs: ['All', 'Perfumes','Shoes','Devices'],
+                  tabs: [LangKeys.allKey.tr(), 'Perfumes','Shoes','Devices'],
                   views: [
                     AllMostPopularFilterView(),
                     MostPopularFilterView(filterName: 'Perfumes'),

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as easy_locale;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,6 +12,8 @@ import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/effects/white_gradient_overlay_effect.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/view/widgets/shared/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
 
 /// A rich product card used inside the "Most Popular" horizontal slider.
@@ -129,10 +131,13 @@ class MostPopularSliderItemCard extends StatelessWidget {
               color: colors.primaryFixedDim,
               shape: BoxShape.circle,
             ),
-            child: Text(
-              '-21%',
-              style: AppTextStyles.style12Bold.copyWith(
-                color: colors.onPrimary,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Text(
+                '-21%',
+                style: AppTextStyles.style12Bold.copyWith(
+                  color: colors.onPrimary,
+                ),
               ),
             ),
           ),
@@ -144,6 +149,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
           start: 12.w,
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            textDirection: TextDirection.ltr,
             children: [
               _featureTag(colors, LangKeys.newArrivalKey.tr()),
               8.wSpace,
@@ -202,35 +208,11 @@ class MostPopularSliderItemCard extends StatelessWidget {
         8.wSpace,
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
+          spacing: 4,
           children: [
-            _currentPrice(colors),
-            4.hSpace,
-            const PreviousPriceWithCurrency(),
+            NewPriceWidget(color: colors.primaryFixedDim, price: '10'),
+            OldPriceWidget(color: colors.onSurface, price: '10'),
           ],
-        ),
-      ],
-    );
-  }
-
-  Widget _currentPrice(ColorScheme colors) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Assets.media.images.svg.realSaudiCurrency.svg(
-          width: 22.w,
-          height: 22.w,
-          fit: BoxFit.contain,
-          colorFilter: ColorFilter.mode(
-            colors.primaryFixedDim,
-            BlendMode.srcIn,
-          ),
-        ),
-        4.wSpace,
-        Text(
-          '10',
-          style: AppTextStyles.style28Bold.copyWith(
-            color: colors.primaryFixedDim,
-          ),
         ),
       ],
     );
@@ -267,6 +249,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
         ),
         8.wSpace,
         Text(
+          textDirection: TextDirection.ltr,
           '12.4k ${LangKeys.soldKey.tr()}',
           style: AppTextStyles.style12Regular.copyWith(color: colors.onSurface),
         ),
