@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/widgets/most_popular/filters_items/most_popular_horizontal_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/most_popular/filters_items/most_popular_vertical_item.dart';
+import 'package:nowdelivery_user_app/view/widgets/most_popular/cards/most_popular_top1_item_card.dart';
+import 'package:nowdelivery_user_app/view/widgets/most_popular/cards/most_popular_top2_item_card.dart';
+
+import '../cards/most_popular_top3_item_card.dart';
 
 class Top3MostPopularView extends StatelessWidget {
   const Top3MostPopularView({super.key, required this.categoryName});
@@ -22,30 +24,14 @@ class Top3MostPopularView extends StatelessWidget {
         ),
         Expanded(
           flex: 2,
-            child: MostPopularHorizontalItem()),
-        /*        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  color: colors.primary,
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  color: colors.error,
-                ),
-              )
-            ],
-          ),
-        )*/
+            child: MostPopularTop1ItemCard()),
         Expanded(
           flex: 3,
           child: Row(
             spacing: 20,
             children: [
-              Expanded(child: MostPopularVerticalItem()),
-              Expanded(child: MostPopularVerticalItem()),
+              Expanded(child: MostPopularTop2ItemCard()),
+              Expanded(child: MostPopularTop3ItemCard()),
             ],
           ),
         ),

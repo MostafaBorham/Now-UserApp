@@ -25,7 +25,8 @@ class PreviousPriceWithCurrency extends StatelessWidget {
             colorFilter: ColorFilter.mode(colors.inversePrimary, BlendMode.srcIn),
           ),
           AutoSizeText('10',style: AppTextStyles.style14Medium.copyWith(
-              color: colors.inversePrimary
+              color: colors.inversePrimary,
+            height: 1
           ),),
 
         ],

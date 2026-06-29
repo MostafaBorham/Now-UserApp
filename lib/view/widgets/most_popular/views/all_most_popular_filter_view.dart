@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/widgets/most_popular/top3_most_popular_view.dart';
+import 'package:nowdelivery_user_app/view/widgets/most_popular/views/top3_most_popular_view.dart';
 
 class AllMostPopularFilterView extends StatelessWidget {
   const AllMostPopularFilterView({super.key});

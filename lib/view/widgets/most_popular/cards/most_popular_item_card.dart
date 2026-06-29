@@ -15,9 +15,8 @@ import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_cur
 ///
 /// Static/dummy content is hardcoded inline for fast UI iteration; real data
 /// will be wired in later.
-class MostPopularHorizontalItem extends StatelessWidget {
-  const MostPopularHorizontalItem({super.key});
-
+class MostPopularItemCard extends StatelessWidget {
+  const MostPopularItemCard({super.key});
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -26,7 +25,7 @@ class MostPopularHorizontalItem extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLowest,
+        color: colors.onPrimary,
         borderRadius: AppBorderRadius.brCircular16,
         boxShadow: AppBoxShadows.greyElevation2,
         border: Border.all(
@@ -39,38 +38,16 @@ class MostPopularHorizontalItem extends StatelessWidget {
         children: [
           Expanded(
             flex: 3,
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: AppCachedNetworkImage(
-                    imageUrl:
-                        'https://images3.alphacoders.com/641/thumb-1920-641462.jpg',
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                  ),
-                ),
-                PositionedDirectional(
-                  top: 8.h,
-                  start: 8.w,
-                  child: Container(
-                    width: 28.w,
-                    height: 28.w,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: colors.primaryFixedDim,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '#1',
-                      style: AppTextStyles.style10Medium.copyWith(
-                        color: colors.onPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: AppCachedNetworkImage(
+                imageUrl:
+                'https://i.pinimg.com/236x/ea/a7/7c/eaa77cb87594418722bf12af28481fdb.jpg',
+                fit: BoxFit.cover,
+                height: double.infinity,
+                width: double.infinity,
+              ),
             ),
           ),
           Expanded(
@@ -174,7 +151,7 @@ class MostPopularHorizontalItem extends StatelessWidget {
                               '10',
                               style: AppTextStyles.style32SemiBold.copyWith(
                                 color: colors.primaryFixedDim,
-                                height: 1
+                                height: 1,
                               ),
                             ),
                             8.wSpace,
@@ -183,11 +160,21 @@ class MostPopularHorizontalItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    FloatingActionButton(onPressed: () {
-
-                    },mini: true,backgroundColor: colors.primaryFixedDim,child: Text('+',style: AppTextStyles.style20SemiBold.copyWith(
-                      color: colors.onPrimary
-                    ),),)
+                    FloatingActionButton(
+                      onPressed: () {},
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(17),
+                      ),
+                      mini: true,
+                      backgroundColor: colors.primaryFixedDim,
+                      child: Text(
+                        '+',
+                        style: AppTextStyles.style20SemiBold.copyWith(
+                          color: colors.onPrimary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
