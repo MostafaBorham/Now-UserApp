@@ -1,13 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/offers_cannot_wait/offers_cannot_wait_view.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/offers_cannot_wait/offers_cannot_wait_view.dart';
 
-import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
 
-import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/view/widgets/top_brands/top_brands_view.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 
 class OffersCannotWaitScreen extends StatelessWidget {
   const OffersCannotWaitScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/components/field_input_borders.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/components/field_input_borders.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 class AppDescriptionField extends StatelessWidget {
   const AppDescriptionField({super.key, required this.hintTxt});

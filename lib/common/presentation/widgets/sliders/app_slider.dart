@@ -1,11 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/app_borders.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class AppSlider extends ConsumerWidget {

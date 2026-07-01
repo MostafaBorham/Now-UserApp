@@ -1,18 +1,15 @@
 import 'package:easy_localization/easy_localization.dart' as easy;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/previous_price_with_currency.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_box_shadows.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/price/old_price_widget.dart';
 
 /// A compact horizontal product card used inside the "Most Popular" filters list.
 ///

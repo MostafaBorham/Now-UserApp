@@ -1,8 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/styles/app_box_shadows.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 class AddCardForm extends StatelessWidget {
   const AddCardForm({super.key});

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/data/datasources/local/cache/shared_pref_manager.dart';
 import 'package:nowdelivery_user_app/my_app.dart';
 
 import 'common/localization/configs.dart';

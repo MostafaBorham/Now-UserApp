@@ -1,13 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
 class WalletHistoryItem extends StatelessWidget {
   const WalletHistoryItem({super.key});

@@ -1,6 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 class UnPrimaryButton extends StatelessWidget {
   const UnPrimaryButton({

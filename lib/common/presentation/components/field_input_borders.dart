@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
 
 InputBorder get circularInputBorder=> OutlineInputBorder(
   borderRadius: BorderRadius.circular(25),

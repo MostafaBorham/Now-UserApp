@@ -1,23 +1,16 @@
-import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
-import '../shared/price_with_currency.dart';
-import '../shared/previous_price_with_currency.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/reverse_widget.dart';
 
 class OffersCannotWaitItemCard extends StatefulWidget {
   const OffersCannotWaitItemCard({super.key});

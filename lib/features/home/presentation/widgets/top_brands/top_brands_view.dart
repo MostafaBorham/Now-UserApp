@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/widgets/top_brands/top_brands_item.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/top_brands/top_brands_item.dart';
 
 class TopBrandsView extends StatelessWidget {
   const TopBrandsView({super.key});

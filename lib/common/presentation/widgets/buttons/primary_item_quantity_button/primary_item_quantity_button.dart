@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
 
 class PrimaryItemQuantityButton extends StatefulWidget {
   const PrimaryItemQuantityButton({super.key});

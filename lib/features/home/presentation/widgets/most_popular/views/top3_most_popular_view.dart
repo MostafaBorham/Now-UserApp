@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/widgets/most_popular/cards/most_popular_top1_item_card.dart';
-import 'package:nowdelivery_user_app/view/widgets/most_popular/cards/most_popular_top2_item_card.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/cards/most_popular_top1_item_card.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/cards/most_popular_top2_item_card.dart';
 
 import '../cards/most_popular_top3_item_card.dart';
 

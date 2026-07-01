@@ -3,11 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_postfix_icon_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
 
 class AppUnderMaintainErrorWidget extends StatelessWidget {
   const AppUnderMaintainErrorWidget({super.key});

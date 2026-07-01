@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/params/online_card_params.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/online_card_radio_selector_item.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector_item.dart';
 
 class OnlineCardRadioSelector extends StatefulWidget {
   const OnlineCardRadioSelector({super.key, required this.cards, this.onAmountChanged});

@@ -1,13 +1,10 @@
 import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/theme/app_themes.dart';
-import 'package:nowdelivery_user_app/view/theme/theme_manager.dart';
+import 'package:nowdelivery_user_app/common/presentation/theme/app_themes.dart';
+import 'package:nowdelivery_user_app/common/presentation/theme/theme_manager.dart';
 
-import 'common/localization/local_controller.dart';
 import 'common/route/app_routes.dart';
 import 'common/route/router.dart';
 

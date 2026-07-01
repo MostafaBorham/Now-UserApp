@@ -1,17 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/errors/no_items_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/product_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/store_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/home/home_offers_item.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home_store_list_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/text_fields/app_search_field.dart';
 
 class CategoriesStoreTabView extends StatelessWidget {
   const CategoriesStoreTabView({super.key});

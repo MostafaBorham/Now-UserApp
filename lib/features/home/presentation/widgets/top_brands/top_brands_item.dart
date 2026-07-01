@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/images/app_cached_network_image.dart';
 
 class TopBrandsItem extends StatelessWidget {
   const TopBrandsItem({super.key});

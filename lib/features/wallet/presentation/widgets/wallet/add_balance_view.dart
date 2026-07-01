@@ -3,13 +3,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
 
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_disabled_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/payment_method_selector.dart';import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/money_amount_picker.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_disabled_button.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/payment_method_selector.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/money_amount_picker.dart';
 
 class AddBalanceView extends StatefulWidget {
   const AddBalanceView({super.key});

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/screens/categories/category_details_screen.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/screens/on_boarding_screen.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/file_complaint_screen.dart';
-import 'package:nowdelivery_user_app/features/orders/presentation/screens/my_order_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
-import 'package:nowdelivery_user_app/view/screens/categories/categories_screen.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/screens/wallet_screen.dart';
 
@@ -30,7 +28,7 @@ abstract class AppRouter {
     ////////////////////////////////////////////////////////////////
       case AppRoutes.mainLayoutScreen:
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  const MainLayoutScreen());
+            settings: settings, builder: (_) =>  const MainScreen());
     ////////////////////////////////////////////////////////////////
       case AppRoutes.orderDetailsScreen:
         return MaterialPageRoute(

@@ -1,11 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../common/localization/lang_keys.dart';
-import '../../../../../view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 import 'circular_brand_logo.dart';
 
 class CircularBrandItem extends StatelessWidget {

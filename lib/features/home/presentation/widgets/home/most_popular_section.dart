@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular_item.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_item.dart';
 
-import '../../../../../view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 class MostPopularSection extends StatelessWidget {
   const MostPopularSection({super.key});

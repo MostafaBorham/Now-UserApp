@@ -1,21 +1,15 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/add_card_view.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/add_balance_view.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/my_cards_view.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_action_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_card_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/wallet/wallet_history_item.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_balance_view.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/my_cards_view.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_action_button.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_card_widget.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_history_item.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});

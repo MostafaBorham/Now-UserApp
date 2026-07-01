@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
 
 class AppFavouriteIcon extends StatelessWidget {
   const AppFavouriteIcon({super.key, this.size = 10, this.isFavourite = false});

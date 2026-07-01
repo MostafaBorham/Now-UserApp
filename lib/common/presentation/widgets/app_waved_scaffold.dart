@@ -1,15 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
-import 'buttons/primary_app_prefix_icon_button.dart';
-import 'reverse_widget.dart';
 
 class AppWavedScaffold extends StatelessWidget {
   const AppWavedScaffold({

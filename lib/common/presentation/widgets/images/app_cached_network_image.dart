@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/enums/placeholder_types.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
 import 'package:shimmer/shimmer.dart';
 
 /*class AppCachedNetworkImage extends StatelessWidget {

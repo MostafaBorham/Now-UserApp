@@ -6,13 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/common/route/app_routes.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/unprimary_button.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/price_with_currency.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_button.dart';
 
 class OrderListItem extends ConsumerWidget {
   const OrderListItem({super.key});

@@ -1,12 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/show_more_items_header.dart';
 
 class TopBrandsSection extends StatelessWidget {
   const TopBrandsSection({super.key});

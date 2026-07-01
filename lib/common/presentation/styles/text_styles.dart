@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/assets/fonts.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/fonts.gen.dart';
 
 class AppTextStyles {
   AppTextStyles._();

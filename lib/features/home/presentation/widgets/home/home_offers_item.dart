@@ -1,20 +1,18 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/reverse_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
-import '../../../../../view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import '../../../../../view/widgets/shared/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
-import '../../../../../view/widgets/shared/price_with_currency.dart';
-import '../../../../../view/widgets/shared/previous_price_with_currency.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/price_with_currency.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/previous_price_with_currency.dart';
 
 class HomeOffersItem extends StatefulWidget {
   const HomeOffersItem({super.key});

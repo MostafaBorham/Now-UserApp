@@ -2,14 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../view/assets/assets.gen.dart';
-import '../../../../../view/responsive/spacing_extension.dart';
-import '../../../../../view/styles/app_border_radius.dart';
-import '../../../../../view/styles/text_styles.dart';
-import '../circular_brand_logo.dart';
-import '../../../../../view/widgets/shared/price_with_currency.dart';
-import '../../../../../view/widgets/shared/previous_price_with_currency.dart';
-import '../../../../../view/widgets/shared/reverse_widget.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
 class HomeStoreListItem extends StatefulWidget {
   const HomeStoreListItem({super.key});

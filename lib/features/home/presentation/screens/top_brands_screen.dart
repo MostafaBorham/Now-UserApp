@@ -1,13 +1,12 @@
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/view/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/text_fields/app_search_field.dart';
-import 'package:nowdelivery_user_app/view/widgets/top_brands/top_brands_view.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/top_brands/top_brands_view.dart';
 
 class TopBrandsScreen extends StatelessWidget {
   const TopBrandsScreen({super.key});

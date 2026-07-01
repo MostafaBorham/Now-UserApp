@@ -1,12 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home_product_item.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/show_more_items_header.dart';
-import 'package:nowdelivery_user_app/view/widgets/shared/sliders/spool_carousel_slider.dart';
+import 'package:nowdelivery_user_app/common/presentation/widgets/show_more_items_header.dart';
 
 import '../../../../../common/localization/lang_keys.dart';
-import '../../../../../view/styles/text_styles.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
   const HomeCategoriesSection({super.key});

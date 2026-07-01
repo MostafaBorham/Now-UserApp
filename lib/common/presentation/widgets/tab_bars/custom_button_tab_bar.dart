@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../responsive/spacing_extension.dart';
-import '../../../styles/app_border_radius.dart';
-import '../../../styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 class CustomButtonTabBar extends StatefulWidget {
   const CustomButtonTabBar({

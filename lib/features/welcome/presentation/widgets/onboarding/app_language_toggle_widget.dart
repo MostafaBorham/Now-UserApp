@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
 
-import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
-import 'package:nowdelivery_user_app/view/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
 
 enum AppLanguage { en, ar }
 
