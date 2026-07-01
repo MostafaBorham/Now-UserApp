@@ -83,22 +83,17 @@ class NotificationsScreen extends StatelessWidget {
                     actionLabel: context.tr(LangKeys.shopNowKey),
                     onActionTap: () {},
                     leading: Container(
-                      width: 48,
-                      height: 48,
                       padding: EdgeInsets.all(9),
                       decoration: BoxDecoration(
                         color: colors.onTertiaryContainer,
                         shape: BoxShape.circle,
                         border: Border.all(color: colors.surfaceContainerLow),
                       ),
-                      child: ClipOval(
-                        child: AppCachedNetworkImage(
-                          imageUrl:
-                              'https://picsum.photos/seed/nowdelivery/100',
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
-                        ),
+                      child: AppCachedNetworkImage(
+                        imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -111,21 +106,17 @@ class NotificationsScreen extends StatelessWidget {
                     actionLabel: context.tr(LangKeys.shopNowKey),
                     onActionTap: () {},
                     leading: Container(
-                      width: 48,
-                      height: 48,
                       padding: EdgeInsets.all(9),
                       decoration: BoxDecoration(
                         color: colors.onTertiaryContainer,
                         shape: BoxShape.circle,
                         border: Border.all(color: colors.surfaceContainerLow),
                       ),
-                      child: ClipOval(
-                        child: AppCachedNetworkImage(
-                          imageUrl: 'https://picsum.photos/seed/nowmarket/100',
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
-                        ),
+                      child: AppCachedNetworkImage(
+                        imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
