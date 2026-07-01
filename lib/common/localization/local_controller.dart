@@ -1,9 +1,7 @@
-import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/common/localization/constants.dart';
-import 'package:nowdelivery_user_app/data/datasources/local/cache/shared_pref_manager.dart';
 
 class LocalController extends StateNotifier<Locale> {
   LocalController() : super(LocalizationConstants.englishLocale);

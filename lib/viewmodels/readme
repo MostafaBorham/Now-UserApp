@@ -1,2 +1,0 @@
-# This layer that called viewModel layer is used for control and manage app state
-#also is responsible for connect between ui layer and data layer

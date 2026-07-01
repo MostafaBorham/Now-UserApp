@@ -9,8 +9,8 @@ import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/common/localization/constants.dart';
 import 'package:nowdelivery_user_app/common/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/view/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/view/widgets/onboarding/app_language_toggle_widget.dart';
-import 'package:nowdelivery_user_app/view/widgets/onboarding/onboarding_content_view.dart';
+import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/app_language_toggle_widget.dart';
+import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/onboarding_content_view.dart';
 
 class OnBoardingScreen extends ConsumerWidget {
   const OnBoardingScreen({super.key});
