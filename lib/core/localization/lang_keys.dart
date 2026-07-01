@@ -129,4 +129,13 @@ abstract class LangKeys {
   static const String todayKey = 'today';
   static const String yesterdayKey = 'yesterday';
   static const String justNowKey = 'justNow';
+
+  // Search
+  static const String searchKey = 'search';
+  static const String recentKey = 'recent';
+  static const String clearKey = 'clear';
+  static const String bestCategoriesKey = 'bestCategories';
+  static const String seeAllKey = 'seeAll';
+  static const String mostRequestedKey = 'mostRequested';
+  static const String upToKey = 'upTo';
 }

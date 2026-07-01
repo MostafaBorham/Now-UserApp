@@ -117,5 +117,13 @@
   "notifications": "الإشعارات",
   "today": "اليوم",
   "yesterday": "أمس",
-  "justNow": "الآن"
+  "justNow": "الآن",
+
+  "search": "بحث",
+  "recent": "الأخيرة",
+  "clear": "مسح",
+  "bestCategories": "أفضل الفئات",
+  "seeAll": "عرض الكل",
+  "mostRequested": "الأكثر طلبًا",
+  "upTo": "حتى"
 }

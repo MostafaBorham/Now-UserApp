@@ -117,5 +117,13 @@
   "notifications": "Notifications",
   "today": "Today",
   "yesterday": "Yesterday",
-  "justNow": "Just now"
+  "justNow": "Just now",
+
+  "search": "Search",
+  "recent": "Recent",
+  "clear": "Clear",
+  "bestCategories": "Best Categories",
+  "seeAll": "See All",
+  "mostRequested": "Most Requested",
+  "upTo": "Upto"
 }

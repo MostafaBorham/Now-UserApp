@@ -10,8 +10,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class AppSearchField extends ConsumerWidget {
-  const AppSearchField({super.key, this.hintText});
+  const AppSearchField({super.key, this.hintText, this.reverseSearchIcon = false});
   final String? hintText;
+  final bool? reverseSearchIcon;
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -37,6 +38,7 @@ class AppSearchField extends ConsumerWidget {
                   prefixIcon: Padding(
                     padding: const EdgeInsetsDirectional.only(start: 16),
                     child: ReverseWidget(
+                      applyReverse: reverseSearchIcon,
                       child: Assets.media.images.svg.searchIcon.svg(
                       ),
                     ),

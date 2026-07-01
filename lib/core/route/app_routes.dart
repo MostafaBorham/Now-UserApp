@@ -13,4 +13,5 @@ abstract class AppRoutes {
   static const String mostPopularScreen = 'most popular screen';
   static const String offersCannotWaitScreen = 'offers cannot wait screen';
   static const String notificationsScreen = 'notifications screen';
+  static const String searchScreen = 'search screen';
 }
