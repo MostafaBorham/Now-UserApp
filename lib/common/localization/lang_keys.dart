@@ -123,4 +123,10 @@ abstract class LangKeys {
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
   static const String appUnderMaintenanceSubtitleKey = 'appUnderMaintenanceSubtitle';
   static const String notifyMeWhenDoneKey = 'notifyMeWhenDone';
+
+  // Notifications
+  static const String notificationsKey = 'notifications';
+  static const String todayKey = 'today';
+  static const String yesterdayKey = 'yesterday';
+  static const String justNowKey = 'justNow';
 }

@@ -5,7 +5,8 @@ import 'package:nowdelivery_user_app/view/screens/home/home_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/main/main_layout_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/most_popular/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/offers_cannot_wait/offers_cannot_wait_screen.dart';
-import 'package:nowdelivery_user_app/view/screens/onboarding/on_boarding_screen.dart';
+import 'package:nowdelivery_user_app/view/screens/notifications/notifications_screen.dart';
+import 'package:nowdelivery_user_app/features/welcome/presentation/screens/on_boarding_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/file_complaint_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/my_order_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/order/order_details_screen.dart';
@@ -13,7 +14,7 @@ import 'package:nowdelivery_user_app/view/screens/categories/categories_screen.d
 import 'package:nowdelivery_user_app/view/screens/top_brands/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/view/screens/wallet/wallet_screen.dart';
 
-import '../../view/screens/splash/splash_screen.dart';
+import '../../features/welcome/presentation/screens/splash_screen.dart';
 import 'app_routes.dart';
 
 abstract class AppRouter {
@@ -66,6 +67,10 @@ abstract class AppRouter {
       case AppRoutes.offersCannotWaitScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const OffersCannotWaitScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.notificationsScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const NotificationsScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

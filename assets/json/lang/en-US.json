@@ -112,5 +112,10 @@
   "retry": "Retry",
   "appUnderMaintenance": "App is under maintenance",
   "appUnderMaintenanceSubtitle": "We’re working to improve your experience. We’ll be back soon. Thank you for your patience.",
-  "notifyMeWhenDone": "Notify me when it’s done"
+  "notifyMeWhenDone": "Notify me when it’s done",
+
+  "notifications": "Notifications",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "justNow": "Just now"
 }

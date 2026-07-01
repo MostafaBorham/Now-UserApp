@@ -112,5 +112,10 @@
   "retry": "إعادة المحاولة",
   "appUnderMaintenance": "التطبيق قيد الصيانة",
   "appUnderMaintenanceSubtitle": "نعمل على تحسين تجربتك. سنعود قريبًا. شكرًا لصبرك.",
-  "notifyMeWhenDone": "أبلغني عند الانتهاء"
+  "notifyMeWhenDone": "أبلغني عند الانتهاء",
+
+  "notifications": "الإشعارات",
+  "today": "اليوم",
+  "yesterday": "أمس",
+  "justNow": "الآن"
 }

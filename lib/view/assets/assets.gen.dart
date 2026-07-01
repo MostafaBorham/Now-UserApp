@@ -244,6 +244,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get clipper =>
       const SvgGenImage('assets/media/images/svg/clipper.svg');
 
+  /// File path: assets/media/images/svg/delivery_icon.svg
+  SvgGenImage get deliveryIcon =>
+      const SvgGenImage('assets/media/images/svg/delivery_icon.svg');
+
   /// File path: assets/media/images/svg/empty-add-to-cart.svg
   SvgGenImage get emptyAddToCart =>
       const SvgGenImage('assets/media/images/svg/empty-add-to-cart.svg');
@@ -412,6 +416,7 @@ class $AssetsMediaImagesSvgGen {
     bottomNavBarBackground,
     categoriesUpArrow,
     clipper,
+    deliveryIcon,
     emptyAddToCart,
     favouriteIcon,
     filledAccountIcon,
