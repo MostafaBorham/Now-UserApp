@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/show_more_items_header.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/show_more_items_header.dart';
 
-import '../../../../../common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
   const HomeCategoriesSection({super.key});

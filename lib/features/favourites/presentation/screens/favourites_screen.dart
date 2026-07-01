@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_store_tab_view.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/tab_bars/app_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});

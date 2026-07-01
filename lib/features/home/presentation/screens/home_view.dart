@@ -4,21 +4,21 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/app_borders.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_borders.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_all_stores_section.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/sliders/app_slider.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_categories_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_offers_section.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/logos/white_app_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
 
 
 class HomeView extends StatefulWidget {

@@ -1,14 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/views/all_most_popular_filter_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/views/most_popular_filter_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/cards/most_popular_slider_item_card.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/sliders/app_slider.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 
 class MostPopularScreen extends StatelessWidget {
   const MostPopularScreen({super.key});

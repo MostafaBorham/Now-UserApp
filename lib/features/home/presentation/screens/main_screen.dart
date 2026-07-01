@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/common/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/main_controller.dart';
 
 import '../widgets/main/app_bottom_nav_bar.dart';

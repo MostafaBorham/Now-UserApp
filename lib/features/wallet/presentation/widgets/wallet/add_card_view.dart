@@ -1,13 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 class AddCardView extends StatefulWidget {
   const AddCardView({super.key});

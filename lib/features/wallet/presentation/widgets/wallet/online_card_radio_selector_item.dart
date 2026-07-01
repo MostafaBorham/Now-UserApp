@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/enums/online_card_types.dart';
-import 'package:nowdelivery_user_app/common/params/online_card_params.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/common/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
+import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class OnlineCardRadioSelectorItem extends StatelessWidget {
   const OnlineCardRadioSelectorItem({

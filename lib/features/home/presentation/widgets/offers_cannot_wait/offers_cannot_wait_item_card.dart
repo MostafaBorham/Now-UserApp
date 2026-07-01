@@ -1,16 +1,16 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class OffersCannotWaitItemCard extends StatefulWidget {
   const OffersCannotWaitItemCard({super.key});

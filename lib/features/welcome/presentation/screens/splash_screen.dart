@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/route/app_routes.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

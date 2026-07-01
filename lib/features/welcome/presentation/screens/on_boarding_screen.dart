@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:nowdelivery_user_app/common/localization/constants.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/localization/constants.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/app_language_toggle_widget.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/onboarding_content_view.dart';
 

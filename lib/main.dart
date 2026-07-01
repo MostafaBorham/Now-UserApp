@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/my_app.dart';
 
-import 'common/localization/configs.dart';
+import 'package:nowdelivery_user_app/core/localization/configs.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

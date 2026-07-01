@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/widgets/file_complaint/complaint_photos_picker.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/rating_card.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/text_fields/app_description_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/rating_card.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_description_field.dart';
 
 class FileComplaintScreen extends StatelessWidget {
   const FileComplaintScreen({super.key});

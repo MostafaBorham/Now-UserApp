@@ -4,16 +4,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/common/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/clippers/card_clipper.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/price_with_currency.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/card_clipper.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
 
-import 'package:nowdelivery_user_app/common/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/previous_price_with_currency.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
 class MostPopularItem extends StatefulWidget {
   const MostPopularItem({super.key});

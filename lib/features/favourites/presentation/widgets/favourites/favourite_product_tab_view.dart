@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/common/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nowdelivery_user_app/common/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/product_item.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/errors/no_items_widget.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/common/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/product_item.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 
 class FavouriteProductTabView extends StatelessWidget {
   const FavouriteProductTabView({super.key});
