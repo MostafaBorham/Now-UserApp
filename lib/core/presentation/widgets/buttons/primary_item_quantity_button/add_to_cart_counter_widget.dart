@@ -1,7 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -18,7 +16,7 @@ class AddToCartCounterWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        borderRadius: AppBorderRadius.brCircular8.r,
+        borderRadius: AppBorderRadius.brCircular8,
         color: colors.primary,
       ),
       child: Row(
@@ -29,7 +27,7 @@ class AddToCartCounterWidget extends StatelessWidget {
           InkWell(
             onTap:onInc ,
             child: Assets.media.images.png.increamentIcon.image(
-              width: 15.sp,
+              width: 15,
               color: colors.onPrimary,
             ),
           ),
@@ -42,13 +40,13 @@ class AddToCartCounterWidget extends StatelessWidget {
           counter<2? InkWell(
             onTap: onDelete,
             child: Assets.media.images.png.removeIcon.image(
-              width: 15.sp,
+              width: 15,
               color: colors.onPrimary,
             ),
           ) : InkWell(
             onTap: onDec,
             child: Assets.media.images.png.decrementIcon.image(
-              width: 15.sp,
+              width: 15,
               color: colors.onPrimary,
             ),
           ),

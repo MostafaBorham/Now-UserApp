@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -57,8 +56,8 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                     ),
                     Positioned.fill(child: WhiteGradientOverlayEffect()),
                     PositionedDirectional(
-                      top: 12.h,
-                      start: 12.w,
+                      top: 12,
+                      start: 12,
                       child: Container(
                         padding: EdgeInsets.all(5),
                         alignment: Alignment.center,
@@ -76,8 +75,8 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                       ),
                     ),
                     PositionedDirectional(
-                      top: 12.h,
-                      end: 12.w,
+                      top: 12,
+                      end: 12,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 7,

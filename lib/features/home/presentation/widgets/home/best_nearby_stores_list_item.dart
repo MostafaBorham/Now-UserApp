@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -25,7 +24,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
     return LayoutBuilder(
       builder: (context, constrains) {
         return SizedBox(
-          width: 280.w,
+          width: 280,
           child: Card(
             elevation: 2,
             shadowColor: colors.onTertiaryContainer.withValues(alpha: 0.4),
@@ -50,7 +49,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                       Align(
                         alignment: Alignment.center,
                         child: CircularBrandLogo(
-                          radius: 24.r,
+                          radius: 24,
                           logoUrl:
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
@@ -110,10 +109,10 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                       2.hSpace,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        spacing: 5.w,
+                        spacing: 5,
                         children: [
                           Assets.media.images.svg.shippingIcon.svg(
-                            width: 16.sp,
+                            width: 16,
                             colorFilter: ColorFilter.mode(
                               colors.onSurface,
                               BlendMode.srcIn,
@@ -126,7 +125,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                             ),
                           ),
                           Assets.media.images.svg.realSaudiCurrency.svg(
-                            width: 15.sp,
+                            width: 15,
                             colorFilter: ColorFilter.mode(
                               colors.onSecondary,
                               BlendMode.srcIn,
@@ -140,7 +139,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                             ),
                             decoration: BoxDecoration(
                               color: colors.tertiaryFixed,
-                              borderRadius: AppBorderRadius.brCircular20.r,
+                              borderRadius: AppBorderRadius.brCircular20,
                             ),
                             child: Row(
                               spacing: 5,
@@ -159,10 +158,10 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        spacing: 5.w,
+                        spacing: 5,
                         children: [
                           Assets.media.images.svg.timeIcon.svg(
-                            width: 16.sp,
+                            width: 16,
                             colorFilter: ColorFilter.mode(
                               colors.onSurface,
                               BlendMode.srcIn,
@@ -176,7 +175,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                           ),
                           5.wSpace,
                           Assets.media.images.svg.locationIcon.svg(
-                            width: 14.sp,
+                            width: 14,
                             colorFilter: ColorFilter.mode(
                               colors.onSurface,
                               BlendMode.srcIn,

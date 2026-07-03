@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -19,7 +18,7 @@ class AppUnderMaintainErrorWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 10,
         children: [
-          Assets.media.images.svg.appUnderMaintainIcon.svg(width: 300.w),
+          Assets.media.images.svg.appUnderMaintainIcon.svg(width: 300),
           10.hSpace,
           AutoSizeText(
             LangKeys.appUnderMaintenanceKey.tr(),

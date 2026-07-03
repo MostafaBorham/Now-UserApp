@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
 import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -44,7 +43,7 @@ class _MyCardsViewState extends State<MyCardsView> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.clear, size: 20.sp, color: colors.onSecondary),
+                icon: Icon(Icons.clear, size: 20, color: colors.onSecondary),
               ),
             ],
           ),

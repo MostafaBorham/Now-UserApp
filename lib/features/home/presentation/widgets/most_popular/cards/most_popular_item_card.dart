@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' as easy;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -25,14 +24,14 @@ class MostPopularItemCard extends StatelessWidget {
       builder: (context,con) {
         return Container(
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: colors.onPrimary,
             borderRadius: AppBorderRadius.brCircular16,
             boxShadow: AppBoxShadows.greyElevation2,
             border: Border.all(
               color: colors.onSurface.withValues(alpha: 0.08),
-              width: 1.w,
+              width: 1,
             ),
           ),
           child: Row(
@@ -196,11 +195,11 @@ class MostPopularItemCard extends StatelessWidget {
                     ),
                   ),
                   PositionedDirectional(
-                    top: 8.h,
-                    start: 8.w,
+                    top: 8,
+                    start: 8,
                     child: Container(
-                      width: 28.w,
-                      height: 28.w,
+                      width: 28,
+                      height: 28,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: colors.primaryFixedDim,
@@ -255,8 +254,8 @@ class MostPopularItemCard extends StatelessWidget {
                             ),
                             8.wSpace,
                             Assets.media.images.svg.favouriteIcon.svg(
-                              width: 18.w,
-                              height: 18.w,
+                              width: 18,
+                              height: 18,
                               colorFilter: ColorFilter.mode(
                                 colors.onSurface,
                                 BlendMode.srcIn,
@@ -267,8 +266,8 @@ class MostPopularItemCard extends StatelessWidget {
                         8.hSpace,
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 3.h,
+                            horizontal: 10,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
                             color: colors.primaryFixedDim.withValues(alpha: 0.13),
@@ -295,8 +294,8 @@ class MostPopularItemCard extends StatelessWidget {
                               Row(
                                 children: [
                                   Assets.media.images.svg.starRate.svg(
-                                    width: 12.w,
-                                    height: 12.w,
+                                    width: 12,
+                                    height: 12,
                                     colorFilter: ColorFilter.mode(
                                       colors.primaryFixedDim,
                                       BlendMode.srcIn,
@@ -326,8 +325,8 @@ class MostPopularItemCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 20.w,
-                                    height: 22.h,
+                                    width: 20,
+                                    height: 22,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.primaryFixedDim,
@@ -351,16 +350,16 @@ class MostPopularItemCard extends StatelessWidget {
                         ),
                         8.wSpace,
                         Container(
-                          width: 38.w,
-                          height: 38.w,
+                          width: 38,
+                          height: 38,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: colors.primaryFixedDim,
                             borderRadius: AppBorderRadius.brCircular14,
                           ),
                           child: Assets.media.images.svg.addToCartIcon.svg(
-                            width: 18.w,
-                            height: 18.w,
+                            width: 18,
+                            height: 18,
                             colorFilter: ColorFilter.mode(
                               colors.onPrimary,
                               BlendMode.srcIn,

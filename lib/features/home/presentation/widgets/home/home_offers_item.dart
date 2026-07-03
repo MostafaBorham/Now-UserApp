@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -48,7 +47,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
         borderRadius: AppBorderRadius.brCircular16,
       ),
       child: Container(
-        width: 190.w,
+        width: 190,
         padding: EdgeInsets.symmetric(vertical: 12,horizontal: 12),
         child: Column(
           spacing: 15,
@@ -79,7 +78,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                             spacing: 7,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Assets.media.images.svg.starRate.svg(width: 20.sp),
+                              Assets.media.images.svg.starRate.svg(width: 20),
                               AutoSizeText(
                                 '4',
                                 style: AppTextStyles.style14Medium.copyWith(
@@ -133,7 +132,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                                     backgroundColor: colors.onPrimary,
                                     child: (isFavorite? Assets.media.images.svg.filledFavouriteIcon : Assets.media.images.svg.favouriteIcon)
                                         .svg(
-                                          width: 16.sp,
+                                          width: 16,
                                           colorFilter: ColorFilter.mode(
                                             isFavorite ? colors.errorContainer : colors.onTertiaryFixed,
                                             BlendMode.srcIn,
@@ -149,7 +148,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                     ],
                   ),
                   CircularBrandLogo(
-                    radius: 25.sp,
+                    radius: 25,
                     logoUrl:
                         'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                   ),

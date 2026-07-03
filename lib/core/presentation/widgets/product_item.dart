@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
@@ -93,7 +92,7 @@ class _ProductItemState extends State<ProductItem> {
                             elevation: 1,
                             shape: const CircleBorder(),
                             child: CircleAvatar(
-                              radius: 13.sp,
+                              radius: 13,
                               backgroundColor: colors.onPrimary,
                               child:
                                   (isFavorite
@@ -108,7 +107,7 @@ class _ProductItemState extends State<ProductItem> {
                                                 .svg
                                                 .favouriteIcon)
                                       .svg(
-                                        width: 15.sp,
+                                        width: 15,
                                         colorFilter: ColorFilter.mode(
                                           isFavorite
                                               ? colors.errorContainer
