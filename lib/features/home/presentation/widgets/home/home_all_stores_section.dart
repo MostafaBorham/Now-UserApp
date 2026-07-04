@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_store_list_item.dart';
@@ -45,8 +44,8 @@ class HomeAllStoresSection extends StatelessWidget {
             child: CustomButtonTabBar(
               filterWidget: CircleAvatar(
                 backgroundColor: colors.tertiary.withValues(alpha: 0.3),
-                radius: 20.r,
-                child: Assets.media.images.svg.filterIcon.svg(width: 20.w),
+                radius: 20,
+                child: Assets.media.images.svg.filterIcon.svg(width: 20),
               ),
               tabs: [LangKeys.allKey.tr(), LangKeys.clothesKey.tr(), LangKeys.otherKey.tr()],
               views: [

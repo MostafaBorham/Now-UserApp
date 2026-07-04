@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -89,10 +88,10 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
                             ),
                           ),
                           Row(
-                            spacing: 5.w,
+                            spacing: 5,
                             children: [
                               Assets.media.images.svg.timeIcon.svg(
-                                width: 16.sp,
+                                width: 16,
                                 colorFilter: ColorFilter.mode(
                                   colors.onSurface,
                                   BlendMode.srcIn,
@@ -106,7 +105,7 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
                               ),
                               5.wSpace,
                               Assets.media.images.svg.locationIcon.svg(
-                                width: 14.sp,
+                                width: 14,
                                 colorFilter: ColorFilter.mode(
                                   colors.onSurface,
                                   BlendMode.srcIn,
@@ -120,7 +119,7 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
                               ),
                               5.wSpace,
                               Assets.media.images.svg.shippingIcon.svg(
-                                width: 16.sp,
+                                width: 16,
                                 colorFilter: ColorFilter.mode(
                                   colors.onSurface,
                                   BlendMode.srcIn,
@@ -133,7 +132,7 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
                                 ),
                               ),
                               Assets.media.images.svg.realSaudiCurrency.svg(
-                                width: 15.sp,
+                                width: 15,
                                 colorFilter: ColorFilter.mode(
                                   colors.onSecondary,
                                   BlendMode.srcIn,
@@ -190,7 +189,7 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
                         radius: 20,
                         backgroundColor: colors.onPrimary,
                         child: (isFavorite? Assets.media.images.svg.filledFavouriteIcon : Assets.media.images.svg.favouriteIcon).svg(
-                          width: 16.sp,
+                          width: 16,
                           colorFilter: ColorFilter.mode(
                             isFavorite ? colors.errorContainer : colors.onTertiaryFixed,
                             BlendMode.srcIn,
@@ -208,7 +207,7 @@ class _HomeStoreListItemState extends State<HomeStoreListItem> {
             child: Padding(
               padding: const EdgeInsetsDirectional.only(start: 12.0),
               child: CircularBrandLogo(
-                radius: 30.r,
+                radius: 30,
                 logoUrl:
                     'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
               ),

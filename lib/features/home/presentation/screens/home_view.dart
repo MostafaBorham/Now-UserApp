@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -75,13 +74,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                       child: CachedNetworkImage(imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg'),
                     ),*/
-                  WhiteAppLogo(size: 134.sp),
+                  WhiteAppLogo(size: 134),
                   Row(
                     spacing: 10,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       CircleAvatar(
-                        radius: 25.w,
+                        radius: 25,
                         backgroundColor: Colors.transparent,
                         child: CachedNetworkImage(
                           imageUrl: '',
@@ -115,8 +114,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Assets.media.images.svg.locationIcon.svg(
-                                width: 16.w,
-                                height: 16.w,
+                                width: 16,
+                                height: 16,
                                 colorFilter: ColorFilter.mode(
                                   colors.onSecondary,
                                   BlendMode.srcIn,
@@ -141,7 +140,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         padding: EdgeInsets.all(3),
                         backgroundColor: colors.errorContainer,
                         child: Assets.media.images.svg.alertIcon.svg(
-                          width: 35.sp,
+                          width: 35,
                         ),
                       ),
                     ],
@@ -150,7 +149,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   AppSlider(sliderItem: Container(
                     width: double.infinity,
                     margin: EdgeInsets.symmetric(horizontal: 10),
-                    height: 100.h,
+                    height: 100,
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     decoration: BoxDecoration(
                         borderRadius: AppBorderRadius.brCircular16
@@ -159,7 +158,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           width: double.infinity,
-                          height: 100.h,
+                          height: 100,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           decoration: BoxDecoration(
                               borderRadius: AppBorderRadius.brCircular16,
@@ -199,12 +198,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: TopBrandsSection(),
                       ),
-                      SizedBox(height: 350.h, child: MostPopularSection()),
+                      SizedBox(height: 350, child: MostPopularSection()),
                       SizedBox(
-                        height: 240.h,
+                        height: 240,
                         child: BestNearbyStoresSection(),
                       ),
-                      SizedBox(height: 350.h, child: HomeOffersSection()),
+                      SizedBox(height: 350, child: HomeOffersSection()),
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16),
@@ -250,7 +249,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   CircularBrandLogo(
-                                    radius: 35.r,
+                                    radius: 35,
                                     logoUrl:
                                     'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                                   ),
@@ -276,7 +275,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      SizedBox(height: 400.h, child: HomeAllStoresSection()),
+                      SizedBox(height: 400, child: HomeAllStoresSection()),
                     ],
                   ),
                 ),

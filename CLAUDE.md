@@ -2,88 +2,77 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+## Project
+
+Flutter customer app for the NowDelivery platform (`nowdelivery_user_app`). Dart SDK `^3.11.4`. Portrait-only, ships Arabic (`ar-EG`) and English (`en-US`).
+
+## Common commands
 
 ```bash
-flutter pub get                       # Install dependencies
-flutter run                           # Run on connected device/emulator
-flutter analyze                       # Static analysis (analysis_options.yaml)
-flutter test                          # Run all tests
-flutter test test/path/to_test.dart   # Run a single test file
-flutter build apk                     # Android release build
-dart run build_runner build           # Regenerate assets (assets.gen.dart) after adding files under assets/
-dart run build_runner watch           # Watch mode for code generation
+flutter pub get                  # install deps
+flutter run                      # run on attached device / emulator
+flutter analyze                  # lint (flutter_lints, see analysis_options.yaml)
+flutter test                     # run all tests
+flutter test test/auth/login/unit_test.dart   # run a single test file
+
+# Regenerate flutter_gen output (asset & font classes) after adding assets:
+dart run build_runner build --delete-conflicting-outputs
+
+# Regenerate the native splash after changing assets or config in pubspec.yaml:
+dart run flutter_native_splash:create
 ```
 
-Re-run `build_runner build` any time new files are added under `assets/media/images/svg/`, `png/`, `assets/media/sounds/`, `videos/`, or `assets/json/` — the generated `Assets` class must be regenerated for the new paths to be accessible.
-
-Package import prefix: `package:nowdelivery_user_app/`.
+Windows/PowerShell: same commands, no shell-specific tweaks needed.
 
 ## Architecture
 
-**Feature-first layout** under `lib/` (not a layered MVVM tree — do not put new code under `lib/common`, `lib/data`, `lib/view`, or `lib/viewmodels`; those folders do not exist).
+### Layout
 
-- `lib/core/` — cross-cutting/shared code:
-  - `route/` — `app_routes.dart` (route name constants) and `router.dart` (switch-based `onGenerateRoute`).
-  - `localization/` — `lang_keys.dart` (string key constants) and `local_controller.dart` (Riverpod locale state).
-  - `presentation/` — shared UI atoms: `assets/` (flutter_gen output: `assets.gen.dart`, `fonts.gen.dart`), `styles/` (`text_styles.dart`, `app_border_radius.dart`, `app_borders.dart`, `app_box_shadows.dart`), `theme/` (`app_themes.dart`, `theme_manager.dart`), `responsive/` (`spacing_extension.dart`), `components/`, and `widgets/` (shared widgets grouped by kind: `buttons/`, `images/`, `text_fields/`, …).
-  - Other cross-cutting folders: `connection/`, `enums/`, `errors/`, `extensions/`, `formatters/`, `loggers/`, `notifications/`, `params/`, `pickers/`, `utils/`.
-- `lib/features/<feature>/` — self-contained feature module. Each has `data/` (`datasources/`, `models/`, `repo/`), `presentation/` (`screens/`, `widgets/<group>/`, sometimes `controllers/` for Riverpod), and `viewmodel/`. Current features: `categories`, `favourites`, `home`, `notifications`, `orders`, `products`, `search`, `stores`, `support`, `wallet`, `welcome`.
+```
+lib/
+  main.dart            # bootstraps EasyLocalization → DevicePreview → ProviderScope → ScreenUtilInit → NowUserApp
+  my_app.dart          # MaterialApp; wires localization, themes, onGenerateRoute
+  core/                # shared, cross-feature code (see below)
+  features/<feature>/  # feature-scoped code; each feature has presentation/ (screens, widgets, controllers); a data/ layer is added only when needed (currently just `categories`)
+```
 
-**Current phase is UI-first.** `data/`, `repo/`, `datasources/`, `viewmodel/` folders are largely empty scaffolding. Most screens use inline hardcoded/sample data; Riverpod state that exists today lives in feature-level `presentation/controllers/`.
+Features today: `categories`, `favourites`, `home`, `notifications`, `orders`, `search`, `support`, `wallet`, `welcome`. Most are UI-only skeletons — no repositories or API calls are wired yet.
 
-**State management:** Flutter Riverpod 2.6.1. Use `ConsumerWidget` / `ConsumerStatefulWidget` when Riverpod is needed; default to `StatelessWidget` otherwise. `StateNotifierProvider` for mutable state, `StateProvider.autoDispose` for transient UI state.
+### Feature isolation (interface-file rule)
 
-**Navigation:** Custom `onGenerateRoute` switch in `lib/core/route/router.dart`, keyed on constants in `lib/core/route/app_routes.dart`. Navigate with `Navigator.pushNamed(context, AppRoutes.xScreen)`.
+Each feature under `lib/features/<x>/` exposes one public entry file: `lib/features/<x>/<x>_interface.dart`. That file re-exports every `.dart` file inside the feature.
 
-**Localization:** `easy_localization` with JSON files under `assets/json/lang/` (`en-US.json`, `ar-EG.json`). Always use `LangKeys` constants — e.g. `LangKeys.homeTitle.tr()` — never raw strings in a `Text()` widget. Locale state is a Riverpod `StateNotifier<Locale>` in `LocalController`.
+**Rule:** any file *outside* `features/<x>/` may import from that feature *only* through `features/<x>/<x>_interface.dart`. Deep paths like `features/wallet/presentation/screens/wallet_screen.dart` are not allowed from outside `features/wallet/`.
 
-**Responsive sizing:** Design base 390×844. Use `flutter_screenutil` extensions everywhere — `.sp` for font sizes, `.w` / `.h` for widths/heights and padding, `.r` for radii. Never pass raw `double` literals for sizes. Spacing widgets via `.hSpace` / `.wSpace` from `spacing_extension.dart`.
+The interface file is the feature's public contract. When adding a new `.dart` file inside a feature, add its `export` line to the interface file.
 
-**Type-safe assets:** All images/SVGs/animations go through the generated `Assets` class (e.g. `Assets.media.images.svg.logo.svg()`). Never reference raw string paths.
+The router (`lib/core/route/router.dart`) composes features by importing their interface files. `core/` is shared infrastructure and does not follow this rule.
 
-**Functional errors:** `dartz` `Either<Failure, Success>` is the intended return type for repository methods once the data layer lands.
+### `lib/core/` conventions
 
-## Adding a New Screen (checklist)
+- `route/` — `AppRoutes` holds route-name constants; `AppRouter.onGenerate` is a switch that returns `MaterialPageRoute`s. **New screens must be added in both files.**
+- `localization/` — `easy_localization` config, `LangKeys` constants, JSON at `assets/json/lang/{ar-EG,en-US}.json`. Wrap keys with `.tr()`.
+- `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (uses `flutter_screenutil`, design size 390×844), `assets/` (generated by flutter_gen), plus shared `components/`, `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
+- `connection/`, `errors/exceptions/`, `notifications/{local,remote}/`, `loggers/`, `formatters/`, `pickers/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper.
+- `readme` (file, no extension) documents the intent: "shared between more than one main layer (data, view model or view)".
 
-1. Screen file → `lib/features/<feature>/presentation/screens/<name>_screen.dart`.
-2. Feature-local widgets → `lib/features/<feature>/presentation/widgets/<group>/`. Genuinely shared widgets → `lib/core/presentation/widgets/<group>/`.
-3. Add a route constant to `lib/core/route/app_routes.dart` and a `case` + import to `lib/core/route/router.dart`.
-4. Wrap the body in `AppWavedScaffold(appBarTitle:, body:, canPop:)` for standard screens.
-5. Localize every static user-visible string: key in `lib/core/localization/lang_keys.dart`, plus entries in `assets/json/lang/en-US.json` and `assets/json/lang/ar-EG.json`. Reference as `LangKeys.myKey.tr()`.
+### State management
 
-## Screen Building Rules (MUST follow)
+Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation/controllers/` — see `lib/features/home/presentation/controllers/main_controller.dart` for the pattern (`Provider` for static lists, `StateProvider` for mutable index-style state, `.autoDispose` when tied to a screen).
 
-### 1. Colors — from `AppThemes` ColorScheme only
-Never hardcode `Color(0xff...)` in widgets. If the color already exists in `lib/core/presentation/theme/app_themes.dart` `ColorScheme`, use it via `Theme.of(context).colorScheme.<property>`. If it does not, add it to **both** light and dark `ColorScheme` first, then reference it semantically.
+### Assets & codegen
 
-### 2. Text styles — from `AppTextStyles`
-Never create inline `TextStyle` objects. Check `lib/core/presentation/styles/text_styles.dart` for a matching size+weight (`AppTextStyles.style16SemiBold`); add a new entry there if missing.
+- `pubspec.yaml` declares asset folders under `assets/`; `flutter_gen_runner` produces typed accessors.
+- **Generator output note:** `pubspec.yaml` sets `flutter_gen.output: lib/view/assets/`, but the checked-in generated files live at `lib/core/presentation/assets/` (`assets.gen.dart`, `fonts.gen.dart`). Import from there. If you re-run `build_runner`, verify the output path before committing.
+- Fonts: `Roboto` (light) and `IbmPlexSans` (thin→bold, Arabic-capable) declared in `pubspec.yaml`.
 
-### 3. Border radius — from `AppBorderRadius`
-Never use inline `BorderRadius.circular(...)`. Use `AppBorderRadius.brCircular12` (etc.) from `lib/core/presentation/styles/app_border_radius.dart`; add missing values there.
+### Bootstrap details worth knowing
 
-### 4. Icons — SVG assets, never Flutter built-ins
-Do **not** use `Icons.*`. Icons come from the design as SVGs under `assets/media/images/svg/`. After adding a file, run `dart run build_runner build` and reference it as `Assets.media.images.svg.iconName.svg()`.
+- `main.dart` locks orientation to portrait, makes the status bar transparent, and wraps the app in `DevicePreview` (enabled outside release mode).
+- `my_app.dart` currently sets `initialRoute: AppRoutes.searchScreen` — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
+- `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
+- Locale is persisted by `easy_localization` (`saveLocale: true`); the commented `LocalController.getCurrentLocale()` in `main.dart` is a leftover from a manual approach — don't reintroduce it without removing `easy_localization`'s own persistence.
 
-### 5. Network images — always `CachedNetworkImage`
-Never use `Image.network()`. Use `CachedNetworkImage` (or the project wrapper `AppCachedNetworkImage`) for any URL-loaded image.
+## Tests
 
-### 6. Localization — Arabic and English for every static string
-Static labels/titles/buttons/hints/errors MUST be localized (key + `en-US` + `ar-EG` entries). Dynamic values from the API (product names, prices, IDs) are not translated. RTL layout mirroring goes through the project's `ReverseWidget` helper where needed.
-
-## Widget Coding Style
-
-- **Flat `build()` methods.** Do not extract `_buildSomething()` helper methods returning `Widget`, and do not create small single-use `StatelessWidget` subclasses purely to tidy the tree. Build inline. Extract to a class only when the widget is genuinely reused across files. Private sub-widget classes (e.g. `_DiscountBadge`) are preferred over helper methods when extraction is warranted.
-- No data-model classes for placeholder/sample content during UI-first work — hardcode dummy values inline in the widget. Model classes come with the data layer later.
-- Add pub.dev packages freely when needed (`flutter pub add <package>`); no need to ask.
-
-## Design System
-
-- **Primary:** Green `#4BB749`. **Accent:** Yellow `#EAD800`.
-- **Fonts:** IBM Plex Sans (Arabic + English, weights 100–700), Roboto Light fallback.
-- Themes toggled via `ThemeManager` in `lib/core/presentation/theme/`.
-
-## Networking & Connectivity
-
-DIO client lives under the data layer (per-feature `datasources/` once populated). `PrettyDioLogger` is used in debug builds. Connectivity is monitored via `connectivity_plus` + `internet_connection_checker`; the app routes to a no-internet screen when offline via the router.
+`test/auth/{login,register}/{unit,widget,integration}_test.dart` exist as empty scaffolding (single line each). There is no working test suite yet — running `flutter test` will pass trivially. Populate these files before relying on CI signal.

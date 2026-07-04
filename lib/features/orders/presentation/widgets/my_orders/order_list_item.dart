@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -23,12 +22,12 @@ class OrderListItem extends ConsumerWidget {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colors.onPrimaryContainer,
-        borderRadius: AppBorderRadius.brCircular16.r,
+        borderRadius: AppBorderRadius.brCircular16,
         boxShadow: [
           BoxShadow(
             color: colors.onSurface.withValues(alpha: 0.08),
-            blurRadius: 12.r,
-            offset: Offset(0, 4.h),
+            blurRadius: 12,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -43,12 +42,12 @@ class OrderListItem extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                   child: CachedNetworkImage(
                     imageUrl:
                         'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
-                    width: 88.w,
-                    height: 88.w,
+                    width: 88,
+                    height: 88,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -75,12 +74,12 @@ class OrderListItem extends ConsumerWidget {
                         Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 4.h,
+                            horizontal: 12,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
                             color: colors.onSurface.withValues(alpha: 0.1),
-                            borderRadius: AppBorderRadius.brCircular20.r,
+                            borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
                             '5 ${LangKeys.itemsKey.tr()}',
@@ -94,14 +93,14 @@ class OrderListItem extends ConsumerWidget {
                         Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 4.h,
+                            horizontal: 12,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
                             color: colors.onSecondaryFixed.withValues(
                               alpha: 0.4,
                             ),
-                            borderRadius: AppBorderRadius.brCircular20.r,
+                            borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
                             LangKeys.pendingKey.tr(),
@@ -118,8 +117,8 @@ class OrderListItem extends ConsumerWidget {
                   spacing: 5,
                   children: [
                     Assets.media.images.svg.realSaudiCurrency.svg(
-                      width: 12.sp,
-                      height: 12.sp,
+                      width: 12,
+                      height: 12,
                       fit: BoxFit.contain,
                       colorFilter: ColorFilter.mode(
                         colors.primary,

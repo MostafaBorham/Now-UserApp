@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -29,7 +28,7 @@ class AppSlider extends ConsumerWidget {
             );
           },
           options: CarouselOptions(
-            // height: 150.h,
+            // height: 150,
             enlargeCenterPage: false,
             autoPlay: true,
             aspectRatio: itemAspectRatio!,
@@ -43,8 +42,8 @@ class AppSlider extends ConsumerWidget {
           activeIndex: ref.watch(_homeController.sliderIndexProvider),
           count: 4,
           effect: WormEffect(
-            dotHeight: 10.h,
-            dotWidth: 10.w,
+            dotHeight: 10,
+            dotWidth: 10,
             activeDotColor: activeDotColor?? colors.primary,
             dotColor: dotColor?? colors.onTertiary,
           ),

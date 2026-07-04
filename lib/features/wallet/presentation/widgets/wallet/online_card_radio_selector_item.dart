@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
 import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -83,10 +82,10 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: switch (cardItem.cardType) {
                   OnlineCardTypes.visa => Assets.media.images.svg.visaLogo.svg(
-                    width: 25.w,
+                    width: 25,
                   ),
                   OnlineCardTypes.master => Assets.media.images.svg.masterLogo.svg(
-                    width: 25.w,
+                    width: 25,
                   ),
                 },
               ),

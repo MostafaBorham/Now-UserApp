@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -46,7 +45,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SizedBox(
-          width: 170.w,
+          width: 170,
           child: Column(
             spacing: 5,
             children: [
@@ -152,7 +151,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                                                         .svg
                                                         .favouriteIcon)
                                               .svg(
-                                                width: 16.sp,
+                                                width: 16,
                                                 colorFilter: ColorFilter.mode(
                                                   isFavorite
                                                       ? colors.errorContainer
@@ -251,7 +250,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                           spacing: 7,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Assets.media.images.svg.starRate.svg(width: 20.sp),
+                            Assets.media.images.svg.starRate.svg(width: 20),
                             AutoSizeText(
                               '4',
                               style: AppTextStyles.style14Regular.copyWith(

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
@@ -51,7 +50,7 @@ class _RecentSearchWidgetState extends State<RecentSearchWidget> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16.h,
+      spacing: 16,
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +92,7 @@ class _RecentSearchWidgetState extends State<RecentSearchWidget> {
                 onTap: () => _onRemove(term),
                 child: Icon(
                   Icons.close,
-                  size: 22.sp,
+                  size: 22,
                   color: colors.outline,
                 ),
               ),

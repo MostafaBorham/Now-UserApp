@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
-import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/main_screen.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
-import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
-import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
-import 'package:nowdelivery_user_app/features/welcome/presentation/screens/on_boarding_screen.dart';
-import 'package:nowdelivery_user_app/features/support/presentation/screens/file_complaint_screen.dart';
-import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
-import 'package:nowdelivery_user_app/features/wallet/presentation/screens/wallet_screen.dart';
+import 'package:nowdelivery_user_app/features/categories/categories_interface.dart';
+import 'package:nowdelivery_user_app/features/favourites/favourites_interface.dart';
+import 'package:nowdelivery_user_app/features/home/home_interface.dart';
+import 'package:nowdelivery_user_app/features/notifications/notifications_interface.dart';
+import 'package:nowdelivery_user_app/features/orders/orders_interface.dart';
+import 'package:nowdelivery_user_app/features/search/search_interface.dart';
+import 'package:nowdelivery_user_app/features/support/support_interface.dart';
+import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
+import 'package:nowdelivery_user_app/features/welcome/welcome_interface.dart';
 
-import '../../features/welcome/presentation/screens/splash_screen.dart';
 import 'app_routes.dart';
 
 abstract class AppRouter {

@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -44,16 +43,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 spacing: 8,
                 children: [
                   Container(
-                    width: 48.w,
-                    height: 48.w,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       gradient: screenGradient,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: Assets.media.images.svg.orderIcon.svg(
-                        width: 24.w,
-                        height: 24.w,
+                        width: 24,
+                        height: 24,
                         colorFilter: ColorFilter.mode(
                           colors.tertiaryContainer,
                           BlendMode.srcIn,
@@ -83,12 +82,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 5.h,
+                      horizontal: 8,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: colors.primary.withValues(alpha: 0.1),
-                      borderRadius: AppBorderRadius.brCircular20.r,
+                      borderRadius: AppBorderRadius.brCircular20,
                     ),
                     child: Text(
                       LangKeys.deliveredKey.tr(),
@@ -111,8 +110,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 3.h,
+                            horizontal: 10,
+                            vertical: 3,
                           ),
                           decoration: BoxDecoration(
                             color: colors.primary,
@@ -122,7 +121,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             spacing: 5,
                             children: [
                               Assets.media.images.svg.starOutlineIcon.svg(
-                                width: 12.sp,
+                                width: 12,
                                 colorFilter: ColorFilter.mode(
                                   colors.onPrimary,
                                   BlendMode.srcIn,
@@ -140,12 +139,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 5.h,
+                          horizontal: 8,
+                          vertical: 5,
                         ),
                         decoration: BoxDecoration(
                           color: colors.primary.withValues(alpha: 0.1),
-                          borderRadius: AppBorderRadius.brCircular20.r,
+                          borderRadius: AppBorderRadius.brCircular20,
                         ),
                         child: Text(
                           'Delivered',
@@ -159,13 +158,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ],
               ),
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   /*    color: colors.secondary.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,10 +178,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     12.hSpace,
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
+                        borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
                         children: [
@@ -268,13 +267,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   /*    color: colors.secondary.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,22 +287,22 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     12.hSpace,
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
+                        borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         spacing: 10,
                         children: [
                           ClipRRect(
-                            borderRadius: AppBorderRadius.brCircular12.r,
+                            borderRadius: AppBorderRadius.brCircular12,
                             child: CachedNetworkImage(
                               imageUrl:
                                   'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
-                              width: 70.w,
-                              height: 70.w,
+                              width: 70,
+                              height: 70,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -323,8 +322,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   children: [
                                     Assets.media.images.svg.realSaudiCurrency
                                         .svg(
-                                          width: 12.sp,
-                                          height: 12.sp,
+                                          width: 12,
+                                          height: 12,
                                           fit: BoxFit.contain,
                                           colorFilter: ColorFilter.mode(
                                             colors.onSecondary,
@@ -342,7 +341,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 40.h,
+                            height: 40,
                             child: AutoSizeText(
                               'x3',
                               style: AppTextStyles.style16Medium.copyWith(
@@ -357,13 +356,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   /*    color: colors.secondary.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,10 +376,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     12.hSpace,
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
+                        borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,16 +387,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           Row(
                             children: [
                               Container(
-                                width: 44.w,
-                                height: 44.w,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
                                   color: colors.primary,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
                                   child: Assets.media.images.svg.marketIcon.svg(
-                                    width: 20.w,
-                                    height: 20.w,
+                                    width: 20,
+                                    height: 20,
                                     colorFilter: ColorFilter.mode(
                                       colors.onPrimary,
                                       BlendMode.srcIn,
@@ -438,8 +437,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           Row(
                             children: [
                               Container(
-                                width: 44.w,
-                                height: 44.w,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
                                   color: colors.onSecondaryFixedVariant,
                                   shape: BoxShape.circle,
@@ -447,8 +446,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Center(
                                   child: Assets.media.images.svg.locationIcon
                                       .svg(
-                                        width: 20.w,
-                                        height: 20.w,
+                                        width: 20,
+                                        height: 20,
                                         colorFilter: ColorFilter.mode(
                                           colors.onSecondary,
                                           BlendMode.srcIn,
@@ -491,13 +490,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Navigator.pushNamed(context, AppRoutes.fileComplaintScreen),
               ),
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   /*    color: colors.secondary.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -511,10 +510,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     12.hSpace,
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
+                        borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -524,8 +523,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             child: CachedNetworkImage(
                               imageUrl:
                                   'https://cdn-icons-png.flaticon.com/512/5968/5968601.png',
-                              width: 44.w,
-                              height: 44.w,
+                              width: 44,
+                              height: 44,
                               fit: BoxFit.cover,
                             ),
                             decoration: BoxDecoration(shape: BoxShape.circle),
@@ -547,8 +546,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   children: [
                                     Assets.media.images.svg.realSaudiCurrency
                                         .svg(
-                                          width: 12.sp,
-                                          height: 12.sp,
+                                          width: 12,
+                                          height: 12,
                                           fit: BoxFit.contain,
                                           colorFilter: ColorFilter.mode(
                                             colors.onSurface,
@@ -572,13 +571,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   /*    color: colors.secondary.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12.r,
+                  borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,10 +591,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     ),
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: colors.onPrimary,
-                        borderRadius: AppBorderRadius.brCircular8.r,
+                        borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
                         spacing: 10,
@@ -614,8 +613,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 spacing: 5,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15.sp,
-                                    height: 15.sp,
+                                    width: 15,
+                                    height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.onSecondary,
@@ -646,8 +645,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 spacing: 5,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15.sp,
-                                    height: 15.sp,
+                                    width: 15,
+                                    height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.onSecondary,
@@ -678,8 +677,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 spacing: 5,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15.sp,
-                                    height: 15.sp,
+                                    width: 15,
+                                    height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.onSecondary,
@@ -710,8 +709,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 spacing: 5,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15.sp,
-                                    height: 15.sp,
+                                    width: 15,
+                                    height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.onError,
@@ -743,8 +742,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 spacing: 5,
                                 children: [
                                   Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15.sp,
-                                    height: 15.sp,
+                                    width: 15,
+                                    height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
                                       colors.primary,

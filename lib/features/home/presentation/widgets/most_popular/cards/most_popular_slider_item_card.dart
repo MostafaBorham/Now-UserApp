@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' as easy_locale;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -86,10 +85,10 @@ class MostPopularSliderItemCard extends StatelessWidget {
         ),
         // Rank badge (top-start)
         PositionedDirectional(
-          top: 12.h,
-          start: 12.w,
+          top: 12,
+          start: 12,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
               color: colors.onPrimary,
               borderRadius: AppBorderRadius.brCircular30,
@@ -118,11 +117,11 @@ class MostPopularSliderItemCard extends StatelessWidget {
 
         // Discount circle (top-end)
         PositionedDirectional(
-          top: 12.h,
-          end: 12.w,
+          top: 12,
+          end: 12,
           child: Container(
-            width: 46.w,
-            height: 46.w,
+            width: 46,
+            height: 46,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.primaryFixedDim,
@@ -142,8 +141,8 @@ class MostPopularSliderItemCard extends StatelessWidget {
 
         // Feature tags (bottom-start)
         PositionedDirectional(
-          bottom: 12.h,
-          start: 12.w,
+          bottom: 12,
+          start: 12,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             textDirection: TextDirection.ltr,
@@ -160,7 +159,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
 
   Widget _featureTag(ColorScheme colors, String label) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: AppBorderRadius.brCircular30,
@@ -220,8 +219,8 @@ class MostPopularSliderItemCard extends StatelessWidget {
     return Row(
       children: [
         Assets.media.images.svg.starRate.svg(
-          width: 16.w,
-          height: 16.w,
+          width: 16,
+          height: 16,
           colorFilter: ColorFilter.mode(
             colors.primaryFixedDim,
             BlendMode.srcIn,

@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -66,14 +65,14 @@ class RatingCard extends StatelessWidget {
             emptyWidget: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
               child: Assets.media.images.svg.orderStarRate.svg(
-                width: 20.sp,
+                width: 20,
                 colorFilter: ColorFilter.mode(colors.inversePrimary.withValues(alpha: 0.3), BlendMode.srcIn)
               ),
             ),
             fullWidget: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
               child: Assets.media.images.svg.orderStarRate.svg(
-                  width: 20.sp,
+                  width: 20,
                   colorFilter: ColorFilter.mode(colors.surface, BlendMode.srcIn)
               ),
             ),
