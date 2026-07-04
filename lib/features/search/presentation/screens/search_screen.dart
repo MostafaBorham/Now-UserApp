@@ -80,8 +80,17 @@ class SearchScreen extends StatelessWidget {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) => AspectRatio(
-                            aspectRatio: 0.8,
-                            child: CategoryCard(category: CategoryModel(id: 1, name: 'Beauty', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkOC7uWMySbv_tq5UbaLYW_OQDfLceK4LNAUqhTeyAr186tx5PEjWrUHw&s=10',discountPercentage: 50))),
+                          aspectRatio: 0.8,
+                          child: CategoryCard(
+                            category: CategoryModel(
+                              id: 1,
+                              name: 'Beauty',
+                              imageUrl:
+                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7in6v147mMSnkxkYcpf0X3UvHmk7HS7bUKWIrG-iqAg&s=10',
+                              discountPercentage: 50,
+                            ),
+                          ),
+                        ),
                         separatorBuilder: (context, index) => 10.wSpace,
                         itemCount: 5,
                       ),
@@ -119,15 +128,16 @@ class SearchScreen extends StatelessWidget {
                       child: GridView.builder(
                         padding: EdgeInsets.symmetric(vertical: 5),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 14,
-                            mainAxisSpacing: 14,
-                            childAspectRatio: 0.65
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 14,
+                          childAspectRatio: 0.65,
                         ),
                         itemCount: 6,
-                        itemBuilder: (BuildContext context, int index) => ProductItemCard1(),
+                        itemBuilder: (BuildContext context, int index) =>
+                            ProductItemCard1(),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
