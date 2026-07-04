@@ -14,4 +14,5 @@ abstract class AppRoutes {
   static const String offersCannotWaitScreen = 'offers cannot wait screen';
   static const String notificationsScreen = 'notifications screen';
   static const String searchScreen = 'search screen';
+  static const String allStoresScreen = 'all stores screen';
 }

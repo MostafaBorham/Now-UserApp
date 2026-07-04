@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
@@ -116,30 +117,13 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                                 ),
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                isFavorite = !isFavorite;
-                                setState(() {
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.only(end: 8.0),
-                                child: Material(
-                                  elevation: 1,
-                                  shape: const CircleBorder(),
-                                  child: CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: colors.onPrimary,
-                                    child: (isFavorite? Assets.media.images.svg.filledFavouriteIcon : Assets.media.images.svg.favouriteIcon)
-                                        .svg(
-                                          width: 16,
-                                          colorFilter: ColorFilter.mode(
-                                            isFavorite ? colors.errorContainer : colors.onTertiaryFixed,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                  ),
-                                ),
+                            Padding(
+                              padding: const EdgeInsetsDirectional.only(end: 8.0),
+                              child: CircularAppFavouriteIcon(
+                                isFavourite: false,
+                                onFavouriteChanged: (currentFavourite) {
+
+                                },
                               ),
                             ),
                           ],

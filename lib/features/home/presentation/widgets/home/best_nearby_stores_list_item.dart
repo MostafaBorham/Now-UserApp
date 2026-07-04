@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
 class BestNearbyStoresListItem extends StatefulWidget {
@@ -54,40 +55,16 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          isFavorite = !isFavorite;
-                          setState(() {});
-                        },
-                        child: Align(
-                          alignment: AlignmentDirectional.topStart,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircleAvatar(
-                              radius: constrains.maxHeight * 0.08,
-                              backgroundColor: colors.onPrimary,
-                              child:
-                                  (isFavorite
-                                          ? Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .filledFavouriteIcon
-                                          : Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .favouriteIcon)
-                                      .svg(
-                                        width: constrains.maxHeight * 0.08,
-                                        colorFilter: ColorFilter.mode(
-                                          isFavorite
-                                              ? colors.errorContainer
-                                              : colors.onTertiaryFixed,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                            ),
+                      Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularAppFavouriteIcon(
+                            size: constrains.maxHeight*0.08,
+                            isFavourite: false,
+                            onFavouriteChanged: (currentFavourite) {
+
+                            },
                           ),
                         ),
                       ),

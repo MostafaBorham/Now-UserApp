@@ -14,6 +14,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_wi
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
+import '../../../features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+
 class ProductItem extends StatefulWidget {
   const ProductItem({super.key});
 
@@ -79,44 +81,15 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                     Align(
                       alignment: AlignmentDirectional.topEnd,
-                      child: InkWell(
-                        onTap: () {
-                          isFavorite = !isFavorite;
-                          setState(() {});
-                        },
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.all(
-                            con.maxWidth * 0.05,
-                          ),
-                          child: Material(
-                            elevation: 1,
-                            shape: const CircleBorder(),
-                            child: CircleAvatar(
-                              radius: 13,
-                              backgroundColor: colors.onPrimary,
-                              child:
-                                  (isFavorite
-                                          ? Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .filledFavouriteIcon
-                                          : Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .favouriteIcon)
-                                      .svg(
-                                        width: 15,
-                                        colorFilter: ColorFilter.mode(
-                                          isFavorite
-                                              ? colors.errorContainer
-                                              : colors.onTertiaryFixed,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                            ),
-                          ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.all(
+                          con.maxWidth * 0.05,
+                        ),
+                        child: CircularAppFavouriteIcon(
+                          size: con.maxWidth*0.08,
+                          isFavourite: false,
+                          onFavouriteChanged: (currentFavourite) {
+                          },
                         ),
                       ),
                     ),

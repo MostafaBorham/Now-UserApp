@@ -83,7 +83,10 @@ class AppCachedNetworkImage extends StatelessWidget {
       placeholder: (context, url) {
         switch (placeholderType) {
           case PlaceholderTypes.circular:
-            return Center(child: CircularProgressIndicator(color: colors.primary));
+            return Center(child: SizedBox(
+                width: (width??30)*0.7,
+                height: (height??30)*0.7,
+                child: CircularProgressIndicator(color: colors.primary,)));
           case PlaceholderTypes.shimmer || null:
             return Shimmer.fromColors(
               baseColor: colors.onSurface.withValues(alpha: 0.6),

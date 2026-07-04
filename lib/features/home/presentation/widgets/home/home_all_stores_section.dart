@@ -3,7 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_store_list_item.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_item_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -42,11 +43,7 @@ class HomeAllStoresSection extends StatelessWidget {
           ),
           Expanded(
             child: CustomButtonTabBar(
-              filterWidget: CircleAvatar(
-                backgroundColor: colors.tertiary.withValues(alpha: 0.3),
-                radius: 20,
-                child: Assets.media.images.svg.filterIcon.svg(width: 20),
-              ),
+              filterWidget: AppFilterIcon(),
               tabs: [LangKeys.allKey.tr(), LangKeys.clothesKey.tr(), LangKeys.otherKey.tr()],
               views: [
                 LayoutBuilder(
@@ -54,7 +51,7 @@ class HomeAllStoresSection extends StatelessWidget {
                     return ListView.separated(
                       itemBuilder: (context, index) => SizedBox(
                         height: con.maxHeight * 0.6,
-                        child: HomeStoreListItem(),
+                        child: StoreItemCard(),
                       ),
                       separatorBuilder: (context, index) => 20.hSpace,
                       itemCount: 3,
@@ -66,7 +63,7 @@ class HomeAllStoresSection extends StatelessWidget {
                     return ListView.separated(
                       itemBuilder: (context, index) => SizedBox(
                         height: con.maxHeight * 0.6,
-                        child: HomeStoreListItem(),
+                        child: StoreItemCard(),
                       ),
                       separatorBuilder: (context, index) => 20.hSpace,
                       itemCount: 3,
@@ -78,7 +75,7 @@ class HomeAllStoresSection extends StatelessWidget {
                     return ListView.separated(
                       itemBuilder: (context, index) => SizedBox(
                         height: con.maxHeight * 0.6,
-                        child: HomeStoreListItem(),
+                        child: StoreItemCard(),
                       ),
                       separatorBuilder: (context, index) => 20.hSpace,
                       itemCount: 3,

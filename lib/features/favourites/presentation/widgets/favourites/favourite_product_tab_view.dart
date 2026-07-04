@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/product_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
@@ -19,11 +20,7 @@ class FavouriteProductTabView extends StatelessWidget {
         AppSearchField(hintText: LangKeys.searchForAProductKey.tr(),),
         Expanded(
           child: isProductsEmpty? NoItemsWidget() : CustomButtonTabBar(
-            filterWidget: CircleAvatar(
-              backgroundColor: colors.tertiary.withValues(alpha: 0.3),
-              radius: 20,
-              child: Assets.media.images.svg.filterIcon.svg(width: 20),
-            ),
+            filterWidget: AppFilterIcon(),
             tabs: [LangKeys.allKey.tr(), LangKeys.menKey.tr()],
             views: ['', '']
                 .map(

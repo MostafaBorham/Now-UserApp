@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/white_gradient_overlay_effect.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
@@ -100,7 +100,9 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                     PositionedDirectional(
                       bottom: 9,
                       start: 9,
-                      child: AppFavouriteIcon(size: con.maxWidth * 0.07),
+                      child: CircularAppFavouriteIcon(size: con.maxWidth * 0.07,onFavouriteChanged: (p0) {
+
+                      },),
                     ),
                   ],
                 ),

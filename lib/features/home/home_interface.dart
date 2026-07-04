@@ -17,7 +17,7 @@ export 'presentation/widgets/home/home_categories_section.dart';
 export 'presentation/widgets/home/home_offers_item.dart';
 export 'presentation/widgets/home/home_offers_section.dart';
 export 'presentation/widgets/home/home_product_item.dart';
-export 'presentation/widgets/home/home_store_list_item.dart';
+export '../stores/presentation/widgets/store_item_card.dart';
 export 'presentation/widgets/home/most_popular_item.dart';
 export 'presentation/widgets/home/most_popular_section.dart';
 export 'presentation/widgets/home/top_brands_section.dart';

@@ -8,6 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
+import '../../../features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import 'rate/app_rate_widget.dart';
+
 class StoreItem extends StatefulWidget {
   const StoreItem({super.key});
 
@@ -56,42 +59,14 @@ class _StoreItemState extends State<StoreItem> {
                     ),
                     Align(
                       alignment: AlignmentDirectional.topEnd,
-                      child: InkWell(
-                        onTap: () {
-                          isFavorite = !isFavorite;
-                          setState(() {});
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Material(
-                            elevation: 1,
-                            shape: const CircleBorder(),
-                            child: CircleAvatar(
-                              radius: stackCon.maxHeight * 0.12,
-                              backgroundColor: colors.onPrimary,
-                              child:
-                                  (isFavorite
-                                          ? Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .filledFavouriteIcon
-                                          : Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .favouriteIcon)
-                                      .svg(
-                                        width: stackCon.maxHeight * 0.12,
-                                        colorFilter: ColorFilter.mode(
-                                          isFavorite
-                                              ? colors.errorContainer
-                                              : colors.onTertiaryFixed,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                            ),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: CircularAppFavouriteIcon(
+                          size: stackCon.maxHeight*0.12,
+                          isFavourite: false,
+                          onFavouriteChanged: (currentFavourite) {
+
+                          },
                         ),
                       ),
                     ),
@@ -214,20 +189,7 @@ class _StoreItemState extends State<StoreItem> {
                                 borderRadius: AppBorderRadius.brCircular20,
                               ),
                               child: FittedBox(
-                                child: Row(
-                                  spacing: 5,
-                                  children: [
-                                    Assets.media.images.svg.starIcon.svg(
-                                      width: 17,
-                                      colorFilter: ColorFilter.mode(colors.surface, BlendMode.srcIn)
-                                    ),
-                                    AutoSizeText(
-                                      '4.5 (12)',
-                                      style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.onSecondary),
-                                    ),
-                                  ],
-                                ),
+                                child: AppRateWidget(starColor: colors.onSecondaryContainer, rateRatio: '4.5',rateCount: '12',rateColor: colors.onSurface,size: 15,),
                               ),
                             ),
                           ],

@@ -7,25 +7,31 @@ class CircularBrandLogo extends StatelessWidget {
     super.key,
     required this.radius,
     required this.logoUrl,
-    this.backgroundColor,
+    this.backgroundColor, this.elevation = 1,
   });
 
   final double radius;
   final String logoUrl;
   final Color? backgroundColor;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: backgroundColor ?? colors.onPrimaryContainer,
-      child: Center(
-        child: AppCachedNetworkImage(
-          height: radius,
-          imageUrl: logoUrl,
-          fit: BoxFit.contain,
-          placeholderType: PlaceholderTypes.circular,
+    return Material(
+      elevation: elevation!,
+      shape: CircleBorder(),
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: backgroundColor ?? colors.onPrimaryContainer,
+        child: Center(
+          child: AppCachedNetworkImage(
+            height: radius,
+            width: radius,
+            imageUrl: logoUrl,
+            fit: BoxFit.contain,
+            placeholderType: PlaceholderTypes.circular,
+          ),
         ),
       ),
     );

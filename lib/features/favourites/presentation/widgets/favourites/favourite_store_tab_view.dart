@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
@@ -20,11 +21,7 @@ class FavouriteStoreTabView extends StatelessWidget {
         AppSearchField(hintText: LangKeys.searchForAStoreKey.tr(),),
         Expanded(
           child: isStoresEmpty? NoItemsWidget() : CustomButtonTabBar(
-            filterWidget: CircleAvatar(
-              backgroundColor: colors.tertiary.withValues(alpha: 0.3),
-              radius: 20,
-              child: Assets.media.images.svg.filterIcon.svg(width: 20),
-            ),
+            filterWidget: AppFilterIcon(),
             tabs: [LangKeys.allKey.tr(), LangKeys.menKey.tr()],
             views: ['', '']
                 .map(
