@@ -11,15 +11,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
 
-class StoreItemCard extends StatefulWidget {
+class StoreItemCard extends StatelessWidget {
   const StoreItemCard({super.key});
-
-  @override
-  State<StoreItemCard> createState() => _StoreItemCardState();
-}
-
-class _StoreItemCardState extends State<StoreItemCard> {
-  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,73 +34,76 @@ class _StoreItemCardState extends State<StoreItemCard> {
                   Expanded(
                     child: LayoutBuilder(
                       builder: (context, con) {
-                        return Container(
-                          color: colors.error,
-                          child: Stack(
-                            children: [
-                              AppCachedNetworkImage(
+                        return Stack(
+                          children: [
+                            Positioned.fill(
+                              bottom: con.maxHeight*0.23,
+                              child: AppCachedNetworkImage(
                                 imageUrl:
                                     'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
                                 width: double.infinity,
-                                height: 100,
+                                height: double.infinity,
                               ),
-                              Align(
-                                alignment: AlignmentDirectional.topCenter,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: colors.errorContainer,
-                                          borderRadius:
-                                              BorderRadiusDirectional.only(
-                                                bottomEnd: Radius.circular(
-                                                  con.maxHeight * 0.14,
-                                                ),
+                            ),
+                            Align(
+                              alignment: AlignmentDirectional.topCenter,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: colors.errorContainer,
+                                        borderRadius:
+                                            BorderRadiusDirectional.only(
+                                              bottomEnd: Radius.circular(
+                                                con.maxHeight * 0.12,
                                               ),
-                                        ),
-                                        child: FittedBox(
-                                          child: Text(
-                                            '25%',
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color: colors.onPrimary,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: con.maxHeight * 0.12,
                                             ),
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          '25%',
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: colors.onPrimary,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: con.maxHeight * 0.1,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                        end: 16.0,
-                                        top: 8,
-                                      ),
-                                      child: CircularAppFavouriteIcon(
-                                        isFavourite: false,
-                                        size: con.maxHeight * 0.17,
-                                        onFavouriteChanged: (currentFavourite) {},
-                                      ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.only(
+                                      end: 16.0,
+                                      top: 8,
                                     ),
-                                  ],
-                                ),
+                                    child: CircularAppFavouriteIcon(
+                                      isFavourite: false,
+                                      size: con.maxHeight * 0.15,
+                                      onFavouriteChanged: (currentFavourite) {},
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Align(
-                                alignment: Alignment.bottomCenter,
+                            ),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: con.maxWidth*0.05),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   spacing: 8,
                                   children: [
                                     CircularBrandLogo(
-                                      radius: 30,
+                                      radius: con.maxHeight*0.2,
                                       elevation: 0.5,
                                       logoUrl:
                                       'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
@@ -117,6 +113,7 @@ class _StoreItemCardState extends State<StoreItemCard> {
                                         'Panda',
                                         style: AppTextStyles.style18Bold.copyWith(
                                           color: colors.onSecondary,
+                                          fontSize: con.maxHeight*0.12
                                         ),
                                       ),
                                     ),
@@ -125,37 +122,37 @@ class _StoreItemCardState extends State<StoreItemCard> {
                                       rateRatio: '4.5',
                                       rateCount: '4',
                                       rateColor: colors.onSurface,
-                                      size: 15,
+                                      size: con.maxHeight*0.1,
                                     ),
                                   ],
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         );
                       },
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 12.0),
+                  LayoutBuilder(
+                    builder: (context,con) {
+                      return Padding(
+                        padding:  EdgeInsets.symmetric(horizontal: con.maxWidth*0.05,vertical: con.maxWidth*0.02),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 6,
                           children: [
                             Text(
-                              'Panda is suprmarket contain everything',
+                              'Panda is supermarket contain everything',
                               style: AppTextStyles.style14Regular.copyWith(
                                 color: colors.onSurface,
+                                fontSize: con.maxWidth*0.04
                               ),
                             ),
                             Row(
                               spacing: 5,
                               children: [
                                 Assets.media.images.svg.timeIcon.svg(
-                                  width: 16,
+                                  width: con.maxWidth*0.05,
                                   colorFilter: ColorFilter.mode(
                                     colors.onSurface,
                                     BlendMode.srcIn,
@@ -165,11 +162,12 @@ class _StoreItemCardState extends State<StoreItemCard> {
                                   '40-50 minutes',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
+                                    fontSize: con.maxWidth*0.035
                                   ),
                                 ),
                                 5.wSpace,
                                 Assets.media.images.svg.locationIcon.svg(
-                                  width: 14,
+                                  width: con.maxWidth*0.04,
                                   colorFilter: ColorFilter.mode(
                                     colors.onSurface,
                                     BlendMode.srcIn,
@@ -179,11 +177,12 @@ class _StoreItemCardState extends State<StoreItemCard> {
                                   '40 - 50 km',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
+                                    fontSize: con.maxWidth*0.035
                                   ),
                                 ),
                                 5.wSpace,
                                 Assets.media.images.svg.shippingIcon.svg(
-                                  width: 16,
+                                  width: con.maxWidth*0.05,
                                   colorFilter: ColorFilter.mode(
                                     colors.onSurface,
                                     BlendMode.srcIn,
@@ -192,14 +191,14 @@ class _StoreItemCardState extends State<StoreItemCard> {
                                 NewPriceWidget(
                                   color: colors.onSecondary,
                                   price: '10',
-                                  size: 14,
+                                  size: con.maxWidth*0.04,
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    }
                   ),
                 ],
               ),

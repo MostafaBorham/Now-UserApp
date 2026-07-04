@@ -11,7 +11,7 @@ class StoresListView extends StatelessWidget {
       itemBuilder: (context, index) => AspectRatio(
         aspectRatio: 2,
           child: StoreItemCard()),
-      separatorBuilder: (context, index) => 10.hSpace,
+      separatorBuilder: (context, index) => 15.hSpace,
       itemCount: 5,
     );
   }
