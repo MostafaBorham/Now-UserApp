@@ -30,10 +30,12 @@ class CategoryCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
-            child: Material(
-              borderRadius: AppBorderRadius.brCircular18,
+            child: Container(
               clipBehavior: Clip.antiAliasWithSaveLayer,
-              elevation: 2,
+              decoration: BoxDecoration(
+                borderRadius: AppBorderRadius.brCircular18,
+                gradient: LinearGradient(colors: [colors.surface,colors.onPrimary],begin: Alignment.topCenter,end: Alignment.bottomCenter)
+              ),
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -45,7 +47,8 @@ class CategoryCard extends StatelessWidget {
                     placeholder: (_, _) => const SizedBox.shrink(),
                     errorWidget: (_, _, _) => const SizedBox.shrink(),
                   ),
-                  if(category.discountPercentage!=null) _DiscountBadge(percentage: category.discountPercentage!)
+                  if (category.discountPercentage != null)
+                    _DiscountBadge(percentage: category.discountPercentage!),
                 ],
               ),
             ),
@@ -81,9 +84,7 @@ class _DiscountBadge extends StatelessWidget {
       ),
       child: Text(
         '$percentage % ${LangKeys.discountKey.tr()}',
-        style: AppTextStyles.style18SemiBold.copyWith(
-          color: colors.onPrimary,
-        ),
+        style: AppTextStyles.style18SemiBold.copyWith(color: colors.onPrimary),
       ),
     );
   }

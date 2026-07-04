@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/offers_cannot_wait/offers_cannot_wait_item_card.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
 
 class OffersCannotWaitView extends StatelessWidget {
   const OffersCannotWaitView({super.key});
@@ -15,7 +15,7 @@ class OffersCannotWaitView extends StatelessWidget {
           childAspectRatio: 0.65
       ),
       itemCount: 6,
-      itemBuilder: (BuildContext context, int index) => OffersCannotWaitItemCard(),
+      itemBuilder: (BuildContext context, int index) => ProductItemCard1(),
     );
   }
 }

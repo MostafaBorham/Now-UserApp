@@ -30,7 +30,7 @@ export 'presentation/widgets/most_popular/cards/most_popular_top3_item_card.dart
 export 'presentation/widgets/most_popular/views/all_most_popular_filter_view.dart';
 export 'presentation/widgets/most_popular/views/most_popular_filter_view.dart';
 export 'presentation/widgets/most_popular/views/top3_most_popular_view.dart';
-export 'presentation/widgets/offers_cannot_wait/offers_cannot_wait_item_card.dart';
+export '../products/presentation/widgets/product_item_card1.dart';
 export 'presentation/widgets/offers_cannot_wait/offers_cannot_wait_view.dart';
 export 'presentation/widgets/top_brands/top_brands_item.dart';
 export 'presentation/widgets/top_brands/top_brands_view.dart';

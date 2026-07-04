@@ -1,11 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/product_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/features/categories/categories_interface.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -35,22 +38,21 @@ class SearchScreen extends StatelessWidget {
         body: AppWavedScaffold(
           appBarTitle: LangKeys.searchKey.tr(),
           canPop: Navigator.canPop(context),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 20,
-              children: <Widget>[
-                AppSearchField(
-                  autofocus: true,
-                  enableRecentKeywords: true,
-                  recentKeywords: recentSearches,
-                  onRecentSelect: (String term) {},
-                  onRecentRemove: (String term) {},
-                  onRecentClear: () {},
-                ),
-
-                // Best categories
-                Column(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 20,
+            children: <Widget>[
+              AppSearchField(
+                autofocus: true,
+                enableRecentKeywords: true,
+                recentKeywords: recentSearches,
+                onRecentSelect: (String term) {},
+                onRecentRemove: (String term) {},
+                onRecentClear: () {},
+              ),
+              AspectRatio(
+                aspectRatio: 2,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: <Widget>[
@@ -74,71 +76,22 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 140,
+                    Expanded(
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.zero,
-                        itemCount: bestCategories.length,
-                        separatorBuilder: (BuildContext context, int index) =>
-                            SizedBox(width: 12),
-                        itemBuilder: (BuildContext context, int index) => SizedBox(
-                          width: 100,
-                          child: Column(
-                            spacing: 6,
-                            children: <Widget>[
-                              Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  alignment: AlignmentDirectional.topStart,
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: AppBorderRadius.brCircular16,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: <Color>[
-                                        colors.surfaceContainerHighest,
-                                        colors.surface,
-                                      ],
-                                    ),
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 3,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: colors.errorContainer,
-                                      borderRadius: AppBorderRadius.brCircular6,
-                                    ),
-                                    child: Text(
-                                      index == 0
-                                          ? '${LangKeys.upToKey.tr()} 50% ${LangKeys.discountKey.tr()}'
-                                          : '50% ${LangKeys.discountKey.tr()}',
-                                      style: AppTextStyles.style8SemiBold
-                                          .copyWith(color: colors.onPrimary),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                bestCategories[index],
-                                maxLines: 1,
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.onSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        itemBuilder: (context, index) => AspectRatio(
+                            aspectRatio: 0.8,
+                            child: CategoryCard(category: CategoryModel(id: 1, name: 'Beauty', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkOC7uWMySbv_tq5UbaLYW_OQDfLceK4LNAUqhTeyAr186tx5PEjWrUHw&s=10',discountPercentage: 50))),
+                        separatorBuilder: (context, index) => 10.wSpace,
+                        itemCount: 5,
                       ),
                     ),
                   ],
                 ),
-
-                // Most requested
-                Column(
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: <Widget>[
@@ -162,24 +115,23 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    GridView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 6,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.6,
+                    Expanded(
+                      child: GridView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 14,
+                            childAspectRatio: 0.65
+                        ),
+                        itemCount: 6,
+                        itemBuilder: (BuildContext context, int index) => ProductItemCard1(),
                       ),
-                      itemBuilder: (BuildContext context, int index) =>
-                          const ProductItem(),
-                    ),
+                    )
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

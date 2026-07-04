@@ -12,15 +12,15 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
-class OffersCannotWaitItemCard extends StatefulWidget {
-  const OffersCannotWaitItemCard({super.key});
+class ProductItemCard1 extends StatefulWidget {
+  const ProductItemCard1({super.key});
 
   @override
-  State<OffersCannotWaitItemCard> createState() =>
-      _OffersCannotWaitItemCardState();
+  State<ProductItemCard1> createState() =>
+      _ProductItemCard1State();
 }
 
-class _OffersCannotWaitItemCardState extends State<OffersCannotWaitItemCard> {
+class _ProductItemCard1State extends State<ProductItemCard1> {
   bool isFavorite = false;
 
   @override
