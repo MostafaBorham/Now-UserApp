@@ -131,6 +131,8 @@ class SearchScreen extends StatelessWidget {
                     ),
                     Expanded(
                       child: GridView.builder(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
                         padding: EdgeInsets.symmetric(vertical: 5),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
