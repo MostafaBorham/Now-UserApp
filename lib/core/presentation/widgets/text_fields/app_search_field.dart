@@ -76,7 +76,11 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                   boxShadow: AppBoxShadows.blackBottomShadow1,
                 ),
                 child: Center(
-                  child: TextField(
+                  child: TextFormField(
+                    style: AppTextStyles.style16Regular.copyWith(
+                      color: colors.onSecondary,
+                      fontSize: con.maxWidth * 0.05,
+                    ),
                     autofocus: widget.autofocus,
                     focusNode: _focusNode,
                     decoration: InputDecoration(

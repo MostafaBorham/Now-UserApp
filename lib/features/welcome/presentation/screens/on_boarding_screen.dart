@@ -41,8 +41,8 @@ class OnBoardingScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: AppLanguageToggleWidget(
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.3,
+
                     initialLanguage: context.locale == LocalizationConstants.arabicLocale? AppLanguage.ar : AppLanguage.en,
                     onChanged: (lang) {
                       if (lang == AppLanguage.ar) {

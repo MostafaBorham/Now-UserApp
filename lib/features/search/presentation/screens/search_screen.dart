@@ -16,6 +16,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
 
     // Dummy placeholder data — replaced with real data later.
     final List<String> recentSearches = <String>[
@@ -63,6 +64,7 @@ class SearchScreen extends StatelessWidget {
                           LangKeys.bestCategoriesKey.tr(),
                           style: AppTextStyles.style18SemiBold.copyWith(
                             color: colors.onSecondary,
+                            fontSize: screenWidth*0.05
                           ),
                         ),
                         InkWell(
@@ -71,6 +73,7 @@ class SearchScreen extends StatelessWidget {
                             LangKeys.seeAllKey.tr(),
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.primary,
+                                fontSize: screenWidth*0.035
                             ),
                           ),
                         ),
@@ -111,6 +114,7 @@ class SearchScreen extends StatelessWidget {
                           LangKeys.mostRequestedKey.tr(),
                           style: AppTextStyles.style18SemiBold.copyWith(
                             color: colors.onSecondary,
+                              fontSize: screenWidth*0.05
                           ),
                         ),
                         InkWell(
@@ -119,6 +123,7 @@ class SearchScreen extends StatelessWidget {
                             LangKeys.seeAllKey.tr(),
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.primary,
+                                fontSize: screenWidth*0.035
                             ),
                           ),
                         ),

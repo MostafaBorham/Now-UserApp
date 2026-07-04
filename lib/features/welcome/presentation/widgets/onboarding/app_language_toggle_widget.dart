@@ -57,17 +57,9 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
             ),lightDirection: 20,lightColor: colors.onPrimary),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.symmetric(horizontal: 13,vertical: 5),
             child: Row(
               children: [
-                SizedBox(
-                  width: widget.width*0.2,
-                  child: Center(
-                    child: Assets.media.images.svg.languageIcon.svg(
-                      colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn)
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {

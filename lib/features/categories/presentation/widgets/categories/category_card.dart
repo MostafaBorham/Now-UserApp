@@ -47,18 +47,26 @@ class CategoryCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                   if (category.discountPercentage != null)
-                    _DiscountBadge(percentage: category.discountPercentage!),
+                    FractionallySizedBox(
+                        widthFactor: 0.75,
+                        heightFactor: 0.25,
+                        child: _DiscountBadge(percentage: category.discountPercentage!)),
                 ],
               ),
             ),
           ),
-          Text(
-            category.name,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.style14Medium.copyWith(
-              color: colors.onTertiaryFixed,
+          FractionallySizedBox(
+            widthFactor: 0.4,
+            child: FittedBox(
+              child: Text(
+                category.name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.style14Medium.copyWith(
+                  color: colors.onTertiaryFixed,
+                ),
+              ),
             ),
           ),
         ],
@@ -81,9 +89,11 @@ class _DiscountBadge extends StatelessWidget {
         color: colors.errorContainer,
         borderRadius: AppBorderRadius.brCircular7,
       ),
-      child: Text(
-        '$percentage % ${LangKeys.discountKey.tr()}',
-        style: AppTextStyles.style18SemiBold.copyWith(color: colors.onPrimary),
+      child: FittedBox(
+        child: Text(
+          '$percentage % ${LangKeys.discountKey.tr()}',
+          style: AppTextStyles.style18SemiBold.copyWith(color: colors.onPrimary),
+        ),
       ),
     );
   }
