@@ -138,4 +138,7 @@ abstract class LangKeys {
   static const String seeAllKey = 'seeAll';
   static const String mostRequestedKey = 'mostRequested';
   static const String upToKey = 'upTo';
+  static const String moreFiltersKey = 'moreFilters';
+  static const String ratingsKey = 'ratings';
+  static const String applyFiltersKey = 'applyFilters';
 }

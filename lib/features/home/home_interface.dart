@@ -11,7 +11,7 @@ export 'presentation/screens/top_brands_screen.dart';
 export 'presentation/widgets/home/best_nearby_stores_list_item.dart';
 export 'presentation/widgets/home/best_nearby_stores_section.dart';
 export 'presentation/widgets/home/circular_brand_item.dart';
-export 'presentation/widgets/home/circular_brand_logo.dart';
+export '../../core/presentation/widgets/logos/circular_brand_logo.dart';
 export 'presentation/widgets/home/home_all_stores_section.dart';
 export 'presentation/widgets/home/home_categories_section.dart';
 export 'presentation/widgets/home/home_offers_item.dart';

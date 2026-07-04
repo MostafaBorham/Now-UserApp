@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/features/notifications/notifications_interf
 import 'package:nowdelivery_user_app/features/orders/orders_interface.dart';
 import 'package:nowdelivery_user_app/features/search/search_interface.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/screens/view_store_category_products_screen.dart';
 import 'package:nowdelivery_user_app/features/support/support_interface.dart';
 import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
 import 'package:nowdelivery_user_app/features/welcome/welcome_interface.dart';
@@ -74,6 +75,10 @@ abstract class AppRouter {
       case AppRoutes.allStoresScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const AllStoresScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.viewStoreCategoryProductsScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const ViewStoreCategoryProductsScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());

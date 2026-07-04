@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'circular_brand_logo.dart';
+import '../../../../../core/presentation/widgets/logos/circular_brand_logo.dart';
 
 class CircularBrandItem extends StatelessWidget {
   const CircularBrandItem({super.key});

@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/product_item.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/categories/categories_interface.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';

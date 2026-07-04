@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/app_borders.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/best_nearby_stores_section.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_all_stores_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_categories_section.dart';

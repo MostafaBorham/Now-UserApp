@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
 class StoreItemCard extends StatelessWidget {
   const StoreItemCard({super.key});

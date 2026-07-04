@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
@@ -14,16 +14,16 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_wi
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-import '../../../features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
-class ProductItem extends StatefulWidget {
-  const ProductItem({super.key});
+class ProductItemCard2 extends StatefulWidget {
+  const ProductItemCard2({super.key});
 
   @override
-  State<ProductItem> createState() => _ProductItemState();
+  State<ProductItemCard2> createState() => _ProductItemCard2State();
 }
 
-class _ProductItemState extends State<ProductItem> {
+class _ProductItemCard2State extends State<ProductItemCard2> {
   bool isRotate = false;
   bool showAddToCartCounter = false;
   int counter = 0;

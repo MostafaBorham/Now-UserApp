@@ -125,5 +125,8 @@
   "bestCategories": "Best Categories",
   "seeAll": "See All",
   "mostRequested": "Most Requested",
-  "upTo": "Upto"
+  "upTo": "Upto",
+  "moreFilters": "More Filters",
+  "ratings": "Ratings",
+  "applyFilters": "Apply Filters"
 }

@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/product_item.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
@@ -37,7 +37,7 @@ class CategoriesProductTabView extends StatelessWidget {
                 itemCount: 6,
                 itemBuilder:
                     (BuildContext context, int index) =>
-                ProductItem(),
+                ProductItemCard2(),
               ),
             )
                 .toList(),
