@@ -33,10 +33,12 @@ lib/
   main.dart            # bootstraps EasyLocalization → DevicePreview → ProviderScope → ScreenUtilInit → NowUserApp
   my_app.dart          # MaterialApp; wires localization, themes, onGenerateRoute
   core/                # shared, cross-feature code (see below)
-  features/<feature>/  # feature-scoped code; each feature has presentation/ (screens, widgets, controllers); a data/ layer is added only when needed (currently just `categories`)
+  features/<feature>/  # feature-scoped code
 ```
 
-Features today: `categories`, `favourites`, `home`, `notifications`, `orders`, `search`, `support`, `wallet`, `welcome`. Most are UI-only skeletons — no repositories or API calls are wired yet.
+Every feature is scaffolded with three layers: `presentation/` (`screens/`, `widgets/`, and — where present — `controllers/`), `viewmodel/`, and `data/` (`datasources/`, `models/`, `repo/`). **The `viewmodel/` and `data/` folders are currently empty placeholders across all features** — no repositories or API calls are wired yet, and the only live state code lives in `home/presentation/controllers/`.
+
+Features today: `categories`, `favourites`, `home`, `notifications`, `orders`, `products`, `search`, `stores`, `support`, `wallet`, `welcome`. Most are UI-only skeletons.
 
 ### Feature isolation (interface-file rule)
 
@@ -47,6 +49,8 @@ Each feature under `lib/features/<x>/` exposes one public entry file: `lib/featu
 The interface file is the feature's public contract. When adding a new `.dart` file inside a feature, add its `export` line to the interface file.
 
 The router (`lib/core/route/router.dart`) composes features by importing their interface files. `core/` is shared infrastructure and does not follow this rule.
+
+**Two newer features (`stores`, `products`) have no interface file yet**, so `router.dart` currently imports their screens via deep paths (e.g. `features/stores/presentation/screens/all_stores_screen.dart`). This is a deviation, not the pattern — when touching these features, add a `<x>_interface.dart` and switch the router to import through it.
 
 ### `lib/core/` conventions
 
@@ -69,7 +73,7 @@ Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation
 ### Bootstrap details worth knowing
 
 - `main.dart` locks orientation to portrait, makes the status bar transparent, and wraps the app in `DevicePreview` (enabled outside release mode).
-- `my_app.dart` currently sets `initialRoute: AppRoutes.searchScreen` — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
+- `my_app.dart` currently sets `initialRoute` to whichever screen is under active development (presently `AppRoutes.viewStoreCategoryProductsScreen`) — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
 - `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
 - Locale is persisted by `easy_localization` (`saveLocale: true`); the commented `LocalController.getCurrentLocale()` in `main.dart` is a leftover from a manual approach — don't reintroduce it without removing `easy_localization`'s own persistence.
 

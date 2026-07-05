@@ -16,4 +16,5 @@ abstract class AppRoutes {
   static const String searchScreen = 'search screen';
   static const String allStoresScreen = 'all stores screen';
   static const String viewStoreCategoryProductsScreen = 'view Store Category Products';
+  static const String storeDetailsScreen = 'store details screen';
 }
