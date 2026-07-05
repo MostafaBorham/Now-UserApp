@@ -15,5 +15,11 @@ abstract class AppRoutes {
   static const String notificationsScreen = 'notifications screen';
   static const String searchScreen = 'search screen';
   static const String allStoresScreen = 'all stores screen';
-  static const String viewStoreCategoryProductsScreen = 'view Store Category Products';
+  static const String viewStoreCategoryProductsScreen =
+      'view Store Category Products';
+  static const String addPaymentCard = 'paymentCard';
+  static const String paymentMethodsScreen = 'payment methods screen';
+  static const String phoneVerificationScreen = 'phone verification screen';
+  static const String otpVerificationScreen = 'otp verification screen';
+  static const String personalInformationScreen = 'personal information screen';
 }

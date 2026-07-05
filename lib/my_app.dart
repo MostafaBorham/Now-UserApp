@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/theme_manager.dart';
-
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/core/route/router.dart';
 
@@ -26,7 +25,7 @@ class NowUserApp extends StatelessWidget {
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       onGenerateRoute: AppRouter.onGenerate,
-      initialRoute: AppRoutes.viewStoreCategoryProductsScreen,
+      initialRoute: AppRoutes.addPaymentCard,
     );
   }
 }

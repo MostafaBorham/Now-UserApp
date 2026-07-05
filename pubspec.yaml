@@ -49,7 +49,7 @@ dev_dependencies:
   flutter_gen_runner: ^5.14.1
   build_runner: ^2.15.0
 flutter_gen:
-  output: lib/view/assets/
+  output: lib/core/presentation/assets/
 
   # Optional
   integrations:
