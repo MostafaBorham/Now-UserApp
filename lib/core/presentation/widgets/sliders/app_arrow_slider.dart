@@ -1,22 +1,35 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class AppArrowSlider extends ConsumerWidget {
-  AppArrowSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItem, this.sliderSpace = 8, this.itemAspectRatio =1});
+class AppArrowSlider extends StatefulWidget {
+  const AppArrowSlider({
+    super.key,
+    this.activeDotColor,
+    this.dotColor,
+    required this.sliderItem,
+    this.sliderSpace = 8,
+    this.itemAspectRatio = 1,
+    this.itemCount = 4,
+  });
+
   final Color? activeDotColor;
   final Color? dotColor;
   final Widget sliderItem;
-  final double? sliderSpace;
-  final double? itemAspectRatio;
-  final HomeController _homeController = HomeController();
-  final CarouselSliderController _controller = CarouselSliderController();
+  final double sliderSpace;
+  final double itemAspectRatio;
+  final int itemCount;
+
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  State<AppArrowSlider> createState() => _AppArrowSliderState();
+}
+
+class _AppArrowSliderState extends State<AppArrowSlider> {
+  final CarouselSliderController _controller = CarouselSliderController();
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return Column(
       spacing: 20,
       children: [
@@ -34,27 +47,44 @@ class AppArrowSlider extends ConsumerWidget {
                 child: CircleAvatar(
                   radius: 20,
                   backgroundColor: colors.onPrimary,
-                  child: Icon(Icons.arrow_back_ios,size: 20,color: colors.onSecondary,),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: colors.onSecondary,
+                  ),
                 ),
               ),
             ),
             Expanded(
-              child: CarouselSlider.builder(
-                carouselController: _controller,
-                itemCount: 4,
-                itemBuilder: (_, index, _) {
-                  return sliderItem;
-                },
-                options: CarouselOptions(
-                  // height: 150,
-                  enlargeCenterPage: false,
-                  viewportFraction: 1,
-                  clipBehavior: Clip.none,
-                  autoPlay: false,
-                  aspectRatio: itemAspectRatio!,
-                  onPageChanged: (index, _) {
-                    ref.read(_homeController.sliderIndexProvider.notifier).state = index;
+              // Clips only horizontally so sliding items stay inside the slider
+              // boundaries and never paint over the arrow buttons, while the
+              // item's vertical drop-shadow is still allowed to show.
+              child: ClipRect(
+                clipper: _HorizontalClipper(),
+                child: CarouselSlider.builder(
+                  carouselController: _controller,
+                  itemCount: widget.itemCount,
+                  itemBuilder: (_, index, _) {
+                    return Padding(
+                      padding: EdgeInsetsDirectional.symmetric(
+                        horizontal: widget.sliderSpace,
+                      ),
+                      child: widget.sliderItem,
+                    );
                   },
+                  options: CarouselOptions(
+                    enlargeCenterPage: false,
+                    viewportFraction: 1,
+                    clipBehavior: Clip.none,
+                    autoPlay: false,
+                    aspectRatio: widget.itemAspectRatio,
+                    // Only the arrow buttons drive the slider; manual
+                    // swipe/drag scrolling is disabled.
+                    scrollPhysics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (index, _) {
+                      setState(() => _currentIndex = index);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -69,34 +99,39 @@ class AppArrowSlider extends ConsumerWidget {
                 child: CircleAvatar(
                   radius: 20,
                   backgroundColor: colors.onPrimary,
-                  child: Icon(Icons.arrow_forward_ios,size: 20,color: colors.onSecondary,),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: colors.onSecondary,
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
-     /*   CarouselSlider.builder(
-          itemCount: 4,
-          itemBuilder: (_, index, _) {
-            return sliderItem;
-          },
-          options: CarouselOptions(
-            // height: 150,
-            enlargeCenterPage: false,
-            autoPlay: false,
-            aspectRatio: itemAspectRatio!,
-            onPageChanged: (index, _) {
-              ref.read(_homeController.sliderIndexProvider.notifier).state = index;
-            },
-          ),
-        ),*/
-        DotsIndicator(currentIndex: ref.watch(_homeController.sliderIndexProvider), itemCount: 4,activeColor: activeDotColor?? colors.primary,
-          inactiveColor: dotColor?? colors.onTertiary,)
+        DotsIndicator(
+          currentIndex: _currentIndex,
+          itemCount: widget.itemCount,
+          activeColor: widget.activeDotColor ?? colors.primary,
+          inactiveColor: widget.dotColor ?? colors.onTertiary,
+        ),
       ],
     );
   }
 }
 
+class _HorizontalClipper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) => Rect.fromLTRB(
+        0,
+        -size.height,
+        size.width,
+        size.height * 2,
+      );
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => false;
+}
 
 class DotsIndicator extends StatelessWidget {
   const DotsIndicator({
