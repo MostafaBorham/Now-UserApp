@@ -21,7 +21,7 @@ class StoreCategoryCirclesList extends StatelessWidget {
       height: 110,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.zero,
         itemCount: _categories.length,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, index) => SizedBox(

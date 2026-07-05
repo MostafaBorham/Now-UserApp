@@ -11,6 +11,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
+import 'store_info_row.dart';
+
 class StoreItemCard extends StatelessWidget {
   const StoreItemCard({super.key});
 
@@ -148,52 +150,9 @@ class StoreItemCard extends StatelessWidget {
                                 fontSize: con.maxWidth*0.04
                               ),
                             ),
-                            Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.timeIcon.svg(
-                                  width: con.maxWidth*0.05,
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                Text(
-                                  '40-50 minutes',
-                                  style: AppTextStyles.style12Medium.copyWith(
-                                    color: colors.onSecondary,
-                                    fontSize: con.maxWidth*0.035
-                                  ),
-                                ),
-                                5.wSpace,
-                                Assets.media.images.svg.locationIcon.svg(
-                                  width: con.maxWidth*0.04,
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                Text(
-                                  '40 - 50 km',
-                                  style: AppTextStyles.style12Medium.copyWith(
-                                    color: colors.onSecondary,
-                                    fontSize: con.maxWidth*0.035
-                                  ),
-                                ),
-                                5.wSpace,
-                                Assets.media.images.svg.shippingIcon.svg(
-                                  width: con.maxWidth*0.05,
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                NewPriceWidget(
-                                  color: colors.onSecondary,
-                                  price: '10',
-                                  size: con.maxWidth*0.04,
-                                ),
-                              ],
+                            StoreInfoRow(
+                              infoFontSize: con.maxWidth*0.05,
+                              infoIconSize: con.maxWidth*0.05,
                             ),
                           ],
                         ),
@@ -221,3 +180,4 @@ class StoreItemCard extends StatelessWidget {
     );
   }
 }
+

@@ -10,7 +10,7 @@ class StoreDiscountCouponsList extends StatelessWidget {
       height: 130,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.zero,
         itemCount: 3,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, _) => const StoreDiscountCouponItem(),
