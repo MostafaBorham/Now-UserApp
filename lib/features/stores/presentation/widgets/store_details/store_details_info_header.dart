@@ -45,7 +45,7 @@ class StoreDetailsInfoHeader extends StatelessWidget {
                 clipper: TopWaveClipper(),
                 child: AppCachedNetworkImage(
                   imageUrl:
-                  'https://i.pinimg.com/236x/ea/a7/7c/eaa77cb87594418722bf12af28481fdb.jpg',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTE97wzpAcXRQWUFbg6JGvWivxBLHnzFq2p9DVZRMKZg&s=10',
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
