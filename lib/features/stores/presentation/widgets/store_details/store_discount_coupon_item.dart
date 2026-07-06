@@ -24,7 +24,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
                 width: 77,
                 height: double.infinity,
                 alignment: Alignment.center,
-                color: colors.primaryContainer,
+                color: colors.primaryContainer.withGreen(70),
                 child: Text(
                   '20%',
                   textAlign: TextAlign.center,
@@ -41,8 +41,8 @@ class StoreDiscountCouponItem extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        colors.scrim,
-                        colors.surfaceContainerHighest,
+                        colors.surfaceContainerHighest.withValues(alpha: 0.2),
+                        colors.surfaceContainerHighest.withValues(alpha: 0.6),
                       ],
                     ),
                   ),
@@ -107,11 +107,10 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                             color: colors.primaryContainer,
                                           ),
                                     ),
-                                    Icon(
-                                      Icons.copy_rounded,
-                                      size: 16,
-                                      color: colors.primaryContainer,
-                                    ),
+                                    Assets.media.images.svg.copyCouponCodeIcon.svg(
+                                      width: 16,
+                                      colorFilter: ColorFilter.mode(colors.primaryContainer,BlendMode.srcIn)
+                                    )
                                   ],
                                 ),
                               ),

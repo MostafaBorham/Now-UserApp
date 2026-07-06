@@ -84,15 +84,24 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 6,
+              spacing: 16,
               children: [
-                AppRateWidget(
-                  starColor: colors.onSecondaryContainer,
-                  rateRatio: '4.8',
-                  rateCount: '2.5K',
-                  rateColor: colors.onSecondary,
-                  size: 14,
+                Text(
+                  '4.8 (2.5K)',
+                  style: TextStyle(
+                      color: colors.onSurface,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 15
+                  ),
                 ),
+                Row(
+                  spacing: 3,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(5, (index) => Assets.media.images.svg.starIcon.svg(
+                    colorFilter: ColorFilter.mode(colors.onSecondaryContainer, BlendMode.srcIn),
+                    width: 15
+                  ),),
+                )
               ],
             ),
           ),
@@ -123,7 +132,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                             6,
                           ),
                           decoration: BoxDecoration(
-                            color: colors.errorContainer,
+                            color: colors.errorContainer.withValues(alpha: 0.8),
                             borderRadius:
                             BorderRadiusGeometry.circular(
                               16,
@@ -163,7 +172,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                         .images
                         .svg
                         .shoppingCartIcon
-                        .svg(width: 15),
+                        .svg(width: 20),
                     buttonRadius: 16,
                   ),
                 ),

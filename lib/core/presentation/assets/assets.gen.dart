@@ -244,6 +244,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get clipper =>
       const SvgGenImage('assets/media/images/svg/clipper.svg');
 
+  /// File path: assets/media/images/svg/copy-coupon-code-icon.svg
+  SvgGenImage get copyCouponCodeIcon =>
+      const SvgGenImage('assets/media/images/svg/copy-coupon-code-icon.svg');
+
   /// File path: assets/media/images/svg/delivery_icon.svg
   SvgGenImage get deliveryIcon =>
       const SvgGenImage('assets/media/images/svg/delivery_icon.svg');
@@ -416,6 +420,7 @@ class $AssetsMediaImagesSvgGen {
     bottomNavBarBackground,
     categoriesUpArrow,
     clipper,
+    copyCouponCodeIcon,
     deliveryIcon,
     emptyAddToCart,
     favouriteIcon,

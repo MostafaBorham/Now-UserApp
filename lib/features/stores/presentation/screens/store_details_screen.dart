@@ -70,7 +70,10 @@ class StoreDetailsScreen extends StatelessWidget {
                             child: StoreDetailsBanner(),
                           ),
                           StoreDetailsBrandsSlider(),
-                          StoreDetailsBrandInfoCard(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: StoreDetailsBrandInfoCard(),
+                          ),
                           5.hSpace,
                           StoreDiscountCouponsList(),
                           5.hSpace,

@@ -62,7 +62,7 @@ The router (`lib/core/route/router.dart`) composes features by importing their i
 
 ### State management
 
-Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation/controllers/` — see `lib/features/home/presentation/controllers/main_controller.dart` for the pattern (`Provider` for static lists, `StateProvider` for mutable index-style state, `.autoDispose` when tied to a screen).
+Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation/controllers/` — see `lib/features/home/presentation/controllers/` (`main_controller.dart`, `home_controller.dart`) for the pattern (`Provider` for static lists, `StateProvider` for mutable index-style state, `.autoDispose` when tied to a screen).
 
 ### Assets & codegen
 
@@ -73,7 +73,7 @@ Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation
 ### Bootstrap details worth knowing
 
 - `main.dart` locks orientation to portrait, makes the status bar transparent, and wraps the app in `DevicePreview` (enabled outside release mode).
-- `my_app.dart` currently sets `initialRoute` to whichever screen is under active development (presently `AppRoutes.viewStoreCategoryProductsScreen`) — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
+- `my_app.dart` currently sets `initialRoute` to whichever screen is under active development (presently `AppRoutes.storeDetailsScreen`) — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
 - `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
 - Locale is persisted by `easy_localization` (`saveLocale: true`); the commented `LocalController.getCurrentLocale()` in `main.dart` is a leftover from a manual approach — don't reintroduce it without removing `easy_localization`'s own persistence.
 

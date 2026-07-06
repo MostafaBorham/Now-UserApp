@@ -33,76 +33,110 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
     return Column(
       spacing: 20,
       children: [
-        Row(
-          spacing: 10,
+        // The arrows are overlaid on top of the carousel (painted after it)
+        // and nothing clips, so the item's soft drop-shadow is free to spread
+        // outward beneath the arrow buttons and — downward — beneath the dots
+        // indicator that follows in the column.
+        Stack(
+          clipBehavior: Clip.none,
+          alignment: AlignmentDirectional.center,
           children: [
-            InkWell(
-              onTap: () {
-                _controller.previousPage();
-              },
-              child: Material(
-                shape: CircleBorder(),
-                elevation: 4,
-                shadowColor: colors.onSurface.withValues(alpha: 0.3),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: colors.onPrimary,
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 20,
-                    color: colors.onSecondary,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              // Clips only horizontally so sliding items stay inside the slider
-              // boundaries and never paint over the arrow buttons, while the
-              // item's vertical drop-shadow is still allowed to show.
-              child: ClipRect(
-                clipper: _HorizontalClipper(),
-                child: CarouselSlider.builder(
-                  carouselController: _controller,
-                  itemCount: widget.itemCount,
-                  itemBuilder: (_, index, _) {
-                    return Padding(
-                      padding: EdgeInsetsDirectional.symmetric(
-                        horizontal: widget.sliderSpace,
-                      ),
-                      child: widget.sliderItem,
-                    );
+            // Inset so the item image sits between the arrows while its
+            // shadow still bleeds out under them.
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 44),
+              child: CarouselSlider.builder(
+                carouselController: _controller,
+                itemCount: widget.itemCount,
+                itemBuilder: (_, index, _) {
+                  return Padding(
+                    padding: EdgeInsetsDirectional.symmetric(
+                      horizontal: widget.sliderSpace,
+                    ),
+                    child: widget.sliderItem,
+                  );
+                },
+                options: CarouselOptions(
+                  enlargeCenterPage: false,
+                  viewportFraction: 1,
+                  clipBehavior: Clip.none,
+                  autoPlay: false,
+                  aspectRatio: widget.itemAspectRatio,
+                  // Only the arrow buttons drive the slider; manual
+                  // swipe/drag scrolling is disabled.
+                  scrollPhysics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index, _) {
+                    setState(() => _currentIndex = index);
                   },
-                  options: CarouselOptions(
-                    enlargeCenterPage: false,
-                    viewportFraction: 1,
-                    clipBehavior: Clip.none,
-                    autoPlay: false,
-                    aspectRatio: widget.itemAspectRatio,
-                    // Only the arrow buttons drive the slider; manual
-                    // swipe/drag scrolling is disabled.
-                    scrollPhysics: const NeverScrollableScrollPhysics(),
-                    onPageChanged: (index, _) {
-                      setState(() => _currentIndex = index);
+                ),
+              ),
+            ),
+            PositionedDirectional(
+              start: 0,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: colors.onPrimary,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colors.onSurface.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      _controller.previousPage();
                     },
+                    child: Center(
+                      child: Icon(
+                        Icons.chevron_left,
+                        size: 24,
+                        color: colors.onSecondary,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            InkWell(
-              onTap: () {
-                _controller.nextPage();
-              },
-              child: Material(
-                shape: CircleBorder(),
-                elevation: 4,
-                shadowColor: colors.onSurface.withValues(alpha: 0.3),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: colors.onPrimary,
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
-                    color: colors.onSecondary,
+            PositionedDirectional(
+              end: 0,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: colors.onPrimary,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colors.onSurface.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      _controller.nextPage();
+                    },
+                    child: Center(
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 24,
+                        color: colors.onSecondary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -118,19 +152,6 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
       ],
     );
   }
-}
-
-class _HorizontalClipper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) => Rect.fromLTRB(
-        0,
-        -size.height,
-        size.width,
-        size.height * 2,
-      );
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => false;
 }
 
 class DotsIndicator extends StatelessWidget {

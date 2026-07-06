@@ -28,6 +28,7 @@ import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_products_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupons_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
+
 class StoreDetailsBrandsSlider extends StatelessWidget {
   const StoreDetailsBrandsSlider({
     super.key,
@@ -105,6 +106,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
               'https://www.elsupplier.com/_next/image?url=https://portal.elsupplier.com/backend/public/storage/products/dark-chocolate-bar-732x549-thumbnail604108001.jpg&w=640&q=50',
             ),
           ),
+          sliderSpace: 8,
           itemAspectRatio: 1.5,
           activeDotColor: colors.secondaryFixedDim,
           dotColor: colors.onPrimary,
