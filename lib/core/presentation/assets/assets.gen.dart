@@ -392,6 +392,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get timeIcon =>
       const SvgGenImage('assets/media/images/svg/time-icon.svg');
 
+  /// File path: assets/media/images/svg/trust-icon.svg
+  SvgGenImage get trustIcon =>
+      const SvgGenImage('assets/media/images/svg/trust-icon.svg');
+
   /// File path: assets/media/images/svg/visa-logo.svg
   SvgGenImage get visaLogo =>
       const SvgGenImage('assets/media/images/svg/visa-logo.svg');
@@ -457,6 +461,7 @@ class $AssetsMediaImagesSvgGen {
     starRate,
     supportCallIcon,
     timeIcon,
+    trustIcon,
     visaLogo,
     whiteAppLogo,
     whiteWaveBackground,
