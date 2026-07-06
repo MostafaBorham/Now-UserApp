@@ -49,62 +49,67 @@ class StoreDetailsScreen extends StatelessWidget {
               child: StoreDetailsAppBar(),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 1.5,
-                      child: StoreDetailsInfoHeader(),
+              child: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 1.5,
+                          child: StoreDetailsInfoHeader(),
+                        ),
+                        Container(
+                          color: colors.onPrimary,
+                          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
+                            top: 35
+                          ),
+                          width: double.infinity,
+                          child: Column(
+                            spacing: 15,
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 3,
+                                child: StoreDetailsBanner(),
+                              ),
+                              StoreDetailsBrandsSlider(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: StoreDetailsBrandInfoCard(),
+                              ),
+                              5.hSpace,
+                              StoreDiscountCouponsList(),
+                              5.hSpace,
+                              StoreCategoryCirclesList(),
+                              2.hSpace,
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      color: colors.onPrimary,
-                      padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
-                        top: 35
-                      ),
-                      width: double.infinity,
-                      child: Column(
-                        spacing: 15,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 3,
-                            child: StoreDetailsBanner(),
-                          ),
-                          StoreDetailsBrandsSlider(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: StoreDetailsBrandInfoCard(),
-                          ),
-                          5.hSpace,
-                          StoreDiscountCouponsList(),
-                          5.hSpace,
-                          StoreCategoryCirclesList(),
-                          2.hSpace,
-                          AspectRatio(
-                            aspectRatio: 0.5,
-                            child: CustomButtonTabBar(
-                              tabs: [
-                                LangKeys.allKey.tr(),
-                                'Devices',
-                                'sddssdsd',
-                                'aaaaaaa',
-                              ],
-                              views: [
-                                StoreDetailsProductsView(),
-                                StoreDetailsProductsView(),
-                                StoreDetailsProductsView(),
-                                StoreDetailsProductsView(),
-                              ],
-                              selectedTabColor: colors.tertiaryContainer,
-                              unSelectedTabColor: colors.inversePrimary
-                                  .withValues(alpha: 0.2),
-                              selectedLabelColor: colors.onPrimary,
-                              unSelectedLabelColor: colors.onSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+                body: Container(
+                  color: colors.onPrimary,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: CustomButtonTabBar(
+                    tabs: [
+                      LangKeys.allKey.tr(),
+                      'Devices',
+                      'sddssdsd',
+                      'aaaaaaa',
+                    ],
+                    views: [
+                      StoreDetailsProductsView(),
+                      StoreDetailsProductsView(),
+                      StoreDetailsProductsView(),
+                      StoreDetailsProductsView(),
+                    ],
+                    selectedTabColor: colors.tertiaryContainer,
+                    unSelectedTabColor: colors.inversePrimary
+                        .withValues(alpha: 0.2),
+                    selectedLabelColor: colors.onPrimary,
+                    unSelectedLabelColor: colors.onSecondary,
+                  ),
                 ),
               ),
             ),
