@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slide
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
@@ -58,7 +59,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 ),
                 itemAspectRatio: 1.5,
               ),
-              ProductMainInfoCard()
+              ProductMainInfoCard(),
+              ProductColorsSelector()
             ],
           ),
         ),
