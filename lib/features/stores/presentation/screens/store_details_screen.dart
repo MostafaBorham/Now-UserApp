@@ -67,10 +67,7 @@ class StoreDetailsScreen extends StatelessWidget {
                           child: Column(
                             spacing: 15,
                             children: [
-                              AspectRatio(
-                                aspectRatio: 3,
-                                child: StoreDetailsBanner(),
-                              ),
+                              AppSlider(sliderItem: StoreDetailsBanner(),itemAspectRatio: 2.8,),
                               StoreDetailsBrandsSlider(),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
