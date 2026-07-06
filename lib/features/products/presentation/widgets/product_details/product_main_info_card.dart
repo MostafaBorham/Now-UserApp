@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/texts/expandable_text.dart';
 
 class ProductMainInfoCard extends StatefulWidget {
   const ProductMainInfoCard({
@@ -21,7 +22,7 @@ class ProductMainInfoCard extends StatefulWidget {
     this.description =
         'Almarai Milk 2 Liters: Fresh, high-quality milk with a creamy taste '
         'and smooth texture. Provides essential nutrients like calcium and '
-        'vitamin D for strong bones and a healthy body.',
+        'vitamin D for strong bones and a healthy body',
     this.isTrusted = true,
     this.trustedBadgeLabel = 'منتج موثوق',
     this.initialQuantity = 1,
@@ -44,8 +45,8 @@ class ProductMainInfoCard extends StatefulWidget {
 }
 
 class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
+
   late int quantity = widget.initialQuantity;
-  bool isDescriptionExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -244,30 +245,9 @@ class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
                   fontSize: 15,
                 ),
               ),
-              Text(
-                widget.description,
-                maxLines: isDescriptionExpanded ? null : 3,
-                overflow: isDescriptionExpanded
-                    ? TextOverflow.visible
-                    : TextOverflow.ellipsis,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.outline,
-                  fontSize: 13,
-                  height: 1.8,
-                ),
-              ),
-              InkWell(
-                onTap: () => setState(
-                  () => isDescriptionExpanded = !isDescriptionExpanded,
-                ),
-                child: Text(
-                  isDescriptionExpanded ? 'See Less' : 'See More',
-                  style: AppTextStyles.style14Bold.copyWith(
-                    color: colors.primary,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
+              ExpandableText(text: widget.description,style: AppTextStyles.style14Regular.copyWith(
+                color: colors.onSurface
+              ),maxCharacters: 150,seeMoreText: 'See More',),
             ],
           ),
         ],
