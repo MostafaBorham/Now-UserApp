@@ -96,3 +96,40 @@ abstract class AppThemes {
     ),
   );
 }
+
+/// Colors introduced by the order-tracking flow
+/// (Order Confirmed, Track Order and Payment Failed screens).
+///
+/// Only colors that aren't already expressed by the theme [ColorScheme]
+/// (green `primary`, black `onSecondary`, grey `onSurface`, red
+/// `errorContainer` …) or by `AppColors` live here — screens keep pulling the
+/// shared palette from the theme and add these screen-specific tones on top.
+class TrackingOrderColors {
+  TrackingOrderColors._();
+
+  /// Placeholder fill behind a product thumbnail that has no image yet
+  /// (Track Order → Item Information).
+  static const Color itemImagePlaceholder = Color(0xFFDCE6F7);
+
+  /// Neutral background of the courier card on Track Order.
+  static const Color courierCardBackground = Color(0xFFF5F5F6);
+
+  /// Colour of a not-yet-reached step marker & connector on the delivery
+  /// timeline (reached segments use the theme green `primary`).
+  static const Color timelinePending = Color(0xFFDCDCDC);
+
+  /// Background of the red "card declined" banner on Payment Failed.
+  static const Color errorBannerBackground = Color(0xffFFF5F5);
+
+  static const Color errorBannerBorder = Color(0xffFEE2E2);
+
+  /// Body/description colour inside the "card declined" banner
+  /// (its heading reuses the theme's `errorContainer` red).
+  static const Color errorBannerTitle = Color(0xFFB91C1C);
+
+  static const Color errorBannerBody = Color(0xFFC0392B);
+
+  static const Color paymentMethodBackground = Color(0xFFF4FBF3);
+
+  static const Color border2 = Color(0xFFEEEEEE);
+}

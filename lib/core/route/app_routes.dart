@@ -22,4 +22,7 @@ abstract class AppRoutes {
   static const String phoneVerificationScreen = 'phone verification screen';
   static const String otpVerificationScreen = 'otp verification screen';
   static const String personalInformationScreen = 'personal information screen';
+  static const String orderConfirmedScreen = 'order confirmed screen';
+  static const String trackOrderScreen = 'track order screen';
+  static const String paymentFailedScreen = 'payment failed screen';
 }
