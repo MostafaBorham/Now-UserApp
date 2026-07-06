@@ -6,11 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
@@ -31,44 +35,50 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     return Scaffold(
       body: AppWavedScaffold(
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 5,horizontal: 12),
-                    decoration: BoxDecoration(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              spacing: 16,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: colors.errorContainer
+                        color: colors.errorContainer,
+                      ),
+                      child: Text(
+                        '10%',
+                        style: AppTextStyles.style14Bold.copyWith(
+                          color: colors.onPrimary,
+                        ),
+                      ),
                     ),
-                    child: Text('10%',style: AppTextStyles.style14Bold.copyWith(
-                        color: colors.onPrimary
-                    ),),
-                  ),
-                  CircularAppFavouriteIcon(onFavouriteChanged: (p0) {
-
-                  },),
-                ],
-              ),
-              AppSlider(
-                sliderItem: AppCachedNetworkImage(
-                  imageUrl:
-                      'https://shuttershopegypt.com/wp-content/uploads/2026/01/1727307031_IMG_2344874.webp',
-                  height: double.infinity,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
+                    CircularAppFavouriteIcon(onFavouriteChanged: (p0) {}),
+                  ],
                 ),
-                itemAspectRatio: 1.5,
-              ),
-              ProductMainInfoCard(),
-              Align(
+                AppSlider(
+                  sliderItem: AppCachedNetworkImage(
+                    imageUrl:
+                        'https://shuttershopegypt.com/wp-content/uploads/2026/01/1727307031_IMG_2344874.webp',
+                    height: double.infinity,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                  itemAspectRatio: 1.5,
+                ),
+                ProductMainInfoCard(),
+                Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: ProductColorsSelector()),
-              Align(
+                  child: ProductColorsSelector(),
+                ),
+                Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: ProductSizeSelector()),
-              Align(
+                  child: ProductSizeSelector(),
+                ),
+                Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: ProductKeyFeaturesView(
                     productFeatures: [
@@ -76,8 +86,43 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
                       'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
                     ],
-                  )),
-            ],
+                  ),
+                ),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: ProductBasicSpecificationsView(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Divider(
+                    color: colors.onSurface.withValues(alpha: 0.3),
+                    thickness: 1,
+                    height: 2,
+                  ),
+                ),
+                Row(
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: PrimaryAppPrefixIconButton(
+                        title: LangKeys.addToCartKey.tr(),
+                        buttonPadding: 10,
+                        buttonRadius:8,
+                        prefixIcon: Assets.media.images.svg.shoppingCartIcon.svg(
+                          width: 20,
+                          colorFilter: ColorFilter.mode(
+                            colors.onPrimary,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(child: UnPrimaryButton(title: 'Buy Now',buttonPadding: 10,)),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         appBarTitle: 'Product Details',
