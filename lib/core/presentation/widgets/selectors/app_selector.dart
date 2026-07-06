@@ -11,14 +11,16 @@ class AppSelector extends StatefulWidget {
     this.height = 36,
     this.labelColor,
     this.selectedColor,
-    this.unselectedColor,
+    this.unselectedColor, this.radius = 10, this.borderColor,
   });
 
   final List<String> items;
   final int initialIndex;
   final ValueChanged<int>? onChanged;
   final double height;
+  final double? radius;
   final Color? labelColor;
+  final Color? borderColor;
   final Color? selectedColor;
   final Color? unselectedColor;
 
@@ -42,6 +44,8 @@ class _AppSelectorState extends State<AppSelector> {
           isSelected: index == selectedIndex,
           labelColor: widget.labelColor,
           selectedColor: widget.selectedColor,
+          radius: widget.radius,
+          borderColor: widget.borderColor,
           unselectedColor: widget.unselectedColor,
           onTap: () {
             setState(() => selectedIndex = index);
@@ -61,13 +65,16 @@ class SelectorItem extends StatelessWidget {
     this.onTap,
     this.labelColor,
     this.selectedColor,
-    this.unselectedColor,
+    this.unselectedColor, this.selectedLabelColor, this.borderColor, this.radius,
   });
 
   final String label;
   final bool isSelected;
   final VoidCallback? onTap;
   final Color? labelColor;
+  final Color? borderColor;
+  final double? radius;
+  final Color? selectedLabelColor;
   final Color? selectedColor;
   final Color? unselectedColor;
 
@@ -84,12 +91,13 @@ class SelectorItem extends StatelessWidget {
           color: isSelected
               ? (selectedColor ?? colors.surfaceContainerHigh)
               : (unselectedColor ?? colors.onPrimaryContainer),
-          borderRadius: AppBorderRadius.brCircular30,
+          borderRadius: BorderRadius.circular(radius!),
+          border: Border.all(color: borderColor??colors.onSecondary)
         ),
         child: Text(
           label,
           style: AppTextStyles.style14Medium.copyWith(
-            color: labelColor ?? colors.onTertiaryFixed,
+            color: isSelected? selectedLabelColor??colors.onPrimary : labelColor??colors.onSecondary,
           ),
         ),
       ),

@@ -12,7 +12,7 @@ class ProductColorsSelector extends StatefulWidget {
       (color: Color(0xffD9D9DE), name: 'Silver'),
       (color: Color(0xffE8C9A0), name: 'Gold'),
       (color: Color(0xff5C5C60), name: 'Astronaut Gray'),
-      (color: Color(0xff1A1A1A), name: 'Black'),
+
     ],
     this.initialSelectedIndex = 0,
     this.onColorSelected,
@@ -42,7 +42,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 4,
           children: [
             Text(
@@ -77,28 +77,31 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                   widget.colorOptions[index];
               final bool isSelected = index == selectedIndex;
               return GestureDetector(
-                onTap: () => setState(() => selectedIndex = index),
+                onTap: () {
+                  setState(() => selectedIndex = index);
+                  widget.onColorSelected?.call(index);
+                },
                 behavior: HitTestBehavior.opaque,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   spacing: 6,
                   children: [
                     Container(
-                      width: 44,
-                      height: 44,
+                      padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                        color: option.color,
                         shape: BoxShape.circle,
+                        border: isSelected
+                            ? Border.all(color: colors.primary, width: 2)
+                            : Border.all(color: Colors.transparent, width: 2),
                       ),
-                      child: isSelected
-                          ? Icon(
-                              Icons.check_rounded,
-                              size: 16,
-                              color: option.color.computeLuminance() > 0.5
-                                  ? colors.onSecondary
-                                  : colors.onPrimary,
-                            )
-                          : null,
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: option.color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                     ),
                     Text(
                       option.name,
