@@ -26,7 +26,7 @@ abstract class AppRouter {
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const OnBoardingScreen());
     ////////////////////////////////////////////////////////////////
-      case AppRoutes.mainLayoutScreen:
+      case AppRoutes.mainScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const MainScreen());
     ////////////////////////////////////////////////////////////////

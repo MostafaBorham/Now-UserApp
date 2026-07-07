@@ -4,7 +4,7 @@
 export 'presentation/controllers/home_controller.dart';
 export 'presentation/controllers/main_controller.dart';
 export 'presentation/screens/home_view.dart';
-export 'presentation/screens/main_screen.dart';
+export '../../core/presentation/screens/main_screen.dart';
 export 'presentation/screens/most_popular_screen.dart';
 export 'presentation/screens/offers_cannot_wait_screen.dart';
 export 'presentation/screens/top_brands_screen.dart';
@@ -21,7 +21,6 @@ export '../stores/presentation/widgets/store_item_card.dart';
 export 'presentation/widgets/home/most_popular_item.dart';
 export 'presentation/widgets/home/most_popular_section.dart';
 export 'presentation/widgets/home/top_brands_section.dart';
-export 'presentation/widgets/main/app_bottom_nav_bar.dart';
 export 'presentation/widgets/most_popular/cards/most_popular_item_card.dart';
 export 'presentation/widgets/most_popular/cards/most_popular_slider_item_card.dart';
 export 'presentation/widgets/most_popular/cards/most_popular_top1_item_card.dart';

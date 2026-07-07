@@ -150,7 +150,7 @@ class OnBoardingContentView extends StatelessWidget {
               onTap: () {
                 Navigator.pushReplacementNamed(
                   context,
-                  AppRoutes.mainLayoutScreen,
+                  AppRoutes.mainScreen,
                 );
               },
               buttonGradient: screenGradient,

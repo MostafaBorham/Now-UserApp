@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/screens/main/app_bottom_nav_bar.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/main_controller.dart';
 
-import '../widgets/main/app_bottom_nav_bar.dart';
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
@@ -21,7 +21,7 @@ class MainScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: AppBottomNavBar(currentIndex: currentPageIndex, onIndexChanged: (int value) {
           ref.read(currentPageIndexProvider.notifier).state = value;
-        },onCenterTap: () => Navigator.pushNamed(context, AppRoutes.categoriesScreen),),
+        }),
       ),
     );
   }
