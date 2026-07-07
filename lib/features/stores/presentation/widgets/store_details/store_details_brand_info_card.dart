@@ -112,53 +112,50 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
           Row(
             spacing: 20,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.center,
-                  spacing: 4,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 8,
-                      children: [
-                        OldPriceWidget(
-                          color: colors.inversePrimary,
-                          price: '13',
-                          size: 14,
+              Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.center,
+                spacing: 4,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 8,
+                    children: [
+                      OldPriceWidget(
+                        color: colors.inversePrimary,
+                        price: '13',
+                        size: 14,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(
+                          6,
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(
-                            6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.errorContainer.withValues(alpha: 0.8),
-                            borderRadius:
-                            BorderRadiusGeometry.circular(
-                              16,
-                            ),
-                          ),
-                          child: Text(
-                            '-27%',
-                            style: AppTextStyles
-                                .style12SemiBold
-                                .copyWith(
-                              color: colors.onPrimary,
-                            ),
+                        decoration: BoxDecoration(
+                          color: colors.errorContainer.withValues(alpha: 0.8),
+                          borderRadius:
+                          BorderRadiusGeometry.circular(
+                            16,
                           ),
                         ),
-                      ],
-                    ),
-                    NewPriceWidget(
-                      color: colors.onSecondary,
-                      price: '10',
-                      size: 28,
-                    ),
-                  ],
-                ),
+                        child: Text(
+                          '-27%',
+                          style: AppTextStyles
+                              .style12SemiBold
+                              .copyWith(
+                            color: colors.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  NewPriceWidget(
+                    color: colors.onSecondary,
+                    price: '10',
+                    size: 28,
+                  ),
+                ],
               ),
               Expanded(
-                flex: 2,
                 child: Material(
                   elevation: 10,
                   color: Colors.transparent,

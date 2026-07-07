@@ -42,12 +42,15 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
       children: [
         Stack(
           children: [
-            Text(
-              'GALAXY',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 90,
-                color: colors.secondaryFixedDim,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'GALAXY',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 90,
+                  color: colors.secondaryFixedDim,
+                ),
               ),
             ),
             Positioned.fill(

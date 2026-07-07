@@ -86,22 +86,35 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 6,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: isSelected
-                            ? Border.all(color: colors.primary, width: 2)
-                            : Border.all(color: Colors.transparent, width: 2),
-                      ),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: option.color,
-                          shape: BoxShape.circle,
+                    Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(color: colors.primary, width: 2)
+                                : Border.all(color: Colors.transparent, width: 2),
+                          ),
+                          child: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: option.color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
                         ),
-                      ),
+                        if(isSelected)Container(
+                          decoration: BoxDecoration(
+                            color: colors.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 2,color: colors.onPrimary)
+                          ),
+                          child: Center(child: Icon(Icons.check,color: colors.onPrimary,size: 15,)),
+                        )
+                      ],
                     ),
                     Text(
                       option.name,

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -66,6 +67,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     height: double.infinity,
                     width: double.infinity,
                     fit: BoxFit.contain,
+                    placeholderType: PlaceholderTypes.circular,
+                    circularProgressSize: 50,
                   ),
                   itemAspectRatio: 1.5,
                 ),
@@ -92,13 +95,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   alignment: AlignmentDirectional.centerStart,
                   child: ProductBasicSpecificationsView(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Divider(
-                    color: colors.onSurface.withValues(alpha: 0.3),
-                    thickness: 1,
-                    height: 2,
-                  ),
+                Container(
+                  color: colors.onSurface.withValues(alpha: 0.3),
+                  width: double.infinity,
+                  height: 1,
+                  padding: EdgeInsets.symmetric(vertical: 15),
                 ),
                 Row(
                   spacing: 10,

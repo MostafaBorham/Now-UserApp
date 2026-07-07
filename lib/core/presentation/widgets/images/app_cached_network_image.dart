@@ -54,11 +54,12 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
-    this.placeholderType = PlaceholderTypes.shimmer,
+    this.placeholderType = PlaceholderTypes.shimmer, this.circularProgressSize,
   });
 
   final String imageUrl;
   final double? width;
+  final double? circularProgressSize;
   final double? height;
   final BoxFit fit;
   final PlaceholderTypes? placeholderType;
@@ -84,8 +85,8 @@ class AppCachedNetworkImage extends StatelessWidget {
         switch (placeholderType) {
           case PlaceholderTypes.circular:
             return Center(child: SizedBox(
-                width: (width??30)*0.7,
-                height: (height??30)*0.7,
+                width: circularProgressSize?? ((width??30)*0.7),
+                height: circularProgressSize?? ((width??30)*0.7),
                 child: CircularProgressIndicator(color: colors.primary,)));
           case PlaceholderTypes.shimmer || null:
             return Shimmer.fromColors(
