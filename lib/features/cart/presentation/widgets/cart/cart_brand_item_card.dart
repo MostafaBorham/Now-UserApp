@@ -209,11 +209,13 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                                     child: Container(
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
-                                        color: colors.surfaceBright,
+                                        color: colors.error.withValues(alpha: 0.15),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Assets.media.images.svg.deleteIcon
-                                          .svg(),
+                                          .svg(
+                                        colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
+                                      ),
                                     ),
                                   ),
                                 ],
