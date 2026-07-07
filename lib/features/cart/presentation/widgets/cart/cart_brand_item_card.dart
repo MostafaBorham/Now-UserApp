@@ -1,35 +1,4 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
-class CartBrandItemCard extends StatelessWidget {
-  const CartBrandItemCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    return ExpansionTile(
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          CircularBrandLogo(
-            radius: 20,
-            logoUrl:
-                'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-          ),
-          Expanded(
-            child: Text('Banda Store',style: AppTextStyles.style16Medium.copyWith(
-              color: colors.onSecondary
-            ),),
-          )
-        ],
-      ),
-      backgroundColor: colors.onSurface.withValues(alpha: 0.2),
-    );
-  }
-}*/
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -39,10 +8,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item/widgets/cart_item_apply_discount_code_row.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item/widgets/cart_item_checkout_row.dart';
 
 class CartBrandItemCard extends StatefulWidget {
-  const CartBrandItemCard({super.key});
-
+  const CartBrandItemCard({super.key, this.readyToCheckout = false});
+  final bool? readyToCheckout;
   @override
   State<CartBrandItemCard> createState() => _CartBrandItemCardState();
 }
@@ -413,61 +384,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
             ],
 
             // Total + checkout pill (shared between both states)
-            Container(
-              padding: const EdgeInsetsDirectional.all(12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: AlignmentDirectional.centerStart,
-                  end: AlignmentDirectional.centerEnd,
-                  colors: [
-                    colors.onTertiaryFixedVariant,
-                    colors.onSurfaceVariant,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 12,
-                      children: [
-                        Text(
-                          'Total',
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.tertiaryContainer,
-                          ),
-                        ),
-                        NewPriceWidget(
-                          color: colors.onSecondary,
-                          price: '10',
-                          size: 17,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 3,
-                    child: ClipRRect(
-                      borderRadius: BorderRadiusGeometry.circular(999),
-                      clipBehavior: Clip.antiAlias,
-                      child: PrimaryAppPostfixIconButton(
-                        title: 'Checkout',
-                        postfixIcon: Assets
-                            .media
-                            .images
-                            .svg
-                            .rightArrowBrokenIcon
-                            .svg(),
-                        buttonPadding: 8,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            widget.readyToCheckout!? CartItemCheckoutRow(): CartItemApplyDiscountCodeRow(),
           ],
         ),
       ),

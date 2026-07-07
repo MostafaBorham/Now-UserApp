@@ -47,7 +47,6 @@ abstract class AppThemes {
       surfaceContainerLowest: Color(0xffFCEFEA),
       surfaceContainerLow: Color(0xffE5E5E5),
       outline: Color(0xff737373),
-      surfaceBright: Color(0xffFFE2E2),
       surfaceDim: Color(0xffEEEEEE),
     ),
   );
@@ -97,7 +96,6 @@ abstract class AppThemes {
       surfaceContainerLowest: Color(0xffFCEFEA),
       surfaceContainerLow: Color(0xffE5E5E5),
       outline: Color(0xff737373),
-      surfaceBright: Color(0xffFFE2E2),
       surfaceDim: Color(0xffEEEEEE),
     ),
   );

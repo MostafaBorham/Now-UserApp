@@ -10,7 +10,7 @@ class CartBrandItemsList extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(3),
       itemBuilder: (context, index) {
-        return const CartBrandItemCard();
+        return const CartBrandItemCard(readyToCheckout: true,);
       },
       separatorBuilder: (context, index) {
         return 20.hSpace;

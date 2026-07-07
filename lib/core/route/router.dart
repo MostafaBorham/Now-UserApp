@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/features/categories/categories_interface.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/favourites_interface.dart';
 import 'package:nowdelivery_user_app/features/home/home_interface.dart';
 import 'package:nowdelivery_user_app/features/notifications/notifications_interface.dart';
@@ -89,6 +90,10 @@ abstract class AppRouter {
       case AppRoutes.productDetailsScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const ProductDetailsScreen());
+    ////////////////////////////////////////////////////////////////
+      case AppRoutes.checkoutScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const CheckoutScreen());
       default:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SizedBox.shrink());
