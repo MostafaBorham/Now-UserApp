@@ -21,7 +21,7 @@ class CartScreen extends StatelessWidget {
           Expanded(
             child: CartBrandItemsList(),
           ),
-          PrimaryAppButton(title: 'Checkout')
+          PrimaryAppButton(title: 'Checkout',)
         ],
       ),
       appBarTitle: 'Cart',

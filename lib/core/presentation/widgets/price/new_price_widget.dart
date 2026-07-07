@@ -24,7 +24,7 @@ class NewPriceWidget extends StatelessWidget {
           fit: BoxFit.contain,
           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),
-        AutoSizeText(price,style: AppTextStyles.style28SemiBold.copyWith(
+        Text(price,style: AppTextStyles.style28SemiBold.copyWith(
           color: color,
           fontSize: size!*0.9,
           height: 1,

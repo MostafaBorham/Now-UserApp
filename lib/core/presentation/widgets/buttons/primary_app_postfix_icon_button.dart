@@ -26,20 +26,22 @@ class PrimaryAppPostfixIconButton extends StatelessWidget {
                 width: 2
             )
         ),
-        child: Row(
-          spacing: 8,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AutoSizeText(
-              title,
-              textAlign: TextAlign.center,
-              minFontSize: 10,
-              style: AppTextStyles.style14Medium.copyWith(
-                color: colors.onPrimary,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            spacing: 8,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.style14Medium.copyWith(
+                  color: colors.onPrimary,
+                ),
               ),
-            ),
-            postfixIcon??SizedBox.shrink(),
-          ],
+              postfixIcon??SizedBox.shrink(),
+            ],
+          ),
         ),
       ),
     );

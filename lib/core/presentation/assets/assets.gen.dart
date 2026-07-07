@@ -240,6 +240,11 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
 
+  /// File path: assets/media/images/svg/circle-add-more-broken-icon.svg
+  SvgGenImage get circleAddMoreBrokenIcon => const SvgGenImage(
+    'assets/media/images/svg/circle-add-more-broken-icon.svg',
+  );
+
   /// File path: assets/media/images/svg/clipper.svg
   SvgGenImage get clipper =>
       const SvgGenImage('assets/media/images/svg/clipper.svg');
@@ -247,6 +252,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/copy-coupon-code-icon.svg
   SvgGenImage get copyCouponCodeIcon =>
       const SvgGenImage('assets/media/images/svg/copy-coupon-code-icon.svg');
+
+  /// File path: assets/media/images/svg/delete-icon.svg
+  SvgGenImage get deleteIcon =>
+      const SvgGenImage('assets/media/images/svg/delete-icon.svg');
 
   /// File path: assets/media/images/svg/delivery_icon.svg
   SvgGenImage get deliveryIcon =>
@@ -356,6 +365,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get retryIcon =>
       const SvgGenImage('assets/media/images/svg/retry-icon.svg');
 
+  /// File path: assets/media/images/svg/right-arrow-broken-icon.svg
+  SvgGenImage get rightArrowBrokenIcon =>
+      const SvgGenImage('assets/media/images/svg/right-arrow-broken-icon.svg');
+
   /// File path: assets/media/images/svg/search-icon.svg
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/media/images/svg/search-icon.svg');
@@ -423,8 +436,10 @@ class $AssetsMediaImagesSvgGen {
     borderdHomeIcon,
     bottomNavBarBackground,
     categoriesUpArrow,
+    circleAddMoreBrokenIcon,
     clipper,
     copyCouponCodeIcon,
+    deleteIcon,
     deliveryIcon,
     emptyAddToCart,
     favouriteIcon,
@@ -452,6 +467,7 @@ class $AssetsMediaImagesSvgGen {
     rankIcon,
     realSaudiCurrency,
     retryIcon,
+    rightArrowBrokenIcon,
     searchIcon,
     serverFailIcon,
     shippingIcon,
