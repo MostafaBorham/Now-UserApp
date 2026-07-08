@@ -358,28 +358,79 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                         color: colors.tertiaryContainer,
                       ),
                     ),
-                    for (final String label in const [
-                      'Subtotal',
-                      'Vat (5%)',
-                      'Delivery Fee',
-                    ])
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              label,
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.onSecondary,
+                    Column(
+                      spacing: 5,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Subtotal',
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: colors.onSecondary,
+                                ),
                               ),
                             ),
-                          ),
-                          NewPriceWidget(
-                            color: colors.onSecondary,
-                            price: '10',
-                            size: 13,
-                          ),
-                        ],
-                      ),
+                            NewPriceWidget(
+                              color: colors.onSecondary,
+                              price: '10',
+                              size: 13,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Vat (5%)',
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: colors.onSecondary,
+                                ),
+                              ),
+                            ),
+                            NewPriceWidget(
+                              color: colors.onSecondary,
+                              price: '10',
+                              size: 13,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Delivery Fee',
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: colors.onSecondary,
+                                ),
+                              ),
+                            ),
+                            NewPriceWidget(
+                              color: colors.onSecondary,
+                              price: '10',
+                              size: 13,
+                            ),
+                          ],
+                        ),
+                        if(!widget.readyToCheckout!)Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Discount',
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: colors.onSecondary,
+                                ),
+                              ),
+                            ),
+                            NewPriceWidget(
+                              color: colors.onError,
+                              price: '10',
+                              size: 13,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

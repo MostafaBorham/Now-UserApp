@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -209,13 +208,18 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                                     child: Container(
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
-                                        color: colors.error.withValues(alpha: 0.15),
+                                        color: colors.error.withValues(
+                                          alpha: 0.15,
+                                        ),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Assets.media.images.svg.deleteIcon
                                           .svg(
-                                        colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
-                                      ),
+                                            colorFilter: ColorFilter.mode(
+                                              colors.onError,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -386,7 +390,9 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
             ],
 
             // Total + checkout pill (shared between both states)
-            widget.readyToCheckout!? CartItemCheckoutRow(): CartItemApplyDiscountCodeRow(),
+            widget.readyToCheckout!
+                ? CartItemCheckoutRow()
+                : CartItemApplyDiscountCodeRow(),
           ],
         ),
       ),

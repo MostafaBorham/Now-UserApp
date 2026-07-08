@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 
 import 'checkout_brand_item_card.dart';
 
