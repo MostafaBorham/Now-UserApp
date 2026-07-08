@@ -11,7 +11,7 @@ class AppSelector extends StatefulWidget {
     this.height = 36,
     this.labelColor,
     this.selectedColor,
-    this.unselectedColor, this.radius = 10, this.borderColor,
+    this.unselectedColor, this.radius = 10, this.borderColor, this.selectedLabelColor,
   });
 
   final List<String> items;
@@ -23,6 +23,7 @@ class AppSelector extends StatefulWidget {
   final Color? borderColor;
   final Color? selectedColor;
   final Color? unselectedColor;
+  final Color? selectedLabelColor;
 
   @override
   State<AppSelector> createState() => _AppSelectorState();
@@ -44,6 +45,7 @@ class _AppSelectorState extends State<AppSelector> {
           isSelected: index == selectedIndex,
           labelColor: widget.labelColor,
           selectedColor: widget.selectedColor,
+          selectedLabelColor: widget.selectedLabelColor,
           radius: widget.radius,
           borderColor: widget.borderColor,
           unselectedColor: widget.unselectedColor,

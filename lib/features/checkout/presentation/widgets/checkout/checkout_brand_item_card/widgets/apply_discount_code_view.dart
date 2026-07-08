@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class CartItemApplyDiscountCodeRow extends StatefulWidget {
-  const CartItemApplyDiscountCodeRow({
+class ApplyDiscountCodeView extends StatefulWidget {
+  const ApplyDiscountCodeView({
     super.key,
     this.hintText = 'Discount Code',
     this.onApply,
@@ -12,12 +12,12 @@ class CartItemApplyDiscountCodeRow extends StatefulWidget {
   final ValueChanged<String>? onApply;
 
   @override
-  State<CartItemApplyDiscountCodeRow> createState() =>
-      _CartItemApplyDiscountCodeRowState();
+  State<ApplyDiscountCodeView> createState() =>
+      _ApplyDiscountCodeViewState();
 }
 
-class _CartItemApplyDiscountCodeRowState
-    extends State<CartItemApplyDiscountCodeRow> {
+class _ApplyDiscountCodeViewState
+    extends State<ApplyDiscountCodeView> {
   final TextEditingController _controller = TextEditingController();
 
   @override

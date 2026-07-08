@@ -33,7 +33,7 @@ class PrimaryGradientAppButton extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(color: colors.onPrimary),
+            style: AppTextStyles.style16Medium.copyWith(color: colors.onPrimary),
           ),
         ),
       ),

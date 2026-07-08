@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 
-class CartBrandProductItem extends StatefulWidget {
-  const CartBrandProductItem({
+class CartProductItemView extends StatefulWidget {
+  const CartProductItemView({
     super.key,
     this.productName = 'Almarai Milk 2 Liters',
     this.storeName = 'Panda Store',
     this.imageUrl =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
     this.oldPrice = '10',
     this.newPrice = '10',
     this.initialQuantity = 1,
@@ -28,10 +29,10 @@ class CartBrandProductItem extends StatefulWidget {
   final ValueChanged<int>? onQuantityChanged;
 
   @override
-  State<CartBrandProductItem> createState() => _CartBrandProductItemState();
+  State<CartProductItemView> createState() => _CartProductItemViewState();
 }
 
-class _CartBrandProductItemState extends State<CartBrandProductItem> {
+class _CartProductItemViewState extends State<CartProductItemView> {
   late int _quantity = widget.initialQuantity;
 
   @override
@@ -90,13 +91,12 @@ class _CartBrandProductItemState extends State<CartBrandProductItem> {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: colors.surfaceBright,
+                        color: colors.error.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        Icons.delete_outline_rounded,
-                        size: 16,
-                        color: colors.errorContainer,
+                      child: Assets.media.images.svg.deleteIcon
+                          .svg(
+                          colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
                       ),
                     ),
                   ),
@@ -159,9 +159,9 @@ class _CartBrandProductItemState extends State<CartBrandProductItem> {
                       InkWell(
                         onTap: _quantity > 1
                             ? () {
-                                setState(() => _quantity--);
-                                widget.onQuantityChanged?.call(_quantity);
-                              }
+                          setState(() => _quantity--);
+                          widget.onQuantityChanged?.call(_quantity);
+                        }
                             : null,
                         customBorder: const CircleBorder(),
                         child: Container(

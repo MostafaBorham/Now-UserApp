@@ -4,8 +4,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
-class CartItemCheckoutRow extends StatelessWidget {
-  const CartItemCheckoutRow({
+class CartItemCheckoutView extends StatelessWidget {
+  const CartItemCheckoutView({
     super.key,
     this.total = '10',
     this.onCheckout,

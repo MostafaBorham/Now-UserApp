@@ -80,8 +80,11 @@ class _AppFilterViewState extends State<AppFilterView> {
             initialIndex: selectedCategoryIndex,
             onChanged: (index) => selectedCategoryIndex = index,
             labelColor: colors.onTertiaryFixed,
+            radius: 999,
             selectedColor: colors.surfaceContainerHigh,
+            selectedLabelColor: colors.onTertiaryFixed,
             unselectedColor: colors.onPrimaryContainer,
+            borderColor: Colors.transparent,
           ),
           Text(
             LangKeys.ratingsKey.tr(),

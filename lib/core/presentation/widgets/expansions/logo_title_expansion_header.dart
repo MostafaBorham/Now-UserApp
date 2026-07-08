@@ -2,26 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
-class CartItemExpantionHeader extends StatelessWidget {
-  const CartItemExpantionHeader({
+class LogoTitleExpansionHeader extends StatelessWidget {
+  const LogoTitleExpansionHeader({
     super.key,
-    this.storeName = 'Banda Store',
-    this.logoUrl =
-        'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-    this.isExpanded = false,
-    this.onTap,
+    required this.isExpanded,
+    required this.onToggle,
   });
 
-  final String storeName;
-  final String logoUrl;
   final bool isExpanded;
-  final VoidCallback? onTap;
+  final ValueChanged<bool> onToggle;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: onTap,
+      onTap: () => onToggle(!isExpanded),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -31,11 +26,13 @@ class CartItemExpantionHeader extends StatelessWidget {
             children: [
               CircularBrandLogo(
                 radius: 24,
+                elevation: 1,
                 backgroundColor: colors.onTertiaryContainer,
-                logoUrl: logoUrl,
+                logoUrl:
+                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
               ),
               Text(
-                storeName,
+                'Banda Store',
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.onSecondary,
                 ),
@@ -47,7 +44,7 @@ class CartItemExpantionHeader extends StatelessWidget {
                 ? Icons.keyboard_arrow_up_rounded
                 : Icons.keyboard_arrow_down_rounded,
             size: 24,
-            color: colors.onSecondary,
+            color: colors.onSurface.withValues(alpha: 0.7),
           ),
         ],
       ),

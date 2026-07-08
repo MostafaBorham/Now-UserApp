@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/show_more_items_header.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_offers_item.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -27,26 +29,7 @@ class HomeOffersSection extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AutoSizeText(
-                  LangKeys.dontMissTheseOffersKey.tr(),
-                  style: AppTextStyles.style20SemiBold.copyWith(
-                    color: colors.onSecondary,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: AutoSizeText(
-                    LangKeys.showMoreKey.tr(),
-                    style: AppTextStyles.style12SemiBold.copyWith(
-                      color: colors.primary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            child: ShowMoreItemsHeader(headerTitle: LangKeys.dontMissTheseOffersKey.tr(),onMore: () => Navigator.pushNamed(context, AppRoutes.offersCannotWaitScreen),),
           ),
           Expanded(
             child: ListView.separated(

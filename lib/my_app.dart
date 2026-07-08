@@ -13,20 +13,18 @@ class NowUserApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('current locale = ${context.locale.languageCode}');
     return MaterialApp(
       title: LangKeys.appNameKey.tr(),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       debugShowCheckedModeBanner: false,
       darkTheme: AppThemes.getDarkModeTheme(),
-      // locale: ref.watch(localeProvider),
       locale: context.locale,
       builder: DevicePreview.appBuilder,
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       onGenerateRoute: AppRouter.onGenerate,
-      initialRoute: AppRoutes.mainScreen,
+      initialRoute: AppRoutes.splashScreen,
     );
   }
 }

@@ -8,6 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_borders.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_all_stores_section.dart';
@@ -18,7 +20,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_s
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
-
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -133,46 +134,36 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         ],
                       ),
                       Spacer(),
-                      Badge.count(
-                        count: 2,
-                        offset: Offset(1, 1),
-                        textStyle: AppTextStyles.style10Bold,
-                        padding: EdgeInsets.all(3),
-                        backgroundColor: colors.errorContainer,
-                        child: Assets.media.images.svg.alertIcon.svg(
-                          width: 35,
+                      InkWell(
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.notificationsScreen),
+                        child: Badge.count(
+                          count: 2,
+                          offset: Offset(1, 1),
+                          textColor: colors.onPrimary,
+                          textStyle: AppTextStyles.style14SemiBold,
+                          padding: EdgeInsets.all(3),
+                          backgroundColor: colors.errorContainer,
+                          child: Assets.media.images.svg.alertIcon.svg(width: 35),
                         ),
                       ),
                     ],
                   ),
                   AppSearchField(),
-                  AppSlider(sliderItem: Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    height: 100,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    decoration: BoxDecoration(
-                        borderRadius: AppBorderRadius.brCircular16
+                  AppSlider(
+                    sliderItem: Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      decoration: BoxDecoration(
+                        borderRadius: AppBorderRadius.brCircular16,
+                      ),
+                      child: AppCachedNetworkImage(
+                        imageUrl:
+                            'https://img.magnific.com/free-vector/stylish-big-sale-event-banner-buy-save-upto-50-percent_1017-59087.jpg?semt=ais_hybrid&w=740&q=80',
+                      ),
                     ),
-                    child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          width: double.infinity,
-                          height: 100,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          decoration: BoxDecoration(
-                              borderRadius: AppBorderRadius.brCircular16,
-                              color: colors.onPrimary,
-                              border: AppBorders.b1(colors.inversePrimary)
-                          ),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: colors.primary,
-                            ),
-                          ),
-                        ),
-                        imageUrl: 'https://img.magnific.com/free-vector/stylish-big-sale-event-banner-buy-save-upto-50-percent_1017-59087.jpg?semt=ais_hybrid&w=740&q=80'),
-                  ),),
+                    itemAspectRatio: 2,
+                  ),
                 ],
               ),
             ),
@@ -199,10 +190,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         child: TopBrandsSection(),
                       ),
                       SizedBox(height: 350, child: MostPopularSection()),
-                      SizedBox(
-                        height: 240,
-                        child: BestNearbyStoresSection(),
-                      ),
+                      SizedBox(height: 240, child: BestNearbyStoresSection()),
                       SizedBox(height: 350, child: HomeOffersSection()),
                       Container(
                         width: double.infinity,
@@ -223,27 +211,23 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       AutoSizeText(
                                         'Guest 123',
                                         style: AppTextStyles.style20Bold
-                                            .copyWith(
-                                          color: colors.onPrimary,
-                                        ),
+                                            .copyWith(color: colors.onPrimary),
                                         maxLines: 1,
                                       ),
                                       AutoSizeText(
                                         'Guest 123',
                                         style: AppTextStyles.style12Medium
-                                            .copyWith(
-                                          color: colors.onPrimary,
-                                        ),
+                                            .copyWith(color: colors.onPrimary),
                                         maxLines: 1,
                                       ),
                                     ],
@@ -251,7 +235,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   CircularBrandLogo(
                                     radius: 35,
                                     logoUrl:
-                                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                                        'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                                   ),
                                 ],
                               ),
@@ -266,8 +250,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 ),
                                 child: AutoSizeText(
                                   LangKeys.shopNowKey.tr(),
-                                  style: AppTextStyles.style16SemiBold
-                                      .copyWith(color: colors.onSecondary),
+                                  style: AppTextStyles.style16SemiBold.copyWith(
+                                    color: colors.onSecondary,
+                                  ),
                                   maxLines: 1,
                                 ),
                               ),
