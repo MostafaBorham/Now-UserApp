@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filte
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_item_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 
@@ -28,15 +29,17 @@ class HomeAllStoresSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AutoSizeText(
-                LangKeys.dontMissTheseOffersKey.tr(),
+                'All Stores',
                 style: AppTextStyles.style20SemiBold.copyWith(
                   color: colors.onSecondary,
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoutes.allStoresScreen);
+                },
                 child: AutoSizeText(
-                  LangKeys.showMoreKey.tr(),
+                  LangKeys.seeAllKey.tr(),
                   style: AppTextStyles.style12SemiBold.copyWith(
                     color: colors.primary,
                   ),

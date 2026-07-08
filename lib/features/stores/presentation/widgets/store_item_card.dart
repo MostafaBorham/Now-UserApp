@@ -151,8 +151,8 @@ class StoreItemCard extends StatelessWidget {
                               ),
                             ),
                             StoreInfoRow(
-                              infoFontSize: con.maxWidth*0.05,
-                              infoIconSize: con.maxWidth*0.05,
+                              infoFontSize: con.maxWidth*0.04,
+                              infoIconSize: con.maxWidth*0.04,
                             ),
                           ],
                         ),

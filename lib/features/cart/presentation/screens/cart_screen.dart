@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
@@ -30,7 +31,7 @@ class CartScreen extends StatelessWidget {
               itemCount: 5,
             ),
           ),
-          PrimaryAppButton(title: 'Checkout',)
+          PrimaryAppButton(title: 'Checkout',onTap: () => Navigator.pushNamed(context, AppRoutes.checkoutScreen),)
         ],
       ),
       appBarTitle: 'Cart',

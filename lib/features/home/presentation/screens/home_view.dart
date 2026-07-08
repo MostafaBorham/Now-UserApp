@@ -148,7 +148,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                  AppSearchField(),
+                  AppSearchField(
+                  ),
                   AppSlider(
                     sliderItem: Container(
                       width: double.infinity,

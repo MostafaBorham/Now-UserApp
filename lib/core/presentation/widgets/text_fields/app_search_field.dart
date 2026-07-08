@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
 
 class AppSearchField extends ConsumerStatefulWidget {
@@ -75,33 +76,46 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                   borderRadius: AppBorderRadius.brCircular30,
                   boxShadow: AppBoxShadows.blackBottomShadow1,
                 ),
-                child: Center(
-                  child: TextFormField(
-                    style: AppTextStyles.style16Regular.copyWith(
-                      color: colors.onSecondary,
-                      fontSize: con.maxWidth * 0.05,
-                    ),
-                    autofocus: widget.autofocus,
-                    focusNode: _focusNode,
-                    decoration: InputDecoration(
-                      hintText: widget.hintText ?? LangKeys.searchNowKey.tr(),
-                      hintStyle: AppTextStyles.style16Regular.copyWith(
-                        color: colors.onPrimaryFixed,
-                        fontSize: con.maxWidth * 0.05,
-                      ),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 16),
-                        child: ReverseWidget(
-                          applyReverse: widget.reverseSearchIcon,
-                          child: Assets.media.images.svg.searchIcon.svg(),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.searchScreen,
+                  ),
+                  child: AbsorbPointer(
+                    // absorbing: widget.onTap != null,
+                    child: Center(
+                      child: TextFormField(
+                        style: AppTextStyles.style16Regular.copyWith(
+                          color: colors.onSecondary,
+                          fontSize: con.maxWidth * 0.05,
+                        ),
+                        autofocus: widget.autofocus,
+                        focusNode: _focusNode,
+                        // readOnly: widget.onTap != null,
+                        decoration: InputDecoration(
+                          hintText:
+                              widget.hintText ?? LangKeys.searchNowKey.tr(),
+                          hintStyle: AppTextStyles.style16Regular.copyWith(
+                            color: colors.onPrimaryFixed,
+                            fontSize: con.maxWidth * 0.05,
+                          ),
+                          prefixIcon: Padding(
+                            padding:
+                                const EdgeInsetsDirectional.only(start: 16),
+                            child: ReverseWidget(
+                              applyReverse: widget.reverseSearchIcon,
+                              child: Assets.media.images.svg.searchIcon.svg(),
+                            ),
+                          ),
+                          prefixIconConstraints: const BoxConstraints(
+                            maxHeight: 25,
+                            minWidth: 25,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.all(8),
                         ),
                       ),
-                      prefixIconConstraints: const BoxConstraints(
-                        maxHeight: 25,
-                        minWidth: 25,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.all(8),
                     ),
                   ),
                 ),
