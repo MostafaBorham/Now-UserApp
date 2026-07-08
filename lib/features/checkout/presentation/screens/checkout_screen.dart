@@ -13,10 +13,11 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/car
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/choose_payment_method.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/dicount_code_views/discount_code_list_items.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code/discount_code_list_items.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_items_list.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_methods_card.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
@@ -39,6 +40,7 @@ class CheckoutScreen extends StatelessWidget {
               AspectRatio(
                   aspectRatio: 2,
                   child: DiscountCodeListItems()),
+              TipYourDriverView(),
               InvoiceSummaryCard(),
               AddNotesField(),
               methods.isEmpty ? PrimaryAppDisabledButton(title: 'Confirm Order',) : PrimaryAppButton(title: 'Confirm Order'),

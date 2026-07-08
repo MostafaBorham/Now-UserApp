@@ -14,6 +14,7 @@ class OverlayOpacityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return IgnorePointer(
       ignoring: disabled,
       child: Stack(
@@ -23,7 +24,7 @@ class OverlayOpacityWidget extends StatelessWidget {
             Positioned.fill(
               child: ColoredBox(
                 color: overlayColor ??
-                    Colors.black.withValues(alpha: 0.35),
+                    colors.onPrimary.withValues(alpha: 0.8),
               ),
             ),
         ],
