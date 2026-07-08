@@ -4,11 +4,11 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item/widgets/cart_item_apply_discount_code_row.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item/widgets/cart_item_checkout_row.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_brand_item_card_header.dart';
 
 class CartBrandItemCard extends StatefulWidget {
   const CartBrandItemCard({super.key, this.readyToCheckout = false});
@@ -42,39 +42,10 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
           spacing: 20,
           children: [
             // Store header (tap to expand / collapse)
-            InkWell(
-              onTap: () => setState(() => _isExpanded = !_isExpanded),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 12,
-                    children: [
-                      CircularBrandLogo(
-                        radius: 24,
-                        elevation: 1,
-                        backgroundColor: colors.onTertiaryContainer,
-                        logoUrl:
-                            'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                      ),
-                      Text(
-                        'Banda Store',
-                        style: AppTextStyles.style16Medium.copyWith(
-                          color: colors.onSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(
-                    _isExpanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    size: 24,
-                    color: colors.onSurface.withValues(alpha: 0.7),
-                  ),
-                ],
-              ),
+            CartBrandItemCardHeader(
+              isExpanded: _isExpanded,
+              onToggle: (bool expanded) =>
+                  setState(() => _isExpanded = expanded),
             ),
 
             // Collapsed preview: product thumbnails
