@@ -21,7 +21,7 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-          Assets.media.images.svg.personPng.image(),
+        Assets.media.images.svg.personPng.image(),
         const SizedBox(height: 14),
         Text(
           name,

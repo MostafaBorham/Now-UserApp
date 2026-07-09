@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../app_colors.dart';
 
@@ -23,8 +24,7 @@ class LogoutButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/svg/logout.svg',
+              Assets.media.images.svg.logout.svg(
                 width: 22,
                 height: 22,
               ),

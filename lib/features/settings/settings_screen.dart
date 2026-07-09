@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../address/my_address_screen.dart';
 import '../discount/discount_code_screen.dart';
@@ -52,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
                     title: 'General',
                     items: [
                       SettingsItem(
-                        iconAsset: 'assets/svg/personal_info.svg',
+                        iconAsset: Assets.media.images.svg.personalInfo.path,
                         label: 'Personal Information',
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
