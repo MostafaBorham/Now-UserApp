@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -55,9 +54,7 @@ class AddPaymentCardScreen extends StatelessWidget {
                 items: [
                   PaymentMethodItem(
                     title: "Apple Pay",
-                    icon: SvgPicture.asset(
-                      Assets.media.images.svg.applePay.path,
-                    ),
+                    icon: Assets.media.images.svg.applePay.svg(),
                     value: "apple_pay",
                   ),
                   PaymentMethodItem(

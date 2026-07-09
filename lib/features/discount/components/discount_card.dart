@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -194,8 +194,7 @@ class DiscountCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 14, left: 4),
               child: Center(
-                child: SvgPicture.asset(
-                  'assets/svg/logo_vertical.svg',
+                child: Assets.media.images.svg.logoVertical.svg(
                   height: 64,
                 ),
               ),
@@ -227,7 +226,7 @@ class _CodeChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset('assets/svg/copy.svg', width: 16, height: 16),
+            Assets.media.images.svg.copy.svg(width: 16, height: 16),
             const SizedBox(width: 8),
             Text(
               code,

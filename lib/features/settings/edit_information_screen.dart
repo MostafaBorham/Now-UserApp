@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import 'app_colors.dart';
 import 'components/edit_field.dart';
@@ -109,7 +110,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                         EditField(
                           label: 'Full Name',
                           controller: _fullName,
-                          leadingAsset: 'assets/svg/pen.svg',
+                          leadingAsset: Assets.media.images.svg.pen.path,
                           showCounter: true,
                           maxLength: 40,
                         ),
@@ -117,7 +118,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                         EditField(
                           label: 'Phone',
                           controller: _phone,
-                          leadingAsset: 'assets/svg/pen.svg',
+                          leadingAsset: Assets.media.images.svg.pen.path,
                           keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: _fieldGap),
@@ -125,7 +126,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                           label: 'Email',
                           controller: _email,
                           hintText: 'Enter email address',
-                          leadingAsset: 'assets/svg/pen.svg',
+                          leadingAsset: Assets.media.images.svg.pen.path,
                           keyboardType: TextInputType.emailAddress,
                         ),
                         const SizedBox(height: _fieldGap),
@@ -151,7 +152,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                           label: 'Date of Birth',
                           hintText: 'Select Date of Birth',
                           valueText: _dobText,
-                          trailingAsset: 'assets/svg/date.svg',
+                          trailingAsset: Assets.media.images.svg.date.path,
                           readOnly: true,
                           onTap: _pickDate,
                         ),
@@ -160,7 +161,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                           label: 'Nationality',
                           controller: _nationality,
                           hintText: 'Enter your nationality',
-                          trailingAsset: 'assets/svg/pen.svg',
+                          trailingAsset: Assets.media.images.svg.pen.path,
                         ),
                       ],
                     ),

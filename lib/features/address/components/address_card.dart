@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -102,8 +102,7 @@ class AddressCard extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 1),
-                      child: SvgPicture.asset(
-                        'assets/svg/pin.svg',
+                      child: Assets.media.images.svg.pin.svg(
                         width: _leadingSlot,
                         height: _leadingSlot,
                       ),
@@ -181,8 +180,7 @@ class _EditButton extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4),
-          child: SvgPicture.asset(
-            'assets/svg/edit.svg',
+          child: Assets.media.images.svg.edit.svg(
             width: 22,
             height: 22,
           ),

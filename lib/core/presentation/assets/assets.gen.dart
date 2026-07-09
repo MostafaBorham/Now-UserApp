@@ -124,6 +124,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
 
+  /// File path: assets/media/images/png/map.png
+  AssetGenImage get map =>
+      const AssetGenImage('assets/media/images/png/map.png');
+
   /// File path: assets/media/images/png/master-card-logo.png
   AssetGenImage get masterCardLogo =>
       const AssetGenImage('assets/media/images/png/master-card-logo.png');
@@ -167,6 +171,7 @@ class $AssetsMediaImagesPngGen {
     bottomNavBarBackground,
     decrementIcon,
     increamentIcon,
+    map,
     masterCardLogo,
     onboardingImg,
     profileImgPlacholder,

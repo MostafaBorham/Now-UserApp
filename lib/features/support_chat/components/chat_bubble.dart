@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -94,8 +94,7 @@ class _PersonAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: Image.asset(
-        'assets/svg/person.png',
+      child: Assets.media.images.svg.personPng.image(
         width: size,
         height: size,
         fit: BoxFit.cover,
@@ -120,7 +119,7 @@ class _NowAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         color: AppColors.grey,
       ),
-      child: SvgPicture.asset('assets/svg/logo_horizontal.svg', width: 26),
+      child: Assets.media.images.svg.logoHorizontal.svg(width: 26),
     );
   }
 }

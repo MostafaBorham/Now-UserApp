@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/gender_selector.dart';
@@ -47,10 +48,10 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   static const double _hPadding = 20;
 
   static const List<String> _tabs = ['Home', 'Work', 'Other'];
-  static const List<String> _tabIcons = [
-    'assets/svg/home_selected.svg',
-    'assets/svg/work_selected.svg',
-    'assets/svg/other_selected.svg',
+  static final List<String> _tabIcons = [
+    Assets.media.images.svg.homeSelected.path,
+    Assets.media.images.svg.workSelected.path,
+    Assets.media.images.svg.otherSelected.path,
   ];
 
   /// First input placeholder per tab (Home / Work / Other).

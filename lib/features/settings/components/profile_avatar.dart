@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../app_colors.dart';
 
@@ -32,8 +32,7 @@ class ProfileAvatar extends StatelessWidget {
               width: size,
               height: size,
               color: AppColors.avatarPlaceholder,
-              child: Image.asset(
-                'assets/svg/person.png',
+              child: Assets.media.images.svg.personPng.image(
                 fit: BoxFit.cover,
                 width: size,
                 height: size,
@@ -51,8 +50,7 @@ class ProfileAvatar extends StatelessWidget {
                   child: Container(
                     color: AppColors.avatarOverlay,
                     alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      'assets/svg/camera.svg',
+                    child: Assets.media.images.svg.camera.svg(
                       width: 24,
                       height: 24,
                     ),

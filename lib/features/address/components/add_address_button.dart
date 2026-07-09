@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -24,8 +24,7 @@ class AddAddressButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/svg/add-circle.svg',
+              Assets.media.images.svg.addCircle.svg(
                 width: 24,
                 height: 24,
               ),

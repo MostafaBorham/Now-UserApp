@@ -169,6 +169,13 @@ abstract class AppRouter {
           settings: settings,
           builder: (_) => const PaymentFailedScreen(),
         );
+        ///////////////////////////////////////////////////
+      case AppRoutes.checkoutScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const CheckoutScreen(),
+        );
+    ///////////////////////////////////////////////////
       default:
         return MaterialPageRoute(
           settings: settings,

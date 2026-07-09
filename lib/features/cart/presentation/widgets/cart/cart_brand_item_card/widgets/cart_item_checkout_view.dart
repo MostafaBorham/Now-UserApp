@@ -3,6 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 
 class CartItemCheckoutView extends StatelessWidget {
   const CartItemCheckoutView({
@@ -59,6 +60,7 @@ class CartItemCheckoutView extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: PrimaryAppPostfixIconButton(
                 title: 'Checkout',
+                onTap: () => Navigator.pushNamed(context, AppRoutes.checkoutScreen),
                 postfixIcon: Assets
                     .media
                     .images

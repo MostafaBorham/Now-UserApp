@@ -49,7 +49,7 @@ class FileComplaintScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              PrimaryAppButton(title: LangKeys.submitComplaintKey.tr()),
+              PrimaryAppButton(title: LangKeys.submitComplaintKey.tr(),onTap: () => Navigator.pop(context),),
             ],
           ),
         ),

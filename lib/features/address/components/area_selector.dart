@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -35,8 +35,7 @@ class AreaSelector extends StatelessWidget {
       child: Row(
         children: [
           // White-stroked asset recolored grey so it reads on the grey pill.
-          SvgPicture.asset(
-            'assets/svg/address_cutted_grey.svg',
+          Assets.media.images.svg.addressCuttedGrey.svg(
             width: 22,
             height: 22,
             colorFilter: const ColorFilter.mode(

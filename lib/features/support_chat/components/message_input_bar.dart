@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
 
@@ -57,8 +57,7 @@ class MessageInputBar extends StatelessWidget {
               const SizedBox(width: 12),
               GestureDetector(
                 onTap: onSend,
-                child: SvgPicture.asset(
-                  'assets/svg/send.svg',
+                child: Assets.media.images.svg.send.svg(
                   width: 52,
                   height: 52,
                 ),

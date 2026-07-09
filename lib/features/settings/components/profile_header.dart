@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../app_colors.dart';
 
@@ -64,8 +64,7 @@ class CommonHeader extends StatelessWidget {
             left: -1,
             right: -1,
             bottom: -1,
-            child: SvgPicture.asset(
-              'assets/svg/wave.svg',
+            child: Assets.media.images.svg.wave.svg(
               fit: BoxFit.fill,
               height: waveHeight,
             ),
@@ -117,8 +116,7 @@ class ArrowBackButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Center(
-          child: SvgPicture.asset(
-            'assets/svg/arrow-right.svg',
+          child: Assets.media.images.svg.arrowRight.svg(
             width: 22,
             height: 22,
           ),

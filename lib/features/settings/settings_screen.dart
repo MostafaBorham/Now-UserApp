@@ -62,7 +62,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       SettingsItem(
-                        iconAsset: 'assets/svg/my_address.svg',
+                        iconAsset: Assets.media.images.svg.myAddress.path,
                         label: 'My Address',
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -71,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       SettingsItem(
-                        iconAsset: 'assets/svg/language.svg',
+                        iconAsset: Assets.media.images.svg.language.path,
                         label: 'Language',
                         onTap: () {},
                       ),
@@ -82,7 +82,7 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Promotional Activity',
                     items: [
                       SettingsItem(
-                        iconAsset: 'assets/svg/discount.svg',
+                        iconAsset: Assets.media.images.svg.discount.path,
                         label: 'Discount Code',
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -91,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       SettingsItem(
-                        iconAsset: 'assets/svg/wallet.svg',
+                        iconAsset: Assets.media.images.svg.wallet.path,
                         label: 'My Wallet',
                         onTap: () {},
                       ),
@@ -102,7 +102,7 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Support',
                     items: [
                       SettingsItem(
-                        iconAsset: 'assets/svg/live_chat.svg',
+                        iconAsset: Assets.media.images.svg.liveChat.path,
                         label: 'Live Chat',
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -111,14 +111,14 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       SettingsItem(
-                        iconAsset: 'assets/svg/faq.svg',
+                        iconAsset: Assets.media.images.svg.faq.path,
                         label: 'FAQ',
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => const FaqScreen()),
                         ),
                       ),
                       SettingsItem(
-                        iconAsset: 'assets/svg/privacy.svg',
+                        iconAsset: Assets.media.images.svg.privacy.path,
                         label: 'Privacy Policy',
                         onTap: () => Navigator.push(
                           context,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../app_colors.dart';
