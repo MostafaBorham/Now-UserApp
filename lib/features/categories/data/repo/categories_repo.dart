@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/network/api_error_handler.dart';
 import 'package:nowdelivery_user_app/features/categories/data/datasources/remote/api/categories_api_service.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 
@@ -23,17 +24,12 @@ class CategoriesRepo {
 
       return Right(categories);
     } on DioException catch (exception) {
-      return Left(Failure(_extractErrorMessage(exception)));
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
     } catch (exception) {
       return Left(Failure(exception.toString()));
     }
-  }
-
-  String _extractErrorMessage(DioException exception) {
-    final dynamic data = exception.response?.data;
-    if (data is Map && data['message'] != null) {
-      return data['message'].toString();
-    }
-    return exception.message ?? 'Something went wrong, please try again.';
   }
 }
