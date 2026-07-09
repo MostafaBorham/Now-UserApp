@@ -29,7 +29,7 @@ class TrackOrderScreen extends StatelessWidget {
           InkWell(
             customBorder: const CircleBorder(),
             onTap: () {},
-            child: Assets.media.images.svg.checkout.support.svg(
+            child: Assets.media.images.svg.support.svg(
               width: 44,
               height: 44,
             ),

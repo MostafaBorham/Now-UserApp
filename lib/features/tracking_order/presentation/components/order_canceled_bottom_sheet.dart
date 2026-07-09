@@ -42,7 +42,7 @@ class OrderCanceledBottomSheet extends StatelessWidget {
     return CancelSheetScaffold(
       children: [
         const SizedBox(height: 8),
-        Center(child: Assets.media.images.svg.checkout.orderDone.svg()),
+        Center(child: Assets.media.images.svg.orderDone.svg()),
         const SizedBox(height: 24),
         Text(
           LangKeys.orderCanceledTitleKey.tr(),

@@ -21,7 +21,7 @@ class OrderConfirmedHeader extends StatelessWidget {
           mainAxisAlignment: .center,
           children: [
             // CircleBackButton(),
-            Assets.media.images.svg.checkout.orderDone.svg(),
+            Assets.media.images.svg.orderDone.svg(),
           ],
         ),
         16.hSpace,

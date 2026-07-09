@@ -19,10 +19,7 @@ class HomeOffersSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.media.images.png.homeOffersBackground.path,),
-          fit: BoxFit.fitWidth
-        ),
+        color: colors.primary
       ),
       child: Column(
         spacing: 10,

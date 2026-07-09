@@ -35,7 +35,7 @@ class CourierSection extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: AppBorderRadius.brCircular12,
-            child: Assets.media.images.svg.checkout.courier.svg(
+            child: Assets.media.images.svg.courier.svg(
               width: 48,
               height: 48,
             ),
@@ -68,7 +68,7 @@ class CourierSection extends StatelessWidget {
               InkWell(
                 onTap: onChat,
                 customBorder: const CircleBorder(),
-                child: Assets.media.images.svg.checkout.chat.svg(
+                child: Assets.media.images.svg.chat.svg(
                   width: 40,
                   height: 40,
                 ),
@@ -76,7 +76,7 @@ class CourierSection extends StatelessWidget {
               InkWell(
                 onTap: onCall,
                 customBorder: const CircleBorder(),
-                child: Assets.media.images.svg.checkout.call.svg(
+                child: Assets.media.images.svg.call.svg(
                   width: 40,
                   height: 40,
                 ),

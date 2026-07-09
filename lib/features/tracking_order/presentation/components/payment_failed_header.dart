@@ -20,7 +20,7 @@ class PaymentFailedHeader extends StatelessWidget {
           mainAxisAlignment: .center,
           children: [
             // CircleBackButton(),
-            Assets.media.images.svg.checkout.paymentNotComplete.svg(),
+            Assets.media.images.svg.paymentNotComplete.svg(),
           ],
         ),
         16.hSpace,

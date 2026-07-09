@@ -55,7 +55,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
     return CancelSheetScaffold(
       children: [
         const SizedBox(height: 8),
-        Center(child: Assets.media.images.svg.checkout.cancel.svg()),
+        Center(child: Assets.media.images.svg.cancel.svg()),
         const SizedBox(height: 24),
         Text(
           LangKeys.areYouSureCancelKey.tr(),
@@ -161,7 +161,7 @@ class _OrderSummaryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Assets.media.images.svg.checkout.order2.svg(width: 50, height: 50),
+          Assets.media.images.svg.order2.svg(width: 50, height: 50),
         ],
       ),
     );

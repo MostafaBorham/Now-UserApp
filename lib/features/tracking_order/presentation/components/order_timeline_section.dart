@@ -29,7 +29,7 @@ class OrderTimelineSection extends StatelessWidget {
     final List<_TimelineStepData> steps = [
       _TimelineStepData(
         status: OrderStepStatus.done,
-        icon: Assets.media.images.svg.checkout.orderAccepted.svg(
+        icon: Assets.media.images.svg.orderAccepted.svg(
           width: 34,
           height: 34,
         ),
@@ -37,7 +37,7 @@ class OrderTimelineSection extends StatelessWidget {
       ),
       _TimelineStepData(
         status: OrderStepStatus.current,
-        icon: Assets.media.images.svg.checkout.orderConfirmed.svg(
+        icon: Assets.media.images.svg.orderConfirmed.svg(
           width: 34,
           height: 34,
         ),
@@ -45,7 +45,7 @@ class OrderTimelineSection extends StatelessWidget {
       ),
       _TimelineStepData(
         status: OrderStepStatus.pending,
-        icon: Assets.media.images.svg.checkout.onTheWay.svg(
+        icon: Assets.media.images.svg.onTheWay.svg(
           width: 34,
           height: 34,
         ),
@@ -53,7 +53,7 @@ class OrderTimelineSection extends StatelessWidget {
       ),
       _TimelineStepData(
         status: OrderStepStatus.pending,
-        icon: Assets.media.images.svg.checkout.delivered.svg(
+        icon: Assets.media.images.svg.delivered.svg(
           width: 34,
           height: 34,
         ),

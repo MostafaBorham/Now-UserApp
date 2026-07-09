@@ -90,7 +90,7 @@ class OrderTimelineStep extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     switch (status) {
       case OrderStepStatus.done:
-        return Assets.media.images.svg.checkout.stepDone.svg(
+        return Assets.media.images.svg.stepDone.svg(
           width: 22,
           height: 22,
         );

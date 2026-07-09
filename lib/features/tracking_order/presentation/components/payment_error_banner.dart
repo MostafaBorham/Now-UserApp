@@ -49,7 +49,7 @@ class PaymentErrorBanner extends StatelessWidget {
             ),
           ),
           12.wSpace,
-          Assets.media.images.svg.checkout.infoRed.svg(),
+          Assets.media.images.svg.infoRed.svg(),
         ],
       ),
     );

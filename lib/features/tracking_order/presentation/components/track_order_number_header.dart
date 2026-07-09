@@ -23,7 +23,7 @@ class TrackOrderNumberHeader extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Row(
       children: [
-        Assets.media.images.svg.checkout.order.svg(width: 48, height: 48),
+        Assets.media.images.svg.order.svg(width: 48, height: 48),
         12.wSpace,
         Expanded(
           child: Column(

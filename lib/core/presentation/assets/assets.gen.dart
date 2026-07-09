@@ -120,10 +120,6 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get decrementIcon =>
       const AssetGenImage('assets/media/images/png/decrement-icon.png');
 
-  /// File path: assets/media/images/png/home-offers-background.jpg
-  AssetGenImage get homeOffersBackground =>
-      const AssetGenImage('assets/media/images/png/home-offers-background.jpg');
-
   /// File path: assets/media/images/png/increament-icon.png
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
@@ -170,7 +166,6 @@ class $AssetsMediaImagesPngGen {
     appLogo,
     bottomNavBarBackground,
     decrementIcon,
-    homeOffersBackground,
     increamentIcon,
     masterCardLogo,
     onboardingImg,
@@ -187,9 +182,9 @@ class $AssetsMediaImagesPngGen {
 class $AssetsMediaImagesSvgGen {
   const $AssetsMediaImagesSvgGen();
 
-  /// File path: assets/media/images/svg/09.jpg
-  AssetGenImage get a09 =>
-      const AssetGenImage('assets/media/images/svg/09.jpg');
+  /// File path: assets/media/images/svg/Icon-1.svg
+  SvgGenImage get icon1 =>
+      const SvgGenImage('assets/media/images/svg/Icon-1.svg');
 
   /// File path: assets/media/images/svg/add-circle-black.svg
   SvgGenImage get addCircleBlack =>
@@ -264,9 +259,16 @@ class $AssetsMediaImagesSvgGen {
     'assets/media/images/svg/bottom-nav-bar-background.svg',
   );
 
+  /// File path: assets/media/images/svg/call.svg
+  SvgGenImage get call => const SvgGenImage('assets/media/images/svg/call.svg');
+
   /// File path: assets/media/images/svg/camera.svg
   SvgGenImage get camera =>
       const SvgGenImage('assets/media/images/svg/camera.svg');
+
+  /// File path: assets/media/images/svg/cancel.svg
+  SvgGenImage get cancel =>
+      const SvgGenImage('assets/media/images/svg/cancel.svg');
 
   /// File path: assets/media/images/svg/card.svg
   SvgGenImage get card => const SvgGenImage('assets/media/images/svg/card.svg');
@@ -275,9 +277,8 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get categoriesUpArrow =>
       const SvgGenImage('assets/media/images/svg/categories-up-arrow.svg');
 
-  /// Directory path: assets/media/images/svg/checkout
-  $AssetsMediaImagesSvgCheckoutGen get checkout =>
-      const $AssetsMediaImagesSvgCheckoutGen();
+  /// File path: assets/media/images/svg/chat.svg
+  SvgGenImage get chat => const SvgGenImage('assets/media/images/svg/chat.svg');
 
   /// File path: assets/media/images/svg/circle-add-more-broken-icon.svg
   SvgGenImage get circleAddMoreBrokenIcon => const SvgGenImage(
@@ -299,12 +300,20 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/copy.svg
   SvgGenImage get copy => const SvgGenImage('assets/media/images/svg/copy.svg');
 
+  /// File path: assets/media/images/svg/courier.svg
+  SvgGenImage get courier =>
+      const SvgGenImage('assets/media/images/svg/courier.svg');
+
   /// File path: assets/media/images/svg/date.svg
   SvgGenImage get date => const SvgGenImage('assets/media/images/svg/date.svg');
 
   /// File path: assets/media/images/svg/delete-icon.svg
   SvgGenImage get deleteIcon =>
       const SvgGenImage('assets/media/images/svg/delete-icon.svg');
+
+  /// File path: assets/media/images/svg/delivered.svg
+  SvgGenImage get delivered =>
+      const SvgGenImage('assets/media/images/svg/delivered.svg');
 
   /// File path: assets/media/images/svg/delivery_icon.svg
   SvgGenImage get deliveryIcon =>
@@ -360,6 +369,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get homeUnselected =>
       const SvgGenImage('assets/media/images/svg/home_unselected.svg');
 
+  /// File path: assets/media/images/svg/info_red.svg
+  SvgGenImage get infoRed =>
+      const SvgGenImage('assets/media/images/svg/info_red.svg');
+
   /// File path: assets/media/images/svg/language-icon.svg
   SvgGenImage get languageIcon =>
       const SvgGenImage('assets/media/images/svg/language-icon.svg');
@@ -408,6 +421,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get masterCardCircle =>
       const SvgGenImage('assets/media/images/svg/master_card_circle.svg');
 
+  /// File path: assets/media/images/svg/master_card_white.svg
+  SvgGenImage get masterCardWhite =>
+      const SvgGenImage('assets/media/images/svg/master_card_white.svg');
+
   /// File path: assets/media/images/svg/message-icon.svg
   SvgGenImage get messageIcon =>
       const SvgGenImage('assets/media/images/svg/message-icon.svg');
@@ -440,6 +457,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get onBoardingLogo =>
       const SvgGenImage('assets/media/images/svg/on-boarding-logo.svg');
 
+  /// File path: assets/media/images/svg/on_the_way.svg
+  SvgGenImage get onTheWay =>
+      const SvgGenImage('assets/media/images/svg/on_the_way.svg');
+
   /// File path: assets/media/images/svg/onboarding_background.svg
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
@@ -452,6 +473,26 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get orderStarRate =>
       const SvgGenImage('assets/media/images/svg/order-star-rate.svg');
 
+  /// File path: assets/media/images/svg/order.svg
+  SvgGenImage get order =>
+      const SvgGenImage('assets/media/images/svg/order.svg');
+
+  /// File path: assets/media/images/svg/order2.svg
+  SvgGenImage get order2 =>
+      const SvgGenImage('assets/media/images/svg/order2.svg');
+
+  /// File path: assets/media/images/svg/order_accepted.svg
+  SvgGenImage get orderAccepted =>
+      const SvgGenImage('assets/media/images/svg/order_accepted.svg');
+
+  /// File path: assets/media/images/svg/order_confirmed.svg
+  SvgGenImage get orderConfirmed =>
+      const SvgGenImage('assets/media/images/svg/order_confirmed.svg');
+
+  /// File path: assets/media/images/svg/order_done.svg
+  SvgGenImage get orderDone =>
+      const SvgGenImage('assets/media/images/svg/order_done.svg');
+
   /// File path: assets/media/images/svg/orders-icon.svg
   SvgGenImage get ordersIcon =>
       const SvgGenImage('assets/media/images/svg/orders-icon.svg');
@@ -463,6 +504,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/other_unselected.svg
   SvgGenImage get otherUnselected =>
       const SvgGenImage('assets/media/images/svg/other_unselected.svg');
+
+  /// File path: assets/media/images/svg/payment_not_complete.svg
+  SvgGenImage get paymentNotComplete =>
+      const SvgGenImage('assets/media/images/svg/payment_not_complete.svg');
 
   /// File path: assets/media/images/svg/pen.svg
   SvgGenImage get pen => const SvgGenImage('assets/media/images/svg/pen.svg');
@@ -540,9 +585,17 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/stc.svg
   SvgGenImage get stc => const SvgGenImage('assets/media/images/svg/stc.svg');
 
+  /// File path: assets/media/images/svg/step_done.svg
+  SvgGenImage get stepDone =>
+      const SvgGenImage('assets/media/images/svg/step_done.svg');
+
   /// File path: assets/media/images/svg/support-call-icon.svg
   SvgGenImage get supportCallIcon =>
       const SvgGenImage('assets/media/images/svg/support-call-icon.svg');
+
+  /// File path: assets/media/images/svg/support.svg
+  SvgGenImage get support =>
+      const SvgGenImage('assets/media/images/svg/support.svg');
 
   /// File path: assets/media/images/svg/time-icon.svg
   SvgGenImage get timeIcon =>
@@ -584,7 +637,7 @@ class $AssetsMediaImagesSvgGen {
 
   /// List of all assets
   List<dynamic> get values => [
-    a09,
+    icon1,
     addCircleBlack,
     addCircle,
     addToCartBtn,
@@ -603,16 +656,21 @@ class $AssetsMediaImagesSvgGen {
     borderdAccountIcon,
     borderdHomeIcon,
     bottomNavBarBackground,
+    call,
     camera,
+    cancel,
     card,
     categoriesUpArrow,
+    chat,
     circleAddMoreBrokenIcon,
     clipboard,
     clipper,
     copyCouponCodeIcon,
     copy,
+    courier,
     date,
     deleteIcon,
+    delivered,
     deliveryIcon,
     discount,
     edit,
@@ -627,6 +685,7 @@ class $AssetsMediaImagesSvgGen {
     homeOffersBackground,
     homeSelected,
     homeUnselected,
+    infoRed,
     languageIcon,
     language,
     liveChat,
@@ -639,6 +698,7 @@ class $AssetsMediaImagesSvgGen {
     masterLogo,
     masterCard,
     masterCardCircle,
+    masterCardWhite,
     messageIcon,
     mobile,
     myAddress,
@@ -647,12 +707,19 @@ class $AssetsMediaImagesSvgGen {
     nowOffersAr,
     nowWalletCard,
     onBoardingLogo,
+    onTheWay,
     onboardingBackground,
     orderIcon,
     orderStarRate,
+    order,
+    order2,
+    orderAccepted,
+    orderConfirmed,
+    orderDone,
     ordersIcon,
     otherSelected,
     otherUnselected,
+    paymentNotComplete,
     pen,
     personPng,
     personSvg,
@@ -673,7 +740,9 @@ class $AssetsMediaImagesSvgGen {
     starOutlineIcon,
     starRate,
     stc,
+    stepDone,
     supportCallIcon,
+    support,
     timeIcon,
     trustIcon,
     visaLogo,
@@ -684,101 +753,6 @@ class $AssetsMediaImagesSvgGen {
     whiteWaveBackground,
     workSelected,
     workUnselected,
-  ];
-}
-
-class $AssetsMediaImagesSvgCheckoutGen {
-  const $AssetsMediaImagesSvgCheckoutGen();
-
-  /// File path: assets/media/images/svg/checkout/Icon-1.svg
-  SvgGenImage get icon1 =>
-      const SvgGenImage('assets/media/images/svg/checkout/Icon-1.svg');
-
-  /// File path: assets/media/images/svg/checkout/call.svg
-  SvgGenImage get call =>
-      const SvgGenImage('assets/media/images/svg/checkout/call.svg');
-
-  /// File path: assets/media/images/svg/checkout/cancel.svg
-  SvgGenImage get cancel =>
-      const SvgGenImage('assets/media/images/svg/checkout/cancel.svg');
-
-  /// File path: assets/media/images/svg/checkout/chat.svg
-  SvgGenImage get chat =>
-      const SvgGenImage('assets/media/images/svg/checkout/chat.svg');
-
-  /// File path: assets/media/images/svg/checkout/courier.svg
-  SvgGenImage get courier =>
-      const SvgGenImage('assets/media/images/svg/checkout/courier.svg');
-
-  /// File path: assets/media/images/svg/checkout/delivered.svg
-  SvgGenImage get delivered =>
-      const SvgGenImage('assets/media/images/svg/checkout/delivered.svg');
-
-  /// File path: assets/media/images/svg/checkout/info_red.svg
-  SvgGenImage get infoRed =>
-      const SvgGenImage('assets/media/images/svg/checkout/info_red.svg');
-
-  /// File path: assets/media/images/svg/checkout/master_card_white.svg
-  SvgGenImage get masterCardWhite => const SvgGenImage(
-    'assets/media/images/svg/checkout/master_card_white.svg',
-  );
-
-  /// File path: assets/media/images/svg/checkout/on_the_way.svg
-  SvgGenImage get onTheWay =>
-      const SvgGenImage('assets/media/images/svg/checkout/on_the_way.svg');
-
-  /// File path: assets/media/images/svg/checkout/order.svg
-  SvgGenImage get order =>
-      const SvgGenImage('assets/media/images/svg/checkout/order.svg');
-
-  /// File path: assets/media/images/svg/checkout/order2.svg
-  SvgGenImage get order2 =>
-      const SvgGenImage('assets/media/images/svg/checkout/order2.svg');
-
-  /// File path: assets/media/images/svg/checkout/order_accepted.svg
-  SvgGenImage get orderAccepted =>
-      const SvgGenImage('assets/media/images/svg/checkout/order_accepted.svg');
-
-  /// File path: assets/media/images/svg/checkout/order_confirmed.svg
-  SvgGenImage get orderConfirmed =>
-      const SvgGenImage('assets/media/images/svg/checkout/order_confirmed.svg');
-
-  /// File path: assets/media/images/svg/checkout/order_done.svg
-  SvgGenImage get orderDone =>
-      const SvgGenImage('assets/media/images/svg/checkout/order_done.svg');
-
-  /// File path: assets/media/images/svg/checkout/payment_not_complete.svg
-  SvgGenImage get paymentNotComplete => const SvgGenImage(
-    'assets/media/images/svg/checkout/payment_not_complete.svg',
-  );
-
-  /// File path: assets/media/images/svg/checkout/step_done.svg
-  SvgGenImage get stepDone =>
-      const SvgGenImage('assets/media/images/svg/checkout/step_done.svg');
-
-  /// File path: assets/media/images/svg/checkout/support.svg
-  SvgGenImage get support =>
-      const SvgGenImage('assets/media/images/svg/checkout/support.svg');
-
-  /// List of all assets
-  List<SvgGenImage> get values => [
-    icon1,
-    call,
-    cancel,
-    chat,
-    courier,
-    delivered,
-    infoRed,
-    masterCardWhite,
-    onTheWay,
-    order,
-    order2,
-    orderAccepted,
-    orderConfirmed,
-    orderDone,
-    paymentNotComplete,
-    stepDone,
-    support,
   ];
 }
 
