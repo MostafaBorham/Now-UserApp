@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:user_app/settings/app_colors.dart';
-import 'package:user_app/settings/components/profile_header.dart';
+import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart' show CommonHeader;
+
+import '../settings/app_colors.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});

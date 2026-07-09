@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:user_app/settings/app_colors.dart';
+
+import '../app_colors.dart';
 
 /// A pill-shaped segmented control used across the app.
 ///

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:user_app/privacy/privacy_screen.dart';
 
 import '../address/my_address_screen.dart';
 import '../discount/discount_code_screen.dart';
 import '../faq/faq_screen.dart';
-import '../support/support_screen.dart';
+import '../privacy/privacy_screen.dart';
+import '../support_chat/support_screen.dart';
 import 'app_colors.dart';
 import 'components/logout_button.dart';
 import 'components/profile_header.dart';

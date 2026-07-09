@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../app_colors.dart';
 
@@ -20,7 +21,7 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset('assets/svg/person.png'),
+          Assets.media.images.svg.personPng.image(),
         const SizedBox(height: 14),
         Text(
           name,

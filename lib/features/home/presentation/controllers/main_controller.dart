@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_scr
 import 'package:nowdelivery_user_app/features/favourites/favourites_interface.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
 import 'package:nowdelivery_user_app/features/orders/orders_interface.dart';
+import 'package:nowdelivery_user_app/features/settings/settings_screen.dart';
 import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
 
 final Provider<List<Widget>> mainPagesProvider = Provider(
@@ -12,7 +13,7 @@ final Provider<List<Widget>> mainPagesProvider = Provider(
     FavouritesScreen(),
     CartScreen(),
     MyOrderScreen(),
-    WalletScreen(),
+    SettingsScreen(),
   ],
 );
 
