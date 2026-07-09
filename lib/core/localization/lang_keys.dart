@@ -134,6 +134,40 @@ abstract class LangKeys {
   static const String totalKey = 'total';
   static const String printInvoiceKey = 'printInvoice';
 
+  // Order tracking (Order Confirmed / Track Order / Payment Failed)
+  static const String orderConfirmedTitleKey = 'orderConfirmedTitle';
+  static const String orderConfirmedSubtitleKey = 'orderConfirmedSubtitle';
+  static const String receiverKey = 'receiver';
+  static const String addressKey = 'address';
+  static const String contactKey = 'contact';
+  static const String storeKey = 'store';
+  static const String numberOfItemsKey = 'numberOfItems';
+  static const String paymentKey = 'payment';
+  static const String payKey = 'pay';
+  static const String courierKey = 'courier';
+  static const String estimatedDeliveryTimeKey = 'estimatedDeliveryTime';
+  static const String orderAcceptedKey = 'orderAccepted';
+  static const String orderConfirmedBeingPreparedKey =
+      'orderConfirmedBeingPrepared';
+  static const String onTheWayToYouKey = 'onTheWayToYou';
+  static const String cancelOrderKey = 'cancelOrder';
+  static const String paymentNotCompletedKey = 'paymentNotCompleted';
+  static const String paymentFailedSubtitleKey = 'paymentFailedSubtitle';
+  static const String cardDeclinedTitleKey = 'cardDeclinedTitle';
+  static const String cardDeclinedBodyKey = 'cardDeclinedBody';
+  static const String amountDueKey = 'amountDue';
+  static const String tryAnotherPaymentMethodKey = 'tryAnotherPaymentMethod';
+  static const String paymentCardKey = 'paymentCard';
+  static const String backToOrderKey = 'backToOrder';
+  static const String areYouSureCancelKey = 'areYouSureCancel';
+  static const String cancelOrderWarningKey = 'cancelOrderWarning';
+  static const String yesCancelOrderKey = 'yesCancelOrder';
+  static const String keepOrderKey = 'keepOrder';
+  static const String orderCanceledTitleKey = 'orderCanceledTitle';
+  static const String orderCanceledSubtitleKey = 'orderCanceledSubtitle';
+  static const String continueShoppingKey = 'continueShopping';
+  static const String viewOrdersKey = 'viewOrders';
+
   // Complaints & rating
   static const String fileComplaintKey = 'fileComplaint';
   static const String submitComplaintKey = 'submitComplaint';

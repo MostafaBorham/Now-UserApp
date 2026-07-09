@@ -14,7 +14,10 @@ import '../widgets/shared/verification_headline.dart';
 
 /// Step 2 of guest verification: enter the OTP sent to the phone number.
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({super.key, this.phoneNumber = '+966 5 1234 5678'});
+  const OtpVerificationScreen({
+    super.key,
+    this.phoneNumber = '+966 5 1234 5678',
+  });
 
   final String phoneNumber;
 
@@ -78,7 +81,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 buttonPadding: 16,
                 onTap: () => Navigator.pushNamed(
                   context,
-                  AppRoutes.personalInformationScreen,
+                  AppRoutes.orderConfirmedScreen,
                 ),
               ),
             ],

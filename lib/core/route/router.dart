@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_st
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/view_store_category_products_screen.dart';
 import 'package:nowdelivery_user_app/features/support/support_interface.dart';
+import 'package:nowdelivery_user_app/features/tracking_order/tracking_order_interface.dart';
 import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
 import 'package:nowdelivery_user_app/features/welcome/welcome_interface.dart';
 
@@ -149,6 +150,24 @@ abstract class AppRouter {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const PersonalInformationScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.orderConfirmedScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const OrderConfirmedScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.trackOrderScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const TrackOrderScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.paymentFailedScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const PaymentFailedScreen(),
         );
       default:
         return MaterialPageRoute(

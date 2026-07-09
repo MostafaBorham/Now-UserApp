@@ -151,6 +151,7 @@ class OrderListItem extends ConsumerWidget {
                 child: AspectRatio(
                   aspectRatio: 4.3,
                   child: UnPrimaryButton( title: LangKeys.trackOrderKey.tr(),buttonPadding : 8, onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.trackOrderScreen);
                   },),
                 ),
               ),
