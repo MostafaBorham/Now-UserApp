@@ -6,9 +6,13 @@ class DioFactory {
   static const String _baseUrl = 'https://www.now-delivery.com';
   static const Duration _timeout = Duration(seconds: 15);
 
-  static Dio? _dio;
+  /// Single, immutable Dio instance. As a `static final` it is created lazily
+  /// on first access and exactly once, so the same instance is reused for the
+  /// whole app lifetime.
+  static final Dio _dio = _createAndConfigureDio();
 
-  static Dio getDio() => _dio ??= _createAndConfigureDio();
+  /// Always returns the one shared [Dio] singleton.
+  static Dio getDio() => _dio;
 
   static Dio _createAndConfigureDio() {
     final Dio dio = Dio(

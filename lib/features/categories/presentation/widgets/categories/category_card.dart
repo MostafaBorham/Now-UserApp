@@ -40,12 +40,12 @@ class CategoryCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 children: [
                   AppCachedNetworkImage(
-                    imageUrl: category.imageUrl,
+                    imageUrl: category.image?.downloadUrl??'',
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
-                  if (category.discountPercentage != null)
+                  if (category.descendantsCount <0)
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
@@ -53,7 +53,7 @@ class CategoryCard extends StatelessWidget {
                         borderRadius: AppBorderRadius.brCircular7,
                       ),
                       child: Text(
-                        '${category.discountPercentage} % ${LangKeys.discountKey.tr()}',
+                        '${category.descendantsCount} % ${LangKeys.discountKey.tr()}',
                         maxLines: 1,
                         style: AppTextStyles.style18SemiBold.copyWith(
                           color: colors.onPrimary,

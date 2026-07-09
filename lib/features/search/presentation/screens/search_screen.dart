@@ -91,9 +91,7 @@ class SearchScreen extends StatelessWidget {
                             category: CategoryModel(
                               id: 1,
                               name: 'Beauty',
-                              imageUrl:
-                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7in6v147mMSnkxkYcpf0X3UvHmk7HS7bUKWIrG-iqAg&s=10',
-                              discountPercentage: 50,
+                              slug: ''
                             ),
                           ),
                         ),
