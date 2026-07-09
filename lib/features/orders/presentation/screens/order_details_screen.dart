@@ -774,6 +774,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         canPop: true,
         appBarActions: [
           InkWell(
+            onTap: () => Navigator.pushNamed(context,AppRoutes.faqScreen),
             child: CircleAvatar(
               backgroundColor: colors.onPrimary,
               radius: MediaQuery.sizeOf(context).width*0.05,

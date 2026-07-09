@@ -27,4 +27,12 @@ abstract class AppRoutes {
   static const String orderConfirmedScreen = 'order confirmed screen';
   static const String trackOrderScreen = 'track order screen';
   static const String paymentFailedScreen = 'payment failed screen';
+  static const String myAddressScreen = 'my address screen';
+  static const String addressDetailsScreen = 'address details screen';
+  static const String addNewAddressFromMapScreen = 'add new address from map screen';
+  static const String discountCodeScreen = 'discount code screen';
+  static const String supportScreen = 'support screen';
+  static const String faqScreen = 'faq screen';
+  static const String privacyPolicyScreen = 'privacy policy screen';
+  static const String editInformationScreen = 'edit information screen';
 }

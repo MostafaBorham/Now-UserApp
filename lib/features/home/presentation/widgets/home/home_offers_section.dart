@@ -19,7 +19,7 @@ class HomeOffersSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: colors.primary
+        color: colors.primary.withValues(alpha: 0.2)
       ),
       child: Column(
         spacing: 10,
@@ -32,7 +32,9 @@ class HomeOffersSection extends StatelessWidget {
             child: ListView.separated(
               padding: EdgeInsetsDirectional.only(start: 15),
               itemBuilder: (context, index) {
-                return HomeOffersItem();
+                return InkWell(
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.productDetailsScreen),
+                    child: HomeOffersItem());
               },
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) {

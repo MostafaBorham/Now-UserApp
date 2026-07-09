@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 
-import '../address/my_address_screen.dart';
-import '../discount/discount_code_screen.dart';
-import '../faq/faq_screen.dart';
-import '../privacy/privacy_screen.dart';
-import '../support_chat/support_screen.dart';
 import 'app_colors.dart';
 import 'components/logout_button.dart';
 import 'components/profile_header.dart';
 import 'components/profile_info.dart';
 import 'components/settings_section.dart';
 import 'components/settings_tile.dart';
-import 'personal_information_screen.dart';
 
 /// Profile screen.
 ///
@@ -55,19 +50,17 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.personalInfo.path,
                         label: 'Personal Information',
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const PersonalInformationScreen(),
-                          ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.personalInformationScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.myAddress.path,
                         label: 'My Address',
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const MyAddressScreen(),
-                          ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.myAddressScreen,
                         ),
                       ),
                       SettingsItem(
@@ -84,10 +77,9 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.discount.path,
                         label: 'Discount Code',
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const DiscountCodeScreen(),
-                          ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.discountCodeScreen,
                         ),
                       ),
                       SettingsItem(
@@ -104,27 +96,25 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.liveChat.path,
                         label: 'Live Chat',
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const SupportScreen(),
-                          ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.supportScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.faq.path,
                         label: 'FAQ',
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const FaqScreen()),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.faqScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.privacy.path,
                         label: 'Privacy Policy',
-                        onTap: () => Navigator.push(
+                        onTap: () => Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => PrivacyPolicyScreen(),
-                          ),
+                          AppRoutes.privacyPolicyScreen,
                         ),
                       ),
                     ],

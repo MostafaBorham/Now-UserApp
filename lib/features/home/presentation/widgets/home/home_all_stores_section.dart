@@ -51,44 +51,20 @@ class HomeAllStoresSection extends StatelessWidget {
             child: CustomButtonTabBar(
               filterWidget: AppFilterIcon(),
               tabs: [LangKeys.allKey.tr(), LangKeys.clothesKey.tr(), LangKeys.otherKey.tr()],
-              views: [
-                LayoutBuilder(
-                  builder: (context, con) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) => SizedBox(
-                        height: con.maxHeight * 0.6,
-                        child: StoreItem(),
-                      ),
-                      separatorBuilder: (context, index) => 20.hSpace,
-                      itemCount: 3,
-                    );
-                  },
-                ),
-                LayoutBuilder(
-                  builder: (context, con) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) => SizedBox(
-                        height: con.maxHeight * 0.6,
-                        child: StoreItem(),
-                      ),
-                      separatorBuilder: (context, index) => 20.hSpace,
-                      itemCount: 3,
-                    );
-                  },
-                ),
-                LayoutBuilder(
-                  builder: (context, con) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) => SizedBox(
-                        height: con.maxHeight * 0.6,
-                        child: StoreItem(),
-                      ),
-                      separatorBuilder: (context, index) => 20.hSpace,
-                      itemCount: 3,
-                    );
-                  },
-                ),
-              ],
+              views: List.generate(3, (index) => LayoutBuilder(
+                builder: (context, con) {
+                  return ListView.separated(
+                    itemBuilder: (context, index) => SizedBox(
+                      height: con.maxHeight * 0.6,
+                      child: InkWell(
+                          onTap: () => Navigator.pushNamed(context, AppRoutes.storeDetailsScreen),
+                          child: StoreItem()),
+                    ),
+                    separatorBuilder: (context, index) => 20.hSpace,
+                    itemCount: 3,
+                  );
+                },
+              ),),
               selectedTabColor: colors.tertiaryContainer,
               unSelectedTabColor: colors.primaryFixed,
             ),

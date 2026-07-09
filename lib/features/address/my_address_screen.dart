@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
-import 'address_details_screen.dart';
 import 'components/add_address_button.dart';
 import 'components/address_card.dart';
-import 'map.dart';
 
 /// "My Address" screen.
 ///
@@ -63,20 +62,18 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                       address: _addresses[i].address,
                       isDefault: i == _selected,
                       onSelect: () => setState(() => _selected = i),
-                      onEdit: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const AddressDetailsScreen(isEditing: true),
-                        ),
+                      onEdit: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.addressDetailsScreen,
+                        arguments: true,
                       ),
                     ),
                   ],
                   const SizedBox(height: 24),
                   AddAddressButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const AddNewAddressFromMap(),
-                      ),
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.addNewAddressFromMapScreen,
                     ),
                   ),
                 ],

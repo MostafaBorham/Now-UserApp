@@ -135,7 +135,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                       Spacer(),
                       InkWell(
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.notificationsScreen),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.notificationsScreen,
+                        ),
                         child: Badge.count(
                           count: 2,
                           offset: Offset(1, 1),
@@ -143,13 +146,14 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           textStyle: AppTextStyles.style14SemiBold,
                           padding: EdgeInsets.all(3),
                           backgroundColor: colors.errorContainer,
-                          child: Assets.media.images.svg.alertIcon.svg(width: 35),
+                          child: Assets.media.images.svg.alertIcon.svg(
+                            width: 35,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  AppSearchField(
-                  ),
+                  AppSearchField(),
                   AppSlider(
                     sliderItem: Container(
                       width: double.infinity,
@@ -164,6 +168,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                     ),
                     itemAspectRatio: 2,
+                    sliderSpace: 1,
                   ),
                 ],
               ),
@@ -220,13 +225,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       AutoSizeText(
-                                        'Guest 123',
+                                        'Big Grocery Sale',
                                         style: AppTextStyles.style20Bold
                                             .copyWith(color: colors.onPrimary),
                                         maxLines: 1,
                                       ),
                                       AutoSizeText(
-                                        'Guest 123',
+                                        'Buy 1 Get 1 Free',
                                         style: AppTextStyles.style12Medium
                                             .copyWith(color: colors.onPrimary),
                                         maxLines: 1,
@@ -235,26 +240,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   ),
                                   CircularBrandLogo(
                                     radius: 35,
+                                    elevation: 1,
+                                    backgroundColor: colors.onPrimary,
                                     logoUrl:
                                         'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                                   ),
                                 ],
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: colors.onPrimary,
-                                  borderRadius: AppBorderRadius.brCircular8,
-                                ),
-                                child: AutoSizeText(
-                                  LangKeys.shopNowKey.tr(),
-                                  style: AppTextStyles.style16SemiBold.copyWith(
-                                    color: colors.onSecondary,
+                              InkWell(
+                                onTap: () => Navigator.pushNamed(context, AppRoutes.storeDetailsScreen),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 16,
                                   ),
-                                  maxLines: 1,
+                                  decoration: BoxDecoration(
+                                    color: colors.onPrimary,
+                                    borderRadius: AppBorderRadius.brCircular8,
+                                  ),
+                                  child: AutoSizeText(
+                                    LangKeys.shopNowKey.tr(),
+                                    style: AppTextStyles.style16SemiBold.copyWith(
+                                      color: colors.onSecondary,
+                                    ),
+                                    maxLines: 1,
+                                  ),
                                 ),
                               ),
                             ],

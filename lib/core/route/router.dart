@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/features/address/address_details_screen.dart';
+import 'package:nowdelivery_user_app/features/address/map.dart';
+import 'package:nowdelivery_user_app/features/address/my_address_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/categories_interface.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
+import 'package:nowdelivery_user_app/features/discount/discount_code_screen.dart';
+import 'package:nowdelivery_user_app/features/faq/faq_screen.dart';
+import 'package:nowdelivery_user_app/features/privacy/privacy_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/edit_information_screen.dart';
+import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/favourites_interface.dart';
 import 'package:nowdelivery_user_app/features/home/home_interface.dart';
 import 'package:nowdelivery_user_app/features/notifications/notifications_interface.dart';
@@ -174,6 +182,55 @@ abstract class AppRouter {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const CheckoutScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.myAddressScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const MyAddressScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.addressDetailsScreen:
+        final isEditing = settings.arguments as bool? ?? false;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => AddressDetailsScreen(isEditing: isEditing),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.addNewAddressFromMapScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AddNewAddressFromMap(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.discountCodeScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const DiscountCodeScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.supportScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SupportScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.faqScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const FaqScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.privacyPolicyScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const PrivacyPolicyScreen(),
+        );
+      ////////////////////////////////////////////////////////////////
+      case AppRoutes.editInformationScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const EditInformationScreen(),
         );
     ///////////////////////////////////////////////////
       default:

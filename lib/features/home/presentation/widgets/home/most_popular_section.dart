@@ -36,7 +36,9 @@ class MostPopularSection extends StatelessWidget {
             child: ListView.separated(
               padding: EdgeInsetsDirectional.only(start: 15),
               itemBuilder: (context, index) {
-                return MostPopularItem();
+                return InkWell(
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.productDetailsScreen),
+                    child: MostPopularItem());
               },
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) {

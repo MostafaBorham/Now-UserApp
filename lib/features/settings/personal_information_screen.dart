@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 
 import 'app_colors.dart';
 import 'components/info_field.dart';
 import 'components/primary_button.dart';
 import 'components/profile_avatar.dart';
 import 'components/profile_header.dart';
-import 'edit_information_screen.dart';
 
 /// Read-only "Personal Information" screen, shown when the user taps the
 /// Personal Information tile on the profile screen.
@@ -80,10 +80,9 @@ class PersonalInformationScreen extends StatelessWidget {
                         const SizedBox(height: 24),
                         PrimaryButton(
                           label: 'Edit',
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const EditInformationScreen(),
-                            ),
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.editInformationScreen,
                           ),
                         ),
                       ],
