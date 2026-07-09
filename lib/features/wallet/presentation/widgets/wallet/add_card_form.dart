@@ -4,56 +4,71 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class AddCardForm extends StatelessWidget {
-  const AddCardForm({super.key});
-
+  const AddCardForm({
+    super.key,
+    this.lableColor,
+    this.hintColor,
+    this.fieldColor,
+  });
+  final Color? lableColor;
+  final Color? hintColor;
+  final Color? fieldColor;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _FieldLabel(LangKeys.cardholderNameKey.tr()),
-            const SizedBox(height: 10),
-            _CardInputField(
-              hintText: LangKeys.nameHintKey.tr(),
-            ),
-        
-            const SizedBox(height: 18),
-        
-            _FieldLabel(LangKeys.cardNumberKey.tr()),
-            const SizedBox(height: 10),
-            const _CardInputField(
-              hintText: '1111-1111-1111-1111',
-              keyboardType: TextInputType.number,
-            ),
-        
-            const SizedBox(height: 18),
-        
-            Row(
-              spacing: 12,
-              children: [ Expanded(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _FieldLabel(LangKeys.cardholderNameKey.tr(), color: lableColor),
+          const SizedBox(height: 10),
+          _CardInputField(
+            hintText: LangKeys.nameHintKey.tr(),
+            hintColor: hintColor,
+            fieldColor: fieldColor,
+          ),
+
+          const SizedBox(height: 18),
+
+          _FieldLabel(LangKeys.cardNumberKey.tr(), color: lableColor),
+          const SizedBox(height: 10),
+          _CardInputField(
+            hintText: '1111-1111-1111-1111',
+            hintColor: hintColor,
+            fieldColor: fieldColor,
+            keyboardType: TextInputType.number,
+          ),
+
+          const SizedBox(height: 18),
+
+          Row(
+            spacing: 12,
+            children: [
+              Expanded(
                 child: _CardFieldColumn(
+                  hintColor: hintColor,
+                  fieldColor: fieldColor,
+                  labelColor: lableColor,
                   label: LangKeys.expirationDateKey.tr(),
                   hint: LangKeys.expiryDateHintKey.tr(),
                   keyboardType: TextInputType.datetime,
                 ),
               ),
 
-                const Expanded(
-                  child: _CardFieldColumn(
-                    label: 'CVV',
-                    hint: '1**',
-                    keyboardType: TextInputType.number,
-                  ),
+              Expanded(
+                child: _CardFieldColumn(
+                  labelColor: lableColor,
+                  hintColor: hintColor,
+                  fieldColor: fieldColor,
+                  label: 'CVV',
+                  hint: '1**',
+                  keyboardType: TextInputType.number,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -61,6 +76,9 @@ class AddCardForm extends StatelessWidget {
 
 class _CardFieldColumn extends StatelessWidget {
   final String label;
+  final Color? labelColor;
+  final Color? hintColor;
+  final Color? fieldColor;
   final String hint;
   final TextInputType? keyboardType;
   final TextAlign? textAlign;
@@ -70,6 +88,9 @@ class _CardFieldColumn extends StatelessWidget {
     required this.hint,
     this.keyboardType,
     this.textAlign,
+    this.labelColor,
+    this.fieldColor,
+    this.hintColor,
   });
 
   @override
@@ -77,12 +98,14 @@ class _CardFieldColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _FieldLabel(label),
+        _FieldLabel(label, color: labelColor),
         const SizedBox(height: 10),
         _CardInputField(
           hintText: hint,
           keyboardType: keyboardType,
           textAlign: textAlign,
+          fieldColor: fieldColor,
+          hintColor: hintColor,
         ),
       ],
     );
@@ -91,8 +114,8 @@ class _CardFieldColumn extends StatelessWidget {
 
 class _FieldLabel extends StatelessWidget {
   final String text;
-
-  const _FieldLabel(this.text);
+  final Color? color;
+  const _FieldLabel(this.text, {this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +123,7 @@ class _FieldLabel extends StatelessWidget {
     return Text(
       text,
       style: AppTextStyles.style14Medium.copyWith(
-        color: colors.onSecondary
+        color: color ?? colors.onSecondary,
       ),
     );
   }
@@ -110,11 +133,15 @@ class _CardInputField extends StatelessWidget {
   final String hintText;
   final TextInputType? keyboardType;
   final TextAlign? textAlign;
+  final Color? hintColor;
+  final Color? fieldColor;
 
   const _CardInputField({
     required this.hintText,
     this.keyboardType,
     this.textAlign,
+    this.hintColor,
+    this.fieldColor,
   });
 
   @override
@@ -122,29 +149,26 @@ class _CardInputField extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return TextFormField(
       keyboardType: keyboardType,
-      style: const TextStyle(
-        fontSize: 15,
-        color: Colors.black87,
-      ),
+      style: const TextStyle(fontSize: 15, color: Colors.black87),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
-          color: colors.onSurface,
+          color: hintColor ?? colors.onSurface,
           fontSize: 15,
         ),
         filled: true,
-        fillColor: colors.onSurface.withValues(alpha: 0.15),
+        fillColor: fieldColor ?? colors.onPrimary.withValues(alpha: 0.33),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 10,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-            borderSide: BorderSide.none
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide.none
+          borderSide: BorderSide.none,
         ),
       ),
     );

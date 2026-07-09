@@ -19,4 +19,11 @@ abstract class AppRoutes {
   static const String storeDetailsScreen = 'store details screen';
   static const String productDetailsScreen = 'product details screen';
   static const String checkoutScreen = 'checkout screen';
+  static const String viewStoreCategoryProductsScreen =
+      'view Store Category Products';
+  static const String addPaymentCard = 'paymentCard';
+  static const String paymentMethodsScreen = 'payment methods screen';
+  static const String phoneVerificationScreen = 'phone verification screen';
+  static const String otpVerificationScreen = 'otp verification screen';
+  static const String personalInformationScreen = 'personal information screen';
 }

@@ -81,6 +81,36 @@ abstract class LangKeys {
   static const String cardNumberKey = 'cardNumber';
   static const String expirationDateKey = 'expirationDate';
 
+  // Payment methods
+  static const String paymentMethodsKey = 'paymentMethods';
+  static const String savedCardsKey = 'savedCards';
+  static const String defaultCardKey = 'defaultCard';
+  static const String anotherPaymentMethodKey = 'anotherPaymentMethod';
+  static const String applePayKey = 'applePay';
+  static const String stcPayKey = 'stcPay';
+  static const String cvvKey = 'cvv';
+  static const String addKey = 'add';
+  static const String addNewPaymentCardKey = 'addNewPaymentCard';
+
+  // Guest verification
+  static const String verificationCodeKey = 'verificationCode';
+  static const String verifyGuestViaPhoneKey = 'verifyGuestViaPhone';
+  static const String phoneVerificationSubtitleKey = 'phoneVerificationSubtitle';
+  static const String mobileNumberKey = 'mobileNumber';
+  static const String enterVerificationCodeKey = 'enterVerificationCode';
+  static const String otpSentToKey = 'otpSentTo';
+  static const String enterCodeToContinueKey = 'enterCodeToContinue';
+  static const String didNotReceiveCodeKey = 'didNotReceiveCode';
+  static const String resendKey = 'resend';
+  static const String pasteCodeKey = 'pasteCode';
+  static const String personalInformationKey = 'personalInformation';
+  static const String nameKey = 'name';
+  static const String firstNameHintKey = 'firstNameHint';
+  static const String lastNameHintKey = 'lastNameHint';
+  static const String emailOptionalKey = 'emailOptional';
+  static const String enterYourEmailKey = 'enterYourEmail';
+  static const String skipKey = 'skip';
+
   // Orders
   static const String myOrdersKey = 'myOrders';
   static const String orderDetailsKey = 'orderDetails';
