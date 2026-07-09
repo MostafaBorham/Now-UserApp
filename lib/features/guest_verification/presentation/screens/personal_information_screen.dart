@@ -16,7 +16,7 @@ class PersonalInformationScreen extends StatelessWidget {
 
   void _finish(BuildContext context) => Navigator.pushNamedAndRemoveUntil(
     context,
-    AppRoutes.mainLayoutScreen,
+    AppRoutes.mainScreen,
     (route) => false,
   );
 

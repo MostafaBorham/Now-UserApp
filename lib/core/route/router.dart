@@ -30,13 +30,8 @@ abstract class AppRouter {
       case AppRoutes.onBoardingScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const OnBoardingScreen());
-    ////////////////////////////////////////////////////////////////
-      case AppRoutes.mainScreen:
-          settings: settings,
-          builder: (_) => const OnBoardingScreen(),
-        );
       ////////////////////////////////////////////////////////////////
-      case AppRoutes.mainLayoutScreen:
+      case AppRoutes.mainScreen:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const MainScreen(),
@@ -125,13 +120,7 @@ abstract class AppRouter {
       case AppRoutes.productDetailsScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const ProductDetailsScreen());
-    ////////////////////////////////////////////////////////////////
-      case AppRoutes.checkoutScreen:
-        return MaterialPageRoute(
-            settings: settings, builder: (_) => const CheckoutScreen());
-          settings: settings,
-          builder: (_) => const ViewStoreCategoryProductsScreen(),
-        );
+
       case AppRoutes.addPaymentCard:
         return MaterialPageRoute(
           settings: settings,

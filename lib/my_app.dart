@@ -24,7 +24,6 @@ class NowUserApp extends StatelessWidget {
       themeMode: ThemeManager.appThemeMode,
       onGenerateRoute: AppRouter.onGenerate,
       initialRoute: AppRoutes.splashScreen,
-      initialRoute: AppRoutes.addPaymentCard,
     );
   }
 }
