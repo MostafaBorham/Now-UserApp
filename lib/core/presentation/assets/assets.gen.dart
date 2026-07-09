@@ -450,6 +450,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get noItemsIcon =>
       const SvgGenImage('assets/media/images/svg/no-items-icon.svg');
 
+  /// File path: assets/media/images/svg/no-search-result-icon.svg
+  SvgGenImage get noSearchResultIcon =>
+      const SvgGenImage('assets/media/images/svg/no-search-result-icon.svg');
+
   /// File path: assets/media/images/svg/now-offers-ar.svg
   SvgGenImage get nowOffersAr =>
       const SvgGenImage('assets/media/images/svg/now-offers-ar.svg');
@@ -709,6 +713,7 @@ class $AssetsMediaImagesSvgGen {
     myAddress,
     noImagePlaceholder,
     noItemsIcon,
+    noSearchResultIcon,
     nowOffersAr,
     nowWalletCard,
     onBoardingLogo,
