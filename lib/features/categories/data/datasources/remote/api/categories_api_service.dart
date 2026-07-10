@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:nowdelivery_user_app/core/network/dio_factory.dart';
-import 'package:nowdelivery_user_app/core/network/endpoints.dart';
+import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
+import 'package:nowdelivery_user_app/features/categories/data/datasources/remote/api/categories_endpoints.dart';
 
 /// Raw API calls for the categories feature.
 ///
@@ -11,6 +11,9 @@ class CategoriesApiService {
   final Dio _dio = DioFactory.getDio();
 
   Future<Response> getCategories() {
-    return _dio.get(Endpoints.getCategoriesEndpoint,);
+    return _dio.get(
+      CategoriesEndpoints.getCategories,
+      queryParameters: CategoriesEndpoints.getCategoriesQuery,
+    );
   }
 }

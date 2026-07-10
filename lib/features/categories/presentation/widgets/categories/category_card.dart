@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -40,12 +39,12 @@ class CategoryCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 children: [
                   AppCachedNetworkImage(
-                    imageUrl: category.image?.downloadUrl??'',
+                    imageUrl: category.image?.downloadUrl ?? '',
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
-                  if (category.descendantsCount <0)
+                  if (category.descendantsCount < 0)
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
@@ -65,7 +64,7 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
           Text(
-            category.name,
+            category.localizedName(context.locale.languageCode),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

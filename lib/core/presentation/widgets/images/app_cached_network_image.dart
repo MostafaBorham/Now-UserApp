@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 /*class AppCachedNetworkImage extends StatelessWidget {
   const AppCachedNetworkImage({
@@ -89,9 +89,7 @@ class AppCachedNetworkImage extends StatelessWidget {
                 height: circularProgressSize?? ((width??30)*0.7),
                 child: CircularProgressIndicator(color: colors.primary,)));
           case PlaceholderTypes.shimmer || null:
-            return Shimmer.fromColors(
-              baseColor: colors.onSurface.withValues(alpha: 0.6),
-              highlightColor: colors.onSurface.withValues(alpha: 0.3),
+            return AppShimmer(
               child: Container(width: double.infinity,height: double.infinity, color: colors.onPrimary),
             );
         }

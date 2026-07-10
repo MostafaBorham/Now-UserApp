@@ -35,7 +35,7 @@ dependencies:
   convex_bottom_bar: ^3.2.0
   flutter_native_splash: ^2.4.8
   simple_animated_rating_bar: ^2.0.1
-  device_preview_plus: ^2.8.1
+  device_preview_plus: 2.5.5
   shimmer: ^3.0.0
   image_picker: ^1.2.2
   liquid_glass_easy: ^3.0.0
@@ -68,7 +68,6 @@ flutter:
     - assets/json/lang/
     - assets/media/images/png/
     - assets/media/images/svg/
-    - assets/media/images/svg/checkout/
     - assets/media/sounds/
     - assets/media/videos/
 

@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:nowdelivery_user_app/core/loggers/dio_logger.dart';
+import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
+
 class DioFactory {
   DioFactory._();
-
-  static const String _baseUrl = 'https://www.now-delivery.com';
-  static const Duration _timeout = Duration(seconds: 15);
 
   /// Single, immutable Dio instance. As a `static final` it is created lazily
   /// on first access and exactly once, so the same instance is reused for the
@@ -17,15 +16,12 @@ class DioFactory {
   static Dio _createAndConfigureDio() {
     final Dio dio = Dio(
       BaseOptions(
-        baseUrl: _baseUrl,
-        connectTimeout: _timeout,
-        receiveTimeout: _timeout,
-        sendTimeout: _timeout,
+        baseUrl: DioConstants.baseUrl,
+        connectTimeout: DioConstants.timeout,
+        receiveTimeout: DioConstants.timeout,
+        sendTimeout: DioConstants.timeout,
         responseType: ResponseType.json,
-        headers: <String, String>{
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+        headers: DioConstants.defaultHeaders,
       ),
     );
 

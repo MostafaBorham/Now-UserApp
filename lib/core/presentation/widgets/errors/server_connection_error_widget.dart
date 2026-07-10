@@ -8,7 +8,19 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 
 class ServerConnectionErrorWidget extends StatelessWidget {
-  const ServerConnectionErrorWidget({super.key});
+  const ServerConnectionErrorWidget({
+    super.key,
+    this.message,
+    this.onRetry,
+  });
+
+  /// Optional error details shown under the title. Falls back to the generic
+  /// "unable to reach servers" copy when null or empty.
+  final String? message;
+
+  /// Called when the user taps the retry button. The button is hidden when
+  /// this is null.
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +38,22 @@ class ServerConnectionErrorWidget extends StatelessWidget {
             ),
           ),
           AutoSizeText(
-            LangKeys.unableToReachServersKey.tr(),
+            (message == null || message!.isEmpty)
+                ? LangKeys.unableToReachServersKey.tr()
+                : message!.tr(),
             textAlign: TextAlign.center,
             style: AppTextStyles.style16Regular,
           ),
-                15.hSpace,
-                PrimaryAppPrefixIconButton(title: LangKeys.retryKey.tr(),onTap: () {
-
-          },prefixIcon: Assets.media.images.svg.retryIcon.svg(colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn)),)
+          if (onRetry != null) ...[
+            15.hSpace,
+            PrimaryAppPrefixIconButton(
+              title: LangKeys.retryKey.tr(),
+              onTap: onRetry,
+              prefixIcon: Assets.media.images.svg.retryIcon.svg(
+                colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn),
+              ),
+            ),
+          ],
         ],
       ),
     );

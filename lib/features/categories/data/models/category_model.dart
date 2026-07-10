@@ -56,6 +56,15 @@ class CategoryModel extends Equatable {
     this.deletedAt,
   });
 
+  /// Localized display name for the given [languageCode] ('ar' / 'en'),
+  /// falling back to the raw [name] when no translation exists.
+  String localizedName(String languageCode) {
+    final LocalizedText? translatedName = translations?.name;
+    final String? localized =
+        languageCode == 'ar' ? translatedName?.ar : translatedName?.en;
+    return (localized == null || localized.isEmpty) ? name : localized;
+  }
+
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: (json['id'] as num).toInt(),

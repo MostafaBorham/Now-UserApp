@@ -1,52 +1,70 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_categories_vm.dart';
 
-class CategoriesScreen extends ConsumerStatefulWidget {
+class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
 
-  @override
-  ConsumerState<CategoriesScreen> createState() => _CategoriesScreenState();
-}
+  static const SliverGridDelegateWithFixedCrossAxisCount _gridDelegate =
+      SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 20,
+        mainAxisExtent: 220,
+      );
 
-class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<List<CategoryModel>> categoriesState = ref.watch(
+      getCategoriesProvider,
+    );
 
-  @override
-  void initState() {
-    super.initState();
-  }
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: AppWavedScaffold(
-        body: GridView.builder(
-          padding: EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 20,
-            mainAxisExtent: 220,
-          ),
-          itemCount: 8,
-          itemBuilder: (BuildContext context, int index) => CategoryCard(
-            category: CategoryModel(id: 1, name: 'ssa', slug: 'sadsa'),
-            onTap: () =>
-                Navigator.pushNamed(context, AppRoutes.categoryDetailsScreen),
-          ),
-        ),
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: Navigator.canPop(context),
+        body: categoriesState.when(
+          loading: () => AppShimmer(
+            child: GridView.builder(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: _gridDelegate,
+              itemCount: 8,
+              itemBuilder: (_, _) => const CategoryCardShimmer(),
+            ),
+          ),
+          error: (Object error, StackTrace stackTrace) =>
+              ServerConnectionErrorWidget(
+                message: error.toString(),
+                onRetry: () =>
+                    ref.read(getCategoriesProvider.notifier).getCategories(),
+              ),
+          data: (List<CategoryModel> categories) => categories.isEmpty
+              ? const NoItemsWidget()
+              : GridView.builder(
+                  padding: EdgeInsets.zero,
+                  gridDelegate: _gridDelegate,
+                  itemCount: categories.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      CategoryCard(
+                        category: categories[index],
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.categoryDetailsScreen,
+                        ),
+                      ),
+                ),
+        ),
       ),
     );
   }

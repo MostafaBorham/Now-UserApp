@@ -138,6 +138,7 @@
   "serverConnectionFailed": "فشل الاتصال بالخادم",
   "unableToReachServers": "تعذّر الوصول إلى الخوادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
   "retry": "إعادة المحاولة",
+  "noInternetConnection": "لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة والمحاولة مرة أخرى.",
   "appUnderMaintenance": "التطبيق قيد الصيانة",
   "appUnderMaintenanceSubtitle": "نعمل على تحسين تجربتك. سنعود قريبًا. شكرًا لصبرك.",
   "notifyMeWhenDone": "أبلغني عند الانتهاء",
