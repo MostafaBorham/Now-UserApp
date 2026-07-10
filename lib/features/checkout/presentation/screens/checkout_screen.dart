@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/checkout_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/choose_payment_method.dart';
@@ -30,7 +31,7 @@ class CheckoutScreen extends StatelessWidget {
                 spacing: 16,
                 children: List.generate(4, (index) => CheckoutBrandItemCard()),
               ),
-              methods.isEmpty ? ChoosePaymentMethod(onTap: ()=> Navigator.pushNamed(context, AppRoutes.addPaymentCard),) : PaymentMethodsCard(),
+              methods.isEmpty ? ChoosePaymentMethod(onTap: ()=> context.pushNamed(AppRoutes.addPaymentCard),) : PaymentMethodsCard(),
               AspectRatio(
                   aspectRatio: 2,
                   child: ListView.separated(

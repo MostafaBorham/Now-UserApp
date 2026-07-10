@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/features/address/components/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
@@ -12,7 +13,7 @@ class AddNewAddressFromMap extends StatelessWidget {
       appBar: AppBar(
         title: Text("Add new address"),
         centerTitle: true,
-        leading: ArrowBackButton(onTap: () => Navigator.of(context).maybePop()),
+        leading: ArrowBackButton(onTap: () => context.pop()),
         actions: [Assets.media.images.svg.search.svg()],
       ),
       body: Assets.media.images.png.map.image(

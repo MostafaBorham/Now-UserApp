@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -6,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
@@ -79,9 +80,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               PrimaryAppButton(
                 title: LangKeys.continueKey.tr(),
                 buttonPadding: 16,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.orderConfirmedScreen,
+                onTap: () => context.pushNamed(AppRoutes.orderConfirmedScreen,
                 ),
               ),
             ],

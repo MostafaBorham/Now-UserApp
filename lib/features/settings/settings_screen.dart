@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import 'app_colors.dart';
 import 'components/logout_button.dart';
@@ -50,17 +51,13 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.personalInfo.path,
                         label: 'Personal Information',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.personalInformationScreen,
+                        onTap: () => context.pushNamed(AppRoutes.personalInformationScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.myAddress.path,
                         label: 'My Address',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.myAddressScreen,
+                        onTap: () => context.pushNamed(AppRoutes.myAddressScreen,
                         ),
                       ),
                       SettingsItem(
@@ -77,9 +74,7 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.discount.path,
                         label: 'Discount Code',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.discountCodeScreen,
+                        onTap: () => context.pushNamed(AppRoutes.discountCodeScreen,
                         ),
                       ),
                       SettingsItem(
@@ -96,25 +91,19 @@ class SettingsScreen extends StatelessWidget {
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.liveChat.path,
                         label: 'Live Chat',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.supportScreen,
+                        onTap: () => context.pushNamed(AppRoutes.supportScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.faq.path,
                         label: 'FAQ',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.faqScreen,
+                        onTap: () => context.pushNamed(AppRoutes.faqScreen,
                         ),
                       ),
                       SettingsItem(
                         iconAsset: Assets.media.images.svg.privacy.path,
                         label: 'Privacy Policy',
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.privacyPolicyScreen,
+                        onTap: () => context.pushNamed(AppRoutes.privacyPolicyScreen,
                         ),
                       ),
                     ],

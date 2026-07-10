@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 
 import '../settings/app_colors.dart';
@@ -89,7 +90,7 @@ class DiscountCodeScreen extends StatelessWidget {
         children: [
           CommonHeader(
             title: 'Discount Code',
-            onBack: () => Navigator.of(context).maybePop(),
+            onBack: () => context.pop(),
           ),
           Expanded(
             child: ListView.separated(

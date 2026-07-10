@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../components/confirmed_order_card.dart';
 import '../components/order_confirmed_header.dart';
@@ -13,7 +14,7 @@ class OrderConfirmedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void goToTracking() =>
-        Navigator.pushNamed(context, AppRoutes.trackOrderScreen);
+        context.pushNamed(AppRoutes.trackOrderScreen);
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: SingleChildScrollView(

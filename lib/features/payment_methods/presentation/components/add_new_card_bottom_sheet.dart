@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -53,7 +54,7 @@ class AddNewCardBottomSheet extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () => Navigator.pop(context),
+                onTap: () => context.pop(),
                 customBorder: const CircleBorder(),
                 child: const Padding(
                   padding: EdgeInsets.all(4),
@@ -77,7 +78,7 @@ class AddNewCardBottomSheet extends StatelessWidget {
           PrimaryAppPrefixIconButton(
             title: LangKeys.addKey.tr(),
             prefixIcon: Assets.media.images.svg.addCircle.svg(),
-            onTap: () => Navigator.pop(context),
+            onTap: () => context.pop(),
           ),
           const SizedBox(height: 8),
         ],

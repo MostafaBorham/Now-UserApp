@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
@@ -25,7 +26,7 @@ class CartScreen extends StatelessWidget {
               itemCount: 5,
             ),
           ),
-          PrimaryAppButton(title: 'Checkout',onTap: () => Navigator.pushNamed(context, AppRoutes.checkoutScreen),)
+          PrimaryAppButton(title: 'Checkout',onTap: () => context.pushNamed(AppRoutes.checkoutScreen),)
         ],
       ),
       appBarTitle: 'Cart',

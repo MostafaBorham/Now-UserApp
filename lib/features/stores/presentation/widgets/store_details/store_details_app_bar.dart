@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -16,9 +17,9 @@ class StoreDetailsAppBar extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: AlignmentDirectional.centerStart,
-            child: Navigator.canPop(context)
+            child: context.canPop()
                 ? InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: () => context.pop(),
               child: CircleAvatar(
                 backgroundColor: colors.onPrimary,
                 radius: 25,
@@ -53,7 +54,7 @@ class StoreDetailsAppBar extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: InkWell(
-                onTap: () => Navigator.pop(context),
+                onTap: () => context.pop(),
                 child: CircleAvatar(
                   backgroundColor: colors.onPrimary,
                   radius: 25,

@@ -1,10 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../widgets/personal_information/personal_info_form.dart';
 import '../widgets/personal_information/profile_avatar_picker.dart';
@@ -14,11 +15,7 @@ import '../widgets/personal_information/profile_avatar_picker.dart';
 class PersonalInformationScreen extends StatelessWidget {
   const PersonalInformationScreen({super.key});
 
-  void _finish(BuildContext context) => Navigator.pushNamedAndRemoveUntil(
-    context,
-    AppRoutes.mainScreen,
-    (route) => false,
-  );
+  void _finish(BuildContext context) => context.goNamed(AppRoutes.mainScreen);
 
   @override
   Widget build(BuildContext context) {

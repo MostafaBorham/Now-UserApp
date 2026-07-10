@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_all_stores_section.dart';
@@ -133,9 +134,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                       Spacer(),
                       InkWell(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.notificationsScreen,
+                        onTap: () => context.pushNamed(AppRoutes.notificationsScreen,
                         ),
                         child: Badge.count(
                           count: 2,
@@ -246,7 +245,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 ],
                               ),
                               InkWell(
-                                onTap: () => Navigator.pushNamed(context, AppRoutes.storeDetailsScreen),
+                                onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     vertical: 10,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 /// White circular back button used on the plain (non-waved) tracking screens
@@ -16,7 +17,7 @@ class CircleBackButton extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
       borderRadius: BorderRadius.circular(100),
-      onTap: onTap ?? () => Navigator.maybePop(context),
+      onTap: onTap ?? () => context.pop(),
       child: Container(
         width: 44,
         height: 44,

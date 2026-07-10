@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/top_brands/top_brands_item.dart';
 
 class TopBrandsView extends StatelessWidget {
@@ -17,7 +18,7 @@ class TopBrandsView extends StatelessWidget {
       ),
       itemCount: 6,
       itemBuilder: (BuildContext context, int index) => InkWell(
-          onTap: () => Navigator.pushNamed(context, AppRoutes.storeDetailsScreen),
+          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
           child: TopBrandsItem()),
     );
   }

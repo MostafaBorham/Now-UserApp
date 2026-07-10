@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../settings/app_colors.dart';
@@ -99,7 +100,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
         children: [
           CommonHeader(
             title: widget.isEditing ? 'Edit Address' : 'Address Details',
-            onBack: () => Navigator.of(context).maybePop(),
+            onBack: () => context.pop(),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -139,7 +140,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
                   const SizedBox(height: 20),
                   PrimaryButton(
                     label: 'Save Address',
-                    onPressed: () => Navigator.of(context).maybePop(),
+                    onPressed: () => context.pop(),
                   ),
                 ],
               ),

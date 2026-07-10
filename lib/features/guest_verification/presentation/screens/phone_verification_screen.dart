@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../widgets/phone_verification/phone_number_field.dart';
 import '../widgets/shared/verification_headline.dart';
@@ -31,9 +32,7 @@ class PhoneVerificationScreen extends StatelessWidget {
               PrimaryAppButton(
                 title: LangKeys.continueKey.tr(),
                 buttonPadding: 16,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.otpVerificationScreen,
+                onTap: () => context.pushNamed(AppRoutes.otpVerificationScreen,
                 ),
               ),
             ],

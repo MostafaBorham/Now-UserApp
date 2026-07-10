@@ -1,5 +1,6 @@
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/widgets/file_complaint/complaint_photos_picker.dart';
@@ -38,12 +39,12 @@ class FileComplaintScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              PrimaryAppButton(title: LangKeys.submitComplaintKey.tr(),onTap: () => Navigator.pop(context),),
+              PrimaryAppButton(title: LangKeys.submitComplaintKey.tr(),onTap: () => context.pop(),),
             ],
           ),
         ),
         appBarTitle: LangKeys.fileComplaintKey.tr(),
-        canPop: Navigator.canPop(context),
+        canPop: context.canPop(),
       ),
     );
   }

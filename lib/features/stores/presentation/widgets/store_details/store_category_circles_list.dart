@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 class StoreCategoryCirclesList extends StatelessWidget {
   const StoreCategoryCirclesList({super.key});
@@ -26,7 +27,7 @@ class StoreCategoryCirclesList extends StatelessWidget {
         itemCount: _categories.length,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, index) => InkWell(
-          onTap: () => Navigator.pushNamed(context, AppRoutes.viewStoreCategoryProductsScreen),
+          onTap: () => context.pushNamed(AppRoutes.viewStoreCategoryProductsScreen),
           child: SizedBox(
             width: 80,
             child: Column(

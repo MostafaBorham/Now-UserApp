@@ -1,10 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
@@ -31,7 +32,7 @@ class SearchScreen extends StatelessWidget {
       child: Scaffold(
         body: AppWavedScaffold(
           appBarTitle: LangKeys.searchKey.tr(),
-          canPop: Navigator.canPop(context),
+          canPop: context.canPop(),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 20,
@@ -62,7 +63,7 @@ class SearchScreen extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, AppRoutes.categoryDetailsScreen);
+                            context.pushNamed(AppRoutes.categoryDetailsScreen);
                           },
                           child: Text(
                             LangKeys.seeAllKey.tr(),
@@ -112,7 +113,7 @@ class SearchScreen extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, AppRoutes.mostPopularScreen);
+                            context.pushNamed(AppRoutes.mostPopularScreen);
                           },
                           child: Text(
                             LangKeys.seeAllKey.tr(),

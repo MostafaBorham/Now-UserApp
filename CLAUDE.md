@@ -31,7 +31,7 @@ Windows/PowerShell: same commands, no shell-specific tweaks needed.
 ```
 lib/
   main.dart            # bootstraps DevicePreview → LocalizationInit (easy_localization) → ProviderScope → NowUserApp
-  my_app.dart          # MaterialApp; wires localization, themes, onGenerateRoute
+  my_app.dart          # MaterialApp.router; wires localization, themes, routerConfig (go_router)
   core/                # shared, cross-feature code (see below)
   features/<feature>/  # feature-scoped code
 ```
@@ -59,7 +59,7 @@ Screen → viewmodel → repo → API service → shared Dio singleton:
 
 - `dio/` — `DioFactory` (single shared `Dio` singleton), `DioConstants` (base URL, timeouts, default JSON headers), `ApiErrorHandler`, `interceptors/`. All API services must use `DioFactory.getDio()` — never construct their own `Dio`.
 - `errors/` — `failures/failure.dart` (the `Failure` type used in `Either`), `exceptions/` (network, cache). Shared error types live here; feature-specific ones stay in the feature.
-- `route/` — `AppRoutes` holds route-name constants; `AppRouter.onGenerate` is a switch returning `MaterialPageRoute`s. **New screens must be added in both files.** Route arguments are passed via `settings.arguments` (see the `addressDetailsScreen` case for the pattern).
+- `routing/` — navigation uses the **go_router** package (Navigator 1.0/2.0 named routes were fully removed). `app_routes.dart` holds route-name constants (kebab-case strings, also used as URL paths); `app_router.dart` exposes `AppRouter.router`, a `GoRouter` wired into `MaterialApp.router` via `routerConfig`. **New screens must be added in both files** (a name constant + a `GoRoute` with `name` and `path: '/<name>'`). Navigate only with go_router context extensions: `context.pushNamed(AppRoutes.x)` to push, `context.goNamed(...)` for stack resets (splash → onboarding → main), `context.pop()` / `context.canPop()` for back. Route arguments go through `extra:` and are read from `state.extra` in the route builder (see the `addressDetailsScreen` case). Never use `Navigator.push/pop/pushNamed` directly.
 - `localization/` — `easy_localization` config (`LocalizationInit` in `configs.dart`), `LangKeys` constants, JSON at `assets/json/lang/{ar-EG,en-US}.json`. Wrap keys with `.tr()`.
 - `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (uses `flutter_screenutil`, design size 390×844), `assets/` (flutter_gen output: `assets.gen.dart`, `fonts.gen.dart`), plus shared `components/` and `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
 - `connection/`, `notifications/{local,remote}/`, `formatters/`, `pickers/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper.
@@ -80,7 +80,7 @@ Riverpod (`flutter_riverpod`). Two flavors in use:
 ### Bootstrap details worth knowing
 
 - `main.dart` locks orientation to portrait, makes the status bar transparent, and wraps the app in `DevicePreview` (enabled outside release mode).
-- `initialRoute` in `my_app.dart` is sometimes pointed at whatever screen is under active development as a dev shortcut; it must be `AppRoutes.splashScreen` for release (currently it is).
+- `initialLocation` in `AppRouter.router` (`core/routing/app_router.dart`) is sometimes pointed at whatever screen is under active development as a dev shortcut; it must be `'/'` (splash) for release (currently it is).
 - `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
 - Locale is persisted by `easy_localization` (`saveLocale: true`); the commented `LocalController.getCurrentLocale()` in `main.dart` is a leftover from a manual approach — don't reintroduce it without removing `easy_localization`'s own persistence.
 

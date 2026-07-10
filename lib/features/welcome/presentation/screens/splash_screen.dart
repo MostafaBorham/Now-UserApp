@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _logoAnimationListener(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      Navigator.pushReplacementNamed(context, AppRoutes.onBoardingScreen);
+      context.goNamed(AppRoutes.onBoardingScreen);
     }
   }
 }

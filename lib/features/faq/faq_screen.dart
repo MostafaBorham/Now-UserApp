@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -75,7 +76,7 @@ class _FaqScreenState extends State<FaqScreen> {
         children: [
           CommonHeader(
             title: 'FAQ',
-            onBack: () => Navigator.of(context).maybePop(),
+            onBack: () => context.pop(),
           ),
           Expanded(
             child: ListView.separated(

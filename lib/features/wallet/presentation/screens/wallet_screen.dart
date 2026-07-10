@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -21,7 +22,7 @@ class WalletScreen extends StatelessWidget {
     final Size screenSize = MediaQuery.sizeOf(context);
     return AppWavedScaffold(
       appBarTitle: LangKeys.walletKey.tr(),
-      canPop: Navigator.canPop(context),
+      canPop: context.canPop(),
       body: Column(
         spacing: screenSize.height*0.03,
         crossAxisAlignment: CrossAxisAlignment.start,

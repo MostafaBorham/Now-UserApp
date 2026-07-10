@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -48,7 +49,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
         children: [
           CommonHeader(
             title: 'My Address',
-            onBack: () => Navigator.of(context).maybePop(),
+            onBack: () => context.pop(),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -62,18 +63,14 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                       address: _addresses[i].address,
                       isDefault: i == _selected,
                       onSelect: () => setState(() => _selected = i),
-                      onEdit: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.addressDetailsScreen,
-                        arguments: true,
+                      onEdit: () => context.pushNamed(AppRoutes.addressDetailsScreen,
+                        extra: true,
                       ),
                     ),
                   ],
                   const SizedBox(height: 24),
                   AddAddressButton(
-                    onPressed: () => Navigator.pushNamed(
-                      context,
-                      AppRoutes.addNewAddressFromMapScreen,
+                    onPressed: () => context.pushNamed(AppRoutes.addNewAddressFromMapScreen,
                     ),
                   ),
                 ],

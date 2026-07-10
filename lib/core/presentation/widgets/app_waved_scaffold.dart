@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
@@ -41,9 +42,9 @@ class AppWavedScaffold extends StatelessWidget {
                   Expanded(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: canPop?? Navigator.canPop(context)
+                      child: canPop?? context.canPop()
                           ? InkWell(
-                              onTap: () => Navigator.pop(context),
+                              onTap: () => context.pop(),
                               child: CircleAvatar(
                                 backgroundColor: colors.onPrimary,
                                 radius: screenSize.width*0.05,

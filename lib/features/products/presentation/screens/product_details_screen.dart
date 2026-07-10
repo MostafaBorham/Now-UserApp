@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -125,7 +126,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         appBarTitle: 'Product Details',
         appBarActions: [
           InkWell(
-            onTap: () => Navigator.pop(context),
+            onTap: () => context.pop(),
             child: CircleAvatar(
               backgroundColor: colors.onPrimary,
               radius: 25,

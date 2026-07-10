@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/show_more_items_header.dart';
 
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
   const HomeCategoriesSection({super.key});
@@ -13,7 +14,7 @@ class HomeCategoriesSection extends StatelessWidget {
     return Column(
       spacing: 10,
       children: [
-        ShowMoreItemsHeader(headerTitle: LangKeys.categoriesKey.tr(),onMore: () => Navigator.pushNamed(context, AppRoutes.categoriesScreen),),
+        ShowMoreItemsHeader(headerTitle: LangKeys.categoriesKey.tr(),onMore: () => context.pushNamed(AppRoutes.categoriesScreen),),
       ],
     );
   }

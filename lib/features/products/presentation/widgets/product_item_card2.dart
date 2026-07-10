@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:go_router/go_router.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_wi
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
@@ -45,7 +46,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, AppRoutes.productDetailsScreen),
+      onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
       child: Container(
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(

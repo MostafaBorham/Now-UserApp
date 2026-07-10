@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -60,7 +61,7 @@ class _AppFilterViewState extends State<AppFilterView> {
                 ),
               ),
               InkWell(
-                onTap: widget.onClose ?? () => Navigator.of(context).maybePop(),
+                onTap: widget.onClose ?? () => context.pop(),
                 child: Icon(
                   Icons.close,
                   size: 20,

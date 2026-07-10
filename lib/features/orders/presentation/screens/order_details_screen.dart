@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -487,7 +488,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               PrimaryButton(
                 title: LangKeys.submitAComplaintKey.tr(),
                 onTap: () =>
-                    Navigator.pushNamed(context, AppRoutes.fileComplaintScreen),
+                    context.pushNamed(AppRoutes.fileComplaintScreen),
               ),
               Container(
                 padding: EdgeInsets.all(16),
@@ -774,7 +775,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         canPop: true,
         appBarActions: [
           InkWell(
-            onTap: () => Navigator.pushNamed(context,AppRoutes.faqScreen),
+            onTap: () => context.pushNamed(AppRoutes.faqScreen),
             child: CircleAvatar(
               backgroundColor: colors.onPrimary,
               radius: MediaQuery.sizeOf(context).width*0.05,

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -7,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
 class AddPaymentCardScreen extends StatelessWidget {
@@ -68,9 +69,7 @@ class AddPaymentCardScreen extends StatelessWidget {
               PrimaryAppPrefixIconButton(
                 title: "Add",
                 prefixIcon: Assets.media.images.svg.addCircle.svg(),
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.paymentMethodsScreen,
+                onTap: () => context.pushNamed(AppRoutes.paymentMethodsScreen,
                 ),
               ),
               10.hSpace,

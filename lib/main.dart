@@ -11,8 +11,6 @@ import 'package:nowdelivery_user_app/core/localization/configs.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  // await SharedPrefManager.init();
-  // await LocalController.getCurrentLocale();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -27,13 +25,8 @@ Future<void> main() async {
     (_) => runApp(
       DevicePreview(
         enabled: !kReleaseMode,
-        // enabled: false,
         builder: (context) {
-          return LocalizationInit(
-          child: ProviderScope(
-            child: NowUserApp(),
-          ),
-        );
+          return LocalizationInit(child: ProviderScope(child: NowUserApp()));
         },
       ),
     ),

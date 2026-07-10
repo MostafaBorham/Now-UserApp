@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import 'app_colors.dart';
@@ -88,7 +89,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
         children: [
           CommonHeader(
             title: 'Edit Information',
-            onBack: () => Navigator.of(context).maybePop(),
+            onBack: () => context.pop(),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -169,7 +170,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
               ),
             ),
           ),
-          _SaveBar(onSave: () => Navigator.of(context).maybePop()),
+          _SaveBar(onSave: () => context.pop()),
         ],
       ),
     );

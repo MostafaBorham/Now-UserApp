@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -40,9 +41,9 @@ class CancelOrderBottomSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => CancelOrderBottomSheet(
-        onKeep: () => Navigator.pop(context),
+        onKeep: () => context.pop(),
         onConfirm: () {
-          Navigator.pop(context);
+          context.pop();
           OrderCanceledBottomSheet.show(context);
         },
       ),
