@@ -39,6 +39,7 @@ class WalletCardWidget extends StatelessWidget {
                 aspectRatio: 11 ,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -65,7 +66,6 @@ class WalletCardWidget extends StatelessWidget {
                       ),
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
               ),
               AspectRatio(

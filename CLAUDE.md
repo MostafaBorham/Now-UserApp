@@ -30,50 +30,57 @@ Windows/PowerShell: same commands, no shell-specific tweaks needed.
 
 ```
 lib/
-  main.dart            # bootstraps EasyLocalization → DevicePreview → ProviderScope → ScreenUtilInit → NowUserApp
+  main.dart            # bootstraps DevicePreview → LocalizationInit (easy_localization) → ProviderScope → NowUserApp
   my_app.dart          # MaterialApp; wires localization, themes, onGenerateRoute
   core/                # shared, cross-feature code (see below)
   features/<feature>/  # feature-scoped code
 ```
 
-Every feature is scaffolded with three layers: `presentation/` (`screens/`, `widgets/`, and — where present — `controllers/`), `viewmodel/`, and `data/` (`datasources/`, `models/`, `repo/`). **The `viewmodel/` and `data/` folders are currently empty placeholders across all features** — no repositories or API calls are wired yet, and the only live state code lives in `home/presentation/controllers/`.
+Features (22): `address`, `cart`, `categories`, `checkout`, `discount`, `faq`, `favourites`, `guest_verification`, `home`, `notifications`, `orders`, `payment_methods`, `privacy`, `products`, `search`, `settings`, `stores`, `support`, `support_chat`, `tracking_order`, `wallet`, `welcome`.
 
-Features today: `categories`, `favourites`, `home`, `notifications`, `orders`, `products`, `search`, `stores`, `support`, `wallet`, `welcome`. Most are UI-only skeletons.
+The intended shape of a feature is three layers: `presentation/` (`screens/`, `widgets/` or `components/`, and — where present — `controllers/`), `viewmodel/`, and `data/` (`datasources/`, `models/`, `repo/`). Most features are still UI-only; **`categories` is the only feature with a wired data layer and viewmodel — treat it as the reference implementation** when adding backend integration to any other feature.
 
-### Feature isolation (interface-file rule)
+### Feature imports
 
-Each feature under `lib/features/<x>/` exposes one public entry file: `lib/features/<x>/<x>_interface.dart`. That file re-exports every `.dart` file inside the feature.
+Features do **not** use interface/barrel files — import feature files directly by their full path (e.g. `features/stores/presentation/screens/store_details_screen.dart`). Do not create `<x>_interface.dart` files; this pattern was deliberately removed.
 
-**Rule:** any file *outside* `features/<x>/` may import from that feature *only* through `features/<x>/<x>_interface.dart`. Deep paths like `features/wallet/presentation/screens/wallet_screen.dart` are not allowed from outside `features/wallet/`.
+**Known deviations (fix opportunistically, don't copy):**
+- Several newer features (`address`, `discount`, `faq`, `privacy`, `settings`, `support_chat`) are flat — screens and `components/` sit directly in the feature root with no `presentation/` layer. `settings` even carries its own `app_colors.dart` instead of using the core design system. Restructure toward the standard layout when doing non-trivial work in them.
 
-The interface file is the feature's public contract. When adding a new `.dart` file inside a feature, add its `export` line to the interface file.
+### Data flow pattern (see `features/categories/`)
 
-The router (`lib/core/route/router.dart`) composes features by importing their interface files. `core/` is shared infrastructure and does not follow this rule.
+Screen → viewmodel → repo → API service → shared Dio singleton:
 
-**Two newer features (`stores`, `products`) have no interface file yet**, so `router.dart` currently imports their screens via deep paths (e.g. `features/stores/presentation/screens/all_stores_screen.dart`). This is a deviation, not the pattern — when touching these features, add a `<x>_interface.dart` and switch the router to import through it.
+- **API service** (`data/datasources/remote/api/<x>_api_service.dart`): raw requests only, gets `Dio` from `DioFactory.getDio()`, returns the raw `Response`. Endpoint paths/queries live in a sibling `<x>_endpoints.dart` constants class.
+- **Repo** (`data/repo/<x>_repo.dart`): all parsing and error handling. Every method returns `Either<Failure, T>` (dartz). Checks `ConnectionChecker.isConnected` first; maps errors through `ApiErrorHandler.extractErrorMessage`. `Failure.message` is either a `LangKeys` key or a raw server message — callers apply `.tr()`, which leaves non-key strings untouched.
+- **Viewmodel** (`viewmodel/get_<x>_vm.dart`): a `StateNotifier<AsyncValue<T>>` exposed via `StateNotifierProvider.autoDispose`, kicked off on first watch (`..getX()` in the provider factory). Screens `ref.watch` the provider and render the `AsyncValue`; guard state writes with `if (!mounted) return;` after awaits.
 
 ### `lib/core/` conventions
 
-- `route/` — `AppRoutes` holds route-name constants; `AppRouter.onGenerate` is a switch that returns `MaterialPageRoute`s. **New screens must be added in both files.**
-- `localization/` — `easy_localization` config, `LangKeys` constants, JSON at `assets/json/lang/{ar-EG,en-US}.json`. Wrap keys with `.tr()`.
-- `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (uses `flutter_screenutil`, design size 390×844), `assets/` (generated by flutter_gen), plus shared `components/`, `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
-- `connection/`, `errors/exceptions/`, `notifications/{local,remote}/`, `loggers/`, `formatters/`, `pickers/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper.
+- `dio/` — `DioFactory` (single shared `Dio` singleton), `DioConstants` (base URL, timeouts, default JSON headers), `ApiErrorHandler`, `interceptors/`. All API services must use `DioFactory.getDio()` — never construct their own `Dio`.
+- `errors/` — `failures/failure.dart` (the `Failure` type used in `Either`), `exceptions/` (network, cache). Shared error types live here; feature-specific ones stay in the feature.
+- `route/` — `AppRoutes` holds route-name constants; `AppRouter.onGenerate` is a switch returning `MaterialPageRoute`s. **New screens must be added in both files.** Route arguments are passed via `settings.arguments` (see the `addressDetailsScreen` case for the pattern).
+- `localization/` — `easy_localization` config (`LocalizationInit` in `configs.dart`), `LangKeys` constants, JSON at `assets/json/lang/{ar-EG,en-US}.json`. Wrap keys with `.tr()`.
+- `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (uses `flutter_screenutil`, design size 390×844), `assets/` (flutter_gen output: `assets.gen.dart`, `fonts.gen.dart`), plus shared `components/` and `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
+- `connection/`, `notifications/{local,remote}/`, `formatters/`, `pickers/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper.
+- `data/` — empty directory scaffolding (`datasources/{local/cache,remote}/`) reserved for shared data-layer code; contains no files yet.
 - `readme` (file, no extension) documents the intent: "shared between more than one main layer (data, view model or view)".
 
 ### State management
 
-Riverpod (`flutter_riverpod`). Providers live under each feature's `presentation/controllers/` — see `lib/features/home/presentation/controllers/` (`main_controller.dart`, `home_controller.dart`) for the pattern (`Provider` for static lists, `StateProvider` for mutable index-style state, `.autoDispose` when tied to a screen).
+Riverpod (`flutter_riverpod`). Two flavors in use:
+- **UI-only state**: providers under a feature's `presentation/controllers/` — see `lib/features/home/presentation/controllers/` (`Provider` for static lists, `StateProvider` for mutable index-style state, `.autoDispose` when tied to a screen).
+- **Async/backend state**: `StateNotifier<AsyncValue<T>>` viewmodels under `viewmodel/` — see the data-flow pattern above.
 
 ### Assets & codegen
 
-- `pubspec.yaml` declares asset folders under `assets/`; `flutter_gen_runner` produces typed accessors.
-- **Generator output note:** `pubspec.yaml` sets `flutter_gen.output: lib/view/assets/`, but the checked-in generated files live at `lib/core/presentation/assets/` (`assets.gen.dart`, `fonts.gen.dart`). Import from there. If you re-run `build_runner`, verify the output path before committing.
+- `pubspec.yaml` declares asset folders under `assets/`; `flutter_gen_runner` generates typed accessors into `lib/core/presentation/assets/` (set via `flutter_gen.output`). Import `Assets`/`FontFamily` from there.
 - Fonts: `Roboto` (light) and `IbmPlexSans` (thin→bold, Arabic-capable) declared in `pubspec.yaml`.
 
 ### Bootstrap details worth knowing
 
 - `main.dart` locks orientation to portrait, makes the status bar transparent, and wraps the app in `DevicePreview` (enabled outside release mode).
-- `my_app.dart` currently sets `initialRoute` to whichever screen is under active development (presently `AppRoutes.storeDetailsScreen`) — a dev shortcut, not the shipping entry point. Change to `AppRoutes.splashScreen` before releasing.
+- `initialRoute` in `my_app.dart` is sometimes pointed at whatever screen is under active development as a dev shortcut; it must be `AppRoutes.splashScreen` for release (currently it is).
 - `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
 - Locale is persisted by `easy_localization` (`saveLocale: true`); the commented `LocalController.getCurrentLocale()` in `main.dart` is a leftover from a manual approach — don't reintroduce it without removing `easy_localization`'s own persistence.
 

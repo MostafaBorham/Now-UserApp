@@ -15,7 +15,6 @@ class AppSlider extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return Column(
       spacing: 20,
       children: [

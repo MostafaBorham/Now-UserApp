@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';

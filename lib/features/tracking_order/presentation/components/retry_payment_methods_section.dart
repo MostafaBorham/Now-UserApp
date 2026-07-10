@@ -4,7 +4,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/payment_methods/payment_methods_interface.dart';
+import 'package:nowdelivery_user_app/features/payment_methods/presentation/components/payment_option.dart';
+import 'package:nowdelivery_user_app/features/payment_methods/presentation/components/payment_option_tile.dart';
 
 /// "Try another payment method" section on the Payment Failed screen.
 ///

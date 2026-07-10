@@ -6,7 +6,6 @@ import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/app_borders.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
@@ -52,7 +51,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return SafeArea(
       bottom: false,
       child: SingleChildScrollView(

@@ -85,7 +85,6 @@ class NowRadioTile extends StatelessWidget {
   final String? badge;
 
   static const Color _green = Color(0xFF4BB749);
-  static const Color _cardFill = Color(0xFFF6F6F6);
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +13,6 @@ class FileComplaintScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    final LinearGradient screenGradient = LinearGradient(
-      begin: AlignmentDirectional.centerStart,
-      end: AlignmentDirectional.centerEnd,
-      colors: [
-        colors.onTertiaryFixedVariant,
-        colors.onSurfaceVariant.withValues(alpha: 0.3),
-      ],
-    );
-    final List<File> images = [];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: AppWavedScaffold(

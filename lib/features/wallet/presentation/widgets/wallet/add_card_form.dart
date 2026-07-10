@@ -15,7 +15,6 @@ class AddCardForm extends StatelessWidget {
   final Color? fieldColor;
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -87,11 +86,10 @@ class _CardFieldColumn extends StatelessWidget {
     required this.label,
     required this.hint,
     this.keyboardType,
-    this.textAlign,
     this.labelColor,
     this.fieldColor,
     this.hintColor,
-  });
+  }) : textAlign = null;
 
   @override
   Widget build(BuildContext context) {

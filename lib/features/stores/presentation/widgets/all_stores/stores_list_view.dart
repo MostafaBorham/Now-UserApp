@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/features/home/home_interface.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_item_card.dart';
 
 class StoresListView extends StatelessWidget {
   const StoresListView({super.key});

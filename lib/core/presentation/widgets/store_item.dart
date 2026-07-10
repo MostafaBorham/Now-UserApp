@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -76,13 +75,13 @@ class _StoreItemState extends State<StoreItem> {
                         shape: CircleBorder(),
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         elevation: 1,
+                        shadowColor: colors.onSurface.withValues(alpha: 0.5),
                         child: CircularBrandLogo(
                           radius: stackCon.maxHeight * 0.25,
                           backgroundColor: colors.onPrimary,
                           logoUrl:
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
-                        shadowColor: colors.onSurface.withValues(alpha: 0.5),
                       ),
                     ),
                   ],
@@ -199,174 +198,6 @@ class _StoreItemState extends State<StoreItem> {
                   ),
                 );
               },
-            ),
-          ),
-        ],
-      ),
-    );
-    return Container(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: AppBorderRadius.brCircular20,
-        boxShadow: AppBoxShadows.blackBottomShadow2,
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: AppCachedNetworkImage(
-                  imageUrl:
-                      'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
-                  width: double.infinity,
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 4,
-                    children: [
-                      AutoSizeText(
-                        'Panda',
-                        style: AppTextStyles.style18Bold.copyWith(
-                          color: colors.onSecondary,
-                        ),
-                      ),
-                      AutoSizeText(
-                        'Panda is suprmarket contain everything',
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSurface,
-                        ),
-                      ),
-                      Row(
-                        spacing: 5,
-                        children: [
-                          Assets.media.images.svg.shippingIcon.svg(
-                            width: 16,
-                            colorFilter: ColorFilter.mode(
-                              colors.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.onSecondary,
-                            ),
-                          ),
-                          Assets.media.images.svg.realSaudiCurrency.svg(
-                            width: 15,
-                            colorFilter: ColorFilter.mode(
-                              colors.onSecondary,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          5.wSpace,
-                          Assets.media.images.svg.timeIcon.svg(
-                            width: 16,
-                            colorFilter: ColorFilter.mode(
-                              colors.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style12Medium.copyWith(
-                              color: colors.onSecondary,
-                            ),
-                          ),
-                          5.wSpace,
-                          Assets.media.images.svg.locationIcon.svg(
-                            width: 14,
-                            colorFilter: ColorFilter.mode(
-                              colors.onSurface,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style12Medium.copyWith(
-                              color: colors.onSecondary,
-                            ),
-                          ),
-                          20.wSpace,
-                          Spacer(),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colors.tertiaryFixed,
-                              borderRadius: AppBorderRadius.brCircular20,
-                            ),
-                            child: Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.starRate.svg(),
-                                AutoSizeText(
-                                  '4.5 (12)',
-                                  style: AppTextStyles.style14Medium.copyWith(
-                                    color: colors.onSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Align(
-            alignment: AlignmentDirectional.topEnd,
-            child: InkWell(
-              onTap: () {
-                isFavorite = !isFavorite;
-                setState(() {});
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Material(
-                  elevation: 1,
-                  shape: const CircleBorder(),
-                  child: CircleAvatar(
-                    radius: 15,
-                    backgroundColor: colors.onPrimary,
-                    child:
-                        (isFavorite
-                                ? Assets.media.images.svg.filledFavouriteIcon
-                                : Assets.media.images.svg.favouriteIcon)
-                            .svg(
-                              width: 16,
-                              colorFilter: ColorFilter.mode(
-                                isFavorite
-                                    ? colors.errorContainer
-                                    : colors.onTertiaryFixed,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: AlignmentDirectional.center,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(bottom: 30.0),
-              child: CircularBrandLogo(
-                radius: 30,
-                logoUrl:
-                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-              ),
             ),
           ),
         ],

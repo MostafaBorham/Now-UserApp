@@ -6,7 +6,6 @@ class PriceCancelLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return Stack(
       alignment: Alignment.center,
       children: [

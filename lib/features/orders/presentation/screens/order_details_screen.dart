@@ -520,6 +520,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         spacing: 10,
                         children: [
                           Container(
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
                             child: CachedNetworkImage(
                               imageUrl:
                                   'https://cdn-icons-png.flaticon.com/512/5968/5968601.png',
@@ -527,8 +529,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               height: 44,
                               fit: BoxFit.cover,
                             ),
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
                           ),
                           Expanded(
                             child: Column(

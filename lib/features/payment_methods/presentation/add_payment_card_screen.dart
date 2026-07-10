@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
-import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
 class AddPaymentCardScreen extends StatelessWidget {
   const AddPaymentCardScreen({super.key});
@@ -35,7 +35,7 @@ class AddPaymentCardScreen extends StatelessWidget {
                   borderRadius: BorderRadiusDirectional.circular(25),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: svgProvider.Svg(Assets.media.images.svg.card.path),
+                    image: svg_provider.Svg(Assets.media.images.svg.card.path),
                   ),
                 ),
                 child: AddCardForm(

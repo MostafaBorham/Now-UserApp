@@ -25,7 +25,6 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
   late final TextEditingController _email;
   late final TextEditingController _nationality;
 
-  final String _gender = 'Male';
   DateTime? _dob;
 
   static const double _hPadding = 20;

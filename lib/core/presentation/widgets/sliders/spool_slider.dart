@@ -294,7 +294,7 @@ class _Thumb extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(highlighted ? 0.22 : 0.10),
+            color: Colors.black.withValues(alpha: highlighted ? 0.22 : 0.10),
             blurRadius: highlighted ? 16 : 7,
             offset: const Offset(0, 5),
           ),
@@ -442,7 +442,7 @@ class _ClearanceBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFE91E63).withOpacity(0.35),
+            color: const Color(0xFFE91E63).withValues(alpha: 0.35),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

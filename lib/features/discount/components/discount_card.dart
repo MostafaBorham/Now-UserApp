@@ -58,7 +58,6 @@ class DiscountCard extends StatelessWidget {
   final VoidCallback? onCopy;
 
   static const double _radius = 16;
-  static const double _valueWidth = 108;
   static const double _notchRadius = 17;
 
   /// Horizontal position of the perforation, as a fraction of the card width.

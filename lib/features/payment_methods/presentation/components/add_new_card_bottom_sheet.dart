@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/features/wallet/wallet_interface.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
 /// Bottom sheet for entering a new payment card. Opened from the
 /// "Add New Card" button and reuses the shared [AddCardForm] rather than

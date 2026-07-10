@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -7,7 +6,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/show_more_items_h
 import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_item.dart';
 
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class MostPopularSection extends StatelessWidget {
   const MostPopularSection({super.key});
@@ -15,7 +13,6 @@ class MostPopularSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(

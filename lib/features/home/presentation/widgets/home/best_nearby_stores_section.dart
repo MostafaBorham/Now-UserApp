@@ -14,7 +14,6 @@ class BestNearbyStoresSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 12.0),
       child: Column(
@@ -30,11 +29,6 @@ class BestNearbyStoresSection extends StatelessWidget {
                 return InkWell(
                      onTap: () => Navigator.pushNamed(context, AppRoutes.storeDetailsScreen),
                     child: BestNearbyStoresListItem());
-                return Container(
-                  width: 50,
-                  color: Colors.red,
-                );
-
               },
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) {

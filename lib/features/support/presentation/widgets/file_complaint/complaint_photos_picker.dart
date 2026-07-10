@@ -26,10 +26,8 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
   bool _isPicking = false;
 
   static const int _maxImages = 5;
-  static const double _itemSize = 72;
   static const double _spacing = 8;
   static const double _runSpacing = 8;
-  static const double _borderRadius = 12;
 
   Future<void> _pickImage() async {
     if (_isPicking) return;

@@ -65,7 +65,6 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, con) {
-                  print('con ===== ${con.maxHeight}===${con.maxWidth}');
                   return Stack(
                     children: [
                       ClipRRect(
@@ -139,7 +138,6 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
               child: LayoutBuilder(
                 builder: (context, con) {
                   final widthCon = con.maxWidth;
-                  final heightCon = con.maxHeight;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 10,

@@ -78,7 +78,7 @@ class _SpoolCarouselSliderState extends State<SpoolCarouselSlider> {
           PageView.builder(
             controller: controller,
             itemCount: 8,
-            itemBuilder: (_, __) => const SizedBox(),
+            itemBuilder: (_, _) => const SizedBox(),
           ),
         ],
       ),

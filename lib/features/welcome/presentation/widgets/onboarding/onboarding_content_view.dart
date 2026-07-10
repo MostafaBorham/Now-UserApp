@@ -15,7 +15,6 @@ class OnBoardingContentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textThemes = Theme.of(context).textTheme;
     final Gradient screenGradient = LinearGradient(
       colors: [colors.secondaryFixed, colors.primary],
       begin: Alignment.centerLeft,

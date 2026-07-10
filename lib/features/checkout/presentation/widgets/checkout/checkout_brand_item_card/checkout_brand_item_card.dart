@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_images_list_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_item_checkout_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 
 class CheckoutBrandItemCard extends StatefulWidget {
@@ -21,8 +13,6 @@ class CheckoutBrandItemCard extends StatefulWidget {
 
 class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
   bool _isExpanded = false;
-  final List<bool> _checked = [true, false];
-  final List<int> _quantities = [1, 1];
 
   @override
   Widget build(BuildContext context) {

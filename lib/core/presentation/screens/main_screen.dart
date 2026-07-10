@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/screens/main/app_bottom_nav_bar.dart';
-import 'package:nowdelivery_user_app/core/route/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/main_controller.dart';
 
 
@@ -10,7 +9,6 @@ class MainScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
     final int currentPageIndex = ref.watch(currentPageIndexProvider);
 
     return Scaffold(
