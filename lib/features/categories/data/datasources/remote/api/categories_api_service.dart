@@ -16,4 +16,12 @@ class CategoriesApiService {
       queryParameters: CategoriesEndpoints.getCategoriesQuery,
     );
   }
+
+  Future<Response> getCategoryStores({required String categorySlug}) {
+    CategoriesEndpoints.categorySlug = categorySlug;
+    return _dio.get(
+      CategoriesEndpoints.categoryStores,
+      queryParameters: CategoriesEndpoints.getCategoryStoresQuery,
+    );
+  }
 }

@@ -10,13 +10,14 @@ class CustomButtonTabBar extends StatefulWidget {
     required this.tabs,
     required this.views,
     required this.selectedTabColor,
-    required this.unSelectedTabColor, this.filterWidget, this.selectedLabelColor, this.unSelectedLabelColor,
+    required this.unSelectedTabColor, this.filterWidget, this.selectedLabelColor, this.unSelectedLabelColor, this.onTap,
   });
 
   final List<String> tabs;
   final List<Widget> views;
 
   final Color selectedTabColor;
+  final ValueChanged<int>? onTap;
   final Color? selectedLabelColor;
   final Color? unSelectedLabelColor;
   final Color unSelectedTabColor;
@@ -63,6 +64,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                 Flexible(
                   child: TabBar(
                     controller: _controller,
+                    onTap: widget.onTap,
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
                     padding: EdgeInsets.zero,

@@ -1,4 +1,174 @@
+/*{
+  "id": 1,
+  "name": "Electronics",
+  "translations": {
+    "name": {
+      "ar": "الإلكترونيات",
+      "en": "Electronics"
+    }
+  },
+  "description": "Electronics, smart devices, and gadgets",
+  "slug": "electronics",
+  "parent_id": null,
+  "depth": 0,
+  "path": "Electronics",
+  "meta_title": null,
+  "meta_description": null,
+  "search_keywords": null,
+  "index": 1,
+  "active": true,
+  "admin_status": "approved",
+  "reviewed_at": null,
+  "rejection_reason": null,
+  "children_count": 3,
+  "descendants_count": 14,
+  "products_count": 13,
+  "children": [
+    {
+      "id": 77,
+      "name": "My Electronics",
+      "translations": {
+        "name": {
+          "ar": "قسمي - Electronics",
+          "en": "My Electronics"
+        }
+      },
+      "description": null,
+      "slug": "vendor-1-my-electronics-1",
+      "parent_id": 1,
+      "depth": 1,
+      "path": "My Electronics",
+      "meta_title": null,
+      "meta_description": null,
+      "search_keywords": null,
+      "index": 1,
+      "active": true,
+      "admin_status": "approved",
+      "reviewed_at": null,
+      "rejection_reason": null,
+      "children_count": 1,
+      "descendants_count": 2,
+      "products_count": 0,
+      "children": [],
+      "image": null,
+      "created_at": "2026-07-09T13:52:01.000000Z",
+      "updated_at": "2026-07-09T14:48:12.000000Z",
+      "deleted_at": null
+    },
+    {
+      "id": 61,
+      "name": "My Store - Electronics",
+      "translations": {
+        "name": {
+          "ar": "متجري - الإلكترونيات",
+          "en": "My Store - Electronics"
+        }
+      },
+      "description": null,
+      "slug": "vendor-1-my-store-electronics-46",
+      "parent_id": 1,
+      "depth": 1,
+      "path": "My Store - Electronics",
+      "meta_title": null,
+      "meta_description": null,
+      "search_keywords": null,
+      "index": 46,
+      "active": true,
+      "admin_status": "approved",
+      "reviewed_at": null,
+      "rejection_reason": null,
+      "children_count": 2,
+      "descendants_count": 6,
+      "products_count": 0,
+      "children": [],
+      "image": null,
+      "created_at": "2026-07-09T09:09:15.000000Z",
+      "updated_at": "2026-07-09T14:48:13.000000Z",
+      "deleted_at": null
+    },
+    {
+      "id": 68,
+      "name": "My Store - New Arrivals",
+      "translations": {
+        "name": {
+          "ar": "متجري - وصل حديثاً",
+          "en": "My Store - New Arrivals"
+        }
+      },
+      "description": null,
+      "slug": "vendor-1-my-store-new-arrivals-53",
+      "parent_id": 1,
+      "depth": 1,
+      "path": "My Store - New Arrivals",
+      "meta_title": null,
+      "meta_description": null,
+      "search_keywords": null,
+      "index": 53,
+      "active": true,
+      "admin_status": "approved",
+      "reviewed_at": null,
+      "rejection_reason": null,
+      "children_count": 1,
+      "descendants_count": 2,
+      "products_count": 0,
+      "children": [],
+      "image": null,
+      "created_at": "2026-07-09T09:09:16.000000Z",
+      "updated_at": "2026-07-09T14:48:13.000000Z",
+      "deleted_at": null
+    }
+  ],
+  "image": null,
+  "created_at": "2026-07-09T08:56:52.000000Z",
+  "updated_at": "2026-07-09T14:48:04.000000Z",
+  "deleted_at": null
+}*/
+
 {
-  "id" : 106,
-  "name" : "mostafa borham"
+  "id": 22,
+  "category_id": 5,
+  "name": "Natural Bamboo Toothbrush (4-Pack)",
+  "slug": "natural-bamboo-toothbrush-4-pack",
+  "sku": "PRD-UWZ19O",
+  "short_description": "Biodegradable bamboo toothbrushes with soft BPA-free bristles.",
+  "description": "Switch to sustainable oral care with these eco-friendly bamboo toothbrushes. Made from natural Moso bamboo with soft BPA-free nylon bristles. Pack of 4 with color-coded bases for the whole family.",
+  "price": 8.99,
+  "effective_price": 7.99,
+  "deal_discount_amount": 1.0,
+  "compare_price": 12.99,
+  "stock": 500,
+  "in_stock": true,
+  "status": "published",
+  "is_featured": false,
+  "active_deal": {
+    "id": 1,
+    "uuid": "58986253-3777-41fe-8c50-89c7cd80c554",
+    "name": "Weekend Deal",
+    "discount_type": "percentage",
+    "discount_value": 11.08,
+    "scope": "all_products",
+    "priority": 1,
+    "status": "active",
+    "starts_at": "2026-07-08T09:09:15.000000Z",
+    "ends_at": "2026-07-14T09:09:15.000000Z"
+  },
+  "published_at": "2026-05-24T08:56:53.000000Z",
+  "meta_title": "Natural Bamboo Toothbrush (4-Pack)",
+  "meta_description": "Biodegradable bamboo toothbrushes with soft BPA-free bristles.",
+  "search_keywords": "toothbrush, bamboo, eco-friendly, oral care, sustainable",
+  "primary_image": null,
+  "images": [],
+  "has_variants": false,
+  "variants": [],
+  "category": {
+    "id": 5,
+    "name": {
+      "ar": "الصحة والجمال",
+      "en": "Health & Beauty"
+    },
+    "slug": "health-beauty"
+  },
+  "vendor": null,
+  "created_at": "2026-07-09T08:56:53.000000Z",
+  "updated_at": "2026-07-09T08:56:53.000000Z"
 }

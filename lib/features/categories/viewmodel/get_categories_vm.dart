@@ -8,8 +8,7 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// The fetch starts as soon as the provider is first watched, so screens only
 /// need to `ref.watch(getCategoriesProvider)` and render the [AsyncValue].
 /// Retry with `ref.read(getCategoriesProvider.notifier).getCategories()`.
-final AutoDisposeStateNotifierProvider<GetCategoriesViewModel,
-        AsyncValue<List<CategoryModel>>> getCategoriesProvider =
+final getCategoriesProvider =
     StateNotifierProvider.autoDispose<GetCategoriesViewModel,
         AsyncValue<List<CategoryModel>>>(
   (Ref ref) =>

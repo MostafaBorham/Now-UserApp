@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 ///
 /// The endpoint returns a nested tree, so [children] holds the same type.
 class CategoryModel extends Equatable {
-  final int id;
+  final int? id;
   final String name;
   final CategoryTranslations? translations;
   final String? description;
@@ -30,7 +30,7 @@ class CategoryModel extends Equatable {
   final String? deletedAt;
 
   const CategoryModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.slug,
     this.translations,

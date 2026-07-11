@@ -9,18 +9,21 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_i
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_model.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
-  const ProductItemCard2({super.key});
-
+  const ProductItemCard2({super.key, this.productModel});
+  final ProductModel? productModel;
   @override
   State<ProductItemCard2> createState() => _ProductItemCard2State();
 }
@@ -77,7 +80,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           clipper: DiagonalClipper(),
                           child: AppCachedNetworkImage(
                             imageUrl:
-                                'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQRyOwZjDuvOeu-8rzp-El9jt8yHqo1Jm9qDZdB4U3cSwUGpgNJ4kT02s1fdP7t01xMaTKz7z4RvwRMKPsQwwzeP5ttdeFpy4--1ZD47M5UQwzX9-A1xSPn&usqp=CAc',
+                                widget.productModel?.images.firstOrNull??'',
                             width: double.infinity,
                           ),
                         ),
@@ -90,7 +93,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           child: CircularAppFavouriteIcon(
                             size: con.maxWidth*0.08,
-                            isFavourite: false,
+                            isFavourite: widget.productModel?.isFeatured?? false,
                             onFavouriteChanged: (currentFavourite) {
                             },
                           ),
@@ -117,7 +120,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 borderRadius: AppBorderRadius.brCircular6,
                               ),
                               child: AutoSizeText(
-                                'أطفال',
+                                widget.productModel?.category.name.en??'',
                                 maxLines: 1,
                                 style: TextStyle(
                                   color: colors.onPrimary,
@@ -229,16 +232,13 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     mainAxisSize: MainAxisSize.min,
                                     spacing: 10,
                                     children: [
-                                      PreviousPriceWithCurrency(),
-                                      PriceWithCurrency(
-                                        color: colors.onSecondary,
-                                        price: '1000',
-                                      ),
+                                      OldPriceWidget(color: colors.onSurface.withValues(alpha: 0.7), price: '${widget.productModel?.price}'),
+                                   NewPriceWidget(color: colors.onSecondary, price: '${widget.productModel?.price}')
                                     ],
                                   ),
                                 ),
                                 AutoSizeText(
-                                  't-shirt',
+                                  '${widget.productModel?.name}',
                                   style: AppTextStyles.style12SemiBold.copyWith(
                                     color: colors.onSecondary,
                                     fontSize: widthCon * 0.1,

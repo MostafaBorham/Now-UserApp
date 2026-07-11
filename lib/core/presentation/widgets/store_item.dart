@@ -6,13 +6,14 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 
 import '../../../features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'rate/app_rate_widget.dart';
 
 class StoreItem extends StatefulWidget {
-  const StoreItem({super.key});
-
+  const StoreItem({super.key, this.storeModel});
+  final StoreModel? storeModel;
   @override
   State<StoreItem> createState() => _StoreItemState();
 }
@@ -52,7 +53,7 @@ class _StoreItemState extends State<StoreItem> {
                       ),
                       child: AppCachedNetworkImage(
                         imageUrl:
-                            'https://thumbs.dreamstime.com/b/fresh-produce-display-rustic-wooden-tabletop-grocery-store-background-image-design-projects-stunning-bird-eye-view-366982676.jpg',
+                            widget.storeModel?.coverUrl??'',
                         width: double.infinity,
                       ),
                     ),
@@ -61,11 +62,9 @@ class _StoreItemState extends State<StoreItem> {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: CircularAppFavouriteIcon(
-                          size: stackCon.maxHeight*0.12,
+                          size: stackCon.maxHeight * 0.12,
                           isFavourite: false,
-                          onFavouriteChanged: (currentFavourite) {
-
-                          },
+                          onFavouriteChanged: (currentFavourite) {},
                         ),
                       ),
                     ),
@@ -80,7 +79,7 @@ class _StoreItemState extends State<StoreItem> {
                           radius: stackCon.maxHeight * 0.25,
                           backgroundColor: colors.onPrimary,
                           logoUrl:
-                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                              widget.storeModel?.logoUrl??'',
                         ),
                       ),
                     ),
@@ -103,7 +102,7 @@ class _StoreItemState extends State<StoreItem> {
                     children: [
                       Flexible(
                         child: AutoSizeText(
-                          'Panda',
+                          widget.storeModel?.name??'',
                           style: AppTextStyles.style18Bold.copyWith(
                             color: colors.onSecondary,
                           ),
@@ -111,20 +110,19 @@ class _StoreItemState extends State<StoreItem> {
                       ),
                       Flexible(
                         child: AutoSizeText(
-                          'Panda is supermarket contain everything',
+                          widget.storeModel?.description??'',
                           maxLines: 2,
                           style: AppTextStyles.style12Medium.copyWith(
                             color: colors.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
                       ),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          spacing: 10,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                      Row(
+                        spacing: 10,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Row(
                               spacing: 5,
                               children: [
                                 Assets.media.images.svg.shippingIcon.svg(
@@ -132,17 +130,17 @@ class _StoreItemState extends State<StoreItem> {
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
-                                  width: 15
+                                  width: 15,
                                 ),
                                 Assets.media.images.svg.realSaudiCurrency.svg(
                                   colorFilter: ColorFilter.mode(
                                     colors.onSecondary,
                                     BlendMode.srcIn,
                                   ),
-                                  width: 15
+                                  width: 15,
                                 ),
                                 AutoSizeText(
-                                  '10',
+                                  '${widget.storeModel?.deliveryFee}',
                                   style: AppTextStyles.style14SemiBold.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -154,10 +152,10 @@ class _StoreItemState extends State<StoreItem> {
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
-                                  width: 15
+                                  width: 15,
                                 ),
                                 AutoSizeText(
-                                  '40-50 minutes',
+                                  '${widget.storeModel?.deliveryTime}',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
                                   ),
@@ -168,31 +166,37 @@ class _StoreItemState extends State<StoreItem> {
                                     colors.onSurface,
                                     BlendMode.srcIn,
                                   ),
-                                  width: 13
+                                  width: 13,
                                 ),
                                 AutoSizeText(
-                                  '40 - 50 km',
+                                  '${widget.storeModel?.distance}',
                                   style: AppTextStyles.style12Medium.copyWith(
                                     color: colors.onSecondary,
                                   ),
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: categoryDetailsCon.maxHeight * 0.1,
-                                vertical: categoryDetailsCon.maxHeight * 0.05,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colors.tertiaryFixed,
-                                borderRadius: AppBorderRadius.brCircular20,
-                              ),
-                              child: FittedBox(
-                                child: AppRateWidget(starColor: colors.onSecondaryContainer, rateRatio: '4.5',rateCount: '12',rateColor: colors.onSurface,size: 15,),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: categoryDetailsCon.maxHeight * 0.1,
+                              vertical: categoryDetailsCon.maxHeight * 0.05,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colors.tertiaryFixed,
+                              borderRadius: AppBorderRadius.brCircular20,
+                            ),
+                            child: FittedBox(
+                              child: AppRateWidget(
+                                starColor: colors.onSecondaryContainer,
+                                rateRatio: '${widget.storeModel?.rating}',
+                                rateCount: '${widget.storeModel?.ratingCount}',
+                                rateColor: colors.onSurface,
+                                size: 15,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
