@@ -1,29 +1,48 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class AppSlider extends ConsumerWidget {
-  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItem, this.sliderSpace = 8, this.itemAspectRatio =1});
+  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItems, this.sliderSpace = 8, this.itemAspectRatio =1,});
   final Color? activeDotColor;
   final Color? dotColor;
-  final Widget sliderItem;
+  final List<Widget> sliderItems;
   final double? sliderSpace;
   final double? itemAspectRatio;
   final HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Column(
+    return sliderItems.isEmpty? LayoutBuilder(
+      builder: (context,con) {
+        return Container(
+          width: con.maxWidth,
+          alignment: Alignment.center,
+          clipBehavior: Clip.antiAlias,
+          height: con.maxWidth*0.5,
+          decoration: BoxDecoration(
+            color: colors.onSurface.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(16)
+          ),
+          child: Assets.media.images.png.noImageAvail.image(
+
+          ),
+        );
+      }
+    ) : Column(
       spacing: 20,
       children: [
         CarouselSlider.builder(
-          itemCount: 4,
+          itemCount: sliderItems.length,
           itemBuilder: (_, index, _) {
             return Padding(
               padding: EdgeInsets.all(sliderSpace!),
-              child: sliderItem,
+              child: sliderItems.elementAt(index),
             );
           },
           options: CarouselOptions(
@@ -39,7 +58,7 @@ class AppSlider extends ConsumerWidget {
         ),
         AnimatedSmoothIndicator(
           activeIndex: ref.watch(_homeController.sliderIndexProvider),
-          count: 4,
+          count: sliderItems.length,
           effect: WormEffect(
             dotHeight: 10,
             dotWidth: 10,

@@ -95,7 +95,16 @@ class AppCachedNetworkImage extends StatelessWidget {
         }
       },
       errorWidget: (_, _, _) =>
-          Assets.media.images.svg.noImagePlaceholder.svg(fit: BoxFit.cover,height: double.infinity,width: double.infinity),
+          Container(
+              width: width?? double.infinity,
+              alignment: Alignment.center,
+              clipBehavior: Clip.antiAlias,
+              height: height?? double.infinity,
+              decoration: BoxDecoration(
+                  color: colors.onSurface.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(16)
+              ),
+              child: Assets.media.images.png.noImageAvail.image(fit: BoxFit.contain,height: double.infinity,width: double.infinity)),
     );
   }
 }

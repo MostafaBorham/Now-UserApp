@@ -1,3 +1,4 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 
@@ -28,6 +29,7 @@ class ProductModel {
   final StoreModel vendor;
   final String createdAt;
   final String updatedAt;
+  final ActiveDealModel activeDeal;
 
   const ProductModel({
     required this.id,
@@ -56,6 +58,7 @@ class ProductModel {
     required this.vendor,
     required this.createdAt,
     required this.updatedAt,
+    required this.activeDeal,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -65,6 +68,7 @@ class ProductModel {
       name: json['name'],
       slug: json['slug'],
       sku: json['sku'],
+      activeDeal: ActiveDealModel.fromJson(json['active_deal']),
       shortDescription: json['short_description'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
@@ -107,6 +111,7 @@ class ProductModel {
       'status': status,
       'is_featured': isFeatured,
       'published_at': publishedAt,
+      'active_deal' : activeDeal.toJson(),
       'meta_title': metaTitle,
       'meta_description': metaDescription,
       'search_keywords': searchKeywords,

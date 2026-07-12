@@ -132,6 +132,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get masterCardLogo =>
       const AssetGenImage('assets/media/images/png/master-card-logo.png');
 
+  /// File path: assets/media/images/png/no-image-avail.png
+  AssetGenImage get noImageAvail =>
+      const AssetGenImage('assets/media/images/png/no-image-avail.png');
+
   /// File path: assets/media/images/png/onboarding_img.png
   AssetGenImage get onboardingImg =>
       const AssetGenImage('assets/media/images/png/onboarding_img.png');
@@ -173,6 +177,7 @@ class $AssetsMediaImagesPngGen {
     increamentIcon,
     map,
     masterCardLogo,
+    noImageAvail,
     onboardingImg,
     profileImgPlacholder,
     realSaudiCurrency,

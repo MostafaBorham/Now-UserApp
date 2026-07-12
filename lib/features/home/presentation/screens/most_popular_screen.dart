@@ -23,7 +23,7 @@ class MostPopularScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: AppSlider(
                 itemAspectRatio: 0.9,
-                sliderItem: MostPopularSliderItemCard(),
+                sliderItems: [MostPopularSliderItemCard()],
                 activeDotColor: colors.primaryFixedDim,
                 dotColor: colors.inversePrimary.withValues(alpha: 0.5),
               ),

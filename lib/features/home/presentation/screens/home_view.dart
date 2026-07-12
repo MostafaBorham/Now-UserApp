@@ -152,7 +152,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   ),
                   AppSearchField(),
                   AppSlider(
-                    sliderItem: Container(
+                    sliderItems: [Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -163,7 +163,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         imageUrl:
                             'https://img.magnific.com/free-vector/stylish-big-sale-event-banner-buy-save-upto-50-percent_1017-59087.jpg?semt=ais_hybrid&w=740&q=80',
                       ),
-                    ),
+                    ),],
                     itemAspectRatio: 2,
                     sliderSpace: 1,
                   ),

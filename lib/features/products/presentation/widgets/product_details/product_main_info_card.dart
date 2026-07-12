@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -7,8 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/expandable_text.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 
-class ProductMainInfoCard extends StatefulWidget {
+class ProductMainInfoCard extends ConsumerStatefulWidget {
   const ProductMainInfoCard({
     super.key,
     this.productName = 'MacBook Air 3',
@@ -41,16 +43,17 @@ class ProductMainInfoCard extends StatefulWidget {
   final int initialQuantity;
 
   @override
-  State<ProductMainInfoCard> createState() => _ProductMainInfoCardState();
+  ConsumerState<ProductMainInfoCard> createState() => _ProductMainInfoCardState();
 }
 
-class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
+class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
 
   late int quantity = widget.initialQuantity;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final product = ref.watch(productProvider);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -170,7 +173,7 @@ class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
             spacing: 8,
             children: [
               Text(
-                widget.productName,
+                product.name,
                 style: AppTextStyles.style24Bold.copyWith(
                   color: colors.onSecondary,
                   fontSize: 22,
@@ -182,10 +185,10 @@ class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
                   CircularBrandLogo(
                     radius: 18,
                     backgroundColor: colors.onPrimaryContainer,
-                    logoUrl: widget.storeLogoUrl,
+                    logoUrl: product.vendor.logoUrl??'',
                   ),
                   Text(
-                    widget.storeName,
+                    '${product.vendor.name}',
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.onSurface,
                       fontSize: 13,
@@ -203,12 +206,12 @@ class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
                     children: [
                       OldPriceWidget(
                         color: colors.onSurface,
-                        price: widget.oldPrice,
+                        price: '${product.price}',
                         size: 13,
                       ),
                       NewPriceWidget(
                         color: colors.onTertiaryFixed,
-                        price: widget.newPrice,
+                        price: '${product.comparePrice}',
                         size: 32,
                       ),
                     ],
@@ -245,7 +248,7 @@ class _ProductMainInfoCardState extends State<ProductMainInfoCard> {
                   fontSize: 15,
                 ),
               ),
-              ExpandableText(text: widget.description,style: AppTextStyles.style14Regular.copyWith(
+              ExpandableText(text: product.description,style: AppTextStyles.style14Regular.copyWith(
                 color: colors.onSurface
               ),maxCharacters: 150,seeMoreText: 'See More',),
             ],
