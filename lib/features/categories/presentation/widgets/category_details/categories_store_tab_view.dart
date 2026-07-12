@@ -11,8 +11,10 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_store_sub_categories_vm.dart';
 
 import 'categories_store_shimmer_view.dart';
 
@@ -25,31 +27,31 @@ class CategoriesStoreTabView extends ConsumerStatefulWidget {
 
 class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView> {
   final bool isStoresEmpty = false;
-  late final GetCategoriesViewModel _categoriesViewModel;
+  late final GetStoreSubCategoriesViewModel _subCategoriesViewModel;
   int? filterCategoryId;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _categoriesViewModel = ref.read(getCategoriesProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    _subCategoriesViewModel = ref.read(getStoreSubCategoriesProvider.notifier);
+/*    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchFilteredStores();
-    });
+    });*/
   }
 
   void _fetchFilteredStores() {
-    // print('=== $filterCategoryId');
+/*    // print('=== $filterCategoryId');
     final categoryStoresViewModel = ref.read(
       filterCategoryStoresProvider(filterCategoryId).notifier,
     );
-    categoryStoresViewModel.getCategoryStores(categorySlug: 'electronics');
+    categoryStoresViewModel.getCategoryStores(categorySlug: 'electronics');*/
   }
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final filterCategoriesState = ref.watch(getCategoriesProvider);
+    final storeSubCategories = ref.watch(getStoreSubCategoriesProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -59,12 +61,12 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
           color: colors.onSecondary
         ),),
         Expanded(
-          child: filterCategoriesState.when(
+          child: storeSubCategories.when(
             loading: () => CategoriesStoreShimmerView(),
             error: (Object error, StackTrace stackTrace) =>
                 ServerConnectionErrorWidget(
                   message: error.toString(),
-                  onRetry: ()=> _categoriesViewModel.getCategories(),
+                  onRetry: ()=> _subCategoriesViewModel.getStoreSubCategories(),
                 ),
             data: (filterCategories) {
               final filterItems = [
@@ -77,45 +79,14 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
               return CustomButtonTabBar(
                 filterWidget: AppFilterIcon(),
                 onTap: (index) {
-                  print('current = $index');
+/*                  print('current = $index');
                   filterCategoryId = filterItems.elementAt(index).id;
-                  _fetchFilteredStores();
+                  _fetchFilteredStores();*/
                 },
-                tabs: filterItems.map((filter) => filter.name).toList(),
-                views: filterItems.map((e) {
-                  return ref
-                      .watch(filterCategoryStoresProvider(e.id))
-                      .when(
-                    data: (stores) {
-                      return ListView.separated(
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) => AspectRatio(
-                            aspectRatio: 2,
-                            child: StoreItem(
-                              storeModel: stores.elementAtOrNull(index),
-                            )),
-                        separatorBuilder: (context, index) => 20.hSpace,
-                        itemCount: 3,
-                      );
-                    },
-                    error: (error, stackTrace) {
-                      return ServerConnectionErrorWidget(
-                        message: error.toString(),
-                        onRetry: () {
-                          _fetchFilteredStores();
-                        },
-                      );
-                    },
-                    loading: () {
-                      return ListView.separated(
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) => AspectRatio(
-                            aspectRatio: 2,
-                            child: AppShimmer(child: StoreItem())),
-                        separatorBuilder: (context, index) => 20.hSpace,
-                        itemCount: 3,
-                      );
-                    },
+                tabs: filterItems.map((filter) => '${filter.name}').toList(),
+                views: filterItems.map((category) {
+                  return CategoryStoresView(
+                    subCategory: category,
                   );
                 }).toList(),
                 selectedTabColor: colors.onTertiaryFixed,

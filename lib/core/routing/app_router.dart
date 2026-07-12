@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/features/address/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/map.dart';
 import 'package:nowdelivery_user_app/features/address/my_address_screen.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
@@ -71,7 +72,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.categoryDetailsScreen,
         path: '/${AppRoutes.categoryDetailsScreen}',
-        builder: (context, state) => const CategoryDetailsScreen(),
+        builder: (context, state) {
+          final category = state.extra as CategoryModel;
+
+          return CategoryDetailsScreen(
+            category: category,
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.favouritesScreen,
@@ -131,7 +138,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.productDetailsScreen,
         path: '/${AppRoutes.productDetailsScreen}',
-        builder: (context, state) => const ProductDetailsScreen(),
+          builder: (context, state) {
+            final productSlug = state.extra as String?;
+
+            return ProductDetailsScreen(
+              productSlug: productSlug??'',
+            );
+          }
       ),
       GoRoute(
         name: AppRoutes.addPaymentCard,

@@ -1,3 +1,6 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+
 class ProductModel {
   final int id;
   final int categoryId;
@@ -14,7 +17,6 @@ class ProductModel {
   final bool inStock;
   final String status;
   final bool isFeatured;
-  final ActiveDealModel? activeDeal;
   final String? publishedAt;
   final String metaTitle;
   final String metaDescription;
@@ -22,9 +24,8 @@ class ProductModel {
   final String? primaryImage;
   final List<String> images;
   final bool hasVariants;
-  final List<dynamic> variants;
   final CategoryModel category;
-  final dynamic vendor;
+  final StoreModel vendor;
   final String createdAt;
   final String updatedAt;
 
@@ -44,7 +45,6 @@ class ProductModel {
     required this.inStock,
     required this.status,
     required this.isFeatured,
-    this.activeDeal,
     this.publishedAt,
     required this.metaTitle,
     required this.metaDescription,
@@ -52,9 +52,8 @@ class ProductModel {
     this.primaryImage,
     required this.images,
     required this.hasVariants,
-    required this.variants,
     required this.category,
-    this.vendor,
+    required this.vendor,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -76,9 +75,6 @@ class ProductModel {
       inStock: json['in_stock'],
       status: json['status'],
       isFeatured: json['is_featured'],
-      activeDeal: json['active_deal'] == null
-          ? null
-          : ActiveDealModel.fromJson(json['active_deal']),
       publishedAt: json['published_at'],
       metaTitle: json['meta_title'],
       metaDescription: json['meta_description'],
@@ -86,9 +82,8 @@ class ProductModel {
       primaryImage: json['primary_image'],
       images: List<String>.from(json['images'] ?? []),
       hasVariants: json['has_variants'],
-      variants: List<dynamic>.from(json['variants'] ?? []),
       category: CategoryModel.fromJson(json['category']),
-      vendor: json['vendor'],
+      vendor: StoreModel.fromJson(json['vendor']),
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -111,7 +106,6 @@ class ProductModel {
       'in_stock': inStock,
       'status': status,
       'is_featured': isFeatured,
-      'active_deal': activeDeal?.toJson(),
       'published_at': publishedAt,
       'meta_title': metaTitle,
       'meta_description': metaDescription,
@@ -119,106 +113,10 @@ class ProductModel {
       'primary_image': primaryImage,
       'images': images,
       'has_variants': hasVariants,
-      'variants': variants,
       'category': category.toJson(),
-      'vendor': vendor,
+      'vendor': vendor.toJson(),
       'created_at': createdAt,
       'updated_at': updatedAt,
     };
-  }
-}
-
-class ActiveDealModel {
-  final int id;
-  final String uuid;
-  final String name;
-  final String discountType;
-  final double discountValue;
-  final String scope;
-  final int priority;
-  final String status;
-  final String startsAt;
-  final String endsAt;
-
-  const ActiveDealModel({
-    required this.id,
-    required this.uuid,
-    required this.name,
-    required this.discountType,
-    required this.discountValue,
-    required this.scope,
-    required this.priority,
-    required this.status,
-    required this.startsAt,
-    required this.endsAt,
-  });
-
-  factory ActiveDealModel.fromJson(Map<String, dynamic> json) {
-    return ActiveDealModel(
-      id: json['id'],
-      uuid: json['uuid'],
-      name: json['name'],
-      discountType: json['discount_type'],
-      discountValue: (json['discount_value'] as num).toDouble(),
-      scope: json['scope'],
-      priority: json['priority'],
-      status: json['status'],
-      startsAt: json['starts_at'],
-      endsAt: json['ends_at'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'uuid': uuid,
-      'name': name,
-      'discount_type': discountType,
-      'discount_value': discountValue,
-      'scope': scope,
-      'priority': priority,
-      'status': status,
-      'starts_at': startsAt,
-      'ends_at': endsAt,
-    };
-  }
-}
-
-class CategoryModel {
-  final int id;
-  final CategoryNameModel name;
-  final String slug;
-
-  const CategoryModel({
-    required this.id,
-    required this.name,
-    required this.slug,
-  });
-
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
-      id: json['id'],
-      name: CategoryNameModel.fromJson(json['name']),
-      slug: json['slug'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name.toJson(), 'slug': slug};
-  }
-}
-
-class CategoryNameModel {
-  final String ar;
-  final String en;
-
-  const CategoryNameModel({required this.ar, required this.en});
-
-  factory CategoryNameModel.fromJson(Map<String, dynamic> json) {
-    return CategoryNameModel(ar: json['ar'], en: json['en']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'ar': ar, 'en': en};
   }
 }

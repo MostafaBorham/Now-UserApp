@@ -5,11 +5,14 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_product_shimmer_view.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_categories_vm.dart';
-import 'package:nowdelivery_user_app/features/products/data/models/product_model.dart'
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart'
     hide CategoryModel;
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_product_sub_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
@@ -26,7 +29,7 @@ class CategoriesProductTabView extends ConsumerStatefulWidget {
 
 class _CategoriesProductTabViewState
     extends ConsumerState<CategoriesProductTabView> {
-  late final GetCategoriesViewModel _categoriesViewModel;
+  late final GetProductSubCategoriesViewModel _subCategoriesViewModel;
   // late final GetProductsViewModel _productsViewModel;
   int? filterCategoryId;
 
@@ -34,24 +37,24 @@ class _CategoriesProductTabViewState
   void initState() {
     // TODO: implement initState
     super.initState();
-    _categoriesViewModel = ref.read(getCategoriesProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    _subCategoriesViewModel = ref.read(getProductSubCategoriesProvider.notifier);
+/*    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchFilteredProducts();
-    });
+    });*/
   }
 
   void _fetchFilteredProducts() {
-    print('=== $filterCategoryId');
+/*    print('=== $filterCategoryId');
     final productsViewModel = ref.read(
       getProductsByCategoryFilterProvider(filterCategoryId).notifier,
     );
-    productsViewModel.getProducts(categoryId: filterCategoryId);
+    productsViewModel.getProducts(categoryId: filterCategoryId);*/
   }
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final filterCategoriesState = ref.watch(getCategoriesProvider);
+    final productSubCategories = ref.watch(getProductSubCategoriesProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,12 +68,12 @@ class _CategoriesProductTabViewState
           ),
         ),
         Expanded(
-          child: filterCategoriesState.when(
+          child: productSubCategories.when(
             loading: () => CategoriesProductShimmerView(),
             error: (Object error, StackTrace stackTrace) =>
                 ServerConnectionErrorWidget(
                   message: error.toString(),
-                  onRetry: () => _categoriesViewModel.getCategories(),
+                  onRetry: () => _subCategoriesViewModel.getProductSubCategories(),
                 ),
             data: (filterCategories) {
               final filterItems = [
@@ -81,65 +84,17 @@ class _CategoriesProductTabViewState
                 ...filterCategories,
               ];
               return CustomButtonTabBar(
+                filterWidget: AppFilterIcon(),
                 onTap: (index) {
-                  print('current = $index');
+/*                  print('current = $index');
                   filterCategoryId = filterItems.elementAt(index).id;
-                  _fetchFilteredProducts();
+                  _fetchFilteredProducts();*/
                 },
-                tabs: filterItems.map((filter) => filter.name).toList(),
-                views: filterItems.map((e) {
-                  return ref
-                      .watch(getProductsByCategoryFilterProvider(e.id))
-                      .when(
-                        data: (products) {
-                          return GridView.builder(
-                            padding: EdgeInsets.all(4),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 20,
-                                  childAspectRatio: 0.75,
-                                ),
-                            itemCount: 5,
-                            itemBuilder: (BuildContext context, int index) {
-                              // return Container(color: colors.error);
-                              return ProductItemCard2(
-                                // productModel: products.elementAtOrNull(index),
-                              );
-                            },
-                          );
-                        },
-                        error: (error, stackTrace) {
-                          return ServerConnectionErrorWidget(
-                            message: error.toString(),
-                            onRetry: () => _fetchFilteredProducts(),
-                          );
-                        },
-                        loading: () {
-                          return GridView.builder(
-                            padding: EdgeInsets.all(4),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 20,
-                                  childAspectRatio: 0.75,
-                                ),
-                            itemCount: 4,
-                            itemBuilder: (BuildContext context, int index) {
-                              return AppShimmer(
-                                child: ProductItemCard2(
-                                  // productModel: products.elementAtOrNull(index),
-                                ),
-                              );
-                              return ProductItemCard2(
-                                // productModel: products.elementAtOrNull(index),
-                              );
-                            },
-                          );
-                        },
-                      );
+                tabs: filterItems.map((filter) => '${filter.name}').toList(),
+                views: filterItems.map((category) {
+                  return CategoryProductsView(
+                    subCategory: category,
+                  );
                 }).toList(),
                 selectedLabelColor: colors.onSecondary,
                 selectedTabColor: colors.secondary,

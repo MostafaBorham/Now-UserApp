@@ -39,12 +39,12 @@ class CategoryCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 children: [
                   AppCachedNetworkImage(
-                    imageUrl: category.image?.downloadUrl ?? '',
+                    imageUrl: category.image??'',
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
-                  if (category.descendantsCount < 0)
+                  if (category.descendantsCount! < 0)
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
@@ -64,7 +64,7 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
           Text(
-            category.localizedName(context.locale.languageCode),
+            category.name??'',
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

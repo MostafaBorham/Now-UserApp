@@ -17,4 +17,11 @@ class ProductsApiService {
       queryParameters: ProductsEndpoints.getProductsQuery,
     );
   }
+
+  Future<Response> getProductDetails({required String productSlug}) {
+    ProductsEndpoints.productSlug = productSlug;
+    return _dio.get(
+      ProductsEndpoints.getProductDetails,
+    );
+  }
 }

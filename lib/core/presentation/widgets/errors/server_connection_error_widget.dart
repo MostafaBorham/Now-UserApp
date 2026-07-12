@@ -32,17 +32,14 @@ class ServerConnectionErrorWidget extends StatelessWidget {
         children: [
           Assets.media.images.svg.serverFailIcon.svg(width: 300),
           AutoSizeText(
-            LangKeys.serverConnectionFailedKey.tr(),
-            style: AppTextStyles.style24Bold.copyWith(
-              color: colors.onSecondary,
-            ),
-          ),
-          AutoSizeText(
             (message == null || message!.isEmpty)
                 ? LangKeys.unableToReachServersKey.tr()
                 : message!.tr(),
             textAlign: TextAlign.center,
-            style: AppTextStyles.style16Regular,
+            maxLines: 4,
+            style: AppTextStyles.style24Bold.copyWith(
+              color: colors.onSecondary,
+            ),
           ),
           if (onRetry != null) ...[
             15.hSpace,

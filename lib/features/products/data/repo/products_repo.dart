@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/features/categories/data/datasources/remote
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
 import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
-import 'package:nowdelivery_user_app/features/products/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 /// All data operations of the categories feature.
 ///
@@ -46,6 +46,35 @@ class ProductsRepo {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
           data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, ProductModel>> getProductDetails({required String productSlug}) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _productsApiService.getProductDetails(productSlug: productSlug);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+
+      final ProductModel product = ProductModel.fromJson(data['product']);
+
+      return Right(product);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+      data is Map<String, dynamic> ? data : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
     } catch (exception) {
       return Left(Failure(exception.toString()));

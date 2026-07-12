@@ -17,13 +17,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_wi
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/products/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
-  const ProductItemCard2({super.key, this.productModel});
+  const ProductItemCard2({super.key, this.productModel,this.onTap});
   final ProductModel? productModel;
+  final GestureTapCallback? onTap;
   @override
   State<ProductItemCard2> createState() => _ProductItemCard2State();
 }
@@ -49,7 +50,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
+      onTap: widget.onTap?? () => context.pushNamed(AppRoutes.productDetailsScreen,extra: widget.productModel?.slug),
       child: Container(
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
@@ -103,15 +104,16 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                         alignment: AlignmentDirectional.bottomEnd,
                         child: Padding(
                           padding: EdgeInsetsDirectional.only(
-                            bottom: con.maxHeight * 0.25,
-                            end: con.maxWidth * 0.03,
+                            bottom: con.maxHeight * 0.22,
+                            end: con.maxWidth * 0.05,
                           ),
                           child: Transform.rotate(
                             angle: -0.2,
                             child: Container(
+                              width: con.maxWidth*0.5,
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
-                                vertical: 2,
+                                vertical: 4,
                               ),
                               decoration: BoxDecoration(
                                 color: colors.secondaryContainer.withValues(
@@ -119,9 +121,11 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 ),
                                 borderRadius: AppBorderRadius.brCircular6,
                               ),
-                              child: AutoSizeText(
-                                widget.productModel?.category.name.en??'',
+                              child: Text(
+                                widget.productModel?.name??'',
                                 maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: colors.onPrimary,
                                   fontSize: 11,
@@ -250,7 +254,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           CircularBrandLogo(
                             radius: widthCon * 0.12,
                             logoUrl:
-                                'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                                widget.productModel?.vendor.logoUrl??'',
                           ),
                         ],
                       ),

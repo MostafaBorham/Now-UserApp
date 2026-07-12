@@ -20,7 +20,9 @@ class CircularBrandLogo extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Material(
       elevation: elevation!,
-      shape: CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      shape: CircleBorder(
+      ),
       child: CircleAvatar(
         radius: radius,
         backgroundColor: backgroundColor ?? colors.onPrimaryContainer,

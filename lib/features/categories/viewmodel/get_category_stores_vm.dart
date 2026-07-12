@@ -16,7 +16,7 @@ final getCategoryStoresProvider =
       GetCategoryStoresViewModel(const AsyncValue.loading()),
 );
 
-final filterCategoryStoresProvider =
+/*final filterCategoryStoresProvider =
 StateNotifierProvider.autoDispose.family<
     GetCategoryStoresViewModel,
     AsyncValue<List<StoreModel>>,
@@ -26,7 +26,7 @@ StateNotifierProvider.autoDispose.family<
       const AsyncValue.loading(),
     );
   },
-);
+);*/
 
 class GetCategoryStoresViewModel
     extends StateNotifier<AsyncValue<List<StoreModel>>> {
@@ -34,10 +34,10 @@ class GetCategoryStoresViewModel
 
   final CategoriesRepo _repo = CategoriesRepo();
 
-  Future<void> getCategoryStores({required String categorySlug}) async {
+  Future<void> getCategoryStores({required String categorySlug,required int? categoryId}) async {
     state = const AsyncValue.loading();
 
-    final result = await _repo.getCategoryStore(categorySlug: categorySlug);
+    final result = await _repo.getCategoryStores(categorySlug: categorySlug,categoryId: categoryId);
 
     if (!mounted) return;
 

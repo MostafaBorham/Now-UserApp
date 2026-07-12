@@ -8,23 +8,23 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// The fetch starts as soon as the provider is first watched, so screens only
 /// need to `ref.watch(getCategoriesProvider)` and render the [AsyncValue].
 /// Retry with `ref.read(getCategoriesProvider.notifier).getCategories()`.
-final getCategoriesProvider =
-    StateNotifierProvider.autoDispose<GetCategoriesViewModel,
+final getStoreSubCategoriesProvider =
+    StateNotifierProvider.autoDispose<GetStoreSubCategoriesViewModel,
         AsyncValue<List<CategoryModel>>>(
   (Ref ref) =>
-      GetCategoriesViewModel(const AsyncValue.loading())..getCategories(),
+      GetStoreSubCategoriesViewModel(const AsyncValue.loading())..getStoreSubCategories(),
 );
 
-class GetCategoriesViewModel
+class GetStoreSubCategoriesViewModel
     extends StateNotifier<AsyncValue<List<CategoryModel>>> {
-  GetCategoriesViewModel(super.initialState);
+  GetStoreSubCategoriesViewModel(super.initialState);
 
   final CategoriesRepo _repo = CategoriesRepo();
 
-  Future<void> getCategories() async {
+  Future<void> getStoreSubCategories() async {
     state = const AsyncValue.loading();
 
-    final result = await _repo.getCategories();
+    final result = await _repo.getStoreSubCategories();
 
     if (!mounted) return;
 

@@ -10,18 +10,42 @@ import 'package:nowdelivery_user_app/features/categories/data/datasources/remote
 class CategoriesApiService {
   final Dio _dio = DioFactory.getDio();
 
-  Future<Response> getCategories() {
+  Future<Response> getAppCategories() {
     return _dio.get(
-      CategoriesEndpoints.getCategories,
-      queryParameters: CategoriesEndpoints.getCategoriesQuery,
+      CategoriesEndpoints.getAppCategories,
+      queryParameters: CategoriesEndpoints.getAppCategoriesQuery,
     );
   }
 
-  Future<Response> getCategoryStores({required String categorySlug}) {
-    CategoriesEndpoints.categorySlug = categorySlug;
+  Future<Response> getProductSubCategories() {
     return _dio.get(
-      CategoriesEndpoints.categoryStores,
+      CategoriesEndpoints.getProductSubCategories,
+      queryParameters: CategoriesEndpoints.getProductSubCategoriesQuery,
+    );
+  }
+
+  Future<Response> getStoreSubCategories() {
+    return _dio.get(
+      CategoriesEndpoints.getStoreSubCategories,
+      queryParameters: CategoriesEndpoints.getStoreSubCategoriesQuery,
+    );
+  }
+
+  Future<Response> getCategoryStores({required String categorySlug, required int? categoryId}) {
+    CategoriesEndpoints.appCategorySlug = categorySlug;
+    CategoriesEndpoints.categoryId = categoryId;
+    return _dio.get(
+      CategoriesEndpoints.getCategoryStores,
       queryParameters: CategoriesEndpoints.getCategoryStoresQuery,
+    );
+  }
+
+  Future<Response> getCategoryProducts({required String categorySlug,required int? categoryId}) {
+    CategoriesEndpoints.appCategorySlug = categorySlug;
+    CategoriesEndpoints.categoryId = categoryId;
+    return _dio.get(
+      CategoriesEndpoints.getCategoryProducts,
+      queryParameters: CategoriesEndpoints.getCategoryProductsQuery,
     );
   }
 }

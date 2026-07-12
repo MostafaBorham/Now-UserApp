@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
@@ -28,7 +28,7 @@ class CategoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<CategoryModel>> categoriesState = ref.watch(
-      getCategoriesProvider,
+      getAppCategoriesProvider,
     );
 
     return Scaffold(
@@ -49,7 +49,7 @@ class CategoriesScreen extends ConsumerWidget {
               ServerConnectionErrorWidget(
                 message: error.toString(),
                 onRetry: () =>
-                    ref.read(getCategoriesProvider.notifier).getCategories(),
+                    ref.read(getAppCategoriesProvider.notifier).getAppCategories(),
               ),
           data: (List<CategoryModel> categories) => categories.isEmpty
               ? const NoItemsWidget()
@@ -60,10 +60,12 @@ class CategoriesScreen extends ConsumerWidget {
                   itemBuilder: (BuildContext context, int index) =>
                       CategoryCard(
                         category: categories[index],
-                        onTap: () => context.pushNamed(AppRoutes.categoryDetailsScreen,queryParameters: {
-                          AppKeys.categoryModel : categories[index]
-                        }
-                        ),
+                          onTap: () {
+                            context.pushNamed(
+                              AppRoutes.categoryDetailsScreen,
+                              extra: categories[index],
+                            );
+                          }
                       ),
                 ),
         ),

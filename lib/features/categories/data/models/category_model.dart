@@ -5,213 +5,139 @@ import 'package:equatable/equatable.dart';
 /// The endpoint returns a nested tree, so [children] holds the same type.
 class CategoryModel extends Equatable {
   final int? id;
-  final String name;
-  final CategoryTranslations? translations;
+  final String? name;
   final String? description;
-  final String slug;
+  final String? slug;
   final int? parentId;
-  final int depth;
+  final int? depth;
   final String? path;
   final String? metaTitle;
   final String? metaDescription;
   final String? searchKeywords;
-  final int index;
-  final bool active;
+  final int? index;
+  final bool? active;
   final String? adminStatus;
   final String? reviewedAt;
   final String? rejectionReason;
-  final int childrenCount;
-  final int descendantsCount;
-  final int productsCount;
-  final List<CategoryModel> children;
-  final CategoryImage? image;
+  final int? childrenCount;
+  final int? descendantsCount;
+  final int? productsCount;
+  final String? image;
   final String? createdAt;
   final String? updatedAt;
   final String? deletedAt;
 
   const CategoryModel({
     this.id,
-    required this.name,
-    required this.slug,
-    this.translations,
+    this.name,
     this.description,
+    this.slug,
     this.parentId,
-    this.depth = 0,
+    this.depth,
     this.path,
     this.metaTitle,
     this.metaDescription,
     this.searchKeywords,
-    this.index = 0,
-    this.active = false,
+    this.index,
+    this.active,
     this.adminStatus,
     this.reviewedAt,
     this.rejectionReason,
-    this.childrenCount = 0,
-    this.descendantsCount = 0,
-    this.productsCount = 0,
-    this.children = const <CategoryModel>[],
+    this.childrenCount,
+    this.descendantsCount,
+    this.productsCount,
     this.image,
     this.createdAt,
     this.updatedAt,
     this.deletedAt,
   });
 
-  /// Localized display name for the given [languageCode] ('ar' / 'en'),
-  /// falling back to the raw [name] when no translation exists.
-  String localizedName(String languageCode) {
-    final LocalizedText? translatedName = translations?.name;
-    final String? localized =
-        languageCode == 'ar' ? translatedName?.ar : translatedName?.en;
-    return (localized == null || localized.isEmpty) ? name : localized;
-  }
+  factory CategoryModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return const CategoryModel();
+    }
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: (json['id'] as num).toInt(),
-      name: json['name']?.toString() ?? '',
-      slug: json['slug']?.toString() ?? '',
-      translations: json['translations'] == null
-          ? null
-          : CategoryTranslations.fromJson(
-              json['translations'] as Map<String, dynamic>,
-            ),
-      description: json['description'] as String?,
-      parentId: (json['parent_id'] as num?)?.toInt(),
-      depth: (json['depth'] as num?)?.toInt() ?? 0,
-      path: json['path'] as String?,
-      metaTitle: json['meta_title'] as String?,
-      metaDescription: json['meta_description'] as String?,
-      searchKeywords: json['search_keywords']?.toString(),
-      index: (json['index'] as num?)?.toInt() ?? 0,
-      active: json['active'] as bool? ?? false,
-      adminStatus: json['admin_status'] as String?,
-      reviewedAt: json['reviewed_at'] as String?,
-      rejectionReason: json['rejection_reason'] as String?,
-      childrenCount: (json['children_count'] as num?)?.toInt() ?? 0,
-      descendantsCount: (json['descendants_count'] as num?)?.toInt() ?? 0,
-      productsCount: (json['products_count'] as num?)?.toInt() ?? 0,
-      children: (json['children'] as List<dynamic>? ?? const <dynamic>[])
-          .map((dynamic e) =>
-              CategoryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      image: json['image'] == null
-          ? null
-          : CategoryImage.fromJson(json['image'] as Map<String, dynamic>),
-      createdAt: json['created_at'] as String?,
-      updatedAt: json['updated_at'] as String?,
-      deletedAt: json['deleted_at'] as String?,
-    );
-  }
-
-  @override
-  List<Object?> get props => <Object?>[
-        id,
-        name,
-        slug,
-        translations,
-        description,
-        parentId,
-        depth,
-        path,
-        metaTitle,
-        metaDescription,
-        searchKeywords,
-        index,
-        active,
-        adminStatus,
-        reviewedAt,
-        rejectionReason,
-        childrenCount,
-        descendantsCount,
-        productsCount,
-        children,
-        image,
-        createdAt,
-        updatedAt,
-        deletedAt,
-      ];
-}
-
-/// `translations` object. Currently only carries the localized `name`.
-class CategoryTranslations extends Equatable {
-  final LocalizedText? name;
-
-  const CategoryTranslations({this.name});
-
-  factory CategoryTranslations.fromJson(Map<String, dynamic> json) {
-    return CategoryTranslations(
-      name: json['name'] == null
-          ? null
-          : LocalizedText.fromJson(json['name'] as Map<String, dynamic>),
-    );
-  }
-
-  @override
-  List<Object?> get props => <Object?>[name];
-}
-
-/// A localized value with Arabic / English variants (`{ "ar": ..., "en": ... }`).
-class LocalizedText extends Equatable {
-  final String? ar;
-  final String? en;
-
-  const LocalizedText({this.ar, this.en});
-
-  factory LocalizedText.fromJson(Map<String, dynamic> json) {
-    return LocalizedText(
-      ar: json['ar'] as String?,
-      en: json['en'] as String?,
-    );
-  }
-
-  @override
-  List<Object?> get props => <Object?>[ar, en];
-}
-
-/// Image attachment nested inside a [CategoryModel] (nullable on the API).
-class CategoryImage extends Equatable {
-  final int? id;
-  final String? originalName;
-  final String? mimeType;
-  final String? fileExtension;
-  final int? size;
-  final String? downloadUrl;
-  final String? downloadPath;
-  final String? createdAt;
-
-  const CategoryImage({
-    this.id,
-    this.originalName,
-    this.mimeType,
-    this.fileExtension,
-    this.size,
-    this.downloadUrl,
-    this.downloadPath,
-    this.createdAt,
-  });
-
-  factory CategoryImage.fromJson(Map<String, dynamic> json) {
-    return CategoryImage(
       id: (json['id'] as num?)?.toInt(),
-      originalName: json['original_name'] as String?,
-      mimeType: json['mime_type'] as String?,
-      fileExtension: json['extension'] as String?,
-      size: (json['size'] as num?)?.toInt(),
-      downloadUrl: json['download_url'] as String?,
-      downloadPath: json['download_path'] as String?,
-      createdAt: json['created_at'] as String?,
+      name: json['name']?.toString(),
+      description: json['description']?.toString(),
+      slug: json['slug']?.toString(),
+      parentId: (json['parent_id'] as num?)?.toInt(),
+      depth: (json['depth'] as num?)?.toInt(),
+      path: json['path']?.toString(),
+      metaTitle: json['meta_title']?.toString(),
+      metaDescription: json['meta_description']?.toString(),
+      searchKeywords: json['search_keywords']?.toString(),
+      index: (json['index'] as num?)?.toInt(),
+      active: json['active'] as bool?,
+      adminStatus: json['admin_status']?.toString(),
+      reviewedAt: json['reviewed_at']?.toString(),
+      rejectionReason: json['rejection_reason']?.toString(),
+      childrenCount: (json['children_count'] as num?)?.toInt(),
+      descendantsCount: (json['descendants_count'] as num?)?.toInt(),
+      productsCount: (json['products_count'] as num?)?.toInt(),
+      image: (json['image'] as Map<String, dynamic>?)?['download_url']
+          ?.toString(),
+      createdAt: json['created_at']?.toString(),
+      updatedAt: json['updated_at']?.toString(),
+      deletedAt: json['deleted_at']?.toString(),
     );
   }
 
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'slug': slug,
+      'parent_id': parentId,
+      'depth': depth,
+      'path': path,
+      'meta_title': metaTitle,
+      'meta_description': metaDescription,
+      'search_keywords': searchKeywords,
+      'index': index,
+      'active': active,
+      'admin_status': adminStatus,
+      'reviewed_at': reviewedAt,
+      'rejection_reason': rejectionReason,
+      'children_count': childrenCount,
+      'descendants_count': descendantsCount??0,
+      'products_count': productsCount,
+      'image': image == null
+          ? null
+          : {
+        'download_url': image,
+      },
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'deleted_at': deletedAt,
+    };
+  }
   @override
-  List<Object?> get props => <Object?>[
-        id,
-        originalName,
-        mimeType,
-        fileExtension,
-        size,
-        downloadUrl,
-        downloadPath,
-        createdAt,
-      ];
+  List<Object?> get props => [
+    id,
+    name,
+    description,
+    slug,
+    parentId,
+    depth,
+    path,
+    metaTitle,
+    metaDescription,
+    searchKeywords,
+    index,
+    active,
+    adminStatus,
+    reviewedAt,
+    rejectionReason,
+    childrenCount,
+    descendantsCount,
+    productsCount,
+    image,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
 }
