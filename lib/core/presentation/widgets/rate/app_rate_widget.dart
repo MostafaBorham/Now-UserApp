@@ -22,6 +22,7 @@ class AppRateWidget extends StatelessWidget {
           ),
         ),
         Text(
+          textDirection: TextDirection.ltr,
           '$rateRatio ${rateCount!=null? '($rateCount)' : ''}',
           style: TextStyle(
             color: rateColor,

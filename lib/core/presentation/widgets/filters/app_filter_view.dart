@@ -1,14 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_rate_selector.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-class AppFilterView extends StatefulWidget {
+class AppFilterView extends ConsumerStatefulWidget {
   const AppFilterView({
     super.key,
     required this.categories,
@@ -23,16 +27,17 @@ class AppFilterView extends StatefulWidget {
   final VoidCallback? onClose;
 
   @override
-  State<AppFilterView> createState() => _AppFilterViewState();
+  ConsumerState<AppFilterView> createState() => _AppFilterViewState();
 }
 
-class _AppFilterViewState extends State<AppFilterView> {
+class _AppFilterViewState extends ConsumerState<AppFilterView> {
   int selectedCategoryIndex = 0;
   int selectedRatingIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final categoriesState = ref.watch(getAppCategoriesProvider);
     return Container(
       color: colors.onPrimary,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
@@ -76,16 +81,42 @@ class _AppFilterViewState extends State<AppFilterView> {
               color: colors.onTertiaryFixed,
             ),
           ),
-          AppSelector(
-            items: widget.categories,
-            initialIndex: selectedCategoryIndex,
-            onChanged: (index) => selectedCategoryIndex = index,
-            labelColor: colors.onTertiaryFixed,
-            radius: 999,
-            selectedColor: colors.surfaceContainerHigh,
-            selectedLabelColor: colors.onTertiaryFixed,
-            unselectedColor: colors.onPrimaryContainer,
-            borderColor: Colors.transparent,
+          categoriesState.when(
+            loading: () => Row(
+              children: List.generate(
+                4,
+                (index) => Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 2,
+                    child: AppShimmer(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          color: colors.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            error: (error, stackTrace) => ServerConnectionErrorWidget(
+              message: error.toString(),
+              onRetry: () => ref
+                  .read(getAppCategoriesProvider.notifier)
+                  .getAppCategories(),
+            ),
+            data: (categories) => AppSelector(
+              items: categories.map((category) => category.name??'',).toList(),
+              initialIndex: selectedCategoryIndex,
+              onChanged: (index) => selectedCategoryIndex = index,
+              labelColor: colors.onTertiaryFixed,
+              radius: 999,
+              selectedColor: colors.surfaceContainerHigh,
+              selectedLabelColor: colors.onTertiaryFixed,
+              unselectedColor: colors.onPrimaryContainer,
+              borderColor: Colors.transparent,
+            ),
           ),
           Text(
             LangKeys.ratingsKey.tr(),
@@ -104,10 +135,10 @@ class _AppFilterViewState extends State<AppFilterView> {
           ),
           PrimaryAppButton(
             title: LangKeys.applyFiltersKey.tr(),
-            onTap: () => widget.onApply?.call(
-              selectedCategoryIndex,
-              selectedRatingIndex,
-            ),
+            onTap: () {
+              widget.onApply?.call(selectedCategoryIndex, selectedRatingIndex);
+              context.pop();
+            },
           ),
         ],
       ),

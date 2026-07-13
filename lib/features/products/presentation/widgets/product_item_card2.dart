@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -16,13 +18,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_wi
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
-  const ProductItemCard2({super.key, this.productModel,this.onTap});
+  const ProductItemCard2({super.key, this.productModel, this.onTap});
   final ProductModel? productModel;
   final GestureTapCallback? onTap;
   @override
@@ -50,7 +53,12 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: widget.onTap?? () => context.pushNamed(AppRoutes.productDetailsScreen,extra: widget.productModel?.slug),
+      onTap:
+          widget.onTap ??
+          () => context.pushNamed(
+            AppRoutes.productDetailsScreen,
+            extra: widget.productModel?.slug,
+          ),
       child: Container(
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
@@ -58,9 +66,9 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
           borderRadius: AppBorderRadius.brCircular20,
           boxShadow: [
             BoxShadow(
-              color: colors.onSecondary.withValues(alpha: .5),
-              blurRadius: 1,
-              offset: Offset(0, 1),
+              color: colors.onSurface.withValues(alpha: .3),
+              blurRadius: 2,
+              spreadRadius: 1,
             ),
           ],
         ),
@@ -72,17 +80,23 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                 builder: (context, con) {
                   return Stack(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                        child: ClipPath(
-                          clipper: DiagonalClipper(),
-                          child: AppCachedNetworkImage(
-                            imageUrl:
-                                widget.productModel?.images.firstOrNull??'',
-                            width: double.infinity,
+                      ReverseWidget(
+                        applyReverse: context.isRTL,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          child: ClipPath(
+                            clipper: DiagonalClipper(),
+                            child: ReverseWidget(
+                              applyReverse: context.isRTL,
+                              child: AppCachedNetworkImage(
+                                imageUrl:
+                                    widget.productModel?.images.firstOrNull ?? '',
+                                width: double.infinity,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -93,10 +107,10 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             con.maxWidth * 0.05,
                           ),
                           child: CircularAppFavouriteIcon(
-                            size: con.maxWidth*0.08,
-                            isFavourite: widget.productModel?.isFeatured?? false,
-                            onFavouriteChanged: (currentFavourite) {
-                            },
+                            size: con.maxWidth * 0.08,
+                            isFavourite:
+                                widget.productModel?.isFeatured ?? false,
+                            onFavouriteChanged: (currentFavourite) {},
                           ),
                         ),
                       ),
@@ -108,9 +122,9 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             end: con.maxWidth * 0.05,
                           ),
                           child: Transform.rotate(
-                            angle: -0.2,
+                            angle: context.isRTL? 0.2 : -0.2,
                             child: Container(
-                              width: con.maxWidth*0.5,
+                              width: con.maxWidth * 0.5,
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
                                 vertical: 4,
@@ -122,7 +136,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 borderRadius: AppBorderRadius.brCircular6,
                               ),
                               child: Text(
-                                widget.productModel?.name??'',
+                                widget.productModel?.name ?? '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
@@ -166,86 +180,48 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               ),
                             ),
                           ),
-                          showAddToCartCounter
-                              ? AnimatedScale(
-                                  scale: showAddToCartCounter ? 1 : 0,
-                                  duration: const Duration(seconds: 2),
-                                  curve: Curves.linear,
-                                  onEnd: () {},
-                                  child: SizedBox(
-                                    width: widthCon * 0.6,
-                                    height: widthCon * 0.2,
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: AddToCartCounterWidget(
-                                        counter: counter,
-                                        onInc: () {
-                                          startTimer();
-                                          counter++;
-                                          setState(() {});
-                                        },
-                                        onDec: () {
-                                          startTimer();
-                                          counter--;
-                                          setState(() {});
-                                        },
-                                        onDelete: () {
-                                          showAddToCartCounter = false;
-                                          counter--;
-                                          isRotate = false;
-                                          setState(() {});
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : InkWell(
-                                  onTap: () {
-                                    isRotate = !isRotate;
-                                    setState(() {});
-                                  },
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: AddToCartButton(
-                                      text: counter < 1
-                                          ? '+'
-                                          : counter.toString(),
-                                      onEnd: () {
-                                        startTimer();
-                                        if (counter < 1) counter++;
-                                        showAddToCartCounter = true;
-                                        setState(() {});
-                                      },
-                                      isRotate: isRotate,
-                                    ),
-                                  ),
-                                ),
+                          PrimaryItemQuantityButton()
                         ],
                       ),
                       Row(
-                        spacing: widthCon * 0.2,
+                        spacing: widthCon * 0.1,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: Column(
+                              spacing: 5,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    spacing: 10,
-                                    children: [
-                                      OldPriceWidget(color: colors.onSurface.withValues(alpha: 0.7), price: '${widget.productModel?.price}'),
-                                   NewPriceWidget(color: colors.onSecondary, price: '${widget.productModel?.price}')
-                                    ],
-                                  ),
+                                Row(
+                                  textDirection: TextDirection.ltr,
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 2,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: FittedBox(
+                                        child: OldPriceWidget(
+                                          color: colors.onSurface,
+                                          price: '${widget.productModel?.price}',
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: FittedBox(
+                                        child: NewPriceWidget(
+                                          color: colors.onSecondary,
+                                          price: '${widget.productModel?.price}',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 AutoSizeText(
                                   '${widget.productModel?.name}',
                                   style: AppTextStyles.style12SemiBold.copyWith(
                                     color: colors.onSecondary,
-                                    fontSize: widthCon * 0.1,
+                                    fontSize: widthCon * 0.09,
                                   ),
                                 ),
                               ],
@@ -253,8 +229,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           CircularBrandLogo(
                             radius: widthCon * 0.12,
-                            logoUrl:
-                                widget.productModel?.vendor.logoUrl??'',
+                            logoUrl: widget.productModel?.vendor.logoUrl ?? '',
                           ),
                         ],
                       ),

@@ -102,7 +102,6 @@ class AppCachedNetworkImage extends StatelessWidget {
               height: height?? double.infinity,
               decoration: BoxDecoration(
                   color: colors.onSurface.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(16)
               ),
               child: Assets.media.images.png.noImageAvail.image(fit: BoxFit.contain,height: double.infinity,width: double.infinity)),
     );

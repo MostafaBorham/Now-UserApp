@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -56,8 +57,8 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
-        Text('Filters',style: AppTextStyles.style16SemiBold.copyWith(
+        AppSearchField(hintText: LangKeys.searchForAStoreKey.tr(),reverseSearchIcon: context.isRTL,),
+        Text(LangKeys.filtersKey.tr(),style: AppTextStyles.style16SemiBold.copyWith(
           color: colors.onSecondary
         ),),
         Expanded(

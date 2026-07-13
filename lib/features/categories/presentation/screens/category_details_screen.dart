@@ -29,7 +29,7 @@ class CategoryDetailsScreen extends StatelessWidget {
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],
             selectedTabColor: colors.primary,
           ),
-          appBarTitle: LangKeys.offersKey.tr(),
+          appBarTitle: category.name??'',
           canPop: context.canPop(),
         ),
       ),

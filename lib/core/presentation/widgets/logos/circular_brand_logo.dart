@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 class CircularBrandLogo extends StatelessWidget {
@@ -20,19 +22,29 @@ class CircularBrandLogo extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Material(
       elevation: elevation!,
-      clipBehavior: Clip.antiAlias,
       shape: CircleBorder(
       ),
       child: CircleAvatar(
         radius: radius,
         backgroundColor: backgroundColor ?? colors.onPrimaryContainer,
         child: Center(
-          child: AppCachedNetworkImage(
-            height: radius,
-            width: radius,
+          child: CachedNetworkImage(
             imageUrl: logoUrl,
             fit: BoxFit.contain,
-            placeholderType: PlaceholderTypes.circular,
+            width: radius,
+            placeholder: (context, url) => Center(child: SizedBox(
+                width: radius*0.7,
+                height: radius*0.7,
+                child: CircularProgressIndicator(color: colors.primary,
+                 strokeWidth: radius*0.1,
+                ))),
+            errorWidget: (context, url, error) => FractionallySizedBox(
+              widthFactor: 2,
+              heightFactor: 2,
+              child: Assets.media.images.png.noImageAvail.image(
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ),
       ),

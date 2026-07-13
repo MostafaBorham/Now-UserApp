@@ -72,6 +72,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints con) {
               return Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: colors.onPrimary,
                   borderRadius: AppBorderRadius.brCircular30,
@@ -99,20 +100,16 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                             color: colors.onPrimaryFixed,
                             fontSize: con.maxWidth * 0.05,
                           ),
-                          prefixIcon: Padding(
-                            padding:
-                                const EdgeInsetsDirectional.only(start: 16),
-                            child: ReverseWidget(
-                              applyReverse: widget.reverseSearchIcon,
-                              child: Assets.media.images.svg.searchIcon.svg(),
-                            ),
+                          prefixIcon: ReverseWidget(
+                            applyReverse: widget.reverseSearchIcon,
+                            child: Assets.media.images.svg.searchIcon.svg(),
                           ),
-                          prefixIconConstraints: const BoxConstraints(
-                            maxHeight: 25,
-                            minWidth: 25,
+                          prefixIconConstraints: BoxConstraints(
+                            maxHeight: con.maxWidth*0.05,
+                            minWidth: con.maxWidth*0.05,
                           ),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(8),
+                          contentPadding: EdgeInsets.zero,
                         ),
                       ),
                     ),

@@ -18,7 +18,7 @@ class CategoryProductsViewShimmer extends StatelessWidget {
         mainAxisSpacing: 20,
         childAspectRatio: 0.75,
       ),
-      itemCount: 5,
+      itemCount: 4,
       itemBuilder: (BuildContext context, int index) {
         // return Container(color: colors.error);
         return AppShimmer(

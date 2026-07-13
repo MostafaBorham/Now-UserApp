@@ -196,44 +196,48 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    textDirection: TextDirection.ltr,
-                    spacing: 4,
+              LayoutBuilder(
+                builder: (context,con) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      OldPriceWidget(
-                        color: colors.onSurface,
-                        price: '${product.price}',
-                        size: 13,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        textDirection: TextDirection.ltr,
+                        spacing: 4,
+                        children: [
+                          OldPriceWidget(
+                            color: colors.onSurface,
+                            size: con.maxWidth*0.04,
+                            price: '${product.price}',
+                          ),
+                          NewPriceWidget(
+                            size: con.maxWidth*0.07,
+                            color: colors.onTertiaryFixed,
+                            price: '${product.comparePrice}',
+                          ),
+                        ],
                       ),
-                      NewPriceWidget(
-                        color: colors.onTertiaryFixed,
-                        price: '${product.comparePrice}',
-                        size: 32,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.tertiaryFixed,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: AppRateWidget(
+                          starColor: colors.surface,
+                          rateColor: colors.tertiaryContainer,
+                          rateRatio: widget.rate,
+                          rateCount: widget.rateCount,
+                          size: 15,
+                        ),
                       ),
                     ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors.tertiaryFixed,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: AppRateWidget(
-                      starColor: colors.surface,
-                      rateColor: colors.tertiaryContainer,
-                      rateRatio: widget.rate,
-                      rateCount: widget.rateCount,
-                      size: 15,
-                    ),
-                  ),
-                ],
+                  );
+                }
               ),
             ],
           ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-
+import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class AppWavedScaffold extends StatelessWidget {
   const AppWavedScaffold({
@@ -24,15 +26,20 @@ class AppWavedScaffold extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.only(top: 0),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [colors.onSecondaryFixed, colors.onPrimary, colors.onPrimary],
+        gradient: RadialGradient(
+          center: Alignment.topCenter,
+          radius: 0.5,
+          colors: [
+            colors.onSecondaryFixed.withValues(alpha: 0.7), // Center
+            colors.onSecondaryFixed, // Edge
+          ],
+          stops: [0.0, 1.0],
         ),
       ),
       child: SafeArea(
+        bottom: false,
         child: Column(
-          spacing: 20,
+          spacing: 12,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -42,17 +49,20 @@ class AppWavedScaffold extends StatelessWidget {
                   Expanded(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: canPop?? context.canPop()
+                      child: canPop ?? context.canPop()
                           ? InkWell(
                               onTap: () => context.pop(),
-                              child: CircleAvatar(
-                                backgroundColor: colors.onPrimary,
-                                radius: screenSize.width*0.05,
-                                child: Center(
-                                  child: Assets.media.images.svg.appBackArrow
-                                      .svg(
-                                    fit: BoxFit.contain,
-                                    width: screenSize.width*0.05
+                              child: ReverseWidget(
+                                applyReverse: context.isRTL,
+                                child: CircleAvatar(
+                                  backgroundColor: colors.onPrimary,
+                                  radius: screenSize.width * 0.05,
+                                  child: Center(
+                                    child: Assets.media.images.svg.appBackArrow
+                                        .svg(
+                                          fit: BoxFit.contain,
+                                          width: screenSize.width * 0.05,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -81,7 +91,111 @@ class AppWavedScaffold extends StatelessWidget {
                       alignment: AlignmentDirectional.centerEnd,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: appBarActions != null && appBarActions!.isNotEmpty
+                        child:
+                            appBarActions != null && appBarActions!.isNotEmpty
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: appBarActions!,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ClipPath(
+                clipper: TopWaveClipper(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 57,
+                  ).copyWith(bottom: 0),
+
+                  decoration: BoxDecoration(
+                    color: colors.onPrimary,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 20,
+                        spreadRadius: 0,
+                        offset: const Offset(0, -8), // Shadow to the top
+                      ),
+                    ],
+                  ),
+                  child: body,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [colors.onSecondaryFixed, colors.onPrimary, colors.onPrimary],
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
+          spacing: 20,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: canPop ?? context.canPop()
+                          ? InkWell(
+                              onTap: () => context.pop(),
+                              child: CircleAvatar(
+                                backgroundColor: colors.onPrimary,
+                                radius: screenSize.width * 0.05,
+                                child: Center(
+                                  child: Assets.media.images.svg.appBackArrow
+                                      .svg(
+                                        fit: BoxFit.contain,
+                                        width: screenSize.width * 0.05,
+                                      ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        appBarTitle,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.style24SemiBold.copyWith(
+                          color: colors.onSecondary,
+                          // fontSize: screenSize.width*0.06
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child:
+                            appBarActions != null && appBarActions!.isNotEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
@@ -107,9 +221,7 @@ class AppWavedScaffold extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 50.0,
-                    ).copyWith(
-                      bottom: 0
-                    ),
+                    ).copyWith(bottom: 0),
                     child: body,
                   ),
                 ],

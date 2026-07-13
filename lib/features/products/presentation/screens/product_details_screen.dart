@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
@@ -157,22 +158,8 @@ class ProductDetailsScreen extends ConsumerWidget {
         ),
         appBarTitle: 'Product Details',
         appBarActions: [
-          InkWell(
-            onTap: () => context.pop(),
-            child: CircleAvatar(
-              backgroundColor: colors.onPrimary,
-              radius: 25,
-              child: Center(
-                child: Assets.media.images.svg.shoppingCartIcon.svg(
-                  fit: BoxFit.contain,
-                  width: 25,
-                  colorFilter: ColorFilter.mode(
-                    colors.onSecondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
+          CircularCartButton(
+            size: MediaQuery.sizeOf(context).width*0.05,
           ),
         ],
       ),
