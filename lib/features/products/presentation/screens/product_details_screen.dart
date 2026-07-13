@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/ci
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
@@ -34,7 +35,7 @@ class ProductDetailsScreen extends ConsumerWidget {
       body: AppWavedScaffold(
         body: productDetailsState.when(
           loading: () {
-            return Center(child: CircularProgressIndicator());
+            return ProductDetailsShimmer();
           },
           error: (Object error, StackTrace stackTrace) =>
               ServerConnectionErrorWidget(
