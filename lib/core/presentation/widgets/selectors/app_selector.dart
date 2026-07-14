@@ -15,7 +15,7 @@ class AppSelector extends StatefulWidget {
   });
 
   final List<String> items;
-  final int initialIndex;
+  final int? initialIndex;
   final ValueChanged<int>? onChanged;
   final double height;
   final double? radius;
@@ -30,7 +30,7 @@ class AppSelector extends StatefulWidget {
 }
 
 class _AppSelectorState extends State<AppSelector> {
-  late int selectedIndex = widget.initialIndex;
+  late int? selectedIndex = widget.initialIndex;
 
   @override
   Widget build(BuildContext context) {

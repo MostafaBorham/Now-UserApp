@@ -7,7 +7,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view.dart';
 
 class CategoriesStoreTabView extends ConsumerStatefulWidget {
@@ -31,7 +32,17 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
         ),),
         Expanded(
           child: CustomButtonTabBar(
-            filterWidget: AppFilterIcon(),
+            filterWidget: AppFilterIcon(
+              onTap: () => showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => CategoryStoresFilterView(
+                  onApply: (type, rating) {
+                    print('apply = $type$rating');
+                  },
+                ),
+              ),
+            ),
             tabs: StoresSortType.values.map((sortType) => sortType.label.tr()).toList(),
             views: StoresSortType.values.map((sortType) {
               return CategoryStoresView(

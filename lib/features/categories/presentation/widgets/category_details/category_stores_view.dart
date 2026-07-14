@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';

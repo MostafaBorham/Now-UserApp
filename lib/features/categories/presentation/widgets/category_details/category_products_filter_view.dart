@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/enums/separate_option.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
@@ -31,6 +32,7 @@ class _CategoryProductsFilterViewState
   double? maxPrice;
   double? minPrice;
   String? selectedRating;
+  int filtersKey = 0;
 
 
   void resetFilters() {
@@ -39,6 +41,7 @@ class _CategoryProductsFilterViewState
       maxPrice = null;
       minPrice = null;
       selectedRating = null;
+      filtersKey++;
     });
   }
 
@@ -62,15 +65,18 @@ class _CategoryProductsFilterViewState
           children: [
             FilterHeaderView(onClose: () => context.pop()),
             FilterSeparateOptionsView(
+              key: ValueKey('separateOptions_$filtersKey'),
               onChanged: (option) => selectedSeparateOption = option,
             ),
             FilterPriceView(
+              key: ValueKey('price_$filtersKey'),
               onChanged: (values) {
                 minPrice = values.start;
                 maxPrice = values.end;
               },
             ),
             FilterRatingsView(
+              key: ValueKey('ratings_$filtersKey'),
               onChanged: (rating) => selectedRating = rating,
             ),
             Row(
