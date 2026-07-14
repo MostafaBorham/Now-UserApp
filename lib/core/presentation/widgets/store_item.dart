@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -12,8 +14,9 @@ import '../../../features/favourites/presentation/widgets/circular_app_favourite
 import 'rate/app_rate_widget.dart';
 
 class StoreItem extends StatefulWidget {
-  const StoreItem({super.key, this.storeModel});
+  const StoreItem({super.key, this.storeModel, this.onTap});
   final StoreModel? storeModel;
+  final VoidCallback? onTap;
   @override
   State<StoreItem> createState() => _StoreItemState();
 }
@@ -24,7 +27,14 @@ class _StoreItemState extends State<StoreItem> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Container(
+    return InkWell(
+      onTap:
+          widget.onTap ??
+          () => context.pushNamed(
+            AppRoutes.storeDetailsScreen,
+            extra: widget.storeModel?.id,
+          ),
+      child: Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
         color: colors.onPrimary,
@@ -205,6 +215,7 @@ class _StoreItemState extends State<StoreItem> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

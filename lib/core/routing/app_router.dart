@@ -133,7 +133,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.storeDetailsScreen,
         path: '/${AppRoutes.storeDetailsScreen}',
-        builder: (context, state) => const StoreDetailsScreen(),
+        builder: (context, state) {
+          final storeId = state.extra as int?;
+
+          return StoreDetailsScreen(
+            storeId: storeId ?? 0,
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.productDetailsScreen,

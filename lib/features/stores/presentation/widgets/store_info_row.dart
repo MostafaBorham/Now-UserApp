@@ -7,9 +7,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 class StoreInfoRow extends StatelessWidget {
   const StoreInfoRow({
     super.key, required this.infoFontSize, required this.infoIconSize,
+    this.deliveryTime, this.distance, this.deliveryFee,
   });
   final double infoFontSize;
   final double infoIconSize;
+  final int? deliveryTime;
+  final double? distance;
+  final double? deliveryFee;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class StoreInfoRow extends StatelessWidget {
           ),
         ),
         Text(
-          '40-50 minutes',
+          '${deliveryTime ?? 0} minutes',
           style: AppTextStyles.style12Medium.copyWith(
               color: colors.onSecondary,
               fontSize: infoFontSize
@@ -41,7 +45,7 @@ class StoreInfoRow extends StatelessWidget {
           ),
         ),
         Text(
-          '40 - 50 km',
+          '${distance ?? 0} km',
           style: AppTextStyles.style12Medium.copyWith(
               color: colors.onSecondary,
               fontSize: infoFontSize
@@ -57,7 +61,7 @@ class StoreInfoRow extends StatelessWidget {
         ),
         NewPriceWidget(
           color: colors.onSecondary,
-          price: '10',
+          price: '${deliveryFee ?? 0}',
           size: infoFontSize,
         ),
       ],

@@ -6,7 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class StoreDetailsAppBar extends StatelessWidget {
-  const StoreDetailsAppBar({super.key});
+  const StoreDetailsAppBar({super.key, this.title});
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class StoreDetailsAppBar extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              LangKeys.storesKey.tr(),
+              title ?? LangKeys.storesKey.tr(),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
