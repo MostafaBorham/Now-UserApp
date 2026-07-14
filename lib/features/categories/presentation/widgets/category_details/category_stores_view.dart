@@ -4,16 +4,16 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 
 class CategoryStoresView extends ConsumerStatefulWidget {
   const CategoryStoresView({
-    super.key, required this.subCategory,
+    super.key, required this.sortType,
   });
-  final CategoryModel subCategory;
+  final StoresSortType sortType;
 
   @override
   ConsumerState<CategoryStoresView> createState() => _CategoryStoresViewState();
@@ -33,7 +33,8 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   }
 
   void _fetchStores(){
-    storesViewModel.getCategoryStores(categorySlug: ref.read(categoryProvider).slug??'',categoryId: widget.subCategory.id);
+    // TODO: forward widget.sortType to the API once the stores sort param is wired.
+    storesViewModel.getCategoryStores(categorySlug: ref.read(categoryProvider).slug??'',categoryId: null);
   }
   @override
   Widget build(BuildContext context) {
