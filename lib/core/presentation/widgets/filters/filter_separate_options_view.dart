@@ -29,15 +29,18 @@ enum SeparateOption {
   String get label => labelKey.tr();
 }
 
-class FilterSeparateOptionsView extends StatelessWidget {
-  const FilterSeparateOptionsView({
-    super.key,
-    required this.selected,
-    required this.onChanged,
-  });
+class FilterSeparateOptionsView extends StatefulWidget {
+  const FilterSeparateOptionsView({super.key, this.onChanged});
 
-  final SeparateOption selected;
-  final ValueChanged<SeparateOption> onChanged;
+  final ValueChanged<SeparateOption>? onChanged;
+
+  @override
+  State<FilterSeparateOptionsView> createState() =>
+      _FilterSeparateOptionsViewState();
+}
+
+class _FilterSeparateOptionsViewState extends State<FilterSeparateOptionsView> {
+  SeparateOption? selected;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +70,10 @@ class FilterSeparateOptionsView extends StatelessWidget {
               return Expanded(
                 child: InkWell(
                   borderRadius: AppBorderRadius.brCircular30,
-                  onTap: () => onChanged(option),
+                  onTap: () {
+                    setState(() => selected = option);
+                    widget.onChanged?.call(option);
+                  },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 4,

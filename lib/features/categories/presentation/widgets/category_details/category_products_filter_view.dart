@@ -4,55 +4,42 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_categories_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_price_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_ratings_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_separate_options_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_types_view.dart';
 
 class CategoryProductsFilterView extends StatefulWidget {
-  const CategoryProductsFilterView({
-    super.key,
-    required this.ratings,
-    this.minPrice = 0,
-    this.maxPrice = 10000,
-    this.onApply,
-    this.onClose,
-  });
+  const CategoryProductsFilterView({super.key, this.onApply});
 
-  final List<String> ratings;
-  final double minPrice;
-  final double maxPrice;
   final void Function(
-      String separateOptionQueryValue,
-      double minPrice,
-      double maxPrice,
-      int ratingIndex,
-      )?
+    SeparateOption? separateOption,
+    double? maxPrice,
+    double? minPrice,
+    String? rating,
+  )?
   onApply;
-  final VoidCallback? onClose;
 
   @override
-  State<CategoryProductsFilterView> createState() => _CategoryProductsFilterViewState();
+  State<CategoryProductsFilterView> createState() =>
+      _CategoryProductsFilterViewState();
 }
 
-class _CategoryProductsFilterViewState extends State<CategoryProductsFilterView> {
-  SeparateOption selectedSeparateOption = SeparateOption.topRated;
-  int selectedRatingIndex = 0;
-  late RangeValues priceRange = RangeValues(widget.minPrice, widget.maxPrice);
-  late final TextEditingController maxLimitController = TextEditingController(
-    text: widget.maxPrice.round().toString(),
-  );
-  late final TextEditingController minLimitController = TextEditingController(
-    text: widget.minPrice.round().toString(),
-  );
+class _CategoryProductsFilterViewState
+    extends State<CategoryProductsFilterView> {
+  SeparateOption? selectedSeparateOption;
+  double? maxPrice;
+  double? minPrice;
+  String? selectedRating;
 
-  @override
-  void dispose() {
-    maxLimitController.dispose();
-    minLimitController.dispose();
-    super.dispose();
+
+  void resetFilters() {
+    setState(() {
+      selectedSeparateOption = null;
+      maxPrice = null;
+      minPrice = null;
+      selectedRating = null;
+    });
   }
 
   @override
@@ -61,11 +48,11 @@ class _CategoryProductsFilterViewState extends State<CategoryProductsFilterView>
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-          color: colors.onPrimary,
+        color: colors.onPrimary,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
-        )
+        ),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -73,25 +60,18 @@ class _CategoryProductsFilterViewState extends State<CategoryProductsFilterView>
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 20,
           children: [
-            FilterHeaderView(onClose: widget.onClose ?? () => context.pop()),
+            FilterHeaderView(onClose: () => context.pop()),
             FilterSeparateOptionsView(
-              selected: selectedSeparateOption,
-              onChanged: (option) =>
-                  setState(() => selectedSeparateOption = option),
+              onChanged: (option) => selectedSeparateOption = option,
             ),
             FilterPriceView(
-              priceRange: priceRange,
-              minPrice: widget.minPrice,
-              maxPrice: widget.maxPrice,
-              maxLimitController: maxLimitController,
-              minLimitController: minLimitController,
-              onChanged: (values) => setState(() => priceRange = values),
+              onChanged: (values) {
+                minPrice = values.start;
+                maxPrice = values.end;
+              },
             ),
             FilterRatingsView(
-              ratings: widget.ratings,
-              selectedIndex: selectedRatingIndex,
-              onChanged: (index) =>
-                  setState(() => selectedRatingIndex = index),
+              onChanged: (rating) => selectedRating = rating,
             ),
             Row(
               spacing: 16,
@@ -101,16 +81,21 @@ class _CategoryProductsFilterViewState extends State<CategoryProductsFilterView>
                     title: LangKeys.applyFiltersKey.tr(),
                     onTap: () {
                       widget.onApply?.call(
-                        selectedSeparateOption.queryValue,
-                        priceRange.start,
-                        priceRange.end,
-                        selectedRatingIndex,
+                        selectedSeparateOption,
+                        maxPrice,
+                        minPrice,
+                        selectedRating,
                       );
                       context.pop();
                     },
                   ),
                 ),
-                Expanded(child: UnPrimaryAppButton(title: 'Reset Filter'))
+                Expanded(
+                  child: UnPrimaryAppButton(
+                    title: 'Reset Filter',
+                    onTap: resetFilters,
+                  ),
+                ),
               ],
             ),
           ],

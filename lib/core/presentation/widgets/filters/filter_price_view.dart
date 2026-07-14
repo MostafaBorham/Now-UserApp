@@ -5,23 +5,41 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class FilterPriceView extends StatelessWidget {
-  const FilterPriceView({
-    super.key,
-    required this.priceRange,
-    required this.minPrice,
-    required this.maxPrice,
-    required this.maxLimitController,
-    required this.minLimitController,
-    required this.onChanged,
-  });
+class FilterPriceView extends StatefulWidget {
+  const FilterPriceView({super.key, this.onChanged});
 
-  final RangeValues priceRange;
-  final double minPrice;
-  final double maxPrice;
-  final TextEditingController maxLimitController;
-  final TextEditingController minLimitController;
-  final ValueChanged<RangeValues> onChanged;
+  static const double minPrice = 0;
+  static const double maxPrice = 10000;
+
+  final ValueChanged<RangeValues>? onChanged;
+
+  @override
+  State<FilterPriceView> createState() => _FilterPriceViewState();
+}
+
+class _FilterPriceViewState extends State<FilterPriceView> {
+  RangeValues priceRange = const RangeValues(
+    FilterPriceView.minPrice,
+    FilterPriceView.maxPrice,
+  );
+  final TextEditingController maxLimitController = TextEditingController(
+    text: FilterPriceView.maxPrice.round().toString(),
+  );
+  final TextEditingController minLimitController = TextEditingController(
+    text: FilterPriceView.minPrice.round().toString(),
+  );
+
+  void updateRange(RangeValues values) {
+    setState(() => priceRange = values);
+    widget.onChanged?.call(values);
+  }
+
+  @override
+  void dispose() {
+    maxLimitController.dispose();
+    minLimitController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +71,12 @@ class FilterPriceView extends StatelessWidget {
           ),
           child: RangeSlider(
             values: priceRange,
-            min: minPrice,
-            max: maxPrice,
+            min: FilterPriceView.minPrice,
+            max: FilterPriceView.maxPrice,
             onChanged: (values) {
               maxLimitController.text = values.end.round().toString();
               minLimitController.text = values.start.round().toString();
-              onChanged(values);
+              updateRange(values);
             },
           ),
         ),
@@ -101,10 +119,10 @@ class FilterPriceView extends StatelessWidget {
                     onChanged: (value) {
                       final double? parsed = double.tryParse(value);
                       if (parsed == null) return;
-                      onChanged(
+                      updateRange(
                         RangeValues(
                           priceRange.start,
-                          parsed.clamp(priceRange.start, maxPrice),
+                          parsed.clamp(priceRange.start, FilterPriceView.maxPrice),
                         ),
                       );
                     },
@@ -147,9 +165,9 @@ class FilterPriceView extends StatelessWidget {
                     onChanged: (value) {
                       final double? parsed = double.tryParse(value);
                       if (parsed == null) return;
-                      onChanged(
+                      updateRange(
                         RangeValues(
-                          parsed.clamp(minPrice, priceRange.end),
+                          parsed.clamp(FilterPriceView.minPrice, priceRange.end),
                           priceRange.end,
                         ),
                       );

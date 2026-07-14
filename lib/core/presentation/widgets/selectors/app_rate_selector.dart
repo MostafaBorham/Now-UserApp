@@ -6,7 +6,7 @@ class AppRateSelector extends StatefulWidget {
   const AppRateSelector({
     super.key,
     required this.ratings,
-    this.initialIndex = 0,
+    this.initialIndex,
     this.onChanged,
     this.starSize = 15,
     this.labelColor,
@@ -16,7 +16,7 @@ class AppRateSelector extends StatefulWidget {
   });
 
   final List<String> ratings;
-  final int initialIndex;
+  final int? initialIndex;
   final ValueChanged<int>? onChanged;
   final double starSize;
   final Color? labelColor;
@@ -29,7 +29,7 @@ class AppRateSelector extends StatefulWidget {
 }
 
 class _AppRateSelectorState extends State<AppRateSelector> {
-  late int selectedIndex = widget.initialIndex;
+  late int? selectedIndex = widget.initialIndex;
 
   @override
   Widget build(BuildContext context) {

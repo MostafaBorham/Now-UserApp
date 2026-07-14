@@ -5,16 +5,11 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_rate_selector.dart';
 
 class FilterRatingsView extends StatelessWidget {
-  const FilterRatingsView({
-    super.key,
-    required this.ratings,
-    required this.selectedIndex,
-    required this.onChanged,
-  });
+  const FilterRatingsView({super.key, this.onChanged});
 
-  final List<String> ratings;
-  final int selectedIndex;
-  final ValueChanged<int> onChanged;
+  static const List<String> ratings = ['4.0+', '4.5+', '5'];
+
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +26,7 @@ class FilterRatingsView extends StatelessWidget {
         ),
         AppRateSelector(
           ratings: ratings,
-          initialIndex: selectedIndex,
-          onChanged: onChanged,
+          onChanged: (index) => onChanged?.call(ratings[index]),
           labelColor: colors.onSecondary,
           starColor: colors.surface,
           selectedColor: colors.tertiaryFixed,

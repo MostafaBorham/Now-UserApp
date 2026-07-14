@@ -71,7 +71,10 @@ class _CategoriesProductTabViewState
             context: context,
             isScrollControlled: true,
             builder: (context) => CategoryProductsFilterView(
-              ratings: ['4.0+', '4.5+', '5'],
+
+              onApply: (separateOption, maxPrice, minPrice, rating) {
+                print('apply = ${separateOption?.label}$maxPrice$minPrice$rating');
+              },
             ),
           ),
         ),
