@@ -32,66 +32,72 @@ class StoreDetailsScreen extends ConsumerWidget {
       overrides: [storeProvider.overrideWithValue(StoreModel(id: storeId))],
       child: Scaffold(
         body: AppWavedScaffold(
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 1.5,
-                      child: StoreDetailsInfoHeader(),
-                    ),
-                    Container(
-                      color: colors.onPrimary,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ).copyWith(top: 35),
-                      width: double.infinity,
-                      child: Column(
-                        spacing: 15,
-                        children: [
-                          AppSlider(
-                            sliderItems: [StoreDetailsBanner()],
-                            itemAspectRatio: 2.8,
-                          ),
-                          StoreDetailsBrandsSlider(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
+          body: Column(
+            spacing: 16,
+            children: [
+              AspectRatio(
+                aspectRatio: 1.5,
+                child: StoreDetailsInfoHeader(),
+              ),
+              Expanded(
+                child: NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: colors.onPrimary,
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        width: double.infinity,
+                        child: Column(
+                          spacing: 15,
+                          children: [
+                            AppSlider(
+                              sliderItems: [StoreDetailsBanner()],
+                              itemAspectRatio: 2.8,
                             ),
-                            child: StoreDetailsBrandInfoCard(),
-                          ),
-                          5.hSpace,
-                          StoreDiscountCouponsList(),
-                          5.hSpace,
-                          StoreCategoryCirclesList(),
-                          2.hSpace,
-                        ],
+                            StoreDetailsBrandsSlider(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                              ),
+                              child: StoreDetailsBrandInfoCard(),
+                            ),
+                            5.hSpace,
+                            StoreDiscountCouponsList(),
+                            5.hSpace,
+                            StoreCategoryCirclesList(),
+                            2.hSpace,
+                          ],
+                        ),
                       ),
                     ),
                   ],
+                  body: Container(
+                    color: colors.onPrimary,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: CustomButtonTabBar(
+                      tabs: [
+                        LangKeys.allKey.tr(),
+                        'Devices',
+                        'sddssdsd',
+                        'aaaaaaa',
+                      ],
+                      views: [
+                        StoreDetailsProductsView(),
+                        StoreDetailsProductsView(),
+                        StoreDetailsProductsView(),
+                        StoreDetailsProductsView(),
+                      ],
+                      selectedTabColor: colors.tertiaryContainer,
+                      unSelectedTabColor: colors.inversePrimary.withValues(
+                        alpha: 0.2,
+                      ),
+                      selectedLabelColor: colors.onPrimary,
+                      unSelectedLabelColor: colors.onSecondary,
+                    ),
+                  ),
                 ),
               ),
             ],
-            body: Container(
-              color: colors.onPrimary,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomButtonTabBar(
-                tabs: [LangKeys.allKey.tr(), 'Devices', 'sddssdsd', 'aaaaaaa'],
-                views: [
-                  StoreDetailsProductsView(),
-                  StoreDetailsProductsView(),
-                  StoreDetailsProductsView(),
-                  StoreDetailsProductsView(),
-                ],
-                selectedTabColor: colors.tertiaryContainer,
-                unSelectedTabColor: colors.inversePrimary.withValues(
-                  alpha: 0.2,
-                ),
-                selectedLabelColor: colors.onPrimary,
-                unSelectedLabelColor: colors.onSecondary,
-              ),
-            ),
           ),
           appBarTitle: LangKeys.storeKey.tr(),
           hasCartIcon: true,
