@@ -1,0 +1,200 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+
+class FilterPriceView extends StatelessWidget {
+  const FilterPriceView({
+    super.key,
+    required this.priceRange,
+    required this.minPrice,
+    required this.maxPrice,
+    required this.maxLimitController,
+    required this.minLimitController,
+    required this.onChanged,
+  });
+
+  final RangeValues priceRange;
+  final double minPrice;
+  final double maxPrice;
+  final TextEditingController maxLimitController;
+  final TextEditingController minLimitController;
+  final ValueChanged<RangeValues> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final OutlineInputBorder limitFieldBorder = OutlineInputBorder(
+      borderRadius: AppBorderRadius.brCircular8,
+      borderSide: BorderSide(color: colors.tertiaryFixedDim),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
+      children: [
+        Text(
+          LangKeys.priceKey.tr(),
+          style: AppTextStyles.style14SemiBold.copyWith(
+            color: colors.onTertiaryFixed,
+          ),
+        ),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            trackHeight: 4,
+            activeTrackColor: colors.secondaryFixed,
+            inactiveTrackColor: colors.onTertiaryFixedVariant,
+            overlayShape: SliderComponentShape.noOverlay,
+            rangeThumbShape: _FilterSliderThumbShape(
+              thumbColor: colors.secondaryFixed,
+              haloColor: colors.secondaryFixed.withValues(alpha: 0.35),
+            ),
+          ),
+          child: RangeSlider(
+            values: priceRange,
+            min: minPrice,
+            max: maxPrice,
+            onChanged: (values) {
+              maxLimitController.text = values.end.round().toString();
+              minLimitController.text = values.start.round().toString();
+              onChanged(values);
+            },
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 12,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Text(
+                    LangKeys.maximumLimitKey.tr(),
+                    style: AppTextStyles.style14Medium.copyWith(
+                      color: colors.onTertiaryFixed,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: maxLimitController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.onTertiaryFixed,
+                    ),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: LangKeys.maximumLimitKey.tr(),
+                      hintStyle: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSurface,
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
+                      border: limitFieldBorder,
+                      enabledBorder: limitFieldBorder,
+                      focusedBorder: limitFieldBorder.copyWith(
+                        borderSide: BorderSide(color: colors.primary),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      final double? parsed = double.tryParse(value);
+                      if (parsed == null) return;
+                      onChanged(
+                        RangeValues(
+                          priceRange.start,
+                          parsed.clamp(priceRange.start, maxPrice),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Text(
+                    LangKeys.minimumLimitKey.tr(),
+                    style: AppTextStyles.style14Medium.copyWith(
+                      color: colors.onTertiaryFixed,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: minLimitController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.onTertiaryFixed,
+                    ),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: LangKeys.minimumLimitKey.tr(),
+                      hintStyle: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSurface,
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
+                      border: limitFieldBorder,
+                      enabledBorder: limitFieldBorder,
+                      focusedBorder: limitFieldBorder.copyWith(
+                        borderSide: BorderSide(color: colors.primary),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      final double? parsed = double.tryParse(value);
+                      if (parsed == null) return;
+                      onChanged(
+                        RangeValues(
+                          parsed.clamp(minPrice, priceRange.end),
+                          priceRange.end,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Yellow slider thumb with a soft halo ring, matching the Figma range
+/// slider (28px sub-container with an inner dot).
+class _FilterSliderThumbShape extends RangeSliderThumbShape {
+  const _FilterSliderThumbShape({
+    required this.thumbColor,
+    required this.haloColor,
+  });
+
+  final Color thumbColor;
+  final Color haloColor;
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size(28, 28);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    bool isOnTop = false,
+    TextDirection textDirection = TextDirection.ltr,
+    required SliderThemeData sliderTheme,
+    Thumb thumb = Thumb.start,
+    bool isPressed = false,
+  }) {
+    final Canvas canvas = context.canvas;
+    canvas.drawCircle(center, 14, Paint()..color = haloColor);
+    canvas.drawCircle(center, 8, Paint()..color = thumbColor);
+  }
+}

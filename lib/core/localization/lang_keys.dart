@@ -206,4 +206,13 @@ abstract class LangKeys {
   static const String moreFiltersKey = 'moreFilters';
   static const String ratingsKey = 'ratings';
   static const String applyFiltersKey = 'applyFilters';
+  static const String sortOptionsKey = 'sortOptions';
+  static const String separateOptionsKey = 'separateOptions';
+  static const String topRatedKey = 'topRated';
+  static const String mostPopularProductKey = 'mostPopularProduct';
+  static const String priceHighestToLowestKey = 'priceHighestToLowest';
+  static const String priceLowestToHighestKey = 'priceLowestToHighest';
+  static const String priceKey = 'price';
+  static const String maximumLimitKey = 'maximumLimit';
+  static const String minimumLimitKey = 'minimumLimit';
 }

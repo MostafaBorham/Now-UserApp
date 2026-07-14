@@ -25,7 +25,7 @@ class UnPrimaryAppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: colors.primary, width: 2),
+          border: Border.all(color: colors.primary, width: 1.5),
         ),
         child: AutoSizeText(
           title,

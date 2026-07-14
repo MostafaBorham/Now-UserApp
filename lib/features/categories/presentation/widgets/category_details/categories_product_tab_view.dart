@@ -7,13 +7,12 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_product_shimmer_view.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart'
-    hide CategoryModel;
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_product_sub_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
@@ -70,14 +69,9 @@ class _CategoriesProductTabViewState
           hasFilter: true,
           onFilterTap: () => showModalBottomSheet(
             context: context,
-            builder: (context) => AppFilterView(
-              categories: [
-                LangKeys.allKey.tr(),
-                'Devices',
-                'Shoes',
-                'Clothing',
-              ],
-              ratings: ['4.0', '5', '4.5'],
+            isScrollControlled: true,
+            builder: (context) => CategoryProductsFilterView(
+              ratings: ['4.0+', '4.5+', '5'],
             ),
           ),
         ),
