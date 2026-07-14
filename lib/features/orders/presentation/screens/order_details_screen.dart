@@ -773,22 +773,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         ),
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
-        appBarActions: [
-          InkWell(
-            onTap: () => context.pushNamed(AppRoutes.faqScreen),
-            child: CircleAvatar(
-              backgroundColor: colors.onPrimary,
-              radius: MediaQuery.sizeOf(context).width*0.05,
-              child: Assets.media.images.svg.supportCallIcon.svg(
-                width: MediaQuery.sizeOf(context).width*0.05,
-                colorFilter: ColorFilter.mode(
-                  colors.onSecondary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

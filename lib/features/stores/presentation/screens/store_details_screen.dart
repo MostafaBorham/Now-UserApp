@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
@@ -30,70 +29,74 @@ class StoreDetailsScreen extends ConsumerWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final storeDetailsState = ref.watch(getStoreDetailsProvider(storeId));
     return ProviderScope(
-      overrides: [
-        storeProvider.overrideWithValue(StoreModel(id: storeId)),
-      ],
+      overrides: [storeProvider.overrideWithValue(StoreModel(id: storeId))],
       child: Scaffold(
-        body: AppWavedScaffold(body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 1.5,
-                    child: StoreDetailsInfoHeader(),
-                  ),
-                  Container(
-                    color: colors.onPrimary,
-                    padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
-                        top: 35
+        body: AppWavedScaffold(
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1.5,
+                      child: StoreDetailsInfoHeader(),
                     ),
-                    width: double.infinity,
-                    child: Column(
-                      spacing: 15,
-                      children: [
-                        AppSlider(sliderItems: [StoreDetailsBanner()],itemAspectRatio: 2.8,),
-                        StoreDetailsBrandsSlider(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: StoreDetailsBrandInfoCard(),
-                        ),
-                        5.hSpace,
-                        StoreDiscountCouponsList(),
-                        5.hSpace,
-                        StoreCategoryCirclesList(),
-                        2.hSpace,
-                      ],
+                    Container(
+                      color: colors.onPrimary,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ).copyWith(top: 35),
+                      width: double.infinity,
+                      child: Column(
+                        spacing: 15,
+                        children: [
+                          AppSlider(
+                            sliderItems: [StoreDetailsBanner()],
+                            itemAspectRatio: 2.8,
+                          ),
+                          StoreDetailsBrandsSlider(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                            ),
+                            child: StoreDetailsBrandInfoCard(),
+                          ),
+                          5.hSpace,
+                          StoreDiscountCouponsList(),
+                          5.hSpace,
+                          StoreCategoryCirclesList(),
+                          2.hSpace,
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+              ),
+            ],
+            body: Container(
+              color: colors.onPrimary,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomButtonTabBar(
+                tabs: [LangKeys.allKey.tr(), 'Devices', 'sddssdsd', 'aaaaaaa'],
+                views: [
+                  StoreDetailsProductsView(),
+                  StoreDetailsProductsView(),
+                  StoreDetailsProductsView(),
+                  StoreDetailsProductsView(),
                 ],
+                selectedTabColor: colors.tertiaryContainer,
+                unSelectedTabColor: colors.inversePrimary.withValues(
+                  alpha: 0.2,
+                ),
+                selectedLabelColor: colors.onPrimary,
+                unSelectedLabelColor: colors.onSecondary,
               ),
             ),
-          ],
-          body: Container(
-            color: colors.onPrimary,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: CustomButtonTabBar(
-              tabs: [
-                LangKeys.allKey.tr(),
-                'Devices',
-                'sddssdsd',
-                'aaaaaaa',
-              ],
-              views: [
-                StoreDetailsProductsView(),
-                StoreDetailsProductsView(),
-                StoreDetailsProductsView(),
-                StoreDetailsProductsView(),
-              ],
-              selectedTabColor: colors.tertiaryContainer,
-              unSelectedTabColor: colors.inversePrimary
-                  .withValues(alpha: 0.2),
-              selectedLabelColor: colors.onPrimary,
-              unSelectedLabelColor: colors.onSecondary,
-            ),
           ),
-        ), appBarTitle: LangKeys.storeKey.tr(),appBarActions: [CircularCartButton()],bodyPadding: EdgeInsets.zero,),
+          appBarTitle: LangKeys.storeKey.tr(),
+          hasCartIcon: true,
+          bodyPadding: EdgeInsets.zero,
+        ),
       ),
     );
   }

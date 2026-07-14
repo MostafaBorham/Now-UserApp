@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
@@ -25,16 +24,6 @@ class TrackOrderScreen extends StatelessWidget {
       body: AppWavedScaffold(
         appBarTitle: LangKeys.trackOrderKey.tr(),
         canPop: true,
-        appBarActions: [
-          InkWell(
-            customBorder: const CircleBorder(),
-            onTap: () {},
-            child: Assets.media.images.svg.support.svg(
-              width: 44,
-              height: 44,
-            ),
-          ),
-        ],
         body: SingleChildScrollView(
           child: Column(
             spacing: 16,

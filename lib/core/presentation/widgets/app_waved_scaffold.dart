@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
@@ -11,11 +12,11 @@ class AppWavedScaffold extends StatelessWidget {
     super.key,
     required this.body,
     required this.appBarTitle,
-    this.appBarActions,
+    this.hasCartIcon = false,
     this.canPop, this.bodyPadding,
   });
   final String appBarTitle;
-  final List<Widget>? appBarActions;
+  final bool hasCartIcon;
   final bool? canPop;
   final Widget body;
   final EdgeInsets? bodyPadding;
@@ -92,12 +93,9 @@ class AppWavedScaffold extends StatelessWidget {
                       alignment: AlignmentDirectional.centerEnd,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child:
-                            appBarActions != null && appBarActions!.isNotEmpty
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: appBarActions!,
+                        child: hasCartIcon
+                            ? CircularCartButton(
+                                size: screenSize.width * 0.05,
                               )
                             : const SizedBox.shrink(),
                       ),
