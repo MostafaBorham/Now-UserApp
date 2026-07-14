@@ -10,9 +10,9 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 
 class CategoryProductsView extends ConsumerStatefulWidget {
   const CategoryProductsView({
-    super.key, required this.subCategory,
+    super.key, this.subCategory,
   });
-  final CategoryModel subCategory;
+  final CategoryModel? subCategory;
 
   @override
   ConsumerState<CategoryProductsView> createState() => _CategoryProductsViewState();
@@ -25,13 +25,13 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
     super.initState();
     productsViewModel = ref.read(getCategoryProductsProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchProducts();
+      _fetchCategoryProducts();
     },);
 
   }
 
-  void _fetchProducts(){
-    productsViewModel.getCategoryProducts(categorySlug: ref.read(categoryProvider).slug??'',categoryId: widget.subCategory.id);
+  void _fetchCategoryProducts(){
+    productsViewModel.getCategoryProducts(categorySlug: ref.read(categoryProvider).slug??'',categoryId: widget.subCategory?.id);
   }
   @override
   Widget build(BuildContext context,) {
@@ -41,7 +41,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
       error: (Object error, StackTrace stackTrace) =>
           ServerConnectionErrorWidget(
             message: error.toString(),
-            onRetry: () => _fetchProducts(),
+            onRetry: () => _fetchCategoryProducts(),
           ),
       data: (products) => products.isEmpty? NoItemsWidget():GridView.builder(
         padding: EdgeInsets.all(4),

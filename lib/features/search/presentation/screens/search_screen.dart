@@ -26,126 +26,123 @@ class SearchScreen extends StatelessWidget {
       'Meat',
       'Fish',
     ];
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        body: AppWavedScaffold(
-          appBarTitle: LangKeys.searchKey.tr(),
-          canPop: context.canPop(),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 20,
-            children: <Widget>[
-              AppSearchField(
-                autofocus: true,
-                enableRecentKeywords: true,
-                recentKeywords: recentSearches,
-                onRecentSelect: (String term) {},
-                onRecentRemove: (String term) {},
-                onRecentClear: () {},
-              ),
-              AspectRatio(
-                aspectRatio: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 16,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          LangKeys.bestCategoriesKey.tr(),
-                          style: AppTextStyles.style18SemiBold.copyWith(
-                            color: colors.onSecondary,
-                            fontSize: screenWidth*0.05
-                          ),
+    return Scaffold(
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.searchKey.tr(),
+        canPop: context.canPop(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 20,
+          children: <Widget>[
+            AppSearchField(
+              autofocus: true,
+              navigateToSearchOnTap: false,
+              enableRecentKeywords: true,
+              recentKeywords: recentSearches,
+              onRecentSelect: (String term) {},
+              onRecentRemove: (String term) {},
+              onRecentClear: () {},
+            ),
+            AspectRatio(
+              aspectRatio: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        LangKeys.bestCategoriesKey.tr(),
+                        style: AppTextStyles.style18SemiBold.copyWith(
+                          color: colors.onSecondary,
+                          fontSize: screenWidth * 0.05,
                         ),
-                        InkWell(
-                          onTap: () {
-                            context.pushNamed(AppRoutes.categoryDetailsScreen);
-                          },
-                          child: Text(
-                            LangKeys.seeAllKey.tr(),
-                            style: AppTextStyles.style14Medium.copyWith(
-                              color: colors.primary,
-                                fontSize: screenWidth*0.035
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => AspectRatio(
-                          aspectRatio: 0.8,
-                          child: CategoryCard(
-                            category: CategoryModel(
-                              id: 1,
-                              name: 'Beauty',
-                              slug: ''
-                            ),
-                          ),
-                        ),
-                        separatorBuilder: (context, index) => 10.wSpace,
-                        itemCount: 5,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 16,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          LangKeys.mostPopularKey.tr(),
-                          style: AppTextStyles.style18SemiBold.copyWith(
-                            color: colors.onSecondary,
-                              fontSize: screenWidth*0.05
+                      InkWell(
+                        onTap: () {
+                          context.pushNamed(AppRoutes.categoryDetailsScreen);
+                        },
+                        child: Text(
+                          LangKeys.seeAllKey.tr(),
+                          style: AppTextStyles.style14Medium.copyWith(
+                            color: colors.primary,
+                            fontSize: screenWidth * 0.035,
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            context.pushNamed(AppRoutes.mostPopularScreen);
-                          },
-                          child: Text(
-                            LangKeys.seeAllKey.tr(),
-                            style: AppTextStyles.style14Medium.copyWith(
-                              color: colors.primary,
-                                fontSize: screenWidth*0.035
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: GridView.builder(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 14,
-                          mainAxisSpacing: 14,
-                          childAspectRatio: 0.65,
-                        ),
-                        itemCount: 6,
-                        itemBuilder: (BuildContext context, int index) =>
-                            ProductItemCard1(),
                       ),
+                    ],
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => AspectRatio(
+                        aspectRatio: 0.8,
+                        child: CategoryCard(
+                          category: CategoryModel(
+                            id: 1,
+                            name: 'Beauty',
+                            slug: '',
+                          ),
+                        ),
+                      ),
+                      separatorBuilder: (context, index) => 10.wSpace,
+                      itemCount: 5,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        LangKeys.mostPopularKey.tr(),
+                        style: AppTextStyles.style18SemiBold.copyWith(
+                          color: colors.onSecondary,
+                          fontSize: screenWidth * 0.05,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          context.pushNamed(AppRoutes.mostPopularScreen);
+                        },
+                        child: Text(
+                          LangKeys.seeAllKey.tr(),
+                          style: AppTextStyles.style14Medium.copyWith(
+                            color: colors.primary,
+                            fontSize: screenWidth * 0.035,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 14,
+                        mainAxisSpacing: 14,
+                        childAspectRatio: 0.65,
+                      ),
+                      itemCount: 6,
+                      itemBuilder: (BuildContext context, int index) =>
+                          ProductItemCard1(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

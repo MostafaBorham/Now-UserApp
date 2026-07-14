@@ -46,6 +46,6 @@ abstract class CategoriesEndpoints {
     'page': page,
     'sort': 'price',
     'direction': 'asc',
-    'category_id': categoryId,
+    // 'category_id': categoryId,
   };
 }

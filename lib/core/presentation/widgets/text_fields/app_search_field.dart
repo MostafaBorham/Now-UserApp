@@ -22,17 +22,22 @@ class AppSearchField extends ConsumerStatefulWidget {
     this.onRecentSelect,
     this.onRecentRemove,
     this.onRecentClear,
+    this.hasFilter = false,
+    this.onFilterTap,
+    this.navigateToSearchOnTap = true,
   });
 
   final String? hintText;
   final bool? reverseSearchIcon;
   final bool autofocus;
+  final bool? hasFilter;
+  final bool navigateToSearchOnTap;
   final bool? enableRecentKeywords;
   final List<String>? recentKeywords;
   final ValueChanged<String>? onRecentSelect;
   final ValueChanged<String>? onRecentRemove;
   final VoidCallback? onRecentClear;
-
+  final GestureTapCallback? onFilterTap;
   @override
   ConsumerState<AppSearchField> createState() => _AppSearchFieldState();
 }
@@ -46,7 +51,14 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
     _focusNode.addListener(_onFocusChange);
   }
 
-  void _onFocusChange() => setState(() {});
+  void _onFocusChange() {
+    if (_focusNode.hasFocus && widget.navigateToSearchOnTap) {
+      _focusNode.unfocus();
+      context.pushNamed(AppRoutes.searchScreen);
+      return;
+    }
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -60,7 +72,8 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final List<String> keywords = widget.recentKeywords ?? const <String>[];
-    final bool showRecent = (widget.enableRecentKeywords ?? false) &&
+    final bool showRecent =
+        (widget.enableRecentKeywords ?? false) &&
         _focusNode.hasFocus &&
         keywords.isNotEmpty;
 
@@ -78,42 +91,79 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                   borderRadius: AppBorderRadius.brCircular30,
                   boxShadow: AppBoxShadows.blackBottomShadow1,
                 ),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => context.pushNamed(AppRoutes.searchScreen,
-                  ),
-                  child: AbsorbPointer(
-                    // absorbing: widget.onTap != null,
-                    child: Center(
-                      child: TextFormField(
-                        style: AppTextStyles.style16Regular.copyWith(
-                          color: colors.onSecondary,
-                          fontSize: con.maxWidth * 0.05,
-                        ),
-                        autofocus: widget.autofocus,
-                        focusNode: _focusNode,
-                        // readOnly: widget.onTap != null,
-                        decoration: InputDecoration(
-                          hintText:
-                              widget.hintText ?? LangKeys.searchNowKey.tr(),
-                          hintStyle: AppTextStyles.style16Regular.copyWith(
-                            color: colors.onPrimaryFixed,
-                            fontSize: con.maxWidth * 0.05,
-                          ),
-                          prefixIcon: ReverseWidget(
-                            applyReverse: widget.reverseSearchIcon,
-                            child: Assets.media.images.svg.searchIcon.svg(),
-                          ),
-                          prefixIconConstraints: BoxConstraints(
-                            maxHeight: con.maxWidth*0.05,
-                            minWidth: con.maxWidth*0.05,
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
+                alignment: Alignment.center,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TapRegion(
+                        onTapOutside: (PointerDownEvent event) {
+                          if (_focusNode.hasFocus) _focusNode.unfocus();
+                        },
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            final Widget field = Center(
+                              child: TextFormField(
+                                style: AppTextStyles.style16Regular.copyWith(
+                                  color: colors.onSecondary,
+                                  fontSize: con.maxWidth * 0.05,
+                                ),
+                                textAlignVertical: TextAlignVertical.center,
+                                autofocus: widget.autofocus,
+                                focusNode: _focusNode,
+                                readOnly: widget.navigateToSearchOnTap,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  hintText:
+                                      widget.hintText ??
+                                      LangKeys.searchNowKey.tr(),
+                                  hintStyle: AppTextStyles.style16Regular
+                                      .copyWith(
+                                        color: colors.onPrimaryFixed,
+                                        fontSize: con.maxWidth * 0.05,
+                                      ),
+                                  prefixIcon: ReverseWidget(
+                                    applyReverse: widget.reverseSearchIcon,
+                                    child: Assets.media.images.svg.searchIcon
+                                        .svg(),
+                                  ),
+                                  prefixIconConstraints: BoxConstraints(
+                                    maxHeight: con.maxWidth * 0.05,
+                                    minWidth: con.maxWidth * 0.05,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            );
+                            if (!widget.navigateToSearchOnTap) return field;
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () =>
+                                  context.pushNamed(AppRoutes.searchScreen),
+                              child: field,
+                            );
+                          },
                         ),
                       ),
                     ),
-                  ),
+                    if (widget.hasFilter ?? false)
+                      InkWell(
+                        onTap: widget.onFilterTap,
+                        borderRadius: AppBorderRadius.brCircular30,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 8,
+                          ),
+                          child: Assets.media.images.svg.filterIcon.svg(
+                            colorFilter: ColorFilter.mode(
+                              colors.onSecondary,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               );
             },

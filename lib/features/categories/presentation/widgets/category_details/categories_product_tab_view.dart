@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_product_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view.dart';
@@ -38,14 +39,16 @@ class _CategoriesProductTabViewState
   void initState() {
     // TODO: implement initState
     super.initState();
-    _subCategoriesViewModel = ref.read(getProductSubCategoriesProvider.notifier);
-/*    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    _subCategoriesViewModel = ref.read(
+      getProductSubCategoriesProvider.notifier,
+    );
+    /*    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchFilteredProducts();
     });*/
   }
 
   void _fetchFilteredProducts() {
-/*    print('=== $filterCategoryId');
+    /*    print('=== $filterCategoryId');
     final productsViewModel = ref.read(
       getProductsByCategoryFilterProvider(filterCategoryId).notifier,
     );
@@ -61,46 +64,24 @@ class _CategoriesProductTabViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        AppSearchField(hintText: LangKeys.searchForAProductKey.tr(),reverseSearchIcon: context.isRTL,),
-        Text(
-          LangKeys.filtersKey.tr(),
-          style: AppTextStyles.style14SemiBold.copyWith(
-            color: colors.onSecondary,
+        AppSearchField(
+          hintText: LangKeys.searchForAProductKey.tr(),
+          reverseSearchIcon: context.isRTL,
+          hasFilter: true,
+          onFilterTap: () => showModalBottomSheet(
+            context: context,
+            builder: (context) => AppFilterView(
+              categories: [
+                LangKeys.allKey.tr(),
+                'Devices',
+                'Shoes',
+                'Clothing',
+              ],
+              ratings: ['4.0', '5', '4.5'],
+            ),
           ),
         ),
-        Expanded(
-          child: productSubCategories.when(
-            loading: () => CategoriesProductShimmerView(),
-            error: (Object error, StackTrace stackTrace) =>
-                ServerConnectionErrorWidget(
-                  message: error.toString(),
-                  onRetry: () => _subCategoriesViewModel.getProductSubCategories(),
-                ),
-            data: (filterCategories) {
-              final filterItems = [
-                CategoryModel(
-                  name: LangKeys.allKey.tr(),
-                  slug: LangKeys.allKey.tr(),
-                ),
-                ...filterCategories,
-              ];
-              return CustomButtonTabBar(
-                // filterWidget: AppFilterIcon(),
-                tabs: filterItems.map((filter) => '${filter.name}').toList(),
-                views: filterItems.map((category) {
-                  return CategoryProductsView(
-                    subCategory: category,
-                  );
-                }).toList(),
-                selectedLabelColor: colors.onSecondary,
-                selectedTabColor: colors.secondary.withValues(alpha: 0.7),
-                unSelectedTabColor: colors.inversePrimary.withValues(
-                  alpha: 0.2,
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: CategoryProductsView()),
       ],
     );
   }
