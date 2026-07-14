@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 class CircularCartButton extends StatelessWidget {
-  const CircularCartButton({super.key, this.size});
+  const CircularCartButton({super.key, this.size, this.onTap});
   final double? size;
+
+  final GestureTapCallback? onTap;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
+      onTap: onTap,
       child: CircleAvatar(
         backgroundColor: colors.onPrimary,
         radius: size??25,

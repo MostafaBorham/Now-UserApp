@@ -24,6 +24,8 @@ class TrackOrderScreen extends StatelessWidget {
       body: AppWavedScaffold(
         appBarTitle: LangKeys.trackOrderKey.tr(),
         canPop: true,
+        hasSupportIcon: true,
+        onSupportTap: () {},
         body: SingleChildScrollView(
           child: Column(
             spacing: 16,

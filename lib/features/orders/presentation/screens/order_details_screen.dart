@@ -773,6 +773,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         ),
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
+        hasSupportIcon: true,
       ),
     );
   }
