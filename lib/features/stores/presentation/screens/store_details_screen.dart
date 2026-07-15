@@ -91,24 +91,44 @@ class StoreDetailsScreen extends ConsumerWidget {
                     body: Container(
                       color: colors.onPrimary,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: CustomButtonTabBar(
-                        tabs: StoresSortType.values
-                            .map((StoresSortType sortType) =>
-                                sortType.label.tr())
-                            .toList(),
-                        views: StoresSortType.values
-                            .map((StoresSortType sortType) =>
-                                StoreDetailsProductsView(
-                                  products: products,
-                                  sortType: sortType,
-                                ))
-                            .toList(),
-                        selectedTabColor: colors.tertiaryContainer,
-                        unSelectedTabColor: colors.inversePrimary.withValues(
-                          alpha: 0.2,
-                        ),
-                        selectedLabelColor: colors.onPrimary,
-                        unSelectedLabelColor: colors.onSecondary,
+                      child: LayoutBuilder(
+                        builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          const double minTabBarHeight = 70;
+                          return ClipRect(
+                            child: OverflowBox(
+                              alignment: AlignmentDirectional.topStart,
+                              minHeight: 0,
+                              maxHeight: double.infinity,
+                              child: SizedBox(
+                                height: constraints.maxHeight < minTabBarHeight
+                                    ? minTabBarHeight
+                                    : constraints.maxHeight,
+                                width: constraints.maxWidth,
+                                child: CustomButtonTabBar(
+                                  tabs: StoresSortType.values
+                                      .map((StoresSortType sortType) =>
+                                          sortType.label.tr())
+                                      .toList(),
+                                  views: StoresSortType.values
+                                      .map((StoresSortType sortType) =>
+                                          StoreDetailsProductsView(
+                                            products: products,
+                                            sortType: sortType,
+                                          ))
+                                      .toList(),
+                                  selectedTabColor: colors.tertiaryContainer,
+                                  unSelectedTabColor:
+                                      colors.inversePrimary.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  selectedLabelColor: colors.onPrimary,
+                                  unSelectedLabelColor: colors.onSecondary,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
