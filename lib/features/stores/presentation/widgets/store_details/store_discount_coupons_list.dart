@@ -16,13 +16,16 @@ class StoreDiscountCouponsList extends ConsumerWidget {
 
     return SizedBox(
       height: 130,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: coupons.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
-        itemBuilder: (_, index) =>
-            StoreDiscountCouponItem(coupon: coupons[index]),
+      child: Center(
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: coupons.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 12),
+          itemBuilder: (_, index) =>
+              StoreDiscountCouponItem(coupon: coupons[index]),
+        ),
       ),
     );
   }
