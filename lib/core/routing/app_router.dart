@@ -128,7 +128,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.viewStoreCategoryProductsScreen,
         path: '/${AppRoutes.viewStoreCategoryProductsScreen}',
-        builder: (context, state) => const ViewStoreCategoryProductsScreen(),
+        builder: (context, state) {
+          final category = state.extra as CategoryModel?;
+
+          return ViewStoreCategoryProductsScreen(
+            category: category ?? const CategoryModel(),
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.storeDetailsScreen,

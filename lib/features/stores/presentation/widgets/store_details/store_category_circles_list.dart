@@ -18,6 +18,32 @@ class StoreCategoryCirclesList extends ConsumerWidget {
         ref.watch(storeProvider).categories ?? const [];
 
     if (categories.isEmpty) return const SizedBox.shrink();
+    // if (categories.isEmpty) return InkWell(
+    //   onTap: () => context.pushNamed(
+    //     AppRoutes.viewStoreCategoryProductsScreen,
+    //     extra: CategoryModel(
+    //       id: 1,
+    //       slug: 'electronics',
+    //       name: 'Products'
+    //     ),
+    //   ),
+    //   child: Column(
+    //     spacing: 8,
+    //     children: [
+    //       CircularBrandLogo(
+    //         radius: 40,
+    //         logoUrl: '',
+    //       ),
+    //       AutoSizeText(
+    //         'sddssd',
+    //         maxLines: 1,
+    //         style: AppTextStyles.style14SemiBold.copyWith(
+    //           color: colors.onSecondary,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
 
     return SizedBox(
       height: 110,
@@ -27,7 +53,10 @@ class StoreCategoryCirclesList extends ConsumerWidget {
         itemCount: categories.length,
         separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (_, index) => InkWell(
-          onTap: () => context.pushNamed(AppRoutes.viewStoreCategoryProductsScreen),
+          onTap: () => context.pushNamed(
+            AppRoutes.viewStoreCategoryProductsScreen,
+            extra: categories[index],
+          ),
           child: SizedBox(
             width: 80,
             child: Column(
