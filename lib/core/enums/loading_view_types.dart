@@ -1,0 +1,4 @@
+enum LoadingViewTypes {
+  circular,
+  shimmer
+}

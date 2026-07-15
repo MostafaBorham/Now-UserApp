@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -87,7 +87,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                           height: double.infinity,
                           width: double.infinity,
                           fit: BoxFit.contain,
-                          placeholderType: PlaceholderTypes.circular,
+                          placeholderType: LoadingViewTypes.circular,
                           circularProgressSize: 50,
                         )).toList(),
                         itemAspectRatio: 1.5,

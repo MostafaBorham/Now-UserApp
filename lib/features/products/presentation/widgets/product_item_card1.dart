@@ -11,9 +11,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 class ProductItemCard1 extends StatefulWidget {
-  const ProductItemCard1({super.key});
+  const ProductItemCard1({super.key, this.product});
+
+  final ProductModel? product;
 
   @override
   State<ProductItemCard1> createState() => _ProductItemCard1State();
@@ -23,6 +26,20 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final ProductModel? product = widget.product;
+    final bool hasDiscount = product == null
+        ? true
+        : product.comparePrice > product.effectivePrice &&
+            product.comparePrice > 0;
+    final String discountPercent = product == null
+        ? '50'
+        : !hasDiscount
+            ? '0'
+            : ((product.comparePrice - product.effectivePrice) /
+                    product.comparePrice *
+                    100)
+                .round()
+                .toString();
     return InkWell(
       onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
       child: LayoutBuilder(
@@ -56,7 +73,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       con.maxWidth * 0.04,
                                     ),
                                     child: AppCachedNetworkImage(
-                                      imageUrl:
+                                      imageUrl: product?.primaryImage ??
                                           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
@@ -66,7 +83,9 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                                 AppRateWidget(
                                   starColor: colors.onSecondaryContainer,
-                                  rateRatio: '4',
+                                  rateRatio: product?.vendor.rating
+                                          ?.toStringAsFixed(1) ??
+                                      '4',
                                   rateColor: colors.onSurface,
                                   size: con.maxWidth * 0.1,
                                 ),
@@ -78,31 +97,34 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: colors.errorContainer,
-                                      borderRadius: BorderRadiusDirectional.only(
-                                        topEnd: Radius.circular(
-                                          con.maxWidth * 0.1,
-                                        ),
-                                        bottomEnd: Radius.circular(
-                                          con.maxWidth * 0.1,
+                                  if (hasDiscount)
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: colors.errorContainer,
+                                        borderRadius: BorderRadiusDirectional.only(
+                                          topEnd: Radius.circular(
+                                            con.maxWidth * 0.1,
+                                          ),
+                                          bottomEnd: Radius.circular(
+                                            con.maxWidth * 0.1,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      '50%',
-                                      style: TextStyle(
-                                        color: colors.onPrimary,
-                                        fontSize: con.maxWidth * 0.06,
-                                        fontWeight: FontWeight.w600,
+                                      child: Text(
+                                        '$discountPercent%',
+                                        style: TextStyle(
+                                          color: colors.onPrimary,
+                                          fontSize: con.maxWidth * 0.06,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    )
+                                  else
+                                    const SizedBox.shrink(),
                                   Padding(
                                     padding: const EdgeInsetsDirectional.only(
                                       end: 8.0,
@@ -128,7 +150,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                           child: CircularBrandLogo(
                             radius: con.maxWidth * 0.1,
                             backgroundColor: colors.onPrimary,
-                            logoUrl:
+                            logoUrl: product?.vendor.logoUrl ??
                                 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                           ),
                         ),
@@ -145,7 +167,9 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                     spacing: 7,
                     children: [
                       Text(
-                        'feta cheese',
+                        product?.name ?? 'feta cheese',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.style18Bold.copyWith(
                           color: colors.onTertiaryFixed,
                           fontSize: con.maxWidth * 0.1,
@@ -163,14 +187,19 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 textDirection: TextDirection.ltr,
                                 spacing: 5,
                                 children: [
-                                  OldPriceWidget(
-                                    color: colors.inversePrimary,
-                                    price: '10',
-                                    size: con.maxWidth * 0.04,
-                                  ),
+                                  if (hasDiscount)
+                                    OldPriceWidget(
+                                      color: colors.inversePrimary,
+                                      price: product?.comparePrice
+                                              .toStringAsFixed(0) ??
+                                          '10',
+                                      size: con.maxWidth * 0.04,
+                                    ),
                                   NewPriceWidget(
                                     color: colors.onSecondary,
-                                    price: '10',
+                                    price: product?.effectivePrice
+                                            .toStringAsFixed(0) ??
+                                        '10',
                                     size: con.maxWidth * 0.08,
                                   ),
                                 ],

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/enums/placeholder_types.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
@@ -54,7 +54,7 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
-    this.placeholderType = PlaceholderTypes.shimmer, this.circularProgressSize,
+    this.placeholderType = LoadingViewTypes.shimmer, this.circularProgressSize,
   });
 
   final String imageUrl;
@@ -62,7 +62,7 @@ class AppCachedNetworkImage extends StatelessWidget {
   final double? circularProgressSize;
   final double? height;
   final BoxFit fit;
-  final PlaceholderTypes? placeholderType;
+  final LoadingViewTypes? placeholderType;
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +83,12 @@ class AppCachedNetworkImage extends StatelessWidget {
       ),
       placeholder: (context, url) {
         switch (placeholderType) {
-          case PlaceholderTypes.circular:
+          case LoadingViewTypes.circular:
             return Center(child: SizedBox(
                 width: circularProgressSize?? ((width??30)*0.7),
                 height: circularProgressSize?? ((width??30)*0.7),
                 child: CircularProgressIndicator(color: colors.primary,)));
-          case PlaceholderTypes.shimmer || null:
+          case LoadingViewTypes.shimmer || null:
             return AppShimmer(
               child: Container(width: double.infinity,height: double.infinity, color: colors.onPrimary),
             );

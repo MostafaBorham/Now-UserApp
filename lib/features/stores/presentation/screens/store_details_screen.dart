@@ -7,6 +7,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffol
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
@@ -39,7 +42,9 @@ class StoreDetailsScreen extends ConsumerWidget {
                     .read(getStoreDetailsProvider(storeId).notifier)
                     .getStoreDetails(),
               ),
-          data: (StoreModel store) => ProviderScope(
+          data: (StoreModel store) {
+            final List<ProductModel> products = store.products ?? const [];
+            return ProviderScope(
             overrides: [storeProvider.overrideWithValue(store)],
             child: Column(
               spacing: 16,
@@ -60,7 +65,10 @@ class StoreDetailsScreen extends ConsumerWidget {
                             spacing: 15,
                             children: [
                               AppSlider(
-                                sliderItems: [StoreDetailsBanner()],
+                                sliderItems: (store.banners ?? const [])
+                                    .map((BannerModel banner) =>
+                                        StoreDetailsBanner(banner: banner))
+                                    .toList(),
                                 itemAspectRatio: 2.8,
                               ),
                               StoreDetailsBrandsSlider(),
@@ -84,18 +92,17 @@ class StoreDetailsScreen extends ConsumerWidget {
                       color: colors.onPrimary,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: CustomButtonTabBar(
-                        tabs: [
-                          LangKeys.allKey.tr(),
-                          'Devices',
-                          'sddssdsd',
-                          'aaaaaaa',
-                        ],
-                        views: [
-                          StoreDetailsProductsView(),
-                          StoreDetailsProductsView(),
-                          StoreDetailsProductsView(),
-                          StoreDetailsProductsView(),
-                        ],
+                        tabs: StoresSortType.values
+                            .map((StoresSortType sortType) =>
+                                sortType.label.tr())
+                            .toList(),
+                        views: StoresSortType.values
+                            .map((StoresSortType sortType) =>
+                                StoreDetailsProductsView(
+                                  products: products,
+                                  sortType: sortType,
+                                ))
+                            .toList(),
                         selectedTabColor: colors.tertiaryContainer,
                         unSelectedTabColor: colors.inversePrimary.withValues(
                           alpha: 0.2,
@@ -108,7 +115,8 @@ class StoreDetailsScreen extends ConsumerWidget {
                 ),
               ],
             ),
-          ),
+          );
+          },
         ),
         appBarTitle: storeDetailsState.valueOrNull?.name ?? LangKeys.storeKey.tr(),
         loadAppBarTitle: storeDetailsState.isLoading,

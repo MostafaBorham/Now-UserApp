@@ -1,9 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -18,23 +15,7 @@ class AppSlider extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return sliderItems.isEmpty? LayoutBuilder(
-      builder: (context,con) {
-        return Container(
-          width: con.maxWidth,
-          alignment: Alignment.center,
-          clipBehavior: Clip.antiAlias,
-          height: con.maxWidth*0.5,
-          decoration: BoxDecoration(
-            color: colors.onSurface.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(16)
-          ),
-          child: Assets.media.images.png.noImageAvail.image(
-
-          ),
-        );
-      }
-    ) : Column(
+    return sliderItems.isEmpty? const SizedBox.shrink() : Column(
       spacing: 20,
       children: [
         CarouselSlider.builder(

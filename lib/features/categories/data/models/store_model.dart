@@ -1,3 +1,4 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
@@ -19,6 +20,7 @@ class StoreModel {
   final List<CategoryModel>? categories;
   final List<CouponModel>? coupons;
   final List<ProductModel>? products;
+  final List<BannerModel>? banners;
 
   const StoreModel({
     this.id,
@@ -36,7 +38,8 @@ class StoreModel {
     this.distance,
     this.categories,
     this.coupons,
-    this.products
+    this.products,
+    this.banners,
   });
 
   factory StoreModel.fromJson(Map<String, dynamic>? json) {
@@ -67,6 +70,9 @@ class StoreModel {
       products: (json['products'] as List?)
           ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      banners: (json['banners'] as List?)
+          ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>?))
+          .toList(),
     );
   }
 
@@ -88,6 +94,7 @@ class StoreModel {
       'categories': categories?.map((e) => e.toJson()).toList(),
       'coupons': coupons?.map((e) => e.toJson()).toList(),
       'products': products?.map((e) => e.toJson()).toList(),
+      'banners': banners?.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -108,6 +115,7 @@ class StoreModel {
     List<CategoryModel>? categories,
     List<CouponModel>? coupons,
     List<ProductModel>? products,
+    List<BannerModel>? banners,
   }) {
     return StoreModel(
       id: id ?? this.id,
@@ -126,6 +134,7 @@ class StoreModel {
       categories: categories ?? this.categories,
       coupons: coupons ?? this.coupons,
       products: products ?? this.products,
+      banners: banners ?? this.banners,
     );
   }
 }
