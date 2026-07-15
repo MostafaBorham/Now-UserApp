@@ -9,6 +9,7 @@ abstract class LangKeys {
   static const String searchNowKey = 'searchNow';
   static const String categoriesKey = 'categories';
   static const String discountUpToKey = 'discountUpTo';
+  static const String discountCouponKey = 'discountCoupon';
   static const String showMoreKey = 'showMore';
   static const String offersKey = 'offers';
   static const String topBrandsKey = 'topBrands';

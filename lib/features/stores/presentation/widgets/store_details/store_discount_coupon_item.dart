@@ -1,14 +1,43 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
 
 class StoreDiscountCouponItem extends StatelessWidget {
-  const StoreDiscountCouponItem({super.key});
+  const StoreDiscountCouponItem({super.key, required this.coupon});
+  final CouponModel coupon;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+
+/*    final double discountValue = coupon.discountValue ?? 0;
+    final String discountText = discountValue % 1 == 0
+        ? discountValue.toStringAsFixed(0)
+        : discountValue.toString();
+    final String discountLabel =
+        coupon.isPercentage == true ? '$discountText%' : discountText;*/
+
+    final DateTime? startsAt = DateTime.tryParse(coupon.startsAt ?? '');
+    final DateTime? expiresAt = DateTime.tryParse(coupon.expiresAt ?? '');
+    final DateFormat dateFormat =
+        DateFormat.yMMMMd(context.locale.toString());
+    final String validityText = [
+      if (startsAt != null)
+        '${LangKeys.fromKey.tr()} ${dateFormat.format(startsAt)}',
+      if (expiresAt != null)
+        '${LangKeys.toKey.tr()} ${dateFormat.format(expiresAt)}',
+    ].join(' ');
+
+    final double minOrderValue = coupon.minOrderValue ?? 0;
+    final String minOrderText = minOrderValue % 1 == 0
+        ? minOrderValue.toStringAsFixed(0)
+        : minOrderValue.toString();
+
     return Container(
       width: 325,
       height: 130,
@@ -25,12 +54,25 @@ class StoreDiscountCouponItem extends StatelessWidget {
                 height: double.infinity,
                 alignment: Alignment.center,
                 color: colors.primaryContainer.withGreen(70),
-                child: Text(
-                  '20%',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.style20Bold.copyWith(
-                    color: colors.onSecondaryFixedVariant,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    coupon.isPercentage!? SizedBox() : Assets.media.images.svg.realSaudiCurrency.svg(),
+                    Text(
+                      '${coupon.discountValue}',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.style20Bold.copyWith(
+                        color: colors.onSecondaryFixedVariant,
+                      ),
+                    ),
+                    coupon.isPercentage!? Text(
+                      '%',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.style20Bold.copyWith(
+                        color: colors.onSecondaryFixedVariant,
+                      ),
+                    ) : SizedBox()
+                  ],
                 ),
               ),
               Expanded(
@@ -62,7 +104,9 @@ class StoreDiscountCouponItem extends StatelessWidget {
                             spacing: 6,
                             children: [
                               Text(
-                                'Discount Coupon',
+                                coupon.name ?? LangKeys.discountCouponKey.tr(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: AppTextStyles.style16Medium.copyWith(
                                   color: colors.primaryContainer,
                                 ),
@@ -71,15 +115,16 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 spacing: 2,
                                 children: [
-                                  Text(
-                                    'From January 10 to January 31, 2026',
-                                    maxLines: 1,
-                                    style: AppTextStyles.style10Regular.copyWith(
-                                      color: colors.onSurface,
+                                  if (validityText.isNotEmpty)
+                                    Text(
+                                      validityText,
+                                      maxLines: 1,
+                                      style: AppTextStyles.style10Regular.copyWith(
+                                        color: colors.onSurface,
+                                      ),
                                     ),
-                                  ),
                                   Text(
-                                    'Minimum purchase 1',
+                                    '${coupon.description}',
                                     maxLines: 1,
                                     style: AppTextStyles.style12Regular.copyWith(
                                       color: colors.onSurface,
@@ -87,31 +132,38 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: colors.onSurfaceVariant,
-                                  borderRadius: AppBorderRadius.brCircular30,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  spacing: 4,
-                                  children: [
-                                    Text(
-                                      'ST-V2586',
-                                      style: AppTextStyles.style12Regular
-                                          .copyWith(
-                                            color: colors.primaryContainer,
-                                          ),
-                                    ),
-                                    Assets.media.images.svg.copyCouponCodeIcon.svg(
-                                      width: 16,
-                                      colorFilter: ColorFilter.mode(colors.primaryContainer,BlendMode.srcIn)
-                                    )
-                                  ],
+                              InkWell(
+                                onTap: coupon.code == null
+                                    ? null
+                                    : () => Clipboard.setData(
+                                          ClipboardData(text: coupon.code!),
+                                        ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colors.onSurfaceVariant,
+                                    borderRadius: AppBorderRadius.brCircular30,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 4,
+                                    children: [
+                                      Text(
+                                        coupon.code ?? '',
+                                        style: AppTextStyles.style12Regular
+                                            .copyWith(
+                                              color: colors.primaryContainer,
+                                            ),
+                                      ),
+                                      Assets.media.images.svg.copyCouponCodeIcon.svg(
+                                        width: 16,
+                                        colorFilter: ColorFilter.mode(colors.primaryContainer,BlendMode.srcIn)
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
