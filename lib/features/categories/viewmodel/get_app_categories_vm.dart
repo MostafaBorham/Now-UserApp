@@ -17,11 +17,23 @@ final getAppCategoriesProvider =
 
 class GetAppCategoriesViewModel
     extends StateNotifier<AsyncValue<List<CategoryModel>>> {
-  GetAppCategoriesViewModel(super.initialState);
+  GetAppCategoriesViewModel(super.initialState){
+    print('get app categories created');
+  }
 
   final CategoriesRepo _repo = CategoriesRepo();
 
+
+
+  @override
+  void dispose() {
+    _repo.cancelRequests();
+    print('get app categories disposed');
+    super.dispose();
+  }
+
   Future<void> getAppCategories() async {
+    print('get app categories call');
     state = const AsyncValue.loading();
 
     final result = await _repo.getAppCategories();

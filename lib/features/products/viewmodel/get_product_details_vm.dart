@@ -28,6 +28,12 @@ class GetProductDetailsViewModel
   final String productSlug;
   final ProductsRepo _repo = ProductsRepo();
 
+  @override
+  void dispose() {
+    _repo.cancelRequests();
+    super.dispose();
+  }
+
   Future<void> getProductDetails() async {
     state = const AsyncValue.loading();
 

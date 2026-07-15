@@ -34,6 +34,12 @@ class GetProductsViewModel
 
   final ProductsRepo _repo = ProductsRepo();
 
+  @override
+  void dispose() {
+    _repo.cancelRequests();
+    super.dispose();
+  }
+
   Future<void> getProducts({int? categoryId}) async {
     state = const AsyncValue.loading();
 

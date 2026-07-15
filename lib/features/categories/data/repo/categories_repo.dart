@@ -17,6 +17,10 @@ import 'package:nowdelivery_user_app/features/categories/data/models/store_model
 class CategoriesRepo {
   final CategoriesApiService _categoriesApiService = CategoriesApiService();
 
+  /// Cancels every in-flight request of this repo. The actual cancellation
+  /// mechanism (CancelToken) lives entirely inside the data source layer.
+  void cancelRequests() => _categoriesApiService.cancelRequests();
+
   Future<Either<Failure, List<CategoryModel>>> getAppCategories() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));

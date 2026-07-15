@@ -18,6 +18,10 @@ import 'package:nowdelivery_user_app/features/categories/data/models/product_mod
 class ProductsRepo {
   final ProductsApiService _productsApiService = ProductsApiService();
 
+  /// Cancels every in-flight request of this repo. The actual cancellation
+  /// mechanism (CancelToken) lives entirely inside the data source layer.
+  void cancelRequests() => _productsApiService.cancelRequests();
+
   Future<Either<Failure, List<ProductModel>>> getProducts({int? categoryId}) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));

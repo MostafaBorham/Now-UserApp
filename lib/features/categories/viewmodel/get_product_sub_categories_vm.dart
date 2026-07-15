@@ -21,6 +21,12 @@ class GetProductSubCategoriesViewModel
 
   final CategoriesRepo _repo = CategoriesRepo();
 
+  @override
+  void dispose() {
+    _repo.cancelRequests();
+    super.dispose();
+  }
+
   Future<void> getProductSubCategories() async {
     state = const AsyncValue.loading();
 

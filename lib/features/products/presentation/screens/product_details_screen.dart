@@ -51,7 +51,7 @@ class ProductDetailsScreen extends ConsumerWidget {
               ],
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0).copyWith(bottom: 16),
                   child: Column(
                     spacing: 16,
                     children: [

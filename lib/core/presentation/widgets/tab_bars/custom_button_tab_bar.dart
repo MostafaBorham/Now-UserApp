@@ -10,7 +10,11 @@ class CustomButtonTabBar extends StatefulWidget {
     required this.tabs,
     required this.views,
     required this.selectedTabColor,
-    required this.unSelectedTabColor, this.filterWidget, this.selectedLabelColor, this.unSelectedLabelColor, this.onTap,
+    required this.unSelectedTabColor,
+    this.filterWidget,
+    this.selectedLabelColor,
+    this.unSelectedLabelColor,
+    this.onTap,
   });
 
   final List<String> tabs;
@@ -52,7 +56,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return LayoutBuilder(
-      builder: (context,con) {
+      builder: (context, con) {
         return Column(
           spacing: 16,
           children: [
@@ -73,7 +77,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     splashFactory: NoSplash.splashFactory,
                     dividerColor: Colors.transparent,
                     overlayColor: WidgetStateProperty.resolveWith(
-                          (states) => Colors.transparent,
+                      (states) => Colors.transparent,
                     ),
                     labelPadding: EdgeInsets.symmetric(horizontal: 6),
                     tabs: List.generate(widget.tabs.length, (index) {
@@ -82,7 +86,10 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                       return Tab(
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: AppBorderRadius.brCircular20,
                             color: isSelected
@@ -93,8 +100,12 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                             widget.tabs[index],
                             maxLines: 1,
                             style: AppTextStyles.style16Medium.copyWith(
-                              fontSize: con.maxWidth*0.04,
-                              color: isSelected ? widget.selectedLabelColor?? colors.onPrimary : widget.unSelectedLabelColor?? colors.onSecondary,
+                              fontSize: con.maxWidth * 0.04,
+                              color: isSelected
+                                  ? widget.selectedLabelColor ??
+                                        colors.onPrimary
+                                  : widget.unSelectedLabelColor ??
+                                        colors.onSecondary,
                             ),
                           ),
                         ),
@@ -102,16 +113,18 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     }),
                   ),
                 ),
-                widget.filterWidget??0.wSpace,
+                widget.filterWidget ?? 0.wSpace,
               ],
             ),
             Expanded(
               child: TabBarView(
-                controller: _controller, children: widget.views,),
+                controller: _controller,
+                children: widget.views,
+              ),
             ),
           ],
         );
-      }
+      },
     );
   }
 }
