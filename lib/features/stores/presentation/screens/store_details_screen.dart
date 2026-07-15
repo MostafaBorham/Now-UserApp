@@ -110,8 +110,8 @@ class StoreDetailsScreen extends ConsumerWidget {
             ),
           ),
         ),
-        appBarTitle:
-            storeDetailsState.valueOrNull?.name ?? LangKeys.storeKey.tr(),
+        appBarTitle: storeDetailsState.valueOrNull?.name ?? LangKeys.storeKey.tr(),
+        loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
         bodyPadding: EdgeInsets.zero,
       ),

@@ -11,7 +11,7 @@ class StoreInfoRow extends StatelessWidget {
   });
   final double infoFontSize;
   final double infoIconSize;
-  final int? deliveryTime;
+  final String? deliveryTime;
   final double? distance;
   final double? deliveryFee;
 
@@ -30,7 +30,7 @@ class StoreInfoRow extends StatelessWidget {
           ),
         ),
         Text(
-          '${deliveryTime ?? 0} minutes',
+          '${deliveryTime ?? 0}',
           style: AppTextStyles.style12Medium.copyWith(
               color: colors.onSecondary,
               fontSize: infoFontSize
@@ -45,7 +45,7 @@ class StoreInfoRow extends StatelessWidget {
           ),
         ),
         Text(
-          '${distance ?? 0} km',
+          '${distance ?? 0}',
           style: AppTextStyles.style12Medium.copyWith(
               color: colors.onSecondary,
               fontSize: infoFontSize

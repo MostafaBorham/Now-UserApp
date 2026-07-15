@@ -1,3 +1,7 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+
 class StoreModel {
   final int? id;
   final String? name;
@@ -10,8 +14,11 @@ class StoreModel {
   final double? rating;
   final int? ratingCount;
   final double? deliveryFee;
-  final int? deliveryTime;
+  final String? deliveryTime;
   final double? distance;
+  final List<CategoryModel>? categories;
+  final List<CouponModel>? coupons;
+  final List<ProductModel>? products;
 
   const StoreModel({
     this.id,
@@ -27,6 +34,9 @@ class StoreModel {
     this.deliveryFee,
     this.deliveryTime,
     this.distance,
+    this.categories,
+    this.coupons,
+    this.products
   });
 
   factory StoreModel.fromJson(Map<String, dynamic>? json) {
@@ -46,8 +56,17 @@ class StoreModel {
       rating: (json['rating'] as num?)?.toDouble(),
       ratingCount: (json['rating_count'] as num?)?.toInt(),
       deliveryFee: (json['delivery_fee'] as num?)?.toDouble(),
-      deliveryTime: (json['delivery_time'] as num?)?.toInt(),
+      deliveryTime: json['delivery_time']?.toString(),
       distance: (json['distance'] as num?)?.toDouble(),
+      categories: (json['categories'] as List?)
+          ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>?))
+          .toList(),
+      coupons: (json['coupons'] as List?)
+          ?.map((e) => CouponModel.fromJson(e as Map<String, dynamic>?))
+          .toList(),
+      products: (json['products'] as List?)
+          ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -66,6 +85,9 @@ class StoreModel {
       'delivery_fee': deliveryFee,
       'delivery_time': deliveryTime,
       'distance': distance,
+      'categories': categories?.map((e) => e.toJson()).toList(),
+      'coupons': coupons?.map((e) => e.toJson()).toList(),
+      'products': products?.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -81,8 +103,11 @@ class StoreModel {
     double? rating,
     int? ratingCount,
     double? deliveryFee,
-    int? deliveryTime,
+    String? deliveryTime,
     double? distance,
+    List<CategoryModel>? categories,
+    List<CouponModel>? coupons,
+    List<ProductModel>? products,
   }) {
     return StoreModel(
       id: id ?? this.id,
@@ -98,6 +123,9 @@ class StoreModel {
       deliveryFee: deliveryFee ?? this.deliveryFee,
       deliveryTime: deliveryTime ?? this.deliveryTime,
       distance: distance ?? this.distance,
+      categories: categories ?? this.categories,
+      coupons: coupons ?? this.coupons,
+      products: products ?? this.products,
     );
   }
 }

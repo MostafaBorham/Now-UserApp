@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/support/circular_support_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
@@ -13,12 +14,14 @@ class AppWavedScaffold extends StatelessWidget {
     super.key,
     required this.body,
     required this.appBarTitle,
+    this.loadAppBarTitle = false,
     this.hasCartIcon = false,
     this.hasSupportIcon = false,
     this.onSupportTap,
     this.canPop, this.bodyPadding, this.onCartTap,
   });
   final String appBarTitle;
+  final bool loadAppBarTitle;
   final bool hasCartIcon;
   final bool hasSupportIcon;
   final VoidCallback? onSupportTap;
@@ -82,16 +85,26 @@ class AppWavedScaffold extends StatelessWidget {
                     flex: 2,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(
-                        appBarTitle,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.style24SemiBold.copyWith(
-                          color: colors.onSecondary,
-                          // fontSize: screenSize.width*0.06
-                        ),
-                      ),
+                      child: loadAppBarTitle
+                          ? AppShimmer(
+                              child: Container(
+                                width: 120,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            )
+                          : Text(
+                              appBarTitle,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.style24SemiBold.copyWith(
+                                color: colors.onSecondary,
+                              ),
+                            ),
                     ),
                   ),
                   Expanded(
