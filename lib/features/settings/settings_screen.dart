@@ -1,9 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import 'app_colors.dart';
+import 'components/language_bottom_sheet.dart';
 import 'components/logout_button.dart';
 import 'components/profile_header.dart';
 import 'components/profile_info.dart';
@@ -22,100 +26,83 @@ import 'components/settings_tile.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  /// Horizontal padding shared by the sections and the log out button.
-  static const double _hPadding = 20;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Column(
-            mainAxisSize: .min,
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.profileKey.tr(),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              const CommonHeader(),
-              const SizedBox(height: 24),
               const ProfileInfo(),
+              const SizedBox(height: 32),
+              SettingsSection(
+                title: LangKeys.general.tr(),
+                items: [
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.personalInfo.path,
+                    label: LangKeys.personalInformationKey.tr(),
+                    onTap: () =>
+                        context.pushNamed(AppRoutes.personalInformationScreen),
+                  ),
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.myAddress.path,
+                    label: LangKeys.myAddress.tr(),
+                    onTap: () => context.pushNamed(AppRoutes.myAddressScreen),
+                  ),
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.language.path,
+                    label: LangKeys.language.tr(),
+                    onTap: () => LanguageBottomSheet.show(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SettingsSection(
+                title: LangKeys.proActivity.tr(),
+                items: [
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.discount.path,
+                    label: LangKeys.discount.tr(),
+                    onTap: () =>
+                        context.pushNamed(AppRoutes.discountCodeScreen),
+                  ),
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.wallet.path,
+                    label: LangKeys.myWallet.tr(),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SettingsSection(
+                title: LangKeys.supportLabel.tr(),
+                items: [
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.liveChat.path,
+                    label: LangKeys.liveChat.tr(),
+                    onTap: () => context.pushNamed(AppRoutes.supportScreen),
+                  ),
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.faq.path,
+                    label: LangKeys.faqs.tr(),
+                    onTap: () => context.pushNamed(AppRoutes.faqScreen),
+                  ),
+                  SettingsItem(
+                    iconAsset: Assets.media.images.svg.privacy.path,
+                    label: LangKeys.privacyPolicy.tr(),
+                    onTap: () =>
+                        context.pushNamed(AppRoutes.privacyPolicyScreen),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 28),
+              LogoutButton(onPressed: () {}),
               const SizedBox(height: 32),
             ],
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: _hPadding),
-              child: Column(
-                children: [
-                  SettingsSection(
-                    title: 'General',
-                    items: [
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.personalInfo.path,
-                        label: 'Personal Information',
-                        onTap: () => context.pushNamed(AppRoutes.personalInformationScreen,
-                        ),
-                      ),
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.myAddress.path,
-                        label: 'My Address',
-                        onTap: () => context.pushNamed(AppRoutes.myAddressScreen,
-                        ),
-                      ),
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.language.path,
-                        label: 'Language',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  SettingsSection(
-                    title: 'Promotional Activity',
-                    items: [
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.discount.path,
-                        label: 'Discount Code',
-                        onTap: () => context.pushNamed(AppRoutes.discountCodeScreen,
-                        ),
-                      ),
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.wallet.path,
-                        label: 'My Wallet',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  SettingsSection(
-                    title: 'Support',
-                    items: [
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.liveChat.path,
-                        label: 'Live Chat',
-                        onTap: () => context.pushNamed(AppRoutes.supportScreen,
-                        ),
-                      ),
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.faq.path,
-                        label: 'FAQ',
-                        onTap: () => context.pushNamed(AppRoutes.faqScreen,
-                        ),
-                      ),
-                      SettingsItem(
-                        iconAsset: Assets.media.images.svg.privacy.path,
-                        label: 'Privacy Policy',
-                        onTap: () => context.pushNamed(AppRoutes.privacyPolicyScreen,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  LogoutButton(onPressed: () {}),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

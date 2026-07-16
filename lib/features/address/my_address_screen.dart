@@ -1,5 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../settings/app_colors.dart';
@@ -24,9 +27,6 @@ class MyAddressScreen extends StatefulWidget {
 }
 
 class _MyAddressScreenState extends State<MyAddressScreen> {
-  /// Horizontal padding shared by the cards and the button.
-  static const double _hPadding = 20;
-
   /// Gap between the two address cards.
   static const double _cardGap = 16;
 
@@ -45,39 +45,32 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'My Address',
-            onBack: () => context.pop(),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(_hPadding, 20, _hPadding, 24),
-              child: Column(
-                children: [
-                  for (int i = 0; i < _addresses.length; i++) ...[
-                    if (i > 0) const SizedBox(height: _cardGap),
-                    AddressCard(
-                      title: _addresses[i].title,
-                      address: _addresses[i].address,
-                      isDefault: i == _selected,
-                      onSelect: () => setState(() => _selected = i),
-                      onEdit: () => context.pushNamed(AppRoutes.addressDetailsScreen,
-                        extra: true,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  AddAddressButton(
-                    onPressed: () => context.pushNamed(AppRoutes.addNewAddressFromMapScreen,
-                    ),
+      body: AppWavedScaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              for (int i = 0; i < _addresses.length; i++) ...[
+                if (i > 0) const SizedBox(height: _cardGap),
+                AddressCard(
+                  title: _addresses[i].title,
+                  address: _addresses[i].address,
+                  isDefault: i == _selected,
+                  onSelect: () => setState(() => _selected = i),
+                  onEdit: () => context.pushNamed(
+                    AppRoutes.addressDetailsScreen,
+                    extra: true,
                   ),
-                ],
+                ),
+              ],
+              const SizedBox(height: 24),
+              AddAddressButton(
+                onPressed: () =>
+                    context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
+        appBarTitle: LangKeys.addressKey.tr(),
       ),
     );
   }

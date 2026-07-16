@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -72,25 +74,17 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'FAQ',
-            onBack: () => context.pop(),
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.faq.tr(),
+        body: ListView.separated(
+          itemCount: _items.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 14),
+          itemBuilder: (context, index) => FaqTile(
+            item: _items[index],
+            expanded: _expanded.contains(index),
+            onTap: () => _toggle(index),
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(_hPadding, 20, _hPadding, 24),
-              itemCount: _items.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 14),
-              itemBuilder: (context, index) => FaqTile(
-                item: _items[index],
-                expanded: _expanded.contains(index),
-                onTap: () => _toggle(index),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

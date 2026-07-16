@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -85,24 +87,22 @@ class _SupportScreenState extends State<SupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'Support',
-            onBack: () => context.pop(),
-          ),
-          Expanded(
-            child: ListView.separated(
-              controller: _scroll,
-              padding: const EdgeInsets.fromLTRB(_hPadding, 16, _hPadding, 16),
-              itemCount: _messages.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 18),
-              itemBuilder: (context, index) =>
-                  ChatBubble(message: _messages[index]),
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.support.tr(),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                controller: _scroll,
+                itemCount: _messages.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 18),
+                itemBuilder: (context, index) =>
+                    ChatBubble(message: _messages[index]),
+              ),
             ),
-          ),
-          MessageInputBar(controller: _input, onSend: _send),
-        ],
+            MessageInputBar(controller: _input, onSend: _send),
+          ],
+        ),
       ),
     );
   }

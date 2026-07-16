@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 import '../app_colors.dart';
 
@@ -21,7 +22,21 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Assets.media.images.svg.personPng.image(),
+        // Assets.media.images.svg.personPng.image(),
+        Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(shape: BoxShape.circle),
+          child: AppCachedNetworkImage(
+            // width: 120,
+            // height: 120,
+            placeholderType: LoadingViewTypes.shimmer,
+            fit: BoxFit.cover,
+            width: 120,
+            height: 120,
+            imageUrl:
+                "https://cdn-icons-png.flaticon.com/512/17552/17552522.png",
+          ),
+        ),
         const SizedBox(height: 14),
         Text(
           name,

@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart' show CommonHeader;
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 import '../settings/app_colors.dart';
 
@@ -11,13 +12,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'Privacy Policy',
-            onBack: () => context.pop(),
-          ),
-        ],
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.privacy.tr(),
+        body: SizedBox.expand(),
       ),
     );
   }

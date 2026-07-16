@@ -16,12 +16,29 @@ abstract class LangKeys {
   static const String mostPopularKey = 'mostPopular';
   static const String categoriesTitleKey = 'categoriesTitle';
   static const String discountKey = 'discount';
+  static const String discountTitle = 'discountScreenTitle';
   static const String rankKey = 'rank';
   static const String newArrivalKey = 'newArrival';
   static const String exclusiveKey = 'exclusive';
   static const String addToCartKey = 'addToCart';
   static const String soldKey = 'sold';
   static const String hotKey = 'hot';
+  static const String faq = 'faq';
+  static const String privacy = 'privacy';
+  static const String language = 'language';
+  static const String languageAr = 'languageAr';
+  static const String languageEn = 'languageEn';
+
+  static const String general = 'general';
+  static const String myAddress = 'myAddress';
+  static const String proActivity = 'promotionalActivity';
+  static const String discount = 'discountCode';
+  static const String myWallet = 'myWallet';
+  static const String supportLabel = 'support';
+  static const String liveChat = 'liveChat';
+  static const String faqs = 'faqs';
+  static const String privacyPolicy = 'privacyPolicy';
+  static const String logout = 'logout';
 
   // Categories & favourites
   static const String productsKey = 'products';
@@ -36,6 +53,20 @@ abstract class LangKeys {
   static const String searchForAStoreKey = 'searchForAStore';
   static const String cashOnDeliveryKey = 'cashOnDeliveryKey';
   static const String rateKey = 'rateKey';
+
+  static const String area = 'area';
+  static const String change = 'change';
+  static const String homeAddressSelector = 'homeAddressSelector';
+  static const String workAddressSelector = 'workAddressSelector';
+  static const String otherAddressSelector = 'otherAddressSelector';
+  static const String floor = 'floor';
+  static const String building = 'building';
+  static const String instructions = 'instructions';
+  static const String saveAddress = 'saveAddress';
+  static const String editAddress = 'editAddress';
+  static const String addressDetails = 'addressDetails';
+  static const String addNewAddress = 'addNewAddress';
+  static const String defaultAddress = 'defaultAddress';
 
   // Bottom navigation
   static const String homeKey = 'home';
@@ -62,6 +93,7 @@ abstract class LangKeys {
 
   // Wallet
   static const String walletKey = 'wallet';
+  static const String support = 'supportTitle';
   static const String walletRecordKey = 'walletRecord';
   static const String nowCreditKey = 'nowCredit';
   static const String addBalanceKey = 'addBalance';
@@ -96,7 +128,8 @@ abstract class LangKeys {
   // Guest verification
   static const String verificationCodeKey = 'verificationCode';
   static const String verifyGuestViaPhoneKey = 'verifyGuestViaPhone';
-  static const String phoneVerificationSubtitleKey = 'phoneVerificationSubtitle';
+  static const String phoneVerificationSubtitleKey =
+      'phoneVerificationSubtitle';
   static const String mobileNumberKey = 'mobileNumber';
   static const String enterVerificationCodeKey = 'enterVerificationCode';
   static const String otpSentToKey = 'otpSentTo';
@@ -176,8 +209,10 @@ abstract class LangKeys {
   static const String complaintPhotosKey = 'complaintPhotos';
   static const String tellUsMoreKey = 'tellUsMore';
   static const String rateStoreQuestionKey = 'rateStoreQuestion';
-  static const String rateDeliveryPersonQuestionKey = 'rateDeliveryPersonQuestion';
-  static const String ratingHelpsImproveServiceKey = 'ratingHelpsImproveService';
+  static const String rateDeliveryPersonQuestionKey =
+      'rateDeliveryPersonQuestion';
+  static const String ratingHelpsImproveServiceKey =
+      'ratingHelpsImproveService';
   static const String ratingGoodKey = 'ratingGood';
 
   // Errors & states
@@ -189,7 +224,8 @@ abstract class LangKeys {
   static const String saveGuestSessionFailedKey = 'saveGuestSessionFailed';
   static const String readGuestSessionFailedKey = 'readGuestSessionFailed';
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
-  static const String appUnderMaintenanceSubtitleKey = 'appUnderMaintenanceSubtitle';
+  static const String appUnderMaintenanceSubtitleKey =
+      'appUnderMaintenanceSubtitle';
   static const String notifyMeWhenDoneKey = 'notifyMeWhenDone';
 
   // Notifications
