@@ -16,12 +16,15 @@ abstract class LangKeys {
   static const String mostPopularKey = 'mostPopular';
   static const String categoriesTitleKey = 'categoriesTitle';
   static const String discountKey = 'discount';
+  static const String discountTitle = 'discountScreenTitle';
   static const String rankKey = 'rank';
   static const String newArrivalKey = 'newArrival';
   static const String exclusiveKey = 'exclusive';
   static const String addToCartKey = 'addToCart';
   static const String soldKey = 'sold';
   static const String hotKey = 'hot';
+  static const String faq = 'faq';
+  static const String privacy = 'privacy';
 
   // Categories & favourites
   static const String productsKey = 'products';
@@ -62,6 +65,7 @@ abstract class LangKeys {
 
   // Wallet
   static const String walletKey = 'wallet';
+  static const String support = 'supportTitle';
   static const String walletRecordKey = 'walletRecord';
   static const String nowCreditKey = 'nowCredit';
   static const String addBalanceKey = 'addBalance';
@@ -96,7 +100,8 @@ abstract class LangKeys {
   // Guest verification
   static const String verificationCodeKey = 'verificationCode';
   static const String verifyGuestViaPhoneKey = 'verifyGuestViaPhone';
-  static const String phoneVerificationSubtitleKey = 'phoneVerificationSubtitle';
+  static const String phoneVerificationSubtitleKey =
+      'phoneVerificationSubtitle';
   static const String mobileNumberKey = 'mobileNumber';
   static const String enterVerificationCodeKey = 'enterVerificationCode';
   static const String otpSentToKey = 'otpSentTo';
@@ -176,8 +181,10 @@ abstract class LangKeys {
   static const String complaintPhotosKey = 'complaintPhotos';
   static const String tellUsMoreKey = 'tellUsMore';
   static const String rateStoreQuestionKey = 'rateStoreQuestion';
-  static const String rateDeliveryPersonQuestionKey = 'rateDeliveryPersonQuestion';
-  static const String ratingHelpsImproveServiceKey = 'ratingHelpsImproveService';
+  static const String rateDeliveryPersonQuestionKey =
+      'rateDeliveryPersonQuestion';
+  static const String ratingHelpsImproveServiceKey =
+      'ratingHelpsImproveService';
   static const String ratingGoodKey = 'ratingGood';
 
   // Errors & states
@@ -187,7 +194,8 @@ abstract class LangKeys {
   static const String retryKey = 'retry';
   static const String noInternetConnectionKey = 'noInternetConnection';
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
-  static const String appUnderMaintenanceSubtitleKey = 'appUnderMaintenanceSubtitle';
+  static const String appUnderMaintenanceSubtitleKey =
+      'appUnderMaintenanceSubtitle';
   static const String notifyMeWhenDoneKey = 'notifyMeWhenDone';
 
   // Notifications

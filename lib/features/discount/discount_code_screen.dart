@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -86,25 +88,19 @@ class DiscountCodeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'Discount Code',
-            onBack: () => context.pop(),
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(_hPadding, 20, _hPadding, 24),
-              itemCount: _coupons.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 16),
-              itemBuilder: (context, index) => DiscountCard(
-                coupon: _coupons[index],
-                dark: index.isOdd,
-                onCopy: () => _copyCode(context, _coupons[index].code),
-              ),
+      body: AppWavedScaffold(
+        appBarTitle: LangKeys.discountTitle.tr(),
+        body: Expanded(
+          child: ListView.separated(
+            itemCount: _coupons.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
+            itemBuilder: (context, index) => DiscountCard(
+              coupon: _coupons[index],
+              dark: index.isOdd,
+              onCopy: () => _copyCode(context, _coupons[index].code),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
