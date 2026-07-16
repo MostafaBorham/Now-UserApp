@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
@@ -81,7 +83,9 @@ class AddressCard extends StatelessWidget {
                     const SizedBox(width: _leadingGap),
                     Expanded(
                       child: Text(
-                        isDefault ? '$title (Default)' : title,
+                        isDefault
+                            ? '$title ${LangKeys.defaultAddress.tr()}'
+                            : title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -180,10 +184,7 @@ class _EditButton extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4),
-          child: Assets.media.images.svg.edit.svg(
-            width: 22,
-            height: 22,
-          ),
+          child: Assets.media.images.svg.edit.svg(width: 22, height: 22),
         ),
       ),
     );

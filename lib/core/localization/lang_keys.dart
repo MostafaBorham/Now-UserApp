@@ -25,6 +25,20 @@ abstract class LangKeys {
   static const String hotKey = 'hot';
   static const String faq = 'faq';
   static const String privacy = 'privacy';
+  static const String language = 'language';
+  static const String languageAr = 'languageAr';
+  static const String languageEn = 'languageEn';
+
+  static const String general = 'general';
+  static const String myAddress = 'myAddress';
+  static const String proActivity = 'promotionalActivity';
+  static const String discount = 'discountCode';
+  static const String myWallet = 'myWallet';
+  static const String supportLabel = 'support';
+  static const String liveChat = 'liveChat';
+  static const String faqs = 'faqs';
+  static const String privacyPolicy = 'privacyPolicy';
+  static const String logout = 'logout';
 
   // Categories & favourites
   static const String productsKey = 'products';
@@ -39,6 +53,20 @@ abstract class LangKeys {
   static const String searchForAStoreKey = 'searchForAStore';
   static const String cashOnDeliveryKey = 'cashOnDeliveryKey';
   static const String rateKey = 'rateKey';
+
+  static const String area = 'area';
+  static const String change = 'change';
+  static const String homeAddressSelector = 'homeAddressSelector';
+  static const String workAddressSelector = 'workAddressSelector';
+  static const String otherAddressSelector = 'otherAddressSelector';
+  static const String floor = 'floor';
+  static const String building = 'building';
+  static const String instructions = 'instructions';
+  static const String saveAddress = 'saveAddress';
+  static const String editAddress = 'editAddress';
+  static const String addressDetails = 'addressDetails';
+  static const String addNewAddress = 'addNewAddress';
+  static const String defaultAddress = 'defaultAddress';
 
   // Bottom navigation
   static const String homeKey = 'home';

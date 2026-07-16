@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/gender_selector.dart';
@@ -45,9 +48,6 @@ class AddressDetailsScreen extends StatefulWidget {
 }
 
 class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
-  /// Horizontal padding shared by every section.
-  static const double _hPadding = 20;
-
   static const List<String> _tabs = ['Home', 'Work', 'Other'];
   static final List<String> _tabIcons = [
     Assets.media.images.svg.homeSelected.path,
@@ -96,57 +96,52 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: widget.isEditing ? 'Edit Address' : 'Address Details',
-            onBack: () => context.pop(),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(_hPadding, 20, _hPadding, 24),
-              child: Column(
-                children: [
-                  AreaSelector(value: widget.area, onChange: () {}),
-                  const SizedBox(height: 16),
-                  CommonScreenTabs(
-                    tabsName: _tabs,
-                    icons: _tabIcons,
-                    initialIndex: _type,
-                    height: 52,
-                    radius: 100,
-                    tapRadius: 100,
-                    backgroundColor: AppColors.grey,
-                    activeColor: AppColors.primaryGreen,
-                    activeFontColor: AppColors.buttonForeground,
-                    inactiveFontColor: AppColors.textPrimary,
-                    onTaptab: (index) => setState(() => _type = index),
-                  ),
-                  const SizedBox(height: 16),
-                  AddressField(
-                    hintText: _line1Hints[_type],
-                    controller: _line1,
-                  ),
-                  const SizedBox(height: 14),
-                  AddressField(
-                    hintText: _line2Hints[_type],
-                    controller: _line2,
-                  ),
-                  const SizedBox(height: 14),
-                  AddressField(
-                    hintText: 'instructions (optional)',
-                    controller: _instructions,
-                  ),
-                  const SizedBox(height: 20),
-                  PrimaryButton(
-                    label: 'Save Address',
-                    onPressed: () => context.pop(),
-                  ),
+      body: AppWavedScaffold(
+        appBarTitle: widget.isEditing
+            ? LangKeys.editAddress.tr()
+            : LangKeys.addressDetails.tr(),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              AreaSelector(value: widget.area, onChange: () {}),
+              const SizedBox(height: 16),
+              CommonScreenTabs(
+                tabsName: [
+                  LangKeys.homeAddressSelector.tr(),
+                  LangKeys.workAddressSelector.tr(),
+                  LangKeys.otherAddressSelector.tr(),
                 ],
+                icons: _tabIcons,
+                initialIndex: _type,
+                height: 52,
+                radius: 100,
+                tapRadius: 100,
+                backgroundColor: AppColors.grey,
+                activeColor: AppColors.primaryGreen,
+                activeFontColor: AppColors.buttonForeground,
+                inactiveFontColor: AppColors.textPrimary,
+                onTaptab: (index) => setState(() => _type = index),
               ),
-            ),
+              const SizedBox(height: 16),
+              AddressField(hintText: LangKeys.floor.tr(), controller: _line1),
+              const SizedBox(height: 14),
+              AddressField(
+                hintText: LangKeys.building.tr(),
+                controller: _line2,
+              ),
+              const SizedBox(height: 14),
+              AddressField(
+                hintText: LangKeys.instructions.tr(),
+                controller: _instructions,
+              ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: LangKeys.saveAddress.tr(),
+                onPressed: () => context.pop(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

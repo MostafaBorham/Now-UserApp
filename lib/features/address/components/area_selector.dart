@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import '../../settings/app_colors.dart';
@@ -50,7 +52,7 @@ class AreaSelector extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  label,
+                  LangKeys.area.tr(),
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.fieldLabel,
@@ -74,10 +76,10 @@ class AreaSelector extends StatelessWidget {
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: onChange,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
               child: Text(
-                'Change',
+                LangKeys.change.tr(),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,

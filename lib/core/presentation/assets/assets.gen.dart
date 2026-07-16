@@ -611,6 +611,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get support =>
       const SvgGenImage('assets/media/images/svg/support.svg');
 
+  /// File path: assets/media/images/svg/tick-circle.svg
+  SvgGenImage get tickCircle =>
+      const SvgGenImage('assets/media/images/svg/tick-circle.svg');
+
   /// File path: assets/media/images/svg/time-icon.svg
   SvgGenImage get timeIcon =>
       const SvgGenImage('assets/media/images/svg/time-icon.svg');
@@ -758,6 +762,7 @@ class $AssetsMediaImagesSvgGen {
     stepDone,
     supportCallIcon,
     support,
+    tickCircle,
     timeIcon,
     trustIcon,
     visaLogo,

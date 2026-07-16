@@ -27,9 +27,6 @@ class MyAddressScreen extends StatefulWidget {
 }
 
 class _MyAddressScreenState extends State<MyAddressScreen> {
-  /// Horizontal padding shared by the cards and the button.
-  static const double _hPadding = 20;
-
   /// Gap between the two address cards.
   static const double _cardGap = 16;
 

@@ -54,7 +54,8 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
-    this.placeholderType = LoadingViewTypes.shimmer, this.circularProgressSize,
+    this.placeholderType = LoadingViewTypes.shimmer,
+    this.circularProgressSize,
   });
 
   final String imageUrl;
@@ -75,35 +76,43 @@ class AppCachedNetworkImage extends StatelessWidget {
         child: SizedBox(
           width: width,
           height: height,
-          child: Image(
-            image: imageProvider,
-            fit: fit,
-          ),
+          child: Image(image: imageProvider, fit: fit),
         ),
       ),
       placeholder: (context, url) {
         switch (placeholderType) {
           case LoadingViewTypes.circular:
-            return Center(child: SizedBox(
-                width: circularProgressSize?? ((width??30)*0.7),
-                height: circularProgressSize?? ((width??30)*0.7),
-                child: CircularProgressIndicator(color: colors.primary,)));
+            return Center(
+              child: SizedBox(
+                width: circularProgressSize ?? ((width ?? 30) * 0.7),
+                height: circularProgressSize ?? ((width ?? 30) * 0.7),
+                child: CircularProgressIndicator(color: colors.primary),
+              ),
+            );
           case LoadingViewTypes.shimmer || null:
             return AppShimmer(
-              child: Container(width: double.infinity,height: double.infinity, color: colors.onPrimary),
+              child: Container(
+                width: double.infinity,
+                height: height,
+                color: colors.onPrimary,
+              ),
             );
         }
       },
-      errorWidget: (_, _, _) =>
-          Container(
-              width: width?? double.infinity,
-              alignment: Alignment.center,
-              clipBehavior: Clip.antiAlias,
-              height: height?? double.infinity,
-              decoration: BoxDecoration(
-                  color: colors.onSurface.withValues(alpha: 0.3),
-              ),
-              child: Assets.media.images.png.noImageAvail.image(fit: BoxFit.contain,height: double.infinity,width: double.infinity)),
+      errorWidget: (_, _, _) => Container(
+        width: width ?? double.infinity,
+        alignment: Alignment.center,
+        clipBehavior: Clip.antiAlias,
+        height: height ?? double.infinity,
+        decoration: BoxDecoration(
+          color: colors.onSurface.withValues(alpha: 0.3),
+        ),
+        child: Assets.media.images.png.noImageAvail.image(
+          fit: BoxFit.contain,
+          height: double.infinity,
+          width: double.infinity,
+        ),
+      ),
     );
   }
 }
