@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/features/categories/data/models/product_mod
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_category_provider.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_id_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
 
 class StoreCategoryProductsView extends ConsumerStatefulWidget {
@@ -32,8 +33,9 @@ class _StoreCategoryProductsViewState
 
   void _fetchStoreCategoryProducts() {
     final CategoryModel category = ref.read(storeCategoryProvider);
+    final int storeId = ref.read(storeIdProvider);
     productsViewModel.getStoreCategoryProducts(
-      categorySlug: category.slug ?? '',
+      storeId: storeId,
       categoryId: category.id,
     );
   }

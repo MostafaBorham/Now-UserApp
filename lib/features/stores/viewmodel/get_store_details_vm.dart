@@ -29,7 +29,7 @@ class GetStoreDetailsViewModel
   Future<void> getStoreDetails() async {
     state = const AsyncValue.loading();
 
-    final result = await _repo.getStoreDetails(storeId: 7);
+    final result = await _repo.getStoreDetails(storeId: 3);
 
     if (!mounted) return;
 

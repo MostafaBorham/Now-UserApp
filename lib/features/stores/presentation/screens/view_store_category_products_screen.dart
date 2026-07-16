@@ -7,16 +7,25 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_s
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_category_provider.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_id_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/view_store_category_products_screen/store_category_products_view.dart';
 
 class ViewStoreCategoryProductsScreen extends StatelessWidget {
-  const ViewStoreCategoryProductsScreen({super.key, required this.category});
+  const ViewStoreCategoryProductsScreen({
+    super.key,
+    required this.storeId,
+    required this.category,
+  });
+  final int storeId;
   final CategoryModel category;
 
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-      overrides: [storeCategoryProvider.overrideWithValue(category)],
+      overrides: [
+        storeCategoryProvider.overrideWithValue(category),
+        storeIdProvider.overrideWithValue(storeId),
+      ],
       child: Scaffold(
         body: AppWavedScaffold(
           body: Column(

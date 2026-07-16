@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 
 class StoreCategoryCirclesList extends ConsumerWidget {
@@ -14,36 +15,36 @@ class StoreCategoryCirclesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final List<CategoryModel> categories =
-        ref.watch(storeProvider).categories ?? const [];
+    final StoreModel store = ref.watch(storeProvider);
+    final List<CategoryModel> categories = store.categories ?? const [];
 
     if (categories.isEmpty) return const SizedBox.shrink();
-    // if (categories.isEmpty) return InkWell(
-    //   onTap: () => context.pushNamed(
-    //     AppRoutes.viewStoreCategoryProductsScreen,
-    //     extra: CategoryModel(
-    //       id: 1,
-    //       slug: 'electronics',
-    //       name: 'Products'
-    //     ),
-    //   ),
-    //   child: Column(
-    //     spacing: 8,
-    //     children: [
-    //       CircularBrandLogo(
-    //         radius: 40,
-    //         logoUrl: '',
-    //       ),
-    //       AutoSizeText(
-    //         'sddssd',
-    //         maxLines: 1,
-    //         style: AppTextStyles.style14SemiBold.copyWith(
-    //           color: colors.onSecondary,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+/*    if (categories.isEmpty) return InkWell(
+      onTap: () => context.pushNamed(
+        AppRoutes.viewStoreCategoryProductsScreen,
+        extra: (storeId: store.id ?? 0, category: CategoryModel(
+            id: 1,
+            slug: 'electronics',
+            name: 'Products'
+        )),
+      ),
+      child: Column(
+        spacing: 8,
+        children: [
+          CircularBrandLogo(
+            radius: 40,
+            logoUrl: '',
+          ),
+          AutoSizeText(
+            'sddssd',
+            maxLines: 1,
+            style: AppTextStyles.style14SemiBold.copyWith(
+              color: colors.onSecondary,
+            ),
+          ),
+        ],
+      ),
+    );*/
 
     return SizedBox(
       height: 110,
@@ -55,7 +56,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
         itemBuilder: (_, index) => InkWell(
           onTap: () => context.pushNamed(
             AppRoutes.viewStoreCategoryProductsScreen,
-            extra: categories[index],
+            extra: (storeId: store.id ?? 0, category: categories[index]),
           ),
           child: SizedBox(
             width: 80,

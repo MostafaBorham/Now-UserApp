@@ -57,7 +57,7 @@ class StoresRepo {
   }
 
   Future<Either<Failure, List<ProductModel>>> getStoreCategoryProducts({
-    required String categorySlug,
+    required int storeId,
     required int? categoryId,
   }) async {
     if (!await ConnectionChecker.isConnected) {
@@ -67,7 +67,7 @@ class StoresRepo {
     try {
       final Response response = await _storesApiService
           .getStoreCategoryProducts(
-            categorySlug: categorySlug,
+            storeId: storeId,
             categoryId: categoryId,
           );
 

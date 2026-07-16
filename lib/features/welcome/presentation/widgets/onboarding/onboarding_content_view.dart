@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/welcome/viewmodel/get_guest_token_vm.dart';
+import 'package:nowdelivery_user_app/features/welcome/viewmodel/guest_token_vm.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -17,7 +17,8 @@ class OnBoardingContentView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<String?>>(getGuestTokenProvider,
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    ref.listen<AsyncValue<String?>>(generateGuestTokenProvider,
         (AsyncValue<String?>? previous, AsyncValue<String?> next) {
       next.whenOrNull(
         data: (String? guestToken) {
@@ -30,17 +31,25 @@ class OnBoardingContentView extends ConsumerWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(error.toString().tr()),
+                content: Text(error.toString().tr(),style: AppTextStyles.style16SemiBold.copyWith(
+                    color: colors.onPrimary
+                ),),
                 behavior: SnackBarBehavior.floating,
+                elevation: 4,
+                padding: EdgeInsets.all(16),
+                backgroundColor: colors.onError,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(100)
+                ),
               ),
             );
         },
       );
     });
     final bool isGuestTokenLoading =
-        ref.watch(getGuestTokenProvider).isLoading;
+        ref.watch(generateGuestTokenProvider).isLoading;
 
-    final ColorScheme colors = Theme.of(context).colorScheme;
+
     final Gradient screenGradient = LinearGradient(
       colors: [colors.secondaryFixed, colors.primary],
       begin: Alignment.centerLeft,
@@ -161,6 +170,7 @@ class OnBoardingContentView extends ConsumerWidget {
           AspectRatio(
             aspectRatio: 7.5,
             child: PrimaryGradientAppButton(
+              onTap: () =>  context.goNamed(AppRoutes.phoneVerificationScreen),
               title: LangKeys.loginKey.tr(),
               buttonGradient: screenGradient,
             ),
@@ -174,7 +184,7 @@ class OnBoardingContentView extends ConsumerWidget {
               title: LangKeys.continueAsGuestKey.tr(),
               isLoading: isGuestTokenLoading,
               onTap: () {
-                ref.read(getGuestTokenProvider.notifier).getGuestToken();
+                ref.read(generateGuestTokenProvider.notifier).generateGuestToken();
               },
               buttonGradient: screenGradient,
             ),

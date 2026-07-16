@@ -52,6 +52,16 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.onBoardingScreen,
         path: '/${AppRoutes.onBoardingScreen}',
+        // The splash always targets this route and passes the cached guest
+        // token via `extra`. A null/empty token means no guest session yet,
+        // so onboarding builds normally; a real token reroutes to main.
+        redirect: (context, state) {
+          final String? guestToken = state.extra as String?;
+          final bool hasGuestToken =
+              guestToken != null && guestToken.isNotEmpty;
+
+          return hasGuestToken ? '/${AppRoutes.mainScreen}' : null;
+        },
         builder: (context, state) => const OnBoardingScreen(),
       ),
       GoRoute(
@@ -129,10 +139,12 @@ abstract class AppRouter {
         name: AppRoutes.viewStoreCategoryProductsScreen,
         path: '/${AppRoutes.viewStoreCategoryProductsScreen}',
         builder: (context, state) {
-          final category = state.extra as CategoryModel?;
+          final args =
+              state.extra as ({int storeId, CategoryModel category})?;
 
           return ViewStoreCategoryProductsScreen(
-            category: category ?? const CategoryModel(),
+            storeId: args?.storeId ?? 0,
+            category: args?.category ?? const CategoryModel(),
           );
         },
       ),

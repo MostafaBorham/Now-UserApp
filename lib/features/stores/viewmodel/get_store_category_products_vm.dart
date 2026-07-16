@@ -30,13 +30,13 @@ class GetStoreCategoryProductsViewModel
   }
 
   Future<void> getStoreCategoryProducts({
-    required String categorySlug,
+    required int storeId,
     required int? categoryId,
   }) async {
     state = const AsyncValue.loading();
 
     final result = await _repo.getStoreCategoryProducts(
-      categorySlug: categorySlug,
+      storeId: storeId,
       categoryId: categoryId,
     );
 
