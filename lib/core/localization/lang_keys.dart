@@ -186,6 +186,7 @@ abstract class LangKeys {
   static const String unableToReachServersKey = 'unableToReachServers';
   static const String retryKey = 'retry';
   static const String noInternetConnectionKey = 'noInternetConnection';
+  static const String saveGuestSessionFailedKey = 'saveGuestSessionFailed';
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
   static const String appUnderMaintenanceSubtitleKey = 'appUnderMaintenanceSubtitle';
   static const String notifyMeWhenDoneKey = 'notifyMeWhenDone';

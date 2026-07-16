@@ -140,6 +140,7 @@
   "unableToReachServers": "Unable to reach the servers. Please check your internet connection and try again.",
   "retry": "Retry",
   "noInternetConnection": "No internet connection. Please check your network and try again.",
+  "saveGuestSessionFailed": "Failed to save guest session, please try again.",
   "appUnderMaintenance": "App is under maintenance",
   "appUnderMaintenanceSubtitle": "We’re working to improve your experience. We’ll be back soon. Thank you for your patience.",
   "notifyMeWhenDone": "Notify me when it’s done",

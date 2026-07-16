@@ -13,7 +13,6 @@ dependencies:
   dartz: ^0.10.1
   equatable: ^2.0.8
   dio: ^5.10.0
-  flutter_screenutil: ^5.9.3
   flutter_riverpod: ^2.6.1
   shared_preferences: ^2.5.5
   pretty_dio_logger: ^1.4.0

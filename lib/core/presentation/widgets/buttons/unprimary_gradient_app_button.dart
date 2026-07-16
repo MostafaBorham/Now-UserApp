@@ -7,6 +7,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
     required this.title,
     this.onTap,
     this.buttonPadding = 12, required this.buttonGradient, this.backgroundColor,
+    this.isLoading = false,
   });
 
   final String title;
@@ -15,11 +16,14 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
   final Gradient buttonGradient;
   final Color? backgroundColor;
 
+  /// Replaces the title with a circular indicator and disables taps.
+  final bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         padding: EdgeInsets.all(2),
         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -35,19 +39,30 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
             // borderRadius: BorderRadius.circular(8),
             // border: Border.all(color: colors.primary, width: 2),
           ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.style16Medium.copyWith(
-                foreground: Paint()
-                  ..shader = buttonGradient.createShader(
-                    const Rect.fromLTWH(0, 0, 300, 70),
+          child: isLoading
+              ? Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: colors.primary,
+                    ),
                   ),
-              ),
-            ),
-          ),
+                )
+              : FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.style16Medium.copyWith(
+                      foreground: Paint()
+                        ..shader = buttonGradient.createShader(
+                          const Rect.fromLTWH(0, 0, 300, 70),
+                        ),
+                    ),
+                  ),
+                ),
         ),
       ),
     );

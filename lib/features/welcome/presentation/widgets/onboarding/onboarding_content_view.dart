@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/welcome/viewmodel/get_guest_token_vm.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -10,11 +12,34 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_g
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_gradient_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/app_logo.dart';
 
-class OnBoardingContentView extends StatelessWidget {
+class OnBoardingContentView extends ConsumerWidget {
   const OnBoardingContentView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<String?>>(getGuestTokenProvider,
+        (AsyncValue<String?>? previous, AsyncValue<String?> next) {
+      next.whenOrNull(
+        data: (String? guestToken) {
+          if (guestToken != null) {
+            context.goNamed(AppRoutes.mainScreen);
+          }
+        },
+        error: (Object error, StackTrace stackTrace) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(error.toString().tr()),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        },
+      );
+    });
+    final bool isGuestTokenLoading =
+        ref.watch(getGuestTokenProvider).isLoading;
+
     final ColorScheme colors = Theme.of(context).colorScheme;
     final Gradient screenGradient = LinearGradient(
       colors: [colors.secondaryFixed, colors.primary],
@@ -147,8 +172,9 @@ class OnBoardingContentView extends StatelessWidget {
             aspectRatio: 7.5,
             child: UnPrimaryGradientAppButton(
               title: LangKeys.continueAsGuestKey.tr(),
+              isLoading: isGuestTokenLoading,
               onTap: () {
-                context.goNamed(AppRoutes.mainScreen);
+                ref.read(getGuestTokenProvider.notifier).getGuestToken();
               },
               buttonGradient: screenGradient,
             ),
