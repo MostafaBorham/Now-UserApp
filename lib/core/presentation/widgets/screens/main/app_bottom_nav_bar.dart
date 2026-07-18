@@ -1,10 +1,13 @@
-import 'package:easy_localization/easy_localization.dart';
+﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class AppBottomNavBar extends StatefulWidget {
+/// Fully controlled by the parent: the highlighted tab always follows
+/// [currentIndex], so a tap the parent decides not to honor (e.g. a guest
+/// tapping a login-required tab) leaves the selection unchanged.
+class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     super.key,
     this.currentIndex = 0,
@@ -16,35 +19,10 @@ class AppBottomNavBar extends StatefulWidget {
   final ValueChanged<int>? onIndexChanged;
   final VoidCallback? onCenterTap;
 
-  @override
-  State<AppBottomNavBar> createState() => _AppBottomNavBarState();
-}
-
-class _AppBottomNavBarState extends State<AppBottomNavBar> {
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.currentIndex;
-  }
-
-  @override
-  void didUpdateWidget(covariant AppBottomNavBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentIndex != widget.currentIndex) {
-      _currentIndex = widget.currentIndex;
-    }
-  }
-
   void _changeIndex(int index) {
-    if (_currentIndex == index) return;
+    if (currentIndex == index) return;
 
-    setState(() {
-      _currentIndex = index;
-    });
-
-    widget.onIndexChanged?.call(index);
+    onIndexChanged?.call(index);
   }
 
   @override
@@ -70,7 +48,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                 children: [
                   Expanded(
                     child: _NavItem(
-                      isSelected: _currentIndex == 0,
+                      isSelected: currentIndex == 0,
                       label: LangKeys.homeKey.tr(),
                       selectedColor: colors.primary,
                       unselectedColor: colors.tertiaryContainer,
@@ -78,7 +56,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _currentIndex == 0
+                          currentIndex == 0
                               ? Assets.media.images.svg.filledHomeIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
@@ -97,7 +75,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                           Text(
                             LangKeys.homeKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: _currentIndex == 0
+                              color: currentIndex == 0
                                   ? colors.secondary
                                   : colors.tertiaryContainer,
                             ),
@@ -109,7 +87,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 
                   Expanded(
                     child: _NavItem(
-                      isSelected: _currentIndex == 1,
+                      isSelected: currentIndex == 1,
                       label: LangKeys.favouriteKey.tr(),
                       selectedColor: colors.primary,
                       unselectedColor: colors.tertiaryContainer,
@@ -117,7 +95,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _currentIndex == 1
+                          currentIndex == 1
                               ? Assets.media.images.svg.filledFavouriteIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
@@ -136,7 +114,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                           Text(
                             LangKeys.favouriteKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: _currentIndex == 1
+                              color: currentIndex == 1
                                   ? colors.secondary
                                   : colors.tertiaryContainer,
                             ),
@@ -176,7 +154,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 
                   Expanded(
                     child: _NavItem(
-                      isSelected: _currentIndex == 3,
+                      isSelected: currentIndex == 3,
                       label: LangKeys.ordersKey.tr(),
                       selectedColor: colors.secondary,
                       unselectedColor: colors.tertiaryContainer,
@@ -184,7 +162,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _currentIndex == 3
+                          currentIndex == 3
                               ? Assets.media.images.svg.filledOrdersIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
@@ -203,7 +181,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                           Text(
                             LangKeys.ordersKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: _currentIndex == 3
+                              color: currentIndex == 3
                                   ? colors.secondary
                                   : colors.tertiaryContainer,
                             ),
@@ -215,7 +193,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 
                   Expanded(
                     child: _NavItem(
-                      isSelected: _currentIndex == 4,
+                      isSelected: currentIndex == 4,
                       label: LangKeys.profileKey.tr(),
                       selectedColor: colors.secondary,
                       unselectedColor: colors.tertiaryContainer,
@@ -223,7 +201,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _currentIndex == 4
+                          currentIndex == 4
                               ? Assets.media.images.svg.filledAccountIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
@@ -242,7 +220,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                           Text(
                             LangKeys.profileKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: _currentIndex == 4
+                              color: currentIndex == 4
                                   ? colors.secondary
                                   : colors.tertiaryContainer,
                             ),

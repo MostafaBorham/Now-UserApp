@@ -82,16 +82,12 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
       alignment: Alignment.center,
       children: [
         Row(
+          spacing: 8,
           children: List.generate(widget.length, (index) {
             final bool isActive = hasFocus && index == code.length;
             final String char = index < code.length ? code[index] : '';
             return Expanded(
-              child: Padding(
-                padding: EdgeInsetsDirectional.only(
-                  end: index == widget.length - 1 ? 0 : 8,
-                ),
-                child: _OtpBox(char: char, isActive: isActive),
-              ),
+              child: _OtpBox(char: char, isActive: isActive),
             );
           }),
         ),
