@@ -173,6 +173,7 @@
   "noInternetConnection": "No internet connection. Please check your network and try again.",
   "saveGuestSessionFailed": "Failed to save guest session, please try again.",
   "readGuestSessionFailed": "Failed to read guest session, please try again.",
+  "saveUserSessionFailed": "Failed to save your session, please try again.",
   "appUnderMaintenance": "App is under maintenance",
   "appUnderMaintenanceSubtitle": "We’re working to improve your experience. We’ll be back soon. Thank you for your patience.",
   "notifyMeWhenDone": "Notify me when it’s done",

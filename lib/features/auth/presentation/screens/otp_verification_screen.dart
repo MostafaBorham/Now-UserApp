@@ -9,7 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffol
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/verify_otp_vm.dart';
 
 import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
@@ -42,8 +44,67 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     _otpController.text = digits;
   }
 
+  /// Exits the verification flow after a successful login.
+  ///
+  /// Pops this OTP screen and the phone screen beneath it so back never
+  /// returns into the flow, landing on the screen the flow was opened from
+  /// (e.g. payment methods or the pre-checkout screen). When there is no
+  /// meaningful screen to return to — the flow was entered from onboarding
+  /// or opened directly — the stack is reset to the main screen instead.
+  /// Route-level redirects don't run on pop, so the onboarding case is
+  /// detected and rerouted here.
+  void _leaveVerificationFlow() {
+    final GoRouter router = GoRouter.of(context);
+
+    if (router.canPop()) router.pop(); // this OTP screen
+    if (router.canPop()) router.pop(); // the phone screen beneath it
+
+    final String? landedOn = router.state.topRoute?.name;
+    if (landedOn == null ||
+        landedOn == AppRoutes.onBoardingScreen ||
+        landedOn == AppRoutes.phoneVerificationScreen ||
+        landedOn == AppRoutes.otpVerificationScreen ||
+        landedOn == AppRoutes.splashScreen) {
+      router.goNamed(AppRoutes.mainScreen);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    ref.listen<AsyncValue<UserModel?>>(verifyOtpProvider,
+        (AsyncValue<UserModel?>? previous, AsyncValue<UserModel?> next) {
+      next.whenOrNull(
+        data: (UserModel? user) {
+          if (user != null) {
+            _leaveVerificationFlow();
+          }
+        },
+        error: (Object error, StackTrace stackTrace) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  error.toString().tr(),
+                  style: AppTextStyles.style16SemiBold.copyWith(
+                    color: colors.onPrimary,
+                  ),
+                ),
+                behavior: SnackBarBehavior.floating,
+                elevation: 4,
+                padding: EdgeInsets.all(16),
+                backgroundColor: colors.onError,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(100),
+                ),
+              ),
+            );
+        },
+      );
+    });
+    final bool isVerifyOtpLoading = ref.watch(verifyOtpProvider).isLoading;
+
     return Scaffold(
       body: AppWavedScaffold(
         appBarTitle: LangKeys.verificationCodeKey.tr(),
@@ -95,18 +156,22 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              if (_isCodeComplete)
-                PrimaryAppButton(
-                  title: LangKeys.continueKey.tr(),
-                  buttonPadding: 16,
-                  onTap: () =>
-                      context.pushNamed(AppRoutes.orderConfirmedScreen),
-                )
-              else
-                PrimaryAppDisabledButton(
-                  title: LangKeys.continueKey.tr(),
-                  buttonPadding: 16,
-                ),
+              !_isCodeComplete && !isVerifyOtpLoading
+                  ? PrimaryAppDisabledButton(
+                      title: LangKeys.continueKey.tr(),
+                      buttonPadding: 16,
+                    )
+                  : PrimaryAppButton(
+                      title: LangKeys.continueKey.tr(),
+                      buttonPadding: 16,
+                      isLoading: isVerifyOtpLoading,
+                      onTap: () {
+                        ref.read(verifyOtpProvider.notifier).verifyOtp(
+                              phone: widget.phoneNumber,
+                              code: _otpController.text,
+                            );
+                      },
+                    ),
             ],
           ),
         ),

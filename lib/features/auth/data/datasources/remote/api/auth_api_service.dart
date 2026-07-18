@@ -25,4 +25,18 @@ class AuthApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  /// Verifies the OTP [code] sent to [phone]. The caller's guest session is
+  /// identified by the `X-Guest-Token` header, attached automatically from
+  /// the cache by `AuthTokenInterceptor` — no token is passed here.
+  Future<Response> verifyOtp({
+    required String phone,
+    required String code,
+  }) {
+    return _dio.post(
+      AuthEndpoints.verifyOtp,
+      data: <String, dynamic>{'phone': phone, 'code': code},
+      cancelToken: _canceller.token,
+    );
+  }
 }

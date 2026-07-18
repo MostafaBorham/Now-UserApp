@@ -16,6 +16,10 @@ class CacheException implements Exception {
   static const String readGuestSessionFailedMessage =
       LangKeys.readGuestSessionFailedKey;
 
+  /// Message key used when persisting the logged-in user session fails.
+  static const String saveUserSessionFailedMessage =
+      LangKeys.saveUserSessionFailedKey;
+
   final String message;
 
   const CacheException(this.message);

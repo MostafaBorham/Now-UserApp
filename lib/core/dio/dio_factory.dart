@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 
 class DioFactory {
@@ -25,6 +26,9 @@ class DioFactory {
       ),
     );
 
+    // Order matters: attach the token first so the logger prints the final
+    // outgoing headers.
+    dio.interceptors.add(AuthTokenInterceptor());
     dio.interceptors.add(DioLogger.logger);
 
     return dio;

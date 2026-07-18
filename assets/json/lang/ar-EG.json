@@ -173,6 +173,7 @@
   "noInternetConnection": "لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة والمحاولة مرة أخرى.",
   "saveGuestSessionFailed": "فشل حفظ جلسة الضيف، يرجى المحاولة مرة أخرى.",
   "readGuestSessionFailed": "فشل قراءة جلسة الضيف، يرجى المحاولة مرة أخرى.",
+  "saveUserSessionFailed": "فشل حفظ جلستك، يرجى المحاولة مرة أخرى.",
   "appUnderMaintenance": "التطبيق قيد الصيانة",
   "appUnderMaintenanceSubtitle": "نعمل على تحسين تجربتك. سنعود قريبًا. شكرًا لصبرك.",
   "notifyMeWhenDone": "أبلغني عند الانتهاء",

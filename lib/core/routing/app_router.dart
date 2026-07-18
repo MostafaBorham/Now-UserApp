@@ -42,6 +42,24 @@ import 'package:nowdelivery_user_app/features/welcome/presentation/screens/splas
 import 'app_routes.dart';
 
 abstract class AppRouter {
+  /// Shared redirect of the verification flow (phone + OTP screens).
+  ///
+  /// Those screens exist only to log a guest in, so once a user token is
+  /// cached (token present and `isGuest == false`) they redirect to the main
+  /// screen. Checking the token alone is not enough — a guest session also
+  /// stores a (guest) token, and guests are exactly who these screens are
+  /// for.
+  static String? _redirectLoggedInUserToMain(
+    BuildContext context,
+    GoRouterState state,
+  ) {
+    final Map<String, dynamic> tokenData = WelcomeCacheService().getToken();
+    final String token = tokenData[CacheKeys.tokenValue] as String? ?? '';
+    final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
+
+    return token.isNotEmpty && !isGuest ? '/${AppRoutes.mainScreen}' : null;
+  }
+
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     errorBuilder: (context, state) => const SizedBox.shrink(),
@@ -185,11 +203,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.phoneVerificationScreen,
         path: '/${AppRoutes.phoneVerificationScreen}',
+        redirect: _redirectLoggedInUserToMain,
         builder: (context, state) => const PhoneVerificationScreen(),
       ),
       GoRoute(
         name: AppRoutes.otpVerificationScreen,
         path: '/${AppRoutes.otpVerificationScreen}',
+        redirect: _redirectLoggedInUserToMain,
         builder: (context, state) {
           final phoneNumber = state.extra as String?;
 
