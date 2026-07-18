@@ -16,6 +16,7 @@ final Provider<List<Widget>> mainPagesProvider = Provider(
   ],
 );
 
-final StateProvider<int> currentPageIndexProvider = StateProvider(
+final AutoDisposeStateProvider<int> currentPageIndexProvider =
+    StateProvider.autoDispose(
       (ref) => 0,
 );
