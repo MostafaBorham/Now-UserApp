@@ -170,7 +170,7 @@ class OnBoardingContentView extends ConsumerWidget {
           AspectRatio(
             aspectRatio: 7.5,
             child: PrimaryGradientAppButton(
-              onTap: () =>  context.goNamed(AppRoutes.phoneVerificationScreen),
+              onTap: () => context.pushNamed(AppRoutes.phoneVerificationScreen),
               title: LangKeys.loginKey.tr(),
               buttonGradient: screenGradient,
             ),

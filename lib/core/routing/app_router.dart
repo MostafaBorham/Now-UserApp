@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/map.dart';
 import 'package:nowdelivery_user_app/features/address/my_address_screen.dart';
@@ -52,15 +54,15 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.onBoardingScreen,
         path: '/${AppRoutes.onBoardingScreen}',
-        // The splash always targets this route and passes the cached guest
-        // token via `extra`. A null/empty token means no guest session yet,
-        // so onboarding builds normally; a real token reroutes to main.
         redirect: (context, state) {
-          final String? guestToken = state.extra as String?;
-          final bool hasGuestToken =
-              guestToken != null && guestToken.isNotEmpty;
+          bool hasToken;
+            final Map<String, dynamic> tokenData =
+                WelcomeCacheService().getToken();
+            final String token =
+                tokenData[CacheKeys.tokenValue] as String? ?? '';
+            hasToken = token.isNotEmpty;
 
-          return hasGuestToken ? '/${AppRoutes.mainScreen}' : null;
+          return hasToken ? '/${AppRoutes.mainScreen}' : null;
         },
         builder: (context, state) => const OnBoardingScreen(),
       ),
@@ -213,6 +215,16 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.checkoutScreen,
         path: '/${AppRoutes.checkoutScreen}',
+        // Checkout is only for authenticated users. A guest session
+        // (isGuest == true) or no session at all is rerouted to phone
+        // verification to log in; a registered user continues to checkout.
+        redirect: (context, state) {
+          final Map<String, dynamic> tokenData =
+              WelcomeCacheService().getToken();
+          final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
+
+          return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
+        },
         builder: (context, state) => const CheckoutScreen(),
       ),
       GoRoute(

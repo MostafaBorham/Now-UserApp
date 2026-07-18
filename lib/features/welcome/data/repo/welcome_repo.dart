@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -58,22 +57,6 @@ class WelcomeRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
-  }
-
-  /// Reads the auth token from the local cache.
-  ///
-  /// `Right` carries the cached token, or an empty string when none is
-  /// stored yet (first launch). A genuine cache read error is a `Left`.
-  Future<Either<Failure, String>> getCachedToken() async {
-    try {
-      final Map<String, dynamic> tokenData = _welcomeCacheService.getToken();
-      final String token = tokenData[CacheKeys.tokenValue] as String? ?? '';
-      return Right(token);
-    } on CacheException catch (exception) {
-      return Left(Failure(exception.message));
     } catch (exception) {
       return Left(Failure(exception.toString()));
     }
