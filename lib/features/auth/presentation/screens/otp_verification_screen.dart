@@ -13,11 +13,11 @@ import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
-/// Step 2 of guest verification: enter the OTP sent to the phone number.
+/// Step 2 of login: enter the OTP sent to the phone number.
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({
     super.key,
-    this.phoneNumber = '+966 5 1234 5678',
+    required this.phoneNumber,
   });
 
   final String phoneNumber;

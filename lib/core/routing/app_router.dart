@@ -22,9 +22,9 @@ import 'package:nowdelivery_user_app/features/home/presentation/screens/top_bran
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
-import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/otp_verification_screen.dart';
+import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/personal_information_screen.dart';
-import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/phone_verification_screen.dart';
+import 'package:nowdelivery_user_app/features/auth/presentation/screens/phone_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
@@ -190,7 +190,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.otpVerificationScreen,
         path: '/${AppRoutes.otpVerificationScreen}',
-        builder: (context, state) => const OtpVerificationScreen(),
+        builder: (context, state) {
+          final phoneNumber = state.extra as String?;
+
+          return OtpVerificationScreen(
+            phoneNumber: phoneNumber ?? '',
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.personalInformationScreen,
