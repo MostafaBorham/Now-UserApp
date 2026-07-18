@@ -10,13 +10,19 @@ class OtpCodeField extends StatefulWidget {
   const OtpCodeField({
     super.key,
     required this.controller,
-    this.length = 4,
+    this.length = 6,
     this.onCompleted,
+    this.onCompletionChanged,
   });
 
   final TextEditingController controller;
   final int length;
   final ValueChanged<String>? onCompleted;
+
+  /// Fires with `true` once all [length] digits are entered and `false` when
+  /// the code becomes incomplete again (e.g. on backspace). Only fires on a
+  /// change of state, so the parent can drive its button toggle off it.
+  final ValueChanged<bool>? onCompletionChanged;
 
   @override
   State<OtpCodeField> createState() => _OtpCodeFieldState();
@@ -24,6 +30,7 @@ class OtpCodeField extends StatefulWidget {
 
 class _OtpCodeFieldState extends State<OtpCodeField> {
   final FocusNode _focusNode = FocusNode();
+  bool _isComplete = false;
 
   @override
   void initState() {
@@ -33,9 +40,26 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
   }
 
   void _onChanged() {
+    // A programmatic assignment (e.g. paste) bypasses the field's input
+    // formatters, so clamp the length here to keep the field the single owner
+    // of the [length] constraint. The reassignment re-triggers this listener
+    // with the clamped value, which then falls through to the logic below.
+    if (widget.controller.text.length > widget.length) {
+      final String clamped = widget.controller.text.substring(0, widget.length);
+      widget.controller.value = TextEditingValue(
+        text: clamped,
+        selection: TextSelection.collapsed(offset: clamped.length),
+      );
+      return;
+    }
     setState(() {});
-    if (widget.controller.text.length == widget.length) {
+    final bool complete = widget.controller.text.length == widget.length;
+    if (complete) {
       widget.onCompleted?.call(widget.controller.text);
+    }
+    if (complete != _isComplete) {
+      _isComplete = complete;
+      widget.onCompletionChanged?.call(complete);
     }
   }
 
@@ -64,7 +88,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
             return Expanded(
               child: Padding(
                 padding: EdgeInsetsDirectional.only(
-                  end: index == widget.length - 1 ? 0 : 12,
+                  end: index == widget.length - 1 ? 0 : 8,
                 ),
                 child: _OtpBox(char: char, isActive: isActive),
               ),

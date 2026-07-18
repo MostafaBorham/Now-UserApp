@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import '../widgets/otp_verification/otp_actions_row.dart';
@@ -15,10 +15,7 @@ import '../widgets/shared/verification_headline.dart';
 
 /// Step 2 of login: enter the OTP sent to the phone number.
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({
-    super.key,
-    required this.phoneNumber,
-  });
+  const OtpVerificationScreen({super.key, required this.phoneNumber});
 
   final String phoneNumber;
 
@@ -29,7 +26,8 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
 
-  static const int _codeLength = 4;
+
+  bool _isCodeComplete = false;
 
   @override
   void dispose() {
@@ -37,12 +35,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.dispose();
   }
 
-  Future<void> _pasteCode() async {
-    final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-    final String digits = (data?.text ?? '').replaceAll(RegExp(r'[^0-9]'), '');
-    _otpController.text = digits.length > _codeLength
-        ? digits.substring(0, _codeLength)
-        : digits;
+  void _pasteCode(String digits) {
+    _otpController.text = digits;
   }
 
   @override
@@ -73,16 +67,26 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              OtpCodeField(controller: _otpController, length: _codeLength),
+              OtpCodeField(
+                controller: _otpController,
+                onCompletionChanged: (isComplete) =>
+                    setState(() => _isCodeComplete = isComplete),
+              ),
               const SizedBox(height: 16),
               OtpActionsRow(onResend: () {}, onPaste: _pasteCode),
               const SizedBox(height: 28),
-              PrimaryAppButton(
-                title: LangKeys.continueKey.tr(),
-                buttonPadding: 16,
-                onTap: () => context.pushNamed(AppRoutes.orderConfirmedScreen,
+              if (_isCodeComplete)
+                PrimaryAppButton(
+                  title: LangKeys.continueKey.tr(),
+                  buttonPadding: 16,
+                  onTap: () =>
+                      context.pushNamed(AppRoutes.orderConfirmedScreen),
+                )
+              else
+                PrimaryAppDisabledButton(
+                  title: LangKeys.continueKey.tr(),
+                  buttonPadding: 16,
                 ),
-              ),
             ],
           ),
         ),

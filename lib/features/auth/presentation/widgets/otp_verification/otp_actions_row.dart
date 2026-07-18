@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -17,11 +18,14 @@ class OtpActionsRow extends StatefulWidget {
     super.key,
     required this.onResend,
     required this.onPaste,
-    this.countdown = const Duration(seconds: 30),
+    this.countdown = const Duration(seconds: 60),
   });
 
   final VoidCallback onResend;
-  final VoidCallback onPaste;
+
+  /// Fires with the digits extracted from the clipboard when "Paste Code" is
+  /// tapped. Empty if the clipboard holds no digits.
+  final ValueChanged<String> onPaste;
   final Duration countdown;
 
   @override
@@ -62,6 +66,12 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
     if (_secondsLeft > 0) return;
     widget.onResend();
     _restartCountdown();
+  }
+
+  Future<void> _onPasteTap() async {
+    final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    final String digits = (data?.text ?? '').replaceAll(RegExp(r'[^0-9]'), '');
+    widget.onPaste(digits);
   }
 
   String get _formatted {
@@ -109,7 +119,7 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
           ),
         ),
         const SizedBox(width: 12),
-        _PasteCodeButton(onTap: widget.onPaste),
+        _PasteCodeButton(onTap: _onPasteTap),
       ],
     );
   }

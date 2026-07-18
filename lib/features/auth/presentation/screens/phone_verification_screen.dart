@@ -88,24 +88,21 @@ class _PhoneVerificationScreenState
                     setState(() => _isPhoneValid = isValid),
               ),
               const SizedBox(height: 28),
-              isRequestOtpLoading
-                  ? Center(
-                      child: CircularProgressIndicator(color: colors.primary),
+              !_isPhoneValid && !isRequestOtpLoading
+                  ? PrimaryAppDisabledButton(
+                      title: LangKeys.continueKey.tr(),
+                      buttonPadding: 16,
                     )
-                  : !_isPhoneValid
-                      ? PrimaryAppDisabledButton(
-                          title: LangKeys.continueKey.tr(),
-                          buttonPadding: 16,
-                        )
-                      : PrimaryAppButton(
-                          title: LangKeys.continueKey.tr(),
-                          buttonPadding: 16,
-                          onTap: () {
-                            ref
-                                .read(requestOtpProvider.notifier)
-                                .requestOtp(_phoneController.text.trim());
-                          },
-                        ),
+                  : PrimaryAppButton(
+                      title: LangKeys.continueKey.tr(),
+                      buttonPadding: 16,
+                      isLoading: isRequestOtpLoading,
+                      onTap: () {
+                        ref
+                            .read(requestOtpProvider.notifier)
+                            .requestOtp(_phoneController.text.trim());
+                      },
+                    ),
             ],
           ),
         ),
