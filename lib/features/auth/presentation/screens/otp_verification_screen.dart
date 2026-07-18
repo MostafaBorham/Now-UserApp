@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
@@ -8,22 +9,24 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffol
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
 
 import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
 /// Step 2 of login: enter the OTP sent to the phone number.
-class OtpVerificationScreen extends StatefulWidget {
+class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key, required this.phoneNumber});
 
   final String phoneNumber;
 
   @override
-  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+  ConsumerState<OtpVerificationScreen> createState() =>
+      _OtpVerificationScreenState();
 }
 
-class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
 
 
@@ -73,7 +76,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     setState(() => _isCodeComplete = isComplete),
               ),
               const SizedBox(height: 16),
-              OtpActionsRow(onResend: () {}, onPaste: _pasteCode),
+              // Give the resend action its own scoped instance of
+              // requestOtpProvider. The phone screen (still mounted below in
+              // the stack) listens to the root instance, so a resend here does
+              // not trigger its listener and re-navigate to this screen.
+              ProviderScope(
+                overrides: [
+                  requestOtpProvider
+                      .overrideWith((Ref ref) => RequestOtpViewModel()),
+                ],
+                child: Consumer(
+                  builder: (context, WidgetRef ref, _) => OtpActionsRow(
+                    onResend: () => ref
+                        .read(requestOtpProvider.notifier)
+                        .requestOtp(widget.phoneNumber),
+                    onPaste: _pasteCode,
+                  ),
+                ),
+              ),
               const SizedBox(height: 28),
               if (_isCodeComplete)
                 PrimaryAppButton(
