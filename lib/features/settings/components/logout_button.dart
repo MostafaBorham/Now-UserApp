@@ -6,10 +6,14 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import '../app_colors.dart';
 
 /// Full-width red "Log Out" button with the provided logout icon.
+///
+/// While [isLoading] is true it shows a spinner and ignores taps, so the
+/// logout request can't be fired twice.
 class LogoutButton extends StatelessWidget {
-  const LogoutButton({super.key, this.onPressed});
+  const LogoutButton({super.key, this.onPressed, this.isLoading = false});
 
   final VoidCallback? onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -18,25 +22,36 @@ class LogoutButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: onPressed,
+        onTap: isLoading ? null : onPressed,
         child: SizedBox(
           height: 54,
           width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Assets.media.images.svg.logout.svg(width: 22, height: 22),
-              const SizedBox(width: 12),
-              Text(
-                LangKeys.logout.tr(),
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.logoutForeground,
+          child: isLoading
+              ? Center(
+                  child: SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: AppColors.logoutForeground,
+                    ),
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Assets.media.images.svg.logout.svg(width: 22, height: 22),
+                    const SizedBox(width: 12),
+                    Text(
+                      LangKeys.logout.tr(),
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.logoutForeground,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );

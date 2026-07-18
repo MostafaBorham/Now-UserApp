@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
@@ -60,6 +62,13 @@ abstract class AppRouter {
     return token.isNotEmpty && !isGuest ? '/${AppRoutes.mainScreen}' : null;
   }
 
+  static FutureOr<String?> _redirectToLogin(BuildContext context, GoRouterState state) {
+    final Map<String, dynamic> tokenData =
+    WelcomeCacheService().getToken();
+    final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
+
+    return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
+  }
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     errorBuilder: (context, state) => const SizedBox.shrink(),
@@ -143,6 +152,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.notificationsScreen,
         path: '/${AppRoutes.notificationsScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
@@ -244,13 +254,7 @@ abstract class AppRouter {
         // Checkout is only for authenticated users. A guest session
         // (isGuest == true) or no session at all is rerouted to phone
         // verification to log in; a registered user continues to checkout.
-        redirect: (context, state) {
-          final Map<String, dynamic> tokenData =
-              WelcomeCacheService().getToken();
-          final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-          return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
-        },
+        redirect: _redirectToLogin,
         builder: (context, state) => const CheckoutScreen(),
       ),
       GoRoute(

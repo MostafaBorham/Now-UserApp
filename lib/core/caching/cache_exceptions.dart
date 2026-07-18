@@ -20,6 +20,10 @@ class CacheException implements Exception {
   static const String saveUserSessionFailedMessage =
       LangKeys.saveUserSessionFailedKey;
 
+  /// Message key used when clearing the cached session (logout) fails.
+  static const String clearUserSessionFailedMessage =
+      LangKeys.clearUserSessionFailedKey;
+
   final String message;
 
   const CacheException(this.message);

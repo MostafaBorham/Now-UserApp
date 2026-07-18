@@ -14,13 +14,19 @@ import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
 class AuthTokenInterceptor extends Interceptor {
   static const String _headerKey = 'X-Guest-Token';
 
+  /// Flag in `RequestOptions.extra`: when `true`, the `X-Guest-Token` header
+  /// is not attached (e.g. the logout request authenticates with a `Bearer`
+  /// token only).
+  static const String skipGuestTokenKey = 'skipGuestToken';
+
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) {
+    final bool skip = options.extra[skipGuestTokenKey] as bool? ?? false;
     final String token = _readCachedToken();
-    if (token.isNotEmpty) {
+    if (!skip && token.isNotEmpty) {
       options.headers[_headerKey] = token;
     }
     handler.next(options);

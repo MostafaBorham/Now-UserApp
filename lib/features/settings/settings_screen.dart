@@ -1,10 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 
 import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
@@ -23,11 +26,48 @@ import 'components/settings_tile.dart';
 ///   4. [LogoutButton]   – red log out action
 ///
 /// The bottom navigation bar is intentionally NOT included here.
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
+    ref.listen<AsyncValue<dynamic>>(logoutProvider,
+        (AsyncValue<dynamic>? previous, AsyncValue<dynamic> next) {
+      next.whenOrNull(
+        // Logged out: reset the stack so onboarding is the only screen left.
+        data: (dynamic value) {
+          if (value != null) {
+            context.goNamed(AppRoutes.onBoardingScreen);
+          }
+        },
+        error: (Object error, StackTrace stackTrace) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  error.toString().tr(),
+                  style: AppTextStyles.style16SemiBold.copyWith(
+                    color: colors.onPrimary,
+                  ),
+                ),
+                behavior: SnackBarBehavior.floating,
+                elevation: 4,
+                padding: const EdgeInsets.all(16),
+                backgroundColor: colors.onError,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+            );
+        },
+      );
+    });
+
+    final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: AppWavedScaffold(
@@ -98,7 +138,10 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 28),
-              LogoutButton(onPressed: () {}),
+              LogoutButton(
+                isLoading: isLoggingOut,
+                onPressed: () => ref.read(logoutProvider.notifier).logout(),
+              ),
               const SizedBox(height: 32),
             ],
           ),

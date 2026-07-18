@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
 import 'package:nowdelivery_user_app/features/auth/data/datasources/remote/api/auth_endpoints.dart';
 
@@ -37,6 +38,23 @@ class AuthApiService {
       AuthEndpoints.verifyOtp,
       data: <String, dynamic>{'phone': phone, 'code': code},
       cancelToken: _canceller.token,
+    );
+  }
+
+  /// Logs the current user out. Authenticated by a `Bearer` token passed in
+  /// explicitly by the repository (read from the cache there). The
+  /// `skipGuestToken` flag tells `AuthTokenInterceptor` not to attach the
+  /// `X-Guest-Token` header, so this request carries the `Bearer` token only.
+  Future<Response> logout({required String token}) {
+    return _dio.post(
+      AuthEndpoints.logout,
+      cancelToken: _canceller.token,
+      options: Options(
+        headers: <String, dynamic>{'Authorization': 'Bearer $token'},
+        extra: <String, dynamic>{
+          AuthTokenInterceptor.skipGuestTokenKey: true,
+        },
+      ),
     );
   }
 }

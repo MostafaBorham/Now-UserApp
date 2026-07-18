@@ -110,4 +110,44 @@ class AuthRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  /// Logs the current user out.
+  ///
+  /// Authenticates with the cached token (as a `Bearer` header) and, only when
+  /// the server reports `success: true`, clears the cached session so the app
+  /// falls back to a logged-out state. `Right(unit)` means the user is fully
+  /// logged out; anything else is a `Left` carrying the error message.
+  Future<Either<Failure, Unit>> logout() async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final String token = _authCacheService.getToken();
+
+      final Response response = await _authApiService.logout(token: token);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+
+      if (!success) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      await _authCacheService.clearToken();
+
+      return const Right(unit);
+    } on CacheException catch (exception) {
+      return Left(Failure(exception.message));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }
