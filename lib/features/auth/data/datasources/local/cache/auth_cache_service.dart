@@ -31,6 +31,20 @@ class AuthCacheService {
     }
   }
 
+  /// Reads the cached session map (`{'token': String, 'isGuest': bool}`),
+  /// returning an empty map when nothing is stored yet. A genuine cache
+  /// read error is rethrown as a [CacheException] for the repository to map
+  /// into a `Failure`.
+  Map<String, dynamic> getSession() {
+    try {
+      final String? raw = SharedPrefManager.getString(CacheKeys.token);
+      if (raw == null || raw.isEmpty) return const <String, dynamic>{};
+      return jsonDecode(raw) as Map<String, dynamic>;
+    } catch (_) {
+      throw const CacheException(CacheException.readGuestSessionFailedMessage);
+    }
+  }
+
   /// Removes the cached session entirely, so the app falls back to a
   /// logged-out state. A removal failure surfaces as a [CacheException] for
   /// the repository to map into a `Failure`.

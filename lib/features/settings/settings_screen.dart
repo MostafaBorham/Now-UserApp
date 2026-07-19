@@ -6,8 +6,10 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
 
 import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
@@ -67,6 +69,7 @@ class SettingsScreen extends ConsumerWidget {
     });
 
     final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
+    final bool isUser = ref.watch(sessionTypeProvider) == SessionType.user;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -137,8 +140,7 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 28),
-              LogoutButton(
+              if(isUser)LogoutButton(
                 isLoading: isLoggingOut,
                 onPressed: () => ref.read(logoutProvider.notifier).logout(),
               ),

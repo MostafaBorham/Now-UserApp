@@ -2,7 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/auth/data/datasources/local/cache/auth_cache_service.dart';
@@ -145,6 +147,31 @@ class AuthRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
+  /// Resolves the [SessionType] of the cached session.
+  ///
+  /// Reads the `{'token', 'isGuest'}` map through [AuthCacheService]:
+  /// `Right(SessionType.user)` only when a non-empty token is cached with
+  /// `isGuest: false`; an empty/missing session or `isGuest: true` is
+  /// `Right(SessionType.guest)`. A genuine cache read error is a `Left`
+  /// carrying the error message.
+  Future<Either<Failure, SessionType>> getSessionType() async {
+    try {
+      final Map<String, dynamic> session = _authCacheService.getSession();
+
+      final bool isGuest = session[CacheKeys.isGuest] as bool? ?? true;
+
+      if (isGuest) {
+        return const Right(SessionType.guest);
+      }
+
+      return const Right(SessionType.user);
+    } on CacheException catch (exception) {
+      return Left(Failure(exception.message));
     } catch (exception) {
       return Left(Failure(exception.toString()));
     }
