@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
-class StoreImagesListView extends StatelessWidget {
-  const StoreImagesListView({super.key});
+class ProductsImagesListView extends StatelessWidget {
+  const ProductsImagesListView({super.key});
 
   @override
   Widget build(BuildContext context) {

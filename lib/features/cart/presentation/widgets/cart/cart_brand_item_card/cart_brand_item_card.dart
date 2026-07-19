@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_images_list_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products_images_list_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_item_checkout_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
@@ -39,7 +39,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                   setState(() => _isExpanded = expanded),
             ),
 
-             _isExpanded? CartBrandItemDetailsView() : StoreImagesListView(),
+             _isExpanded? CartBrandItemDetailsView() : ProductsImagesListView(),
 
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_images_list_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products_images_list_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 
@@ -39,7 +39,7 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                   setState(() => _isExpanded = expanded),
             ),
 
-            _isExpanded? CartBrandItemDetailsView() : StoreImagesListView(),
+            _isExpanded? CartBrandItemDetailsView() : ProductsImagesListView(),
 
             ApplyDiscountCodeView(),
           ],

@@ -31,6 +31,11 @@ class ProductModel {
   final String updatedAt;
   final ActiveDealModel activeDeal;
 
+  /// Cart-line state — only present when the product comes from the cart
+  /// endpoint (`GET /api/v1/cart`); `null` everywhere else.
+  final int? quantity;
+  final bool? isSelected;
+
   const ProductModel({
     required this.id,
     required this.categoryId,
@@ -59,6 +64,8 @@ class ProductModel {
     required this.createdAt,
     required this.updatedAt,
     required this.activeDeal,
+    this.quantity,
+    this.isSelected,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -90,6 +97,8 @@ class ProductModel {
       vendor: StoreModel.fromJson(json['vendor']),
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      quantity: (json['quantity'] as num?)?.toInt(),
+      isSelected: json['is_selected'] as bool?,
     );
   }
 
@@ -122,6 +131,8 @@ class ProductModel {
       'vendor': vendor.toJson(),
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'quantity': quantity,
+      'is_selected': isSelected,
     };
   }
 }
