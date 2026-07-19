@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/screens/main/app_bottom_nav_bar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_bottom_nav_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/main_controller.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';

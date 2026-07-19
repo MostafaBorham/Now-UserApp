@@ -28,6 +28,9 @@ class $AssetsJsonGen {
   /// Directory path: assets/json/lang
   $AssetsJsonLangGen get lang => const $AssetsJsonLangGen();
 
+  /// File path: assets/json/map.json
+  String get map => 'assets/json/map.json';
+
   /// File path: assets/json/splash.json
   LottieGenImage get splash => const LottieGenImage('assets/json/splash.json');
 
@@ -35,7 +38,7 @@ class $AssetsJsonGen {
   String get test => 'assets/json/test.json';
 
   /// List of all assets
-  List<dynamic> get values => [splash, test];
+  List<dynamic> get values => [map, splash, test];
 }
 
 class $AssetsMediaGen {
@@ -350,6 +353,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/filled-account-icon.svg
   SvgGenImage get filledAccountIcon =>
       const SvgGenImage('assets/media/images/svg/filled-account-icon.svg');
+
+  /// File path: assets/media/images/svg/filled-cart-icon.svg
+  SvgGenImage get filledCartIcon =>
+      const SvgGenImage('assets/media/images/svg/filled-cart-icon.svg');
 
   /// File path: assets/media/images/svg/filled-favourite-icon.svg
   SvgGenImage get filledFavouriteIcon =>
@@ -696,6 +703,7 @@ class $AssetsMediaImagesSvgGen {
     faq,
     favouriteIcon,
     filledAccountIcon,
+    filledCartIcon,
     filledFavouriteIcon,
     filledHomeIcon,
     filledOrdersIcon,

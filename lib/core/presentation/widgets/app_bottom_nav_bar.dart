@@ -42,7 +42,7 @@ class AppBottomNavBar extends StatelessWidget {
             ),
 
             Positioned.fill(
-              top: stackCon.maxHeight*0.022,
+              top: stackCon.maxHeight * 0.022,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -135,13 +135,20 @@ class AppBottomNavBar extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: colors.primary,
                             shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(
-                              color: colors.onSurface.withValues(alpha: 0.3),
-                              spreadRadius: 5,
-                              blurRadius: 6
-                            )]
+                            boxShadow: [
+                              BoxShadow(
+                                color: colors.onSurface.withValues(alpha: 0.3),
+                                spreadRadius: 5,
+                                blurRadius: 6,
+                              ),
+                            ],
                           ),
-                          child: Assets.media.images.svg.shoppingCartIcon.svg(
+                          child: currentIndex==2? Assets.media.images.svg.filledCartIcon.svg(
+                            colorFilter: ColorFilter.mode(
+                              colors.onPrimary,
+                              BlendMode.srcIn,
+                            ),
+                          ) : Assets.media.images.svg.shoppingCartIcon.svg(
                             colorFilter: ColorFilter.mode(
                               colors.onPrimary,
                               BlendMode.srcIn,
