@@ -111,7 +111,7 @@ class SettingsScreen extends ConsumerWidget {
                   SettingsItem(
                     iconAsset: Assets.media.images.svg.wallet.path,
                     label: LangKeys.myWallet.tr(),
-                    onTap: () {},
+                    onTap: () => context.pushNamed(AppRoutes.walletScreen),
                   ),
                 ],
               ),

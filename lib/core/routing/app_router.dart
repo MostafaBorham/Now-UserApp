@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/map.dart';
@@ -17,7 +18,6 @@ import 'package:nowdelivery_user_app/features/privacy/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-import 'package:nowdelivery_user_app/core/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
@@ -127,6 +127,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.walletScreen,
         path: '/${AppRoutes.walletScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const WalletScreen(),
       ),
       GoRoute(
@@ -231,6 +232,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.personalInformationScreen,
         path: '/${AppRoutes.personalInformationScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const PersonalInformationScreen(),
       ),
       GoRoute(
@@ -260,6 +262,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.myAddressScreen,
         path: '/${AppRoutes.myAddressScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const MyAddressScreen(),
       ),
       GoRoute(
