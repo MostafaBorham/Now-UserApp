@@ -1,5 +1,3 @@
-import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
-import 'package:nowdelivery_user_app/core/localization/constants.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 

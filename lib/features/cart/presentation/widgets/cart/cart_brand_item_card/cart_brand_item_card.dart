@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/products_images_list_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_item_checkout_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 
 class CartBrandItemCard extends StatefulWidget {
-  const CartBrandItemCard({super.key, this.readyToCheckout = false});
-  final bool? readyToCheckout;
+  const CartBrandItemCard({
+    super.key,
+    required this.cartVendor,
+  });
+
+  final CartVendorModel cartVendor;
+
   @override
   State<CartBrandItemCard> createState() => _CartBrandItemCardState();
 }
@@ -17,6 +23,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final CartVendorPricingModel pricing = widget.cartVendor.pricing;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -37,12 +44,24 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
               isExpanded: _isExpanded,
               onToggle: (bool expanded) =>
                   setState(() => _isExpanded = expanded),
+              storeName: widget.cartVendor.vendor.name,
+              logoUrl: widget.cartVendor.vendor.logoUrl,
             ),
 
-             _isExpanded? CartBrandItemDetailsView() : ProductsImagesListView(),
+            _isExpanded
+                ? CartBrandItemDetailsView(
+                    products: widget.cartVendor.products,
+                    pricing: pricing,
+                    vendorName: widget.cartVendor.vendor.name,
+                  )
+                : ProductsImagesListView(products: widget.cartVendor.products),
 
             // Total + checkout pill (shared between both states)
-            CartItemCheckoutView(),
+            CartItemCheckoutView(
+              total: pricing.total % 1 == 0
+                  ? pricing.total.toStringAsFixed(0)
+                  : pricing.total.toStringAsFixed(2),
+            ),
           ],
         ),
       ),

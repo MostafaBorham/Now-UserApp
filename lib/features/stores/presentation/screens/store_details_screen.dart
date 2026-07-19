@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -138,7 +139,9 @@ class StoreDetailsScreen extends ConsumerWidget {
           );
           },
         ),
-        appBarTitle: storeDetailsState.valueOrNull?.name ?? LangKeys.storeKey.tr(),
+        appBarTitle: storeDetailsState.valueOrNull?.name == null
+            ? LangKeys.storeKey.tr()
+            : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
         loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
         bodyPadding: EdgeInsets.zero,

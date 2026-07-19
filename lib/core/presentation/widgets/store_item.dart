@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -112,7 +113,7 @@ class _StoreItemState extends State<StoreItem> {
                     children: [
                       Flexible(
                         child: AutoSizeText(
-                          widget.storeModel?.name??'',
+                          context.getLocalizedApiText(widget.storeModel?.name),
                           style: AppTextStyles.style18Bold.copyWith(
                             color: colors.onSecondary,
                           ),

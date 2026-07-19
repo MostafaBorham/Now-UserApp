@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -173,7 +174,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
             spacing: 8,
             children: [
               Text(
-                product.name,
+                context.getLocalizedApiText(product.name),
                 style: AppTextStyles.style24Bold.copyWith(
                   color: colors.onSecondary,
                   fontSize: 22,
@@ -188,7 +189,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                     logoUrl: product.vendor.logoUrl??'',
                   ),
                   Text(
-                    '${product.vendor.name}',
+                    context.getLocalizedApiText(product.vendor.name),
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.onSurface,
                       fontSize: 13,

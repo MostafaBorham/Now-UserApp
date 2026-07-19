@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:nowdelivery_user_app/features/categories/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
@@ -5,7 +6,10 @@ import 'package:nowdelivery_user_app/features/categories/data/models/store_model
 class ProductModel {
   final int id;
   final int categoryId;
-  final String name;
+
+  /// Localized product name as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(name)`.
+  final Map<String, dynamic>? name;
   final String slug;
   final String sku;
   final String shortDescription;
@@ -39,7 +43,7 @@ class ProductModel {
   const ProductModel({
     required this.id,
     required this.categoryId,
-    required this.name,
+    this.name,
     required this.slug,
     required this.sku,
     required this.shortDescription,
@@ -72,7 +76,7 @@ class ProductModel {
     return ProductModel(
       id: json['id'],
       categoryId: json['category_id'],
-      name: json['name'],
+      name: jsonDecode(json['name']) as Map<String,dynamic>?,
       slug: json['slug'],
       sku: json['sku'],
       activeDeal: ActiveDealModel.fromJson(json['active_deal']),

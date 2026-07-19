@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
@@ -7,14 +8,26 @@ class LogoTitleExpansionHeader extends StatelessWidget {
     super.key,
     required this.isExpanded,
     required this.onToggle,
+    this.storeName,
+    this.logoUrl,
   });
 
   final bool isExpanded;
   final ValueChanged<bool> onToggle;
 
+  /// Localized store name as an API translation map. Falls back to a
+  /// placeholder title when null.
+  final Map<String, dynamic>? storeName;
+
+  /// Store logo url. Falls back to a placeholder logo when null.
+  final String? logoUrl;
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String title = storeName == null
+        ? 'Banda Store'
+        : context.getLocalizedApiText(storeName);
     return InkWell(
       onTap: () => onToggle(!isExpanded),
       child: Row(
@@ -28,11 +41,11 @@ class LogoTitleExpansionHeader extends StatelessWidget {
                 radius: 24,
                 elevation: 1,
                 backgroundColor: colors.onTertiaryContainer,
-                logoUrl:
+                logoUrl: logoUrl ??
                     'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
               ),
               Text(
-                'Banda Store',
+                title,
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.onSecondary,
                 ),

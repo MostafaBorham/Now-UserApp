@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 class CartItemCheckoutView extends StatelessWidget {
   const CartItemCheckoutView({
     super.key,
-    this.total = '10',
+    required this.total,
     this.onCheckout,
   });
 
@@ -48,7 +48,7 @@ class CartItemCheckoutView extends StatelessWidget {
                 ),
                 NewPriceWidget(
                   color: colors.onSecondary,
-                  price: '10',
+                  price: total,
                   size: 17,
                 ),
               ],

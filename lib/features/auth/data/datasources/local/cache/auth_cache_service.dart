@@ -31,20 +31,6 @@ class AuthCacheService {
     }
   }
 
-  /// Reads the `token` value out of the cached `{'token', 'isGuest'}` map,
-  /// returning an empty string when nothing is stored or the cache is
-  /// malformed. Never throws — used to authenticate the logout request.
-  String getToken() {
-    try {
-      final String? raw = SharedPrefManager.getString(CacheKeys.token);
-      if (raw == null || raw.isEmpty) return '';
-      final Map<String, dynamic> map = jsonDecode(raw) as Map<String, dynamic>;
-      return map[CacheKeys.tokenValue] as String? ?? '';
-    } catch (_) {
-      return '';
-    }
-  }
-
   /// Removes the cached session entirely, so the app falls back to a
   /// logged-out state. A removal failure surfaces as a [CacheException] for
   /// the repository to map into a `Failure`.

@@ -1,3 +1,6 @@
+
+import 'dart:convert';
+
 import 'package:nowdelivery_user_app/features/categories/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
@@ -5,7 +8,10 @@ import 'package:nowdelivery_user_app/features/categories/data/models/product_mod
 
 class StoreModel {
   final int? id;
-  final String? name;
+
+  /// Localized store name as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(name)`.
+  final Map<String, dynamic>? name;
   final String? description;
   final String? logoUrl;
   final String? coverUrl;
@@ -49,7 +55,7 @@ class StoreModel {
 
     return StoreModel(
       id: (json['id'] as num?)?.toInt(),
-      name: json['name']?.toString(),
+      name: jsonDecode(json['name']) as Map<String,dynamic>?,
       description: json['description']?.toString(),
       logoUrl: json['logo_url']?.toString(),
       coverUrl: json['cover_url']?.toString(),
@@ -100,7 +106,7 @@ class StoreModel {
 
   StoreModel copyWith({
     int? id,
-    String? name,
+    Map<String, dynamic>? name,
     String? description,
     String? logoUrl,
     String? coverUrl,

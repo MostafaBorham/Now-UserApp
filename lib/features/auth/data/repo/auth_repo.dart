@@ -113,8 +113,9 @@ class AuthRepo {
 
   /// Logs the current user out.
   ///
-  /// Authenticates with the cached token (as a `Bearer` header) and, only when
-  /// the server reports `success: true`, clears the cached session so the app
+  /// Authentication is applied automatically by `AuthTokenInterceptor` (the
+  /// logged-in user's `Bearer` token from the cached session). Only when the
+  /// server reports `success: true` is the cached session cleared, so the app
   /// falls back to a logged-out state. `Right(unit)` means the user is fully
   /// logged out; anything else is a `Left` carrying the error message.
   Future<Either<Failure, Unit>> logout() async {
@@ -123,9 +124,7 @@ class AuthRepo {
     }
 
     try {
-      final String token = _authCacheService.getToken();
-
-      final Response response = await _authApiService.logout(token: token);
+      final Response response = await _authApiService.logout();
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 

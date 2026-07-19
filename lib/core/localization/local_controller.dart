@@ -44,4 +44,18 @@ final localeProvider = StateNotifierProvider<LocalController, Locale>(
 
 extension LocaleExt on BuildContext{
   bool get isRTL => locale == LocalizationConstants.arabicLocale;
+
+  /// Resolves an API text map like `{'en': '...', 'ar': '...'}` to the string
+  /// for the current locale. Falls back to the other language when the current
+  /// one is missing, and to an empty string when the map is null/empty — so
+  /// callers can pass a nullable or partial map without extra guards.
+  String getLocalizedApiText(Map<String, dynamic>? translations) {
+    if (translations == null) return '';
+    final Object? value = isRTL
+        ? translations[LocalizationConstants.arabicLangCode] ??
+              translations[LocalizationConstants.englishLangCode]
+        : translations[LocalizationConstants.englishLangCode] ??
+              translations[LocalizationConstants.arabicLangCode];
+    return value?.toString() ?? '';
+  }
 }

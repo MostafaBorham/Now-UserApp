@@ -136,7 +136,9 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 borderRadius: AppBorderRadius.brCircular6,
                               ),
                               child: Text(
-                                widget.productModel?.name ?? '',
+                                context.getLocalizedApiText(
+                                  widget.productModel?.name,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
@@ -218,7 +220,9 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                   ],
                                 ),
                                 AutoSizeText(
-                                  '${widget.productModel?.name}',
+                                  context.getLocalizedApiText(
+                                    widget.productModel?.name,
+                                  ),
                                   style: AppTextStyles.style12SemiBold.copyWith(
                                     color: colors.onSecondary,
                                     fontSize: widthCon * 0.09,

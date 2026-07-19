@@ -4,7 +4,6 @@ import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/auth/data/datasources/local/cache/auth_cache_service.dart';
 import 'package:nowdelivery_user_app/features/cart/data/datasources/remote/api/cart_api_service.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 
@@ -15,7 +14,6 @@ import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class CartRepo {
   final CartApiService _cartApiService = CartApiService();
-  final AuthCacheService _authCacheService = AuthCacheService();
 
   /// Cancels every in-flight request of this repo. The actual cancellation
   /// mechanism (CancelToken) lives entirely inside the data source layer.
@@ -23,17 +21,15 @@ class CartRepo {
 
   /// Fetches the current user's cart together with its pricing estimate.
   ///
-  /// Authenticates with the cached token (as a `Bearer` header), read here
-  /// through [AuthCacheService] — the same pattern as `AuthRepo.logout`.
+  /// Authentication is applied automatically by `AuthTokenInterceptor` from the
+  /// cached session, so no token is read or passed here.
   Future<Either<Failure, CartModel>> getCart() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final String token = _authCacheService.getToken();
-
-      final Response response = await _cartApiService.getCart(token: token);
+      final Response response = await _cartApiService.getCart();
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 

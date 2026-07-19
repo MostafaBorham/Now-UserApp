@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 class CartProductItemView extends StatefulWidget {
   const CartProductItemView({
     super.key,
+    this.product,
+    this.vendorName,
     this.productName = 'Almarai Milk 2 Liters',
     this.storeName = 'Panda Store',
     this.imageUrl =
@@ -18,6 +22,13 @@ class CartProductItemView extends StatefulWidget {
     this.onDelete,
     this.onQuantityChanged,
   });
+
+  /// Cart line whose data drives this row. When null, the [productName]/
+  /// [storeName]/[imageUrl]/price placeholder values are shown instead.
+  final ProductModel? product;
+
+  /// Localized vendor name (API translation map) for the store label.
+  final Map<String, dynamic>? vendorName;
 
   final String productName;
   final String storeName;
@@ -33,11 +44,31 @@ class CartProductItemView extends StatefulWidget {
 }
 
 class _CartProductItemViewState extends State<CartProductItemView> {
-  late int _quantity = widget.initialQuantity;
+  late int _quantity = widget.product?.quantity ?? widget.initialQuantity;
+
+  static String _money(double value) =>
+      value % 1 == 0 ? value.toStringAsFixed(0) : value.toStringAsFixed(2);
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final ProductModel? product = widget.product;
+
+    final String productName = product != null
+        ? context.getLocalizedApiText(product.name)
+        : widget.productName;
+    final String storeName = widget.vendorName != null
+        ? context.getLocalizedApiText(widget.vendorName)
+        : widget.storeName;
+    final String imageUrl = product?.primaryImage ??
+        (product != null && product.images.isNotEmpty
+            ? product.images.first
+            : widget.imageUrl);
+    final String oldPrice =
+        product != null ? _money(product.comparePrice) : widget.oldPrice;
+    final String newPrice =
+        product != null ? _money(product.effectivePrice) : widget.newPrice;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 12,
@@ -51,7 +82,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
               width: 76,
               height: 76,
               fit: BoxFit.cover,
-              imageUrl: widget.imageUrl,
+              imageUrl: imageUrl,
             ),
           ),
         ),
@@ -69,14 +100,14 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.productName,
+                          productName,
                           maxLines: 1,
                           style: AppTextStyles.style16Medium.copyWith(
                             color: colors.tertiaryContainer,
                           ),
                         ),
                         Text(
-                          widget.storeName,
+                          storeName,
                           maxLines: 1,
                           style: AppTextStyles.style14Regular.copyWith(
                             color: colors.onSurface,
@@ -112,12 +143,12 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                     children: [
                       OldPriceWidget(
                         color: colors.onSurface,
-                        price: widget.oldPrice,
+                        price: oldPrice,
                         size: 10,
                       ),
                       NewPriceWidget(
                         color: colors.onSecondary,
-                        price: widget.newPrice,
+                        price: newPrice,
                         size: 14,
                       ),
                     ],

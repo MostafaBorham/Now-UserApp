@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
@@ -167,7 +168,9 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                     spacing: 7,
                     children: [
                       Text(
-                        product?.name ?? 'feta cheese',
+                        product?.name == null
+                            ? 'feta cheese'
+                            : context.getLocalizedApiText(product?.name),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.style18Bold.copyWith(
