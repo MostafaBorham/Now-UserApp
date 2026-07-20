@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/delete_cart_product_dialog.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 class CartProductItemView extends StatefulWidget {
@@ -109,7 +110,17 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                     ),
                   ),
                   InkWell(
-                    onTap: widget.onDelete,
+                    onTap: () {
+                      final int? productId = product?.id;
+                      showDialog<void>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => DeleteCartProductDialog(
+                          productId: product?.productId??-1,
+                          productName: productName,
+                        ),
+                      );
+                    },
                     customBorder: const CircleBorder(),
                     child: Container(
                       padding: const EdgeInsets.all(6),

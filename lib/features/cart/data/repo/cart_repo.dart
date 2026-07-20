@@ -57,4 +57,38 @@ class CartRepo {
       return Left(Failure(e.toString()));
     }
   }
+
+  /// Removes the cart line for [productId].
+  ///
+  /// `Right` carries the server success message; `Left` a user-facing error.
+  Future<Either<Failure, String>> deleteCartProduct(int productId) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _cartApiService.deleteCartProduct(productId);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+
+      if (response.statusCode != 200 || !success) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return Right(body['message']?.toString() ?? '');
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+
+      return Left(Failure(e.toString()));
+    }
+  }
 }

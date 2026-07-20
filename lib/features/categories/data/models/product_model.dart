@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/features/categories/data/models/store_model
 
 class ProductModel {
   final int? id;
+  final int? productId;
   final int? categoryId;
 
   /// Localized product name as an API translation map (`{'en': ..., 'ar': ...}`).
@@ -42,6 +43,7 @@ class ProductModel {
 
   const ProductModel({
     this.id,
+    this.productId,
     this.categoryId,
     this.name,
     this.slug,
@@ -76,6 +78,7 @@ class ProductModel {
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id'] as int?,
+      productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
       name: json['name'] as Map<String, dynamic>?,
       slug: json['slug'] as String?,
@@ -117,6 +120,7 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'product_id': productId,
       'category_id': categoryId,
       'name': name,
       'slug': slug,

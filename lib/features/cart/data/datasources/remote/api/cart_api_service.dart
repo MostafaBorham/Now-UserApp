@@ -27,4 +27,15 @@ class CartApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  /// Removes the cart line for [productId]. The body is always the static
+  /// `{"quantity": 0}` payload the endpoint expects. Authentication is applied
+  /// by `AuthTokenInterceptor` from the cached session.
+  Future<Response> deleteCartProduct(int productId) {
+    return _dio.delete(
+      CartEndpoints.deleteCartProduct(productId),
+      data: CartEndpoints.deleteCartProductBody,
+      cancelToken: _canceller.token,
+    );
+  }
 }

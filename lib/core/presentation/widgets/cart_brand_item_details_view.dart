@@ -49,38 +49,34 @@ class CartBrandItemDetailsView extends StatelessWidget {
           itemCount: products?.length ?? 3,
         ),
 
-          InkWell(
-            onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen,extra: store?.id),
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 26,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: colors.onPrimary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 10,
-                children: [
-                  Assets.media.images.svg.circleAddMoreBrokenIcon
-                      .svg(),
-                  Text(
-                    'Add More Items',
-                    style: AppTextStyles.style14Medium.copyWith(
-                      color: colors.onTertiaryFixed,
-                    ),
+        InkWell(
+          onTap: () =>
+              context.pushNamed(AppRoutes.storeDetailsScreen, extra: store?.id),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 8),
+            decoration: BoxDecoration(
+              color: colors.onPrimary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 10,
+              children: [
+                Assets.media.images.svg.circleAddMoreBrokenIcon.svg(),
+                Text(
+                  'Add More Items',
+                  style: AppTextStyles.style14Medium.copyWith(
+                    color: colors.onTertiaryFixed,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+        ),
 
-          // Store invoice summary
-          StoreInvoiceSummaryCard(pricing: pricing,),
-
+        // Store invoice summary
+        StoreInvoiceSummaryCard(pricing: pricing),
       ],
     );
   }

@@ -29,7 +29,7 @@ class CircularBrandLogo extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: logoUrl,
             fit: BoxFit.contain,
-            width: radius,
+            width: radius*0.7,
             placeholder: (context, url) => Center(
               child: SizedBox(
                 width: radius * 0.7,
