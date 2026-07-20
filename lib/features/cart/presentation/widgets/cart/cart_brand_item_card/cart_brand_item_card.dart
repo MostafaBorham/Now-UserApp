@@ -52,15 +52,13 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                 ? CartBrandItemDetailsView(
                     products: widget.cartVendor.products,
                     pricing: pricing,
-                    vendorName: widget.cartVendor.vendor.name,
+                    store: widget.cartVendor.vendor,
                   )
-                : ProductsImagesListView(products: widget.cartVendor.products),
+                : ProductsImagesListView(products: widget.cartVendor.products,storeId: widget.cartVendor.vendor.id,),
 
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
-              total: pricing.total % 1 == 0
-                  ? pricing.total.toStringAsFixed(0)
-                  : pricing.total.toStringAsFixed(2),
+              total: '${pricing.total}',
             ),
           ],
         ),

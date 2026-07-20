@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 
 class StoreInvoiceSummaryCard extends StatelessWidget {
-  const StoreInvoiceSummaryCard({super.key});
+  const StoreInvoiceSummaryCard({super.key, this.pricing});
 
+  final CartVendorPricingModel? pricing;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -40,7 +42,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '10',
+                    price: '${pricing?.subtotal}',
                     size: 13,
                   ),
                 ],
@@ -57,7 +59,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '10',
+                    price: '${pricing?.tax}',
                     size: 13,
                   ),
                 ],
@@ -74,7 +76,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '10',
+                    price: '${pricing?.deliveryFee}',
                     size: 13,
                   ),
                 ],
@@ -91,7 +93,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.errorContainer,
-                    price: '10',
+                    price: '${pricing?.discount}',
                     size: 13,
                   ),
                 ],

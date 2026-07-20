@@ -51,7 +51,8 @@ class StoresRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
+    } catch (exception,stackTrack) {
+      print(stackTrack);
       return Left(Failure(exception.toString()));
     }
   }

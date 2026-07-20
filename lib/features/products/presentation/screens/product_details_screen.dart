@@ -68,7 +68,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                               color: colors.errorContainer,
                             ),
                             child: Text(
-                              '${product.activeDeal.discountValue}%',
+                              '${product.activeDeal?.discountValue ?? 0}%',
                               style: AppTextStyles.style14Bold.copyWith(
                                 color: colors.onPrimary,
                               ),
@@ -81,7 +81,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                         ],
                       ),
                       AppSlider(
-                        sliderItems: product.images.map((image) => AppCachedNetworkImage(
+                        sliderItems: (product.images ?? []).map((image) => AppCachedNetworkImage(
                           imageUrl:
                               image,
                           height: double.infinity,

@@ -55,7 +55,7 @@ class StoreModel {
 
     return StoreModel(
       id: (json['id'] as num?)?.toInt(),
-      name: jsonDecode(json['name']) as Map<String,dynamic>?,
+      name: json['name'] as Map<String, dynamic>?,
       description: json['description']?.toString(),
       logoUrl: json['logo_url']?.toString(),
       coverUrl: json['cover_url']?.toString(),

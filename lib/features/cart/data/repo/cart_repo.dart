@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -49,8 +50,11 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+
+      return Left(Failure(e.toString()));
     }
   }
 }

@@ -30,14 +30,14 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
     final ProductModel? product = widget.product;
     final bool hasDiscount = product == null
         ? true
-        : product.comparePrice > product.effectivePrice &&
-            product.comparePrice > 0;
+        : (product.comparePrice ?? 0) > (product.effectivePrice ?? 0) &&
+            (product.comparePrice ?? 0) > 0;
     final String discountPercent = product == null
         ? '50'
         : !hasDiscount
             ? '0'
-            : ((product.comparePrice - product.effectivePrice) /
-                    product.comparePrice *
+            : (((product.comparePrice ?? 0) - (product.effectivePrice ?? 0)) /
+                    (product.comparePrice ?? 1) *
                     100)
                 .round()
                 .toString();
@@ -84,7 +84,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                                 AppRateWidget(
                                   starColor: colors.onSecondaryContainer,
-                                  rateRatio: product?.vendor.rating
+                                  rateRatio: product?.vendor?.rating
                                           ?.toStringAsFixed(1) ??
                                       '4',
                                   rateColor: colors.onSurface,
@@ -151,7 +151,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                           child: CircularBrandLogo(
                             radius: con.maxWidth * 0.1,
                             backgroundColor: colors.onPrimary,
-                            logoUrl: product?.vendor.logoUrl ??
+                            logoUrl: product?.vendor?.logoUrl ??
                                 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                           ),
                         ),
@@ -194,14 +194,14 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                     OldPriceWidget(
                                       color: colors.inversePrimary,
                                       price: product?.comparePrice
-                                              .toStringAsFixed(0) ??
+                                              ?.toStringAsFixed(0) ??
                                           '10',
                                       size: con.maxWidth * 0.04,
                                     ),
                                   NewPriceWidget(
                                     color: colors.onSecondary,
                                     price: product?.effectivePrice
-                                            .toStringAsFixed(0) ??
+                                            ?.toStringAsFixed(0) ??
                                         '10',
                                     size: con.maxWidth * 0.08,
                                   ),

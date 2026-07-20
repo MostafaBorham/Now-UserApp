@@ -281,11 +281,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.discountCodeScreen,
         path: '/${AppRoutes.discountCodeScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const DiscountCodeScreen(),
       ),
       GoRoute(
         name: AppRoutes.supportScreen,
         path: '/${AppRoutes.supportScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const SupportScreen(),
       ),
       GoRoute(

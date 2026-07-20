@@ -186,10 +186,10 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   CircularBrandLogo(
                     radius: 18,
                     backgroundColor: colors.onPrimaryContainer,
-                    logoUrl: product.vendor.logoUrl??'',
+                    logoUrl: product.vendor?.logoUrl ?? '',
                   ),
                   Text(
-                    context.getLocalizedApiText(product.vendor.name),
+                    context.getLocalizedApiText(product.vendor?.name),
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.onSurface,
                       fontSize: 13,
@@ -253,7 +253,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   fontSize: 15,
                 ),
               ),
-              ExpandableText(text: product.description,style: AppTextStyles.style14Regular.copyWith(
+              ExpandableText(text: product.description ?? '',style: AppTextStyles.style14Regular.copyWith(
                 color: colors.onSurface
               ),maxCharacters: 150,seeMoreText: 'See More',),
             ],

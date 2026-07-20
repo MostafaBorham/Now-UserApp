@@ -1,56 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 class ProductsImagesListView extends StatelessWidget {
-  const ProductsImagesListView({super.key, this.products});
+  const ProductsImagesListView({super.key, this.products, this.storeId});
 
-  /// Products whose images are previewed (first 3, then a "+" tile for the
-  /// rest). Falls back to the static placeholder tiles when null.
   final List<ProductModel>? products;
+  final int? storeId;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final List<ProductModel>? items = products;
-    return Row(
+    return Wrap(
+      runSpacing: 8,
       spacing: 8,
       children: [
-        if (items == null)
-          for (int i = 0; i < 2; i++)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: SizedBox(
-                width: 56,
-                height: 56,
-                child: AppCachedNetworkImage(
+        ...((products ?? [])
+            .map(
+              (product) => ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: SizedBox(
                   width: 56,
                   height: 56,
-                  fit: BoxFit.cover,
-                  imageUrl:
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
+                  child: AppCachedNetworkImage(
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
+                    imageUrl: product.imageUrl ?? '',
+                  ),
                 ),
               ),
             )
-        else
-          for (final ProductModel product in items.take(3))
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: SizedBox(
-                width: 56,
-                height: 56,
-                child: AppCachedNetworkImage(
-                  width: 56,
-                  height: 56,
-                  fit: BoxFit.cover,
-                  imageUrl: product.primaryImage ??
-                      (product.images.isNotEmpty ? product.images.first : ''),
-                ),
-              ),
-            ),
-        if (items == null || items.length > 3)
-          Container(
+            .toList()),
+        InkWell(
+          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen,extra: storeId),
+          child: Container(
             width: 56,
             height: 56,
             decoration: BoxDecoration(
@@ -66,6 +53,7 @@ class ProductsImagesListView extends StatelessWidget {
               ),
             ),
           ),
+        ),
       ],
     );
   }

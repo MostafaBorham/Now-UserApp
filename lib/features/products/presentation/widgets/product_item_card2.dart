@@ -93,7 +93,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               applyReverse: context.isRTL,
                               child: AppCachedNetworkImage(
                                 imageUrl:
-                                    widget.productModel?.images.firstOrNull ?? '',
+                                    widget.productModel?.images?.firstOrNull ?? '',
                                 width: double.infinity,
                               ),
                             ),
@@ -233,7 +233,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           CircularBrandLogo(
                             radius: widthCon * 0.12,
-                            logoUrl: widget.productModel?.vendor.logoUrl ?? '',
+                            logoUrl: widget.productModel?.vendor?.logoUrl ?? '',
                           ),
                         ],
                       ),

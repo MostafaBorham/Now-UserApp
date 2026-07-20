@@ -92,11 +92,11 @@ class CartVendorPricingModel {
       available: json['available'] as bool? ?? false,
       minOrderValue: json['min_order_value'] ?? 0,
       minOrderMet: json['min_order_met'] as bool? ?? false,
-      subtotal: json['subtotal'] ?? 0,
-      discount: json['discount'] ?? 0,
-      tax: json['tax'] ?? 0,
-      deliveryFee: json['delivery_fee'] ?? 0,
-      total: json['total'] ?? 0,
+      subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
+      discount: double.tryParse(json['discount']?.toString() ?? '') ?? 0.0,
+      tax: double.tryParse(json['tax']?.toString() ?? '') ?? 0.0,
+      deliveryFee: double.tryParse(json['delivery_fee']?.toString() ?? '') ?? 0.0,
+      total: double.tryParse(json['total']?.toString() ?? '') ?? 0.0,
     );
   }
 }

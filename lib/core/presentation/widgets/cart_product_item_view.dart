@@ -60,14 +60,6 @@ class _CartProductItemViewState extends State<CartProductItemView> {
     final String storeName = widget.vendorName != null
         ? context.getLocalizedApiText(widget.vendorName)
         : widget.storeName;
-    final String imageUrl = product?.primaryImage ??
-        (product != null && product.images.isNotEmpty
-            ? product.images.first
-            : widget.imageUrl);
-    final String oldPrice =
-        product != null ? _money(product.comparePrice) : widget.oldPrice;
-    final String newPrice =
-        product != null ? _money(product.effectivePrice) : widget.newPrice;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +74,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
               width: 76,
               height: 76,
               fit: BoxFit.cover,
-              imageUrl: imageUrl,
+              imageUrl: widget.product?.imageUrl??'',
             ),
           ),
         ),
@@ -143,12 +135,12 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                     children: [
                       OldPriceWidget(
                         color: colors.onSurface,
-                        price: oldPrice,
+                        price: '${widget.product?.comparePrice}',
                         size: 10,
                       ),
                       NewPriceWidget(
                         color: colors.onSecondary,
-                        price: newPrice,
+                        price: '${widget.product?.price}',
                         size: 14,
                       ),
                     ],
