@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/products_images_list_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_products_images_list_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_details_view.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_images_list_view.dart';
 
 class CheckoutBrandItemCard extends StatefulWidget {
   const CheckoutBrandItemCard({super.key, this.readyToCheckout = false});
@@ -39,7 +41,7 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                   setState(() => _isExpanded = expanded),
             ),
 
-            _isExpanded? CartBrandItemDetailsView() : ProductsImagesListView(),
+            _isExpanded? CheckoutProductsDetailsView() : CheckoutProductsImagesListView(),
 
             ApplyDiscountCodeView(),
           ],

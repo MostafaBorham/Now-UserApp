@@ -5,8 +5,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
-class ProductsImagesListView extends StatelessWidget {
-  const ProductsImagesListView({super.key, this.products, this.storeId});
+class CartProductsImagesListView extends StatelessWidget {
+  const CartProductsImagesListView({super.key, this.products, this.storeId});
 
   final List<ProductModel>? products;
   final int? storeId;

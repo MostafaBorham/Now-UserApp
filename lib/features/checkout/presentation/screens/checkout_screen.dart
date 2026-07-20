@@ -31,7 +31,7 @@ class CheckoutScreen extends StatelessWidget {
               DeliveryAddressCard(),
               Column(
                 spacing: 16,
-                children: List.generate(4, (index) => CheckoutBrandItemCard()),
+                children: List.generate(2, (index) => CheckoutBrandItemCard()),
               ),
               methods.isEmpty ? ChoosePaymentMethod(onTap: ()=> context.pushNamed(AppRoutes.addPaymentCard),) : PaymentMethodsCard(),
               AspectRatio(

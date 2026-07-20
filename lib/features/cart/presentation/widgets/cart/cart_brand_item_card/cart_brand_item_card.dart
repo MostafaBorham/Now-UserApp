@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/products_images_list_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cart_brand_item_details_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_products_images_list_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_item_checkout_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 
 class CartBrandItemCard extends StatefulWidget {
-  const CartBrandItemCard({
-    super.key,
-    required this.cartVendor,
-  });
+  const CartBrandItemCard({super.key, required this.cartVendor});
 
   final CartVendorModel cartVendor;
 
@@ -54,7 +51,10 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                     pricing: pricing,
                     store: widget.cartVendor.vendor,
                   )
-                : ProductsImagesListView(products: widget.cartVendor.products,storeId: widget.cartVendor.vendor.id,),
+                : CartProductsImagesListView(
+                    products: widget.cartVendor.products,
+                    storeId: widget.cartVendor.vendor.id,
+                  ),
 
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
