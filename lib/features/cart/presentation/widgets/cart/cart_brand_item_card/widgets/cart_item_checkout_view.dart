@@ -10,10 +10,12 @@ class CartItemCheckoutView extends StatelessWidget {
   const CartItemCheckoutView({
     super.key,
     required this.total,
+    this.storeId,
     this.onCheckout,
   });
 
   final String total;
+  final int? storeId;
   final VoidCallback? onCheckout;
 
   @override
@@ -61,7 +63,10 @@ class CartItemCheckoutView extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: PrimaryAppPostfixIconButton(
                 title: 'Checkout',
-                onTap: () => context.pushNamed(AppRoutes.checkoutScreen),
+                onTap: () => context.pushNamed(
+                  AppRoutes.checkoutScreen,
+                  extra: storeId,
+                ),
                 postfixIcon: Assets
                     .media
                     .images

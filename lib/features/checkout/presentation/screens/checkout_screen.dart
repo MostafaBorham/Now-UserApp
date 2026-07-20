@@ -15,7 +15,9 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
 
 class CheckoutScreen extends StatelessWidget {
-  const CheckoutScreen({super.key});
+  const CheckoutScreen({super.key, this.storeId});
+
+  final int? storeId;
 
   @override
   Widget build(BuildContext context) {

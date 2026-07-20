@@ -257,7 +257,9 @@ abstract class AppRouter {
         // (isGuest == true) or no session at all is rerouted to phone
         // verification to log in; a registered user continues to checkout.
         redirect: _redirectToLogin,
-        builder: (context, state) => const CheckoutScreen(),
+        builder: (context, state) => CheckoutScreen(
+          storeId: state.extra as int?,
+        ),
       ),
       GoRoute(
         name: AppRoutes.myAddressScreen,

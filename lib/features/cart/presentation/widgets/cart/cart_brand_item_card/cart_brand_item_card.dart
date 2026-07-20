@@ -59,6 +59,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
               total: '${pricing.total}',
+              storeId: widget.cartVendor.vendor.id,
             ),
           ],
         ),
