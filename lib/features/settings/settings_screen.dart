@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
 import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
@@ -41,6 +42,9 @@ class SettingsScreen extends ConsumerWidget {
         // Logged out: reset the stack so onboarding is the only screen left.
         data: (dynamic value) {
           if (value != null) {
+            // Tear down the app-lifetime cart state so the next user starts
+            // with a fresh cart (see `getCartProvider`).
+            ref.invalidate(getCartProvider);
             context.goNamed(AppRoutes.onBoardingScreen);
           }
         },

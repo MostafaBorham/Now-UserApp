@@ -9,8 +9,13 @@ import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 /// The fetch starts as soon as the provider is first watched, so screens only
 /// need to `ref.watch(getCartProvider)` and render the [AsyncValue].
 /// Retry with `ref.read(getCartProvider.notifier).getCart()`.
-final getCartProvider = StateNotifierProvider.autoDispose<GetCartViewModel,
-    AsyncValue<CartModel>>(
+///
+/// This provider is intentionally **not** `autoDispose`: the cart is shared
+/// state that must survive the whole app life cycle (navigating away from the
+/// cart screen must not throw the loaded cart away). It is disposed only on
+/// logout via `ref.invalidate(getCartProvider)`.
+final getCartProvider =
+    StateNotifierProvider<GetCartViewModel, AsyncValue<CartModel>>(
   (Ref ref) => GetCartViewModel(const AsyncValue.loading())..getCart(),
 );
 
