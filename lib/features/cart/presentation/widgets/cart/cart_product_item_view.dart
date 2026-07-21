@@ -49,9 +49,6 @@ class CartProductItemView extends StatefulWidget {
 class _CartProductItemViewState extends State<CartProductItemView> {
   late int _quantity = widget.product?.quantity ?? widget.initialQuantity;
 
-  static String _money(double value) =>
-      value % 1 == 0 ? value.toStringAsFixed(0) : value.toStringAsFixed(2);
-
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -64,16 +61,16 @@ class _CartProductItemViewState extends State<CartProductItemView> {
         ? context.getLocalizedApiText(widget.vendorName)
         : widget.storeName;
 
-    return InkWell(
-      onTap: () => context.pushNamed(
-        AppRoutes.productDetailsScreen,
-        extra: product?.slug,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 12,
-        children: [
-          ClipRRect(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 12,
+      children: [
+        InkWell(
+          onTap: () => context.pushNamed(
+            AppRoutes.productDetailsScreen,
+            extra: product?.slug,
+          ),
+          child: ClipRRect(
             borderRadius: BorderRadius.circular(7),
             child: SizedBox(
               width: 76,
@@ -86,148 +83,147 @@ class _CartProductItemViewState extends State<CartProductItemView> {
               ),
             ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 4,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 16,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            productName,
-                            maxLines: 1,
-                            style: AppTextStyles.style16Medium.copyWith(
-                              color: colors.tertiaryContainer,
-                            ),
-                          ),
-                          Text(
-                            storeName,
-                            maxLines: 1,
-                            style: AppTextStyles.style14Regular.copyWith(
-                              color: colors.onSurface,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        final int? productId = product?.id;
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) => DeleteCartProductDialog(
-                            productId: product?.productId??-1,
-                            productName: productName,
-                          ),
-                        );
-                      },
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: colors.error.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Assets.media.images.svg.deleteIcon
-                            .svg(
-                            colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      textDirection: TextDirection.ltr,
-                      spacing: 4,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 4,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if((widget.product?.comparePrice ?? 0) > 0)OldPriceWidget(
-                          color: colors.onSurface,
-                          price: '${widget.product?.comparePrice}',
-                          size: 10,
+                        Text(
+                          productName,
+                          maxLines: 1,
+                          style: AppTextStyles.style16Medium.copyWith(
+                            color: colors.tertiaryContainer,
+                          ),
                         ),
-                        NewPriceWidget(
-                          color: colors.onSecondary,
-                          price: '${widget.product?.price}',
-                          size: 14,
+                        Text(
+                          storeName,
+                          maxLines: 1,
+                          style: AppTextStyles.style14Regular.copyWith(
+                            color: colors.onSurface,
+                          ),
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 4,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() => _quantity++);
-                            widget.onQuantityChanged?.call(_quantity);
-                          },
-                          customBorder: const CircleBorder(),
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: colors.onPrimary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.add_rounded,
-                              size: 16,
-                              color: colors.onSecondary,
-                            ),
-                          ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog<void>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => DeleteCartProductDialog(
+                          productId: product?.productId??-1,
+                          productName: productName,
                         ),
-                        SizedBox(
+                      );
+                    },
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: colors.error.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Assets.media.images.svg.deleteIcon
+                          .svg(
+                          colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    textDirection: TextDirection.ltr,
+                    spacing: 4,
+                    children: [
+                      if((widget.product?.comparePrice ?? 0) > 0)OldPriceWidget(
+                        color: colors.onSurface,
+                        price: '${widget.product?.comparePrice}',
+                        size: 10,
+                      ),
+                      NewPriceWidget(
+                        color: colors.onSecondary,
+                        price: '${widget.product?.price}',
+                        size: 14,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 4,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() => _quantity++);
+                          widget.onQuantityChanged?.call(_quantity);
+                        },
+                        customBorder: const CircleBorder(),
+                        child: Container(
                           width: 28,
-                          child: Text(
-                            _quantity.toString(),
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.style14Medium.copyWith(
-                              color: colors.tertiaryContainer,
-                            ),
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: colors.onPrimary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            size: 16,
+                            color: colors.onSecondary,
                           ),
                         ),
-                        InkWell(
-                          onTap: _quantity > 1
-                              ? () {
-                            setState(() => _quantity--);
-                            widget.onQuantityChanged?.call(_quantity);
-                          }
-                              : null,
-                          customBorder: const CircleBorder(),
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: colors.onPrimary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.remove_rounded,
-                              size: 16,
-                              color: colors.onSurface,
-                            ),
+                      ),
+                      SizedBox(
+                        width: 28,
+                        child: Text(
+                          _quantity.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.style14Medium.copyWith(
+                            color: colors.tertiaryContainer,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      ),
+                      InkWell(
+                        onTap: _quantity > 1
+                            ? () {
+                          setState(() => _quantity--);
+                          widget.onQuantityChanged?.call(_quantity);
+                        }
+                            : null,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: colors.onPrimary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.remove_rounded,
+                            size: 16,
+                            color: colors.onSurface,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

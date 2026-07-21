@@ -9,12 +9,15 @@ import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.d
 /// need to `ref.watch(checkoutForAllStoresProvider)` and render the
 /// [AsyncValue]. Retry with
 /// `ref.read(checkoutForAllStoresProvider.notifier).checkoutForAllStores()`.
-final checkoutForAllStoresProvider = StateNotifierProvider.autoDispose<
-    CheckoutForAllStoresViewModel, AsyncValue<CheckoutModel>>(
-  (Ref ref) =>
-      CheckoutForAllStoresViewModel(const AsyncValue.loading())
-        ..checkoutForAllStores(),
-);
+final checkoutForAllStoresProvider =
+    StateNotifierProvider.autoDispose<
+      CheckoutForAllStoresViewModel,
+      AsyncValue<CheckoutModel>
+    >(
+      (Ref ref) =>
+          CheckoutForAllStoresViewModel(const AsyncValue.loading())
+            ..checkoutForAllStores(),
+    );
 
 class CheckoutForAllStoresViewModel
     extends StateNotifier<AsyncValue<CheckoutModel>> {
