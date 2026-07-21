@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
@@ -29,30 +30,33 @@ class CartScreen extends ConsumerWidget {
               message: error.toString(),
               onRetry: () => ref.read(getCartProvider.notifier).getCart(),
             ),
-        data: (CartModel cart) => cart.vendors.isEmpty
-            ? const NoItemsWidget()
-            : Column(
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(3),
-                      itemBuilder: (context, index) {
-                        return CartBrandItemCard(
-                          cartVendor: cart.vendors[index],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return 20.hSpace;
-                      },
-                      itemCount: cart.vendors.length,
+        data: (CartModel cart) => AppRefreshIndicator(
+          onRefresh: () async => ref.read(getCartProvider.notifier).getCart(),
+          child: cart.vendors.isEmpty
+              ? const NoItemsWidget(isScrollable: true)
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(3),
+                        itemBuilder: (context, index) {
+                          return CartBrandItemCard(
+                            cartVendor: cart.vendors[index],
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return 20.hSpace;
+                        },
+                        itemCount: cart.vendors.length,
+                      ),
                     ),
-                  ),
-                  PrimaryAppButton(
-                    title: 'Checkout',
-                    onTap: () => context.pushNamed(AppRoutes.checkoutScreen),
-                  ),
-                ],
-              ),
+                    PrimaryAppButton(
+                      title: 'Checkout',
+                      onTap: () => context.pushNamed(AppRoutes.checkoutScreen),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

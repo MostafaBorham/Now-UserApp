@@ -58,16 +58,17 @@ class CartRepo {
     }
   }
 
-  /// Removes the cart line for [productId].
+  /// Updates the cart line for [productId] (a new [productQuantity], or `0` to
+  /// remove it) and returns the fresh cart.
   ///
-  /// `Right` carries the server success message; `Left` a user-facing error.
-  Future<Either<Failure, String>> deleteCartProduct(int productId) async {
+  /// `Right` carries the updated [CartModel]; `Left` a user-facing error.
+  Future<Either<Failure, CartModel>> updateCartProduct(int productId,{int? productQuantity}) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _cartApiService.deleteCartProduct(productId);
+      final Response response = await _cartApiService.updateCartProduct(productId,productQuantity);
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
@@ -77,7 +78,10 @@ class CartRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      return Right(body['message']?.toString() ?? '');
+      final CartModel cart =
+          CartModel.fromJson(body['data'] as Map<String, dynamic>?);
+
+      return Right(cart);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

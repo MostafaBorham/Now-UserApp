@@ -2,18 +2,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_product_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
 /// Confirmation + progress dialog for removing a single cart line.
 ///
 /// Lifecycle inside the one dialog:
 ///   1. Confirm  – asks the user to confirm the deletion (Cancel / Delete).
-///   2. Loading  – once confirmed, fires [DeleteCartProductViewModel] and shows
+///   2. Loading  – once confirmed, fires [UpdateCartProductViewModel] and shows
 ///      a spinner; the dialog can NOT be dismissed (barrier + back button).
-///   3. Result   – on success the dialog closes and [getCartProvider] is
-///      refreshed; on failure the spinner stops, the dialog stays open (back on
-///      the confirm state) and an error snackbar is shown.
+///   3. Result   – on success the dialog closes and the line is removed from
+///      [getCartProvider]'s state locally (no refetch); on failure the spinner
+///      stops, the dialog stays open (back on the confirm state) and an error
+///      snackbar is shown.
 ///
 /// Open it with `barrierDismissible: false` so the loading state is truly
 /// non-dismissible; cancelling is only possible through the Cancel button.
@@ -39,17 +41,16 @@ class _DeleteCartProductDialogState
   void _confirmDelete() {
     setState(() => _isDeleting = true);
     ref
-        .read(deleteCartProductProvider(widget.productId).notifier)
-        .deleteCartItem();
+        .read(updateCartProductProvider(widget.productId).notifier)
+        .deleteCartProduct();
   }
 
-  void _handleResult(AsyncValue<bool> state) {
+  void _handleResult(AsyncValue<CartModel?> state) {
     state.whenOrNull(
-      data: (bool removed) {
-        // Ignore the initial idle `data(false)`; only react to a real removal.
-        if (!removed) return;
+      data: (CartModel? cart) {
+        if (cart == null) return;
         Navigator.of(context).pop();
-        ref.read(getCartProvider.notifier).getCart();
+        ref.read(getCartProvider.notifier).updateCartState(cart);
       },
       error: (Object error, StackTrace _) {
         // Stop loading but keep the dialog open, then surface the error.
@@ -83,9 +84,9 @@ class _DeleteCartProductDialogState
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
-    ref.listen<AsyncValue<bool>>(
-      deleteCartProductProvider(widget.productId),
-      (AsyncValue<bool>? previous, AsyncValue<bool> next) =>
+    ref.listen<AsyncValue<CartModel?>>(
+      updateCartProductProvider(widget.productId),
+      (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) =>
           _handleResult(next),
     );
 

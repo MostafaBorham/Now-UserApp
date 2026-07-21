@@ -5,12 +5,17 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class NoItemsWidget extends StatelessWidget {
-  const NoItemsWidget({super.key});
+  const NoItemsWidget({super.key, this.isScrollable = false});
+
+  /// When `true` the empty state is wrapped in an always-scrollable viewport
+  /// that fills the available height, so a wrapping [RefreshIndicator] (or any
+  /// pull gesture) still works even though there is no list to scroll.
+  final bool? isScrollable;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Center(
+    final Widget content = Center(
       // FittedBox lets the empty state shrink instead of overflowing when it
       // gets less height than its content (e.g. while a NestedScrollView body
       // is still being revealed by scrolling).
@@ -28,6 +33,23 @@ class NoItemsWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+
+    if (!isScrollable!) return content;
+
+    // Stretch a scrollable to the full viewport height so the centered content
+    // stays centered while still giving the pull-to-refresh gesture something
+    // to grab onto.
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: content,
+          ),
+        );
+      },
     );
   }
 }

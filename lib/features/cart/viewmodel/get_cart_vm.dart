@@ -43,4 +43,11 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
       (CartModel cart) => AsyncValue.data(cart),
     );
   }
+
+  /// Replaces the current cart with [newCart], the fresh cart returned by an
+  /// update/delete request, so the screen reflects the server truth without a
+  /// refetch.
+  void updateCartState(CartModel newCart) {
+    state = AsyncValue.data(newCart);
+  }
 }
