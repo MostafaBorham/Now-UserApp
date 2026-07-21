@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -7,10 +9,13 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/delete_cart_product_dialog.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
-class CartProductItemView extends StatefulWidget {
+class CartProductItemView extends ConsumerStatefulWidget {
   const CartProductItemView({
     super.key,
     this.product,
@@ -18,7 +23,7 @@ class CartProductItemView extends StatefulWidget {
     this.productName = 'Almarai Milk 2 Liters',
     this.storeName = 'Panda Store',
     this.imageUrl =
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
     this.oldPrice = '10',
     this.newPrice = '10',
     this.initialQuantity = 1,
@@ -43,16 +48,73 @@ class CartProductItemView extends StatefulWidget {
   final ValueChanged<int>? onQuantityChanged;
 
   @override
-  State<CartProductItemView> createState() => _CartProductItemViewState();
+  ConsumerState<CartProductItemView> createState() =>
+      _CartProductItemViewState();
 }
 
-class _CartProductItemViewState extends State<CartProductItemView> {
+class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   late int _quantity = widget.product?.quantity ?? widget.initialQuantity;
+
+  /// Pushes [newQuantity] to the server for this cart line. The optimistic
+  /// [_quantity] is already applied by the caller; a failure reverts it.
+  void _updateQuantity(int newQuantity) {
+    final int? productId = widget.product?.productId;
+    if (productId == null) return;
+
+    setState(() => _quantity = newQuantity);
+    widget.onQuantityChanged?.call(newQuantity);
+
+    ref
+        .read(updateCartProductProvider(productId).notifier)
+        .changeQuantityOfCartProduct(newQuantity);
+  }
+
+  /// Applies the server result of a quantity update: refresh the shared cart on
+  /// success, revert the optimistic quantity and surface the error otherwise.
+  void _handleUpdateResult(AsyncValue<CartModel?> state) {
+    state.whenOrNull(
+      data: (CartModel? cart) {
+        if (cart == null) return;
+        ref.read(getCartProvider.notifier).updateCartState(cart);
+      },
+      error: (Object error, StackTrace _) {
+        if (!mounted) return;
+        setState(
+          () => _quantity = widget.product?.quantity ?? widget.initialQuantity,
+        );
+
+        final ColorScheme colors = Theme.of(context).colorScheme;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                error.toString().tr(),
+                style: AppTextStyles.style16SemiBold.copyWith(
+                  color: colors.onPrimary,
+                ),
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: colors.onError,
+            ),
+          );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final ProductModel? product = widget.product;
+
+    final int? productId = product?.productId;
+    if (productId != null) {
+      ref.listen<AsyncValue<CartModel?>>(
+        updateCartProductProvider(productId),
+        (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) =>
+            _handleUpdateResult(next),
+      );
+    }
 
     final String productName = product != null
         ? context.getLocalizedApiText(product.name)
@@ -79,7 +141,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                 width: 76,
                 height: 76,
                 fit: BoxFit.cover,
-                imageUrl: widget.product?.imageUrl??'',
+                imageUrl: widget.product?.imageUrl ?? '',
               ),
             ),
           ),
@@ -120,7 +182,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                         context: context,
                         barrierDismissible: false,
                         builder: (_) => DeleteCartProductDialog(
-                          productId: product?.productId??-1,
+                          productId: product?.productId ?? -1,
                           productName: productName,
                         ),
                       );
@@ -132,9 +194,11 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                         color: colors.error.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: Assets.media.images.svg.deleteIcon
-                          .svg(
-                          colorFilter: ColorFilter.mode(colors.onError, BlendMode.srcIn)
+                      child: Assets.media.images.svg.deleteIcon.svg(
+                        colorFilter: ColorFilter.mode(
+                          colors.onError,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
@@ -148,11 +212,12 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                     textDirection: TextDirection.ltr,
                     spacing: 4,
                     children: [
-                      if((widget.product?.comparePrice ?? 0) > 0)OldPriceWidget(
-                        color: colors.onSurface,
-                        price: '${widget.product?.comparePrice}',
-                        size: 10,
-                      ),
+                      if ((widget.product?.comparePrice ?? 0) > 0)
+                        OldPriceWidget(
+                          color: colors.onSurface,
+                          price: '${widget.product?.comparePrice}',
+                          size: 10,
+                        ),
                       NewPriceWidget(
                         color: colors.onSecondary,
                         price: '${widget.product?.price}',
@@ -165,10 +230,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                     spacing: 4,
                     children: [
                       InkWell(
-                        onTap: () {
-                          setState(() => _quantity++);
-                          widget.onQuantityChanged?.call(_quantity);
-                        },
+                        onTap: () => _updateQuantity(_quantity + 1),
                         customBorder: const CircleBorder(),
                         child: Container(
                           width: 28,
@@ -196,10 +258,7 @@ class _CartProductItemViewState extends State<CartProductItemView> {
                       ),
                       InkWell(
                         onTap: _quantity > 1
-                            ? () {
-                          setState(() => _quantity--);
-                          widget.onQuantityChanged?.call(_quantity);
-                        }
+                            ? () => _updateQuantity(_quantity - 1)
                             : null,
                         customBorder: const CircleBorder(),
                         child: Container(

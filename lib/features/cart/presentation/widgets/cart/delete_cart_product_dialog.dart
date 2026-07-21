@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
 /// Confirmation + progress dialog for removing a single cart line.
@@ -41,7 +41,7 @@ class _DeleteCartProductDialogState
   void _confirmDelete() {
     setState(() => _isDeleting = true);
     ref
-        .read(updateCartProductProvider(widget.productId).notifier)
+        .read(deleteCartProductProvider(widget.productId).notifier)
         .deleteCartProduct();
   }
 
@@ -85,7 +85,7 @@ class _DeleteCartProductDialogState
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     ref.listen<AsyncValue<CartModel?>>(
-      updateCartProductProvider(widget.productId),
+      deleteCartProductProvider(widget.productId),
       (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) =>
           _handleResult(next),
     );
