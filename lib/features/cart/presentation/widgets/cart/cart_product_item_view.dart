@@ -28,7 +28,7 @@ class CartProductItemView extends ConsumerStatefulWidget {
     this.newPrice = '10',
     this.initialQuantity = 1,
     this.onDelete,
-    this.onQuantityChanged,
+    // this.onQuantityChanged,
   });
 
   /// Cart line whose data drives this row. When null, the [productName]/
@@ -45,7 +45,7 @@ class CartProductItemView extends ConsumerStatefulWidget {
   final String newPrice;
   final int initialQuantity;
   final VoidCallback? onDelete;
-  final ValueChanged<int>? onQuantityChanged;
+  // final ValueChanged<int>? onQuantityChanged;
 
   @override
   ConsumerState<CartProductItemView> createState() =>
@@ -55,14 +55,26 @@ class CartProductItemView extends ConsumerStatefulWidget {
 class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   late int _quantity = widget.product?.quantity ?? widget.initialQuantity;
 
+  @override
+  void didUpdateWidget(covariant CartProductItemView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When the shared cart is refreshed (e.g. after a successful update) the
+    // parent passes a new product; keep the displayed quantity in sync with
+    // that server truth.
+    final int? newQuantity = widget.product?.quantity;
+    if (newQuantity != null && newQuantity != oldWidget.product?.quantity) {
+      _quantity = newQuantity;
+    }
+  }
+
   /// Pushes [newQuantity] to the server for this cart line. The optimistic
   /// [_quantity] is already applied by the caller; a failure reverts it.
   void _updateQuantity(int newQuantity) {
     final int? productId = widget.product?.productId;
     if (productId == null) return;
 
-    setState(() => _quantity = newQuantity);
-    widget.onQuantityChanged?.call(newQuantity);
+    // setState(() => _quantity = newQuantity);
+    // widget.onQuantityChanged?.call(newQuantity);
 
     ref
         .read(updateCartProductProvider(productId).notifier)
@@ -108,12 +120,14 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     final ProductModel? product = widget.product;
 
     final int? productId = product?.productId;
+    bool isUpdating = false;
     if (productId != null) {
       ref.listen<AsyncValue<CartModel?>>(
         updateCartProductProvider(productId),
         (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) =>
             _handleUpdateResult(next),
       );
+      isUpdating = ref.watch(updateCartProductProvider(productId)).isLoading;
     }
 
     final String productName = product != null
@@ -225,57 +239,72 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 4,
-                    children: [
-                      InkWell(
-                        onTap: () => _updateQuantity(_quantity + 1),
-                        customBorder: const CircleBorder(),
-                        child: Container(
+                  AbsorbPointer(
+                    absorbing: isUpdating,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 4,
+                      children: [
+                        InkWell(
+                          onTap: () => _updateQuantity(_quantity + 1),
+                          customBorder: const CircleBorder(),
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: colors.onPrimary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.add_rounded,
+                              size: 16,
+                              color: colors.onSecondary,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
                           width: 28,
                           height: 28,
-                          decoration: BoxDecoration(
-                            color: colors.onPrimary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.add_rounded,
-                            size: 16,
-                            color: colors.onSecondary,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 28,
-                        child: Text(
-                          _quantity.toString(),
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.style14Medium.copyWith(
-                            color: colors.tertiaryContainer,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: _quantity > 1
-                            ? () => _updateQuantity(_quantity - 1)
-                            : null,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: colors.onPrimary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.remove_rounded,
-                            size: 16,
-                            color: colors.onSurface,
+                          child: Center(
+                            child: isUpdating
+                                ? SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: colors.onSecondary,
+                                    ),
+                                  )
+                                : Text(
+                                    _quantity.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: AppTextStyles.style14Medium.copyWith(
+                                      color: colors.tertiaryContainer,
+                                    ),
+                                  ),
                           ),
                         ),
-                      ),
-                    ],
+                        InkWell(
+                          onTap: _quantity > 1
+                              ? () => _updateQuantity(_quantity - 1)
+                              : null,
+                          customBorder: const CircleBorder(),
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: colors.onPrimary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.remove_rounded,
+                              size: 16,
+                              color: colors.onSurface,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

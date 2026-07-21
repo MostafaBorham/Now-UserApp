@@ -36,7 +36,7 @@ class DeleteCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     state = const AsyncValue<CartModel?>.loading();
 
     final Either<Failure, CartModel> result =
-        await _repo.updateCartProduct(_productId);
+        await _repo.deleteCartProduct(_productId);
 
     if (!mounted) return;
 

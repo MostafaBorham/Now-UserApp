@@ -35,10 +35,8 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   Future<void> changeQuantityOfCartProduct(int productQuantity) async {
     state = const AsyncValue<CartModel?>.loading();
 
-    final Either<Failure, CartModel> result = await _repo.updateCartProduct(
-      _productId,
-      productQuantity: productQuantity,
-    );
+    final Either<Failure, CartModel> result =
+        await _repo.updateCartProductQuantity(_productId, productQuantity);
 
     if (!mounted) return;
 

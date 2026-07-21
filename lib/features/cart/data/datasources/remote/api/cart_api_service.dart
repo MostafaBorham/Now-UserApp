@@ -28,14 +28,23 @@ class CartApiService {
     );
   }
 
-  /// Removes the cart line for [productId]. The body is always the static
-  /// `{"quantity": 0}` payload the endpoint expects. Authentication is applied
-  /// by `AuthTokenInterceptor` from the cached session.
-  Future<Response> updateCartProduct(int productId,int? productQuantity) {
-    CartEndpoints.productQuantity = productQuantity??0;
+  /// Removes the cart line for [productId] by sending the `{"quantity": 0}`
+  /// payload the endpoint expects. Authentication is applied by
+  /// `AuthTokenInterceptor` from the cached session.
+  Future<Response> deleteCartProduct(int productId) {
     return _dio.delete(
       CartEndpoints.cartProduct(productId),
-      data: CartEndpoints.updateQuantityToCartProductBody,
+      data: CartEndpoints.quantityBody(0),
+      cancelToken: _canceller.token,
+    );
+  }
+
+  /// Sets the cart line for [productId] to [quantity]. Authentication is applied
+  /// by `AuthTokenInterceptor` from the cached session.
+  Future<Response> updateCartProductQuantity(int productId, int quantity) {
+    return _dio.patch(
+      CartEndpoints.cartProduct(productId),
+      data: CartEndpoints.quantityBody(quantity),
       cancelToken: _canceller.token,
     );
   }
