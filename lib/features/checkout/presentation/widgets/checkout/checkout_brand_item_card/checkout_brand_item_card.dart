@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_products_images_list_view.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_details_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_images_list_view.dart';
 
 class CheckoutBrandItemCard extends StatefulWidget {
-  const CheckoutBrandItemCard({super.key, this.readyToCheckout = false});
+  const CheckoutBrandItemCard({
+    super.key,
+    this.order,
+    this.readyToCheckout = false,
+  });
+
+  /// The single store's draft order rendered by this card.
+  final DraftOrderModel? order;
   final bool? readyToCheckout;
+
   @override
   State<CheckoutBrandItemCard> createState() => _CheckoutBrandItemCardState();
 }
@@ -41,7 +48,9 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                   setState(() => _isExpanded = expanded),
             ),
 
-            _isExpanded? CheckoutProductsDetailsView() : CheckoutProductsImagesListView(),
+            _isExpanded
+                ? CheckoutProductsDetailsView(order: widget.order)
+                : CheckoutProductsImagesListView(items: widget.order?.items),
 
             ApplyDiscountCodeView(),
           ],

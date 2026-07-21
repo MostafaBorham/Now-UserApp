@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 
-class InvoiceSummaryCard extends StatelessWidget {
+class InvoiceSummaryCard extends ConsumerWidget {
   const InvoiceSummaryCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final OrderGroupModel orderGroup = ref.watch(
+      checkoutModelProvider.select((checkout) => checkout.orderGroup),
+    );
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -25,79 +31,79 @@ class InvoiceSummaryCard extends StatelessWidget {
               color: colors.tertiaryContainer,
             ),
           ),
-            Column(
-              spacing: 8,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Subtotal',
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSecondary,
-                        ),
+          Column(
+            spacing: 8,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Subtotal',
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSecondary,
                       ),
                     ),
-                    NewPriceWidget(
-                      color: colors.onSecondary,
-                      price: '10',
-                      size: 13,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Vat (5%)',
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSecondary,
-                        ),
+                  ),
+                  NewPriceWidget(
+                    color: colors.onSecondary,
+                    price: '${orderGroup.subtotal}',
+                    size: 13,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Vat (5%)',
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSecondary,
                       ),
                     ),
-                    NewPriceWidget(
-                      color: colors.onSecondary,
-                      price: '10',
-                      size: 13,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Delivery Fee',
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSecondary,
-                        ),
+                  ),
+                  NewPriceWidget(
+                    color: colors.onSecondary,
+                    price: '${orderGroup.tax}',
+                    size: 13,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Delivery Fee',
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSecondary,
                       ),
                     ),
-                    NewPriceWidget(
-                      color: colors.onSecondary,
-                      price: '10',
-                      size: 13,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Discount',
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSecondary,
-                        ),
+                  ),
+                  NewPriceWidget(
+                    color: colors.onSecondary,
+                    price: '${orderGroup.deliveryFee}',
+                    size: 13,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Discount',
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSecondary,
                       ),
                     ),
-                    NewPriceWidget(
-                      color: colors.errorContainer,
-                      price: '10',
-                      size: 13,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  NewPriceWidget(
+                    color: colors.errorContainer,
+                    price: '${orderGroup.discount}',
+                    size: 13,
+                  ),
+                ],
+              ),
+            ],
+          ),
           Divider(
             height: 2,
             thickness: 1,
@@ -115,7 +121,7 @@ class InvoiceSummaryCard extends StatelessWidget {
               ),
               NewPriceWidget(
                 color: colors.primary,
-                price: '10',
+                price: '${orderGroup.total}',
                 size: 13,
               ),
             ],

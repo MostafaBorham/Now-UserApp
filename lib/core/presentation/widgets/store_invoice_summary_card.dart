@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 
 class StoreInvoiceSummaryCard extends StatelessWidget {
-  const StoreInvoiceSummaryCard({super.key, this.pricing});
+  const StoreInvoiceSummaryCard({
+    super.key,
+    this.subtotal,
+    this.tax,
+    this.deliveryFee,
+    this.discount,
+  });
 
-  final CartVendorPricingModel? pricing;
+  final double? subtotal;
+  final double? tax;
+  final double? deliveryFee;
+  final double? discount;
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -42,7 +51,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '${pricing?.subtotal}',
+                    price: '${subtotal ?? 0}',
                     size: 13,
                   ),
                 ],
@@ -59,7 +68,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '${pricing?.tax}',
+                    price: '${tax ?? 0}',
                     size: 13,
                   ),
                 ],
@@ -76,7 +85,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '${pricing?.deliveryFee}',
+                    price: '${deliveryFee ?? 0}',
                     size: 13,
                   ),
                 ],
@@ -93,7 +102,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                   NewPriceWidget(
                     color: colors.errorContainer,
-                    price: '${pricing?.discount}',
+                    price: '${discount ?? 0}',
                     size: 13,
                   ),
                 ],

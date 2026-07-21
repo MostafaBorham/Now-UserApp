@@ -76,7 +76,12 @@ class CartBrandItemDetailsView extends StatelessWidget {
         ),
 
         // Store invoice summary
-        StoreInvoiceSummaryCard(pricing: pricing),
+        StoreInvoiceSummaryCard(
+          subtotal: pricing?.subtotal,
+          tax: pricing?.tax,
+          deliveryFee: pricing?.deliveryFee,
+          discount: pricing?.discount,
+        ),
       ],
     );
   }

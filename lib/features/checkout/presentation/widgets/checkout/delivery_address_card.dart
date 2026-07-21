@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 
-class DeliveryAddressCard extends StatelessWidget {
+class DeliveryAddressCard extends ConsumerWidget {
   const DeliveryAddressCard({
     super.key,
     this.title = 'Delivery Address',
-    this.address = '7468 Olaya, Riyadh',
     this.onEdit,
   });
 
   final String title;
-  final String address;
   final VoidCallback? onEdit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String? address = ref.watch(
+      checkoutModelProvider.select(
+        (checkout) => checkout.orderGroup.deliveryAddress,
+      ),
+    );
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -50,7 +55,7 @@ class DeliveryAddressCard extends StatelessWidget {
             ],
           ),
           Text(
-            address,
+            address ?? 'No Address',
             style: AppTextStyles.style14Regular.copyWith(
               color: colors.onSurface,
             ),

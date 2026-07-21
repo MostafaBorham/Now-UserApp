@@ -18,21 +18,10 @@ class CheckoutApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  /// Drafts an order group for every store in the cart (sends a `null`
-  /// `vendor_id`). Authentication is applied by `AuthTokenInterceptor` from the
-  /// cached session.
-  Future<Response> checkoutForAllStores() {
-    return _dio.post(
-      CheckoutEndpoints.checkout,
-      data: CheckoutEndpoints.checkoutBody(),
-      cancelToken: _canceller.token,
-    );
-  }
-
-  /// Drafts an order group for a single store identified by [vendorId].
-  /// Authentication is applied by `AuthTokenInterceptor` from the cached
-  /// session.
-  Future<Response> checkoutForSingleStore(int vendorId) {
+  /// Drafts an order group. A `null` [vendorId] drafts every store in the cart;
+  /// a concrete [vendorId] drafts only that single store. Authentication is
+  /// applied by `AuthTokenInterceptor` from the cached session.
+  Future<Response> checkout({int? vendorId}) {
     return _dio.post(
       CheckoutEndpoints.checkout,
       data: CheckoutEndpoints.checkoutBody(vendorId: vendorId),
