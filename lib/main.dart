@@ -26,7 +26,7 @@ Future<void> main() async {
   ]).then(
     (_) => runApp(
       DevicePreview(
-        enabled: !kReleaseMode,
+        enabled: false,
         builder: (context) {
           return LocalizationInit(child: ProviderScope(child: NowUserApp()));
         },

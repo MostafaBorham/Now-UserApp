@@ -13,6 +13,8 @@ class OnBoardingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     return Scaffold(
+      extendBody: false,
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -29,31 +31,25 @@ class OnBoardingScreen extends ConsumerWidget {
               Column(
                 children: [
                   Expanded(
-                    child: Center(
-                      child: Assets.media.images.png.onboardingImg.image(),
+                    child: Assets.media.images.png.onboardingImg.image(
+                      fit: BoxFit.fill
                     ),
                   ),
                   OnBoardingContentView(),
                 ],
               ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: AppLanguageToggleWidget(
-                    width: MediaQuery.of(context).size.width * 0.3,
+              AppLanguageToggleWidget(
+                width: MediaQuery.of(context).size.width * 0.3,
 
-                    initialLanguage: context.locale == LocalizationConstants.arabicLocale? AppLanguage.ar : AppLanguage.en,
-                    onChanged: (lang) {
-                      if (lang == AppLanguage.ar) {
-                        context.setLocale(LocalizationConstants.arabicLocale);
-                      } else {
-                        context.setLocale(LocalizationConstants.englishLocale);
-                      }
-                    },
-                  ),
-                ),
-              ),
+                initialLanguage: context.locale == LocalizationConstants.arabicLocale? AppLanguage.ar : AppLanguage.en,
+                onChanged: (lang) {
+                  if (lang == AppLanguage.ar) {
+                    context.setLocale(LocalizationConstants.arabicLocale);
+                  } else {
+                    context.setLocale(LocalizationConstants.englishLocale);
+                  }
+                },
+              )
             ],
           ),
         ),

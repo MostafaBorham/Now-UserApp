@@ -33,20 +33,18 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: false,
       body: mainPages.elementAt(currentPageIndex),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
+      bottomNavigationBar: SafeArea(
         child: AppBottomNavBar(currentIndex: currentPageIndex, onIndexChanged: (int value) {
           if (_loginRequiredTabs.contains(value)) {
             final Map<String, dynamic> tokenData =
                 WelcomeCacheService().getToken();
             final bool isGuest =
                 tokenData[CacheKeys.isGuest] as bool? ?? true;
-
+        
             if (isGuest) {
               context.pushNamed(AppRoutes.phoneVerificationScreen);
               return;

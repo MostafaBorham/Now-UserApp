@@ -70,11 +70,10 @@ class OnBoardingContentView extends ConsumerWidget {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         spacing: 5,
         children: [
-          AspectRatio(
-              aspectRatio: 6.5,
-              child: AppLogo(size: 200)),
+          AppLogo(size: 200),
           25.hSpace,
           AspectRatio(
             aspectRatio: 10,
