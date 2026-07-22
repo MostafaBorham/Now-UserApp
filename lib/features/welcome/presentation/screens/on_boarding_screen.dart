@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,7 +11,7 @@ class OnBoardingScreen extends ConsumerWidget {
   const OnBoardingScreen({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       extendBody: false,
       resizeToAvoidBottomInset: false,
@@ -26,30 +26,36 @@ class OnBoardingScreen extends ConsumerWidget {
         ),
         child: SafeArea(
           bottom: false,
-          child: Stack(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: Assets.media.images.png.onboardingImg.image(
-                      fit: BoxFit.fill
+              Expanded(
+                child: Stack(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Assets.media.images.png.onboardingImg.image(
+                      fit: BoxFit.fill,
                     ),
-                  ),
-                  OnBoardingContentView(),
-                ],
-              ),
-              AppLanguageToggleWidget(
-                width: MediaQuery.of(context).size.width * 0.3,
+                    AppLanguageToggleWidget(
+                      width: MediaQuery.of(context).size.width * 0.3,
 
-                initialLanguage: context.locale == LocalizationConstants.arabicLocale? AppLanguage.ar : AppLanguage.en,
-                onChanged: (lang) {
-                  if (lang == AppLanguage.ar) {
-                    context.setLocale(LocalizationConstants.arabicLocale);
-                  } else {
-                    context.setLocale(LocalizationConstants.englishLocale);
-                  }
-                },
-              )
+                      initialLanguage:
+                          context.locale == LocalizationConstants.arabicLocale
+                          ? AppLanguage.ar
+                          : AppLanguage.en,
+                      onChanged: (lang) {
+                        if (lang == AppLanguage.ar) {
+                          context.setLocale(LocalizationConstants.arabicLocale);
+                        } else {
+                          context.setLocale(
+                            LocalizationConstants.englishLocale,
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              OnBoardingContentView(),
             ],
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,8 +18,10 @@ class OnBoardingContentView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    ref.listen<AsyncValue<String?>>(generateGuestTokenProvider,
-        (AsyncValue<String?>? previous, AsyncValue<String?> next) {
+    ref.listen<AsyncValue<String?>>(generateGuestTokenProvider, (
+      AsyncValue<String?>? previous,
+      AsyncValue<String?> next,
+    ) {
       next.whenOrNull(
         data: (String? guestToken) {
           if (guestToken != null) {
@@ -31,24 +33,27 @@ class OnBoardingContentView extends ConsumerWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(error.toString().tr(),style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.onPrimary
-                ),),
+                content: Text(
+                  error.toString().tr(),
+                  style: AppTextStyles.style16SemiBold.copyWith(
+                    color: colors.onPrimary,
+                  ),
+                ),
                 behavior: SnackBarBehavior.floating,
                 elevation: 4,
                 padding: EdgeInsets.all(16),
                 backgroundColor: colors.onError,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(100)
+                  borderRadius: BorderRadiusGeometry.circular(100),
                 ),
               ),
             );
         },
       );
     });
-    final bool isGuestTokenLoading =
-        ref.watch(generateGuestTokenProvider).isLoading;
-
+    final bool isGuestTokenLoading = ref
+        .watch(generateGuestTokenProvider)
+        .isLoading;
 
     final Gradient screenGradient = LinearGradient(
       colors: [colors.secondaryFixed, colors.primary],
@@ -56,9 +61,10 @@ class OnBoardingContentView extends ConsumerWidget {
       end: Alignment.centerRight,
       stops: const [0, 1],
     );
+    final pixRatio = MediaQuery.of(context).devicePixelRatio;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16,vertical: 40),
+      padding: EdgeInsets.symmetric(horizontal: 5*pixRatio, vertical: 12*pixRatio),
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
@@ -71,101 +77,94 @@ class OnBoardingContentView extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        spacing: 5,
+        spacing: pixRatio,
         children: [
-          AppLogo(size: 200),
-          25.hSpace,
-          AspectRatio(
-            aspectRatio: 10,
-            child: FittedBox(
-              child: Text(
-                LangKeys.onBoardingTitleKey.tr(),
-                style: AppTextStyles.style24Bold.copyWith(
-                  color: colors.onSecondary,
-                ),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-              ),
+          AppLogo(size: pixRatio*80),
+          (7*pixRatio).toInt().hSpace,
+          Text(
+            LangKeys.onBoardingTitleKey.tr(),
+            style: AppTextStyles.style24Bold.copyWith(
+              color: colors.onSecondary,
+              fontSize: 8*pixRatio,
             ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            maxLines: 2,
           ),
-          AspectRatio(
-            aspectRatio: 10,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 5,
-                  children: [
-                    IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            LangKeys.thatSuitKey.tr(),
-                            style: AppTextStyles.style24SemiBold.copyWith(
-                              height: 1,
-                              foreground: Paint()
-                                ..shader = screenGradient.createShader(
-                                  const Rect.fromLTWH(0, 0, 300, 70),
-                                ),
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              textDirection: TextDirection.ltr,
+              spacing: 5,
+              children: [
+                IntrinsicWidth(
+                  child: Column(
+                    spacing: 2,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        LangKeys.thatSuitKey.tr(),
+                        style: AppTextStyles.style24SemiBold.copyWith(
+                          height: 1,
+                          fontSize: 7*pixRatio,
+                          foreground: Paint()
+                            ..shader = screenGradient.createShader(
+                              const Rect.fromLTWH(0, 0, 300, 70),
                             ),
-                          ),
-                          Container(
-                            height: 5,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [colors.secondary, colors.primary],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                stops: const [0, 1],
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            LangKeys.youKey.tr(),
-                            style: AppTextStyles.style24SemiBold.copyWith(
-                              height: 1,
-                              color: colors.primary,
-                            ),
+                      Container(
+                        height: 2*pixRatio,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [colors.secondary, colors.primary],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            stops: const [0, 1],
                           ),
-                          Container(
-                            margin: EdgeInsetsDirectional.only(start: 15),
-                            height: 5,
-                            color: colors.primary,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+                IntrinsicWidth(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 2,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        LangKeys.youKey.tr(),
+                        style: AppTextStyles.style24SemiBold.copyWith(
+                          height: 1,
+                          fontSize: 7*pixRatio,
+                          color: colors.primary,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 4*pixRatio,),
+                        height: 2*pixRatio,
+                        color: colors.primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          8.hSpace,
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              LangKeys.onBoardingSubTitleKey.tr(),
-              style: AppTextStyles.style12Medium.copyWith(
-                color: colors.onSurface,
-              ),
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              maxLines: 2,
+          (2*pixRatio).toInt().hSpace,
+          Text(
+            LangKeys.onBoardingSubTitleKey.tr(),
+            style: AppTextStyles.style12Medium.copyWith(
+              color: colors.onSecondary.withValues(alpha: 0.8),
+              fontSize: 4.5*pixRatio,
             ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            maxLines: 2,
           ),
-          10.hSpace,
+          (3*pixRatio).toInt().hSpace,
           AspectRatio(
             aspectRatio: 7.5,
             child: PrimaryGradientAppButton(
@@ -174,16 +173,19 @@ class OnBoardingContentView extends ConsumerWidget {
               buttonGradient: screenGradient,
             ),
           ),
-          10.hSpace,
-          OrDivider(),
-          10.hSpace,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 4*pixRatio,),
+            child: AspectRatio(aspectRatio: 15, child: OrDivider()),
+          ),
           AspectRatio(
             aspectRatio: 7.5,
             child: UnPrimaryGradientAppButton(
               title: LangKeys.continueAsGuestKey.tr(),
               isLoading: isGuestTokenLoading,
               onTap: () {
-                ref.read(generateGuestTokenProvider.notifier).generateGuestToken();
+                ref
+                    .read(generateGuestTokenProvider.notifier)
+                    .generateGuestToken();
               },
               buttonGradient: screenGradient,
             ),

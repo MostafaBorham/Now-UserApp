@@ -31,12 +31,24 @@ class ResponsiveConfig {
   /// above the widget calling `.sf`.
   static ResponsiveConfig? current;
 
-  /// Scales [size] from the figma design space into the available space using
-  /// the smaller of the width/height scale factors (uniform scaling).
+  /// Scales [size] from the figma design space into the available space.
+  ///
+  /// The factor is the geometric mean of the width and height scales, so the
+  /// result reacts to a change in *either* dimension: widen the space and it
+  /// grows, shorten it and it shrinks. This differs from `min()`, which tracks
+  /// only the single limiting axis and ignores changes on the other one.
   double scale(num size) {
     final widthScale = maxWidth / figmaWidth;
     final heightScale = maxHeight / figmaHeight;
-    final scaleFactor = math.min(widthScale, heightScale);
+    final scaleFactor = math.sqrt(widthScale * heightScale);
     return scaleFactor * size;
   }
+
+  /// Scales [size] purely by the width ratio (`maxWidth / figmaWidth`).
+  /// Reacts to horizontal changes only.
+  double scaleWidth(num size) => (maxWidth / figmaWidth) * size;
+
+  /// Scales [size] purely by the height ratio (`maxHeight / figmaHeight`).
+  /// Reacts to vertical changes only.
+  double scaleHeight(num size) => (maxHeight / figmaHeight) * size;
 }

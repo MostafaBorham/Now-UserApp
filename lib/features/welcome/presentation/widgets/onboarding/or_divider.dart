@@ -21,11 +21,14 @@ class OrDivider extends StatelessWidget {
             height: 1,
           ),
         ),
-        AutoSizeText(LangKeys.orKey.tr(),
-          style: textThemes.bodyLarge?.copyWith(
-            color: colors.inversePrimary,
-            fontWeight: FontWeight.w500
-        ),minFontSize: 10,),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(LangKeys.orKey.tr(),
+            style: textThemes.bodyLarge?.copyWith(
+              color: colors.inversePrimary,
+              fontWeight: FontWeight.w500
+          )),
+        ),
         Expanded(
           child: Container(
             color: colors.inversePrimary,

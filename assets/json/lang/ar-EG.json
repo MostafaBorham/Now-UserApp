@@ -118,8 +118,8 @@
   "numberOfItems": "عدد المنتجات",
   "offers": "عروض",
   "offersYouCannotWaitFor": "عروض لا تُفوَّت",
-  "onBoardingSubTitle": "احصل على كل ما تحتاجه بسهولة وسرعة، من خلال تطبيق واحد",
-  "onBoardingTitle": "تسوّق كل ما تحتاجه بالطريقة التي تناسبك",
+  "onBoardingSubTitle": "احصل على كل ما تحتاجه بسهولة وسرعة، من خلال تطبيق واحد.",
+  "onBoardingTitle": "تسوّق كل ما تحتاجه بالطريقة",
   "onTheWayToYou": "في الطريق إليك",
   "or": "أو",
   "orDivider": "- أو -",
@@ -209,7 +209,7 @@
   "support": "الدعم",
   "supportTitle": "خدمة العملاء",
   "tellUsMore": "أخبرنا بالمزيد ...",
-  "thatSuit": "يناسبك",
+  "thatSuit": "تناسبك",
   "to": "إلى",
   "today": "اليوم",
   "topBrands": "أفضل العلامات التجارية",
@@ -231,5 +231,5 @@
   "workAddressSelector": "العمل",
   "yesCancelOrder": "نعم، إلغاء الطلب",
   "yesterday": "أمس",
-  "you": "أنت"
+  "you": "التى"
 }
