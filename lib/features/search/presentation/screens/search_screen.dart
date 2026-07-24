@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -10,22 +11,23 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_s
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
+import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
-    // Dummy placeholder data — replaced with real data later.
-    final List<String> recentSearches = <String>[
-      'Milk',
-      'Vegetables',
-      'Meat',
-      'Fish',
-    ];
+    // Recent search keywords (loaded on first watch by the provider).
+    final RecentSearchViewModel recentVm = ref.read(
+      recentSearchProvider.notifier,
+    );
+    final List<String> recentSearches =
+        ref.watch(recentSearchProvider).valueOrNull ?? const <String>[];
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: AppWavedView(
@@ -40,9 +42,14 @@ class SearchScreen extends StatelessWidget {
               navigateToSearchOnTap: false,
               enableRecentKeywords: true,
               recentKeywords: recentSearches,
-              onRecentSelect: (String term) {},
-              onRecentRemove: (String term) {},
-              onRecentClear: () {},
+              // Live-filter recents as the user types (req 5).
+              onChanged: recentVm.filterRecentSearch,
+              // Submit a new keyword to the database, then unfocus (req 6).
+              onSubmitted: recentVm.addSearchKey,
+              // Remove a single recent keyword (req 2).
+              onRecentRemove: recentVm.removeSearchKey,
+              // Clear all recent keywords (req 3).
+              onRecentClear: recentVm.clearAll,
             ),
             AspectRatio(
               aspectRatio: 2,
