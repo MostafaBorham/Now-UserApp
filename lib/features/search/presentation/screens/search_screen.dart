@@ -27,6 +27,7 @@ class SearchScreen extends StatelessWidget {
       'Fish',
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: AppWavedView(
         appBarTitle: LangKeys.searchKey.tr(),
         canPop: context.canPop(),

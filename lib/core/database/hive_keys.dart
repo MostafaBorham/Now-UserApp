@@ -1,0 +1,9 @@
+/// Keys used to address values inside Hive boxes.
+///
+/// Declared centrally (like `CacheKeys` for SharedPreferences) so every value
+/// stored in a box is addressed by a single, collision-free key.
+abstract class HiveKeys {
+  /// Key inside [HiveBoxes.recentSearches] holding the `List<String>` of
+  /// recent search keywords (most-recent first).
+  static const String recentSearchKeywords = 'keywords';
+}

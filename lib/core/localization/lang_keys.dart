@@ -225,6 +225,10 @@ abstract class LangKeys {
   static const String readGuestSessionFailedKey = 'readGuestSessionFailed';
   static const String saveUserSessionFailedKey = 'saveUserSessionFailed';
   static const String clearUserSessionFailedKey = 'clearUserSessionFailed';
+  static const String readRecentSearchesFailedKey = 'readRecentSearchesFailed';
+  static const String saveRecentSearchesFailedKey = 'saveRecentSearchesFailed';
+  static const String clearRecentSearchesFailedKey =
+      'clearRecentSearchesFailed';
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
   static const String appUnderMaintenanceSubtitleKey =
       'appUnderMaintenanceSubtitle';

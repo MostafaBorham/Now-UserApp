@@ -76,28 +76,28 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
         _focusNode.hasFocus &&
         keywords.isNotEmpty;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: 7.5,
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints con) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: colors.onPrimary,
-                  borderRadius: AppBorderRadius.brCircular30,
-                  boxShadow: AppBoxShadows.blackBottomShadow1,
-                ),
-                alignment: Alignment.center,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TapRegion(
-                        onTapOutside: (PointerDownEvent event) {
-                          if (_focusNode.hasFocus) _focusNode.unfocus();
-                        },
+    return TapRegion(
+      onTapOutside: (PointerDownEvent event) {
+        if (_focusNode.hasFocus) _focusNode.unfocus();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          AspectRatio(
+            aspectRatio: 7.5,
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints con) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: colors.onPrimary,
+                    borderRadius: AppBorderRadius.brCircular30,
+                    boxShadow: AppBoxShadows.blackBottomShadow1,
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
                         child: Builder(
                           builder: (BuildContext context) {
                             final Widget field = Center(
@@ -144,47 +144,47 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                           },
                         ),
                       ),
-                    ),
-                    if (widget.hasFilter ?? false)
-                      InkWell(
-                        onTap: widget.onFilterTap,
-                        borderRadius: AppBorderRadius.brCircular30,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 8,
-                          ),
-                          child: Assets.media.images.svg.filterIcon.svg(
-                            colorFilter: ColorFilter.mode(
-                              colors.onSecondary,
-                              BlendMode.srcIn,
+                      if (widget.hasFilter ?? false)
+                        InkWell(
+                          onTap: widget.onFilterTap,
+                          borderRadius: AppBorderRadius.brCircular30,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 8,
+                            ),
+                            child: Assets.media.images.svg.filterIcon.svg(
+                              colorFilter: ColorFilter.mode(
+                                colors.onSecondary,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          alignment: Alignment.topCenter,
-          child: showRecent
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: RecentSearchWidget(
-                    keywords: keywords,
-                    onSelect: widget.onRecentSelect,
-                    onRemove: widget.onRecentRemove,
-                    onClear: widget.onRecentClear,
+                    ],
                   ),
-                )
-              : const SizedBox(width: double.infinity),
-        ),
-      ],
+                );
+              },
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: showRecent
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: RecentSearchWidget(
+                      keywords: keywords,
+                      onSelect: widget.onRecentSelect,
+                      onRemove: widget.onRecentRemove,
+                      onClear: widget.onRecentClear,
+                    ),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ],
+      ),
     );
   }
 }
