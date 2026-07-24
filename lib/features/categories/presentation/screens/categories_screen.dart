@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/constants/app_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -32,7 +32,7 @@ class CategoriesScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: context.canPop(),
         body: categoriesState.when(
@@ -48,8 +48,9 @@ class CategoriesScreen extends ConsumerWidget {
           error: (Object error, StackTrace stackTrace) =>
               ServerConnectionErrorWidget(
                 message: error.toString(),
-                onRetry: () =>
-                    ref.read(getAppCategoriesProvider.notifier).getAppCategories(),
+                onRetry: () => ref
+                    .read(getAppCategoriesProvider.notifier)
+                    .getAppCategories(),
               ),
           data: (List<CategoryModel> categories) => categories.isEmpty
               ? const NoItemsWidget()
@@ -60,12 +61,12 @@ class CategoriesScreen extends ConsumerWidget {
                   itemBuilder: (BuildContext context, int index) =>
                       CategoryCard(
                         category: categories[index],
-                          onTap: () {
-                            context.pushNamed(
-                              AppRoutes.categoryDetailsScreen,
-                              extra: categories[index],
-                            );
-                          }
+                        onTap: () {
+                          context.pushNamed(
+                            AppRoutes.categoryDetailsScreen,
+                            extra: categories[index],
+                          );
+                        },
                       ),
                 ),
         ),

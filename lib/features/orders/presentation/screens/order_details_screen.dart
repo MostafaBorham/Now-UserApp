@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 
@@ -34,7 +34,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       ],
     );
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         body: SingleChildScrollView(
           child: Column(
             spacing: 15,
@@ -82,10 +82,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 5,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     decoration: BoxDecoration(
                       color: colors.primary.withValues(alpha: 0.1),
                       borderRadius: AppBorderRadius.brCircular20,
@@ -487,8 +484,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               ),
               PrimaryButton(
                 title: LangKeys.submitAComplaintKey.tr(),
-                onTap: () =>
-                    context.pushNamed(AppRoutes.fileComplaintScreen),
+                onTap: () => context.pushNamed(AppRoutes.fileComplaintScreen),
               ),
               Container(
                 padding: EdgeInsets.all(16),

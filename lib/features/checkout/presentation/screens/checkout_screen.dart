@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/payment_methods_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 class CheckoutScreen extends ConsumerWidget {
   const CheckoutScreen({super.key, this.storeId});
@@ -35,7 +35,7 @@ class CheckoutScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: 'Checkout',
         body: checkoutState.when(
           loading: () => const CheckoutShimmerView(),
@@ -57,15 +57,14 @@ class CheckoutScreen extends ConsumerWidget {
                   Column(
                     spacing: 16,
                     children: checkout.orderGroup.orders
-                        .map(
-                          (order) => CheckoutBrandItemCard(order: order),
-                        )
+                        .map((order) => CheckoutBrandItemCard(order: order))
                         .toList(),
                   ),
                   methods.isEmpty
                       ? ChoosePaymentMethod(
-                    onTap: () => context.pushNamed(AppRoutes.addPaymentCard),
-                  )
+                          onTap: () =>
+                              context.pushNamed(AppRoutes.addPaymentCard),
+                        )
                       : PaymentMethodsCard(),
                   AspectRatio(
                     aspectRatio: 2,

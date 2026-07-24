@@ -6,7 +6,9 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12, required this.buttonGradient, this.backgroundColor,
+    this.buttonPadding = 12,
+    required this.buttonGradient,
+    this.backgroundColor,
     this.isLoading = false,
   });
 
@@ -29,14 +31,14 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
           gradient: buttonGradient,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(buttonPadding!),
           decoration: BoxDecoration(
-            color: backgroundColor?? colors.onPrimary,
-            // borderRadius: BorderRadius.circular(8),
+            color: backgroundColor ?? colors.onPrimary,
+            borderRadius: BorderRadius.circular(8),
             // border: Border.all(color: colors.primary, width: 2),
           ),
           child: isLoading

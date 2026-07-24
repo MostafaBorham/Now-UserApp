@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -30,7 +30,6 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
 
 class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
-
 
   bool _isCodeComplete = false;
 
@@ -72,8 +71,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    ref.listen<AsyncValue<UserModel?>>(verifyOtpProvider,
-        (AsyncValue<UserModel?>? previous, AsyncValue<UserModel?> next) {
+    ref.listen<AsyncValue<UserModel?>>(verifyOtpProvider, (
+      AsyncValue<UserModel?>? previous,
+      AsyncValue<UserModel?> next,
+    ) {
       next.whenOrNull(
         data: (UserModel? user) {
           if (user != null) {
@@ -106,7 +107,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     final bool isVerifyOtpLoading = ref.watch(verifyOtpProvider).isLoading;
 
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: LangKeys.verificationCodeKey.tr(),
         body: SingleChildScrollView(
           child: Column(
@@ -143,8 +144,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
               // not trigger its listener and re-navigate to this screen.
               ProviderScope(
                 overrides: [
-                  requestOtpProvider
-                      .overrideWith((Ref ref) => RequestOtpViewModel()),
+                  requestOtpProvider.overrideWith(
+                    (Ref ref) => RequestOtpViewModel(),
+                  ),
                 ],
                 child: Consumer(
                   builder: (context, WidgetRef ref, _) => OtpActionsRow(
@@ -166,7 +168,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       buttonPadding: 16,
                       isLoading: isVerifyOtpLoading,
                       onTap: () {
-                        ref.read(verifyOtpProvider.notifier).verifyOtp(
+                        ref
+                            .read(verifyOtpProvider.notifier)
+                            .verifyOtp(
                               phone: widget.phoneNumber,
                               code: _otpController.text,
                             );

@@ -8,9 +8,10 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/support/circular_support_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-class AppWavedScaffold extends StatelessWidget {
-  const AppWavedScaffold({
+class AppWavedView extends StatelessWidget {
+  const AppWavedView({
     super.key,
     required this.body,
     required this.appBarTitle,
@@ -18,7 +19,9 @@ class AppWavedScaffold extends StatelessWidget {
     this.hasCartIcon = false,
     this.hasSupportIcon = false,
     this.onSupportTap,
-    this.canPop, this.bodyPadding, this.onCartTap,
+    this.canPop,
+    this.bodyPadding,
+    this.onCartTap,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -120,12 +123,24 @@ class AppWavedScaffold extends StatelessWidget {
                                   if (hasSupportIcon)
                                     CircularSupportIcon(
                                       size: screenSize.width * 0.05,
-                                      onTap: onSupportTap,
+                                      onTap:
+                                          onSupportTap ??
+                                          () {
+                                            context.pushNamed(
+                                              AppRoutes.supportScreen,
+                                            );
+                                          },
                                     ),
                                   if (hasCartIcon)
                                     CircularCartButton(
                                       size: screenSize.width * 0.05,
-                                      onTap: onCartTap,
+                                      onTap:
+                                          onCartTap ??
+                                          () {
+                                            context.pushNamed(
+                                              AppRoutes.cartScreen,
+                                            );
+                                          },
                                     ),
                                 ],
                               )
@@ -140,10 +155,12 @@ class AppWavedScaffold extends StatelessWidget {
               child: ClipPath(
                 clipper: TopWaveClipper(),
                 child: Container(
-                  padding: bodyPadding?? EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 57,
-                  ).copyWith(bottom: 0),
+                  padding:
+                      bodyPadding ??
+                      EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 57,
+                      ).copyWith(bottom: 0),
                   decoration: BoxDecoration(
                     color: colors.onPrimary,
                     boxShadow: [

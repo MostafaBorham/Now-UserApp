@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_balance_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/my_cards_view.dart';
@@ -20,16 +20,14 @@ class WalletScreen extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final double screenHeight = MediaQuery.sizeOf(context).height;
     final Size screenSize = MediaQuery.sizeOf(context);
-    return AppWavedScaffold(
+    return AppWavedView(
       appBarTitle: LangKeys.walletKey.tr(),
       canPop: context.canPop(),
       body: Column(
-        spacing: screenSize.height*0.03,
+        spacing: screenSize.height * 0.03,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-              aspectRatio: 2,
-              child: WalletCardWidget()),
+          AspectRatio(aspectRatio: 2, child: WalletCardWidget()),
           Row(
             spacing: 5,
             children: [
@@ -44,10 +42,11 @@ class WalletScreen extends StatelessWidget {
                         isScrollControlled: true,
                         backgroundColor: colors.onPrimary,
                         builder: (context) => ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: screenHeight*0.6
-                            ),
-                            child: AddBalanceView()),
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight * 0.6,
+                          ),
+                          child: AddBalanceView(),
+                        ),
                       );
                     },
                   ),
@@ -63,10 +62,11 @@ class WalletScreen extends StatelessWidget {
                         context: context,
                         backgroundColor: colors.onPrimary,
                         builder: (context) => ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight: screenHeight*0.6
-                            ),
-                            child: MyCardsView()),
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight * 0.6,
+                          ),
+                          child: MyCardsView(),
+                        ),
                       );
                     },
                   ),
@@ -82,10 +82,11 @@ class WalletScreen extends StatelessWidget {
                         context: context,
                         backgroundColor: colors.onPrimary,
                         builder: (context) => ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight: screenHeight*0.6
-                            ),
-                            child: AddCardView()),
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight * 0.6,
+                          ),
+                          child: AddCardView(),
+                        ),
                       );
                     },
                   ),
@@ -95,22 +96,23 @@ class WalletScreen extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              spacing: screenSize.height*0.015,
+              spacing: screenSize.height * 0.015,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   LangKeys.walletRecordKey.tr(),
                   style: AppTextStyles.style18SemiBold.copyWith(
-                      color: colors.onSecondary,
-                    fontSize: screenSize.width*0.04
+                    color: colors.onSecondary,
+                    fontSize: screenSize.width * 0.04,
                   ),
                 ),
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
                     itemBuilder: (context, index) => AspectRatio(
-                        aspectRatio: 5.5,
-                        child: WalletHistoryItem()),
+                      aspectRatio: 5.5,
+                      child: WalletHistoryItem(),
+                    ),
                     separatorBuilder: (context, index) => 12.hSpace,
                     itemCount: 10,
                   ),

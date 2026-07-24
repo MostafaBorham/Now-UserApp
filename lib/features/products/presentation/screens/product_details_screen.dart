@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
@@ -32,7 +32,7 @@ class ProductDetailsScreen extends ConsumerWidget {
       getProductDetailsProvider(productSlug),
     );
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         body: productDetailsState.when(
           loading: () {
             return ProductDetailsShimmer();
@@ -46,12 +46,12 @@ class ProductDetailsScreen extends ConsumerWidget {
               ),
           data: (product) {
             return ProviderScope(
-              overrides: [
-                productProvider.overrideWithValue(product),
-              ],
+              overrides: [productProvider.overrideWithValue(product)],
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0).copyWith(bottom: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                  ).copyWith(bottom: 16),
                   child: Column(
                     spacing: 16,
                     children: [
@@ -81,15 +81,18 @@ class ProductDetailsScreen extends ConsumerWidget {
                         ],
                       ),
                       AppSlider(
-                        sliderItems: (product.images ?? []).map((image) => AppCachedNetworkImage(
-                          imageUrl:
-                              image,
-                          height: double.infinity,
-                          width: double.infinity,
-                          fit: BoxFit.contain,
-                          placeholderType: LoadingViewTypes.circular,
-                          circularProgressSize: 50,
-                        )).toList(),
+                        sliderItems: (product.images ?? [])
+                            .map(
+                              (image) => AppCachedNetworkImage(
+                                imageUrl: image,
+                                height: double.infinity,
+                                width: double.infinity,
+                                fit: BoxFit.contain,
+                                placeholderType: LoadingViewTypes.circular,
+                                circularProgressSize: 50,
+                              ),
+                            )
+                            .toList(),
                         itemAspectRatio: 1.5,
                       ),
                       ProductMainInfoCard(),
@@ -130,7 +133,11 @@ class ProductDetailsScreen extends ConsumerWidget {
                               title: LangKeys.addToCartKey.tr(),
                               buttonPadding: 10,
                               buttonRadius: 8,
-                              prefixIcon: Assets.media.images.svg.shoppingCartIcon
+                              prefixIcon: Assets
+                                  .media
+                                  .images
+                                  .svg
+                                  .shoppingCartIcon
                                   .svg(
                                     width: 20,
                                     colorFilter: ColorFilter.mode(

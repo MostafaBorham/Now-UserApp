@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 class MyOrderScreen extends ConsumerStatefulWidget {
   const MyOrderScreen({super.key});
@@ -16,13 +16,11 @@ class MyOrderScreen extends ConsumerStatefulWidget {
 class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   Widget build(BuildContext context) {
-    return AppWavedScaffold(
+    return AppWavedView(
       body: ListView.separated(
         padding: EdgeInsets.all(3),
         itemBuilder: (context, index) {
-          return AspectRatio(
-              aspectRatio: 2,
-              child: OrderListItem());
+          return AspectRatio(aspectRatio: 2, child: OrderListItem());
         },
         separatorBuilder: (context, index) {
           return 20.hSpace;

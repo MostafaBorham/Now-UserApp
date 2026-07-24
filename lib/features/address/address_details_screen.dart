@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/gender_selector.dart';
@@ -96,7 +96,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: widget.isEditing
             ? LangKeys.editAddress.tr()
             : LangKeys.addressDetails.tr(),

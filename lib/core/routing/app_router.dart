@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/address_details_screen.dart';
@@ -62,13 +63,16 @@ abstract class AppRouter {
     return token.isNotEmpty && !isGuest ? '/${AppRoutes.mainScreen}' : null;
   }
 
-  static FutureOr<String?> _redirectToLogin(BuildContext context, GoRouterState state) {
-    final Map<String, dynamic> tokenData =
-    WelcomeCacheService().getToken();
+  static FutureOr<String?> _redirectToLogin(
+    BuildContext context,
+    GoRouterState state,
+  ) {
+    final Map<String, dynamic> tokenData = WelcomeCacheService().getToken();
     final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
 
     return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
   }
+
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     errorBuilder: (context, state) => const SizedBox.shrink(),
@@ -83,15 +87,19 @@ abstract class AppRouter {
         path: '/${AppRoutes.onBoardingScreen}',
         redirect: (context, state) {
           bool hasToken;
-            final Map<String, dynamic> tokenData =
-                WelcomeCacheService().getToken();
-            final String token =
-                tokenData[CacheKeys.tokenValue] as String? ?? '';
-            hasToken = token.isNotEmpty;
+          final Map<String, dynamic> tokenData = WelcomeCacheService()
+              .getToken();
+          final String token = tokenData[CacheKeys.tokenValue] as String? ?? '';
+          hasToken = token.isNotEmpty;
 
           return hasToken ? '/${AppRoutes.mainScreen}' : null;
         },
         builder: (context, state) => const OnBoardingScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.cartScreen,
+        path: '/${AppRoutes.cartScreen}',
+        builder: (context, state) => const CartScreen(),
       ),
       GoRoute(
         name: AppRoutes.mainScreen,
@@ -114,9 +122,7 @@ abstract class AppRouter {
         builder: (context, state) {
           final category = state.extra as CategoryModel;
 
-          return CategoryDetailsScreen(
-            category: category,
-          );
+          return CategoryDetailsScreen(category: category);
         },
       ),
       GoRoute(
@@ -170,8 +176,7 @@ abstract class AppRouter {
         name: AppRoutes.viewStoreCategoryProductsScreen,
         path: '/${AppRoutes.viewStoreCategoryProductsScreen}',
         builder: (context, state) {
-          final args =
-              state.extra as ({int storeId, CategoryModel category})?;
+          final args = state.extra as ({int storeId, CategoryModel category})?;
 
           return ViewStoreCategoryProductsScreen(
             storeId: args?.storeId ?? 0,
@@ -185,21 +190,17 @@ abstract class AppRouter {
         builder: (context, state) {
           final storeId = state.extra as int?;
 
-          return StoreDetailsScreen(
-            storeId: storeId ?? 0,
-          );
+          return StoreDetailsScreen(storeId: storeId ?? 0);
         },
       ),
       GoRoute(
         name: AppRoutes.productDetailsScreen,
         path: '/${AppRoutes.productDetailsScreen}',
-          builder: (context, state) {
-            final productSlug = state.extra as String?;
+        builder: (context, state) {
+          final productSlug = state.extra as String?;
 
-            return ProductDetailsScreen(
-              productSlug: productSlug??'',
-            );
-          }
+          return ProductDetailsScreen(productSlug: productSlug ?? '');
+        },
       ),
       GoRoute(
         name: AppRoutes.addPaymentCard,
@@ -224,9 +225,7 @@ abstract class AppRouter {
         builder: (context, state) {
           final phoneNumber = state.extra as String?;
 
-          return OtpVerificationScreen(
-            phoneNumber: phoneNumber ?? '',
-          );
+          return OtpVerificationScreen(phoneNumber: phoneNumber ?? '');
         },
       ),
       GoRoute(
@@ -257,9 +256,8 @@ abstract class AppRouter {
         // (isGuest == true) or no session at all is rerouted to phone
         // verification to log in; a registered user continues to checkout.
         redirect: _redirectToLogin,
-        builder: (context, state) => CheckoutScreen(
-          storeId: state.extra as int?,
-        ),
+        builder: (context, state) =>
+            CheckoutScreen(storeId: state.extra as int?),
       ),
       GoRoute(
         name: AppRoutes.myAddressScreen,

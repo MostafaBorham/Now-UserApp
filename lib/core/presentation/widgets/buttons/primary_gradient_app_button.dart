@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-
 class PrimaryGradientAppButton extends StatelessWidget {
   const PrimaryGradientAppButton({
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12, required this.buttonGradient,
+    this.buttonPadding = 12,
+    required this.buttonGradient,
   });
 
   final String title;
@@ -33,7 +33,9 @@ class PrimaryGradientAppButton extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.style24Medium.copyWith(color: colors.onPrimary),
+            style: AppTextStyles.style24SemiBold.copyWith(
+              color: colors.onPrimary,
+            ),
           ),
         ),
       ),

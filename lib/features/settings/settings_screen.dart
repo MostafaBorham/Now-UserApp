@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
@@ -36,8 +36,10 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
-    ref.listen<AsyncValue<dynamic>>(logoutProvider,
-        (AsyncValue<dynamic>? previous, AsyncValue<dynamic> next) {
+    ref.listen<AsyncValue<dynamic>>(logoutProvider, (
+      AsyncValue<dynamic>? previous,
+      AsyncValue<dynamic> next,
+    ) {
       next.whenOrNull(
         // Logged out: reset the stack so onboarding is the only screen left.
         data: (dynamic value) {
@@ -77,7 +79,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: LangKeys.profileKey.tr(),
         body: SingleChildScrollView(
           child: Column(
@@ -144,10 +146,11 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              if(isUser)LogoutButton(
-                isLoading: isLoggingOut,
-                onPressed: () => ref.read(logoutProvider.notifier).logout(),
-              ),
+              if (isUser)
+                LogoutButton(
+                  isLoading: isLoggingOut,
+                  onPressed: () => ref.read(logoutProvider.notifier).logout(),
+                ),
               const SizedBox(height: 32),
             ],
           ),

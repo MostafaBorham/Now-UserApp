@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
@@ -15,7 +16,6 @@ class AppSearchField extends ConsumerStatefulWidget {
   const AppSearchField({
     super.key,
     this.hintText,
-    this.reverseSearchIcon = false,
     this.autofocus = false,
     this.enableRecentKeywords = false,
     this.recentKeywords,
@@ -28,7 +28,6 @@ class AppSearchField extends ConsumerStatefulWidget {
   });
 
   final String? hintText;
-  final bool? reverseSearchIcon;
   final bool autofocus;
   final bool? hasFilter;
   final bool navigateToSearchOnTap;
@@ -122,7 +121,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                                         fontSize: con.maxWidth * 0.05,
                                       ),
                                   prefixIcon: ReverseWidget(
-                                    applyReverse: widget.reverseSearchIcon,
+                                    applyReverse: context.isRTL,
                                     child: Assets.media.images.svg.searchIcon
                                         .svg(),
                                   ),

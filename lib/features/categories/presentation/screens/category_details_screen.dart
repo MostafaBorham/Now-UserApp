@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_store_tab_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
 
 import '../providers/category_details/category_model_provider.dart';
@@ -16,20 +16,17 @@ class CategoryDetailsScreen extends StatelessWidget {
   final CategoryModel category;
   @override
   Widget build(BuildContext context) {
-
     final ColorScheme colors = Theme.of(context).colorScheme;
     return ProviderScope(
-      overrides: [
-        categoryProvider.overrideWithValue(category),
-      ],
+      overrides: [categoryProvider.overrideWithValue(category)],
       child: Scaffold(
-        body: AppWavedScaffold(
+        body: AppWavedView(
           body: AppTabBar(
             tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],
             selectedTabColor: colors.primary,
           ),
-          appBarTitle: category.name??'',
+          appBarTitle: category.name ?? '',
           canPop: context.canPop(),
         ),
       ),

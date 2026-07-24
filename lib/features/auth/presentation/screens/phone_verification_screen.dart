@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -37,8 +37,10 @@ class _PhoneVerificationScreenState
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    ref.listen<AsyncValue<String?>>(requestOtpProvider,
-        (AsyncValue<String?>? previous, AsyncValue<String?> next) {
+    ref.listen<AsyncValue<String?>>(requestOtpProvider, (
+      AsyncValue<String?>? previous,
+      AsyncValue<String?> next,
+    ) {
       next.whenOrNull(
         data: (String? phone) {
           if (phone != null) {
@@ -71,7 +73,7 @@ class _PhoneVerificationScreenState
     final bool isRequestOtpLoading = ref.watch(requestOtpProvider).isLoading;
 
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: LangKeys.verificationCodeKey.tr(),
         body: SingleChildScrollView(
           child: Column(

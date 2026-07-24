@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/widgets/notifications/notification_item_card.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
@@ -16,7 +16,7 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: context.tr(LangKeys.notificationsKey),
         body: SingleChildScrollView(
           child: Column(
@@ -90,7 +90,8 @@ class NotificationsScreen extends StatelessWidget {
                         border: Border.all(color: colors.surfaceContainerLow),
                       ),
                       child: AppCachedNetworkImage(
-                        imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                        imageUrl:
+                            'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         width: 30,
                         height: 30,
                         fit: BoxFit.contain,
@@ -113,7 +114,8 @@ class NotificationsScreen extends StatelessWidget {
                         border: Border.all(color: colors.surfaceContainerLow),
                       ),
                       child: AppCachedNetworkImage(
-                        imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                        imageUrl:
+                            'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         width: 30,
                         height: 30,
                         fit: BoxFit.contain,

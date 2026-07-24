@@ -8,6 +8,7 @@ abstract class AppRoutes {
   static const String onBoardingScreen = 'onboarding';
   static const String mainScreen = 'main';
   static const String orderDetailsScreen = 'order-details';
+  static const String cartScreen = 'cart';
   static const String categoriesScreen = 'categories';
   static const String categoryDetailsScreen = 'category-details';
   static const String favouritesScreen = 'favourites';
@@ -19,7 +20,8 @@ abstract class AppRoutes {
   static const String notificationsScreen = 'notifications';
   static const String searchScreen = 'search';
   static const String allStoresScreen = 'all-stores';
-  static const String viewStoreCategoryProductsScreen = 'store-category-products';
+  static const String viewStoreCategoryProductsScreen =
+      'store-category-products';
   static const String storeDetailsScreen = 'store-details';
   static const String productDetailsScreen = 'product-details';
   static const String checkoutScreen = 'checkout';

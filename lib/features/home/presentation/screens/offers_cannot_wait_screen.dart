@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/offers_cannot_wait/offers_cannot_wait_view.dart';
 
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 
@@ -15,7 +15,7 @@ class OffersCannotWaitScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         body: Column(
           spacing: 11,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class OffersCannotWaitScreen extends StatelessWidget {
             ),
             Expanded(
               child: CustomButtonTabBar(
-                tabs: [LangKeys.allKey.tr(), 'Devices','sddssdsd','aaaaaaa'],
+                tabs: [LangKeys.allKey.tr(), 'Devices', 'sddssdsd', 'aaaaaaa'],
                 views: [
                   OffersCannotWaitView(),
                   OffersCannotWaitView(),
@@ -36,7 +36,9 @@ class OffersCannotWaitScreen extends StatelessWidget {
                   OffersCannotWaitView(),
                 ],
                 selectedTabColor: colors.secondary.withValues(alpha: 0.8),
-                unSelectedTabColor: colors.inversePrimary.withValues(alpha: 0.2),
+                unSelectedTabColor: colors.inversePrimary.withValues(
+                  alpha: 0.2,
+                ),
                 selectedLabelColor: colors.onSecondary,
                 unSelectedLabelColor: colors.onSecondary,
               ),

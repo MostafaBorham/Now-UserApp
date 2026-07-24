@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
@@ -18,7 +18,7 @@ class AddPaymentCardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
-      body: AppWavedScaffold(
+      body: AppWavedView(
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,8 +69,7 @@ class AddPaymentCardScreen extends StatelessWidget {
               PrimaryAppPrefixIconButton(
                 title: "Add",
                 prefixIcon: Assets.media.images.svg.addCircle.svg(),
-                onTap: () => context.pushNamed(AppRoutes.paymentMethodsScreen,
-                ),
+                onTap: () => context.pushNamed(AppRoutes.paymentMethodsScreen),
               ),
               10.hSpace,
             ],

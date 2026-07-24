@@ -59,12 +59,12 @@ class OnBoardingContentView extends ConsumerWidget {
       colors: [colors.secondaryFixed, colors.primary],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
-      stops: const [0, 1],
+      stops: [0.2, 1],
     );
-    final pixRatio = MediaQuery.of(context).devicePixelRatio;
+    final heightFactor = MediaQuery.of(context).size.height;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 5*pixRatio, vertical: 12*pixRatio),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
@@ -77,19 +77,19 @@ class OnBoardingContentView extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        spacing: pixRatio,
+        spacing: 5,
         children: [
-          AppLogo(size: pixRatio*80),
-          (7*pixRatio).toInt().hSpace,
+          AppLogo(size: heightFactor * 0.2),
+          3.hSpace,
           Text(
             LangKeys.onBoardingTitleKey.tr(),
             style: AppTextStyles.style24Bold.copyWith(
               color: colors.onSecondary,
-              fontSize: 8*pixRatio,
+              fontSize: heightFactor * 0.03,
             ),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            maxLines: 2,
+            maxLines: 5,
           ),
           Center(
             child: Row(
@@ -107,7 +107,7 @@ class OnBoardingContentView extends ConsumerWidget {
                         LangKeys.thatSuitKey.tr(),
                         style: AppTextStyles.style24SemiBold.copyWith(
                           height: 1,
-                          fontSize: 7*pixRatio,
+                          fontSize: heightFactor * 0.03,
                           foreground: Paint()
                             ..shader = screenGradient.createShader(
                               const Rect.fromLTWH(0, 0, 300, 70),
@@ -115,15 +115,8 @@ class OnBoardingContentView extends ConsumerWidget {
                         ),
                       ),
                       Container(
-                        height: 2*pixRatio,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [colors.secondary, colors.primary],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            stops: const [0, 1],
-                          ),
-                        ),
+                        height: 5,
+                        decoration: BoxDecoration(gradient: screenGradient),
                       ),
                     ],
                   ),
@@ -138,13 +131,13 @@ class OnBoardingContentView extends ConsumerWidget {
                         LangKeys.youKey.tr(),
                         style: AppTextStyles.style24SemiBold.copyWith(
                           height: 1,
-                          fontSize: 7*pixRatio,
+                          fontSize: heightFactor * 0.03,
                           color: colors.primary,
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 4*pixRatio,),
-                        height: 2*pixRatio,
+                        margin: EdgeInsets.only(left: heightFactor * 0.015),
+                        height: 5,
                         color: colors.primary,
                       ),
                     ],
@@ -153,20 +146,20 @@ class OnBoardingContentView extends ConsumerWidget {
               ],
             ),
           ),
-          (2*pixRatio).toInt().hSpace,
+          2.hSpace,
           Text(
             LangKeys.onBoardingSubTitleKey.tr(),
             style: AppTextStyles.style12Medium.copyWith(
               color: colors.onSecondary.withValues(alpha: 0.8),
-              fontSize: 4.5*pixRatio,
+              fontSize: heightFactor * 0.015,
             ),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             maxLines: 2,
           ),
-          (3*pixRatio).toInt().hSpace,
+          4.hSpace,
           AspectRatio(
-            aspectRatio: 7.5,
+            aspectRatio: 7,
             child: PrimaryGradientAppButton(
               onTap: () => context.pushNamed(AppRoutes.phoneVerificationScreen),
               title: LangKeys.loginKey.tr(),
@@ -174,11 +167,11 @@ class OnBoardingContentView extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 4*pixRatio,),
-            child: AspectRatio(aspectRatio: 15, child: OrDivider()),
+            padding: EdgeInsets.symmetric(vertical: heightFactor * 0.01),
+            child: OrDivider(),
           ),
           AspectRatio(
-            aspectRatio: 7.5,
+            aspectRatio: 7,
             child: UnPrimaryGradientAppButton(
               title: LangKeys.continueAsGuestKey.tr(),
               isLoading: isGuestTokenLoading,

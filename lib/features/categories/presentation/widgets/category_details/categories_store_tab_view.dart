@@ -15,10 +15,12 @@ class CategoriesStoreTabView extends ConsumerStatefulWidget {
   const CategoriesStoreTabView({super.key});
 
   @override
-  ConsumerState<CategoriesStoreTabView> createState() => _CategoriesStoreTabViewState();
+  ConsumerState<CategoriesStoreTabView> createState() =>
+      _CategoriesStoreTabViewState();
 }
 
-class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView> {
+class _CategoriesStoreTabViewState
+    extends ConsumerState<CategoriesStoreTabView> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -26,10 +28,13 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        AppSearchField(hintText: LangKeys.searchForAStoreKey.tr(),reverseSearchIcon: context.isRTL,),
-        Text(LangKeys.filtersKey.tr(),style: AppTextStyles.style16SemiBold.copyWith(
-          color: colors.onSecondary
-        ),),
+        AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
+        Text(
+          LangKeys.filtersKey.tr(),
+          style: AppTextStyles.style16SemiBold.copyWith(
+            color: colors.onSecondary,
+          ),
+        ),
         Expanded(
           child: CustomButtonTabBar(
             filterWidget: AppFilterIcon(
@@ -43,11 +48,11 @@ class _CategoriesStoreTabViewState extends ConsumerState<CategoriesStoreTabView>
                 ),
               ),
             ),
-            tabs: StoresSortType.values.map((sortType) => sortType.label.tr()).toList(),
+            tabs: StoresSortType.values
+                .map((sortType) => sortType.label.tr())
+                .toList(),
             views: StoresSortType.values.map((sortType) {
-              return CategoryStoresView(
-                sortType: sortType,
-              );
+              return CategoryStoresView(sortType: sortType);
             }).toList(),
             selectedTabColor: colors.onTertiaryFixed,
             unSelectedTabColor: colors.onSurface.withValues(alpha: 0.2),

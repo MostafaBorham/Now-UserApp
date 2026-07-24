@@ -65,15 +65,15 @@ class _CategoriesProductTabViewState
       children: [
         AppSearchField(
           hintText: LangKeys.searchForAProductKey.tr(),
-          reverseSearchIcon: context.isRTL,
           hasFilter: true,
           onFilterTap: () => showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             builder: (context) => CategoryProductsFilterView(
-
               onApply: (separateOption, maxPrice, minPrice, rating) {
-                print('apply = ${separateOption?.label}$maxPrice$minPrice$rating');
+                print(
+                  'apply = ${separateOption?.label}$maxPrice$minPrice$rating',
+                );
               },
             ),
           ),

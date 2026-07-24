@@ -20,7 +20,8 @@ class AppLanguageToggleWidget extends StatefulWidget {
   final double height;
 
   @override
-  State<AppLanguageToggleWidget> createState() => _AppLanguageToggleWidgetState();
+  State<AppLanguageToggleWidget> createState() =>
+      _AppLanguageToggleWidgetState();
 }
 
 class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
@@ -51,12 +52,15 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
         height: widget.height,
         child: LiquidGlassLens(
           style: LiquidGlassStyle(
-            shape: LiquidGlassShape.squircle(cornerRadius: 36,borderType: OpticalBorder(
-              borderSolidity: 5,
-            ),lightDirection: 20,lightColor: colors.onPrimary),
+            shape: LiquidGlassShape.squircle(
+              cornerRadius: 36,
+              borderType: OpticalBorder(borderSolidity: 5),
+              lightDirection: 20,
+              lightColor: colors.onPrimary,
+            ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 13,vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
             child: Row(
               children: [
                 Expanded(
@@ -84,7 +88,7 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
                                   ],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
-                                  stops: const [0, 0.8],
+                                  stops: const [0.2, 1],
                                 ),
                                 borderRadius: borderRadius,
                               ),

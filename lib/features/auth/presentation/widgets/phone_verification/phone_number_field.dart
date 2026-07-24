@@ -96,12 +96,14 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                 ),
                 TextFormField(
                   controller: widget.controller,
+                  maxLength: 14,
                   keyboardType: TextInputType.phone,
                   style: AppTextStyles.style16Medium.copyWith(
                     color: AppColors.optionTitle,
                   ),
                   decoration: InputDecoration(
                     isDense: true,
+                    counterText: "",
                     isCollapsed: true,
                     hintText: widget.hint ?? '+966 5X XXX XXXX',
                     hintStyle: AppTextStyles.style16Medium.copyWith(

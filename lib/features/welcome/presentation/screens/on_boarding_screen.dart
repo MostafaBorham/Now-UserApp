@@ -26,36 +26,38 @@ class OnBoardingScreen extends ConsumerWidget {
         ),
         child: SafeArea(
           bottom: false,
-          child: Column(
+          child: Stack(
+            textDirection: TextDirection.ltr,
             children: [
-              Expanded(
-                child: Stack(
-                  textDirection: TextDirection.ltr,
-                  children: [
-                    Assets.media.images.png.onboardingImg.image(
+              Column(
+                children: [
+                  Expanded(
+                    child: Assets.media.images.png.onboardingImg.image(
                       fit: BoxFit.fill,
                     ),
-                    AppLanguageToggleWidget(
-                      width: MediaQuery.of(context).size.width * 0.3,
+                  ),
+                  OnBoardingContentView(),
+                ],
+              ),
+              Positioned(
+                left: 10,
+                top: 5,
+                child: AppLanguageToggleWidget(
+                  width: MediaQuery.of(context).size.width * 0.3,
 
-                      initialLanguage:
-                          context.locale == LocalizationConstants.arabicLocale
-                          ? AppLanguage.ar
-                          : AppLanguage.en,
-                      onChanged: (lang) {
-                        if (lang == AppLanguage.ar) {
-                          context.setLocale(LocalizationConstants.arabicLocale);
-                        } else {
-                          context.setLocale(
-                            LocalizationConstants.englishLocale,
-                          );
-                        }
-                      },
-                    ),
-                  ],
+                  initialLanguage:
+                      context.locale == LocalizationConstants.arabicLocale
+                      ? AppLanguage.ar
+                      : AppLanguage.en,
+                  onChanged: (lang) {
+                    if (lang == AppLanguage.ar) {
+                      context.setLocale(LocalizationConstants.arabicLocale);
+                    } else {
+                      context.setLocale(LocalizationConstants.englishLocale);
+                    }
+                  },
                 ),
               ),
-              OnBoardingContentView(),
             ],
           ),
         ),

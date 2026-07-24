@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_waved_scaffold.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 import '../settings/app_colors.dart';
 import '../settings/components/profile_header.dart';
@@ -74,7 +74,7 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: AppWavedScaffold(
+      body: AppWavedView(
         appBarTitle: LangKeys.faq.tr(),
         body: ListView.separated(
           itemCount: _items.length,
