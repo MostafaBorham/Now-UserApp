@@ -28,4 +28,19 @@ class CheckoutApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  /// Applies [coupons] (vendor id → coupon code) to the draft order group
+  /// identified by [orderGroupUuid] and returns the refreshed draft, which has
+  /// the same shape as [checkout]. Authentication is applied by
+  /// `AuthTokenInterceptor` from the cached session.
+  Future<Response> applyCoupons({
+    required String orderGroupUuid,
+    required Map<int, String> coupons,
+  }) {
+    return _dio.post(
+      CheckoutEndpoints.draftCoupons(orderGroupUuid),
+      data: CheckoutEndpoints.draftCouponsBody(coupons: coupons),
+      cancelToken: _canceller.token,
+    );
+  }
 }

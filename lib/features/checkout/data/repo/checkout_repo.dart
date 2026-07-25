@@ -61,4 +61,51 @@ class CheckoutRepo {
       return Left(Failure(e.toString()));
     }
   }
+
+  /// Applies [coupons] (vendor id → coupon code) to the draft order group
+  /// identified by [orderGroupUuid] and returns the refreshed draft, which has
+  /// the same shape as [checkout].
+  ///
+  /// Authentication is applied automatically by `AuthTokenInterceptor` from the
+  /// cached session, so no token is read or passed here.
+  Future<Either<Failure, CheckoutModel>> applyCoupons({
+    required String orderGroupUuid,
+    required Map<int, String> coupons,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _checkoutApiService.applyCoupons(
+        orderGroupUuid: orderGroupUuid,
+        coupons: coupons,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+
+      if (!success) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final CheckoutModel checkout = CheckoutModel.fromJson(
+        body['data'] as Map<String, dynamic>?,
+      );
+
+      return Right(checkout);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (e, stackTrace) {
+      debugPrint('$e');
+      debugPrint('$stackTrace');
+
+      return Left(Failure(e.toString()));
+    }
+  }
 }

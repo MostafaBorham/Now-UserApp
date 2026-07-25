@@ -11,4 +11,22 @@ abstract class CheckoutEndpoints {
   static Map<String, dynamic> checkoutBody({int? vendorId}) => <String, dynamic>{
         'vendor_id': vendorId,
       };
+
+  /// Applies coupon codes to an existing draft order group and returns the same
+  /// shape as [checkout]. [orderGroupUuid] identifies the draft to update.
+  static String draftCoupons(String orderGroupUuid) =>
+      '/api/v1/checkout/draft/$orderGroupUuid';
+
+  /// Builds the coupons request body. [coupons] maps a vendor id to the coupon
+  /// code applied for that vendor; JSON object keys must be strings, so the
+  /// vendor ids are serialized as their string form.
+  static Map<String, dynamic> draftCouponsBody({
+    required Map<int, String> coupons,
+  }) =>
+      <String, dynamic>{
+        'coupons': coupons.map(
+          (int vendorId, String couponCode) =>
+              MapEntry<String, String>('$vendorId', couponCode),
+        ),
+      };
 }
