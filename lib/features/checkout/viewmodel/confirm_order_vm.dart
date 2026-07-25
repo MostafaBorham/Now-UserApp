@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.dart';
 
@@ -28,7 +29,11 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
 
   /// Confirms the draft group identified by [orderGroupUuid] with the chosen
   /// [addressId] and [paymentMethod], plus the optional [driverTip], [notes]
-  /// and [coupons] (vendor id → coupon code).
+  /// and [coupons].
+  ///
+  /// [coupons] arrives as the flat list the screen collects while the user
+  /// applies codes; folding it into the `vendor id → code` map the request
+  /// expects is this layer's job, so callers never assemble the map themselves.
   ///
   /// On success the confirmed group is swapped into [state] and `null` is
   /// returned; on failure [state] becomes an error and the message is also
@@ -39,7 +44,7 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
     required String paymentMethod,
     double? driverTip,
     String? notes,
-    Map<int, String>? coupons,
+    List<AppliedCouponModel> coupons = const <AppliedCouponModel>[],
   }) async {
     state = const AsyncValue<CheckoutModel?>.loading();
 
@@ -49,7 +54,10 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
       paymentMethod: paymentMethod,
       driverTip: driverTip,
       notes: notes,
-      coupons: coupons,
+      coupons: <int, String>{
+        for (final AppliedCouponModel coupon in coupons)
+          coupon.vendorId: coupon.code,
+      },
     );
 
     if (!mounted) return null;

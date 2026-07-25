@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class AddNotesField extends StatelessWidget {
-  const AddNotesField({super.key});
+  const AddNotesField({super.key, this.onChanged});
+
+  /// Reports the note text on every keystroke; the parent owns the value.
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return TextFormField(
+      onChanged: onChanged,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       minLines: 3,
       style: AppTextStyles.style16Medium.copyWith(
           color: colors.onSecondary

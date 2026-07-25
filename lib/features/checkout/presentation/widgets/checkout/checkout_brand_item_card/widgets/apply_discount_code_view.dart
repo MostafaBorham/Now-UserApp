@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 
@@ -42,8 +44,9 @@ class _ApplyDiscountCodeViewState
   /// actually holds a code and the vendor/draft ids are known, so an empty (or
   /// whitespace-only) field applies nothing.
   ///
-  /// On success the checkout draft refreshes automatically; on failure the
-  /// server's rejection reason is shown in a snackbar.
+  /// On success the checkout draft refreshes automatically and the code is
+  /// registered in [appliedCouponsProvider] so the confirm-order request can
+  /// resend it; on failure the server's rejection reason is shown in a snackbar.
   Future<void> _onApply() async {
     final String code = _controller.text.trim();
     final int? vendorId = widget.vendorId;
@@ -72,7 +75,12 @@ class _ApplyDiscountCodeViewState
 
     if (error != null) {
       ErrorSnackBar.show(context, error);
+      return;
     }
+
+    ref.read(appliedCouponsProvider.notifier).add(
+          AppliedCouponModel(vendorId: vendorId, code: code),
+        );
   }
 
   @override

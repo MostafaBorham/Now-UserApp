@@ -7,15 +7,22 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/counters/full_wid
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 
 class TipYourDriverView extends StatefulWidget {
-  const TipYourDriverView({super.key});
+  const TipYourDriverView({super.key, this.onTipChanged});
+
+  /// Reports the tip the user picked — a preset amount, or the counter value
+  /// while "Other" is selected. Not called until the user actually picks one,
+  /// so the parent's own default stands for "no tip".
+  final ValueChanged<double>? onTipChanged;
 
   @override
   State<TipYourDriverView> createState() => _TipYourDriverViewState();
 }
 
 class _TipYourDriverViewState extends State<TipYourDriverView> {
+  /// The amount the counter starts at when "Other" is selected.
+  static const int _otherTipInitialValue = 13;
+
   bool showTipOtherCounterView = false;
-  double tipAmount = 0;
   @override
   Widget build(BuildContext context) {
     final List<String> tips = ['2', '5', '8','10', '12', LangKeys.otherKey.tr()];
@@ -40,17 +47,19 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
           5.hSpace,
           AppSelector(
             items: tips,
-            initialIndex: 0,
+            // Nothing is preselected: a highlighted amount the request would
+            // not carry would misreport the tip the user is about to pay.
+            initialIndex: null,
             onChanged: (index) {
-              if(index == tips.length-1){
-                showTipOtherCounterView = true;
-              }
-              else{
-                showTipOtherCounterView = false;
-              }
-              setState(() {
+              final bool isOtherSelected = index == tips.length - 1;
 
-              });
+              setState(() => showTipOtherCounterView = isOtherSelected);
+
+              widget.onTipChanged?.call(
+                isOtherSelected
+                    ? _otherTipInitialValue.toDouble()
+                    : double.tryParse(tips[index]) ?? 0,
+              );
             },
             labelColor: colors.onSurface,
             selectedColor: colors.tertiaryContainer,
@@ -58,7 +67,12 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
             borderColor: Colors.transparent,
             unselectedColor: Colors.transparent,
           ),
-          if(showTipOtherCounterView)FullWidthCounterView(initialValue: 13),
+          if (showTipOtherCounterView)
+            FullWidthCounterView(
+              initialValue: _otherTipInitialValue,
+              onValueChanged: (int value) =>
+                  widget.onTipChanged?.call(value.toDouble()),
+            ),
         ],
       ),
     );
