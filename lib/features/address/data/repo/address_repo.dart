@@ -1,0 +1,54 @@
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/address/data/datasources/remote/api/address_api_service.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+
+/// All data operations of the address feature.
+///
+/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
+/// error message (a [LangKeys] key or a raw server message — callers apply
+/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+class AddressRepo {
+  final AddressApiService _addressApiService = AddressApiService();
+
+  /// Cancels every in-flight request of this repo. The actual cancellation
+  /// mechanism (CancelToken) lives entirely inside the data source layer.
+  void cancelRequests() => _addressApiService.cancelRequests();
+
+  Future<Either<Failure, List<AddressModel>>> getMyAddresses() async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _addressApiService.getMyAddresses();
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final List<dynamic> rawAddresses =
+          data['addresses'] as List<dynamic>? ?? <dynamic>[];
+
+      final List<AddressModel> addresses = rawAddresses
+          .map((dynamic e) => AddressModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      return Right(addresses);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+}
