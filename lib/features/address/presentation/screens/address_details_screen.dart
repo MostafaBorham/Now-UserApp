@@ -5,12 +5,12 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
-import '../settings/app_colors.dart';
-import '../settings/components/gender_selector.dart';
-import '../settings/components/primary_button.dart';
-import '../settings/components/profile_header.dart';
-import 'components/address_field.dart';
-import 'components/area_selector.dart';
+import '../../../settings/app_colors.dart';
+import '../../../settings/components/gender_selector.dart';
+import '../../../settings/components/primary_button.dart';
+import '../../../settings/components/profile_header.dart';
+import '../widgets/address_field.dart';
+import '../widgets/area_selector.dart';
 
 /// Address Details form — also serves as "Edit Address".
 ///

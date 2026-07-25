@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/features/address/components/add_address_button.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
 class AddNewAddressFromMap extends StatelessWidget {

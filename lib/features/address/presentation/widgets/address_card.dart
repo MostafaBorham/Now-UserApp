@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-import '../../settings/app_colors.dart';
+import '../../../settings/app_colors.dart';
 
 /// A single saved address (Home, Office, …) rendered as a selectable card.
 ///

@@ -5,10 +5,10 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-import '../settings/app_colors.dart';
-import '../settings/components/profile_header.dart';
-import 'components/add_address_button.dart';
-import 'components/address_card.dart';
+import '../../../settings/app_colors.dart';
+import '../../../settings/components/profile_header.dart';
+import '../widgets/add_address_button.dart';
+import '../widgets/address_card.dart';
 
 /// "My Address" screen.
 ///
@@ -70,7 +70,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
             ],
           ),
         ),
-        appBarTitle: LangKeys.addressKey.tr(),
+        appBarTitle: LangKeys.myAddress.tr(),
       ),
     );
   }

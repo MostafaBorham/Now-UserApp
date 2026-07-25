@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 
 class DeliveryAddressCard extends ConsumerWidget {
   const DeliveryAddressCard({
     super.key,
-    this.title = 'Delivery Address',
-    this.onEdit,
   });
 
-  final String title;
-  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,13 +36,13 @@ class DeliveryAddressCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                title,
+                'Delivery Address',
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,
                 ),
               ),
               InkWell(
-                onTap: onEdit,
+                onTap: () => context.pushNamed(AppRoutes.myAddressScreen),
                 child: Text(
                   'Edit',
                   style: AppTextStyles.style14Regular.copyWith(
