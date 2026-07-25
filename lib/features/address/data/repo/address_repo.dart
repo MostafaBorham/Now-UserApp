@@ -51,4 +51,34 @@ class AddressRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  Future<Either<Failure, void>> setDefaultAddress({
+    required int addressId,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response =
+          await _addressApiService.setDefaultAddress(addressId: addressId);
+
+      final dynamic rawBody = response.data;
+      final Map<String, dynamic>? body =
+          rawBody is Map<String, dynamic> ? rawBody : null;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(null);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }

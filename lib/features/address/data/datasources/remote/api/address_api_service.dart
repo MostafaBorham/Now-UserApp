@@ -24,4 +24,11 @@ class AddressApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> setDefaultAddress({required int addressId}) {
+    return _dio.put(
+      AddressEndpoints.setDefaultAddress(addressId),
+      cancelToken: _canceller.token,
+    );
+  }
 }
