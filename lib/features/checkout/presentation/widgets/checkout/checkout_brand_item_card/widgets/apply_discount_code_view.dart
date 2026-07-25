@@ -1,29 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 
-class ApplyDiscountCodeView extends StatefulWidget {
+class ApplyDiscountCodeView extends ConsumerStatefulWidget {
   const ApplyDiscountCodeView({
     super.key,
     this.hintText = 'Discount Code',
-    this.onApply,
+    this.vendorId,
+    this.storeId,
   });
 
   final String hintText;
-  final ValueChanged<String>? onApply;
+
+  /// The vendor this discount applies to (the card's own store).
+  final int? vendorId;
+
+  /// The checkout provider family key (the screen's `storeId`): `null` for the
+  /// all-stores flow, a concrete id for the single-store flow.
+  final int? storeId;
 
   @override
-  State<ApplyDiscountCodeView> createState() =>
+  ConsumerState<ApplyDiscountCodeView> createState() =>
       _ApplyDiscountCodeViewState();
 }
 
 class _ApplyDiscountCodeViewState
-    extends State<ApplyDiscountCodeView> {
+    extends ConsumerState<ApplyDiscountCodeView> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  /// Applies the entered code to this vendor's draft. A no-op unless the field
+  /// actually holds a code and the vendor/draft ids are known, so an empty (or
+  /// whitespace-only) field applies nothing.
+  void _onApply() {
+    final String code = _controller.text.trim();
+    final int? vendorId = widget.vendorId;
+    final String? orderGroupUuid =
+        ref.read(checkoutModelProvider).orderGroup.uuid;
+
+    if (code.isEmpty || vendorId == null || orderGroupUuid == null) return;
+
+    ref.read(checkoutProvider(widget.storeId).notifier).applyCoupons(
+          orderGroupUuid: orderGroupUuid,
+          vendorId: vendorId,
+          code: code,
+        );
   }
 
   @override
@@ -63,7 +91,7 @@ class _ApplyDiscountCodeViewState
             ),
           ),
           InkWell(
-            onTap: () => widget.onApply?.call(_controller.text),
+            onTap: _onApply,
             borderRadius: BorderRadius.circular(999),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

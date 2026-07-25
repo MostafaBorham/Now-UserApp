@@ -57,7 +57,12 @@ class CheckoutScreen extends ConsumerWidget {
                   Column(
                     spacing: 16,
                     children: checkout.orderGroup.orders
-                        .map((order) => CheckoutBrandItemCard(order: order))
+                        .map(
+                          (order) => CheckoutBrandItemCard(
+                            order: order,
+                            storeId: storeId,
+                          ),
+                        )
                         .toList(),
                   ),
                   methods.isEmpty

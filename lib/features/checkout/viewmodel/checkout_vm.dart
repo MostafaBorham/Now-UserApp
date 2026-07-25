@@ -42,4 +42,29 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel>> {
       (CheckoutModel draft) => AsyncValue.data(draft),
     );
   }
+
+  /// Applies coupon [code] for [vendorId] to the draft group identified by
+  /// [orderGroupUuid] and swaps in the refreshed draft returned by the server,
+  /// which has the same shape as the original checkout draft. The vendor→code
+  /// map required by the repo is assembled here.
+  Future<void> applyCoupons({
+    required String orderGroupUuid,
+    required int vendorId,
+    required String code,
+  }) async {
+    state = const AsyncValue.loading();
+
+    final result = await _repo.applyCoupons(
+      orderGroupUuid: orderGroupUuid,
+      coupons: <int, String>{vendorId: code},
+    );
+
+    if (!mounted) return;
+
+    state = result.fold(
+      (Failure failure) =>
+          AsyncValue.error(failure.message, StackTrace.current),
+      (CheckoutModel draft) => AsyncValue.data(draft),
+    );
+  }
 }
