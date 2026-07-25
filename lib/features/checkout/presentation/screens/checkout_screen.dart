@@ -46,7 +46,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
    ref.read(confirmOrderProvider.notifier).confirmOrder(
               orderGroupUuid: orderGroupUuid??'',
-              addressId: addressId??1,
+              addressId: addressId??3,
               paymentMethod: paymentMethod??'wallet',
               driverTip: _driverTip,
               notes: _notes.trim().isEmpty ? null : _notes.trim(),
@@ -63,6 +63,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     ref.watch(appliedCouponsProvider);
 
     final bool isConfirming = ref.watch(confirmOrderProvider).isLoading;
+
+    // React to the outcome of a confirm-order request: on success push the
+    // confirmation screen, on failure surface the message via the shared
+    // error snackbar. Uses `listen` (not `watch`) so this fires only on state
+    // transitions, never on unrelated rebuilds.
+    ref.listen<AsyncValue<CheckoutModel?>>(
+      confirmOrderProvider,
+      (AsyncValue<CheckoutModel?>? previous, AsyncValue<CheckoutModel?> next) {
+        next.whenOrNull(
+          data: (CheckoutModel? confirmed) {
+            // The idle state is `AsyncData(null)`; only the real, non-null
+            // response should trigger navigation.
+            if (confirmed == null) return;
+            context.pushReplacementNamed(AppRoutes.orderConfirmedScreen);
+          },
+          error: (Object error, StackTrace stackTrace) =>
+              ErrorSnackBar.show(context, error.toString()),
+        );
+      },
+    );
 
     return Scaffold(
       body: AppWavedView(

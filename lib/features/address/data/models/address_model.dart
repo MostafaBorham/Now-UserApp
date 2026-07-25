@@ -72,6 +72,50 @@ class AddressModel extends Equatable {
     );
   }
 
+  AddressModel copyWith({
+    int? id,
+    int? userId,
+    String? label,
+    String? phone,
+    String? country,
+    String? city,
+    String? area,
+    String? street,
+    String? buildingNumber,
+    String? floor,
+    String? apartment,
+    String? latitude,
+    String? longitude,
+    String? notes,
+    bool? isDefault,
+    String? fullAddress,
+    String? createdAt,
+    String? updatedAt,
+    String? deletedAt,
+  }) {
+    return AddressModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      label: label ?? this.label,
+      phone: phone ?? this.phone,
+      country: country ?? this.country,
+      city: city ?? this.city,
+      area: area ?? this.area,
+      street: street ?? this.street,
+      buildingNumber: buildingNumber ?? this.buildingNumber,
+      floor: floor ?? this.floor,
+      apartment: apartment ?? this.apartment,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      notes: notes ?? this.notes,
+      isDefault: isDefault ?? this.isDefault,
+      fullAddress: fullAddress ?? this.fullAddress,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

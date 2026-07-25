@@ -39,4 +39,29 @@ class GetMyAddressesViewModel
       (List<AddressModel> addresses) => AsyncValue.data(addresses),
     );
   }
+
+  /// Replaces the entry matching [updatedAddress] in the already loaded list
+  /// with [updatedAddress] itself, and clears the default flag on the address
+  /// that used to be the default, without refetching.
+  ///
+  /// Call this only after the backend confirmed the change (see
+  /// `SetDefaultAddressViewModel`), so the UI never shows a default the server
+  /// rejected. No-op while the list is loading or in error.
+  void updateCurrentDefaultAddress(AddressModel updatedAddress) {
+    final List<AddressModel>? addresses = state.value;
+
+    if (addresses == null) return;
+
+    state = AsyncValue.data(
+      addresses.map((AddressModel address) {
+        if (address.id == updatedAddress.id) return updatedAddress;
+
+        if (address.isDefault ?? false) {
+          return address.copyWith(isDefault: false);
+        }
+
+        return address;
+      }).toList(),
+    );
+  }
 }

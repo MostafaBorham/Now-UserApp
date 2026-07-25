@@ -52,7 +52,9 @@ class AddressRepo {
     }
   }
 
-  Future<Either<Failure, void>> setDefaultAddress({
+  /// Marks the address identified by [addressId] as the user's default one and
+  /// returns the updated address as the backend echoes it back.
+  Future<Either<Failure, AddressModel>> setDefaultAddress({
     required int addressId,
   }) async {
     if (!await ConnectionChecker.isConnected) {
@@ -63,15 +65,17 @@ class AddressRepo {
       final Response response =
           await _addressApiService.setDefaultAddress(addressId: addressId);
 
-      final dynamic rawBody = response.data;
-      final Map<String, dynamic>? body =
-          rawBody is Map<String, dynamic> ? rawBody : null;
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
       if (response.statusCode != 200) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      return const Right(null);
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+
+      return Right(
+        AddressModel.fromJson(data['address'] as Map<String, dynamic>?),
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
