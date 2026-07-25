@@ -35,40 +35,42 @@ class CategoriesScreen extends ConsumerWidget {
       body: AppWavedView(
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: context.canPop(),
-        body: categoriesState.when(
-          loading: () => AppShimmer(
-            child: GridView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: _gridDelegate,
-              itemCount: 8,
-              itemBuilder: (_, _) => const CategoryCardShimmer(),
-            ),
-          ),
-          error: (Object error, StackTrace stackTrace) =>
-              ServerConnectionErrorWidget(
-                message: error.toString(),
-                onRetry: () => ref
-                    .read(getAppCategoriesProvider.notifier)
-                    .getAppCategories(),
+        body: SafeArea(
+          child: categoriesState.when(
+            loading: () => AppShimmer(
+              child: GridView.builder(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: _gridDelegate,
+                itemCount: 8,
+                itemBuilder: (_, _) => const CategoryCardShimmer(),
               ),
-          data: (List<CategoryModel> categories) => categories.isEmpty
-              ? const NoItemsWidget()
-              : GridView.builder(
-                  padding: EdgeInsets.zero,
-                  gridDelegate: _gridDelegate,
-                  itemCount: categories.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      CategoryCard(
-                        category: categories[index],
-                        onTap: () {
-                          context.pushNamed(
-                            AppRoutes.categoryDetailsScreen,
-                            extra: categories[index],
-                          );
-                        },
-                      ),
+            ),
+            error: (Object error, StackTrace stackTrace) =>
+                ServerConnectionErrorWidget(
+                  message: error.toString(),
+                  onRetry: () => ref
+                      .read(getAppCategoriesProvider.notifier)
+                      .getAppCategories(),
                 ),
+            data: (List<CategoryModel> categories) => categories.isEmpty
+                ? const NoItemsWidget()
+                : GridView.builder(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: _gridDelegate,
+                    itemCount: categories.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        CategoryCard(
+                          category: categories[index],
+                          onTap: () {
+                            context.pushNamed(
+                              AppRoutes.categoryDetailsScreen,
+                              extra: categories[index],
+                            );
+                          },
+                        ),
+                  ),
+          ),
         ),
       ),
     );

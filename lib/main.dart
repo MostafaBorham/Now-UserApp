@@ -28,7 +28,7 @@ Future<void> main() async {
   ]).then(
     (_) => runApp(
       DevicePreview(
-        enabled: true,
+        enabled: false,
         builder: (context) {
           return LocalizationInit(child: ProviderScope(child: NowUserApp()));
         },

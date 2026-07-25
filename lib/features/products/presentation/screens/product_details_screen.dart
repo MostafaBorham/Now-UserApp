@@ -33,134 +33,136 @@ class ProductDetailsScreen extends ConsumerWidget {
     );
     return Scaffold(
       body: AppWavedView(
-        body: productDetailsState.when(
-          loading: () {
-            return ProductDetailsShimmer();
-          },
-          error: (Object error, StackTrace stackTrace) =>
-              ServerConnectionErrorWidget(
-                message: error.toString(),
-                onRetry: () => ref
-                    .read(getProductDetailsProvider(productSlug).notifier)
-                    .getProductDetails(),
-              ),
-          data: (product) {
-            return ProviderScope(
-              overrides: [productProvider.overrideWithValue(product)],
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                  ).copyWith(bottom: 16),
-                  child: Column(
-                    spacing: 16,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 5,
-                              horizontal: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: colors.errorContainer,
-                            ),
-                            child: Text(
-                              '${product.activeDeal?.discountValue ?? 0}%',
-                              style: AppTextStyles.style14Bold.copyWith(
-                                color: colors.onPrimary,
+        body: SafeArea(
+          child: productDetailsState.when(
+            loading: () {
+              return ProductDetailsShimmer();
+            },
+            error: (Object error, StackTrace stackTrace) =>
+                ServerConnectionErrorWidget(
+                  message: error.toString(),
+                  onRetry: () => ref
+                      .read(getProductDetailsProvider(productSlug).notifier)
+                      .getProductDetails(),
+                ),
+            data: (product) {
+              return ProviderScope(
+                overrides: [productProvider.overrideWithValue(product)],
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                    ).copyWith(bottom: 16),
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: colors.errorContainer,
+                              ),
+                              child: Text(
+                                '${product.activeDeal?.discountValue ?? 0}%',
+                                style: AppTextStyles.style14Bold.copyWith(
+                                  color: colors.onPrimary,
+                                ),
                               ),
                             ),
-                          ),
-                          CircularAppFavouriteIcon(
-                            onFavouriteChanged: (p0) {},
-                            isFavourite: product.isFeatured,
-                          ),
-                        ],
-                      ),
-                      AppSlider(
-                        sliderItems: (product.images ?? [])
-                            .map(
-                              (image) => AppCachedNetworkImage(
-                                imageUrl: image,
-                                height: double.infinity,
-                                width: double.infinity,
-                                fit: BoxFit.contain,
-                                placeholderType: LoadingViewTypes.circular,
-                                circularProgressSize: 50,
-                              ),
-                            )
-                            .toList(),
-                        itemAspectRatio: 1.5,
-                      ),
-                      ProductMainInfoCard(),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: ProductColorsSelector(),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: ProductSizeSelector(),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: ProductKeyFeaturesView(
-                          productFeatures: [
-                            'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
-                            'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
-                            'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
+                            CircularAppFavouriteIcon(
+                              onFavouriteChanged: (p0) {},
+                              isFavourite: product.isFeatured,
+                            ),
                           ],
                         ),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: ProductBasicSpecificationsView(),
-                      ),
-                      Container(
-                        color: colors.onSurface.withValues(alpha: 0.3),
-                        width: double.infinity,
-                        height: 1,
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      Row(
-                        spacing: 10,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: PrimaryAppPrefixIconButton(
-                              title: LangKeys.addToCartKey.tr(),
-                              buttonPadding: 10,
-                              buttonRadius: 8,
-                              prefixIcon: Assets
-                                  .media
-                                  .images
-                                  .svg
-                                  .shoppingCartIcon
-                                  .svg(
-                                    width: 20,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.onPrimary,
-                                      BlendMode.srcIn,
+                        AppSlider(
+                          sliderItems: (product.images ?? [])
+                              .map(
+                                (image) => AppCachedNetworkImage(
+                                  imageUrl: image,
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  fit: BoxFit.contain,
+                                  placeholderType: LoadingViewTypes.circular,
+                                  circularProgressSize: 50,
+                                ),
+                              )
+                              .toList(),
+                          itemAspectRatio: 1.5,
+                        ),
+                        ProductMainInfoCard(),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: ProductColorsSelector(),
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: ProductSizeSelector(),
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: ProductKeyFeaturesView(
+                            productFeatures: [
+                              'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
+                              'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
+                              'The text is an example of text that can be replaced in the same space. This text was generated by a text generator.',
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: ProductBasicSpecificationsView(),
+                        ),
+                        Container(
+                          color: colors.onSurface.withValues(alpha: 0.3),
+                          width: double.infinity,
+                          height: 1,
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        Row(
+                          spacing: 10,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: PrimaryAppPrefixIconButton(
+                                title: LangKeys.addToCartKey.tr(),
+                                buttonPadding: 10,
+                                buttonRadius: 8,
+                                prefixIcon: Assets
+                                    .media
+                                    .images
+                                    .svg
+                                    .shoppingCartIcon
+                                    .svg(
+                                      width: 20,
+                                      colorFilter: ColorFilter.mode(
+                                        colors.onPrimary,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
-                                  ),
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: UnPrimaryButton(
-                              title: 'Buy Now',
-                              buttonPadding: 10,
+                            Expanded(
+                              child: UnPrimaryButton(
+                                title: 'Buy Now',
+                                buttonPadding: 10,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
         appBarTitle: 'Product Details',
         hasCartIcon: true,
