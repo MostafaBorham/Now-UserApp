@@ -29,4 +29,35 @@ abstract class CheckoutEndpoints {
               MapEntry<String, String>('$vendorId', couponCode),
         ),
       };
+
+  /// Confirms a draft order group — the final checkout step, sending the
+  /// address, tip, notes, payment method and coupons in one request.
+  /// Shares the draft resource path with [draftCoupons]; [orderGroupUuid]
+  /// identifies the draft to confirm.
+  static String confirmOrder(String orderGroupUuid) =>
+      '/api/v1/checkout/draft/$orderGroupUuid';
+
+  /// Builds the confirm-order request body. Only [addressId] and
+  /// [paymentMethod] are always sent; the optional fields are omitted when not
+  /// provided so the server keeps whatever the draft already holds. [coupons]
+  /// maps a vendor id to its coupon code and — JSON object keys must be
+  /// strings — is serialized with the vendor ids in their string form.
+  static Map<String, dynamic> confirmOrderBody({
+    required int addressId,
+    required String paymentMethod,
+    double? driverTip,
+    String? notes,
+    Map<int, String>? coupons,
+  }) =>
+      <String, dynamic>{
+        'address_id': addressId,
+        'payment_method': paymentMethod,
+        'driver_tip': ?driverTip,
+        'notes': ?notes,
+        if (coupons != null && coupons.isNotEmpty)
+          'coupons': coupons.map(
+            (int vendorId, String couponCode) =>
+                MapEntry<String, String>('$vendorId', couponCode),
+          ),
+      };
 }

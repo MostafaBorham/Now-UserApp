@@ -43,4 +43,29 @@ class CheckoutApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  /// Confirms the draft order group identified by [orderGroupUuid] — the final
+  /// checkout step, submitting the delivery address, driver tip, notes, payment
+  /// method and coupons together. Authentication is applied by
+  /// `AuthTokenInterceptor` from the cached session.
+  Future<Response> confirmOrder({
+    required String orderGroupUuid,
+    required int addressId,
+    required String paymentMethod,
+    double? driverTip,
+    String? notes,
+    Map<int, String>? coupons,
+  }) {
+    return _dio.patch(
+      CheckoutEndpoints.confirmOrder(orderGroupUuid),
+      data: CheckoutEndpoints.confirmOrderBody(
+        addressId: addressId,
+        paymentMethod: paymentMethod,
+        driverTip: driverTip,
+        notes: notes,
+        coupons: coupons,
+      ),
+      cancelToken: _canceller.token,
+    );
+  }
 }
