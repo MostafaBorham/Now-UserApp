@@ -5,12 +5,13 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class NoItemsWidget extends StatelessWidget {
-  const NoItemsWidget({super.key, this.isScrollable = false});
+  const NoItemsWidget({super.key, this.isScrollable = false, this.emptyMessage});
 
   /// When `true` the empty state is wrapped in an always-scrollable viewport
   /// that fills the available height, so a wrapping [RefreshIndicator] (or any
   /// pull gesture) still works even though there is no list to scroll.
   final bool? isScrollable;
+  final String? emptyMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class NoItemsWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Assets.media.images.svg.noItemsIcon.svg(fit: BoxFit.contain,width: MediaQuery.sizeOf(context).width*0.5),
-            Text(LangKeys.noItemsYetKey.tr(),style: AppTextStyles.style24SemiBold.copyWith(
+            Text(emptyMessage?? LangKeys.noItemsYetKey.tr(),style: AppTextStyles.style24SemiBold.copyWith(
               color: colors.onSecondary,
               fontSize: MediaQuery.sizeOf(context).width*0.04
             ),)

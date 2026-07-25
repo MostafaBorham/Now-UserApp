@@ -48,35 +48,38 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
             onRetry: () =>
                 ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
           ),
-          data: (List<AddressModel> addresses) => addresses.isEmpty
-              ? const NoItemsWidget()
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < addresses.length; i++) ...[
-                        if (i > 0) const SizedBox(height: 16),
-                        AddressCard(
-                          title: addresses[i].label ?? '',
-                          address: addresses[i].fullAddress ?? '',
-                          isDefault: _selected == null
-                              ? (addresses[i].isDefault ?? false)
-                              : _selected == i,
-                          onSelect: () => setState(() => _selected = i),
-                          onEdit: () => context.pushNamed(
-                            AppRoutes.addressDetailsScreen,
-                            extra: true,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 24),
-                      AddAddressButton(
-                        onPressed: () => context.pushNamed(
-                          AppRoutes.addNewAddressFromMapScreen,
-                        ),
+          data: (List<AddressModel> addresses) => SingleChildScrollView(
+            child: Column(
+              children: [
+                if (addresses.isEmpty)
+                  const NoItemsWidget(
+                    emptyMessage: 'No Addresses Yet',
+                  )
+                else
+                  for (int i = 0; i < addresses.length; i++) ...[
+                    if (i > 0) const SizedBox(height: 16),
+                    AddressCard(
+                      title: addresses[i].label ?? '',
+                      address: addresses[i].fullAddress ?? '',
+                      isDefault: _selected == null
+                          ? (addresses[i].isDefault ?? false)
+                          : _selected == i,
+                      onSelect: () => setState(() => _selected = i),
+                      onEdit: () => context.pushNamed(
+                        AppRoutes.addressDetailsScreen,
+                        extra: true,
                       ),
-                    ],
+                    ),
+                  ],
+                const SizedBox(height: 24),
+                AddAddressButton(
+                  onPressed: () => context.pushNamed(
+                    AppRoutes.addNewAddressFromMapScreen,
                   ),
                 ),
+              ],
+            ),
+          ),
         ),
       ),
     );

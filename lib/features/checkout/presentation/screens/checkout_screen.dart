@@ -46,7 +46,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
    ref.read(confirmOrderProvider.notifier).confirmOrder(
               orderGroupUuid: orderGroupUuid??'',
-              addressId: addressId??0,
+              addressId: addressId??1,
               paymentMethod: paymentMethod??'wallet',
               driverTip: _driverTip,
               notes: _notes.trim().isEmpty ? null : _notes.trim(),
