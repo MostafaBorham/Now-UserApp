@@ -37,7 +37,7 @@ class CheckoutApiService {
     required String orderGroupUuid,
     required Map<int, String> coupons,
   }) {
-    return _dio.post(
+    return _dio.patch(
       CheckoutEndpoints.draftCoupons(orderGroupUuid),
       data: CheckoutEndpoints.draftCouponsBody(coupons: coupons),
       cancelToken: _canceller.token,

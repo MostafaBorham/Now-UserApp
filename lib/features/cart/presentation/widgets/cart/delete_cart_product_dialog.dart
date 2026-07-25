@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_product_vm.dart';
@@ -55,27 +55,7 @@ class _DeleteCartProductDialogState
       error: (Object error, StackTrace _) {
         // Stop loading but keep the dialog open, then surface the error.
         setState(() => _isDeleting = false);
-
-        final ColorScheme colors = Theme.of(context).colorScheme;
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                error.toString().tr(),
-                style: AppTextStyles.style16SemiBold.copyWith(
-                  color: colors.onPrimary,
-                ),
-              ),
-              behavior: SnackBarBehavior.floating,
-              elevation: 4,
-              padding: const EdgeInsets.all(16),
-              backgroundColor: colors.onError,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
-              ),
-            ),
-          );
+        ErrorSnackBar.show(context, error.toString());
       },
     );
   }

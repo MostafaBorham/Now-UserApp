@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
@@ -29,6 +30,7 @@ class ApplyDiscountCodeView extends ConsumerStatefulWidget {
 class _ApplyDiscountCodeViewState
     extends ConsumerState<ApplyDiscountCodeView> {
   final TextEditingController _controller = TextEditingController();
+  bool _isApplying = false;
 
   @override
   void dispose() {
@@ -39,19 +41,38 @@ class _ApplyDiscountCodeViewState
   /// Applies the entered code to this vendor's draft. A no-op unless the field
   /// actually holds a code and the vendor/draft ids are known, so an empty (or
   /// whitespace-only) field applies nothing.
-  void _onApply() {
+  ///
+  /// On success the checkout draft refreshes automatically; on failure the
+  /// server's rejection reason is shown in a snackbar.
+  Future<void> _onApply() async {
     final String code = _controller.text.trim();
     final int? vendorId = widget.vendorId;
     final String? orderGroupUuid =
         ref.read(checkoutModelProvider).orderGroup.uuid;
 
-    if (code.isEmpty || vendorId == null || orderGroupUuid == null) return;
+    if (_isApplying ||
+        code.isEmpty ||
+        vendorId == null ||
+        orderGroupUuid == null) {
+      return;
+    }
 
-    ref.read(checkoutProvider(widget.storeId).notifier).applyCoupons(
-          orderGroupUuid: orderGroupUuid,
-          vendorId: vendorId,
-          code: code,
-        );
+    setState(() => _isApplying = true);
+
+    final String? error =
+        await ref.read(checkoutProvider(widget.storeId).notifier).applyCoupons(
+              orderGroupUuid: orderGroupUuid,
+              vendorId: vendorId,
+              code: code,
+            );
+
+    if (!mounted) return;
+
+    setState(() => _isApplying = false);
+
+    if (error != null) {
+      ErrorSnackBar.show(context, error);
+    }
   }
 
   @override
@@ -64,50 +85,70 @@ class _ApplyDiscountCodeViewState
         color: colors.primaryFixed,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
-        spacing: 12,
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.onPrimaryContainer,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: TextField(
-                controller: _controller,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.onSecondary,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 12,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: colors.onPrimaryContainer,
+                  borderRadius: BorderRadius.circular(999),
                 ),
-                decoration: InputDecoration(
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  hintText: widget.hintText,
-                  hintStyle: AppTextStyles.style14Regular.copyWith(
-                    color: colors.onSurface,
+                child: Center(
+                  child: TextField(
+                    controller: _controller,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.onSecondary,
+                    ),
+                    decoration: InputDecoration(
+                      isCollapsed: true,
+                      isDense: true,
+                      border: InputBorder.none,
+                      hintText: widget.hintText,
+                      hintStyle: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onSurface,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: _onApply,
-            borderRadius: BorderRadius.circular(999),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.onSecondaryFixedVariant,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                'Apply',
-                style: AppTextStyles.style14Medium.copyWith(
-                  color: colors.onSecondary,
+            Expanded(
+              child: InkWell(
+                onTap: _isApplying ? null : _onApply,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colors.onSecondaryFixedVariant,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: _isApplying
+                        ? SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: colors.onSecondary,
+                            ),
+                          )
+                        : Text(
+                            'Apply',
+                            style: AppTextStyles.style14Medium.copyWith(
+                              color: colors.onSecondary,
+                            ),
+                          ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -47,6 +47,7 @@ class OrderGroupModel {
   final String? placedAt;
   final String? createdAt;
   final List<DraftOrderModel> orders;
+  final List<CouponModel> coupons;
 
   const OrderGroupModel({
     this.uuid,
@@ -70,6 +71,7 @@ class OrderGroupModel {
     this.placedAt,
     this.createdAt,
     this.orders = const <DraftOrderModel>[],
+    this.coupons = const <CouponModel>[],
   });
 
   factory OrderGroupModel.fromJson(Map<String, dynamic>? json) {
@@ -103,6 +105,39 @@ class OrderGroupModel {
               ?.map((e) => DraftOrderModel.fromJson(e as Map<String, dynamic>?))
               .toList() ??
           const <DraftOrderModel>[],
+      coupons: (json['coupons'] as List?)
+              ?.map((e) => CouponModel.fromJson(e as Map<String, dynamic>?))
+              .toList() ??
+          const <CouponModel>[],
+    );
+  }
+}
+
+/// A coupon entry on the draft group, reporting whether the submitted [code]
+/// for [vendorId] was [applied] and, if not, the server's [reason].
+class CouponModel {
+  final int? vendorId;
+  final String? code;
+  final bool applied;
+  final String? reason;
+
+  const CouponModel({
+    this.vendorId,
+    this.code,
+    this.applied = false,
+    this.reason,
+  });
+
+  factory CouponModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return const CouponModel();
+    }
+
+    return CouponModel(
+      vendorId: (json['vendor_id'] as num?)?.toInt(),
+      code: json['code']?.toString(),
+      applied: json['applied'] as bool? ?? false,
+      reason: json['reason']?.toString(),
     );
   }
 }

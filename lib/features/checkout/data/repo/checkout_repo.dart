@@ -94,6 +94,19 @@ class CheckoutRepo {
         body['data'] as Map<String, dynamic>?,
       );
 
+      // The request can succeed while the coupon itself is rejected (expired,
+      // not found, …). For every vendor we submitted a code for, surface the
+      // server's reason of the first coupon that was not applied.
+      for (final int vendorId in coupons.keys) {
+        for (final CouponModel coupon in checkout.orderGroup.coupons) {
+          if (coupon.vendorId == vendorId && !coupon.applied) {
+            return Left(
+              Failure(coupon.reason ?? ApiErrorHandler.extractErrorMessage(body)),
+            );
+          }
+        }
+      }
+
       return Right(checkout);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
