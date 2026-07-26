@@ -50,8 +50,8 @@ class CheckoutApiService {
   /// `AuthTokenInterceptor` from the cached session.
   Future<Response> confirmOrder({
     required String orderGroupUuid,
-    required int addressId,
-    required String paymentMethod,
+    int? addressId,
+    String? paymentMethod,
     double? driverTip,
     String? notes,
     Map<int, String>? coupons,

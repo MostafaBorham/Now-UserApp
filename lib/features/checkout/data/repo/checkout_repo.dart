@@ -131,8 +131,8 @@ class CheckoutRepo {
   /// cached session, so no token is read or passed here.
   Future<Either<Failure, CheckoutModel>> confirmOrder({
     required String orderGroupUuid,
-    required int addressId,
-    required String paymentMethod,
+    int? addressId,
+    String? paymentMethod,
     double? driverTip,
     String? notes,
     Map<int, String>? coupons,

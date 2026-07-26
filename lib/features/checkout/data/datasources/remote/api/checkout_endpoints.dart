@@ -43,15 +43,15 @@ abstract class CheckoutEndpoints {
   /// maps a vendor id to its coupon code and — JSON object keys must be
   /// strings — is serialized with the vendor ids in their string form.
   static Map<String, dynamic> confirmOrderBody({
-    required int addressId,
-    required String paymentMethod,
+    int? addressId,
+    String? paymentMethod,
     double? driverTip,
     String? notes,
     Map<int, String>? coupons,
   }) =>
       <String, dynamic>{
         'address_id': addressId,
-        'payment_method': paymentMethod,
+        if(paymentMethod!=null && paymentMethod.isNotEmpty) 'payment_method': paymentMethod,
         'driver_tip': ?driverTip,
         'notes': ?notes,
         if (coupons != null && coupons.isNotEmpty)

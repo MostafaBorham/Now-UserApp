@@ -9,7 +9,13 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_
 class DeliveryAddressCard extends ConsumerStatefulWidget {
   const DeliveryAddressCard({
     super.key,
+    this.onAddressIdChanged,
   });
+
+  /// Reports the id of the resolved default address (`null` when there is no
+  /// default) whenever it changes. Lets the parent submit the order with this
+  /// id instead of reading `orderGroup.addressId`.
+  final ValueChanged<int?>? onAddressIdChanged;
 
   @override
   ConsumerState<DeliveryAddressCard> createState() =>
@@ -17,25 +23,40 @@ class DeliveryAddressCard extends ConsumerStatefulWidget {
 }
 
 class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
-  String? _fullAddress;
+  AddressModel? _address;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Seed from the provider if it already holds data on first build, and
+    // report that id up after the first frame (so the parent isn't mutated
+    // mid-build).
+    _address = ref.read(defaultAddressProvider).valueOrNull;
+    if (_address != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onAddressIdChanged?.call(_address?.id);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     // Only adopt a new address when the provider is in the data state.
-    // On loading / error the previous address string stays untouched.
+    // On loading / error the previous address stays untouched.
     ref.listen<AsyncValue<AddressModel?>>(
       defaultAddressProvider,
       (previous, next) {
         next.whenData((address) {
-          setState(() => _fullAddress = address?.fullAddress);
+          setState(() => _address = address);
+          widget.onAddressIdChanged?.call(address?.id);
         });
       },
     );
 
-    // Seed the initial value if the provider already holds data on first build.
-    _fullAddress ??= ref.read(defaultAddressProvider).valueOrNull?.fullAddress;
+    final String? fullAddress = _address?.fullAddress;
 
     return Container(
       width: double.infinity,
@@ -71,10 +92,10 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
             ],
           ),
           Text(
-            _fullAddress ?? 'No Address',
+            fullAddress ?? 'No Address',
             maxLines: 3,
             style: AppTextStyles.style14Regular.copyWith(
-              color: _fullAddress != null ? colors.onSurface : colors.error,
+              color: fullAddress != null ? colors.onSurface : colors.error,
             ),
           ),
         ],

@@ -47,6 +47,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   double _driverTip = 0;
   String _notes = '';
 
+  /// The default-address id reported by [DeliveryAddressCard], used at confirm
+  /// time instead of reading it from the order group.
+  int? _addressId;
+
   void _onConfirmOrder() {
     // Read from the async provider rather than [checkoutModelProvider]: the
     // latter only exists inside the scope below, which this `ref` is above.
@@ -57,7 +61,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     if (checkout == null) return;
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
-    final int? addressId = checkout.orderGroup.addressId;
     final String? paymentMethod = checkout.orderGroup.paymentMethod;
     final List<AppliedCouponModel> coupons = ref.read(appliedCouponsProvider);
 
@@ -65,8 +68,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         .read(confirmOrderProvider.notifier)
         .confirmOrder(
           orderGroupUuid: orderGroupUuid ?? '',
-          addressId: addressId ?? 3,
-          paymentMethod: paymentMethod ?? 'wallet',
+          addressId: _addressId ?? 3,
+          paymentMethod: paymentMethod,
           driverTip: _driverTip,
           notes: _notes.trim().isEmpty ? null : _notes.trim(),
           coupons: coupons,
@@ -119,7 +122,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 spacing: 16,
                 children: [
                   CheckoutBrandCardsSection(storeId: widget.storeId),
-                  DeliveryAddressCard(),
+                  DeliveryAddressCard(
+                    onAddressIdChanged: (int? id) => _addressId = id,
+                  ),
                   TipYourDriverView(
                     initialTip: 2,
                     onTipChanged: (double tip) => _driverTip = tip,

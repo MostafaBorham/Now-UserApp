@@ -40,8 +40,8 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
   /// returned so the caller can surface it — e.g. in a snackbar.
   Future<String?> confirmOrder({
     required String orderGroupUuid,
-    required int addressId,
-    required String paymentMethod,
+    int? addressId,
+    String? paymentMethod,
     double? driverTip,
     String? notes,
     List<AppliedCouponModel> coupons = const <AppliedCouponModel>[],

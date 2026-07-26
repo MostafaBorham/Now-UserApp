@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
 
 /// Provider for the "continue" button on the OTP verification screen.
 ///
@@ -10,12 +11,13 @@ import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 /// via `ref.read(verifyOtpProvider.notifier).verifyOtp(phone: ..., code: ...)`.
 final verifyOtpProvider = StateNotifierProvider.autoDispose<
     VerifyOtpViewModel, AsyncValue<UserModel?>>(
-  (Ref ref) => VerifyOtpViewModel(),
+  (Ref ref) => VerifyOtpViewModel(ref),
 );
 
 class VerifyOtpViewModel extends StateNotifier<AsyncValue<UserModel?>> {
-  VerifyOtpViewModel() : super(const AsyncValue.data(null));
+  VerifyOtpViewModel(this._ref) : super(const AsyncValue.data(null));
 
+  final Ref _ref;
   final AuthRepo _repo = AuthRepo();
 
   @override
@@ -34,9 +36,20 @@ class VerifyOtpViewModel extends StateNotifier<AsyncValue<UserModel?>> {
 
     if (!mounted) return;
 
-    state = result.fold(
-      (Failure failure) => AsyncValue.error(failure.message, StackTrace.current),
-      (UserModel user) => AsyncValue.data(user),
+    await result.fold(
+      (Failure failure) async {
+        state = AsyncValue.error(failure.message, StackTrace.current);
+      },
+      (UserModel user) async {
+        // The auth token now replaces the guest token, so the session type has
+        // changed — refresh it before exposing the logged-in user, so anything
+        // watching the session type sees the new value.
+        await _ref.read(sessionTypeProvider.notifier).getSessionType();
+
+        if (!mounted) return;
+
+        state = AsyncValue.data(user);
+      },
     );
   }
 }

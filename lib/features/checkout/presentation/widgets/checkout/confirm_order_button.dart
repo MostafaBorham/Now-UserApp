@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 
-/// The checkout screen's confirm button. Kept stateless and provider-free on
-/// purpose: no `ref.watch` means it's built once with the body and never
-/// rebuilds — not when the draft resolves, not while the confirm request is in
-/// flight. Loading/enabled feedback lives elsewhere (e.g. the screen's
-/// `ref.listen` on the confirm result surfacing errors via snackbar).
-class ConfirmOrderButton extends StatelessWidget {
+/// The checkout screen's confirm button. It watches only the *loading slice* of
+/// [confirmOrderProvider], so it rebuilds solely while the confirm request is in
+/// flight — showing a spinner and blocking repeat taps — and nothing else on the
+/// page rebuilds with it. Success/error feedback stays on the screen's
+/// `ref.listen` (navigation on success, snackbar on error).
+class ConfirmOrderButton extends ConsumerWidget {
   const ConfirmOrderButton({super.key, required this.onConfirm});
 
   final VoidCallback onConfirm;
 
   @override
-  Widget build(BuildContext context) {
-    return PrimaryAppButton(title: 'Confirm Order', onTap: onConfirm);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isLoading = ref.watch(
+      confirmOrderProvider.select(
+        (AsyncValue<CheckoutModel?> state) => state.isLoading,
+      ),
+    );
+
+    return PrimaryAppButton(
+      title: 'Confirm Order',
+      isLoading: isLoading,
+      onTap: onConfirm,
+    );
   }
 }
