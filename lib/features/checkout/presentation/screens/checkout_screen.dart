@@ -104,7 +104,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               child: Column(
                 spacing: 16,
                 children: [
-                  DeliveryAddressCard(),
                   Column(
                     spacing: 16,
                     children: checkout.orderGroup.orders
@@ -115,6 +114,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           ),
                         )
                         .toList(),
+                  ),
+                  DeliveryAddressCard(),
+                  TipYourDriverView(
+                    onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   (checkout.orderGroup.paymentMethod??'').isEmpty
                       ? ChoosePaymentMethod(
@@ -133,9 +136,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       separatorBuilder: (context, index) => 16.wSpace,
                       itemCount: 4,
                     ),
-                  ),
-                  TipYourDriverView(
-                    onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   InvoiceSummaryCard(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),

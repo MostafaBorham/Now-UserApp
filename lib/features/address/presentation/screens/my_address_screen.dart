@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/my_addresses_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
-import 'package:nowdelivery_user_app/features/address/viewmodel/set_default_address_vm.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
 import '../../../settings/app_colors.dart';
 import '../widgets/add_address_button.dart';
@@ -26,7 +26,7 @@ import '../widgets/address_card.dart';
 ///   - on failure     → a [ServerConnectionErrorWidget] with retry.
 ///
 /// Tapping a non-default card asks the backend to make it the default
-/// ([setDefaultAddressProvider]): the list is covered by a
+/// ([defaultAddressProvider]): the list is covered by a
 /// [BlockingLoadingOverlay] until the response arrives, then the highlight moves
 /// to the new address on success, or stays where it was and an error snackbar is
 /// shown on failure.
@@ -48,13 +48,13 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     if (addressId == null || (address.isDefault ?? false)) return;
 
     await ref
-        .read(setDefaultAddressProvider.notifier)
+        .read(defaultAddressProvider.notifier)
         .setDefaultAddress(addressId: addressId);
 
     if (!mounted) return;
 
     ref
-        .read(setDefaultAddressProvider)
+        .read(defaultAddressProvider)
         .whenOrNull(
           data: (AddressModel? defaultAddress) {
             if (defaultAddress == null) return;
@@ -74,7 +74,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
       getMyAddressesProvider,
     );
     final bool isSettingDefault = ref
-        .watch(setDefaultAddressProvider)
+        .watch(defaultAddressProvider)
         .isLoading;
 
     return Scaffold(

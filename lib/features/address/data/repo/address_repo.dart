@@ -14,9 +14,6 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class AddressRepo {
   final AddressApiService _addressApiService = AddressApiService();
-
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _addressApiService.cancelRequests();
 
   Future<Either<Failure, List<AddressModel>>> getMyAddresses() async {
@@ -51,9 +48,32 @@ class AddressRepo {
       return Left(Failure(exception.toString()));
     }
   }
+  Future<Either<Failure, AddressModel>> getDefaultAddress() async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
 
-  /// Marks the address identified by [addressId] as the user's default one and
-  /// returns the updated address as the backend echoes it back.
+    try {
+      final Response response = await _addressApiService.getDefaultAddress();
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+
+      return Right(AddressModel.fromJson(data['address'] as Map<String, dynamic>));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
   Future<Either<Failure, AddressModel>> setDefaultAddress({
     required int addressId,
   }) async {
