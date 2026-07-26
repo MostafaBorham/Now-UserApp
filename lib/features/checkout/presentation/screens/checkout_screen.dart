@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
@@ -12,18 +10,26 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_mode
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/checkout_brand_item_card.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_shimmer_view.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/choose_payment_method.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_card.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/payment_methods_card.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
+/// The checkout screen is deliberately *not* wrapped in a top-level
+/// `AsyncValue.when`: the whole page would then be discarded and rebuilt every
+/// time the draft resolves or refreshes (applying a coupon, for one), throwing
+/// away the local state of the tip picker, the notes field and the payment list.
+///
+/// Instead the body is built exactly once and the draft is pushed down through
+/// [checkoutModelProvider], so each section subscribes to just the slice it
+/// renders. Only [CheckoutBrandCardsSection] and [InvoiceSummarySection] have a
+/// loading state — everything else shows real content from the first frame.
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key, this.storeId});
 
@@ -36,95 +42,89 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
+  /// Owned here — and mutated through callbacks without `setState` — so the
+  /// widgets reporting them are never rebuilt by their own input.
   double _driverTip = 0;
   String _notes = '';
-  Future<void> _onConfirmOrder(CheckoutModel checkout) async {
+
+  void _onConfirmOrder() {
+    // Read from the async provider rather than [checkoutModelProvider]: the
+    // latter only exists inside the scope below, which this `ref` is above.
+    final CheckoutModel? checkout = ref
+        .read(checkoutProvider(widget.storeId))
+        .valueOrNull;
+
+    if (checkout == null) return;
+
     final String? orderGroupUuid = checkout.orderGroup.uuid;
     final int? addressId = checkout.orderGroup.addressId;
     final String? paymentMethod = checkout.orderGroup.paymentMethod;
     final List<AppliedCouponModel> coupons = ref.read(appliedCouponsProvider);
 
-   ref.read(confirmOrderProvider.notifier).confirmOrder(
-              orderGroupUuid: orderGroupUuid??'',
-              addressId: addressId??3,
-              paymentMethod: paymentMethod??'wallet',
-              driverTip: _driverTip,
-              notes: _notes.trim().isEmpty ? null : _notes.trim(),
-              coupons: coupons,
-            );
+    ref
+        .read(confirmOrderProvider.notifier)
+        .confirmOrder(
+          orderGroupUuid: orderGroupUuid ?? '',
+          addressId: addressId ?? 3,
+          paymentMethod: paymentMethod ?? 'wallet',
+          driverTip: _driverTip,
+          notes: _notes.trim().isEmpty ? null : _notes.trim(),
+          coupons: coupons,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<CheckoutModel> checkoutState = ref.watch(
-      checkoutProvider(widget.storeId),
-    );
-
-    ref.watch(appliedCouponsProvider);
-
-    final bool isConfirming = ref.watch(confirmOrderProvider).isLoading;
+    // Nothing is `watch`ed here on purpose: this build must run once, or the
+    // whole body would be rebuilt with it.
 
     // React to the outcome of a confirm-order request: on success push the
     // confirmation screen, on failure surface the message via the shared
     // error snackbar. Uses `listen` (not `watch`) so this fires only on state
     // transitions, never on unrelated rebuilds.
-    ref.listen<AsyncValue<CheckoutModel?>>(
-      confirmOrderProvider,
-      (AsyncValue<CheckoutModel?>? previous, AsyncValue<CheckoutModel?> next) {
-        next.whenOrNull(
-          data: (CheckoutModel? confirmed) {
-            // The idle state is `AsyncData(null)`; only the real, non-null
-            // response should trigger navigation.
-            if (confirmed == null) return;
-            context.pushReplacementNamed(AppRoutes.orderConfirmedScreen);
-          },
-          error: (Object error, StackTrace stackTrace) =>
-              ErrorSnackBar.show(context, error.toString()),
-        );
-      },
-    );
+    ref.listen<AsyncValue<CheckoutModel?>>(confirmOrderProvider, (
+      AsyncValue<CheckoutModel?>? previous,
+      AsyncValue<CheckoutModel?> next,
+    ) {
+      next.whenOrNull(
+        data: (CheckoutModel? confirmed) {
+          // The idle state is `AsyncData(null)`; only the real, non-null
+          // response should trigger navigation.
+          if (confirmed == null) return;
+          context.pushReplacementNamed(AppRoutes.orderConfirmedScreen);
+        },
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
+      );
+    });
 
     return Scaffold(
       body: AppWavedView(
         appBarTitle: 'Checkout',
-        body: checkoutState.when(
-          loading: () => const CheckoutShimmerView(),
-          error: (Object error, StackTrace stackTrace) =>
-              ServerConnectionErrorWidget(
-                message: error.toString(),
-                onRetry: () => ref
-                    .read(checkoutProvider(widget.storeId).notifier)
-                    .checkout(),
-              ),
-          // The resolved draft is exposed to the subtree via [checkoutModelProvider];
-          // wiring the individual widgets to it is a later task.
-          data: (CheckoutModel checkout) => ProviderScope(
-            overrides: [checkoutModelProvider.overrideWithValue(checkout)],
+        body: ProviderScope(
+          overrides: [
+            // A derived override, not a value one: the scope is built once and
+            // recomputes this provider itself, so the subtree below is never
+            // rebuilt wholesale — only its `select`ing descendants are.
+            checkoutModelProvider.overrideWith(
+              (Ref ref) =>
+                  ref.watch(checkoutProvider(widget.storeId)).valueOrNull,
+            ),
+          ],
+          child: Consumer(
+            // `child` is built once, outside the builder, and handed back
+            // untouched — so even the error/body swap can't rebuild the body.
             child: SingleChildScrollView(
               child: Column(
                 spacing: 16,
                 children: [
-                  Column(
-                    spacing: 16,
-                    children: checkout.orderGroup.orders
-                        .map(
-                          (order) => CheckoutBrandItemCard(
-                            order: order,
-                            storeId: widget.storeId,
-                          ),
-                        )
-                        .toList(),
-                  ),
+                  CheckoutBrandCardsSection(storeId: widget.storeId),
                   DeliveryAddressCard(),
                   TipYourDriverView(
+                    initialTip: 2,
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
-                  (checkout.orderGroup.paymentMethod??'').isEmpty
-                      ? ChoosePaymentMethod(
-                          onTap: () =>
-                              context.pushNamed(AppRoutes.addPaymentCard),
-                        )
-                      : PaymentMethodsCard(),
+                  const CheckoutPaymentSection(),
                   AspectRatio(
                     aspectRatio: 2,
                     child: ListView.separated(
@@ -137,19 +137,34 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       itemCount: 4,
                     ),
                   ),
-                  InvoiceSummaryCard(),
+                  const InvoiceSummarySection(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),
-                  checkout.orderGroup.paymentStatus == null
-                      ? PrimaryAppDisabledButton(title: 'Confirm Order')
-                      : PrimaryAppButton(
-                          title: 'Confirm Order',
-                          isLoading: isConfirming,
-                          onTap: () => _onConfirmOrder(checkout),
-                        ),
+                  ConfirmOrderButton(onConfirm: _onConfirmOrder),
                   10.hSpace,
                 ],
               ),
             ),
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              // A failed draft still replaces the whole page — the sections
+              // below it would have nothing to show. Watching the error alone
+              // means the loading → data transition doesn't even run this.
+              final Object? error = ref.watch(
+                checkoutProvider(
+                  widget.storeId,
+                ).select((AsyncValue<CheckoutModel> state) => state.error),
+              );
+
+              if (error != null) {
+                return ServerConnectionErrorWidget(
+                  message: error.toString(),
+                  onRetry: () => ref
+                      .read(checkoutProvider(widget.storeId).notifier)
+                      .checkout(),
+                );
+              }
+
+              return child!;
+            },
           ),
         ),
       ),

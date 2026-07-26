@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _logoController;
 
@@ -77,8 +81,19 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _logoAnimationListener(AnimationStatus status) {
     if (status == AnimationStatus.completed && mounted) {
-      setState(() => showLoader = true);
-      context.goNamed(AppRoutes.onBoardingScreen);
+      _initAppDependencies();
     }
+  }
+
+  Future<void> _initAppDependencies() async {
+    setState(() => showLoader = true);
+    await Future.wait([
+      // ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
+      ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
+    ]).whenComplete(() {
+      if(mounted) {
+        context.goNamed(AppRoutes.onBoardingScreen);
+      }
+    });
   }
 }

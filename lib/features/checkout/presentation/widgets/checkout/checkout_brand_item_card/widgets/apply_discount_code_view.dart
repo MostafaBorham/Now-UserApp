@@ -51,7 +51,7 @@ class _ApplyDiscountCodeViewState
     final String code = _controller.text.trim();
     final int? vendorId = widget.vendorId;
     final String? orderGroupUuid =
-        ref.read(checkoutModelProvider).orderGroup.uuid;
+        ref.read(checkoutModelProvider)?.orderGroup.uuid;
 
     if (_isApplying ||
         code.isEmpty ||

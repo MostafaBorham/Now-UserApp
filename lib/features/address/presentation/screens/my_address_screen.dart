@@ -58,10 +58,10 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
         .whenOrNull(
           data: (AddressModel? defaultAddress) {
             if (defaultAddress == null) return;
-
+/*
             ref
                 .read(getMyAddressesProvider.notifier)
-                .updateCurrentDefaultAddress(defaultAddress);
+                .updateCurrentDefaultAddress(defaultAddress);*/
           },
           error: (Object error, StackTrace stackTrace) =>
               ErrorSnackBar.show(context, error.toString()),

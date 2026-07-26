@@ -11,9 +11,16 @@ class InvoiceSummaryCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final OrderGroupModel orderGroup = ref.watch(
-      checkoutModelProvider.select((checkout) => checkout.orderGroup),
-    );
+    // Falls back to the zeroed group so the card stays renderable even outside
+    // a resolved draft; in practice [InvoiceSummarySection] only mounts it once
+    // the draft is in.
+    final OrderGroupModel orderGroup =
+        ref.watch(
+          checkoutModelProvider.select(
+            (CheckoutModel? checkout) => checkout?.orderGroup,
+          ),
+        ) ??
+        const OrderGroupModel();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -85,7 +92,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              Row(
+              if(orderGroup.discount>0)Row(
                 children: [
                   Expanded(
                     child: Text(

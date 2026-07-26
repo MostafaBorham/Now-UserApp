@@ -10,13 +10,12 @@ import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dar
 /// address list they already show. Trigger with
 /// `ref.read(setDefaultAddressProvider.notifier).setDefaultAddress(addressId: ...)`
 /// and watch the provider to react to loading / error / success.
-final defaultAddressProvider = StateNotifierProvider.autoDispose<
-    DefaultAddressViewModel, AsyncValue<AddressModel?>>(
-  (Ref ref) => DefaultAddressViewModel(const AsyncValue.loading())..getDefaultAddress(),
-);
+final defaultAddressProvider =
+    StateNotifierProvider<DefaultAddressViewModel, AsyncValue<AddressModel?>>(
+      (Ref ref) => DefaultAddressViewModel(const AsyncValue.loading()),
+    );
 
-class DefaultAddressViewModel
-    extends StateNotifier<AsyncValue<AddressModel?>> {
+class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   DefaultAddressViewModel(super.initialState);
 
   final AddressRepo _repo = AddressRepo();
@@ -25,6 +24,10 @@ class DefaultAddressViewModel
   void dispose() {
     _repo.cancelRequests();
     super.dispose();
+  }
+
+  void updateDefaultAddress(AddressModel address) {
+    state = AsyncValue.data(address);
   }
 
   Future<void> setDefaultAddress({required int addressId}) async {
@@ -49,9 +52,9 @@ class DefaultAddressViewModel
     if (!mounted) return;
 
     state = result.fold(
-          (Failure failure) =>
+      (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
-          (AddressModel address) => AsyncValue.data(address),
+      (AddressModel address) => AsyncValue.data(address),
     );
   }
 }

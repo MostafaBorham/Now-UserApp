@@ -49,6 +49,8 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
           spacing: 20,
           children: [
             LogoTitleExpansionHeader(
+              storeName: widget.order?.vendor.name,
+              logoUrl: widget.order?.vendor.logoUrl,
               isExpanded: _isExpanded,
               onToggle: (bool expanded) =>
                   setState(() => _isExpanded = expanded),

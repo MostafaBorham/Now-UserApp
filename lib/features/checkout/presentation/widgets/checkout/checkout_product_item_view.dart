@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -38,7 +39,7 @@ class CheckoutProductItemView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                item?.productName ?? '',
+                context.getLocalizedApiText(item?.productName),
                 maxLines: 1,
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,

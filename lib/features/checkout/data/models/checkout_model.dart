@@ -1,3 +1,5 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+
 /// Parsed representation of a checkout draft (`/api/v1/checkout/draft`).
 ///
 /// Shared by both flows — all-stores and single-store — since the endpoint
@@ -149,6 +151,13 @@ class DraftOrderModel {
   final String? orderNumber;
   final int? vendorId;
   final int? branchId;
+
+  /// The store this order is placed with. Populated from the nested `vendor`
+  /// object on the draft response, mirroring the cart's convention — only the
+  /// display-facing slice (`id`, `name`, `logo_url`) is carried so the card
+  /// header can render without a second lookup.
+  final StoreModel vendor;
+
   final String? status;
   final String? paymentStatus;
   final double subtotal;
@@ -163,6 +172,7 @@ class DraftOrderModel {
     this.orderNumber,
     this.vendorId,
     this.branchId,
+    this.vendor = const StoreModel(),
     this.status,
     this.paymentStatus,
     this.subtotal = 0,
@@ -178,11 +188,20 @@ class DraftOrderModel {
       return const DraftOrderModel();
     }
 
+    final Map<String, dynamic>? vendor =
+        json['vendor'] as Map<String, dynamic>?;
+
     return DraftOrderModel(
       uuid: json['uuid']?.toString(),
       orderNumber: json['order_number']?.toString(),
       vendorId: (json['vendor_id'] as num?)?.toInt(),
       branchId: (json['branch_id'] as num?)?.toInt(),
+      // Same lite slice the cart pulls from its own `vendor` object.
+      vendor: StoreModel.fromJson(<String, dynamic>{
+        'id': vendor?['id'],
+        'name': vendor?['name'],
+        'logo_url': vendor?['logo_url'],
+      }),
       status: json['status']?.toString(),
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
@@ -204,7 +223,10 @@ class DraftOrderModel {
 /// A single line item inside a [DraftOrderModel].
 class DraftOrderItemModel {
   final int? productId;
-  final String? productName;
+
+  /// Localized product name as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(productName)`.
+  final Map<String, dynamic>? productName;
   final String? productSku;
   final int quantity;
   final double unitPrice;
@@ -226,7 +248,7 @@ class DraftOrderItemModel {
 
     return DraftOrderItemModel(
       productId: (json['product_id'] as num?)?.toInt(),
-      productName: json['product_name']?.toString(),
+      productName: json['product_name'] as Map<String, dynamic>?,
       productSku: json['product_sku']?.toString(),
       quantity: (json['quantity'] as num?)?.toInt() ?? 0,
       unitPrice: double.tryParse(json['unit_price']?.toString() ?? '') ?? 0.0,

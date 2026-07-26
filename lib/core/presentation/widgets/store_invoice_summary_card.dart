@@ -90,7 +90,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
+              if((discount??0)>0) Row(
                 children: [
                   Expanded(
                     child: Text(

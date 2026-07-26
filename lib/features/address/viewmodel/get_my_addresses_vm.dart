@@ -2,22 +2,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
 /// Single task: fetch the current user's saved addresses.
 ///
 /// The fetch starts as soon as the provider is first watched, so screens only
 /// need to `ref.watch(getMyAddressesProvider)` and render the [AsyncValue].
 /// Retry with `ref.read(getMyAddressesProvider.notifier).getMyAddresses()`.
-final getMyAddressesProvider = StateNotifierProvider.autoDispose<
-    GetMyAddressesViewModel, AsyncValue<List<AddressModel>>>(
-  (Ref ref) =>
-      GetMyAddressesViewModel(const AsyncValue.loading())..getMyAddresses(),
-);
+final getMyAddressesProvider =
+    StateNotifierProvider<
+      GetMyAddressesViewModel,
+      AsyncValue<List<AddressModel>>
+    >((Ref ref) => GetMyAddressesViewModel(const AsyncValue.loading(), ref));
 
 class GetMyAddressesViewModel
     extends StateNotifier<AsyncValue<List<AddressModel>>> {
-  GetMyAddressesViewModel(super.initialState);
+  GetMyAddressesViewModel(super.initialState, this._ref);
 
+  final Ref _ref;
   final AddressRepo _repo = AddressRepo();
 
   @override
@@ -36,18 +38,29 @@ class GetMyAddressesViewModel
     state = result.fold(
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
-      (List<AddressModel> addresses) => AsyncValue.data(addresses),
+      (List<AddressModel> addresses) {
+        // Sync the default entry into the default-address provider so any
+        // screen watching it shows the default immediately.
+        AddressModel? defaultAddress;
+        for (final AddressModel address in addresses) {
+          if (address.isDefault ?? false) {
+            defaultAddress = address;
+            break;
+          }
+        }
+
+        if (defaultAddress != null) {
+          _ref
+              .read(defaultAddressProvider.notifier)
+              .updateDefaultAddress(defaultAddress);
+        }
+
+        return AsyncValue.data(addresses);
+      },
     );
   }
 
-  /// Replaces the entry matching [updatedAddress] in the already loaded list
-  /// with [updatedAddress] itself, and clears the default flag on the address
-  /// that used to be the default, without refetching.
-  ///
-  /// Call this only after the backend confirmed the change (see
-  /// `SetDefaultAddressViewModel`), so the UI never shows a default the server
-  /// rejected. No-op while the list is loading or in error.
-  void updateCurrentDefaultAddress(AddressModel updatedAddress) {
+  /*  void updateCurrentDefaultAddress(AddressModel updatedAddress) {
     final List<AddressModel>? addresses = state.value;
 
     if (addresses == null) return;
@@ -63,5 +76,5 @@ class GetMyAddressesViewModel
         return address;
       }).toList(),
     );
-  }
+  }*/
 }
