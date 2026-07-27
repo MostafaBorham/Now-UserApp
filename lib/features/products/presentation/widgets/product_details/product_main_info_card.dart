@@ -253,7 +253,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   fontSize: 15,
                 ),
               ),
-              ExpandableText(text: product.description ?? '',style: AppTextStyles.style14Regular.copyWith(
+              ExpandableText(text: context.getLocalizedApiText(product.description),style: AppTextStyles.style14Regular.copyWith(
                 color: colors.onSurface
               ),maxCharacters: 150,seeMoreText: 'See More',),
             ],

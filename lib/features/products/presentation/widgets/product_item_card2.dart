@@ -204,7 +204,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       child: FittedBox(
                                         child: OldPriceWidget(
                                           color: colors.onSurface,
-                                          price: '${widget.productModel?.price}',
+                                          price: '${widget.productModel?.comparePrice}',
                                         ),
                                       ),
                                     ),

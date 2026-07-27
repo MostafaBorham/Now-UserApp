@@ -51,9 +51,13 @@ class GetCategoryProductsViewModel
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (products) => AsyncValue.data(products),
+      (Failure failure) {
+        print('=== fail');
+        return AsyncValue.error(failure.message, StackTrace.current);
+      },
+      (products) {
+        return AsyncValue.data(products);
+      },
     );
   }
 }

@@ -197,7 +197,8 @@ class CategoriesRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
+    } catch (exception,stackTrac) {
+      print(stackTrac);
       return Left(Failure(exception.toString()));
     }
   }

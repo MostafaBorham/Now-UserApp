@@ -12,8 +12,14 @@ class ProductModel {
   final Map<String, dynamic>? name;
   final String? slug;
   final String? sku;
-  final String? shortDescription;
-  final String? description;
+
+  /// Localized short description as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(shortDescription)`.
+  final Map<String, dynamic>? shortDescription;
+
+  /// Localized description as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(description)`.
+  final Map<String, dynamic>? description;
   final double? price;
   final double? effectivePrice;
   final double? dealDiscountAmount;
@@ -29,7 +35,7 @@ class ProductModel {
   final String? primaryImage;
   final List<String>? images;
   final bool? hasVariants;
-  final CategoryModel? category;
+  // final CategoryModel? category;
   final StoreModel? vendor;
   final String? createdAt;
   final String? updatedAt;
@@ -65,7 +71,7 @@ class ProductModel {
     this.primaryImage,
     this.images,
     this.hasVariants,
-    this.category,
+    // this.category,
     this.vendor,
     this.createdAt,
     this.updatedAt,
@@ -80,14 +86,15 @@ class ProductModel {
       id: json['id'] as int?,
       productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
-      name: json['name'] as Map<String, dynamic>?,
+      // name: json['name'],
+      name: {'ar' : json['name'] as String,'en' : json['name'] as String,},
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
           ? null
           : ActiveDealModel.fromJson(json['active_deal']),
-      shortDescription: json['short_description'] as String?,
-      description: json['description'] as String?,
+      // shortDescription: json['short_description'],
+      // description: json['description'],
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
@@ -104,9 +111,9 @@ class ProductModel {
       imageUrl: json['image_url'] as String?,
       images: json['images'] == null ? null : List<String>.from(json['images']),
       hasVariants: json['has_variants'] as bool?,
-      category: json['category'] == null
+/*      category: json['category'] == null
           ? null
-          : CategoryModel.fromJson(json['category']),
+          : CategoryModel.fromJson(json['category']),*/
       vendor: json['vendor'] == null
           ? null
           : StoreModel.fromJson(json['vendor']),
@@ -144,7 +151,7 @@ class ProductModel {
       'image_url': imageUrl,
       'images': images,
       'has_variants': hasVariants,
-      'category': category?.toJson(),
+      // 'category': category?.toJson(),
       'vendor': vendor?.toJson(),
       'created_at': createdAt,
       'updated_at': updatedAt,
