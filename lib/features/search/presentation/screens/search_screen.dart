@@ -89,7 +89,10 @@ class SearchScreen extends ConsumerWidget {
                         child: CategoryCard(
                           category: CategoryModel(
                             id: 1,
-                            name: 'Beauty',
+                            name: {
+                              "ar": "الإلكترونيات",
+                              "en": "Electronics"
+                            },
                             slug: '',
                           ),
                         ),

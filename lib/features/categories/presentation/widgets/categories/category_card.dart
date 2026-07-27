@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -64,7 +65,7 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
           Text(
-            category.name??'',
+            context.getLocalizedApiText(category.name),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

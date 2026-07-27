@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_store_tab_view.dart';
@@ -26,7 +27,7 @@ class CategoryDetailsScreen extends StatelessWidget {
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],
             selectedTabColor: colors.primary,
           ),
-          appBarTitle: category.name ?? '',
+          appBarTitle: context.getLocalizedApiText(category.name),
           canPop: context.canPop(),
         ),
       ),

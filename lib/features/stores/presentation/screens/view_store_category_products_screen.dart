@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
@@ -39,7 +40,7 @@ class ViewStoreCategoryProductsScreen extends StatelessWidget {
               Expanded(child: StoreCategoryProductsView()),
             ],
           ),
-          appBarTitle: category.name ?? LangKeys.offersKey.tr(),
+          appBarTitle: context.getLocalizedApiText(category.name),
           canPop: context.canPop(),
         ),
       ),
