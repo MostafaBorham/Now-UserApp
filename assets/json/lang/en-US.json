@@ -238,5 +238,18 @@
   "workAddressSelector": "Work",
   "yesCancelOrder": "Yes, Cancel Order",
   "yesterday": "Yesterday",
-  "you": "you"
+  "you": "you",
+
+  "addNotesHint": "Add notes.....",
+  "apply": "Apply",
+  "confirmOrder": "Confirm Order",
+  "deliveryAddress": "Delivery Address",
+  "edit": "Edit",
+  "noAddress": "No Address",
+  "choosePaymentMethod": "Choose Payment Method",
+  "addWallet": "+ Add Wallet",
+  "tipYourDriver": "Tip your driver",
+  "sampleStoreName": "In Panda Store",
+  "in": "In",
+  "sampleValidity": "From January 10 to January 31, 2026"
 }

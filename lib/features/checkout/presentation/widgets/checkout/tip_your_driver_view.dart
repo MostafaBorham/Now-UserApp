@@ -95,7 +95,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
         spacing: 12,
         children: [
           Text(
-            'Tip your driver',
+            LangKeys.tipYourDriverKey.tr(),
             style: AppTextStyles.style16Medium.copyWith(
               color: colors.tertiaryContainer,
             ),

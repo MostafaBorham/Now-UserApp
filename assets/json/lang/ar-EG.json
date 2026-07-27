@@ -37,6 +37,7 @@
   "clear": "مسح",
   "clothes": "ملابس",
   "complaintPhotos": "صور الشكوى",
+  "in": "فى",
   "contact": "رقم التواصل",
   "continue": "متابعة",
   "continueAsGuest": "المتابعة كضيف",
@@ -51,7 +52,7 @@
   "deliveryFees": "رسوم التوصيل",
   "didNotReceiveCode": "لم أستلم الرمز",
   "discount": "خصم",
-  "discountCode": "أكواد الخصم",
+  "discountCode": "كود الخصم",
   "discountCoupon": "كوبون خصم",
   "discountLabel": "الخصم",
   "discountScreenTitle": "كود خصم",
@@ -238,5 +239,17 @@
   "workAddressSelector": "العمل",
   "yesCancelOrder": "نعم، إلغاء الطلب",
   "yesterday": "أمس",
-  "you": "التى"
+  "you": "التى",
+
+  "addNotesHint": "أضف ملاحظات.....",
+  "apply": "تطبيق",
+  "confirmOrder": "تأكيد الطلب",
+  "deliveryAddress": "عنوان التسليم",
+  "edit": "تعديل",
+  "noAddress": "لا يوجد عنوان",
+  "choosePaymentMethod": "اختر طريقة الدفع",
+  "addWallet": "+ إضافة محفظة",
+  "tipYourDriver": "إكرامية السائق",
+  "sampleStoreName": "في متجر بندا",
+  "sampleValidity": "من 10 يناير إلى 31 يناير 2026"
 }

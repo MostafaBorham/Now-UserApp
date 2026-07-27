@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_empty_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
@@ -101,7 +102,7 @@ class _CartViewState extends ConsumerState<CartView> {
           data: (CartModel cart) => AppRefreshIndicator(
             onRefresh: () async => ref.read(getCartProvider.notifier).getCart(),
             child: cart.vendors.isEmpty
-                ? const NoItemsWidget(isScrollable: true)
+                ? const CartEmptyView()
                 : Column(
                     children: [
                       Expanded(

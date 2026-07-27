@@ -65,6 +65,7 @@ abstract class LangKeys {
   static const String floor = 'floor';
   static const String building = 'building';
   static const String instructions = 'instructions';
+  static const String inKey = 'in';
   static const String saveAddress = 'saveAddress';
   static const String editAddress = 'editAddress';
   static const String addressDetails = 'addressDetails';
@@ -264,4 +265,17 @@ abstract class LangKeys {
   static const String priceKey = 'price';
   static const String maximumLimitKey = 'maximumLimit';
   static const String minimumLimitKey = 'minimumLimit';
+
+  // Checkout
+  static const String addNotesHintKey = 'addNotesHint';
+  static const String applyKey = 'apply';
+  static const String confirmOrderKey = 'confirmOrder';
+  static const String deliveryAddressKey = 'deliveryAddress';
+  static const String editKey = 'edit';
+  static const String noAddressKey = 'noAddress';
+  static const String choosePaymentMethodKey = 'choosePaymentMethod';
+  static const String addWalletKey = 'addWallet';
+  static const String tipYourDriverKey = 'tipYourDriver';
+  static const String sampleStoreNameKey = 'sampleStoreName';
+  static const String sampleValidityKey = 'sampleValidity';
 }

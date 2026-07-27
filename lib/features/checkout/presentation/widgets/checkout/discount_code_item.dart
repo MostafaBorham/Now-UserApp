@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/overlay_opacity_widget.dart';
@@ -12,20 +14,22 @@ class DiscountCodeItem extends StatelessWidget {
   const DiscountCodeItem({
     super.key,
     this.percentage = '20%',
-    this.storeName = 'In Panda Store',
-    this.label = 'Discount Coupon',
-    this.validity = 'From January 10 to January 31, 2026', this.isDimmed = false,
+    this.storeName,
+    this.label,
+    this.validity,
+    this.isDimmed = false,
   });
 
   final String percentage;
-  final String storeName;
-  final String label;
-  final String validity;
+  final String? storeName;
+  final String? label;
+  final String? validity;
   final bool? isDimmed;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String resolvedValidity = validity ?? LangKeys.sampleValidityKey.tr();
 
     return SizedBox(
       width: 120,
@@ -57,7 +61,7 @@ class DiscountCodeItem extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          storeName,
+                          '${LangKeys.inKey.tr()} ${storeName??'Panda Store'}',
                           maxLines: 1,
                           style: AppTextStyles.style12SemiBold.copyWith(
                             color: colors.tertiaryContainer,
@@ -88,14 +92,14 @@ class DiscountCodeItem extends StatelessWidget {
                                 spacing: 6,
                                 children: [
                                   Text(
-                                    label,
+                                    LangKeys.discountCouponKey.tr(),
                                     maxLines: 1,
                                     style: AppTextStyles.style12Medium.copyWith(
                                       color: colors.primaryContainer,
                                     ),
                                   ),
                                   Text(
-                                    validity,
+                                    resolvedValidity,
                                     maxLines: 2,
                                     textAlign: TextAlign.center,
                                     style: AppTextStyles.style8Medium.copyWith(

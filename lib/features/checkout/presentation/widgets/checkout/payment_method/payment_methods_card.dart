@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -40,21 +42,21 @@ class _PaymentMethodsCardState
         icon: Icons.credit_card,
         color: colors.secondaryContainer,
         solid: false,
-        title: 'Payment Card',
+        title: LangKeys.paymentCardKey.tr(),
         subtitle: 'Visa ****4587',
       ),
       (
         icon: Icons.apple,
         color: colors.onSecondary,
         solid: true,
-        title: 'Apple Pay',
+        title: LangKeys.applePayKey.tr(),
         subtitle: null,
       ),
       (
         icon: Icons.account_balance_wallet_outlined,
         color: colors.outlineVariant,
         solid: false,
-        title: 'STC Pay',
+        title: LangKeys.stcPayKey.tr(),
         subtitle: null,
       ),
     ];
@@ -72,7 +74,7 @@ class _PaymentMethodsCardState
         spacing: 16,
         children: [
           Text(
-            'Payment Method',
+            LangKeys.paymentMethodKey.tr(),
             style: AppTextStyles.style16Medium.copyWith(
               color: colors.tertiaryContainer,
             ),
@@ -102,7 +104,7 @@ class _PaymentMethodsCardState
                 children: [
                   Assets.media.images.svg.circleAddMoreBrokenIcon.svg(),
                   Text(
-                    'Add New Card',
+                    LangKeys.addNewCardKey.tr(),
                     style: AppTextStyles.style16Medium.copyWith(
                       color: colors.onTertiaryFixed,
                     ),

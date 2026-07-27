@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
@@ -23,7 +25,7 @@ class ConfirmOrderButton extends ConsumerWidget {
     );
 
     return PrimaryAppButton(
-      title: 'Confirm Order',
+      title: LangKeys.confirmOrderKey.tr(),
       isLoading: isLoading,
       onTap: onConfirm,
     );

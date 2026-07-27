@@ -1,23 +1,27 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class ChoosePaymentMethod extends StatelessWidget {
   const ChoosePaymentMethod({
     super.key,
-    this.title = 'Choose Payment Method',
-    this.actionLabel = '+ Add Wallet',
+    this.title,
+    this.actionLabel,
     this.onTap,
     this.onAddWallet,
   });
 
-  final String title;
-  final String actionLabel;
+  final String? title;
+  final String? actionLabel;
   final VoidCallback? onTap;
   final VoidCallback? onAddWallet;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String resolvedTitle = title ?? LangKeys.choosePaymentMethodKey.tr();
+    final String resolvedActionLabel = actionLabel ?? LangKeys.addWalletKey.tr();
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -39,7 +43,7 @@ class ChoosePaymentMethod extends StatelessWidget {
                 spacing: 4,
                 children: [
                   Text(
-                    title,
+                    resolvedTitle,
                     style: AppTextStyles.style16Medium.copyWith(
                       color: colors.tertiaryContainer,
                     ),
@@ -47,7 +51,7 @@ class ChoosePaymentMethod extends StatelessWidget {
                   InkWell(
                     onTap: onAddWallet,
                     child: Text(
-                      actionLabel,
+                      resolvedActionLabel,
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.error,
                       ),

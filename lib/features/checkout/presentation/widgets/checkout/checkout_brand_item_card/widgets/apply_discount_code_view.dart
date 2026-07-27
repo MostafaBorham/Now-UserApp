@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
@@ -10,11 +12,11 @@ import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dar
 class ApplyDiscountCodeView extends ConsumerStatefulWidget {
   const ApplyDiscountCodeView({
     super.key,
-    this.hintText = 'Discount Code',
+    this.hintText,
     this.vendorId,
   });
 
-  final String hintText;
+  final String? hintText;
 
   /// The vendor this discount applies to (the card's own store).
   final int? vendorId;
@@ -113,7 +115,7 @@ class _ApplyDiscountCodeViewState
                       isCollapsed: true,
                       isDense: true,
                       border: InputBorder.none,
-                      hintText: widget.hintText,
+                      hintText: widget.hintText ?? LangKeys.discount.tr(),
                       hintStyle: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSurface,
                       ),
@@ -142,7 +144,7 @@ class _ApplyDiscountCodeViewState
                             ),
                           )
                         : Text(
-                            'Apply',
+                            LangKeys.applyKey.tr(),
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.onSecondary,
                             ),

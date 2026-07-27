@@ -47,7 +47,7 @@ class PrimaryAppButton extends StatelessWidget {
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.style14Medium.copyWith(
+                  style: AppTextStyles.style16SemiBold.copyWith(
                     color: colors.onPrimary,
                   ),
                 ),

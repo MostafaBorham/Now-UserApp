@@ -343,6 +343,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get emptyAddToCart =>
       const SvgGenImage('assets/media/images/svg/empty-add-to-cart.svg');
 
+  /// File path: assets/media/images/svg/empty-cart-img.svg
+  SvgGenImage get emptyCartImg =>
+      const SvgGenImage('assets/media/images/svg/empty-cart-img.svg');
+
   /// File path: assets/media/images/svg/faq.svg
   SvgGenImage get faq => const SvgGenImage('assets/media/images/svg/faq.svg');
 
@@ -700,6 +704,7 @@ class $AssetsMediaImagesSvgGen {
     discount,
     edit,
     emptyAddToCart,
+    emptyCartImg,
     faq,
     favouriteIcon,
     filledAccountIcon,

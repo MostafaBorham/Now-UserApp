@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -106,7 +108,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     return Scaffold(
       body: AppWavedView(
-        appBarTitle: 'Checkout',
+        appBarTitle: LangKeys.checkoutKey.tr(),
         body: ProviderScope(
           overrides: [
             // A derived override, not a value one: the scope is built once and
@@ -144,8 +146,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       itemCount: 4,
                     ),
                   ),
-                  const InvoiceSummarySection(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),
+                  const InvoiceSummarySection(),
+
                   ConfirmOrderButton(onConfirm: _onConfirmOrder),
                   10.hSpace,
                 ],

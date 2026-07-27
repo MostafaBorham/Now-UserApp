@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
@@ -33,7 +35,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
         spacing: 8,
         children: [
           Text(
-            'Invoice Summary',
+            LangKeys.invoiceSummaryKey.tr(),
             style: AppTextStyles.style16Medium.copyWith(
               color: colors.tertiaryContainer,
             ),
@@ -45,7 +47,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Subtotal',
+                      LangKeys.subtotalKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -62,7 +64,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Vat (5%)',
+                      LangKeys.vatFivePercentKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -79,7 +81,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Delivery Fee',
+                      LangKeys.deliveryFeesKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -96,7 +98,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Discount',
+                      LangKeys.discountLabelKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -120,7 +122,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Total',
+                  LangKeys.totalKey.tr(),
                   style: AppTextStyles.style14SemiBold.copyWith(
                     color: colors.onSecondary,
                   ),
