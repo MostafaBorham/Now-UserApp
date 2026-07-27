@@ -25,8 +25,6 @@ class BlockingLoadingOverlay extends StatelessWidget {
 
     return Stack(
       children: [
-        // AbsorbPointer keeps the events from reaching the content instead of
-        // letting them fall through to whatever sits behind the overlay.
         AbsorbPointer(absorbing: isLoading, child: child),
         if (isLoading)
           Positioned.fill(

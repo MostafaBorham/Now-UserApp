@@ -30,6 +30,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 /// [checkoutModelProvider], so each section subscribes to just the slice it
 /// renders. Only [CheckoutBrandCardsSection] and [InvoiceSummarySection] have a
 /// loading state — everything else shows real content from the first frame.
+///
+/// The draft itself is *not* requested here: the cart screen fires it and only
+/// navigates once it resolved, so [checkoutProvider] already holds the data on
+/// the first frame. [storeId] is kept only to re-fire the very same request
+/// when the user retries after a failure.
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key, this.storeId});
 
@@ -54,9 +59,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   void _onConfirmOrder() {
     // Read from the async provider rather than [checkoutModelProvider]: the
     // latter only exists inside the scope below, which this `ref` is above.
-    final CheckoutModel? checkout = ref
-        .read(checkoutProvider(widget.storeId))
-        .valueOrNull;
+    final CheckoutModel? checkout = ref.read(checkoutProvider).valueOrNull;
 
     if (checkout == null) return;
 
@@ -110,8 +113,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             // recomputes this provider itself, so the subtree below is never
             // rebuilt wholesale — only its `select`ing descendants are.
             checkoutModelProvider.overrideWith(
-              (Ref ref) =>
-                  ref.watch(checkoutProvider(widget.storeId)).valueOrNull,
+              (Ref ref) => ref.watch(checkoutProvider).valueOrNull,
             ),
           ],
           child: Consumer(
@@ -121,7 +123,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               child: Column(
                 spacing: 16,
                 children: [
-                  CheckoutBrandCardsSection(storeId: widget.storeId),
+                  const CheckoutBrandCardsSection(),
                   DeliveryAddressCard(
                     onAddressIdChanged: (int? id) => _addressId = id,
                   ),
@@ -154,17 +156,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               // below it would have nothing to show. Watching the error alone
               // means the loading → data transition doesn't even run this.
               final Object? error = ref.watch(
-                checkoutProvider(
-                  widget.storeId,
-                ).select((AsyncValue<CheckoutModel> state) => state.error),
+                checkoutProvider.select(
+                  (AsyncValue<CheckoutModel?> state) => state.error,
+                ),
               );
 
               if (error != null) {
                 return ServerConnectionErrorWidget(
                   message: error.toString(),
                   onRetry: () => ref
-                      .read(checkoutProvider(widget.storeId).notifier)
-                      .checkout(),
+                      .read(checkoutProvider.notifier)
+                      .checkout(vendorId: widget.storeId),
                 );
               }
 

@@ -90,6 +90,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await Future.wait([
       // ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
+      ref.read(getCartProvider.notifier).getCart()
     ]).whenComplete(() {
       if(mounted) {
         context.goNamed(AppRoutes.onBoardingScreen);

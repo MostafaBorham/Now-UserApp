@@ -10,17 +10,11 @@ class CheckoutBrandItemCard extends StatefulWidget {
     super.key,
     this.order,
     this.readyToCheckout = false,
-    this.storeId,
   });
 
   /// The single store's draft order rendered by this card.
   final DraftOrderModel? order;
   final bool? readyToCheckout;
-
-  /// The checkout provider family key (the screen's `storeId`): `null` for the
-  /// all-stores flow, a concrete id for the single-store flow. Forwarded to
-  /// [ApplyDiscountCodeView] so it can drive the right checkout notifier.
-  final int? storeId;
 
   @override
   State<CheckoutBrandItemCard> createState() => _CheckoutBrandItemCardState();
@@ -60,10 +54,7 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                 ? CheckoutProductsDetailsView(order: widget.order)
                 : CheckoutProductsImagesListView(items: widget.order?.items),
 
-            ApplyDiscountCodeView(
-              vendorId: widget.order?.vendorId,
-              storeId: widget.storeId,
-            ),
+            ApplyDiscountCodeView(vendorId: widget.order?.vendorId),
           ],
         ),
       ),

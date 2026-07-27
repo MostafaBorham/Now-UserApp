@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 class ReverseWidget extends StatelessWidget {
   const ReverseWidget({
     super.key,
-    required this.child, this.applyReverse = true,
+    required this.child, this.applyReverse,
   });
 
   final bool? applyReverse;

@@ -23,6 +23,10 @@ class CartModel {
           const <CartVendorModel>[],
     );
   }
+
+  CartModel copyWith({int? id, List<CartVendorModel>? vendors}) {
+    return CartModel(id: id ?? this.id, vendors: vendors ?? this.vendors);
+  }
 }
 
 class CartVendorModel {

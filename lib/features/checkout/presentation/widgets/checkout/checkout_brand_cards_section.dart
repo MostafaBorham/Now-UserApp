@@ -12,11 +12,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 /// Watching only `orders` keeps the rest of the screen out of this rebuild —
 /// the siblings never see the draft arrive.
 class CheckoutBrandCardsSection extends ConsumerWidget {
-  const CheckoutBrandCardsSection({super.key, this.storeId});
-
-  /// The checkout provider family key (the screen's `storeId`): `null` for the
-  /// all-stores flow, a concrete id for the single-store flow.
-  final int? storeId;
+  const CheckoutBrandCardsSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,10 +29,7 @@ class CheckoutBrandCardsSection extends ConsumerWidget {
     return Column(
       spacing: 16,
       children: orders
-          .map(
-            (DraftOrderModel order) =>
-                CheckoutBrandItemCard(order: order, storeId: storeId),
-          )
+          .map((DraftOrderModel order) => CheckoutBrandItemCard(order: order))
           .toList(),
     );
   }

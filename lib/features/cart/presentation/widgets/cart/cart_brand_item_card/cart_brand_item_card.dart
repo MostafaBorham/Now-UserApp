@@ -6,9 +6,17 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/car
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 
 class CartBrandItemCard extends StatefulWidget {
-  const CartBrandItemCard({super.key, required this.cartVendor});
+  const CartBrandItemCard({
+    super.key,
+    required this.cartVendor,
+    this.onCheckout,
+  });
 
   final CartVendorModel cartVendor;
+
+  /// Fired when this store's checkout pill is tapped. `null` leaves the pill
+  /// inert — the parent owns both the request and the navigation.
+  final VoidCallback? onCheckout;
 
   @override
   State<CartBrandItemCard> createState() => _CartBrandItemCardState();
@@ -59,7 +67,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
               total: '${pricing.total}',
-              storeId: widget.cartVendor.vendor.id,
+              onCheckout: widget.onCheckout,
             ),
           ],
         ),

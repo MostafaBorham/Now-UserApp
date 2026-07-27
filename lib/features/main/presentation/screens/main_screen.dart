@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> mainPages = [
     HomeView(),
     FavouritesScreen(),
-    CartView(),
+    CartView(canPop: false),
     MyOrderScreen(),
     SettingsScreen(),
   ];

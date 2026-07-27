@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
@@ -31,7 +33,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
         spacing: 8,
         children: [
           Text(
-            'Store Invoice Summary',
+            LangKeys.storeInvoiceSummaryKey.tr(),
             style: AppTextStyles.style16Medium.copyWith(
               color: colors.tertiaryContainer,
             ),
@@ -43,7 +45,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Subtotal',
+                      LangKeys.subtotalKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -60,7 +62,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Vat (5%)',
+                      LangKeys.vatFivePercentKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -77,7 +79,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Delivery Fee',
+                      LangKeys.deliveryFeesKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),
@@ -94,7 +96,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Discount',
+                      LangKeys.discountLabelKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.onSecondary,
                       ),

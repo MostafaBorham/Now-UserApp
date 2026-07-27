@@ -12,17 +12,12 @@ class ApplyDiscountCodeView extends ConsumerStatefulWidget {
     super.key,
     this.hintText = 'Discount Code',
     this.vendorId,
-    this.storeId,
   });
 
   final String hintText;
 
   /// The vendor this discount applies to (the card's own store).
   final int? vendorId;
-
-  /// The checkout provider family key (the screen's `storeId`): `null` for the
-  /// all-stores flow, a concrete id for the single-store flow.
-  final int? storeId;
 
   @override
   ConsumerState<ApplyDiscountCodeView> createState() =>
@@ -62,12 +57,13 @@ class _ApplyDiscountCodeViewState
 
     setState(() => _isApplying = true);
 
-    final String? error =
-        await ref.read(checkoutProvider(widget.storeId).notifier).applyCoupons(
-              orderGroupUuid: orderGroupUuid,
-              vendorId: vendorId,
-              code: code,
-            );
+    final String? error = await ref
+        .read(checkoutProvider.notifier)
+        .applyCoupons(
+          orderGroupUuid: orderGroupUuid,
+          vendorId: vendorId,
+          code: code,
+        );
 
     if (!mounted) return;
 
