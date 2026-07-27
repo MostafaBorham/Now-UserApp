@@ -278,4 +278,13 @@ abstract class LangKeys {
   static const String tipYourDriverKey = 'tipYourDriver';
   static const String sampleStoreNameKey = 'sampleStoreName';
   static const String sampleValidityKey = 'sampleValidity';
+
+  // Cart
+  static const String cartEmptyTitleKey = 'cartEmptyTitle';
+  static const String cartEmptySubtitleKey = 'cartEmptySubtitle';
+  static const String browseProductsKey = 'browseProducts';
+  static const String removeProductKey = 'removeProduct';
+  static const String removeProductConfirmationKey = 'removeProductConfirmation';
+  static const String cancelKey = 'cancel';
+  static const String deleteKey = 'delete';
 }

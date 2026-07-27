@@ -163,31 +163,19 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4,
+            spacing: 8,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 16,
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          productName,
-                          maxLines: 1,
-                          style: AppTextStyles.style16Medium.copyWith(
-                            color: colors.tertiaryContainer,
-                          ),
-                        ),
-                        Text(
-                          storeName,
-                          maxLines: 1,
-                          style: AppTextStyles.style14Regular.copyWith(
-                            color: colors.onSurface,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      productName,
+                      maxLines: 1,
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: colors.tertiaryContainer,
+                      ),
                     ),
                   ),
                   InkWell(

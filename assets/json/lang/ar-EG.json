@@ -251,5 +251,12 @@
   "addWallet": "+ إضافة محفظة",
   "tipYourDriver": "إكرامية السائق",
   "sampleStoreName": "في متجر بندا",
-  "sampleValidity": "من 10 يناير إلى 31 يناير 2026"
+  "sampleValidity": "من 10 يناير إلى 31 يناير 2026",
+  "cartEmptyTitle": "سلتك فارغة!",
+  "cartEmptySubtitle": "لم تقم بإضافة أي منتجات بعد. ابدأ التسوق واكتشف أفضل العروض.",
+  "browseProducts": "تصفح المنتجات",
+  "removeProduct": "إزالة المنتج",
+  "removeProductConfirmation": "هل أنت متأكد من رغبتك في إزالة {name} من سلتك؟",
+  "cancel": "إلغاء",
+  "delete": "حذف"
 }

@@ -251,5 +251,12 @@
   "tipYourDriver": "Tip your driver",
   "sampleStoreName": "In Panda Store",
   "in": "In",
-  "sampleValidity": "From January 10 to January 31, 2026"
+  "sampleValidity": "From January 10 to January 31, 2026",
+  "cartEmptyTitle": "Your cart is empty!",
+  "cartEmptySubtitle": "You haven't added any products yet. Start shopping and discover the best deals.",
+  "browseProducts": "Browse products",
+  "removeProduct": "Remove Product",
+  "removeProductConfirmation": "Are you sure you want to remove {name} from your cart?",
+  "cancel": "Cancel",
+  "delete": "Delete"
 }

@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -89,7 +91,7 @@ class _DeleteCartProductDialogState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Remove Product',
+                  LangKeys.removeProductKey.tr(),
                   style: AppTextStyles.style16SemiBold.copyWith(
                     color: colors.tertiaryContainer,
                   ),
@@ -97,7 +99,9 @@ class _DeleteCartProductDialogState
                 const SizedBox(height: 12),
                 Expanded(
                   child: Text(
-                    'Are you sure you want to remove ${widget.productName} from your cart?',
+                    LangKeys.removeProductConfirmationKey.tr(
+                      namedArgs: {'name': widget.productName},
+                    ),
                     maxLines: 3,
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.onSurface,
@@ -113,7 +117,7 @@ class _DeleteCartProductDialogState
                           ? null
                           : () => Navigator.of(context).pop(),
                       child: Text(
-                        'Cancel',
+                        LangKeys.cancelKey.tr(),
                         style: AppTextStyles.style14Medium.copyWith(
                           color: colors.onSurface.withValues(
                             alpha: _isDeleting ? 0.4 : 1,
@@ -138,7 +142,7 @@ class _DeleteCartProductDialogState
                                   ),
                                 )
                               : Text(
-                                  'Delete',
+                                  LangKeys.deleteKey.tr(),
                                   style: AppTextStyles.style14Medium.copyWith(
                                     color: colors.onError,
                                   ),

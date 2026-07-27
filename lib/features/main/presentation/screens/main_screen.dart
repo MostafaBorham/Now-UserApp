@@ -5,20 +5,21 @@ import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/widgets/app_bottom_nav_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/my_order_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/settings_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   final Set<int> _loginRequiredTabs = <int>{1, 3};
   final List<Widget> mainPages = [
     HomeView(),
@@ -28,10 +29,10 @@ class _MainScreenState extends State<MainScreen> {
     SettingsScreen(),
   ];
 
-  int currentPageIndex = 0;
-
   @override
   Widget build(BuildContext context) {
+    final int currentPageIndex = ref.watch(mainTabIndexProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: false,
@@ -51,9 +52,7 @@ class _MainScreenState extends State<MainScreen> {
                 return;
               }
             }
-            setState(() {
-              currentPageIndex = value;
-            });
+            ref.read(mainTabIndexProvider.notifier).state = value;
           },
         ),
       ),
