@@ -287,4 +287,7 @@ abstract class LangKeys {
   static const String removeProductConfirmationKey = 'removeProductConfirmation';
   static const String cancelKey = 'cancel';
   static const String deleteKey = 'delete';
+
+  // Dialogs
+  static const String logoutConfirmationKey = 'logoutConfirmation';
 }

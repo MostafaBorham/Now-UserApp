@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/delete_cart_product_dialog.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
@@ -114,6 +117,52 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     );
   }
 
+  /// Asks the user to confirm removing this line, then runs the deletion inside
+  /// the dialog: on success the dialog closes and the fresh cart is pushed into
+  /// [getCartProvider] (no refetch), on failure it stays open with an error
+  /// snackbar. The dialog watches [deleteCartProductProvider] itself, so the
+  /// spinner and the disabled buttons follow the request automatically.
+  void _showDeleteDialog(String productName) {
+    final int? productId = widget.product?.productId;
+    if (productId == null) return;
+
+    AppCustomAlertDialog.show(
+      context,
+      (_) => Consumer(
+        builder: (BuildContext dialogContext, WidgetRef dialogRef, Widget? _) {
+          dialogRef.listen<AsyncValue<CartModel?>>(
+            deleteCartProductProvider(productId),
+            (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) {
+              next.whenOrNull(
+                data: (CartModel? cart) {
+                  if (cart == null) return;
+                  Navigator.of(dialogContext).pop();
+                  ref.read(getCartProvider.notifier).updateCartState(cart);
+                },
+                error: (Object error, StackTrace _) =>
+                    ErrorSnackBar.show(dialogContext, error.toString()),
+              );
+            },
+          );
+
+          return AppCustomAlertDialog(
+            title: LangKeys.removeProductKey.tr(),
+            message: LangKeys.removeProductConfirmationKey.tr(
+              namedArgs: <String, String>{'name': productName},
+            ),
+            confirmLabel: LangKeys.deleteKey.tr(),
+            isLoading: dialogRef
+                .watch(deleteCartProductProvider(productId))
+                .isLoading,
+            onConfirm: () => dialogRef
+                .read(deleteCartProductProvider(productId).notifier)
+                .deleteCartProduct(),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -179,16 +228,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {
-                      showDialog<void>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (_) => DeleteCartProductDialog(
-                          productId: product?.productId ?? -1,
-                          productName: productName,
-                        ),
-                      );
-                    },
+                    onTap: () => _showDeleteDialog(productName),
                     customBorder: const CircleBorder(),
                     child: Container(
                       padding: const EdgeInsets.all(6),

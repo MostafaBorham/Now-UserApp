@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/constants/app_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -53,23 +54,26 @@ class CategoriesScreen extends ConsumerWidget {
                       .read(getAppCategoriesProvider.notifier)
                       .getAppCategories(),
                 ),
-            data: (List<CategoryModel> categories) => categories.isEmpty
-                ? const NoItemsWidget()
-                : GridView.builder(
-                    padding: EdgeInsets.zero,
-                    gridDelegate: _gridDelegate,
-                    itemCount: categories.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        CategoryCard(
-                          category: categories[index],
-                          onTap: () {
-                            context.pushNamed(
-                              AppRoutes.categoryDetailsScreen,
-                              extra: categories[index],
-                            );
-                          },
-                        ),
-                  ),
+            data: (List<CategoryModel> categories) => AppRefreshIndicator(
+              onRefresh: ()async => ref.read(getAppCategoriesProvider.notifier).getAppCategories(),
+              child: categories.isEmpty
+                  ? const NoItemsWidget(isScrollable: true,)
+                  : GridView.builder(
+                      padding: EdgeInsets.zero,
+                      gridDelegate: _gridDelegate,
+                      itemCount: categories.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          CategoryCard(
+                            category: categories[index],
+                            onTap: () {
+                              context.pushNamed(
+                                AppRoutes.categoryDetailsScreen,
+                                extra: categories[index],
+                              );
+                            },
+                          ),
+                    ),
+            ),
           ),
         ),
       ),

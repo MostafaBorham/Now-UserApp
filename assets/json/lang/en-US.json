@@ -258,5 +258,6 @@
   "removeProduct": "Remove Product",
   "removeProductConfirmation": "Are you sure you want to remove {name} from your cart?",
   "cancel": "Cancel",
-  "delete": "Delete"
+  "delete": "Delete",
+  "logoutConfirmation": "Are you sure you want to log out of your account?"
 }

@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
@@ -154,7 +155,21 @@ class SettingsScreen extends ConsumerWidget {
               if (isUser)
                 LogoutButton(
                   isLoading: isLoggingOut,
-                  onPressed: () => ref.read(logoutProvider.notifier).logout(),
+                  // Confirm first; the dialog closes as soon as the user
+                  // confirms and the request's progress is shown on the button
+                  // itself (the listener above handles success / failure).
+                  onPressed: () => AppCustomAlertDialog.show(
+                    context,
+                    (BuildContext dialogContext) => AppCustomAlertDialog(
+                      title: LangKeys.logout.tr(),
+                      message: LangKeys.logoutConfirmationKey.tr(),
+                      confirmLabel: LangKeys.logout.tr(),
+                      onConfirm: () {
+                        Navigator.of(dialogContext).pop();
+                        ref.read(logoutProvider.notifier).logout();
+                      },
+                    ),
+                  ),
                 ),
               const SizedBox(height: 32),
             ],
