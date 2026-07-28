@@ -17,8 +17,8 @@ import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 /// logout via `ref.invalidate(getCartProvider)`.
 final getCartProvider =
     StateNotifierProvider<GetCartViewModel, AsyncValue<CartModel>>(
-  (Ref ref) => GetCartViewModel(const AsyncValue.loading()),
-);
+      (Ref ref) => GetCartViewModel(const AsyncValue.loading()),
+    );
 
 class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
   GetCartViewModel(super.initialState);
@@ -31,8 +31,6 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
     super.dispose();
   }
 
-
-
   Future<void> getCart() async {
     state = const AsyncValue.loading();
 
@@ -44,21 +42,6 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (CartModel cart) => AsyncValue.data(cart),
-    );
-  }
-
-  Future<void> addToCart(int productQuantity,int productId) async {
-    state = const AsyncValue.loading();
-
-    final Either<Failure, CartModel> result =
-    await _repo.updateCartProductQuantity(productId, productQuantity);
-
-    if (!mounted) return;
-
-    state = result.fold(
-          (Failure failure) =>
-      AsyncValue.error(failure.message, StackTrace.current),
-          (CartModel cart) => AsyncValue.data(cart),
     );
   }
 

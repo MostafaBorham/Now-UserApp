@@ -22,17 +22,14 @@ class CartApiService {
   /// `AuthTokenInterceptor`, which attaches the right header (`Bearer` for a
   /// logged-in user, `X-Guest-Token` for a guest) from the cached session.
   Future<Response> getCart() {
-    return _dio.get(
-      CartEndpoints.getCart,
-      cancelToken: _canceller.token,
-    );
+    return _dio.get(CartEndpoints.getCart, cancelToken: _canceller.token);
   }
 
   /// Removes the cart line for [productId] by sending the `{"quantity": 0}`
   /// payload the endpoint expects. Authentication is applied by
   /// `AuthTokenInterceptor` from the cached session.
   Future<Response> deleteCartProduct(int productId) {
-    return _dio.delete(
+    return _dio.patch(
       CartEndpoints.cartProduct(productId),
       data: CartEndpoints.quantityBody(0),
       cancelToken: _canceller.token,
@@ -45,14 +42,6 @@ class CartApiService {
     return _dio.patch(
       CartEndpoints.cartProduct(productId),
       data: CartEndpoints.quantityBody(quantity),
-      cancelToken: _canceller.token,
-    );
-  }
-
-  Future<Response> addToCart(int productId, int quantity) {
-    return _dio.post(
-      CartEndpoints.addToCart,
-      data: CartEndpoints.addToCartBody(quantity, productId),
       cancelToken: _canceller.token,
     );
   }

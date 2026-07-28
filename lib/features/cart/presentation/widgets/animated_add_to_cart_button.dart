@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import '../../reverse_widget.dart';
+import '../../../../core/presentation/widgets/reverse_widget.dart';
 
 class AnimatedAddToCartButton extends StatelessWidget {
   const AnimatedAddToCartButton({super.key, this.onEnd, this.isRotate = false, this.text = '+'});

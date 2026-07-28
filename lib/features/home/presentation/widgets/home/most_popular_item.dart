@@ -6,12 +6,12 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/card_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
 
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_counter_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
 class MostPopularItem extends StatefulWidget {

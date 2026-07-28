@@ -32,7 +32,7 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     super.dispose();
   }
 
-  Future<void> changeQuantityOfCartProduct(int productQuantity) async {
+  Future<void> updateCartProductQuantity(int productQuantity) async {
     state = const AsyncValue<CartModel?>.loading();
 
     final Either<Failure, CartModel> result =

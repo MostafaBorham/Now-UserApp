@@ -81,7 +81,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
 
     ref
         .read(updateCartProductProvider(productId).notifier)
-        .changeQuantityOfCartProduct(newQuantity);
+        .updateCartProductQuantity(newQuantity);
   }
 
   /// Applies the server result of a quantity update: refresh the shared cart on
