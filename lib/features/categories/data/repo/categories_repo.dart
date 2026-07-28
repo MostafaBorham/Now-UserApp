@@ -61,7 +61,8 @@ class CategoriesRepo {
     }
 
     try {
-      final Response response = await _categoriesApiService.getProductSubCategories();
+      final Response response = await _categoriesApiService
+          .getProductSubCategories();
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
@@ -88,13 +89,15 @@ class CategoriesRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
   Future<Either<Failure, List<CategoryModel>>> getStoreSubCategories() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _categoriesApiService.getStoreSubCategories();
+      final Response response = await _categoriesApiService
+          .getStoreSubCategories();
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
@@ -124,8 +127,8 @@ class CategoriesRepo {
 
   Future<Either<Failure, List<StoreModel>>> getCategoryStores({
     required String categorySlug,
-    required int? categoryId
-  }) async  {
+    required int? categoryId,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -134,7 +137,7 @@ class CategoriesRepo {
       print('current id== $categoryId');
       final Response response = await _categoriesApiService.getCategoryStores(
         categorySlug: categorySlug,
-        categoryId: categoryId
+        categoryId: categoryId,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
@@ -162,9 +165,10 @@ class CategoriesRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
   Future<Either<Failure, List<ProductModel>>> getCategoryProducts({
     required String categorySlug,
-    required int? categoryId
+    required int? categoryId,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -173,7 +177,7 @@ class CategoriesRepo {
     try {
       final Response response = await _categoriesApiService.getCategoryProducts(
         categorySlug: categorySlug,
-        categoryId: categoryId
+        categoryId: categoryId,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
@@ -197,7 +201,7 @@ class CategoriesRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception,stackTrac) {
+    } catch (exception, stackTrac) {
       print(stackTrac);
       return Left(Failure(exception.toString()));
     }
