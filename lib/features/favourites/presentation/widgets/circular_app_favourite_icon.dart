@@ -28,19 +28,7 @@ class _CircularAppFavouriteIconState extends State<CircularAppFavouriteIcon> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
-        final Map<String, dynamic> tokenData =
-            WelcomeCacheService().getToken();
-        final bool isGuest =
-            tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-        if (isGuest) {
-          context.pushNamed(AppRoutes.phoneVerificationScreen);
-          return;
-        }
-
-        tmpFavourite = !tmpFavourite;
-        widget.onFavouriteChanged.call(tmpFavourite);
-        setState(() {});
+        _redirectToLogin();
       },
       child: Material(
         elevation: 1,
@@ -72,5 +60,17 @@ class _CircularAppFavouriteIconState extends State<CircularAppFavouriteIcon> {
         ),
       ),
     );
+  }
+
+  void _redirectToLogin(){
+    final Map<String, dynamic> tokenData =
+    WelcomeCacheService().getToken();
+    final bool isGuest =
+        tokenData[CacheKeys.isGuest] as bool? ?? true;
+
+    if (isGuest) {
+      context.pushNamed(AppRoutes.phoneVerificationScreen);
+      return;
+    }
   }
 }

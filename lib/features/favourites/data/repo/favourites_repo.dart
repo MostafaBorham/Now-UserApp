@@ -88,4 +88,62 @@ class FavouritesRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  Future<Either<Failure, void>> removeProductFromFavourites({
+    required int productId,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _favouritesApiService
+          .removeProductFromFavourites(productId: productId);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(null);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, void>> removeStoreFromFavourites({
+    required int storeId,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _favouritesApiService
+          .removeStoreFromFavourites(storeId: storeId);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(null);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }

@@ -17,4 +17,12 @@ abstract class FavouritesEndpoints {
     'type': 'vendor',
     'id': storeId,
   };
+
+  /// Path for removing a product from favourites.
+  static String removeProductFromFavourites({required int productId}) =>
+      '/api/v1/favorites/product/$productId';
+
+  /// Path for removing a store (vendor) from favourites.
+  static String removeStoreFromFavourites({required int storeId}) =>
+      '/api/v1/favorites/vendor/$storeId';
 }

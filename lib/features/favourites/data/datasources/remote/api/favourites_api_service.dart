@@ -37,4 +37,18 @@ class FavouritesApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> removeProductFromFavourites({required int productId}) {
+    return _dio.delete(
+      FavouritesEndpoints.removeProductFromFavourites(productId: productId),
+      cancelToken: _canceller.token,
+    );
+  }
+
+  Future<Response> removeStoreFromFavourites({required int storeId}) {
+    return _dio.delete(
+      FavouritesEndpoints.removeStoreFromFavourites(storeId: storeId),
+      cancelToken: _canceller.token,
+    );
+  }
 }
