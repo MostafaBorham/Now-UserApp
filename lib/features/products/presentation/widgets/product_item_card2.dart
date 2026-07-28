@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_counter_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -94,7 +94,8 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               applyReverse: context.isRTL,
                               child: AppCachedNetworkImage(
                                 imageUrl:
-                                    widget.productModel?.images?.firstOrNull ?? '',
+                                    widget.productModel?.images?.firstOrNull ??
+                                    '',
                                 width: double.infinity,
                               ),
                             ),
@@ -125,7 +126,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             end: con.maxWidth * 0.05,
                           ),
                           child: Transform.rotate(
-                            angle: context.isRTL? 0.2 : -0.2,
+                            angle: context.isRTL ? 0.2 : -0.2,
                             child: Container(
                               width: con.maxWidth * 0.5,
                               padding: EdgeInsets.symmetric(
@@ -185,7 +186,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               ),
                             ),
                           ),
-                          PrimaryItemQuantityButton()
+                          AnimatedCartButton(),
                         ],
                       ),
                       Row(
@@ -207,7 +208,8 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       child: FittedBox(
                                         child: OldPriceWidget(
                                           color: colors.onSurface,
-                                          price: '${widget.productModel?.comparePrice}',
+                                          price:
+                                              '${widget.productModel?.comparePrice}',
                                         ),
                                       ),
                                     ),
@@ -216,7 +218,8 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       child: FittedBox(
                                         child: NewPriceWidget(
                                           color: colors.onSecondary,
-                                          price: '${widget.productModel?.price}',
+                                          price:
+                                              '${widget.productModel?.price}',
                                         ),
                                       ),
                                     ),

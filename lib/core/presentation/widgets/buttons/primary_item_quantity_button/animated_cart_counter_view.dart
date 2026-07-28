@@ -4,8 +4,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class AddToCartCounterWidget extends StatelessWidget {
-  const AddToCartCounterWidget({super.key, required this.counter, this.onInc, this.onDec, this.onDelete});
+class AnimatedCartCounterView extends StatelessWidget {
+  const AnimatedCartCounterView({super.key, required this.counter, this.onInc, this.onDec, this.onDelete});
   final int counter;
   final VoidCallback? onInc;
   final VoidCallback? onDec;

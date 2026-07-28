@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_counter_view.dart';
 
-class PrimaryItemQuantityButton extends StatefulWidget {
-  const PrimaryItemQuantityButton({super.key});
+class AnimatedCartButton extends StatefulWidget {
+  const AnimatedCartButton({super.key});
 
   @override
-  State<PrimaryItemQuantityButton> createState() =>
-      _PrimaryItemQuantityButtonState();
+  State<AnimatedCartButton> createState() =>
+      _AnimatedCartButtonState();
 }
 
-class _PrimaryItemQuantityButtonState extends State<PrimaryItemQuantityButton> {
+class _AnimatedCartButtonState extends State<AnimatedCartButton> {
   bool showAddToCartCounter = false;
   int counter = 0;
   bool isRotate = false;
@@ -36,7 +36,7 @@ class _PrimaryItemQuantityButtonState extends State<PrimaryItemQuantityButton> {
             duration: const Duration(seconds: 2),
             curve: Curves.linear,
             onEnd: () {},
-            child: AddToCartCounterWidget(
+            child: AnimatedCartCounterView(
               counter: counter,
               onInc: () {
                 startTimer();
@@ -61,7 +61,7 @@ class _PrimaryItemQuantityButtonState extends State<PrimaryItemQuantityButton> {
               isRotate = !isRotate;
               setState(() {});
             },
-            child: AddToCartButton(
+            child: AnimatedAddToCartButton(
               text: counter < 1 ? '+' : counter.toString(),
               onEnd: () {
                 startTimer();

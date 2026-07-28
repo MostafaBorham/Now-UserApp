@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/primary_item_quantity_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
@@ -215,7 +215,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: ReverseWidget(
-                                  child: PrimaryItemQuantityButton(),
+                                  child: AnimatedCartButton(),
                                 ),
                               ),
                             ),

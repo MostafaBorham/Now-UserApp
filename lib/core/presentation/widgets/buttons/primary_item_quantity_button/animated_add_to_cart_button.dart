@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import '../../reverse_widget.dart';
 
-class AddToCartButton extends StatelessWidget {
-  const AddToCartButton({super.key, this.onEnd, this.isRotate = false, this.text = '+'});
+class AnimatedAddToCartButton extends StatelessWidget {
+  const AnimatedAddToCartButton({super.key, this.onEnd, this.isRotate = false, this.text = '+'});
 
   final VoidCallback? onEnd;
   final bool? isRotate;

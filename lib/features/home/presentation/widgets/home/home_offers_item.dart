@@ -9,8 +9,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_counter_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_add_to_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
@@ -170,7 +170,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                   duration: const Duration(seconds: 2),
                   curve: Curves.linear,
                   onEnd: () {},
-                  child: AddToCartCounterWidget(
+                  child: AnimatedCartCounterView(
                     counter: counter,
                     onInc: () {
                       startTimer();
@@ -195,7 +195,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                     isRotate = !isRotate;
                     setState(() {});
                   },
-                  child: AddToCartButton(
+                  child: AnimatedAddToCartButton(
                     text: counter < 1 ? '+' : counter.toString(),
                     onEnd: () {
                       startTimer();
