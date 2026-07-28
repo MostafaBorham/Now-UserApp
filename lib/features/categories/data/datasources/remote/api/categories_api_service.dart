@@ -52,9 +52,10 @@ class CategoriesApiService {
     );
   }
 
-  Future<Response> getCategoryProducts({required String categorySlug,required int? categoryId}) {
+  Future<Response> getCategoryProducts({required String categorySlug,required int? categoryId,required int page}) {
     CategoriesEndpoints.appCategorySlug = categorySlug;
     CategoriesEndpoints.categoryId = categoryId;
+    CategoriesEndpoints.page = page;
     return _dio.get(
       CategoriesEndpoints.getCategoryProducts,
       queryParameters: CategoriesEndpoints.getCategoryProductsQuery,

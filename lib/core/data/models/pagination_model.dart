@@ -34,4 +34,18 @@ class PaginationModel<T> {
       data: dataList,
     );
   }
+
+  /// Merges a freshly fetched [nextPage] into this one: the counters come from
+  /// [nextPage] (it is the page now loaded), the items are this page's followed
+  /// by the new ones.
+  PaginationModel<T> appendPage(PaginationModel<T> nextPage) {
+    return PaginationModel<T>(
+      currentPage: nextPage.currentPage,
+      lastPage: nextPage.lastPage,
+      perPage: nextPage.perPage,
+      total: nextPage.total,
+      hasMore: nextPage.hasMore,
+      data: <T>[...data, ...nextPage.data],
+    );
+  }
 }

@@ -173,6 +173,7 @@ class CategoriesRepo {
   Future<Either<Failure, PaginationModel<ProductModel>>> getCategoryProducts({
     required String categorySlug,
     required int? categoryId,
+    required int page,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -182,6 +183,7 @@ class CategoriesRepo {
       final Response response = await _categoriesApiService.getCategoryProducts(
         categorySlug: categorySlug,
         categoryId: categoryId,
+        page: page,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
