@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
@@ -43,22 +44,25 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
             message: error.toString(),
             onRetry: () => _fetchCategoryProducts(),
           ),
-      data: (products) => products.isEmpty? NoItemsWidget():GridView.builder(
-        padding: EdgeInsets.all(4),
-        gridDelegate:
-        SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 20,
-          childAspectRatio: 0.75,
+      data: (products) => AppRefreshIndicator(
+        onRefresh: () async => _fetchCategoryProducts(),
+        child: products.isEmpty? NoItemsWidget():GridView.builder(
+          padding: EdgeInsets.all(4),
+          gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 20,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: products.length,
+          itemBuilder: (BuildContext context, int index) {
+            // return Container(color: colors.error);
+            return ProductItemCard2(
+              productModel: products.elementAtOrNull(index),
+            );
+          },
         ),
-        itemCount: products.length,
-        itemBuilder: (BuildContext context, int index) {
-          // return Container(color: colors.error);
-          return ProductItemCard2(
-            productModel: products.elementAtOrNull(index),
-          );
-        },
       ),
     );
   }

@@ -6,7 +6,6 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
@@ -106,10 +105,8 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       isUpdating = ref.watch(provider).isLoading;
     }
 
-    // A zero is never painted in the counter: the view only stays up while it
-    // has a real quantity to show, or a spinner in place of one. The moment the
-    // quantity drops to 0 the add-to-cart button takes over again.
-    final bool showCounterView = _showCounterView && (isUpdating || _counter > 0);
+    final bool showCounterView =
+        _showCounterView && (isUpdating || _counter > 0);
 
     return showCounterView
         ? AnimatedScale(
@@ -175,10 +172,8 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         // The idle seed of the viewmodel, not a response.
         if (cart == null) return;
 
-        // The request already returned the whole cart; hand it to the shared
-        // cart state so the cart screen reflects it without a refetch.
-        ref.read(getCartProvider.notifier).updateCartState(cart);
-
+        // The VM already pushed the fresh cart into getCartProvider before
+        // emitting this state, so the shared cart is already up to date.
         final int newQuantity = _quantityOf(cart);
         setState(() => _counter = newQuantity);
 

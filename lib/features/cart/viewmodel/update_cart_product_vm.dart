@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
 /// One-shot action: change the quantity of a single cart line.
 ///
@@ -16,13 +17,14 @@ import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 /// - `AsyncError`           → failed; carries the user-facing message.
 final updateCartProductProvider = StateNotifierProvider.autoDispose
     .family<UpdateCartProductViewModel, AsyncValue<CartModel?>, int>(
-  (Ref ref, int productId) => UpdateCartProductViewModel(productId),
+  (Ref ref, int productId) => UpdateCartProductViewModel(ref, productId),
 );
 
 class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
-  UpdateCartProductViewModel(this._productId)
+  UpdateCartProductViewModel(this._ref, this._productId)
       : super(const AsyncValue<CartModel?>.data(null));
 
+  final Ref _ref;
   final int _productId;
   final CartRepo _repo = CartRepo();
 
@@ -43,7 +45,10 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     state = result.fold(
       (Failure failure) =>
           AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
-      (CartModel cart) => AsyncValue<CartModel?>.data(cart),
+      (CartModel cart) {
+        _ref.read(getCartProvider.notifier).updateCartState(cart);
+        return AsyncValue<CartModel?>.data(cart);
+      },
     );
   }
 }

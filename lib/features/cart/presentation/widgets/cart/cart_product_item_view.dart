@@ -90,7 +90,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     state.whenOrNull(
       data: (CartModel? cart) {
         if (cart == null) return;
-        ref.read(getCartProvider.notifier).updateCartState(cart);
+        // The VM already pushed the fresh cart into getCartProvider.
       },
       error: (Object error, StackTrace _) {
         if (!mounted) return;

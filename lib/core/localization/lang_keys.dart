@@ -140,6 +140,7 @@ abstract class LangKeys {
   static const String enterCodeToContinueKey = 'enterCodeToContinue';
   static const String didNotReceiveCodeKey = 'didNotReceiveCode';
   static const String resendKey = 'resend';
+  static const String resetFilterKey = 'resetFilter';
   static const String pasteCodeKey = 'pasteCode';
   static const String personalInformationKey = 'personalInformation';
   static const String nameKey = 'name';

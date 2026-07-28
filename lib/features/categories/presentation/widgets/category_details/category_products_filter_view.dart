@@ -98,7 +98,7 @@ class _CategoryProductsFilterViewState
                 ),
                 Expanded(
                   child: UnPrimaryAppButton(
-                    title: 'Reset Filter',
+                    title: LangKeys.resetFilterKey.tr(),
                     onTap: resetFilters,
                   ),
                 ),
