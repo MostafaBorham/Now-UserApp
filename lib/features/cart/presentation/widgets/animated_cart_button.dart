@@ -45,6 +45,7 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
     this.productQuantity = 0,
   });
 
+
   /// Product this control manages in the cart. `null` disables backend
   /// integration.
   final int? productId;
@@ -108,18 +109,15 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
     final bool showCounterView =
         _showCounterView && (isUpdating || _counter > 0);
 
+    // Both children size themselves naturally — it is up to the card to give
+    // this control a stable slot to flip inside of.
     return showCounterView
-        ? AnimatedScale(
-            scale: 1,
-            duration: const Duration(seconds: 2),
-            curve: Curves.linear,
-            child: AnimatedCartCounterView(
-              counter: _counter,
-              isLoading: isUpdating,
-              onInc: () => _updateQuantity(_counter + 1),
-              onDec: _decrement,
-              onDelete: () => _updateQuantity(0),
-            ),
+        ? AnimatedCartCounterView(
+            counter: _counter,
+            isLoading: isUpdating,
+            onInc: () => _updateQuantity(_counter + 1),
+            onDec: _decrement,
+            onDelete: () => _updateQuantity(0),
           )
         : InkWell(
             onTap: () => setState(() => _isRotate = !_isRotate),
@@ -130,10 +128,11 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
                 // The rotation has finished: open the counter.
                 setState(() => _showCounterView = true);
 
-                // The button doubles as the add-to-cart action only while the
-                // product is not in the cart yet — a single tap is then already
-                // an add. With units already in the cart it only reveals the
-                // counter, and the request is left to the counter's own icons.
+                // The button doubles as the add-to-cart action only while
+                // the product is not in the cart yet — a single tap is then
+                // already an add. With units already in the cart it only
+                // reveals the counter, and the request is left to the
+                // counter's own icons.
                 _counter < 1 ? _updateQuantity(1) : _startCollapseTimer();
               },
             ),

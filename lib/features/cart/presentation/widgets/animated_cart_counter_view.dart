@@ -37,7 +37,7 @@ class AnimatedCartCounterView extends StatelessWidget {
       onTap: () {},
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
           borderRadius: AppBorderRadius.brCircular8,
           color: colors.primary,
@@ -54,20 +54,33 @@ class AnimatedCartCounterView extends StatelessWidget {
                 color: colors.onPrimary,
               ),
             ),
-            isLoading
-                ? SizedBox.square(
-                    dimension: 15,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: colors.onPrimary,
-                    ),
-                  )
-                : AutoSizeText(
+            // The number and the spinner have different sizes, so both are kept
+            // in the layout at all times and only their painting is swapped —
+            // the slot then always measures the larger of the two and the pill
+            // never resizes when a request starts or settles.
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Opacity(
+                  opacity: isLoading ? 0 : 1,
+                  child: AutoSizeText(
                     counter.toString(),
                     style: AppTextStyles.style12Medium.copyWith(
                       color: colors.onPrimary,
                     ),
                   ),
+                ),
+                SizedBox.square(
+                  dimension: 15,
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: colors.onPrimary,
+                        )
+                      : null,
+                ),
+              ],
+            ),
             counter < 2
                 ? InkWell(
                     onTap: isLoading ? null : onDelete,

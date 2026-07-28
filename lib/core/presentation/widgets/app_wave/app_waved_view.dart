@@ -160,7 +160,7 @@ class AppWavedView extends StatelessWidget {
                       EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 57,
-                      ).copyWith(bottom: 0),
+                      ).copyWith(bottom: 20),
                   decoration: BoxDecoration(
                     color: colors.onPrimary,
                     boxShadow: [

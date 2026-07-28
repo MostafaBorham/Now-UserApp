@@ -179,19 +179,35 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           Expanded(
                             child: AutoSizeText(
-                              '4.7',
+                              '4.722323',
                               style: AppTextStyles.style14Medium.copyWith(
                                 color: colors.onSecondary,
                                 fontSize: widthCon * 0.1,
                               ),
                             ),
                           ),
-                          AnimatedCartButton(
-                            productId:
-                                widget.productModel?.productId ??
-                                widget.productModel?.id,
-                            productQuantity:
-                                widget.productModel?.quantity ?? 0,
+                          // The control is width-flexible: it takes whatever
+                          // its current child needs, so the rating text keeps
+                          // every pixel the control does not use. The cap stops
+                          // the counter view from eating the row, and
+                          // `scaleDown` shrinks a child that would exceed it
+                          // instead of overflowing.
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: widthCon * 0.2,
+                              maxWidth: widthCon * 0.5,
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: AnimatedCartButton(
+                                productId:
+                                    widget.productModel?.productId ??
+                                    widget.productModel?.id,
+                                productQuantity:
+                                    widget.productModel?.quantity ?? 0,
+                              ),
+                            ),
                           ),
                         ],
                       ),
