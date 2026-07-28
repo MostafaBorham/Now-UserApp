@@ -215,7 +215,11 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: ReverseWidget(
-                                  child: AnimatedCartButton(),
+                                  child: AnimatedCartButton(
+                                    productId:
+                                        product?.productId ?? product?.id,
+                                    productQuantity: product?.quantity ?? 0,
+                                  ),
                                 ),
                               ),
                             ),

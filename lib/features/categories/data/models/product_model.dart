@@ -86,8 +86,9 @@ class ProductModel {
       id: json['id'] as int?,
       productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
-      // name: json['name'],
-      name: {'ar' : json['name'] as String,'en' : json['name'] as String,},
+      name: (json['name'] is String)
+          ? {'ar': json['name'] as String, 'en': json['name'] as String}
+          : json['name'],
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
@@ -98,7 +99,8 @@ class ProductModel {
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
-      comparePrice: double.tryParse(json['compare_price']?.toString() ?? '') ?? 0.0,
+      comparePrice:
+          double.tryParse(json['compare_price']?.toString() ?? '') ?? 0.0,
       stock: (json['stock'] as num?)?.toInt(),
       inStock: json['in_stock'] as bool?,
       status: json['status'] as String?,
@@ -111,7 +113,7 @@ class ProductModel {
       imageUrl: json['image_url'] as String?,
       images: json['images'] == null ? null : List<String>.from(json['images']),
       hasVariants: json['has_variants'] as bool?,
-/*      category: json['category'] == null
+      /*      category: json['category'] == null
           ? null
           : CategoryModel.fromJson(json['category']),*/
       vendor: json['vendor'] == null

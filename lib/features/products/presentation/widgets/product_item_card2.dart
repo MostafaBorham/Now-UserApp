@@ -186,7 +186,13 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               ),
                             ),
                           ),
-                          AnimatedCartButton(),
+                          AnimatedCartButton(
+                            productId:
+                                widget.productModel?.productId ??
+                                widget.productModel?.id,
+                            productQuantity:
+                                widget.productModel?.quantity ?? 0,
+                          ),
                         ],
                       ),
                       Row(
