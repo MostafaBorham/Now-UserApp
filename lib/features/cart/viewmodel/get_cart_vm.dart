@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -30,6 +31,8 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
     super.dispose();
   }
 
+
+
   Future<void> getCart() async {
     state = const AsyncValue.loading();
 
@@ -41,6 +44,21 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (CartModel cart) => AsyncValue.data(cart),
+    );
+  }
+
+  Future<void> addToCart(int productQuantity,int productId) async {
+    state = const AsyncValue.loading();
+
+    final Either<Failure, CartModel> result =
+    await _repo.updateCartProductQuantity(productId, productQuantity);
+
+    if (!mounted) return;
+
+    state = result.fold(
+          (Failure failure) =>
+      AsyncValue.error(failure.message, StackTrace.current),
+          (CartModel cart) => AsyncValue.data(cart),
     );
   }
 

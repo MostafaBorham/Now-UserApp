@@ -48,4 +48,12 @@ class CartApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> addToCart(int productId, int quantity) {
+    return _dio.post(
+      CartEndpoints.addToCart,
+      data: CartEndpoints.addToCartBody(quantity, productId),
+      cancelToken: _canceller.token,
+    );
+  }
 }
