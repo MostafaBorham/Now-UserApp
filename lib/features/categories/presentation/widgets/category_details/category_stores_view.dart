@@ -46,16 +46,19 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
             message: error.toString(),
             onRetry: () => _fetchStores(),
           ),
-      data: (stores) => stores.isEmpty? NoItemsWidget() : ListView.separated(
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) => AspectRatio(
-            aspectRatio: 2,
-            child: StoreItem(
-              storeModel: stores.elementAtOrNull(index),
-            )),
-        separatorBuilder: (context, index) => 20.hSpace,
-        itemCount: stores.length,
-      ),
+      data: (pagination) {
+        final stores = pagination.data;
+        return stores.isEmpty? NoItemsWidget() : ListView.separated(
+          padding: EdgeInsets.zero,
+          itemBuilder: (context, index) => AspectRatio(
+              aspectRatio: 2,
+              child: StoreItem(
+                storeModel: stores.elementAtOrNull(index),
+              )),
+          separatorBuilder: (context, index) => 20.hSpace,
+          itemCount: stores.length,
+        );
+      },
     );
     return ListView.separated(
       padding: EdgeInsets.zero,

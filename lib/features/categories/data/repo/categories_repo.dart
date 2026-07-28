@@ -126,7 +126,7 @@ class CategoriesRepo {
     }
   }
 
-  Future<Either<Failure, List<StoreModel>>> getCategoryStores({
+  Future<Either<Failure, PaginationModel<StoreModel>>> getCategoryStores({
     required String categorySlug,
     required int? categoryId,
   }) async {
@@ -148,14 +148,17 @@ class CategoriesRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData = data['meta'] as Map<String, dynamic>;
       final List<dynamic> rawCategoryStores =
           data['items'] as List<dynamic>? ?? <dynamic>[];
 
       final List<StoreModel> stores = rawCategoryStores
           .map((dynamic e) => StoreModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      final PaginationModel<StoreModel> paginatedStores =
+          PaginationModel<StoreModel>.fromJson(paginationData, stores);
 
-      return Right(stores);
+      return Right(paginatedStores);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
