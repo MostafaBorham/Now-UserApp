@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_item_quantity_button/add_to_cart_button.dart';
@@ -108,6 +109,8 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           child: CircularAppFavouriteIcon(
                             size: con.maxWidth * 0.08,
+                            favouriteType: FavouriteType.product,
+                            itemId: widget.productModel?.id,
                             isFavourite:
                                 widget.productModel?.isFeatured ?? false,
                             onFavouriteChanged: (currentFavourite) {},
