@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -166,7 +167,7 @@ class CategoriesRepo {
     }
   }
 
-  Future<Either<Failure, List<ProductModel>>> getCategoryProducts({
+  Future<Either<Failure, PaginationModel<ProductModel>>> getCategoryProducts({
     required String categorySlug,
     required int? categoryId,
   }) async {
@@ -187,14 +188,17 @@ class CategoriesRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData = data['meta'] as Map<String, dynamic>;
       final List<dynamic> rawCategoryProducts =
           data['items'] as List<dynamic>? ?? <dynamic>[];
 
       final List<ProductModel> products = rawCategoryProducts
           .map((dynamic e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      final PaginationModel<ProductModel> paginatedProducts =
+          PaginationModel<ProductModel>.fromJson(paginationData, products);
 
-      return Right(products);
+      return Right(paginatedProducts);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

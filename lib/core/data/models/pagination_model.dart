@@ -1,3 +1,9 @@
+/// A page of [T] items plus the server's pagination envelope.
+///
+/// The API returns both under the same object — the items under `items` and the
+/// page counters under `meta` — so [fromJson] takes that object and pulls both
+/// out. Endpoints that name those keys differently can override [dataKey] and
+/// [metaKey].
 class PaginationModel<T> {
   final int currentPage;
   final int lastPage;
@@ -17,17 +23,15 @@ class PaginationModel<T> {
 
   factory PaginationModel.fromJson(
     Map<String, dynamic> json,
-    T Function(Map<String, dynamic>) fromJsonT,
-  ) {
-    return PaginationModel(
-      currentPage: json['current_page'] as int,
-      lastPage: json['last_page'] as int,
-      perPage: json['per_page'] as int,
-      total: json['total'] as int,
-      hasMore: json['has_more'] as bool,
-      data: (json['data'] as List)
-          .map((e) => fromJsonT(e as Map<String, dynamic>))
-          .toList(),
+    List<T> dataList) {
+
+    return PaginationModel<T>(
+      currentPage: json['current_page'] as int? ?? 1,
+      lastPage: json['last_page'] as int? ?? 1,
+      perPage: json['per_page'] as int? ?? dataList.length,
+      total: json['total'] as int? ?? dataList.length,
+      hasMore: json['has_more'] as bool? ?? false,
+      data: dataList,
     );
   }
 }

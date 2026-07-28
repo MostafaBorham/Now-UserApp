@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
@@ -14,7 +15,7 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// Retry with `ref.read(getCategoriesProvider.notifier).getCategories()`.
 final getCategoryProductsProvider =
     StateNotifierProvider.autoDispose<GetCategoryProductsViewModel,
-        AsyncValue<List<ProductModel>>>(
+        AsyncValue<PaginationModel<ProductModel>>>(
   (Ref ref) =>
       GetCategoryProductsViewModel(const AsyncValue.loading()),
 );
@@ -32,7 +33,7 @@ StateNotifierProvider.autoDispose.family<
 );*/
 
 class GetCategoryProductsViewModel
-    extends StateNotifier<AsyncValue<List<ProductModel>>> {
+    extends StateNotifier<AsyncValue<PaginationModel<ProductModel>>> {
   GetCategoryProductsViewModel(super.initialState);
 
   final CategoriesRepo _repo = CategoriesRepo();

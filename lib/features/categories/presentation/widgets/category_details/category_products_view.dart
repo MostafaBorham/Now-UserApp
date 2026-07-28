@@ -44,26 +44,29 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
             message: error.toString(),
             onRetry: () => _fetchCategoryProducts(),
           ),
-      data: (products) => AppRefreshIndicator(
-        onRefresh: () async => _fetchCategoryProducts(),
-        child: products.isEmpty? NoItemsWidget():GridView.builder(
-          padding: EdgeInsets.all(4),
-          gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 20,
-            childAspectRatio: 0.75,
+      data: (pagination) {
+        final products = pagination.data;
+        return AppRefreshIndicator(
+          onRefresh: () async => _fetchCategoryProducts(),
+          child: products.isEmpty? NoItemsWidget():GridView.builder(
+            padding: EdgeInsets.all(4),
+            gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 20,
+              childAspectRatio: 0.75,
+            ),
+            itemCount: products.length,
+            itemBuilder: (BuildContext context, int index) {
+              // return Container(color: colors.error);
+              return ProductItemCard2(
+                productModel: products.elementAtOrNull(index),
+              );
+            },
           ),
-          itemCount: products.length,
-          itemBuilder: (BuildContext context, int index) {
-            // return Container(color: colors.error);
-            return ProductItemCard2(
-              productModel: products.elementAtOrNull(index),
-            );
-          },
-        ),
-      ),
+        );
+      },
     );
   }
 }
