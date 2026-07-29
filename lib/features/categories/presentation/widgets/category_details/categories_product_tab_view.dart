@@ -18,14 +18,6 @@ class _CategoriesProductTabViewState
     extends ConsumerState<CategoriesProductTabView> {
   int? filterCategoryId;
 
-  void _fetchFilteredProducts() {
-    /*    print('=== $filterCategoryId');
-    final productsViewModel = ref.read(
-      getProductsByCategoryFilterProvider(filterCategoryId).notifier,
-    );
-    productsViewModel.getProducts(categoryId: filterCategoryId);*/
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
