@@ -148,7 +148,8 @@ class CategoriesRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final Map<String, dynamic> paginationData = data['meta'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData =
+          data['meta'] as Map<String, dynamic>;
       final List<dynamic> rawCategoryStores =
           data['items'] as List<dynamic>? ?? <dynamic>[];
 
@@ -193,7 +194,8 @@ class CategoriesRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final Map<String, dynamic> paginationData = data['meta'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData =
+          data['meta'] as Map<String, dynamic>;
       final List<dynamic> rawCategoryProducts =
           data['items'] as List<dynamic>? ?? <dynamic>[];
 
