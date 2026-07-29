@@ -134,7 +134,7 @@ class _StoreItemState extends State<StoreItem> {
                           child: Row(
                             spacing: 10,
                             children: [
-                              Expanded(
+                              Flexible(
                                 flex: 3,
                                 child: Row(
                                   spacing: 5,
@@ -193,7 +193,7 @@ class _StoreItemState extends State<StoreItem> {
                                       ),
                                     ),
                                     AutoSizeText(
-                                      '${widget.storeModel?.distance}sddsdsdsdsdsds',
+                                      '${widget.storeModel?.distance}',
                                       style: AppTextStyles.style12Medium
                                           .copyWith(color: colors.onSecondary,fontSize: categoryDetailsCon.maxWidth*0.035,),
                                     ),
@@ -218,7 +218,7 @@ class _StoreItemState extends State<StoreItem> {
                                   rateColor: colors.onSecondary.withValues(
                                     alpha: 0.7,
                                   ),
-                                  size: categoryDetailsCon.maxWidth*0.035,
+                                  size: categoryDetailsCon.maxWidth*0.04,
                                 ),
                               ),
                             ],
