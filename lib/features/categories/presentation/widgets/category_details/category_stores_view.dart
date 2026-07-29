@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
@@ -48,27 +49,20 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
           ),
       data: (pagination) {
         final stores = pagination.data;
-        return stores.isEmpty? NoItemsWidget() : ListView.separated(
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, index) => AspectRatio(
-              aspectRatio: 2,
-              child: StoreItem(
-                storeModel: stores.elementAtOrNull(index),
-              )),
-          separatorBuilder: (context, index) => 20.hSpace,
-          itemCount: stores.length,
+        return AppRefreshIndicator(
+          onRefresh: ()async => _fetchStores(),
+          child: stores.isEmpty? NoItemsWidget() : ListView.separated(
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) => AspectRatio(
+                aspectRatio: 2,
+                child: StoreItem(
+                  storeModel: stores.elementAtOrNull(index),
+                )),
+            separatorBuilder: (context, index) => 20.hSpace,
+            itemCount: stores.length,
+          ),
         );
       },
-    );
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) => AspectRatio(
-          aspectRatio: 2,
-          child: StoreItem(
-            // storeModel: stores.elementAtOrNull(index),
-          )),
-      separatorBuilder: (context, index) => 20.hSpace,
-      itemCount: 3,
     );
   }
 }
