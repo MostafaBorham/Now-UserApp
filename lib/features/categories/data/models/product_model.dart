@@ -23,13 +23,13 @@ class ProductModel {
   final String? metaTitle;
   final String? metaDescription;
   final String? searchKeywords;
-  final String? primaryImage;
+  // final String? primaryImage;
   final List<String>? images;
   final bool? hasVariants;
   final StoreModel? vendor;
   final String? createdAt;
   final String? updatedAt;
-  final String? imageUrl;
+  // final String? imageUrl;
   final ActiveDealModel? activeDeal;
   final int? quantity;
   final bool? isSelected;
@@ -58,7 +58,7 @@ class ProductModel {
     this.metaTitle,
     this.metaDescription,
     this.searchKeywords,
-    this.primaryImage,
+    // this.primaryImage,
     this.images,
     this.hasVariants,
     this.vendor,
@@ -67,7 +67,7 @@ class ProductModel {
     this.activeDeal,
     this.quantity,
     this.isSelected,
-    this.imageUrl,
+    // this.imageUrl,
     this.cartQuantity,
     this.isFavorite,
     this.subCategory,
@@ -81,13 +81,15 @@ class ProductModel {
       name: (json['name'] is String)
           ? {'ar': json['name'] as String, 'en': json['name'] as String}
           : json['name'],
+      description: (json['description'] is String)
+          ? {'ar': json['description'] as String, 'en': json['description'] as String}
+          : json['description'],
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
           ? null
           : ActiveDealModel.fromJson(json['active_deal']),
       // shortDescription: json['short_description'],
-      // description: json['description'],
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
@@ -101,9 +103,13 @@ class ProductModel {
       // metaTitle: json['meta_title'] as String?,
       // metaDescription: json['meta_description'] as String?,
       searchKeywords: json['search_keywords'] as String?,
-      primaryImage: json['primary_image'] as String?,
-      imageUrl: json['image_url'] as String?,
-      images: json['images'] == null ? null : List<String>.from(json['images']),
+      // primaryImage: json['primary_image'] as String?,
+      // imageUrl: json['image_url'] as String?,
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) => e['download_url'])
+          .whereType<String>()
+          .toList() ??
+          [],
       hasVariants: json['has_variants'] as bool?,
       /*      category: json['category'] == null
           ? null
@@ -144,8 +150,8 @@ class ProductModel {
       'meta_title': metaTitle,
       'meta_description': metaDescription,
       'search_keywords': searchKeywords,
-      'primary_image': primaryImage,
-      'image_url': imageUrl,
+      // 'primary_image': primaryImage,
+      // 'image_url': imageUrl,
       'images': images,
       'has_variants': hasVariants,
       // 'category': category?.toJson(),

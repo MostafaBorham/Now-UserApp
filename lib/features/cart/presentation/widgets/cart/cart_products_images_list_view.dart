@@ -29,7 +29,7 @@ class CartProductsImagesListView extends StatelessWidget {
                     width: 56,
                     height: 56,
                     fit: BoxFit.cover,
-                    imageUrl: product.imageUrl ?? '',
+                    imageUrl: product.images?.firstOrNull ?? '',
                   ),
                 ),
               ),

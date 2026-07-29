@@ -74,8 +74,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       con.maxWidth * 0.04,
                                     ),
                                     child: AppCachedNetworkImage(
-                                      imageUrl: product?.primaryImage ??
-                                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
+                                      imageUrl: product?.images?.firstOrNull ?? '',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,

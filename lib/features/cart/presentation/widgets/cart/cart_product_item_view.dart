@@ -204,7 +204,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                 width: 76,
                 height: 76,
                 fit: BoxFit.cover,
-                imageUrl: widget.product?.imageUrl ?? '',
+                imageUrl: widget.product?.images?.firstOrNull ?? '',
               ),
             ),
           ),
