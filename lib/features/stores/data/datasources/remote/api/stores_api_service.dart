@@ -29,9 +29,11 @@ class StoresApiService {
   Future<Response> getStoreCategoryProducts({
     required int storeId,
     required int? categoryId,
+    required int page,
   }) {
     StoresEndpoints.storeId = storeId;
     StoresEndpoints.storeCategoryId = categoryId;
+    StoresEndpoints.productsPage = page;
     return _dio.get(
       StoresEndpoints.getStoreCategoryProducts,
       queryParameters: StoresEndpoints.getStoreCategoryProductsQuery,

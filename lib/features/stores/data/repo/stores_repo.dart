@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -57,9 +58,11 @@ class StoresRepo {
     }
   }
 
-  Future<Either<Failure, List<ProductModel>>> getStoreCategoryProducts({
+  Future<Either<Failure, PaginationModel<ProductModel>>>
+  getStoreCategoryProducts({
     required int storeId,
     required int? categoryId,
+    required int page,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -70,6 +73,7 @@ class StoresRepo {
           .getStoreCategoryProducts(
             storeId: storeId,
             categoryId: categoryId,
+            page: page,
           );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
@@ -79,14 +83,18 @@ class StoresRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData =
+          data['pagination'] as Map<String, dynamic>;
       final List<dynamic> rawCategoryProducts =
           data['items'] as List<dynamic>? ?? <dynamic>[];
 
       final List<ProductModel> products = rawCategoryProducts
           .map((dynamic e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      final PaginationModel<ProductModel> paginatedProducts =
+          PaginationModel<ProductModel>.fromJson(paginationData, products);
 
-      return Right(products);
+      return Right(paginatedProducts);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

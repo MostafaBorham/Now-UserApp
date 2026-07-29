@@ -43,7 +43,7 @@ class PaginatedView<T> extends ConsumerWidget {
     required this.layout,
     this.placeholderBuilder,
     this.firstPageLoadingBuilder,
-    this.firstPagePlaceholdersCount = 6,
+    this.firstPagePlaceholdersCount = 4,
     this.nextPagePlaceholdersCount = 4,
     this.emptyBuilder,
     this.nextPageThreshold = 200,
