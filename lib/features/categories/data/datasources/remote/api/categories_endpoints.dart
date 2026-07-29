@@ -17,8 +17,10 @@ abstract class CategoriesEndpoints {
   static int page = 1;
 
   /// Query parameters for getAppCategories
-  static const Map<String, dynamic> getAppCategoriesQuery = {
+  static Map<String, dynamic> get getAppCategoriesQuery => {
     'max_depth': 1,
+    'per_page': perPage,
+    'page': page,
   };
 
   /// Query parameters for getProductSubCategories

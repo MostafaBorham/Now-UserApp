@@ -22,13 +22,17 @@ class CategoriesRepo {
   /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _categoriesApiService.cancelRequests();
 
-  Future<Either<Failure, List<CategoryModel>>> getAppCategories() async {
+  Future<Either<Failure, PaginationModel<CategoryModel>>> getAppCategories({
+    required int page,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _categoriesApiService.getAppCategories();
+      final Response response = await _categoriesApiService.getAppCategories(
+        page: page,
+      );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
@@ -37,14 +41,18 @@ class CategoriesRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData =
+          data['meta'] as Map<String, dynamic>;
       final List<dynamic> rawCategories =
           data['categories'] as List<dynamic>? ?? <dynamic>[];
 
       final List<CategoryModel> categories = rawCategories
           .map((dynamic e) => CategoryModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      final PaginationModel<CategoryModel> paginatedCategories =
+          PaginationModel<CategoryModel>.fromJson(paginationData, categories);
 
-      return Right(categories);
+      return Right(paginatedCategories);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

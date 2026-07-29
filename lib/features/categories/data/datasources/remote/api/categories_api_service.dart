@@ -18,7 +18,8 @@ class CategoriesApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getAppCategories() {
+  Future<Response> getAppCategories({required int page}) {
+    CategoriesEndpoints.page = page;
     return _dio.get(
       CategoriesEndpoints.getAppCategories,
       queryParameters: CategoriesEndpoints.getAppCategoriesQuery,
@@ -45,6 +46,9 @@ class CategoriesApiService {
   Future<Response> getCategoryStores({required String categorySlug, required int? categoryId}) {
     CategoriesEndpoints.appCategorySlug = categorySlug;
     CategoriesEndpoints.categoryId = categoryId;
+    // Stores are not paged yet, but `page` is shared with the paged endpoints —
+    // so it has to be reset, or a stores request inherits their last page.
+    CategoriesEndpoints.page = 1;
     return _dio.get(
       CategoriesEndpoints.getCategoryStores,
       queryParameters: CategoriesEndpoints.getCategoryStoresQuery,

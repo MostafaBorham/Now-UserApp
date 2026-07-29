@@ -2,19 +2,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/constants/app_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
+/// The app categories as an infinite-scrolling grid.
+///
+/// Only describes *what* the grid shows — the paging behaviour (next page on
+/// scroll, pull-to-refresh, loading, empty and error states) lives in
+/// [PaginatedView] and [GetAppCategoriesViewModel].
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
 
@@ -28,8 +31,8 @@ class CategoriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<CategoryModel>> categoriesState = ref.watch(
-      getAppCategoriesProvider,
+    final GetAppCategoriesViewModel categoriesViewModel = ref.read(
+      getAppCategoriesProvider.notifier,
     );
 
     return Scaffold(
@@ -37,43 +40,25 @@ class CategoriesScreen extends ConsumerWidget {
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: context.canPop(),
         body: SafeArea(
-          child: categoriesState.when(
-            loading: () => AppShimmer(
-              child: GridView.builder(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: _gridDelegate,
-                itemCount: 8,
-                itemBuilder: (_, _) => const CategoryCardShimmer(),
-              ),
-            ),
-            error: (Object error, StackTrace stackTrace) =>
-                ServerConnectionErrorWidget(
-                  message: error.toString(),
-                  onRetry: () => ref
-                      .read(getAppCategoriesProvider.notifier)
-                      .getAppCategories(),
-                ),
-            data: (List<CategoryModel> categories) => AppRefreshIndicator(
-              onRefresh: ()async => ref.read(getAppCategoriesProvider.notifier).getAppCategories(),
-              child: categories.isEmpty
-                  ? const NoItemsWidget(isScrollable: true,)
-                  : GridView.builder(
-                      padding: EdgeInsets.zero,
-                      gridDelegate: _gridDelegate,
-                      itemCount: categories.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          CategoryCard(
-                            category: categories[index],
-                            onTap: () {
-                              context.pushNamed(
-                                AppRoutes.categoryDetailsScreen,
-                                extra: categories[index],
-                              );
-                            },
-                          ),
+          child: PaginatedView<CategoryModel>(
+            provider: getAppCategoriesProvider,
+            onRefresh: categoriesViewModel.loadFirstPage,
+            onLoadNextPage: categoriesViewModel.loadNextPage,
+            layout: const PaginatedGridLayout(gridDelegate: _gridDelegate),
+            firstPagePlaceholdersCount: 8,
+            // Fills the grid while the first page loads and trails it while the
+            // next one does, so the skeleton always matches the real cards.
+            placeholderBuilder: (BuildContext context) =>
+                const AppShimmer(child: CategoryCardShimmer()),
+            itemBuilder:
+                (BuildContext context, CategoryModel category, int index) =>
+                    CategoryCard(
+                      category: category,
+                      onTap: () => context.pushNamed(
+                        AppRoutes.categoryDetailsScreen,
+                        extra: category,
+                      ),
                     ),
-            ),
           ),
         ),
       ),
