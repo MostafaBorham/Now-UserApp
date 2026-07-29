@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 
@@ -17,7 +18,7 @@ class FilterTypesView extends StatelessWidget {
       spacing: 12,
       children: [
         Text(
-          'Store Types',
+          LangKeys.storeTypeKey.tr(),
           style: AppTextStyles.style16Medium.copyWith(
             color: colors.onTertiaryFixed,
           ),

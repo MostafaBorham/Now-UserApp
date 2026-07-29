@@ -1,7 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -73,6 +76,8 @@ class _StoreItemState extends State<StoreItem> {
                           padding: const EdgeInsets.all(12.0),
                           child: CircularAppFavouriteIcon(
                             size: stackCon.maxHeight * 0.12,
+                            favouriteType: FavouriteType.store,
+                            itemId: widget.storeModel?.id,
                             isFavourite: false,
                             onFavouriteChanged: (currentFavourite) {},
                           ),
@@ -110,9 +115,7 @@ class _StoreItemState extends State<StoreItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AutoSizeText(
-                          context.getLocalizedApiText(
-                            widget.storeModel?.name,
-                          ),
+                          context.getLocalizedApiText(widget.storeModel?.name),
                           style: AppTextStyles.style18Bold.copyWith(
                             color: colors.onSecondary,
                           ),
@@ -136,75 +139,86 @@ class _StoreItemState extends State<StoreItem> {
                                 child: Row(
                                   spacing: 5,
                                   children: [
-                                    Assets.media.images.svg.shippingIcon.svg(
-                                      colorFilter: ColorFilter.mode(
-                                        colors.onSurface,
-                                        BlendMode.srcIn,
-                                      ),
-                                      width: 15,
+                                    ReverseWidget(
+                                      child: Assets
+                                          .media
+                                          .images
+                                          .svg
+                                          .shippingIcon
+                                          .svg(
+                                            colorFilter: ColorFilter.mode(
+                                              colors.onSurface,
+                                              BlendMode.srcIn,
+                                            ),
+                                            width:
+                                                categoryDetailsCon.maxWidth *
+                                                0.045,
+                                          ),
                                     ),
-                                    Assets.media.images.svg.realSaudiCurrency.svg(
-                                      colorFilter: ColorFilter.mode(
-                                        colors.onSecondary,
-                                        BlendMode.srcIn,
-                                      ),
-                                      width: 15,
+                                    NewPriceWidget(
+                                      color: colors.onSecondary,
+                                      price:
+                                          '${widget.storeModel?.deliveryFee}',
+                                      size: categoryDetailsCon.maxWidth * 0.045,
                                     ),
-                                    AutoSizeText(
-                                      '${widget.storeModel?.deliveryFee}',
-                                      style: AppTextStyles.style14SemiBold
-                                          .copyWith(color: colors.onSecondary),
-                                    ),
-
                                     5.wSpace,
-                                    Assets.media.images.svg.timeIcon.svg(
-                                      colorFilter: ColorFilter.mode(
-                                        colors.onSurface,
-                                        BlendMode.srcIn,
+                                    ReverseWidget(
+                                      child: Assets.media.images.svg.timeIcon.svg(
+                                        colorFilter: ColorFilter.mode(
+                                          colors.onSurface,
+                                          BlendMode.srcIn,
+                                        ),
+                                        width:
+                                            categoryDetailsCon.maxWidth * 0.045,
                                       ),
-                                      width: 15,
                                     ),
                                     AutoSizeText(
                                       '${widget.storeModel?.deliveryTime}',
-                                      style: AppTextStyles.style12Medium.copyWith(
-                                        color: colors.onSecondary,
-                                      ),
+                                      style: AppTextStyles.style12Medium
+                                          .copyWith(
+                                            color: colors.onSecondary,
+                                            fontSize:
+                                                categoryDetailsCon.maxWidth *
+                                                0.035,
+                                          ),
                                     ),
                                     5.wSpace,
-                                    Assets.media.images.svg.locationIcon.svg(
-                                      colorFilter: ColorFilter.mode(
-                                        colors.onSurface,
-                                        BlendMode.srcIn,
+                                    ReverseWidget(
+                                      child: Assets.media.images.svg.locationIcon.svg(
+                                        colorFilter: ColorFilter.mode(
+                                          colors.onSurface,
+                                          BlendMode.srcIn,
+                                        ),
+                                        width: categoryDetailsCon.maxWidth*0.04,
                                       ),
-                                      width: 13,
                                     ),
                                     AutoSizeText(
-                                      '${widget.storeModel?.distance}',
-                                      style: AppTextStyles.style12Medium.copyWith(
-                                        color: colors.onSecondary,
-                                      ),
+                                      '${widget.storeModel?.distance}sddsdsdsdsdsds',
+                                      style: AppTextStyles.style12Medium
+                                          .copyWith(color: colors.onSecondary,fontSize: categoryDetailsCon.maxWidth*0.035,),
                                     ),
                                   ],
                                 ),
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: categoryDetailsCon.maxHeight * 0.1,
+                                  horizontal:
+                                      categoryDetailsCon.maxHeight * 0.1,
                                   vertical: categoryDetailsCon.maxHeight * 0.05,
                                 ),
                                 decoration: BoxDecoration(
                                   color: colors.tertiaryFixed,
                                   borderRadius: AppBorderRadius.brCircular20,
                                 ),
-                                child: FittedBox(
-                                  child: AppRateWidget(
-                                    starColor: colors.surface,
-                                    rateRatio: '${widget.storeModel?.rating}',
-                                    rateCount:
-                                        '${widget.storeModel?.ratingCount}',
-                                    rateColor: colors.onSecondary.withValues(alpha: 0.7),
-                                    size: 15,
+                                child: AppRateWidget(
+                                  starColor: colors.surface,
+                                  rateRatio: '${widget.storeModel?.rating}',
+                                  rateCount:
+                                      '${widget.storeModel?.ratingCount}',
+                                  rateColor: colors.onSecondary.withValues(
+                                    alpha: 0.7,
                                   ),
+                                  size: categoryDetailsCon.maxWidth*0.035,
                                 ),
                               ),
                             ],

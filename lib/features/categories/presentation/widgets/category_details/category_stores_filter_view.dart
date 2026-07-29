@@ -80,7 +80,7 @@ class _CategoryStoresFilterViewState extends State<CategoryStoresFilterView> {
                 ),
                 Expanded(
                   child: UnPrimaryAppButton(
-                    title: 'Reset Filter',
+                    title: LangKeys.resetFilterKey.tr(),
                     onTap: resetFilters,
                   ),
                 ),
