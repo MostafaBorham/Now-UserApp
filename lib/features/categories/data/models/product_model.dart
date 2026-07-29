@@ -6,19 +6,10 @@ class ProductModel {
   final int? id;
   final int? productId;
   final int? categoryId;
-
-  /// Localized product name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
   final Map<String, dynamic>? name;
   final String? slug;
   final String? sku;
-
-  /// Localized short description as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(shortDescription)`.
   final Map<String, dynamic>? shortDescription;
-
-  /// Localized description as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(description)`.
   final Map<String, dynamic>? description;
   final double? price;
   final double? effectivePrice;
@@ -35,17 +26,16 @@ class ProductModel {
   final String? primaryImage;
   final List<String>? images;
   final bool? hasVariants;
-  // final CategoryModel? category;
   final StoreModel? vendor;
   final String? createdAt;
   final String? updatedAt;
   final String? imageUrl;
   final ActiveDealModel? activeDeal;
-
-  /// Cart-line state — only present when the product comes from the cart
-  /// endpoint (`GET /api/v1/cart`); `null` everywhere else.
   final int? quantity;
   final bool? isSelected;
+  final int? cartQuantity;
+  final bool? isFavorite;
+  final CategoryModel? subCategory;
 
   const ProductModel({
     this.id,
@@ -71,7 +61,6 @@ class ProductModel {
     this.primaryImage,
     this.images,
     this.hasVariants,
-    // this.category,
     this.vendor,
     this.createdAt,
     this.updatedAt,
@@ -79,6 +68,9 @@ class ProductModel {
     this.quantity,
     this.isSelected,
     this.imageUrl,
+    this.cartQuantity,
+    this.isFavorite,
+    this.subCategory,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -123,6 +115,9 @@ class ProductModel {
       updatedAt: json['updated_at'] as String?,
       quantity: (json['quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
+      cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
+      isFavorite: json['is_favorite'] as bool?,
+      subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
     );
   }
 
@@ -159,6 +154,9 @@ class ProductModel {
       'updated_at': updatedAt,
       'quantity': quantity,
       'is_selected': isSelected,
+      'cart_quantity': cartQuantity,
+      'is_favorite': isFavorite,
+      'sub_category': subCategory?.toJson(),
     };
   }
 }

@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/features/categories/data/models/store_model
 /// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
 /// error message (a [LangKeys] key or a raw server message — callers apply
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
-class CategoriesRepo {
+  class CategoriesRepo {
   final CategoriesApiService _categoriesApiService = CategoriesApiService();
 
   /// Cancels every in-flight request of this repo. The actual cancellation

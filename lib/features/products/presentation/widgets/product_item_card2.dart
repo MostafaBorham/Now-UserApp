@@ -113,7 +113,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             favouriteType: FavouriteType.product,
                             itemId: widget.productModel?.id,
                             isFavourite:
-                                widget.productModel?.isFeatured ?? false,
+                                widget.productModel?.isFavorite ?? false,
                             onFavouriteChanged: (currentFavourite) {},
                           ),
                         ),
@@ -141,7 +141,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               ),
                               child: Text(
                                 context.getLocalizedApiText(
-                                  widget.productModel?.name,
+                                  widget.productModel?.subCategory?.name,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -179,7 +179,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                           ),
                           Expanded(
                             child: AutoSizeText(
-                              '4.722323',
+                              '4.7',
                               style: AppTextStyles.style14Medium.copyWith(
                                 color: colors.onSecondary,
                                 fontSize: widthCon * 0.1,
@@ -205,7 +205,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     widget.productModel?.productId ??
                                     widget.productModel?.id,
                                 productQuantity:
-                                    widget.productModel?.quantity ?? 0,
+                                    widget.productModel?.cartQuantity ?? 0,
                               ),
                             ),
                           ),

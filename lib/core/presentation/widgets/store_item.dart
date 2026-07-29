@@ -78,7 +78,7 @@ class _StoreItemState extends State<StoreItem> {
                             size: stackCon.maxHeight * 0.12,
                             favouriteType: FavouriteType.store,
                             itemId: widget.storeModel?.id,
-                            isFavourite: false,
+                            isFavourite: widget.storeModel?.isFavorite,
                             onFavouriteChanged: (currentFavourite) {},
                           ),
                         ),

@@ -30,6 +30,7 @@ class StoreModel {
   final List<CouponModel>? coupons;
   final List<ProductModel>? products;
   final List<BannerModel>? banners;
+  final bool? isFavorite;
 
   const StoreModel({
     this.id,
@@ -49,6 +50,7 @@ class StoreModel {
     this.coupons,
     this.products,
     this.banners,
+    this.isFavorite,
   });
 
   factory StoreModel.fromJson(Map<String, dynamic>? json) {
@@ -82,6 +84,7 @@ class StoreModel {
       banners: (json['banners'] as List?)
           ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
+      isFavorite: json['is_favorite'] as bool?,
     );
   }
 
@@ -104,6 +107,7 @@ class StoreModel {
       'coupons': coupons?.map((e) => e.toJson()).toList(),
       'products': products?.map((e) => e.toJson()).toList(),
       'banners': banners?.map((e) => e.toJson()).toList(),
+      'is_favorite': isFavorite,
     };
   }
 
@@ -125,6 +129,7 @@ class StoreModel {
     List<CouponModel>? coupons,
     List<ProductModel>? products,
     List<BannerModel>? banners,
+    bool? isFavorite,
   }) {
     return StoreModel(
       id: id ?? this.id,
@@ -144,6 +149,7 @@ class StoreModel {
       coupons: coupons ?? this.coupons,
       products: products ?? this.products,
       banners: banners ?? this.banners,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 }

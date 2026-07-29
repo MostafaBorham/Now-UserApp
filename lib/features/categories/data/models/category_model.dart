@@ -5,9 +5,6 @@ import 'package:equatable/equatable.dart';
 /// The endpoint returns a nested tree, so [children] holds the same type.
 class CategoryModel extends Equatable {
   final int? id;
-
-  /// Localized category name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
   final Map<String, dynamic>? name;
   final String? description;
   final String? slug;
@@ -62,7 +59,9 @@ class CategoryModel extends Equatable {
 
     return CategoryModel(
       id: (json['id'] as num?)?.toInt(),
-      name: json['translations']['name'] as Map<String, dynamic>?,
+      name: (json['name'] is String)
+          ? {'ar': json['name'] as String, 'en': json['name'] as String}
+          : json['name'],
       description: json['description']?.toString(),
       slug: json['slug']?.toString(),
       parentId: (json['parent_id'] as num?)?.toInt(),
