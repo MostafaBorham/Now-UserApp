@@ -12,7 +12,10 @@ class StoreModel {
   /// Localized store name as an API translation map (`{'en': ..., 'ar': ...}`).
   /// Resolve it for display with `context.getLocalizedApiText(name)`.
   final Map<String, dynamic>? name;
-  final String? description;
+
+  /// Localized store description as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(description)`.
+  final Map<String, dynamic>? description;
   final String? logoUrl;
   final String? coverUrl;
   final bool? isOpen;
@@ -56,7 +59,7 @@ class StoreModel {
     return StoreModel(
       id: (json['id'] as num?)?.toInt(),
       name: json['name'] as Map<String, dynamic>?,
-      description: json['description']?.toString(),
+      description: json['description'] as Map<String, dynamic>?,
       logoUrl: json['logo_url']?.toString(),
       coverUrl: json['cover_url']?.toString(),
       isOpen: json['is_open'] as bool?,
@@ -107,7 +110,7 @@ class StoreModel {
   StoreModel copyWith({
     int? id,
     Map<String, dynamic>? name,
-    String? description,
+    Map<String, dynamic>? description,
     String? logoUrl,
     String? coverUrl,
     bool? isOpen,

@@ -119,7 +119,14 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
             Expanded(
               child: TabBarView(
                 controller: _controller,
-                children: widget.views,
+                children: widget.views
+                    .map(
+                      (view) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: view,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],

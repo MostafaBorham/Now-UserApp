@@ -36,187 +36,188 @@ class _StoreItemState extends State<StoreItem> {
             extra: widget.storeModel?.id,
           ),
       child: Container(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: AppBorderRadius.brCircular20,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            spreadRadius: 0,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 5,
-            child: LayoutBuilder(
-              builder: (context, stackCon) {
-                return Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: stackCon.maxHeight * 0.1,
-                      ),
-                      child: AppCachedNetworkImage(
-                        imageUrl:
-                            widget.storeModel?.coverUrl??'',
-                        width: double.infinity,
-                      ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topEnd,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: CircularAppFavouriteIcon(
-                          size: stackCon.maxHeight * 0.12,
-                          isFavourite: false,
-                          onFavouriteChanged: (currentFavourite) {},
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      child: Material(
-                        shape: CircleBorder(),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        elevation: 1,
-                        shadowColor: colors.onSurface.withValues(alpha: 0.5),
-                        child: CircularBrandLogo(
-                          radius: stackCon.maxHeight * 0.25,
-                          backgroundColor: colors.onPrimary,
-                          logoUrl:
-                              widget.storeModel?.logoUrl??'',
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        decoration: BoxDecoration(
+          color: colors.onPrimary,
+          borderRadius: AppBorderRadius.brCircular20,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              spreadRadius: 0,
+              offset: const Offset(0, 1),
             ),
-          ),
-          Expanded(
-            flex: 4,
-            child: LayoutBuilder(
-              builder: (context, categoryDetailsCon) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: categoryDetailsCon.maxHeight * 0.1,
-                  ).copyWith(bottom: categoryDetailsCon.maxHeight * 0.12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: LayoutBuilder(
+                builder: (context, stackCon) {
+                  return Stack(
                     children: [
-                      Flexible(
-                        child: AutoSizeText(
-                          context.getLocalizedApiText(widget.storeModel?.name),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: stackCon.maxHeight * 0.1,
+                        ),
+                        child: AppCachedNetworkImage(
+                          imageUrl: widget.storeModel?.coverUrl ?? '',
+                          width: double.infinity,
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.topEnd,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: CircularAppFavouriteIcon(
+                            size: stackCon.maxHeight * 0.12,
+                            isFavourite: false,
+                            onFavouriteChanged: (currentFavourite) {},
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.bottomCenter,
+                        child: Material(
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          elevation: 1,
+                          shadowColor: colors.onSurface.withValues(alpha: 0.5),
+                          child: CircularBrandLogo(
+                            radius: stackCon.maxHeight * 0.25,
+                            backgroundColor: colors.onPrimary,
+                            logoUrl: widget.storeModel?.logoUrl ?? '',
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: LayoutBuilder(
+                builder: (context, categoryDetailsCon) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: categoryDetailsCon.maxHeight * 0.1,
+                    ).copyWith(bottom: categoryDetailsCon.maxHeight * 0.12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AutoSizeText(
+                          context.getLocalizedApiText(
+                            widget.storeModel?.name,
+                          ),
                           style: AppTextStyles.style18Bold.copyWith(
                             color: colors.onSecondary,
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: AutoSizeText(
-                          widget.storeModel?.description??'',
-                          maxLines: 2,
+                        AutoSizeText(
+                          context.getLocalizedApiText(
+                            widget.storeModel?.description,
+                          ),
+                          maxLines: 1,
                           style: AppTextStyles.style12Medium.copyWith(
                             color: colors.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
-                      ),
-                      Row(
-                        spacing: 10,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.shippingIcon.svg(
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                  width: 15,
-                                ),
-                                Assets.media.images.svg.realSaudiCurrency.svg(
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSecondary,
-                                    BlendMode.srcIn,
-                                  ),
-                                  width: 15,
-                                ),
-                                AutoSizeText(
-                                  '${widget.storeModel?.deliveryFee}',
-                                  style: AppTextStyles.style14SemiBold.copyWith(
-                                    color: colors.onSecondary,
-                                  ),
-                                ),
+                        5.hSpace,
+                        Flexible(
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    Assets.media.images.svg.shippingIcon.svg(
+                                      colorFilter: ColorFilter.mode(
+                                        colors.onSurface,
+                                        BlendMode.srcIn,
+                                      ),
+                                      width: 15,
+                                    ),
+                                    Assets.media.images.svg.realSaudiCurrency.svg(
+                                      colorFilter: ColorFilter.mode(
+                                        colors.onSecondary,
+                                        BlendMode.srcIn,
+                                      ),
+                                      width: 15,
+                                    ),
+                                    AutoSizeText(
+                                      '${widget.storeModel?.deliveryFee}',
+                                      style: AppTextStyles.style14SemiBold
+                                          .copyWith(color: colors.onSecondary),
+                                    ),
 
-                                5.wSpace,
-                                Assets.media.images.svg.timeIcon.svg(
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                  width: 15,
+                                    5.wSpace,
+                                    Assets.media.images.svg.timeIcon.svg(
+                                      colorFilter: ColorFilter.mode(
+                                        colors.onSurface,
+                                        BlendMode.srcIn,
+                                      ),
+                                      width: 15,
+                                    ),
+                                    AutoSizeText(
+                                      '${widget.storeModel?.deliveryTime}',
+                                      style: AppTextStyles.style12Medium.copyWith(
+                                        color: colors.onSecondary,
+                                      ),
+                                    ),
+                                    5.wSpace,
+                                    Assets.media.images.svg.locationIcon.svg(
+                                      colorFilter: ColorFilter.mode(
+                                        colors.onSurface,
+                                        BlendMode.srcIn,
+                                      ),
+                                      width: 13,
+                                    ),
+                                    AutoSizeText(
+                                      '${widget.storeModel?.distance}',
+                                      style: AppTextStyles.style12Medium.copyWith(
+                                        color: colors.onSecondary,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                AutoSizeText(
-                                  '${widget.storeModel?.deliveryTime}',
-                                  style: AppTextStyles.style12Medium.copyWith(
-                                    color: colors.onSecondary,
-                                  ),
-                                ),
-                                5.wSpace,
-                                Assets.media.images.svg.locationIcon.svg(
-                                  colorFilter: ColorFilter.mode(
-                                    colors.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                  width: 13,
-                                ),
-                                AutoSizeText(
-                                  '${widget.storeModel?.distance}',
-                                  style: AppTextStyles.style12Medium.copyWith(
-                                    color: colors.onSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: categoryDetailsCon.maxHeight * 0.1,
-                              vertical: categoryDetailsCon.maxHeight * 0.05,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colors.tertiaryFixed,
-                              borderRadius: AppBorderRadius.brCircular20,
-                            ),
-                            child: FittedBox(
-                              child: AppRateWidget(
-                                starColor: colors.onSecondaryContainer,
-                                rateRatio: '${widget.storeModel?.rating}',
-                                rateCount: '${widget.storeModel?.ratingCount}',
-                                rateColor: colors.onSurface,
-                                size: 15,
                               ),
-                            ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: categoryDetailsCon.maxHeight * 0.1,
+                                  vertical: categoryDetailsCon.maxHeight * 0.05,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colors.tertiaryFixed,
+                                  borderRadius: AppBorderRadius.brCircular20,
+                                ),
+                                child: FittedBox(
+                                  child: AppRateWidget(
+                                    starColor: colors.surface,
+                                    rateRatio: '${widget.storeModel?.rating}',
+                                    rateCount:
+                                        '${widget.storeModel?.ratingCount}',
+                                    rateColor: colors.onSecondary.withValues(alpha: 0.7),
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
