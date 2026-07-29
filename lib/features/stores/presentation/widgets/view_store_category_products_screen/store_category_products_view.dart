@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
@@ -50,22 +51,25 @@ class _StoreCategoryProductsViewState
             message: error.toString(),
             onRetry: () => _fetchStoreCategoryProducts(),
           ),
-      data: (List<ProductModel> products) => products.isEmpty
-          ? NoItemsWidget()
-          : GridView.builder(
-              padding: EdgeInsets.all(4),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 20,
-                childAspectRatio: 0.75,
+      data: (List<ProductModel> products) => AppRefreshIndicator(
+        onRefresh: ()async => _fetchStoreCategoryProducts(),
+        child: products.isEmpty
+            ? NoItemsWidget()
+            : GridView.builder(
+                padding: EdgeInsets.all(4),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    ProductItemCard2(
+                  productModel: products.elementAtOrNull(index),
+                ),
               ),
-              itemCount: products.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  ProductItemCard2(
-                productModel: products.elementAtOrNull(index),
-              ),
-            ),
+      ),
     );
   }
 }

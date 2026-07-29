@@ -137,16 +137,17 @@ import 'package:nowdelivery_user_app/features/categories/data/models/store_model
   Future<Either<Failure, PaginationModel<StoreModel>>> getCategoryStores({
     required String categorySlug,
     required int? categoryId,
+    required int page,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      print('current id== $categoryId');
       final Response response = await _categoriesApiService.getCategoryStores(
         categorySlug: categorySlug,
         categoryId: categoryId,
+        page: page,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;

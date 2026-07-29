@@ -43,12 +43,10 @@ class CategoriesApiService {
     );
   }
 
-  Future<Response> getCategoryStores({required String categorySlug, required int? categoryId}) {
+  Future<Response> getCategoryStores({required String categorySlug, required int? categoryId, required int page}) {
     CategoriesEndpoints.appCategorySlug = categorySlug;
     CategoriesEndpoints.categoryId = categoryId;
-    // Stores are not paged yet, but `page` is shared with the paged endpoints —
-    // so it has to be reset, or a stores request inherits their last page.
-    CategoriesEndpoints.page = 1;
+    CategoriesEndpoints.page = page;
     return _dio.get(
       CategoriesEndpoints.getCategoryStores,
       queryParameters: CategoriesEndpoints.getCategoryStoresQuery,
