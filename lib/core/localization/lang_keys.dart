@@ -295,4 +295,38 @@ abstract class LangKeys {
 
   // Dialogs
   static const String logoutConfirmationKey = 'logoutConfirmation';
+
+  // Product details
+  static const String buyNowKey = 'buyNow';
+  static const String sampleProductFeatureKey = 'sampleProductFeature';
+  static const String basicSpecificationsKey = 'basicSpecifications';
+  static const String keyFeaturesKey = 'keyFeatures';
+  static const String chooseColorKey = 'chooseColor';
+  static const String selectRequiredKey = 'selectRequired';
+  static const String sizeKey = 'size';
+  static const String inTheShoppingCartKey = 'inTheShoppingCart';
+  static const String viewCartKey = 'viewCart';
+  static const String trustedProductKey = 'trustedProduct';
+  // Sample / placeholder color names
+  static const String colorBlueKey = 'colorBlue';
+  static const String colorSilverKey = 'colorSilver';
+  static const String colorGoldKey = 'colorGold';
+  static const String colorAstronautGrayKey = 'colorAstronautGray';
+  // Sample / placeholder specifications
+  static const String specProcessorKey = 'specProcessor';
+  static const String specRamKey = 'specRam';
+  static const String specStorageKey = 'specStorage';
+  static const String specDisplayKey = 'specDisplay';
+  static const String specBatteryKey = 'specBattery';
+  static const String specWeightKey = 'specWeight';
+  static const String specProcessorValueKey = 'specProcessorValue';
+  static const String specRamValueKey = 'specRamValue';
+  static const String specStorageValueKey = 'specStorageValue';
+  static const String specDisplayValueKey = 'specDisplayValue';
+  static const String specBatteryValueKey = 'specBatteryValue';
+  static const String specWeightValueKey = 'specWeightValue';
+  // Sample / placeholder size options
+  static const String size16InchKey = 'size16Inch';
+  static const String size15InchKey = 'size15Inch';
+  static const String size17InchKey = 'size17Inch';
 }

@@ -1,27 +1,23 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class ProductColorsSelector extends StatefulWidget {
   const ProductColorsSelector({
     super.key,
-    this.title = 'Choose Color',
-    this.hint = '(Select required) ',
+    this.title,
+    this.hint,
     this.isRequired = true,
-    this.colorOptions = const [
-      (color: Color(0xff2C4A6E), name: 'Blue'),
-      (color: Color(0xffD9D9DE), name: 'Silver'),
-      (color: Color(0xffE8C9A0), name: 'Gold'),
-      (color: Color(0xff5C5C60), name: 'Astronaut Gray'),
-
-    ],
+    this.colorOptions,
     this.initialSelectedIndex = 0,
     this.onColorSelected,
   });
 
-  final String title;
-  final String hint;
+  final String? title;
+  final String? hint;
   final bool isRequired;
-  final List<({Color color, String name})> colorOptions;
+  final List<({Color color, String name})>? colorOptions;
   final int initialSelectedIndex;
   final ValueChanged<int>? onColorSelected;
 
@@ -35,6 +31,19 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String title = widget.title ?? LangKeys.chooseColorKey.tr();
+    final String hint = widget.hint ?? LangKeys.selectRequiredKey.tr();
+    final List<({Color color, String name})> colorOptions =
+        widget.colorOptions ??
+        [
+          (color: const Color(0xff2C4A6E), name: LangKeys.colorBlueKey.tr()),
+          (color: const Color(0xffD9D9DE), name: LangKeys.colorSilverKey.tr()),
+          (color: const Color(0xffE8C9A0), name: LangKeys.colorGoldKey.tr()),
+          (
+            color: const Color(0xff5C5C60),
+            name: LangKeys.colorAstronautGrayKey.tr(),
+          ),
+        ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -46,7 +55,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
           spacing: 4,
           children: [
             Text(
-              widget.title,
+              title,
               style: AppTextStyles.style16Bold.copyWith(
                 color: colors.onSecondary,
               ),
@@ -54,7 +63,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
             if (widget.isRequired)
               Text.rich(
                 TextSpan(
-                  text: widget.hint,
+                  text: hint,
                   style: AppTextStyles.style10Medium.copyWith(
                     color: colors.onPrimaryFixed,
                   ),
@@ -72,9 +81,8 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
           scrollDirection: Axis.horizontal,
           child: Row(
             spacing: 16,
-            children: List.generate(widget.colorOptions.length, (index) {
-              final ({Color color, String name}) option =
-                  widget.colorOptions[index];
+            children: List.generate(colorOptions.length, (index) {
+              final ({Color color, String name}) option = colorOptions[index];
               final bool isSelected = index == selectedIndex;
               return GestureDetector(
                 onTap: () {

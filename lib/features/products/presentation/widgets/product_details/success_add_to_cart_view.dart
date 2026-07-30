@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
@@ -11,18 +13,18 @@ class SuccessAddToCartView extends StatefulWidget {
     this.productName = 'MacBook Air 3',
     this.productImageUrl =
         'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-    this.title = 'In the shopping cart',
-    this.viewCartLabel = 'View cart',
-    this.continueShoppingLabel = 'Continue shopping',
+    this.title,
+    this.viewCartLabel,
+    this.continueShoppingLabel,
     this.onViewCart,
     this.onContinueShopping,
   });
 
   final String productName;
   final String productImageUrl;
-  final String title;
-  final String viewCartLabel;
-  final String continueShoppingLabel;
+  final String? title;
+  final String? viewCartLabel;
+  final String? continueShoppingLabel;
   final GestureTapCallback? onViewCart;
   final GestureTapCallback? onContinueShopping;
 
@@ -139,7 +141,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
           ),
           15.hSpace,
           Text(
-            widget.title,
+            widget.title ?? LangKeys.inTheShoppingCartKey.tr(),
             textAlign: TextAlign.center,
             style: AppTextStyles.style20Bold.copyWith(
               color: colors.onSecondary,
@@ -151,13 +153,14 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
             children: [
               Expanded(
                 child: PrimaryAppButton(
-                  title: widget.viewCartLabel,
+                  title: widget.viewCartLabel ?? LangKeys.viewCartKey.tr(),
                   onTap: widget.onViewCart,
                 ),
               ),
               Expanded(
                 child: UnPrimaryAppButton(
-                  title: widget.continueShoppingLabel,
+                  title: widget.continueShoppingLabel ??
+                      LangKeys.continueShoppingKey.tr(),
                   onTap: widget.onContinueShopping,
                 ),
               ),

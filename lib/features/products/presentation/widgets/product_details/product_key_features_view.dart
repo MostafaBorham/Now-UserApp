@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class ProductKeyFeaturesView extends StatelessWidget {
@@ -14,7 +16,7 @@ class ProductKeyFeaturesView extends StatelessWidget {
       spacing: 8,
       children: [
         Text(
-          'Key Features',
+          LangKeys.keyFeaturesKey.tr(),
           style: AppTextStyles.style16Bold.copyWith(
             color: colors.onSecondary,
           ),

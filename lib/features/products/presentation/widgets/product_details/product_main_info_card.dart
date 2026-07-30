@@ -30,7 +30,7 @@ class ProductMainInfoCard extends ConsumerWidget {
         'and smooth texture. Provides essential nutrients like calcium and '
         'vitamin D for strong bones and a healthy body',
     this.isTrusted = true,
-    this.trustedBadgeLabel = 'منتج موثوق',
+    this.trustedBadgeLabel,
   });
 
   final String productName;
@@ -42,7 +42,7 @@ class ProductMainInfoCard extends ConsumerWidget {
   final String rateCount;
   final String description;
   final bool isTrusted;
-  final String trustedBadgeLabel;
+  final String? trustedBadgeLabel;
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -94,7 +94,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                     spacing: 8,
                     children: [
                       Text(
-                        trustedBadgeLabel,
+                        trustedBadgeLabel ?? LangKeys.trustedProductKey.tr(),
                         style: AppTextStyles.style12SemiBold.copyWith(
                           color: colors.onPrimaryFixedVariant,
                         ),

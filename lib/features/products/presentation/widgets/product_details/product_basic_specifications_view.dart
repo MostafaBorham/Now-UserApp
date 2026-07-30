@@ -1,26 +1,31 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class ProductBasicSpecificationsView extends StatelessWidget {
   const ProductBasicSpecificationsView({
     super.key,
-    this.specifications = const {
-      'Processor': 'Apple M3 Chip',
-      'RAM': '16 GB',
-      'Storage': '512 GB SSD',
-      'Display': '13.6" Liquid Retina',
-      'Battery': 'Up to 18 hours',
-      'Weight': '1.24 kg',
-    },
+    this.specifications,
   });
 
-  final Map<String, String> specifications;
+  final Map<String, String>? specifications;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final Map<String, String> resolvedSpecifications =
+        specifications ??
+        {
+          LangKeys.specProcessorKey.tr(): LangKeys.specProcessorValueKey.tr(),
+          LangKeys.specRamKey.tr(): LangKeys.specRamValueKey.tr(),
+          LangKeys.specStorageKey.tr(): LangKeys.specStorageValueKey.tr(),
+          LangKeys.specDisplayKey.tr(): LangKeys.specDisplayValueKey.tr(),
+          LangKeys.specBatteryKey.tr(): LangKeys.specBatteryValueKey.tr(),
+          LangKeys.specWeightKey.tr(): LangKeys.specWeightValueKey.tr(),
+        };
     final List<MapEntry<String, String>> entries =
-        specifications.entries.toList();
+        resolvedSpecifications.entries.toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +33,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
       spacing: 8,
       children: [
         Text(
-          'Basic Specifications',
+          LangKeys.basicSpecificationsKey.tr(),
           style: AppTextStyles.style16Bold.copyWith(
             color: colors.onSecondary,
           ),

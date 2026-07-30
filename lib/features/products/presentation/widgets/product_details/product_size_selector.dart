@@ -1,40 +1,45 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 
 class ProductSizeSelector extends StatefulWidget {
   const ProductSizeSelector({
     super.key,
-    this.title = 'Choose Color',
-    this.hint = '(Select required) ',
+    this.title,
+    this.hint,
     this.isRequired = true,
-    this.colorOptions = const [
-      (color: Color(0xff2C4A6E), name: 'Blue'),
-      (color: Color(0xffD9D9DE), name: 'Silver'),
-      (color: Color(0xffE8C9A0), name: 'Gold'),
-      (color: Color(0xff5C5C60), name: 'Astronaut Gray'),
-    ],
+    this.sizeOptions,
     this.initialSelectedIndex = 0,
-    this.onColorSelected,
+    this.onSizeSelected,
   });
 
-  final String title;
-  final String hint;
+  final String? title;
+  final String? hint;
   final bool isRequired;
-  final List<({Color color, String name})> colorOptions;
+  final List<String>? sizeOptions;
   final int initialSelectedIndex;
-  final ValueChanged<int>? onColorSelected;
+  final ValueChanged<int>? onSizeSelected;
 
   @override
   State<ProductSizeSelector> createState() => _ProductSizeSelectorState();
 }
 
 class _ProductSizeSelectorState extends State<ProductSizeSelector> {
-  late int selectedIndex = widget.initialSelectedIndex;
-
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final String title = widget.title ?? LangKeys.sizeKey.tr();
+    final String hint = widget.hint ?? LangKeys.selectRequiredKey.tr();
+    final List<String> sizeOptions =
+        widget.sizeOptions ??
+        [
+          LangKeys.size16InchKey.tr(),
+          LangKeys.size15InchKey.tr(),
+          LangKeys.size17InchKey.tr(),
+          LangKeys.size16InchKey.tr(),
+        ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -46,7 +51,7 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
           spacing: 4,
           children: [
             Text(
-              'Size',
+              title,
               style: AppTextStyles.style16Bold.copyWith(
                 color: colors.onSecondary,
               ),
@@ -54,7 +59,7 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
             if (widget.isRequired)
               Text.rich(
                 TextSpan(
-                  text: widget.hint,
+                  text: hint,
                   style: AppTextStyles.style10Medium.copyWith(
                     color: colors.onPrimaryFixed,
                   ),
@@ -69,13 +74,13 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
           ],
         ),
         AppSelector(
-          items: ['16 inch', '15 inch', '17 inch', '16 inch'],
-          initialIndex: 0,
+          items: sizeOptions,
+          initialIndex: widget.initialSelectedIndex,
           selectedColor: colors.tertiaryContainer,
           unselectedColor: colors.onPrimary,
           borderColor: colors.onSurface.withValues(alpha: 0.3),
           radius: 14,
-          height: 45
+          height: 45,
         ),
       ],
     );
