@@ -13,9 +13,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
@@ -48,6 +50,12 @@ class ProductDetailsScreen extends ConsumerWidget {
                       .getProductDetails(),
                 ),
             data: (product) {
+              final productCartQuantity = (product.cartQuantity ?? 0) > 0
+                  ? product.cartQuantity!
+                  : 1;
+              final isAddingToCart = ref
+                  .watch(updateCartProductProvider(product.id ?? -1))
+                  .isLoading;
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
                 child: SingleChildScrollView(
@@ -101,11 +109,13 @@ class ProductDetailsScreen extends ConsumerWidget {
                           itemAspectRatio: 1.5,
                         ),
                         ProductMainInfoCard(
-                          initialQuantity: product.cartQuantity ?? 1,
+                          initialQuantity: productCartQuantity,
                           description: context.getLocalizedApiText(
                             product.description,
                           ),
-                          storeName: context.getLocalizedApiText(product.vendor?.name),
+                          storeName: context.getLocalizedApiText(
+                            product.vendor?.name,
+                          ),
                         ),
                         Align(
                           alignment: AlignmentDirectional.centerStart,
@@ -141,6 +151,25 @@ class ProductDetailsScreen extends ConsumerWidget {
                             Expanded(
                               flex: 2,
                               child: PrimaryAppPrefixIconButton(
+                                isLoading: isAddingToCart,
+                                onTap: () {
+                                  final productQuantity = ref.read(
+                                    productQuantityProvider(
+                                      productCartQuantity,
+                                    ),
+                                  );
+                                  if (product.id != null) {
+                                    ref
+                                        .read(
+                                          updateCartProductProvider(
+                                            product.id!,
+                                          ).notifier,
+                                        )
+                                        .updateCartProductQuantity(
+                                          productQuantity,
+                                        );
+                                  }
+                                },
                                 title: LangKeys.addToCartKey.tr(),
                                 buttonPadding: 10,
                                 buttonRadius: 8,

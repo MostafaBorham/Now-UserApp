@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class PrimaryAppPrefixIconButton extends StatelessWidget {
-  const PrimaryAppPrefixIconButton({super.key, required this.title, this.onTap, this.buttonPadding = 12, this.prefixIcon, this.buttonColor, this.buttonRadius,});
+  const PrimaryAppPrefixIconButton({super.key, required this.title, this.onTap, this.buttonPadding = 12, this.prefixIcon, this.buttonColor, this.buttonRadius, this.isLoading = false,});
 
   final String title;
   final GestureTapCallback? onTap;
@@ -12,11 +12,14 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
   final Widget? prefixIcon;
   final Color? buttonColor;
 
+  /// Replaces the content with a circular indicator and disables taps.
+  final bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
@@ -28,7 +31,18 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
                 width: 2
             )
         ),
-        child: Row(
+        child: isLoading
+            ? Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: colors.onPrimary,
+                  ),
+                ),
+              )
+            : Row(
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

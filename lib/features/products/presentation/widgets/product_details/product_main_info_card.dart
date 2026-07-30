@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/expandable_text.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 
 class ProductMainInfoCard extends ConsumerStatefulWidget {
   const ProductMainInfoCard({
@@ -28,7 +29,7 @@ class ProductMainInfoCard extends ConsumerStatefulWidget {
         'vitamin D for strong bones and a healthy body',
     this.isTrusted = true,
     this.trustedBadgeLabel = 'منتج موثوق',
-    this.initialQuantity = 1,
+    required this.initialQuantity,
   });
 
   final String productName;
@@ -44,27 +45,36 @@ class ProductMainInfoCard extends ConsumerStatefulWidget {
   final int initialQuantity;
 
   @override
-  ConsumerState<ProductMainInfoCard> createState() => _ProductMainInfoCardState();
+  ConsumerState<ProductMainInfoCard> createState() =>
+      _ProductMainInfoCardState();
 }
 
 class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
-
-  late int quantity = widget.initialQuantity < 1 ? 1 : widget.initialQuantity;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final product = ref.watch(productProvider);
+    final productQuantityController = ref.read(
+      productQuantityProvider(widget.initialQuantity).notifier,
+    );
+    final productQuantity = ref.watch(
+      productQuantityProvider(widget.initialQuantity),
+    );
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(
-          color: colors.onSurface.withValues(alpha: 0.3), // #0000000F (black 6%)
-          offset: const Offset(0, 2),
-          blurRadius: 30,
-        )],
+        boxShadow: [
+          BoxShadow(
+            color: colors.onSurface.withValues(
+              alpha: 0.3,
+            ), // #0000000F (black 6%)
+            offset: const Offset(0, 2),
+            blurRadius: 30,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +107,10 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                         ),
                       ),
                       Assets.media.images.svg.trustIcon.svg(
-                        colorFilter: ColorFilter.mode(colors.primary,BlendMode.srcIn)
+                        colorFilter: ColorFilter.mode(
+                          colors.primary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ],
                   ),
@@ -113,7 +126,9 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   spacing: 4,
                   children: [
                     InkWell(
-                      onTap: () => setState(() => quantity++),
+                      onTap: () {
+                        productQuantityController.state++;
+                      },
                       customBorder: const CircleBorder(),
                       child: Container(
                         width: 32,
@@ -135,7 +150,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                     SizedBox(
                       width: 28,
                       child: Text(
-                        quantity.toString(),
+                        productQuantity.toString(),
                         textAlign: TextAlign.center,
                         style: AppTextStyles.style16Bold.copyWith(
                           color: colors.onSecondary,
@@ -144,8 +159,10 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                       ),
                     ),
                     InkWell(
-                      onTap: quantity > 1
-                          ? () => setState(() => quantity--)
+                      onTap: productQuantity > 1
+                          ? () {
+                              productQuantityController.state--;
+                            }
                           : null,
                       customBorder: const CircleBorder(),
                       child: Container(
@@ -198,7 +215,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                 ],
               ),
               LayoutBuilder(
-                builder: (context,con) {
+                builder: (context, con) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -209,11 +226,11 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                         children: [
                           OldPriceWidget(
                             color: colors.onSurface,
-                            size: con.maxWidth*0.04,
+                            size: con.maxWidth * 0.04,
                             price: '${product.comparePrice}',
                           ),
                           NewPriceWidget(
-                            size: con.maxWidth*0.07,
+                            size: con.maxWidth * 0.07,
                             color: colors.onTertiaryFixed,
                             price: '${product.price}',
                           ),
@@ -238,7 +255,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                       ),
                     ],
                   );
-                }
+                },
               ),
             ],
           ),
@@ -253,9 +270,14 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                   fontSize: 15,
                 ),
               ),
-              ExpandableText(text: context.getLocalizedApiText(product.description),style: AppTextStyles.style14Regular.copyWith(
-                color: colors.onSurface
-              ),maxCharacters: 150,seeMoreText: 'See More',),
+              ExpandableText(
+                text: context.getLocalizedApiText(product.description),
+                style: AppTextStyles.style14Regular.copyWith(
+                  color: colors.onSurface,
+                ),
+                maxCharacters: 150,
+                seeMoreText: 'See More',
+              ),
             ],
           ),
         ],
