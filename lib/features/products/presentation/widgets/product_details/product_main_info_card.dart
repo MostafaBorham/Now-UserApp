@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
@@ -183,6 +185,7 @@ class ProductMainInfoCard extends ConsumerWidget {
             children: [
               Text(
                 context.getLocalizedApiText(product.name),
+                overflow: TextOverflow.visible,
                 style: AppTextStyles.style24Bold.copyWith(
                   color: colors.onSecondary,
                   fontSize: 22,
@@ -255,7 +258,7 @@ class ProductMainInfoCard extends ConsumerWidget {
             spacing: 4,
             children: [
               Text(
-                'Description',
+                LangKeys.descriptionKey.tr(),
                 style: AppTextStyles.style16Bold.copyWith(
                   color: colors.onSecondary,
                   fontSize: 15,
@@ -267,7 +270,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                   color: colors.onSurface,
                 ),
                 maxCharacters: 150,
-                seeMoreText: 'See More',
+                seeMoreText: LangKeys.seeMoreKey.tr(),
               ),
             ],
           ),

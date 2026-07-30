@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
-class SuccessAddToCartView extends StatelessWidget {
+class SuccessAddToCartView extends StatefulWidget {
   const SuccessAddToCartView({
     super.key,
     this.productName = 'MacBook Air 3',
@@ -27,6 +27,35 @@ class SuccessAddToCartView extends StatelessWidget {
   final GestureTapCallback? onContinueShopping;
 
   @override
+  State<SuccessAddToCartView> createState() => _SuccessAddToCartViewState();
+}
+
+class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
+    with SingleTickerProviderStateMixin {
+  // Drives the badge's pop. The full cycle is 4 seconds and repeats forever:
+  // the scale pops in over the first ~30%, then holds until the next cycle.
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 4),
+  )..repeat();
+
+  late final Animation<double> _scale = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween(begin: 0.0, end: 1.0).chain(
+        CurveTween(curve: Curves.easeOutBack),
+      ),
+      weight: 30,
+    ),
+    TweenSequenceItem(tween: ConstantTween(1.0), weight: 70),
+  ]).animate(_controller);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Padding(
@@ -35,12 +64,10 @@ class SuccessAddToCartView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 8,
         children: [
-      TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOutBack,
-      builder: (context, value, child) =>
-          Transform.scale(scale: value, child: child),
+      AnimatedBuilder(
+      animation: _scale,
+      builder: (context, child) =>
+          Transform.scale(scale: _scale.value, child: child),
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -72,7 +99,7 @@ class SuccessAddToCartView extends StatelessWidget {
             ),
             child: ClipOval(
               child: AppCachedNetworkImage(
-                imageUrl: productImageUrl,
+                imageUrl: widget.productImageUrl,
                 fit: BoxFit.contain,
               ),
             ),
@@ -98,16 +125,21 @@ class SuccessAddToCartView extends StatelessWidget {
         ],
       ),
     ),
-          Text(
-            productName,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(
-              color: colors.onSecondary,
+          AnimatedBuilder(
+            animation: _scale,
+            builder: (context, child) =>
+                Transform.scale(scale: _scale.value, child: child),
+            child: Text(
+              widget.productName,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.style14Medium.copyWith(
+                color: colors.onSecondary,
+              ),
             ),
           ),
           15.hSpace,
           Text(
-            title,
+            widget.title,
             textAlign: TextAlign.center,
             style: AppTextStyles.style20Bold.copyWith(
               color: colors.onSecondary,
@@ -119,14 +151,14 @@ class SuccessAddToCartView extends StatelessWidget {
             children: [
               Expanded(
                 child: PrimaryAppButton(
-                  title: viewCartLabel,
-                  onTap: onViewCart,
+                  title: widget.viewCartLabel,
+                  onTap: widget.onViewCart,
                 ),
               ),
               Expanded(
                 child: UnPrimaryAppButton(
-                  title: continueShoppingLabel,
-                  onTap: onContinueShopping,
+                  title: widget.continueShoppingLabel,
+                  onTap: widget.onContinueShopping,
                 ),
               ),
             ],

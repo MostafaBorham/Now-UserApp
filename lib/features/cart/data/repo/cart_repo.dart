@@ -130,6 +130,8 @@ class CartRepo {
     int productId,
     int quantity,
   ) async {
+    // Adding to the cart creates a new resource, so the API answers with
+    // `201 Created` (not `200`) on success — accept both.
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -144,7 +146,8 @@ class CartRepo {
 
       final bool success = body['success'] as bool? ?? false;
 
-      if (response.statusCode != 200 || !success) {
+      if ((response.statusCode != 200 && response.statusCode != 201) ||
+          !success) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 

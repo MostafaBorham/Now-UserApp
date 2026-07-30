@@ -36,6 +36,7 @@ abstract class LangKeys {
   static const String myAddress = 'myAddress';
   static const String proActivity = 'promotionalActivity';
   static const String discount = 'discountCode';
+  static const String descriptionKey = 'description';
   static const String myWallet = 'myWallet';
   static const String supportLabel = 'support';
   static const String liveChat = 'liveChat';
@@ -165,6 +166,7 @@ abstract class LangKeys {
   static const String fromKey = 'from';
   static const String toKey = 'to';
   static const String productKey = 'product';
+  static const String productDetailsKey = 'productDetails';
   static const String invoiceSummaryKey = 'invoiceSummary';
   static const String storeInvoiceSummaryKey = 'storeInvoiceSummary';
   static const String subtotalKey = 'subtotal';
@@ -253,6 +255,7 @@ abstract class LangKeys {
   static const String clearKey = 'clear';
   static const String bestCategoriesKey = 'bestCategories';
   static const String seeAllKey = 'seeAll';
+  static const String seeMoreKey = 'seeMore';
   static const String mostRequestedKey = 'mostRequested';
   static const String upToKey = 'upTo';
   static const String moreFiltersKey = 'moreFilters';

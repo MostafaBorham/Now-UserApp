@@ -132,15 +132,17 @@ class AppWavedView extends StatelessWidget {
                                           },
                                     ),
                                   if (hasCartIcon)
-                                    CircularCartButton(
-                                      size: screenSize.width * 0.05,
-                                      onTap:
-                                          onCartTap ??
-                                          () {
-                                            context.pushNamed(
-                                              AppRoutes.cartScreen,
-                                            );
-                                          },
+                                    ReverseWidget(
+                                      child: CircularCartButton(
+                                        size: screenSize.width * 0.05,
+                                        onTap:
+                                            onCartTap ??
+                                            () {
+                                              context.pushNamed(
+                                                AppRoutes.cartScreen,
+                                              );
+                                            },
+                                      ),
                                     ),
                                 ],
                               )
