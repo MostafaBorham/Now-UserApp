@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -24,6 +25,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_size_selector.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
 
 class ProductDetailsScreen extends ConsumerWidget {
@@ -56,6 +58,63 @@ class ProductDetailsScreen extends ConsumerWidget {
               final isAddingToCart = ref
                   .watch(updateCartProductProvider(product.id ?? -1))
                   .isLoading;
+              // React to the add-to-cart result: surface failures as a snackbar,
+              // and on success reveal the confirmation bottom sheet.
+              ref.listen(
+                updateCartProductProvider(product.id ?? -1),
+                (previous, next) {
+                  next.whenOrNull(
+                    data: (cart) {
+                      if (cart == null) return;
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: colors.onPrimary,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
+                        ),
+                        builder: (sheetContext) => SuccessAddToCartView(
+                          productName: context.getLocalizedApiText(
+                            product.name,
+                          ),
+                          productImageUrl:
+                              (product.images?.isNotEmpty ?? false)
+                              ? product.images!.first
+                              : '',
+                          onViewCart: () {
+                            Navigator.of(sheetContext).pop();
+                            context.pushNamed(AppRoutes.cartScreen);
+                          },
+                          onContinueShopping: () {
+                            // Close the sheet, then pop the product details
+                            // screen to return to the page that opened it.
+                            Navigator.of(sheetContext).pop();
+                            if (context.canPop()) context.pop();
+                          },
+                        ),
+                      );
+                    },
+                    error: (error, _) {
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              error.toString().tr(),
+                              style: AppTextStyles.style16SemiBold.copyWith(
+                                color: colors.onPrimary,
+                              ),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: colors.onError,
+                          ),
+                        );
+                    },
+                  );
+                },
+              );
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
                 child: SingleChildScrollView(
@@ -109,7 +168,6 @@ class ProductDetailsScreen extends ConsumerWidget {
                           itemAspectRatio: 1.5,
                         ),
                         ProductMainInfoCard(
-                          initialQuantity: productCartQuantity,
                           description: context.getLocalizedApiText(
                             product.description,
                           ),
@@ -154,9 +212,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                                 isLoading: isAddingToCart,
                                 onTap: () {
                                   final productQuantity = ref.read(
-                                    productQuantityProvider(
-                                      productCartQuantity,
-                                    ),
+                                    productQuantityProvider,
                                   );
                                   if (product.id != null) {
                                     ref
@@ -165,7 +221,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                                             product.id!,
                                           ).notifier,
                                         )
-                                        .updateCartProductQuantity(
+                                        .addToCart(
                                           productQuantity,
                                         );
                                   }

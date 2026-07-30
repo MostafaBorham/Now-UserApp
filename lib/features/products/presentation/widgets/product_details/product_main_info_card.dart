@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/texts/expandable_
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 
-class ProductMainInfoCard extends ConsumerStatefulWidget {
+class ProductMainInfoCard extends ConsumerWidget {
   const ProductMainInfoCard({
     super.key,
     this.productName = 'MacBook Air 3',
@@ -29,7 +29,6 @@ class ProductMainInfoCard extends ConsumerStatefulWidget {
         'vitamin D for strong bones and a healthy body',
     this.isTrusted = true,
     this.trustedBadgeLabel = 'منتج موثوق',
-    required this.initialQuantity,
   });
 
   final String productName;
@@ -42,24 +41,16 @@ class ProductMainInfoCard extends ConsumerStatefulWidget {
   final String description;
   final bool isTrusted;
   final String trustedBadgeLabel;
-  final int initialQuantity;
 
   @override
-  ConsumerState<ProductMainInfoCard> createState() =>
-      _ProductMainInfoCardState();
-}
-
-class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final product = ref.watch(productProvider);
     final productQuantityController = ref.read(
-      productQuantityProvider(widget.initialQuantity).notifier,
+      productQuantityProvider.notifier,
     );
     final productQuantity = ref.watch(
-      productQuantityProvider(widget.initialQuantity),
+      productQuantityProvider,
     );
     return Container(
       padding: const EdgeInsets.all(16),
@@ -82,11 +73,11 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
         spacing: 16,
         children: [
           Row(
-            mainAxisAlignment: widget.isTrusted
+            mainAxisAlignment: isTrusted
                 ? MainAxisAlignment.spaceBetween
                 : MainAxisAlignment.end,
             children: [
-              if (widget.isTrusted)
+              if (isTrusted)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -101,7 +92,7 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                     spacing: 8,
                     children: [
                       Text(
-                        widget.trustedBadgeLabel,
+                        trustedBadgeLabel,
                         style: AppTextStyles.style12SemiBold.copyWith(
                           color: colors.onPrimaryFixedVariant,
                         ),
@@ -248,8 +239,8 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                         child: AppRateWidget(
                           starColor: colors.surface,
                           rateColor: colors.tertiaryContainer,
-                          rateRatio: widget.rate,
-                          rateCount: widget.rateCount,
+                          rateRatio: rate,
+                          rateCount: rateCount,
                           size: 15,
                         ),
                       ),

@@ -51,4 +51,21 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
       },
     );
   }
+  Future<void> addToCart(int productQuantity) async {
+    state = const AsyncValue<CartModel?>.loading();
+
+    final Either<Failure, CartModel> result =
+    await _repo.addToCart(_productId, productQuantity);
+
+    if (!mounted) return;
+
+    state = result.fold(
+          (Failure failure) =>
+      AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
+          (CartModel cart) {
+        _ref.read(getCartProvider.notifier).updateCartState(cart);
+        return AsyncValue<CartModel?>.data(cart);
+      },
+    );
+  }
 }
