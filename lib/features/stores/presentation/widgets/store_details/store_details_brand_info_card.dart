@@ -20,7 +20,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 30,
-        horizontal: 20,
+        horizontal: 25,
       ),
       decoration: BoxDecoration(
         color: colors.onPrimary,
@@ -88,7 +88,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
             height: 20,
           ),
           Row(
-            spacing: 20,
+            spacing: 35,
             children: [
               Column(
                 crossAxisAlignment:

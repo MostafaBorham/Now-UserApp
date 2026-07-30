@@ -20,32 +20,6 @@ class StoreCategoryCirclesList extends ConsumerWidget {
     final List<CategoryModel> categories = store.categories ?? const [];
 
     if (categories.isEmpty) return const SizedBox.shrink();
-/*    if (categories.isEmpty) return InkWell(
-      onTap: () => context.pushNamed(
-        AppRoutes.viewStoreCategoryProductsScreen,
-        extra: (storeId: store.id ?? 0, category: CategoryModel(
-            id: 1,
-            slug: 'electronics',
-            name: 'Products'
-        )),
-      ),
-      child: Column(
-        spacing: 8,
-        children: [
-          CircularBrandLogo(
-            radius: 40,
-            logoUrl: '',
-          ),
-          AutoSizeText(
-            'sddssd',
-            maxLines: 1,
-            style: AppTextStyles.style14SemiBold.copyWith(
-              color: colors.onSecondary,
-            ),
-          ),
-        ],
-      ),
-    );*/
 
     return SizedBox(
       height: 110,
@@ -70,7 +44,8 @@ class StoreCategoryCirclesList extends ConsumerWidget {
                 ),
                 AutoSizeText(
                   context.getLocalizedApiText(categories[index].name),
-                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
                   style: AppTextStyles.style14SemiBold.copyWith(
                     color: colors.onSecondary,
                   ),

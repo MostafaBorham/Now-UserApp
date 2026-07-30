@@ -53,7 +53,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
                 width: 77,
                 height: double.infinity,
                 alignment: Alignment.center,
-                color: colors.primaryContainer.withGreen(70),
+                color: colors.surfaceBright,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
