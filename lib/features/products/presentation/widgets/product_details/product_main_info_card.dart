@@ -49,7 +49,7 @@ class ProductMainInfoCard extends ConsumerStatefulWidget {
 
 class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
 
-  late int quantity = widget.initialQuantity;
+  late int quantity = widget.initialQuantity < 1 ? 1 : widget.initialQuantity;
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +210,12 @@ class _ProductMainInfoCardState extends ConsumerState<ProductMainInfoCard> {
                           OldPriceWidget(
                             color: colors.onSurface,
                             size: con.maxWidth*0.04,
-                            price: '${product.price}',
+                            price: '${product.comparePrice}',
                           ),
                           NewPriceWidget(
                             size: con.maxWidth*0.07,
                             color: colors.onTertiaryFixed,
-                            price: '${product.comparePrice}',
+                            price: '${product.price}',
                           ),
                         ],
                       ),
