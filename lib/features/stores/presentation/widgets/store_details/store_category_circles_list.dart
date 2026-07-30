@@ -42,7 +42,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
                   radius: 40,
                   logoUrl: categories[index].image ?? '',
                 ),
-                AutoSizeText(
+                Text(
                   context.getLocalizedApiText(categories[index].name),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,
