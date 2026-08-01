@@ -3,6 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class StoreInfoRow extends StatelessWidget {
   const StoreInfoRow({
@@ -52,11 +53,13 @@ class StoreInfoRow extends StatelessWidget {
           ),
         ),
         5.wSpace,
-        Assets.media.images.svg.shippingIcon.svg(
-          width: infoIconSize,
-          colorFilter: ColorFilter.mode(
-            colors.onSurface,
-            BlendMode.srcIn,
+        ReverseWidget(
+          child: Assets.media.images.svg.shippingIcon.svg(
+            width: infoIconSize,
+            colorFilter: ColorFilter.mode(
+              colors.onSurface,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         NewPriceWidget(

@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,36 +20,43 @@ class StoreCategoryCirclesList extends ConsumerWidget {
 
     if (categories.isEmpty) return const SizedBox.shrink();
 
-    return SizedBox(
-      height: 110,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: categories.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
-        itemBuilder: (_, index) => InkWell(
-          onTap: () => context.pushNamed(
-            AppRoutes.viewStoreCategoryProductsScreen,
-            extra: (storeId: store.id ?? 0, category: categories[index]),
-          ),
-          child: SizedBox(
-            width: 80,
-            child: Column(
-              spacing: 8,
-              children: [
-                CircularBrandLogo(
-                  radius: 40,
-                  logoUrl: categories[index].image ?? '',
-                ),
-                Text(
-                  context.getLocalizedApiText(categories[index].name),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.visible,
-                  style: AppTextStyles.style14SemiBold.copyWith(
-                    color: colors.onSecondary,
+    // A horizontal ListView never sizes itself on the cross axis, so the row is
+    // built inside a horizontal scroll view instead: the Row reports the height
+    // of its tallest child, which lets a long category name wrap onto a second
+    // line without being clipped or leaving dead space.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.zero,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: List.generate(
+          categories.length,
+              (int index) => InkWell(
+            onTap: () => context.pushNamed(
+              AppRoutes.viewStoreCategoryProductsScreen,
+              extra: (storeId: store.id ?? 0, category: categories[index]),
+            ),
+            child: SizedBox(
+              width: 80,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  CircularBrandLogo(
+                    radius: 40,
+                    logoUrl: categories[index].image ?? '',
                   ),
-                ),
-              ],
+                  Text(
+                    context.getLocalizedApiText(categories[index].name),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
+                    style: AppTextStyles.style14SemiBold.copyWith(
+                      color: colors.onSecondary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
