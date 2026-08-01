@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
@@ -27,22 +28,11 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final ProductModel? product = widget.product;
-    final bool hasDiscount = product == null
-        ? true
-        : (product.comparePrice ?? 0) > (product.effectivePrice ?? 0) &&
-              (product.comparePrice ?? 0) > 0;
-    final String discountPercent = product == null
-        ? '50'
-        : !hasDiscount
-        ? '0'
-        : (((product.comparePrice ?? 0) - (product.effectivePrice ?? 0)) /
-                  (product.comparePrice ?? 1) *
-                  100)
-              .round()
-              .toString();
     return InkWell(
-      onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
+      onTap: () => context.pushNamed(
+        AppRoutes.productDetailsScreen,
+        extra: widget.product?.slug,
+      ),
       child: LayoutBuilder(
         builder: (context, con) {
           return Card(
@@ -75,7 +65,8 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                     ),
                                     child: AppCachedNetworkImage(
                                       imageUrl:
-                                          product?.images?.firstOrNull ?? '',
+                                          widget.product?.images?.firstOrNull ??
+                                          '',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
@@ -84,11 +75,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                                 AppRateWidget(
                                   starColor: colors.onSecondaryContainer,
-                                  rateRatio:
-                                      product?.vendor?.rating?.toStringAsFixed(
-                                        1,
-                                      ) ??
-                                      '4',
+                                  rateRatio: '4.2',
                                   rateColor: colors.onSurface,
                                   size: con.maxWidth * 0.1,
                                 ),
@@ -101,7 +88,6 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  if (hasDiscount)
                                     Container(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 10,
@@ -120,23 +106,24 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                             ),
                                       ),
                                       child: Text(
-                                        '$discountPercent%',
+                                        '${widget.product?.activeDeal?.discountValue??0}%',
                                         style: TextStyle(
                                           color: colors.onPrimary,
                                           fontSize: con.maxWidth * 0.06,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    )
-                                  else
-                                    const SizedBox.shrink(),
+                                    ),
                                   Padding(
                                     padding: const EdgeInsetsDirectional.only(
                                       end: 8.0,
                                     ),
                                     child: CircularAppFavouriteIcon(
                                       size: con.maxWidth * 0.08,
-                                      isFavourite: false,
+                                      favouriteType: FavouriteType.product,
+                                      itemId: widget.product?.id,
+                                      isFavourite:
+                                          widget.product?.isFavorite ?? false,
                                       onFavouriteChanged: (currentFavourite) {},
                                     ),
                                   ),
@@ -154,7 +141,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                           radius: con.maxWidth * 0.1,
                           backgroundColor: colors.onPrimary,
                           logoUrl:
-                              product?.vendor?.logoUrl ??
+                              widget.product?.vendor?.logoUrl ??
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                       ),
@@ -170,9 +157,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                     spacing: 7,
                     children: [
                       Text(
-                        product?.name == null
-                            ? 'feta cheese'
-                            : context.getLocalizedApiText(product?.name),
+                        context.getLocalizedApiText(widget.product?.name),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.style18Bold.copyWith(
@@ -188,23 +173,18 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                             textDirection: TextDirection.ltr,
                             spacing: 5,
                             children: [
-                              if (hasDiscount)
                                 OldPriceWidget(
                                   color: colors.inversePrimary,
                                   price:
-                                      product?.comparePrice?.toStringAsFixed(
-                                        0,
-                                      ) ??
+                                      widget.product?.comparePrice
+                                          ?.toStringAsFixed(0) ??
                                       '10',
                                   size: con.maxWidth * 0.04,
                                 ),
                               NewPriceWidget(
                                 color: colors.onSecondary,
                                 price:
-                                    product?.effectivePrice?.toStringAsFixed(
-                                      0,
-                                    ) ??
-                                    '10',
+                                    '${widget.product?.price}',
                                 size: con.maxWidth * 0.08,
                               ),
                             ],
@@ -220,8 +200,10 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 fit: BoxFit.scaleDown,
                                 alignment: AlignmentDirectional.centerEnd,
                                 child: AnimatedCartButton(
-                                  productId: product?.productId ?? product?.id,
-                                  productQuantity: product?.quantity ?? 0,
+                                  productId:
+                                      widget.product?.id,
+                                  productQuantity:
+                                      widget.product?.cartQuantity ?? 0,
                                 ),
                               ),
                             ),
