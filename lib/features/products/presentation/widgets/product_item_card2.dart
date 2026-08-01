@@ -170,47 +170,53 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 10,
                     children: [
-                      Stack(
-                        alignment: AlignmentDirectional.centerStart,
-                        children: [
-                          SizedBox(
-                            width: widthCon*0.6,
-                            child: Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.starRate.svg(
-                                  width: widthCon * 0.1,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '4.7',
-                                    style: AppTextStyles.style14Medium.copyWith(
-                                      color: colors.onSecondary,
-                                      fontSize: widthCon * 0.1,
+                      SizedBox(
+                        width: double.infinity,
+                        child: Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: [
+                            Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: SizedBox(
+                                width: widthCon*0.6,
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    Assets.media.images.svg.starRate.svg(
+                                      width: widthCon * 0.1,
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: Text(
+                                        '4.7',
+                                        style: AppTextStyles.style14Medium.copyWith(
+                                          color: colors.onSecondary,
+                                          fontSize: widthCon * 0.1,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.bottomEnd,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minHeight: con.maxWidth * 0.2,
-                                maxWidth: con.maxWidth * 0.7,
-                              ),
-                              child: AnimatedCartButton(
-                                productId:
-                                    widget.productModel?.productId ??
-                                    widget.productModel?.id,
-                                productQuantity:
-                                    widget.productModel?.cartQuantity ?? 0,
-                                stock: widget.productModel?.stock,
                               ),
                             ),
-                          ),
-                        ],
+                            Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: con.maxWidth * 0.2,
+                                  maxWidth: con.maxWidth * 0.7,
+                                ),
+                                child: AnimatedCartButton(
+                                  productId:
+                                      widget.productModel?.productId ??
+                                      widget.productModel?.id,
+                                  productQuantity:
+                                      widget.productModel?.cartQuantity ?? 0,
+                                  stock: widget.productModel?.stock,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Row(
                         spacing: widthCon * 0.1,
