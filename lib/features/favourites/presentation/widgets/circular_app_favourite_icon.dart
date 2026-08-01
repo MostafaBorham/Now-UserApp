@@ -95,6 +95,7 @@ class _CircularAppFavouriteIconState
     final bool isFavourite = state.valueOrNull ?? _isFavourite;
 
     return InkWell(
+      overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent,),
       onTap: () {
         if(!state.isLoading)_onTap(isFavourite);
       },
