@@ -39,42 +39,34 @@ class GetMyAddressesViewModel
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (List<AddressModel> addresses) {
-        // Sync the default entry into the default-address provider so any
-        // screen watching it shows the default immediately.
-        AddressModel? defaultAddress;
-        for (final AddressModel address in addresses) {
-          if (address.isDefault ?? false) {
-            defaultAddress = address;
-            break;
-          }
-        }
-
-        if (defaultAddress != null) {
-          _ref
-              .read(defaultAddressProvider.notifier)
-              .updateDefaultAddress(defaultAddress);
-        }
-
         return AsyncValue.data(addresses);
       },
     );
   }
 
-  /*  void updateCurrentDefaultAddress(AddressModel updatedAddress) {
+  /// Marks [address] as the default in the currently loaded list.
+  ///
+  /// No-op unless the current state is [AsyncData] and the list actually
+  /// contains a matching address: the matched entry becomes default and any
+  /// previous default is cleared.
+  void updateDefaultInMyAddress({required AddressModel address}) {
     final List<AddressModel>? addresses = state.value;
 
     if (addresses == null) return;
 
-    state = AsyncValue.data(
-      addresses.map((AddressModel address) {
-        if (address.id == updatedAddress.id) return updatedAddress;
-
-        if (address.isDefault ?? false) {
-          return address.copyWith(isDefault: false);
-        }
-
-        return address;
-      }).toList(),
+    final bool exists = addresses.any(
+      (AddressModel current) => current.id == address.id,
     );
-  }*/
+
+    if (!exists) return;
+
+    state = AsyncValue.data(
+      addresses
+          .map(
+            (AddressModel current) =>
+                current.copyWith(isDefault: current.id == address.id),
+          )
+          .toList(),
+    );
+  }
 }

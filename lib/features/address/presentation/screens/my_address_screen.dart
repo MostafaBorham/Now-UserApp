@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -38,44 +41,22 @@ class MyAddressScreen extends ConsumerStatefulWidget {
 }
 
 class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
-  /// Asks the backend to make [address] the default one.
-  ///
-  /// Already-default addresses (and entries without an id) are ignored, so no
-  /// request is fired for a tap that cannot change anything.
-  Future<void> _setDefaultAddress(AddressModel address) async {
-    final int? addressId = address.id;
-
-    if (addressId == null || (address.isDefault ?? false)) return;
-
-    await ref
-        .read(defaultAddressProvider.notifier)
-        .setDefaultAddress(addressId: addressId);
-
-    if (!mounted) return;
-
-    ref
-        .read(defaultAddressProvider)
-        .whenOrNull(
-          data: (AddressModel? defaultAddress) {
-            if (defaultAddress == null) return;
-/*
-            ref
-                .read(getMyAddressesProvider.notifier)
-                .updateCurrentDefaultAddress(defaultAddress);*/
-          },
-          error: (Object error, StackTrace stackTrace) =>
-              ErrorSnackBar.show(context, error.toString()),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     final AsyncValue<List<AddressModel>> addressesState = ref.watch(
       getMyAddressesProvider,
     );
-    final bool isSettingDefault = ref
-        .watch(defaultAddressProvider)
-        .isLoading;
+    final bool isSettingDefault = ref.watch(defaultAddressProvider).isLoading;
+
+    ref.listen<AsyncValue<AddressModel?>>(defaultAddressProvider, (
+      AsyncValue<AddressModel?>? previous,
+      AsyncValue<AddressModel?> next,
+    ) {
+      next.whenOrNull(
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
+      );
+    });
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -89,38 +70,55 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                 onRetry: () =>
                     ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
               ),
-          data: (List<AddressModel> addresses) => SingleChildScrollView(
-            child: Column(
-              children: [
-                if (addresses.isEmpty)
-                  const NoItemsWidget(emptyMessage: 'No Addresses Yet')
-                else
-                  BlockingLoadingOverlay(
-                    isLoading: isSettingDefault,
-                    child: Column(
-                      children: [
-                        for (int i = 0; i < addresses.length; i++) ...[
-                          if (i > 0) const SizedBox(height: 16),
-                          AddressCard(
-                            title: addresses[i].label ?? '',
-                            address: addresses[i].fullAddress ?? '',
-                            isDefault: addresses[i].isDefault ?? false,
-                            onSelect: () => _setDefaultAddress(addresses[i]),
-                            onEdit: () => context.pushNamed(
-                              AppRoutes.addressDetailsScreen,
-                              extra: true,
+          data: (List<AddressModel> addresses) => AppRefreshIndicator(
+            onRefresh: () async =>
+                ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  if (addresses.isEmpty)
+                    const NoItemsWidget(emptyMessage: 'No Addresses Yet')
+                  else
+                    BlockingLoadingOverlay(
+                      isLoading: isSettingDefault,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: addresses.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(height: 16),
+                        itemBuilder: (BuildContext context, int index) =>
+                            AddressCard(
+                              title: addresses[index].label ?? '',
+                              address: addresses[index].fullAddress ?? '',
+                              isDefault: addresses[index].isDefault ?? false,
+                              onSelect: () {
+                                if (addresses[index].isDefault ?? false) return;
+                                ref
+                                    .read(defaultAddressProvider.notifier)
+                                    .setDefaultAddress(
+                                      addressId: addresses[index].id ?? -1,
+                                    );
+                              },
+                              onEdit: () => context.pushNamed(
+                                AppRoutes.addressDetailsScreen,
+                                extra: addresses[index],
+                              ),
                             ),
-                          ),
-                        ],
-                      ],
+                      ),
+                    ),
+                  PrimaryAppPrefixIconButton(
+                    onTap: () =>
+                        context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
+                    title: LangKeys.addNewAddress.tr(),
+                    prefixIcon: Assets.media.images.svg.addCircle.svg(
+                      width: 24,
+                      height: 24,
                     ),
                   ),
-                const SizedBox(height: 24),
-                AddAddressButton(
-                  onPressed: () =>
-                      context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

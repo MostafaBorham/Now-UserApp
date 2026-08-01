@@ -192,6 +192,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                             height: 1,
                             padding: EdgeInsets.symmetric(vertical: 15),
                           ),
+                          if ((product.stock ?? 1) >= 1)
                           Row(
                             spacing: 10,
                             children: [

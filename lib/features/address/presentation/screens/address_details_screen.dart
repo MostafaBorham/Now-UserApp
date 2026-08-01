@@ -9,14 +9,16 @@ import '../../../settings/app_colors.dart';
 import '../../../settings/components/gender_selector.dart';
 import '../../../settings/components/primary_button.dart';
 import '../../../settings/components/profile_header.dart';
+import '../../data/models/address_model.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
 /// Address Details form — also serves as "Edit Address".
 ///
 /// This is a single screen with several states: the selected address type
-/// (Home / Work / Other) drives the two address-line placeholders, and
-/// [isEditing] only swaps the header title. Tapping a tab re-renders the
+/// (Home / Work / Other) drives the two address-line placeholders. When an
+/// [address] is passed the screen acts as "Edit Address" — the header title
+/// swaps and the fields are pre-filled from it. Tapping a tab re-renders the
 /// placeholders live.
 ///
 /// Sections (see `components/`):
@@ -29,19 +31,24 @@ import '../widgets/area_selector.dart';
 class AddressDetailsScreen extends StatefulWidget {
   const AddressDetailsScreen({
     super.key,
-    this.isEditing = false,
+    this.address,
     this.initialType = 0,
     this.area = 'Downtown - Tahrir',
   });
 
-  /// When true the header reads "Edit Address" instead of "Address Details".
-  final bool isEditing;
+  /// The address being edited. When null the screen adds a new address;
+  /// when provided the header reads "Edit Address" and the fields are
+  /// pre-filled from it.
+  final AddressModel? address;
 
   /// Tab pre-selected on open: 0 = Home, 1 = Work, 2 = Other.
   final int initialType;
 
   /// Currently selected delivery area.
   final String area;
+
+  /// Whether the screen is in edit mode (an existing address was passed).
+  bool get isEditing => address != null;
 
   @override
   State<AddressDetailsScreen> createState() => _AddressDetailsScreenState();
@@ -78,10 +85,20 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _type = widget.initialType;
-    _line1 = TextEditingController();
-    _line2 = TextEditingController();
-    _instructions = TextEditingController();
+    final AddressModel? address = widget.address;
+    _type = _tabIndexForLabel(address?.label) ?? widget.initialType;
+    _line1 = TextEditingController(text: address?.floor ?? '');
+    _line2 = TextEditingController(text: address?.buildingNumber ?? '');
+    _instructions = TextEditingController(text: address?.notes ?? '');
+  }
+
+  /// Maps a stored address label ('Home' / 'Work' / 'Other') to its tab index.
+  int? _tabIndexForLabel(String? label) {
+    if (label == null) return null;
+    final int index = _tabs.indexWhere(
+      (String tab) => tab.toLowerCase() == label.toLowerCase(),
+    );
+    return index == -1 ? null : index;
   }
 
   @override
@@ -103,7 +120,10 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              AreaSelector(value: widget.area, onChange: () {}),
+              AreaSelector(
+                value: widget.address?.area ?? widget.area,
+                onChange: () {},
+              ),
               const SizedBox(height: 16),
               CommonScreenTabs(
                 tabsName: [

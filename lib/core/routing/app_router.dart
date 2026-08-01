@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/map_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/my_address_screen.dart';
@@ -269,8 +270,8 @@ abstract class AppRouter {
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
         builder: (context, state) {
-          final isEditing = state.extra as bool? ?? false;
-          return AddressDetailsScreen(isEditing: isEditing);
+          final address = state.extra as AddressModel?;
+          return AddressDetailsScreen(address: address);
         },
       ),
       GoRoute(
