@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
@@ -205,14 +207,24 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                   minHeight: con.maxWidth * 0.2,
                                   maxWidth: con.maxWidth * 0.7,
                                 ),
-                                child: AnimatedCartButton(
-                                  productId:
-                                      widget.productModel?.productId ??
-                                      widget.productModel?.id,
-                                  productQuantity:
-                                      widget.productModel?.cartQuantity ?? 0,
-                                  stock: widget.productModel?.stock,
-                                ),
+                                child: (widget.productModel?.stock ?? 1) < 1
+                                    ? Align(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                      child: Text(
+                                          LangKeys.outOfStockKey.tr(),
+                                          style: AppTextStyles.style12Medium
+                                              .copyWith(color: colors.onError),
+                                        ),
+                                    )
+                                    : AnimatedCartButton(
+                                        productId:
+                                            widget.productModel?.productId ??
+                                            widget.productModel?.id,
+                                        productQuantity:
+                                            widget.productModel?.cartQuantity ??
+                                            0,
+                                        stock: widget.productModel?.stock,
+                                      ),
                               ),
                             ),
                           ],

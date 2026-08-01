@@ -20,7 +20,7 @@ class OldPriceWidget extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             textDirection: TextDirection.ltr,
-            spacing: 3,
+            spacing: 2,
             children: [
               Assets.media.images.svg.realSaudiCurrency.svg(
                 width: size ?? 14,

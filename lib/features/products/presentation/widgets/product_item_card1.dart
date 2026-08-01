@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -77,7 +79,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                   starColor: colors.onSecondaryContainer,
                                   rateRatio: '4.2',
                                   rateColor: colors.onSurface,
-                                  size: con.maxWidth * 0.1,
+                                  size: con.maxWidth * 0.08,
                                 ),
                               ],
                             ),
@@ -110,7 +112,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                         style: TextStyle(
                                           color: colors.onPrimary,
                                           fontSize: con.maxWidth * 0.06,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                     ),
@@ -162,32 +164,37 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.style18Bold.copyWith(
                           color: colors.onTertiaryFixed,
-                          fontSize: con.maxWidth * 0.1,
+                          fontSize: con.maxWidth * 0.09,
                         ),
                       ),
                       Stack(
                         alignment: AlignmentDirectional.centerStart,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            textDirection: TextDirection.ltr,
-                            spacing: 5,
-                            children: [
-                                OldPriceWidget(
-                                  color: colors.inversePrimary,
-                                  price:
-                                      widget.product?.comparePrice
-                                          ?.toStringAsFixed(0) ??
-                                      '10',
-                                  size: con.maxWidth * 0.04,
-                                ),
-                              NewPriceWidget(
-                                color: colors.onSecondary,
-                                price:
-                                    '${widget.product?.price}',
-                                size: con.maxWidth * 0.08,
+                          SizedBox(
+                            width: con.maxWidth*0.55,
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                textDirection: TextDirection.ltr,
+                                spacing: 2,
+                                children: [
+                                    OldPriceWidget(
+                                      color: colors.inversePrimary,
+                                      price:
+                                          widget.product?.comparePrice
+                                              ?.toStringAsFixed(0) ??
+                                          '10',
+                                      size: con.maxWidth * 0.04,
+                                    ),
+                                  NewPriceWidget(
+                                    color: colors.onSecondary,
+                                    price:
+                                        '${widget.product?.price}',
+                                    size: con.maxWidth * 0.08,
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                           Align(
                             alignment: AlignmentDirectional.bottomEnd,
@@ -199,13 +206,21 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 alignment: AlignmentDirectional.centerEnd,
-                                child: AnimatedCartButton(
-                                  productId:
-                                      widget.product?.id,
-                                  productQuantity:
-                                      widget.product?.cartQuantity ?? 0,
-                                  stock: widget.product?.stock,
-                                ),
+                                child: (widget.product?.stock ?? 1) < 1
+                                    ? SizedBox(
+                                  width: con.maxWidth*0.25,
+                                      child: Text(
+                                          LangKeys.outOfStockKey.tr(),
+                                          style: AppTextStyles.style12Medium
+                                              .copyWith(color: colors.onError),
+                                        ),
+                                    )
+                                    : AnimatedCartButton(
+                                        productId: widget.product?.id,
+                                        productQuantity:
+                                            widget.product?.cartQuantity ?? 0,
+                                        stock: widget.product?.stock,
+                                      ),
                               ),
                             ),
                           ),

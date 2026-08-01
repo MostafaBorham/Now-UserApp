@@ -12,7 +12,7 @@ class NewPriceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       textDirection: TextDirection.ltr,
-      spacing: 5,
+      spacing: 3,
       mainAxisSize: .min,
       children: [
         Assets.media.images.svg.realSaudiCurrency.svg(

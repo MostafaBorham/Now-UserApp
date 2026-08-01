@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
@@ -97,16 +94,6 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
   @override
   Widget build(BuildContext context) {
-    // No stock left: the cart controls make no sense, so the whole button is
-    // replaced by an out-of-stock label.
-    if (widget.stock != null && widget.stock! < 1) {
-      final ColorScheme colors = Theme.of(context).colorScheme;
-      return Text(
-        LangKeys.outOfStockKey.tr(),
-        style: AppTextStyles.style12Medium.copyWith(color: colors.onError),
-      );
-    }
-
     bool isUpdating = false;
 
     if (_isIntegrated) {
