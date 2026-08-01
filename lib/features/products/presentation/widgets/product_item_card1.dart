@@ -184,42 +184,43 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         alignment: AlignmentDirectional.centerStart,
                         children: [
                           Row(
-                          mainAxisSize: MainAxisSize.min,
-                          textDirection: TextDirection.ltr,
-                          spacing: 5,
-                          children: [
-                            if (hasDiscount)
-                              OldPriceWidget(
-                                color: colors.inversePrimary,
+                            mainAxisSize: MainAxisSize.min,
+                            textDirection: TextDirection.ltr,
+                            spacing: 5,
+                            children: [
+                              if (hasDiscount)
+                                OldPriceWidget(
+                                  color: colors.inversePrimary,
+                                  price:
+                                      product?.comparePrice?.toStringAsFixed(
+                                        0,
+                                      ) ??
+                                      '10',
+                                  size: con.maxWidth * 0.04,
+                                ),
+                              NewPriceWidget(
+                                color: colors.onSecondary,
                                 price:
-                                product?.comparePrice
-                                    ?.toStringAsFixed(0) ??
+                                    product?.effectivePrice?.toStringAsFixed(
+                                      0,
+                                    ) ??
                                     '10',
-                                size: con.maxWidth * 0.04,
+                                size: con.maxWidth * 0.08,
                               ),
-                            NewPriceWidget(
-                              color: colors.onSecondary,
-                              price:
-                              product?.effectivePrice
-                                  ?.toStringAsFixed(0) ??
-                                  '10',
-                              size: con.maxWidth * 0.08,
-                            ),
-                          ],
-                                                  ),
+                            ],
+                          ),
                           Align(
                             alignment: AlignmentDirectional.bottomEnd,
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
                                 minHeight: con.maxWidth * 0.2,
-                                maxWidth: con.maxWidth * 0.5,
+                                maxWidth: con.maxWidth * 0.7,
                               ),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 alignment: AlignmentDirectional.centerEnd,
                                 child: AnimatedCartButton(
-                                  productId:
-                                  product?.productId ?? product?.id,
+                                  productId: product?.productId ?? product?.id,
                                   productQuantity: product?.quantity ?? 0,
                                 ),
                               ),

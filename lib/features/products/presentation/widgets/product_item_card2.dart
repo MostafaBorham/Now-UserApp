@@ -170,30 +170,36 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 10,
                     children: [
-                      Row(
-                        spacing: widthCon * 0.02,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      Stack(
+                        alignment: AlignmentDirectional.centerStart,
                         children: [
-                          Assets.media.images.svg.starRate.svg(
-                            width: widthCon * 0.1,
+                          SizedBox(
+                            width: widthCon*0.6,
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                Assets.media.images.svg.starRate.svg(
+                                  width: widthCon * 0.1,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '4.7',
+                                    style: AppTextStyles.style14Medium.copyWith(
+                                      color: colors.onSecondary,
+                                      fontSize: widthCon * 0.1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Expanded(
-                            child: AutoSizeText(
-                              '4.7',
-                              style: AppTextStyles.style14Medium.copyWith(
-                                color: colors.onSecondary,
-                                fontSize: widthCon * 0.1,
+                          Align(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: con.maxWidth * 0.2,
+                                maxWidth: con.maxWidth * 0.7,
                               ),
-                            ),
-                          ),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: widthCon * 0.2,
-                              maxWidth: widthCon * 0.5,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: AlignmentDirectional.centerEnd,
                               child: AnimatedCartButton(
                                 productId:
                                     widget.productModel?.productId ??
