@@ -180,50 +180,48 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                           fontSize: con.maxWidth * 0.1,
                         ),
                       ),
-                      Row(
-                        spacing: 5,
+                      Stack(
+                        alignment: AlignmentDirectional.centerStart,
                         children: [
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                textDirection: TextDirection.ltr,
-                                spacing: 5,
-                                children: [
-                                  if (hasDiscount)
-                                    OldPriceWidget(
-                                      color: colors.inversePrimary,
-                                      price:
-                                          product?.comparePrice
-                                              ?.toStringAsFixed(0) ??
-                                          '10',
-                                      size: con.maxWidth * 0.04,
-                                    ),
-                                  NewPriceWidget(
-                                    color: colors.onSecondary,
-                                    price:
-                                        product?.effectivePrice
-                                            ?.toStringAsFixed(0) ??
-                                        '10',
-                                    size: con.maxWidth * 0.08,
-                                  ),
-                                ],
+                          Row(
+                          mainAxisSize: MainAxisSize.min,
+                          textDirection: TextDirection.ltr,
+                          spacing: 5,
+                          children: [
+                            if (hasDiscount)
+                              OldPriceWidget(
+                                color: colors.inversePrimary,
+                                price:
+                                product?.comparePrice
+                                    ?.toStringAsFixed(0) ??
+                                    '10',
+                                size: con.maxWidth * 0.04,
                               ),
+                            NewPriceWidget(
+                              color: colors.onSecondary,
+                              price:
+                              product?.effectivePrice
+                                  ?.toStringAsFixed(0) ??
+                                  '10',
+                              size: con.maxWidth * 0.08,
                             ),
-                          ),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: con.maxWidth * 0.2,
-                              maxWidth: con.maxWidth * 0.5,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: AnimatedCartButton(
-                                productId:
-                                product?.productId ?? product?.id,
-                                productQuantity: product?.quantity ?? 0,
+                          ],
+                                                  ),
+                          Align(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: con.maxWidth * 0.2,
+                                maxWidth: con.maxWidth * 0.5,
+                              ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: AnimatedCartButton(
+                                  productId:
+                                  product?.productId ?? product?.id,
+                                  productQuantity: product?.quantity ?? 0,
+                                ),
                               ),
                             ),
                           ),
