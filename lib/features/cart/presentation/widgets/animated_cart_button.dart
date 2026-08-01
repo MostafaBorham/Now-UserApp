@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
@@ -43,6 +46,7 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
     super.key,
     this.productId,
     this.productQuantity = 0,
+    this.stock,
   });
 
 
@@ -53,6 +57,10 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
   /// Quantity this product currently has in the cart — `0` when it is not in the
   /// cart at all. Seeds the counter.
   final int? productQuantity;
+
+  /// Available stock for this product — the counter never climbs past it. `null`
+  /// leaves the counter uncapped (used by cards still on placeholder data).
+  final int? stock;
 
   @override
   ConsumerState<AnimatedCartButton> createState() => _AnimatedCartButtonState();
@@ -89,6 +97,16 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
   @override
   Widget build(BuildContext context) {
+    // No stock left: the cart controls make no sense, so the whole button is
+    // replaced by an out-of-stock label.
+    if (widget.stock != null && widget.stock! < 1) {
+      final ColorScheme colors = Theme.of(context).colorScheme;
+      return Text(
+        LangKeys.outOfStockKey.tr(),
+        style: AppTextStyles.style12Medium.copyWith(color: colors.onError),
+      );
+    }
+
     bool isUpdating = false;
 
     if (_isIntegrated) {
@@ -109,13 +127,19 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
     final bool showCounterView =
         _showCounterView && (isUpdating || _counter > 0);
 
+    // The counter never climbs past the available stock; a null stock leaves it
+    // uncapped.
+    final bool canIncrement =
+        widget.stock == null || _counter < widget.stock!;
+
     // Both children size themselves naturally — it is up to the card to give
     // this control a stable slot to flip inside of.
     return showCounterView
         ? AnimatedCartCounterView(
             counter: _counter,
             isLoading: isUpdating,
-            onInc: () => _updateQuantity(_counter + 1),
+            canIncrement: canIncrement,
+            onInc: canIncrement ? () => _updateQuantity(_counter + 1) : null,
             onDec: _decrement,
             onDelete: () => _updateQuantity(0),
           )
@@ -132,8 +156,13 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
                 // the product is not in the cart yet — a single tap is then
                 // already an add. With units already in the cart it only
                 // reveals the counter, and the request is left to the
-                // counter's own icons.
-                _counter < 1 ? _updateQuantity(1) : _startCollapseTimer();
+                // counter's own icons. With no stock left there is nothing to
+                // add, so the counter just collapses back to the button.
+                if (_counter < 1) {
+                  canIncrement ? _updateQuantity(1) : _collapse();
+                } else {
+                  _startCollapseTimer();
+                }
               },
             ),
           );

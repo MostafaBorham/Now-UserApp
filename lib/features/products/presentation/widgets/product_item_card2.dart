@@ -206,6 +206,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     widget.productModel?.id,
                                 productQuantity:
                                     widget.productModel?.cartQuantity ?? 0,
+                                stock: widget.productModel?.stock,
                               ),
                             ),
                           ),

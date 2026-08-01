@@ -307,6 +307,7 @@ abstract class LangKeys {
   static const String inTheShoppingCartKey = 'inTheShoppingCart';
   static const String viewCartKey = 'viewCart';
   static const String trustedProductKey = 'trustedProduct';
+  static const String outOfStockKey = 'outOfStock';
   // Sample / placeholder color names
   static const String colorBlueKey = 'colorBlue';
   static const String colorSilverKey = 'colorSilver';

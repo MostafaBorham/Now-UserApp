@@ -15,6 +15,7 @@ class AnimatedCartCounterView extends StatelessWidget {
     super.key,
     required this.counter,
     this.isLoading = false,
+    this.canIncrement = true,
     this.onInc,
     this.onDec,
     this.onDelete,
@@ -22,6 +23,10 @@ class AnimatedCartCounterView extends StatelessWidget {
 
   final int counter;
   final bool isLoading;
+
+  /// Whether another unit still fits within the product's stock. When `false`
+  /// the increment icon is dimmed and stops responding.
+  final bool canIncrement;
   final VoidCallback? onInc;
   final VoidCallback? onDec;
   final VoidCallback? onDelete;
@@ -49,9 +54,12 @@ class AnimatedCartCounterView extends StatelessWidget {
           children: [
             InkWell(
               onTap: isLoading ? null : onInc,
-              child: Assets.media.images.png.increamentIcon.image(
-                width: 15,
-                color: colors.onPrimary,
+              child: Opacity(
+                opacity: canIncrement ? 1 : 0.4,
+                child: Assets.media.images.png.increamentIcon.image(
+                  width: 15,
+                  color: colors.onPrimary,
+                ),
               ),
             ),
             // The number and the spinner have different sizes, so both are kept

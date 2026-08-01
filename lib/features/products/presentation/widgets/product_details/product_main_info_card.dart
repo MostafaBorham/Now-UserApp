@@ -54,6 +54,7 @@ class ProductMainInfoCard extends ConsumerWidget {
     final productQuantity = ref.watch(
       productQuantityProvider,
     );
+    final int maxQuantity = product.stock ?? 1;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -108,6 +109,15 @@ class ProductMainInfoCard extends ConsumerWidget {
                     ],
                   ),
                 ),
+              if (maxQuantity < 1)
+                Text(
+                  LangKeys.outOfStockKey.tr(),
+                  style: AppTextStyles.style16Bold.copyWith(
+                    color: colors.onError,
+                    fontSize: 15,
+                  ),
+                )
+              else
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -119,15 +129,19 @@ class ProductMainInfoCard extends ConsumerWidget {
                   spacing: 4,
                   children: [
                     InkWell(
-                      onTap: () {
-                        productQuantityController.state++;
-                      },
+                      onTap: productQuantity < maxQuantity
+                          ? () {
+                              productQuantityController.state++;
+                            }
+                          : null,
                       customBorder: const CircleBorder(),
                       child: Container(
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: colors.tertiaryContainer,
+                          color: productQuantity < maxQuantity
+                              ? colors.tertiaryContainer
+                              : colors.surfaceContainerLow,
                           shape: BoxShape.circle,
                           boxShadow: AppBoxShadows.blackBottomShadow2,
                         ),
