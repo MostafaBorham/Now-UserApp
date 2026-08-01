@@ -292,5 +292,9 @@
   "specWeightValue": "1.24 kg",
   "size16Inch": "16 inch",
   "size15Inch": "15 inch",
-  "size17Inch": "17 inch"
+  "size17Inch": "17 inch",
+  "sampleBrandCategory": "Dark Chocolate",
+  "sampleBrandName": "Dark Galaxy",
+  "sampleBrandDescription": "Rich 70% cocoa dark chocolate. For lovers of deep and authentic flavor.",
+  "thousandSuffix": "K"
 }

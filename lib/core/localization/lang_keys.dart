@@ -329,4 +329,10 @@ abstract class LangKeys {
   static const String size16InchKey = 'size16Inch';
   static const String size15InchKey = 'size15Inch';
   static const String size17InchKey = 'size17Inch';
+
+  // Store details - sample brand info card
+  static const String sampleBrandCategoryKey = 'sampleBrandCategory';
+  static const String sampleBrandNameKey = 'sampleBrandName';
+  static const String sampleBrandDescriptionKey = 'sampleBrandDescription';
+  static const String thousandSuffixKey = 'thousandSuffix';
 }

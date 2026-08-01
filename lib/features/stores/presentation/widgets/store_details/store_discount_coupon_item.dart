@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -24,8 +24,8 @@ class StoreDiscountCouponItem extends StatelessWidget {
 
     final DateTime? startsAt = DateTime.tryParse(coupon.startsAt ?? '');
     final DateTime? expiresAt = DateTime.tryParse(coupon.expiresAt ?? '');
-    final DateFormat dateFormat =
-        DateFormat.yMMMMd(context.locale.toString());
+    final loc.DateFormat dateFormat =
+        loc.DateFormat.yMMMMd(context.locale.toString());
     final String validityText = [
       if (startsAt != null)
         '${LangKeys.fromKey.tr()} ${dateFormat.format(startsAt)}',
@@ -55,11 +55,12 @@ class StoreDiscountCouponItem extends StatelessWidget {
                 alignment: Alignment.center,
                 color: colors.surfaceBright,
                 child: Row(
+                  textDirection: TextDirection.ltr,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     coupon.isPercentage!? SizedBox() : Assets.media.images.svg.realSaudiCurrency.svg(),
                     Text(
-                      '${coupon.discountValue}',
+                      '${coupon.discountValue?.toInt()}',
                       textAlign: TextAlign.center,
                       style: AppTextStyles.style20Bold.copyWith(
                         color: colors.onSecondaryFixedVariant,
@@ -148,6 +149,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                     borderRadius: AppBorderRadius.brCircular30,
                                   ),
                                   child: Row(
+                                    textDirection: TextDirection.ltr,
                                     mainAxisSize: MainAxisSize.min,
                                     spacing: 4,
                                     children: [
@@ -185,8 +187,8 @@ class StoreDiscountCouponItem extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
-            right: 51.5,
+          PositionedDirectional(
+            end: 60,
             top: -16,
             child: Container(
               width: 32,
@@ -197,8 +199,8 @@ class StoreDiscountCouponItem extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            right: 51.5,
+          PositionedDirectional(
+            end: 60,
             bottom: -16,
             child: Container(
               width: 32,

@@ -31,16 +31,16 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
     final bool hasDiscount = product == null
         ? true
         : (product.comparePrice ?? 0) > (product.effectivePrice ?? 0) &&
-            (product.comparePrice ?? 0) > 0;
+              (product.comparePrice ?? 0) > 0;
     final String discountPercent = product == null
         ? '50'
         : !hasDiscount
-            ? '0'
-            : (((product.comparePrice ?? 0) - (product.effectivePrice ?? 0)) /
-                    (product.comparePrice ?? 1) *
-                    100)
-                .round()
-                .toString();
+        ? '0'
+        : (((product.comparePrice ?? 0) - (product.effectivePrice ?? 0)) /
+                  (product.comparePrice ?? 1) *
+                  100)
+              .round()
+              .toString();
     return InkWell(
       onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
       child: LayoutBuilder(
@@ -74,7 +74,8 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       con.maxWidth * 0.04,
                                     ),
                                     child: AppCachedNetworkImage(
-                                      imageUrl: product?.images?.firstOrNull ?? '',
+                                      imageUrl:
+                                          product?.images?.firstOrNull ?? '',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
@@ -83,8 +84,10 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                                 AppRateWidget(
                                   starColor: colors.onSecondaryContainer,
-                                  rateRatio: product?.vendor?.rating
-                                          ?.toStringAsFixed(1) ??
+                                  rateRatio:
+                                      product?.vendor?.rating?.toStringAsFixed(
+                                        1,
+                                      ) ??
                                       '4',
                                   rateColor: colors.onSurface,
                                   size: con.maxWidth * 0.1,
@@ -95,7 +98,8 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               padding: const EdgeInsets.only(top: 15.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   if (hasDiscount)
                                     Container(
@@ -105,14 +109,15 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: colors.errorContainer,
-                                        borderRadius: BorderRadiusDirectional.only(
-                                          topEnd: Radius.circular(
-                                            con.maxWidth * 0.1,
-                                          ),
-                                          bottomEnd: Radius.circular(
-                                            con.maxWidth * 0.1,
-                                          ),
-                                        ),
+                                        borderRadius:
+                                            BorderRadiusDirectional.only(
+                                              topEnd: Radius.circular(
+                                                con.maxWidth * 0.1,
+                                              ),
+                                              bottomEnd: Radius.circular(
+                                                con.maxWidth * 0.1,
+                                              ),
+                                            ),
                                       ),
                                       child: Text(
                                         '$discountPercent%',
@@ -142,17 +147,15 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         ),
                       ),
                       PositionedDirectional(
-                        bottom: 8,
+                        bottom: 10,
                         end: 2,
-                        child: Material(
-                          elevation: 1,
-                          shape: CircleBorder(),
-                          child: CircularBrandLogo(
-                            radius: con.maxWidth * 0.1,
-                            backgroundColor: colors.onPrimary,
-                            logoUrl: product?.vendor?.logoUrl ??
-                                'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                          ),
+                        child: CircularBrandLogo(
+                          elevation: 0,
+                          radius: con.maxWidth * 0.1,
+                          backgroundColor: colors.onPrimary,
+                          logoUrl:
+                              product?.vendor?.logoUrl ??
+                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                         ),
                       ),
                     ],
@@ -181,7 +184,6 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         spacing: 5,
                         children: [
                           Expanded(
-                            flex: 2,
                             child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Row(
@@ -192,14 +194,16 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                   if (hasDiscount)
                                     OldPriceWidget(
                                       color: colors.inversePrimary,
-                                      price: product?.comparePrice
+                                      price:
+                                          product?.comparePrice
                                               ?.toStringAsFixed(0) ??
                                           '10',
                                       size: con.maxWidth * 0.04,
                                     ),
                                   NewPriceWidget(
                                     color: colors.onSecondary,
-                                    price: product?.effectivePrice
+                                    price:
+                                        product?.effectivePrice
                                             ?.toStringAsFixed(0) ??
                                         '10',
                                     size: con.maxWidth * 0.08,
@@ -208,18 +212,18 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.topEnd,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: ReverseWidget(
-                                  child: AnimatedCartButton(
-                                    productId:
-                                        product?.productId ?? product?.id,
-                                    productQuantity: product?.quantity ?? 0,
-                                  ),
-                                ),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: con.maxWidth * 0.2,
+                              maxWidth: con.maxWidth * 0.5,
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: AnimatedCartButton(
+                                productId:
+                                product?.productId ?? product?.id,
+                                productQuantity: product?.quantity ?? 0,
                               ),
                             ),
                           ),

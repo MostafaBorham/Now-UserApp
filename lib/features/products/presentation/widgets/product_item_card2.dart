@@ -186,12 +186,6 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                               ),
                             ),
                           ),
-                          // The control is width-flexible: it takes whatever
-                          // its current child needs, so the rating text keeps
-                          // every pixel the control does not use. The cap stops
-                          // the counter view from eating the row, and
-                          // `scaleDown` shrinks a child that would exceed it
-                          // instead of overflowing.
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               minHeight: widthCon * 0.2,
