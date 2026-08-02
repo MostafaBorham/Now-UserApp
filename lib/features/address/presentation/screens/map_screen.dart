@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
@@ -13,6 +14,7 @@ class AddNewAddressFromMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(LangKeys.addNewAddress.tr()),
@@ -22,7 +24,13 @@ class AddNewAddressFromMap extends StatelessWidget {
         actions: [Assets.media.images.svg.search.svg()],
       ),
       body: AppMap(),
-      persistentFooterButtons: [AddAddressButton(onPressed: () {})],
+      persistentFooterDecoration: BoxDecoration(
+        color: colors.onPrimary
+      ),
+      persistentFooterAlignment: AlignmentDirectional.center,
+      persistentFooterButtons: [PrimaryAppButton(title: 'Enter address',onTap: () {
+
+      },)],
     );
   }
 }
