@@ -81,5 +81,8 @@
 
         <key>NSPhotoLibraryAddUsageDescription</key>
         <string>This app needs permission to save photos to your library.</string>
+
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>This app needs your location to show your position on the map and find nearby delivery addresses.</string>
 	</dict>
 </plist>
