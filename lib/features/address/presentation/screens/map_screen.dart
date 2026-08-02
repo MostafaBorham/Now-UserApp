@@ -17,6 +17,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
@@ -39,9 +40,10 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     _selectedLocation = widget.currentLocation;
   }
 
-  // Reverse-geocode the picked point before navigating. Only continues to the
-  // details screen when a placemark is resolved; otherwise surfaces an error
-  // and stays on the map.
+  // Reverse-geocode the picked point before navigating. Builds an
+  // [AddressModel] from the resolved placemark and the picked [LatLng], then
+  // continues to the details screen. Only proceeds when a placemark is
+  // resolved; otherwise surfaces an error and stays on the map.
   Future<void> _onEnterAddressTapped() async {
     final LatLng? location = _selectedLocation;
     if (location == null) {
@@ -53,8 +55,9 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       _resolvingAddress = true;
     });
 
-    final Placemark? placemark =
-        await LocationManager.getAddressFromLocation(location);
+    final Placemark? placemark = await LocationManager.getAddressFromLocation(
+      location,
+    );
 
     if (!mounted) return;
 
@@ -67,9 +70,24 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       return;
     }
 
+    final String area = [
+      placemark.subLocality,
+      placemark.locality,
+      placemark.administrativeArea,
+    ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
+
+    final AddressModel address = AddressModel(
+      country: placemark.country,
+      city: placemark.locality,
+      area: area.isEmpty ? placemark.name : area,
+      street: placemark.street,
+      latitude: location.latitude.toString(),
+      longitude: location.longitude.toString(),
+    );
+
     context.pushReplacementNamed(
       AppRoutes.addressDetailsScreen,
-      extra: placemark,
+      extra: address,
     );
   }
 
@@ -78,12 +96,17 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: Text(LangKeys.addNewAddress.tr(),style: AppTextStyles.style24SemiBold.copyWith(
-          color: colors.onSecondary
-        ),),
+        title: Text(
+          LangKeys.addNewAddress.tr(),
+          style: AppTextStyles.style24SemiBold.copyWith(
+            color: colors.onSecondary,
+          ),
+        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
-        leading: ReverseWidget(child: ArrowBackButton(onTap: () => context.pop())),
+        leading: ReverseWidget(
+          child: ArrowBackButton(onTap: () => context.pop()),
+        ),
         actions: [Assets.media.images.svg.search.svg()],
       ),
       body: AppMap(
@@ -94,15 +117,15 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
           });
         },
       ),
-      persistentFooterDecoration: BoxDecoration(
-        color: colors.onPrimary
-      ),
+      persistentFooterDecoration: BoxDecoration(color: colors.onPrimary),
       persistentFooterAlignment: AlignmentDirectional.center,
-      persistentFooterButtons: [PrimaryAppButton(
-        title: LangKeys.enterAddressKey.tr(),
-        isLoading: _resolvingAddress,
-        onTap: _onEnterAddressTapped,
-      )],
+      persistentFooterButtons: [
+        PrimaryAppButton(
+          title: LangKeys.enterAddressKey.tr(),
+          isLoading: _resolvingAddress,
+          onTap: _onEnterAddressTapped,
+        ),
+      ],
     );
   }
 }
@@ -189,9 +212,7 @@ class _AppMapState extends State<AppMap> {
     final controller = _mapController;
     final target = _target;
     if (controller == null || target == null) return;
-    controller.animateCamera(
-      CameraUpdate.newLatLngZoom(target, _targetZoom),
-    );
+    controller.animateCamera(CameraUpdate.newLatLngZoom(target, _targetZoom));
   }
 
   @override
@@ -217,7 +238,7 @@ class _AppMapState extends State<AppMap> {
   Future<void> _loadMarkerIcon() async {
     final icon = await _bitmapDescriptorFromSvg(
       Assets.media.images.svg.mapMarkerIcon.path,
-      width: MediaQuery.sizeOf(context).width*0.2,
+      width: MediaQuery.sizeOf(context).width * 0.2,
     );
     if (!mounted) return;
     setState(() {

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -9,15 +8,16 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_segmented_selector.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import '../../../settings/app_colors.dart';
 import '../../../settings/components/primary_button.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
 class AddressDetailsScreen extends StatefulWidget {
-  const AddressDetailsScreen({super.key, required this.placemark});
+  const AddressDetailsScreen({super.key, required this.address});
 
-  final Placemark placemark;
+  final AddressModel address;
 
   @override
   State<AddressDetailsScreen> createState() => _AddressDetailsScreenState();
@@ -57,12 +57,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final Placemark placemark = widget.placemark;
-    final String area = [
-      placemark.subLocality,
-      placemark.locality,
-      placemark.administrativeArea,
-    ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
+    final String? area = widget.address.area;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -73,8 +68,8 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
             spacing: 10,
             children: [
               AreaSelector(
-                value: area.isEmpty
-                    ? (placemark.name ?? LangKeys.failedToGetArea.tr())
+                value: (area == null || area.isEmpty)
+                    ? LangKeys.failedToGetArea.tr()
                     : area,
                 onChange: () => context.pushReplacementNamed(
                   AppRoutes.addNewAddressFromMapScreen,
