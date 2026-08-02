@@ -24,6 +24,7 @@
   "areYouSureCancel": "Are you sure you want to cancel?",
   "area": "Area",
   "failedToGetArea": "Failed to get area",
+  "failedToGetAddress": "Something went wrong, please try again",
   "backToOrder": "Back to order",
   "bestCategories": "Best Categories",
   "productDetails": "Product Details",

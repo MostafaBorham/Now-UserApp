@@ -4,15 +4,18 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
@@ -28,11 +31,46 @@ class AddNewAddressFromMap extends StatefulWidget {
 
 class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
   LatLng? _selectedLocation;
+  bool _resolvingAddress = false;
 
   @override
   void initState() {
     super.initState();
     _selectedLocation = widget.currentLocation;
+  }
+
+  // Reverse-geocode the picked point before navigating. Only continues to the
+  // details screen when a placemark is resolved; otherwise surfaces an error
+  // and stays on the map.
+  Future<void> _onEnterAddressTapped() async {
+    final LatLng? location = _selectedLocation;
+    if (location == null) {
+      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
+      return;
+    }
+
+    setState(() {
+      _resolvingAddress = true;
+    });
+
+    final Placemark? placemark =
+        await LocationManager.getAddressFromLocation(location);
+
+    if (!mounted) return;
+
+    setState(() {
+      _resolvingAddress = false;
+    });
+
+    if (placemark == null) {
+      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
+      return;
+    }
+
+    context.pushReplacementNamed(
+      AppRoutes.addressDetailsScreen,
+      extra: location,
+    );
   }
 
   @override
@@ -62,10 +100,8 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [PrimaryAppButton(
         title: LangKeys.enterAddressKey.tr(),
-        onTap: () => context.pushReplacementNamed(
-          AppRoutes.addressDetailsScreen,
-          extra: _selectedLocation,
-        ),
+        isLoading: _resolvingAddress,
+        onTap: _onEnterAddressTapped,
       )],
     );
   }

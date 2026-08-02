@@ -27,6 +27,7 @@
   "areYouSureCancel": "هل أنت متأكد من رغبتك في الإلغاء؟",
   "area": "المنطقة",
   "failedToGetArea": "تعذّر تحديد المنطقة",
+  "failedToGetAddress": "حدث خطأ ما، من فضلك حاول مرة أخرى",
   "backToOrder": "العودة إلى الطلب",
   "bestCategories": "أفضل الفئات",
   "building": " اسم المبنى / المجمّع",
