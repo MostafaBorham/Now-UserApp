@@ -107,7 +107,8 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
           spacing: 10,
           children: [
             AreaSelector(value: '', onChange: () {}),
-            Flexible(
+            AspectRatio(
+              aspectRatio: 1.3,
               child: AppTabBar(
                 tabs: [LangKeys.homeKey.tr(), 'Work', LangKeys.otherKey.tr()],
                 tabIcons: [
@@ -174,11 +175,9 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
                 selectedTabColor: colors.primary,
               ),
             ),
-            Flexible(
-              child: PrimaryButton(
-                label: LangKeys.saveAddress.tr(),
-                onPressed: () => context.pop(),
-              ),
+            PrimaryButton(
+              label: LangKeys.saveAddress.tr(),
+              onPressed: () => context.pop(),
             ),
           ],
         ),
