@@ -2,22 +2,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
-import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import '../../../settings/app_colors.dart';
 import '../../../settings/components/primary_button.dart';
-import '../widgets/address_details/address_details_shimmer_view.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
 class AddressDetailsScreen extends StatefulWidget {
-  const AddressDetailsScreen({super.key, this.selectedLocation});
+  const AddressDetailsScreen({super.key, required this.placemark});
 
-  final LatLng? selectedLocation;
+  final Placemark placemark;
 
   @override
   State<AddressDetailsScreen> createState() => _AddressDetailsScreenState();
@@ -34,21 +32,9 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   late final TextEditingController _otherBuildingNameController;
   late final TextEditingController _otherInstructionsController;
 
-  /// Reverse-geocode lookup for the selected map point. Reassigned on retry so
-  /// the [FutureBuilder] re-runs the request.
-  late Future<Placemark?> _addressFuture;
-
-  void _loadAddress() {
-    final LatLng? location = widget.selectedLocation;
-    _addressFuture = location == null
-        ? Future<Placemark?>.value(null)
-        : LocationManager.getAddressFromLocation(location);
-  }
-
   @override
   void initState() {
     super.initState();
-    _loadAddress();
     _homeFloorNumberController = TextEditingController();
     _homeBuildingNameController = TextEditingController();
     _homeInstructionsController = TextEditingController();
@@ -78,35 +64,28 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final Placemark placemark = widget.placemark;
+    final String area = [
+      placemark.subLocality,
+      placemark.locality,
+      placemark.administrativeArea,
+    ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: AppWavedView(
         appBarTitle: LangKeys.addressDetails.tr(),
-        body: FutureBuilder<Placemark?>(
-          future: _addressFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AddressDetailsShimmerView();
-            }
-
-            final Placemark? placemark = snapshot.data;
-            final String area = (snapshot.hasError || placemark == null)
-                ? LangKeys.failedToGetArea.tr()
-                : [
-                    placemark.subLocality,
-                    placemark.locality,
-                    placemark.administrativeArea,
-                  ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
-
-            return Column(
-              spacing: 10,
-              children: [
-                AreaSelector(
-                  value: area.isEmpty
-                      ? (placemark?.name ?? LangKeys.failedToGetArea.tr())
-                      : area,
-                  onChange: () {},
-                ),
+        body: Column(
+          spacing: 10,
+          children: [
+            AreaSelector(
+              value: area.isEmpty
+                  ? (placemark.name ?? LangKeys.failedToGetArea.tr())
+                  : area,
+              onChange: () => context.pushReplacementNamed(
+                AppRoutes.addNewAddressFromMapScreen,
+              ),
+            ),
             AspectRatio(
               aspectRatio: 1.3,
               child: AppTabBar(
@@ -175,13 +154,11 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
                 selectedTabColor: colors.primary,
               ),
             ),
-                PrimaryButton(
-                  label: LangKeys.saveAddress.tr(),
-                  onPressed: () => context.pop(),
-                ),
-              ],
-            );
-          },
+            PrimaryButton(
+              label: LangKeys.saveAddress.tr(),
+              onPressed: () => context.pop(),
+            ),
+          ],
         ),
       ),
     );

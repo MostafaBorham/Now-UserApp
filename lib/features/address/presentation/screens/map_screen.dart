@@ -69,7 +69,7 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
 
     context.pushReplacementNamed(
       AppRoutes.addressDetailsScreen,
-      extra: location,
+      extra: placemark,
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
@@ -271,9 +272,8 @@ abstract class AppRouter {
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
         builder: (context, state) {
-          final extra = state.extra;
           return AddressDetailsScreen(
-            selectedLocation: extra is LatLng ? extra : null,
+            placemark: state.extra as Placemark,
           );
         },
       ),
