@@ -273,7 +273,6 @@ abstract class AppRouter {
         builder: (context, state) {
           final extra = state.extra;
           return AddressDetailsScreen(
-            address: extra is AddressModel ? extra : null,
             selectedLocation: extra is LatLng ? extra : null,
           );
         },
