@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/remote/api/address_endpoints.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 
 /// Raw API calls for the address feature.
 ///
@@ -21,6 +22,33 @@ class AddressApiService {
   Future<Response> getMyAddresses() {
     return _dio.get(
       AddressEndpoints.addresses,
+      cancelToken: _canceller.token,
+    );
+  }
+
+  /// Creates a new address for the current user.
+  ///
+  /// The request body is shaped from [address], sending only the fields the
+  /// backend accepts on creation (server-owned fields such as `id`,
+  /// `user_id`, `full_address` and timestamps are omitted).
+  Future<Response> addAddress({required AddressModel address}) {
+    return _dio.post(
+      AddressEndpoints.addresses,
+      data: <String, dynamic>{
+        'label': address.label,
+        'phone': address.phone,
+        'country': address.country,
+        'city': address.city,
+        'area': address.area,
+        'street': address.street,
+        'building_number': address.buildingNumber,
+        'floor': address.floor,
+        'apartment': address.apartment,
+        'latitude': double.tryParse(address.latitude ?? ''),
+        'longitude': double.tryParse(address.longitude ?? ''),
+        'notes': address.notes,
+        'is_default': address.isDefault ?? false,
+      },
       cancelToken: _canceller.token,
     );
   }

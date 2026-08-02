@@ -1,0 +1,41 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
+
+/// Single task: create a new address for the current user.
+///
+/// Starts idle (`AsyncValue.data(null)`); on success the data holds the created
+/// [AddressModel] returned by the backend. Trigger with
+/// `ref.read(addAddressProvider.notifier).addAddress(address: ...)` and watch
+/// the provider to react to loading / error / success.
+final addAddressProvider =
+    StateNotifierProvider<AddAddressViewModel, AsyncValue<AddressModel?>>(
+      (Ref ref) => AddAddressViewModel(const AsyncValue.data(null)),
+    );
+
+class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
+  AddAddressViewModel(super.initialState);
+
+  final AddressRepo _repo = AddressRepo();
+
+  @override
+  void dispose() {
+    _repo.cancelRequests();
+    super.dispose();
+  }
+
+  Future<void> addAddress({required AddressModel address}) async {
+    state = const AsyncValue.loading();
+
+    final result = await _repo.addAddress(address: address);
+
+    if (!mounted) return;
+
+    state = result.fold(
+      (Failure failure) =>
+          AsyncValue.error(failure.message, StackTrace.current),
+      (AddressModel address) => AsyncValue.data(address),
+    );
+  }
+}
