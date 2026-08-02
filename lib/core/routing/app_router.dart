@@ -271,8 +271,11 @@ abstract class AppRouter {
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
         builder: (context, state) {
-          final address = state.extra as AddressModel?;
-          return AddressDetailsScreen(address: address);
+          final extra = state.extra;
+          return AddressDetailsScreen(
+            address: extra is AddressModel ? extra : null,
+            selectedLocation: extra is LatLng ? extra : null,
+          );
         },
       ),
       GoRoute(

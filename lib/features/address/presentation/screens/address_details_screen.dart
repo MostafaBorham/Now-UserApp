@@ -1,37 +1,22 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-
 import '../../../settings/app_colors.dart';
 import '../../../settings/components/gender_selector.dart';
 import '../../../settings/components/primary_button.dart';
-import '../../../settings/components/profile_header.dart';
 import '../../data/models/address_model.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
-/// Address Details form — also serves as "Edit Address".
-///
-/// This is a single screen with several states: the selected address type
-/// (Home / Work / Other) drives the two address-line placeholders. When an
-/// [address] is passed the screen acts as "Edit Address" — the header title
-/// swaps and the fields are pre-filled from it. Tapping a tab re-renders the
-/// placeholders live.
-///
-/// Sections (see `components/`):
-///   1. [CommonHeader]     – yellow header + wave + back button + title.
-///   2. [AreaSelector]      – selected delivery area + "Change".
-///   3. [CommonScreenTabs]  – Home / Work / Other selector (shared widget,
-///                            reused from the gender toggle).
-///   4. [AddressField] × 3  – floor / building / instructions inputs.
-///   5. [PrimaryButton]     – green "Save Address" (shared widget).
 class AddressDetailsScreen extends StatefulWidget {
   const AddressDetailsScreen({
     super.key,
     this.address,
+    this.selectedLocation,
     this.initialType = 0,
     this.area = 'Downtown - Tahrir',
   });
@@ -40,6 +25,10 @@ class AddressDetailsScreen extends StatefulWidget {
   /// when provided the header reads "Edit Address" and the fields are
   /// pre-filled from it.
   final AddressModel? address;
+
+  /// The map coordinate picked on the previous screen when adding a new
+  /// address via the map flow. Null when editing an existing address.
+  final LatLng? selectedLocation;
 
   /// Tab pre-selected on open: 0 = Home, 1 = Work, 2 = Other.
   final int initialType;
@@ -85,6 +74,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    print('#selected address : ${widget.selectedLocation?.latitude}');
     final AddressModel? address = widget.address;
     _type = _tabIndexForLabel(address?.label) ?? widget.initialType;
     _line1 = TextEditingController(text: address?.floor ?? '');
@@ -92,7 +82,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
     _instructions = TextEditingController(text: address?.notes ?? '');
   }
 
-  /// Maps a stored address label ('Home' / 'Work' / 'Other') to its tab index.
+
   int? _tabIndexForLabel(String? label) {
     if (label == null) return null;
     final int index = _tabs.indexWhere(

@@ -12,14 +12,28 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
-class AddNewAddressFromMap extends StatelessWidget {
+class AddNewAddressFromMap extends StatefulWidget {
   const AddNewAddressFromMap({super.key, this.currentLocation});
 
   final LatLng? currentLocation;
+
+  @override
+  State<AddNewAddressFromMap> createState() => _AddNewAddressFromMapState();
+}
+
+class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
+  LatLng? _selectedLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLocation = widget.currentLocation;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +48,34 @@ class AddNewAddressFromMap extends StatelessWidget {
         leading: ReverseWidget(child: ArrowBackButton(onTap: () => context.pop())),
         actions: [Assets.media.images.svg.search.svg()],
       ),
-      body: AppMap(currentLocation: currentLocation),
+      body: AppMap(
+        currentLocation: widget.currentLocation,
+        onLocationChanged: (LatLng location) {
+          setState(() {
+            _selectedLocation = location;
+          });
+        },
+      ),
       persistentFooterDecoration: BoxDecoration(
         color: colors.onPrimary
       ),
       persistentFooterAlignment: AlignmentDirectional.center,
-      persistentFooterButtons: [PrimaryAppButton(title: LangKeys.enterAddressKey.tr(),onTap: () {
-
-      },)],
+      persistentFooterButtons: [PrimaryAppButton(
+        title: LangKeys.enterAddressKey.tr(),
+        onTap: () => context.pushNamed(
+          AppRoutes.addressDetailsScreen,
+          extra: _selectedLocation,
+        ),
+      )],
     );
   }
 }
 
 class AppMap extends StatefulWidget {
-  const AppMap({super.key, this.currentLocation});
+  const AppMap({super.key, this.currentLocation, this.onLocationChanged});
 
   final LatLng? currentLocation;
+  final ValueChanged<LatLng>? onLocationChanged;
 
   @override
   State<AppMap> createState() => _AppMapState();
@@ -119,6 +145,7 @@ class _AppMapState extends State<AppMap> {
     setState(() {
       _target = resolved;
     });
+    widget.onLocationChanged?.call(resolved);
     _animateToTarget();
   }
 
@@ -234,6 +261,7 @@ class _AppMapState extends State<AppMap> {
     setState(() {
       _target = position;
     });
+    widget.onLocationChanged?.call(position);
     _animateToTarget();
   }
 }
