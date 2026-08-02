@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import '../../../settings/app_colors.dart';
@@ -91,23 +90,21 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
             }
 
             final Placemark? placemark = snapshot.data;
-            if (snapshot.hasError || placemark == null) {
-              return ServerConnectionErrorWidget(
-                onRetry: () => setState(_loadAddress),
-              );
-            }
-
-            final String area = [
-              placemark.subLocality,
-              placemark.locality,
-              placemark.administrativeArea,
-            ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
+            final String area = (snapshot.hasError || placemark == null)
+                ? LangKeys.failedToGetArea.tr()
+                : [
+                    placemark.subLocality,
+                    placemark.locality,
+                    placemark.administrativeArea,
+                  ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
 
             return Column(
               spacing: 10,
               children: [
                 AreaSelector(
-                  value: area.isEmpty ? (placemark.name ?? '') : area,
+                  value: area.isEmpty
+                      ? (placemark?.name ?? LangKeys.failedToGetArea.tr())
+                      : area,
                   onChange: () {},
                 ),
             AspectRatio(

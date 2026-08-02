@@ -23,6 +23,7 @@
   "applyFilters": "Apply Filters",
   "areYouSureCancel": "Are you sure you want to cancel?",
   "area": "Area",
+  "failedToGetArea": "Failed to get area",
   "backToOrder": "Back to order",
   "bestCategories": "Best Categories",
   "productDetails": "Product Details",

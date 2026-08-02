@@ -59,6 +59,7 @@ abstract class LangKeys {
   static const String rateKey = 'rateKey';
 
   static const String area = 'area';
+  static const String failedToGetArea = 'failedToGetArea';
   static const String change = 'change';
   static const String homeAddressSelector = 'homeAddressSelector';
   static const String workAddressSelector = 'workAddressSelector';

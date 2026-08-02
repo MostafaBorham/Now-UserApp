@@ -26,6 +26,7 @@
   "applyFilters": "تطبيق الفلاتر",
   "areYouSureCancel": "هل أنت متأكد من رغبتك في الإلغاء؟",
   "area": "المنطقة",
+  "failedToGetArea": "تعذّر تحديد المنطقة",
   "backToOrder": "العودة إلى الطلب",
   "bestCategories": "أفضل الفئات",
   "building": " اسم المبنى / المجمّع",

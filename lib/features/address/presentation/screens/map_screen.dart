@@ -62,7 +62,7 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       persistentFooterAlignment: AlignmentDirectional.center,
       persistentFooterButtons: [PrimaryAppButton(
         title: LangKeys.enterAddressKey.tr(),
-        onTap: () => context.pushNamed(
+        onTap: () => context.pushReplacementNamed(
           AppRoutes.addressDetailsScreen,
           extra: _selectedLocation,
         ),
