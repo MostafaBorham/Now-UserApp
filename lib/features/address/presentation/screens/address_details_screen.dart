@@ -116,70 +116,69 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
                 views: [
-                  SingleChildScrollView(
-                    child: Column(
-                      spacing: 16,
-                      children: [
-                        AddressField(
-                          hintText: LangKeys.floor.tr(),
-                          controller: _homeFloorNumberController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.building.tr(),
-                          controller: _homeBuildingNameController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.instructions.tr(),
-                          controller: _homeInstructionsController,
-                        ),
-                      ],
-                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 16,
+                    children: [
+                      AddressField(
+                        hintText: LangKeys.floor.tr(),
+                        controller: _homeFloorNumberController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.building.tr(),
+                        controller: _homeBuildingNameController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.instructions.tr(),
+                        controller: _homeInstructionsController,
+                      ),
+                    ],
                   ),
-                  SingleChildScrollView(
-                    child: Column(
-                      spacing: 16,
-                      children: [
-                        AddressField(
-                          hintText: LangKeys.floor.tr(),
-                          controller: _workFloorNumberController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.building.tr(),
-                          controller: _workBuildingNameController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.instructions.tr(),
-                          controller: _workInstructionsController,
-                        ),
-                      ],
-                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 16,
+                    children: [
+                      AddressField(
+                        hintText: LangKeys.floor.tr(),
+                        controller: _workFloorNumberController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.building.tr(),
+                        controller: _workBuildingNameController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.instructions.tr(),
+                        controller: _workInstructionsController,
+                      ),
+                    ],
                   ),
-                  SingleChildScrollView(
-                    child: Column(
-                      spacing: 16,
-                      children: [
-                        AddressField(
-                          hintText: LangKeys.floor.tr(),
-                          controller: _otherFloorNumberController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.building.tr(),
-                          controller: _otherBuildingNameController,
-                        ),
-                        AddressField(
-                          hintText: LangKeys.instructions.tr(),
-                          controller: _otherInstructionsController,
-                        ),
-                      ],
-                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 16,
+                    children: [
+                      AddressField(
+                        hintText: LangKeys.floor.tr(),
+                        controller: _otherFloorNumberController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.building.tr(),
+                        controller: _otherBuildingNameController,
+                      ),
+                      AddressField(
+                        hintText: LangKeys.instructions.tr(),
+                        controller: _otherInstructionsController,
+                      ),
+                    ],
                   ),
                 ],
                 selectedTabColor: colors.primary,
               ),
             ),
-            PrimaryButton(
-              label: LangKeys.saveAddress.tr(),
-              onPressed: () => context.pop(),
+            Flexible(
+              child: PrimaryButton(
+                label: LangKeys.saveAddress.tr(),
+                onPressed: () => context.pop(),
+              ),
             ),
           ],
         ),
