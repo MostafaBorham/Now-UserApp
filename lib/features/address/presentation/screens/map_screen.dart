@@ -44,7 +44,7 @@ class AppMap extends StatefulWidget {
 
 class _AppMapState extends State<AppMap> {
   late GoogleMapController _mapController;
-  String? _darkMapStyle;
+  String? _mapStyle;
 
   @override
   void initState() {
@@ -54,16 +54,17 @@ class _AppMapState extends State<AppMap> {
 
   // Load the styling JSON from application assets
   Future<void> _loadMapStyle() async {
-    final style = await rootBundle.loadString('assets/json/map.json');
+    final style = await rootBundle.loadString(Assets.json.map);
+    if (!mounted) return;
     setState(() {
-      _darkMapStyle = style;
+      _mapStyle = style;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
-      style: _darkMapStyle,
+      style: _mapStyle,
       zoomControlsEnabled: false,
       initialCameraPosition: CameraPosition(
         target: LatLng(30.115508, 31.403403),

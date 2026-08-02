@@ -34,11 +34,8 @@ class $AssetsJsonGen {
   /// File path: assets/json/splash.json
   LottieGenImage get splash => const LottieGenImage('assets/json/splash.json');
 
-  /// File path: assets/json/test.json
-  String get test => 'assets/json/test.json';
-
   /// List of all assets
-  List<dynamic> get values => [map, splash, test];
+  List<dynamic> get values => [map, splash];
 }
 
 class $AssetsMediaGen {
@@ -422,6 +419,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get logout =>
       const SvgGenImage('assets/media/images/svg/logout.svg');
 
+  /// File path: assets/media/images/svg/map-marker-icon.svg
+  SvgGenImage get mapMarkerIcon =>
+      const SvgGenImage('assets/media/images/svg/map-marker-icon.svg');
+
   /// File path: assets/media/images/svg/market-icon.svg
   SvgGenImage get marketIcon =>
       const SvgGenImage('assets/media/images/svg/market-icon.svg');
@@ -724,6 +725,7 @@ class $AssetsMediaImagesSvgGen {
     logoHorizontal,
     logoVertical,
     logout,
+    mapMarkerIcon,
     marketIcon,
     masterCardLogo,
     masterLogo,
