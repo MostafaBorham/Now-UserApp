@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../settings/app_colors.dart';
 
@@ -12,11 +13,13 @@ class AddressField extends StatelessWidget {
     required this.hintText,
     this.controller,
     this.keyboardType,
+    this.inputFormatters,
   });
 
   final String hintText;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,7 @@ class AddressField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
         decoration: InputDecoration(
           isDense: true,

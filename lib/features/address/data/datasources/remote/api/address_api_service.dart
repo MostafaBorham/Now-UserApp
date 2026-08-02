@@ -20,14 +20,14 @@ class AddressApiService {
 
   Future<Response> getMyAddresses() {
     return _dio.get(
-      AddressEndpoints.getMyAddresses,
+      AddressEndpoints.addresses,
       cancelToken: _canceller.token,
     );
   }
 
   Future<Response> getDefaultAddress() {
     return _dio.get(
-      AddressEndpoints.getDefaultAddress,
+      AddressEndpoints.defaultAddress,
       cancelToken: _canceller.token,
     );
   }

@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_segmented_selector.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import '../../../settings/app_colors.dart';
 import '../../../settings/components/primary_button.dart';
@@ -22,43 +24,34 @@ class AddressDetailsScreen extends StatefulWidget {
 }
 
 class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
-  late final TextEditingController _homeFloorNumberController;
-  late final TextEditingController _homeBuildingNameController;
-  late final TextEditingController _homeInstructionsController;
-  late final TextEditingController _workFloorNumberController;
-  late final TextEditingController _workBuildingNameController;
-  late final TextEditingController _workInstructionsController;
-  late final TextEditingController _otherFloorNumberController;
-  late final TextEditingController _otherBuildingNameController;
-  late final TextEditingController _otherInstructionsController;
+  late final TextEditingController _floorNumberController;
+  late final TextEditingController _buildingNameController;
+  late final TextEditingController _instructionsController;
 
   @override
   void initState() {
     super.initState();
-    _homeFloorNumberController = TextEditingController();
-    _homeBuildingNameController = TextEditingController();
-    _homeInstructionsController = TextEditingController();
-    _workFloorNumberController = TextEditingController();
-    _workBuildingNameController = TextEditingController();
-    _workInstructionsController = TextEditingController();
-    _otherFloorNumberController = TextEditingController();
-    _otherBuildingNameController = TextEditingController();
-    _otherInstructionsController = TextEditingController();
+    _floorNumberController = TextEditingController();
+    _buildingNameController = TextEditingController();
+    _instructionsController = TextEditingController();
   }
-
 
   @override
   void dispose() {
-    _homeFloorNumberController.dispose();
-    _homeBuildingNameController.dispose();
-    _homeInstructionsController.dispose();
-    _workFloorNumberController.dispose();
-    _workBuildingNameController.dispose();
-    _workInstructionsController.dispose();
-    _otherFloorNumberController.dispose();
-    _otherBuildingNameController.dispose();
-    _otherInstructionsController.dispose();
+    _floorNumberController.dispose();
+    _buildingNameController.dispose();
+    _instructionsController.dispose();
     super.dispose();
+  }
+
+  void _saveAddress() {
+    final bool isFloorEmpty = _floorNumberController.text.trim().isEmpty;
+    final bool isBuildingEmpty = _buildingNameController.text.trim().isEmpty;
+    if (isFloorEmpty || isBuildingEmpty) {
+      ErrorSnackBar.show(context, LangKeys.completeAddressInfo);
+      return;
+    }
+    context.pop();
   }
 
   @override
@@ -75,90 +68,57 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
       backgroundColor: AppColors.background,
       body: AppWavedView(
         appBarTitle: LangKeys.addressDetails.tr(),
-        body: Column(
-          spacing: 10,
-          children: [
-            AreaSelector(
-              value: area.isEmpty
-                  ? (placemark.name ?? LangKeys.failedToGetArea.tr())
-                  : area,
-              onChange: () => context.pushReplacementNamed(
-                AppRoutes.addNewAddressFromMapScreen,
+        body: SingleChildScrollView(
+          child: Column(
+            spacing: 10,
+            children: [
+              AreaSelector(
+                value: area.isEmpty
+                    ? (placemark.name ?? LangKeys.failedToGetArea.tr())
+                    : area,
+                onChange: () => context.pushReplacementNamed(
+                  AppRoutes.addNewAddressFromMapScreen,
+                ),
               ),
-            ),
-            AspectRatio(
-              aspectRatio: 1.3,
-              child: AppTabBar(
-                tabs: [LangKeys.homeAddressSelector.tr(), LangKeys.workAddressSelector.tr(), LangKeys.otherKey.tr()],
-                tabIcons: [
+              AppSegmentedSelector(
+                items: [
+                  LangKeys.homeAddressSelector.tr(),
+                  LangKeys.workAddressSelector.tr(),
+                  LangKeys.otherKey.tr(),
+                ],
+                itemIcons: [
                   Assets.media.images.svg.homeSelected.svg(),
                   Assets.media.images.svg.workSelected.svg(),
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
-                views: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _homeFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _homeBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _homeInstructionsController,
-                      ),
-                    ],
+                selectedColor: colors.primary,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 16,
+                children: [
+                  AddressField(
+                    hintText: LangKeys.floor.tr(),
+                    controller: _floorNumberController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _workFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _workBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _workInstructionsController,
-                      ),
-                    ],
+                  AddressField(
+                    hintText: LangKeys.building.tr(),
+                    controller: _buildingNameController,
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _otherFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _otherBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _otherInstructionsController,
-                      ),
-                    ],
+                  AddressField(
+                    hintText: LangKeys.instructions.tr(),
+                    controller: _instructionsController,
                   ),
                 ],
-                selectedTabColor: colors.primary,
               ),
-            ),
-            PrimaryButton(
-              label: LangKeys.saveAddress.tr(),
-              onPressed: () => context.pop(),
-            ),
-          ],
+              PrimaryButton(
+                label: LangKeys.saveAddress.tr(),
+                onPressed: _saveAddress,
+              ),
+            ],
+          ),
         ),
       ),
     );

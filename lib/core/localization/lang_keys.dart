@@ -70,6 +70,7 @@ abstract class LangKeys {
   static const String instructions = 'instructions';
   static const String inKey = 'in';
   static const String saveAddress = 'saveAddress';
+  static const String completeAddressInfo = 'completeAddressInfo';
   static const String editAddress = 'editAddress';
   static const String addressDetails = 'addressDetails';
   static const String addNewAddress = 'addNewAddress';
