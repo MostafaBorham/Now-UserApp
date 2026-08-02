@@ -45,19 +45,14 @@ class AddressDetailsShimmerView extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Home / Work / Other tab pill.
-          Container(
-            height: 58,
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: colors.onSurface.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(29),
-            ),
-            child: Row(
-              children: List.generate(
-                3,
-                (_) => Expanded(
+          Row(
+            spacing: 8,
+            children: List.generate(
+              3,
+              (_) => Expanded(
+                child: AspectRatio(
+                  aspectRatio: 2.5,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       color: colors.onSurface,
                       borderRadius: BorderRadius.circular(25),

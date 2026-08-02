@@ -113,7 +113,7 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
             AspectRatio(
               aspectRatio: 1.3,
               child: AppTabBar(
-                tabs: [LangKeys.homeKey.tr(), 'Work', LangKeys.otherKey.tr()],
+                tabs: [LangKeys.homeAddressSelector.tr(), LangKeys.workAddressSelector.tr(), LangKeys.otherKey.tr()],
                 tabIcons: [
                   Assets.media.images.svg.homeSelected.svg(),
                   Assets.media.images.svg.workSelected.svg(),
