@@ -15,10 +15,7 @@ import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
 class AddressDetailsScreen extends StatefulWidget {
-  const AddressDetailsScreen({
-    super.key,
-    this.selectedLocation,
-  });
+  const AddressDetailsScreen({super.key, this.selectedLocation});
 
   final LatLng? selectedLocation;
 
@@ -27,12 +24,6 @@ class AddressDetailsScreen extends StatefulWidget {
 }
 
 class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
-  static final List<String> _tabIcons = [
-    Assets.media.images.svg.homeSelected.path,
-    Assets.media.images.svg.workSelected.path,
-    Assets.media.images.svg.otherSelected.path,
-  ];
-
   late final TextEditingController _homeFloorNumberController;
   late final TextEditingController _homeBuildingNameController;
   late final TextEditingController _homeInstructionsController;
@@ -42,7 +33,6 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   late final TextEditingController _otherFloorNumberController;
   late final TextEditingController _otherBuildingNameController;
   late final TextEditingController _otherInstructionsController;
-
 
   @override
   void initState() {
@@ -116,75 +106,76 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
         body: Column(
           spacing: 10,
           children: [
-            AreaSelector(
-              value:
-                  '',
-              onChange: () {},
-            ),
+            AreaSelector(value: '', onChange: () {}),
             Flexible(
-              child: AppTabBar(tabs: [
-                LangKeys.homeKey.tr(),
-                'Work',
-                LangKeys.otherKey.tr(),
-              ], views: [
-                SingleChildScrollView(
-                  child: Column(
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _homeFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _homeBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _homeInstructionsController,
-                      ),
-                    ],
+              child: AppTabBar(
+                tabs: [LangKeys.homeKey.tr(), 'Work', LangKeys.otherKey.tr()],
+                tabIcons: [
+                  Assets.media.images.svg.homeSelected.svg(),
+                  Assets.media.images.svg.workSelected.svg(),
+                  Assets.media.images.svg.otherSelected.svg(),
+                ],
+                views: [
+                  SingleChildScrollView(
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        AddressField(
+                          hintText: LangKeys.floor.tr(),
+                          controller: _homeFloorNumberController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.building.tr(),
+                          controller: _homeBuildingNameController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.instructions.tr(),
+                          controller: _homeInstructionsController,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _workFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _workBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _workInstructionsController,
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        AddressField(
+                          hintText: LangKeys.floor.tr(),
+                          controller: _workFloorNumberController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.building.tr(),
+                          controller: _workBuildingNameController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.instructions.tr(),
+                          controller: _workInstructionsController,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    spacing: 16,
-                    children: [
-                      AddressField(
-                        hintText: LangKeys.floor.tr(),
-                        controller: _otherFloorNumberController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.building.tr(),
-                        controller: _otherBuildingNameController,
-                      ),
-                      AddressField(
-                        hintText: LangKeys.instructions.tr(),
-                        controller: _otherInstructionsController,
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        AddressField(
+                          hintText: LangKeys.floor.tr(),
+                          controller: _otherFloorNumberController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.building.tr(),
+                          controller: _otherBuildingNameController,
+                        ),
+                        AddressField(
+                          hintText: LangKeys.instructions.tr(),
+                          controller: _otherInstructionsController,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ], selectedTabColor: colors.primary,),
+                ],
+                selectedTabColor: colors.primary,
+              ),
             ),
             PrimaryButton(
               label: LangKeys.saveAddress.tr(),
