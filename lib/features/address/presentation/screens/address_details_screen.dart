@@ -48,39 +48,6 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
     _otherInstructionsController = TextEditingController();
   }
 
-  Future<void> _resolveAreaFromLocation(LatLng location) async {
-    try {
-      await setLocaleIdentifier(context.locale.toLanguageTag());
-      final List<Placemark> placemarks = await placemarkFromCoordinates(
-        location.latitude,
-        location.longitude,
-      );
-      if (!mounted) return;
-      final Placemark? p = placemarks.isNotEmpty ? placemarks.first : null;
-      final String? area = _formatArea(p);
-      print(area);
-    } catch (e, s) {
-      print('catch = $e');
-      print('$s');
-      if (!mounted) return;
-    }
-  }
-
-  String? _formatArea(Placemark? p) {
-    if (p == null) return null;
-    final List<String> parts = <String>[
-      p.subLocality ?? '',
-      p.locality ?? '',
-      p.administrativeArea ?? '',
-    ].where((String s) => s.trim().isNotEmpty).toList();
-    // Deduplicate consecutive equal parts (some OSes repeat locality).
-    final List<String> unique = <String>[];
-    for (final String part in parts) {
-      if (unique.isEmpty || unique.last != part) unique.add(part);
-    }
-    if (unique.isEmpty) return null;
-    return unique.take(2).join(' - ');
-  }
 
   @override
   void dispose() {
