@@ -9,9 +9,10 @@ abstract class LocationManager {
         location.latitude,
         location.longitude,
       );
-
+      print('#address : ${addresses.firstOrNull}');
       return addresses.isNotEmpty ? addresses.first : null;
-    } catch (_) {
+    } catch (e) {
+      print('error in address : $e');
       return null;
     }
   }

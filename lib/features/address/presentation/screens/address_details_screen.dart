@@ -6,11 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
+import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import '../../../settings/app_colors.dart';
-import '../../../settings/components/gender_selector.dart';
 import '../../../settings/components/primary_button.dart';
-import '../../data/models/address_model.dart';
+import '../widgets/address_details/address_details_shimmer_view.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
@@ -34,9 +35,21 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
   late final TextEditingController _otherBuildingNameController;
   late final TextEditingController _otherInstructionsController;
 
+  /// Reverse-geocode lookup for the selected map point. Reassigned on retry so
+  /// the [FutureBuilder] re-runs the request.
+  late Future<Placemark?> _addressFuture;
+
+  void _loadAddress() {
+    final LatLng? location = widget.selectedLocation;
+    _addressFuture = location == null
+        ? Future<Placemark?>.value(null)
+        : LocationManager.getAddressFromLocation(location);
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadAddress();
     _homeFloorNumberController = TextEditingController();
     _homeBuildingNameController = TextEditingController();
     _homeInstructionsController = TextEditingController();
@@ -70,10 +83,33 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
       backgroundColor: AppColors.background,
       body: AppWavedView(
         appBarTitle: LangKeys.addressDetails.tr(),
-        body: Column(
-          spacing: 10,
-          children: [
-            AreaSelector(value: '', onChange: () {}),
+        body: FutureBuilder<Placemark?>(
+          future: _addressFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const AddressDetailsShimmerView();
+            }
+
+            final Placemark? placemark = snapshot.data;
+            if (snapshot.hasError || placemark == null) {
+              return ServerConnectionErrorWidget(
+                onRetry: () => setState(_loadAddress),
+              );
+            }
+
+            final String area = [
+              placemark.subLocality,
+              placemark.locality,
+              placemark.administrativeArea,
+            ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
+
+            return Column(
+              spacing: 10,
+              children: [
+                AreaSelector(
+                  value: area.isEmpty ? (placemark.name ?? '') : area,
+                  onChange: () {},
+                ),
             AspectRatio(
               aspectRatio: 1.3,
               child: AppTabBar(
@@ -142,11 +178,13 @@ class _AddressDetailsScreenState extends State<AddressDetailsScreen> {
                 selectedTabColor: colors.primary,
               ),
             ),
-            PrimaryButton(
-              label: LangKeys.saveAddress.tr(),
-              onPressed: () => context.pop(),
-            ),
-          ],
+                PrimaryButton(
+                  label: LangKeys.saveAddress.tr(),
+                  onPressed: () => context.pop(),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
