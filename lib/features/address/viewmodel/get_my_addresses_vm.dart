@@ -44,6 +44,19 @@ class GetMyAddressesViewModel
     );
   }
 
+  /// Appends a freshly created [address] to the currently loaded list.
+  ///
+  /// No-op unless the current state is [AsyncData]; if the addresses have not
+  /// been loaded yet there is no list to append to (the screen fetches on next
+  /// watch anyway).
+  void addNewAddress({required AddressModel address}) {
+    final List<AddressModel>? addresses = state.value;
+
+    if (addresses == null) return;
+
+    state = AsyncValue.data(<AddressModel>[...addresses, address]);
+  }
+
   /// Marks [address] as the default in the currently loaded list.
   ///
   /// No-op unless the current state is [AsyncData] and the list actually

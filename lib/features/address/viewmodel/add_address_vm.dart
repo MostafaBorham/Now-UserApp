@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
 /// Single task: create a new address for the current user.
 ///
@@ -11,12 +12,13 @@ import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dar
 /// the provider to react to loading / error / success.
 final addAddressProvider =
     StateNotifierProvider<AddAddressViewModel, AsyncValue<AddressModel?>>(
-      (Ref ref) => AddAddressViewModel(const AsyncValue.data(null)),
+      (Ref ref) => AddAddressViewModel(const AsyncValue.data(null), ref),
     );
 
 class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
-  AddAddressViewModel(super.initialState);
+  AddAddressViewModel(super.initialState, this._ref);
 
+  final Ref _ref;
   final AddressRepo _repo = AddressRepo();
 
   @override
@@ -35,7 +37,14 @@ class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
     state = result.fold(
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
-      (AddressModel address) => AsyncValue.data(address),
+      (AddressModel created) {
+        // Push the newly created address into the loaded list before flipping
+        // to success, so any screen watching the list updates in the same frame.
+        _ref
+            .read(getMyAddressesProvider.notifier)
+            .addNewAddress(address: created);
+        return AsyncValue.data(created);
+      },
     );
   }
 }
