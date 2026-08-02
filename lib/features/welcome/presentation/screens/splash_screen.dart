@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
@@ -85,12 +86,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     }
   }
 
+  /// Once the logo animation ends, kick off data loading and the location
+  /// permission request together. We wait for both — including the user's
+  /// allow/refuse response — before navigating to the next screen.
   Future<void> _initAppDependencies() async {
     setState(() => showLoader = true);
     await Future.wait([
       // ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
-      ref.read(getCartProvider.notifier).getCart()
+      ref.read(getCartProvider.notifier).getCart(),
+      LocationPermissionService.request(),
     ]).whenComplete(() {
       if(mounted) {
         context.goNamed(AppRoutes.onBoardingScreen);
