@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
@@ -277,7 +278,10 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addNewAddressFromMapScreen,
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
-        builder: (context, state) => const AddNewAddressFromMap(),
+        builder: (context, state) {
+          final currentLocation = state.extra as LatLng?;
+          return AddNewAddressFromMap(currentLocation: currentLocation);
+        },
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,

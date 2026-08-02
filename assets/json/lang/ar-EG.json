@@ -179,6 +179,7 @@
   "refunded": "تم الاسترداد",
   "resend": "إعادة الإرسال",
   "retry": "إعادة المحاولة",
+  "enterAddress": "أدخل العنوان",
   "saveGuestSessionFailed": "فشل حفظ جلسة الضيف، يرجى المحاولة مرة أخرى.",
   "readGuestSessionFailed": "فشل قراءة جلسة الضيف، يرجى المحاولة مرة أخرى.",
   "saveUserSessionFailed": "فشل حفظ جلستك، يرجى المحاولة مرة أخرى.",
