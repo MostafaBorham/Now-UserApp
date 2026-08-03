@@ -13,14 +13,21 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.dart';
 import '../../../settings/app_colors.dart';
-import '../../../settings/components/primary_button.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
 class AddressDetailsScreen extends ConsumerStatefulWidget {
-  const AddressDetailsScreen({super.key, required this.address});
+  const AddressDetailsScreen({
+    super.key,
+    required this.address,
+    this.cameFromMap = false,
+  });
 
   final AddressModel address;
+
+  /// True when this screen was pushed from the map, which is therefore still
+  /// in the stack — "Change" pops back to it instead of opening a new map.
+  final bool cameFromMap;
 
   @override
   ConsumerState<AddressDetailsScreen> createState() =>
@@ -81,7 +88,9 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     ref.listen<AsyncValue<AddressModel?>>(addAddressProvider, (previous, next) {
       next.whenOrNull(
         data: (AddressModel? created) {
-          if (created != null) context.pop();
+          // Report the save back to the map (if any) so it can pop itself too;
+          // harmless when opened from the address list, which ignores it.
+          if (created != null) context.pop(true);
         },
         error: (Object error, _) {
           ErrorSnackBar.show(context, error.toString());
@@ -103,9 +112,17 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 value: (area == null || area.isEmpty)
                     ? LangKeys.failedToGetArea.tr()
                     : area,
-                onChange: () => context.pushReplacementNamed(
-                  AppRoutes.addNewAddressFromMapScreen,
-                ),
+                onChange: () {
+                  // Coming from the map, just reveal it again; otherwise (edit
+                  // from the address list) open a map to re-pick the location.
+                  if (widget.cameFromMap) {
+                    context.pop();
+                  } else {
+                    context.pushReplacementNamed(
+                      AppRoutes.addNewAddressFromMapScreen,
+                    );
+                  }
+                },
               ),
               AppSegmentedSelector(
                 items: [
