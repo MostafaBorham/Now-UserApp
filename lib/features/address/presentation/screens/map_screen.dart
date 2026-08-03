@@ -46,7 +46,6 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
   Future<void> _onSearchTapped() async {
     final LatLng? picked = await context.pushNamed<LatLng>(
       AppRoutes.addressSearchScreen,
-      extra: _selectedLocation,
     );
 
     if (!mounted || picked == null) return;

@@ -10,8 +10,11 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/place_suggestion_model.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/widgets/places_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/place_autocomplete_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/recent_address_search_vm.dart';
 
@@ -39,9 +42,11 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
   String _query = '';
 
-  /// Place id whose coordinates are being fetched, so only the tapped tile
-  /// spins and a second tap cannot start a parallel navigation.
-  String? _resolvingPlaceId;
+  /// Set while the coordinates of a picked suggestion are being fetched, so a
+  /// second tap cannot start a parallel navigation. Deliberately invisible:
+  /// picking a place goes straight back to the map instead of showing a
+  /// spinner in place of the tile's search icon.
+  bool _isResolving = false;
 
   bool get _hasQuery => _query.trim().isNotEmpty;
 
@@ -76,8 +81,8 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
   /// map, which recenters its pin so the user can confirm it before entering
   /// the address details.
   Future<void> _onSuggestionTapped(PlaceSuggestionModel suggestion) async {
-    if (_resolvingPlaceId != null) return;
-    setState(() => _resolvingPlaceId = suggestion.placeId);
+    if (_isResolving) return;
+    _isResolving = true;
 
     // A term that led to a pick is worth remembering, and re-adding one that
     // is already stored moves it back to the front.
@@ -95,7 +100,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
         );
 
     if (!mounted) return;
-    setState(() => _resolvingPlaceId = null);
+    _isResolving = false;
 
     result.fold(
       (Failure failure) => ErrorSnackBar.show(context, failure.message),
@@ -148,29 +153,18 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
               child: !_hasQuery
                   ? const SizedBox(width: double.infinity)
                   : suggestions.when(
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
+                      loading: () => const PlacesShimmerView(),
                       // `Failure.message` is a LangKeys key or a raw message
                       // from Google — `.tr()` leaves the latter untouched.
-                      error: (Object error, StackTrace _) => Center(
-                        child: Text(
-                          error.toString().tr(),
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.style16Regular.copyWith(
-                            color: colors.tertiaryContainer,
+                      error: (Object error, StackTrace _) =>
+                          ServerConnectionErrorWidget(
+                            message: error.toString(),
+                            onRetry: () => _onQueryChanged(_query),
                           ),
-                        ),
-                      ),
                       data: (List<PlaceSuggestionModel> results) =>
                           results.isEmpty
-                          ? Center(
-                              child: Text(
-                                LangKeys.noAddressResultsKey.tr(),
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.style16Regular.copyWith(
-                                  color: colors.tertiaryContainer,
-                                ),
-                              ),
+                          ? NoItemsWidget(
+                              emptyMessage: LangKeys.noAddressResultsKey.tr(),
                             )
                           : ListView.separated(
                               keyboardDismissBehavior:
@@ -183,33 +177,14 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
                               itemBuilder: (BuildContext context, int index) {
                                 final PlaceSuggestionModel suggestion =
                                     results[index];
-                                final bool isResolving =
-                                    _resolvingPlaceId == suggestion.placeId;
 
                                 return ListTile(
                                   contentPadding: EdgeInsets.zero,
-                                  onTap: isResolving
-                                      ? null
-                                      : () => _onSuggestionTapped(suggestion),
+                                  onTap: () => _onSuggestionTapped(suggestion),
                                   leading: SizedBox.square(
                                     dimension: 24,
-                                    child: isResolving
-                                        ? Center(
-                                            child: SizedBox.square(
-                                              dimension: 18,
-                                              child:
-                                                  CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    color: colors.primary,
-                                                  ),
-                                            ),
-                                          )
-                                        : Assets
-                                              .media
-                                              .images
-                                              .svg
-                                              .searchIcon
-                                              .svg(),
+                                    child: Assets.media.images.svg.searchIcon
+                                        .svg(),
                                   ),
                                   title: Text(
                                     suggestion.mainText,
