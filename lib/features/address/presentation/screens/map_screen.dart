@@ -18,7 +18,6 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/features/address/presentation/widgets/add_address_button.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
 class AddNewAddressFromMap extends StatefulWidget {
@@ -172,13 +171,18 @@ class _AppMapState extends State<AppMap> {
   bool _loadingMarker = false;
   LatLng? _target;
   bool _mapReady = false;
+  bool _locationResolved = false;
 
   @override
   void initState() {
     super.initState();
     _target = widget.currentLocation;
     _loadMapStyle();
-    if (_target == null) {
+    // The map is only built once the camera target is final, so it never
+    // loads on one location and then jumps to another.
+    if (_target != null) {
+      _locationResolved = true;
+    } else {
       _resolveDeviceLocation();
     }
     // Defer building the GoogleMap platform view until after the push
@@ -193,16 +197,23 @@ class _AppMapState extends State<AppMap> {
     });
   }
 
+  @override
+  void dispose() {
+_mapController?.dispose();
+    super.dispose();
+  }
+
   // Falls back through: getCurrentPosition -> getLastKnownPosition.
   // getLastKnownPosition can still return a fix even when the location
   // service is currently disabled, so it is the safety net.
+  // Always flips [_locationResolved], even when nothing could be resolved —
+  // the map then opens on [_fallbackTarget] rather than waiting forever.
   Future<void> _resolveDeviceLocation() async {
-    final granted = await LocationPermissionService.request();
-    if (!mounted) return;
-
     LatLng? resolved;
 
-    if (granted) {
+    final granted = await LocationPermissionService.request();
+
+    if (mounted && granted) {
       try {
         final current = await Geolocator.getCurrentPosition();
         resolved = LatLng(current.latitude, current.longitude);
@@ -211,9 +222,7 @@ class _AppMapState extends State<AppMap> {
       }
     }
 
-    if (!mounted) return;
-
-    if (resolved == null) {
+    if (mounted && resolved == null) {
       try {
         final last = await Geolocator.getLastKnownPosition();
         if (last != null) {
@@ -222,12 +231,16 @@ class _AppMapState extends State<AppMap> {
       } catch (_) {}
     }
 
-    if (!mounted || resolved == null) return;
+    if (!mounted) return;
+
     setState(() {
       _target = resolved;
+      _locationResolved = true;
     });
-    widget.onLocationChanged?.call(resolved);
-    _animateToTarget();
+
+    if (resolved != null) {
+      widget.onLocationChanged?.call(resolved);
+    }
   }
 
   void _animateToTarget() {
@@ -324,7 +337,9 @@ class _AppMapState extends State<AppMap> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_mapReady) {
+    // Wait for both the deferred platform-view build and the resolved
+    // location, so the first frame of the map is already on the right spot.
+    if (!_mapReady || !_locationResolved) {
       return const Center(child: CircularProgressIndicator());
     }
     final LatLng markerPosition = _target ?? _fallbackTarget;
@@ -344,12 +359,9 @@ class _AppMapState extends State<AppMap> {
           ),
       },
       onMapCreated: (GoogleMapController controller) {
+        // No camera move here: [initialCameraPosition] is already the final
+        // target, since the map is not built before the location is resolved.
         _mapController = controller;
-        // If widget.currentLocation was provided, initialCameraPosition
-        // already frames it; this animate is a no-op in that case but
-        // guarantees the camera lands on any location resolved after the
-        // map was built.
-        _animateToTarget();
       },
       onTap: _onMapTapped,
     );
