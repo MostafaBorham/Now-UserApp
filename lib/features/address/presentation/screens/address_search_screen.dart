@@ -169,50 +169,63 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
                             ? NoItemsWidget(
                                 emptyMessage: LangKeys.noAddressResultsKey.tr(),
                               )
-                            : ListView.separated(
-                                keyboardDismissBehavior:
-                                    ScrollViewKeyboardDismissBehavior.onDrag,
-                                padding: EdgeInsets.zero,
-                                itemCount: results.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const SizedBox(height: 4),
-                                itemBuilder: (BuildContext context, int index) {
-                                  final PlaceSuggestionModel suggestion =
-                                      results[index];
+                            : Material(
+                                type: MaterialType.transparency,
+                                child: ListView.separated(
+                                  keyboardDismissBehavior:
+                                      ScrollViewKeyboardDismissBehavior.onDrag,
+                                  padding: EdgeInsets.zero,
+                                  itemCount: results.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const SizedBox(height: 4),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                        final PlaceSuggestionModel suggestion =
+                                            results[index];
 
-                                  return ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    onTap: () =>
-                                        _onSuggestionTapped(suggestion),
-                                    leading: ReverseWidget(
-                                      child: SizedBox.square(
-                                        dimension: 24,
-                                        child: Assets.media.images.svg.searchIcon
-                                            .svg(),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      suggestion.mainText,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: AppTextStyles.style16Medium
-                                          .copyWith(color: colors.onSecondary),
-                                    ),
-                                    subtitle: suggestion.secondaryText.isEmpty
-                                        ? null
-                                        : Text(
-                                            suggestion.secondaryText,
-                                            maxLines: 2,
+                                        return ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          onTap: () =>
+                                              _onSuggestionTapped(suggestion),
+                                          leading: ReverseWidget(
+                                            child: SizedBox.square(
+                                              dimension: 24,
+                                              child: Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .searchIcon
+                                                  .svg(),
+                                            ),
+                                          ),
+                                          title: Text(
+                                            suggestion.mainText,
+                                            maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: AppTextStyles.style14Regular
+                                            style: AppTextStyles.style16Medium
                                                 .copyWith(
-                                                  color:
-                                                      colors.tertiaryContainer,
+                                                  color: colors.onSecondary,
                                                 ),
                                           ),
-                                  );
-                                },
+                                          subtitle:
+                                              suggestion.secondaryText.isEmpty
+                                              ? null
+                                              : Text(
+                                                  suggestion.secondaryText,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: AppTextStyles
+                                                      .style14Regular
+                                                      .copyWith(
+                                                        color: colors
+                                                            .tertiaryContainer,
+                                                      ),
+                                                ),
+                                        );
+                                      },
+                                ),
                               ),
                       ),
               ),
