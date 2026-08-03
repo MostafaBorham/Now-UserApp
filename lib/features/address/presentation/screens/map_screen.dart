@@ -17,7 +17,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
-import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
+
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
 
@@ -216,15 +216,10 @@ _mapController?.dispose();
     super.dispose();
   }
 
-  // Falls back through: getCurrentPosition -> getLastKnownPosition.
-  // getLastKnownPosition can still return a fix even when the location
-  // service is currently disabled, so it is the safety net.
-  // Always flips [_locationResolved], even when nothing could be resolved —
-  // the map then opens on [_fallbackTarget] rather than waiting forever.
   Future<void> _resolveDeviceLocation() async {
     LatLng? resolved;
 
-    final granted = await LocationPermissionService.request();
+    final granted = await LocationManager.requestPermissions();
 
     if (mounted && granted) {
       try {

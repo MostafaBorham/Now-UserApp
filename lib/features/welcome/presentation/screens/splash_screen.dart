@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/utils/location_permission_service.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
@@ -95,7 +95,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       // ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
       ref.read(getCartProvider.notifier).getCart(),
-      LocationPermissionService.request(),
+      LocationManager.requestPermissions(),
     ]).whenComplete(() {
       if(mounted) {
         context.goNamed(AppRoutes.onBoardingScreen);

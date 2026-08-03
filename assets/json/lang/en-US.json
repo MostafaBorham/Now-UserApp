@@ -33,7 +33,6 @@
   "building": "National address / Building name",
   "apartment": "Apartment number (optional)",
   "phoneNumber": "Phone number",
-  "invalidPhone": "Please enter a valid phone number",
   "cancelOrder": "Cancel Order",
   "cancelOrderWarning": "Your order will be canceled and the refund will be processed within 3 - 5 work days to your wallet.",
   "cardDeclinedBody": "Error code: 51 — Insufficient funds. Contact your bank or try another payment method.",

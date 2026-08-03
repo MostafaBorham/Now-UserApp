@@ -69,7 +69,6 @@ abstract class LangKeys {
   static const String building = 'building';
   static const String apartment = 'apartment';
   static const String phoneNumber = 'phoneNumber';
-  static const String invalidPhone = 'invalidPhone';
   static const String instructions = 'instructions';
   static const String inKey = 'in';
   static const String saveAddress = 'saveAddress';

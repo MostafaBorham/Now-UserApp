@@ -8,8 +8,10 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_segmented_selector.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.dart';
 import '../../../settings/app_colors.dart';
@@ -46,6 +48,10 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   static const List<String> _labels = <String>['home', 'work', 'other'];
   int _selectedLabelIndex = 0;
 
+  /// Drives the Save button between its disabled and active states. Only the
+  /// required fields (phone / floor / building) feed it.
+  bool _isFormValid = false;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +60,20 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     _buildingNameController = TextEditingController();
     _apartmentController = TextEditingController();
     _instructionsController = TextEditingController();
+
+    _phoneController.addListener(_onRequiredFieldChanged);
+    _floorNumberController.addListener(_onRequiredFieldChanged);
+    _buildingNameController.addListener(_onRequiredFieldChanged);
+  }
+
+  void _onRequiredFieldChanged() {
+    final bool isValid =
+        AppValidator.isValidSaudiPhone(_phoneController.text.trim()) &&
+        _floorNumberController.text.trim().isNotEmpty &&
+        _buildingNameController.text.trim().isNotEmpty;
+    if (isValid != _isFormValid) {
+      setState(() => _isFormValid = isValid);
+    }
   }
 
   @override
@@ -67,26 +87,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   }
 
   void _saveAddress() {
-    final String phone = _phoneController.text.trim();
-    final bool isPhoneEmpty = phone.isEmpty;
-    final bool isFloorEmpty = _floorNumberController.text.trim().isEmpty;
-    final bool isBuildingEmpty = _buildingNameController.text.trim().isEmpty;
-    if (isPhoneEmpty || isFloorEmpty || isBuildingEmpty) {
-      ErrorSnackBar.show(context, LangKeys.completeAddressInfo);
-      return;
-    }
-
-    // Egyptian mobile numbers: 11 digits starting with 01.
-    final bool isPhoneValid = RegExp(r'^01[0-9]{9}$').hasMatch(phone);
-    if (!isPhoneValid) {
-      ErrorSnackBar.show(context, LangKeys.invalidPhone);
-      return;
-    }
-
+    // The button is only active once [_isFormValid] is true, so no validation
+    // is repeated here — just build the payload and submit.
+    //
     // The floor field maps to building_number and the building field maps to
     // floor by product intent — keep that swap here at the boundary.
     final AddressModel address = widget.address.copyWith(
-      phone: phone,
+      phone: _phoneController.text.trim(),
       buildingNumber: _floorNumberController.text.trim(),
       floor: _buildingNameController.text.trim(),
       apartment: _apartmentController.text.trim(),
@@ -169,8 +176,8 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(11),
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
+                      LengthLimitingTextInputFormatter(14),
                     ],
                   ),
                   AddressField(
@@ -197,11 +204,15 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
               ),
               AspectRatio(
                 aspectRatio: 7,
-                child: PrimaryAppButton(
-                  title: LangKeys.saveAddress.tr(),
-                  isLoading: isSaving,
-                  onTap: _saveAddress,
-                ),
+                child: !_isFormValid && !isSaving
+                    ? PrimaryAppDisabledButton(
+                        title: LangKeys.saveAddress.tr(),
+                      )
+                    : PrimaryAppButton(
+                        title: LangKeys.saveAddress.tr(),
+                        isLoading: isSaving,
+                        onTap: _saveAddress,
+                      ),
               ),
             ],
           ),

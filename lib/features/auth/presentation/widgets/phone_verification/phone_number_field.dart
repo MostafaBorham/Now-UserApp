@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
@@ -31,10 +32,6 @@ class PhoneNumberField extends StatefulWidget {
 }
 
 class _PhoneNumberFieldState extends State<PhoneNumberField> {
-  /// Saudi mobile number with country code: +966 5XXXXXXXX
-  /// (spaces and dashes are ignored when validating).
-  static final RegExp _saudiPhoneRegExp = RegExp(r'^\+9665\d{8}$');
-
   bool _lastIsValid = false;
 
   @override
@@ -60,9 +57,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
   void _onTextChanged() {
     final String raw = widget.controller?.text ?? '';
-    final bool isValid = _saudiPhoneRegExp.hasMatch(
-      raw.replaceAll(RegExp(r'[\s-]'), ''),
-    );
+    final bool isValid = AppValidator.isValidSaudiPhone(raw);
     if (isValid != _lastIsValid) {
       _lastIsValid = isValid;
       widget.onValidChanged?.call(isValid);
