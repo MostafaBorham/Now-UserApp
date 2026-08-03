@@ -1,8 +1,13 @@
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
 
 /// A single store's order, with its own totals and [items]. Used both for the
 /// draft group in checkout and — going forward — for placed orders in the
 /// orders feature.
+///
+/// Line items are parsed as [ProductModel] — the order-item payload is a strict
+/// subset of the product payload, so we remap the `product_*` / `unit_price`
+/// keys onto the product schema instead of maintaining a parallel model.
 class OrderModel {
   final String? uuid;
   final String? orderNumber;
@@ -22,7 +27,7 @@ class OrderModel {
   final double deliveryFee;
   final double discount;
   final double total;
-  final List<OrderItemModel> items;
+  final List<ProductModel> items;
 
   const OrderModel({
     this.uuid,
@@ -37,7 +42,7 @@ class OrderModel {
     this.deliveryFee = 0,
     this.discount = 0,
     this.total = 0,
-    this.items = const <OrderItemModel>[],
+    this.items = const <ProductModel>[],
   });
 
   factory OrderModel.fromJson(Map<String, dynamic>? json) {
@@ -68,49 +73,20 @@ class OrderModel {
       discount: double.tryParse(json['discount']?.toString() ?? '') ?? 0.0,
       total: double.tryParse(json['total']?.toString() ?? '') ?? 0.0,
       items:
-          (json['items'] as List?)
-              ?.map(
-                (e) => OrderItemModel.fromJson(e as Map<String, dynamic>?),
-              )
-              .toList() ??
-          const <OrderItemModel>[],
-    );
-  }
-}
-
-/// A single line item inside an [OrderModel].
-class OrderItemModel {
-  final int? productId;
-
-  /// Localized product name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(productName)`.
-  final Map<String, dynamic>? productName;
-  final String? productSku;
-  final int quantity;
-  final double unitPrice;
-  final double totalPrice;
-
-  const OrderItemModel({
-    this.productId,
-    this.productName,
-    this.productSku,
-    this.quantity = 0,
-    this.unitPrice = 0,
-    this.totalPrice = 0,
-  });
-
-  factory OrderItemModel.fromJson(Map<String, dynamic>? json) {
-    if (json == null) {
-      return const OrderItemModel();
-    }
-
-    return OrderItemModel(
-      productId: (json['product_id'] as num?)?.toInt(),
-      productName: json['product_name'] as Map<String, dynamic>?,
-      productSku: json['product_sku']?.toString(),
-      quantity: (json['quantity'] as num?)?.toInt() ?? 0,
-      unitPrice: double.tryParse(json['unit_price']?.toString() ?? '') ?? 0.0,
-      totalPrice: double.tryParse(json['total_price']?.toString() ?? '') ?? 0.0,
+          (json['items'] as List?)?.map((e) {
+            final Map<String, dynamic> item =
+                (e as Map<String, dynamic>?) ?? <String, dynamic>{};
+            // Remap the order-item keys onto the product schema so
+            // ProductModel.fromJson can consume them directly.
+            return ProductModel.fromJson(<String, dynamic>{
+              ...item,
+              'product_id': item['product_id'],
+              'name': item['product_name'],
+              'sku': item['product_sku'],
+              'price': item['unit_price'],
+            });
+          }).toList() ??
+          const <ProductModel>[],
     );
   }
 }

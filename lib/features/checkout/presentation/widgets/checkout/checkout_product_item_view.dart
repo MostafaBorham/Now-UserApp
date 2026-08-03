@@ -4,13 +4,13 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
 
 class CheckoutProductItemView extends StatelessWidget {
   const CheckoutProductItemView({super.key, this.item});
 
   /// Draft order line whose data drives this row.
-  final OrderItemModel? item;
+  final ProductModel? item;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class CheckoutProductItemView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                context.getLocalizedApiText(item?.productName),
+                context.getLocalizedApiText(item?.name),
                 maxLines: 1,
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,
@@ -60,7 +60,7 @@ class CheckoutProductItemView extends StatelessWidget {
                 children: [
                   NewPriceWidget(
                     color: colors.onSecondary,
-                    price: '${item?.unitPrice ?? 0}',
+                    price: '${item?.price ?? 0}',
                     size: 14,
                   ),
                 ],
