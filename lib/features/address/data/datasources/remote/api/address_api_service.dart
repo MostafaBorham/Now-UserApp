@@ -53,6 +53,36 @@ class AddressApiService {
     );
   }
 
+  /// Updates the address identified by [addressId].
+  ///
+  /// The request body mirrors [addAddress]: only the client-owned fields are
+  /// sent (server-owned fields such as `id`, `user_id`, `full_address` and
+  /// timestamps are omitted).
+  Future<Response> editAddress({
+    required int addressId,
+    required AddressModel address,
+  }) {
+    return _dio.put(
+      AddressEndpoints.editAddress(addressId),
+      data: <String, dynamic>{
+        'label': address.label,
+        'phone': address.phone,
+        'country': address.country,
+        'city': address.city,
+        'area': address.area,
+        'street': address.street,
+        'building_number': address.buildingNumber,
+        'floor': address.floor,
+        'apartment': address.apartment,
+        'latitude': double.tryParse(address.latitude ?? ''),
+        'longitude': double.tryParse(address.longitude ?? ''),
+        'notes': address.notes,
+        'is_default': address.isDefault ?? false,
+      },
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> getDefaultAddress() {
     return _dio.get(
       AddressEndpoints.defaultAddress,

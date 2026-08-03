@@ -80,6 +80,41 @@ class AddressRepo {
     }
   }
 
+  Future<Either<Failure, AddressModel>> editAddress({
+    required int addressId,
+    required AddressModel address,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _addressApiService.editAddress(
+        addressId: addressId,
+        address: address,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+
+      return Right(
+        AddressModel.fromJson(data['address'] as Map<String, dynamic>?),
+      );
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
   Future<Either<Failure, AddressModel>> getDefaultAddress() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));

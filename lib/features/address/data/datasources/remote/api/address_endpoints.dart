@@ -5,4 +5,6 @@ abstract class AddressEndpoints {
 
   static String setDefaultAddress(int addressId) =>
       '/api/v1/addresses/$addressId/set-default';
+
+  static String editAddress(int addressId) => '/api/v1/addresses/$addressId';
 }
