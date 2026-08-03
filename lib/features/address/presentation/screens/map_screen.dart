@@ -107,7 +107,13 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
         leading: ReverseWidget(
           child: ArrowBackButton(onTap: () => context.pop()),
         ),
-        actions: [Assets.media.images.svg.search.svg()],
+        actions: [
+          IconButton(
+            onPressed: () =>
+                context.pushNamed(AppRoutes.addressSearchScreen),
+            icon: Assets.media.images.svg.search.svg(),
+          ),
+        ],
       ),
       body: AppMap(
         currentLocation: widget.currentLocation,

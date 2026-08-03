@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/features/main/presentation/screens/main_scr
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/map_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/my_address_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
@@ -283,6 +284,11 @@ abstract class AppRouter {
           final currentLocation = state.extra as LatLng?;
           return AddNewAddressFromMap(currentLocation: currentLocation);
         },
+      ),
+      GoRoute(
+        name: AppRoutes.addressSearchScreen,
+        path: '/${AppRoutes.addressSearchScreen}',
+        builder: (context, state) => const AddressSearchScreen(),
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,

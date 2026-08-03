@@ -11,9 +11,14 @@ class RecentSearchWidget extends StatefulWidget {
     this.onRemove,
     this.onClear,
     this.onSelect,
+    this.clearLabel,
   });
 
   final List<String> keywords;
+
+  /// Label of the "remove them all" action. Defaults to [LangKeys.clearKey];
+  /// the address search passes [LangKeys.deleteKey] as its design asks for.
+  final String? clearLabel;
   final ValueChanged<String>? onRemove;
   final VoidCallback? onClear;
   final ValueChanged<String>? onSelect;
@@ -64,7 +69,7 @@ class _RecentSearchWidgetState extends State<RecentSearchWidget> {
             InkWell(
               onTap: _onClear,
               child: Text(
-                LangKeys.clearKey.tr(),
+                widget.clearLabel ?? LangKeys.clearKey.tr(),
                 style: AppTextStyles.style14Medium.copyWith(
                   color: colors.errorContainer,
                 ),

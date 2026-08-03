@@ -36,6 +36,7 @@ abstract class AppRoutes {
   static const String myAddressScreen = 'my-address';
   static const String addressDetailsScreen = 'address-details';
   static const String addNewAddressFromMapScreen = 'add-address-from-map';
+  static const String addressSearchScreen = 'address-search';
   static const String discountCodeScreen = 'discount-code';
   static const String supportScreen = 'support';
   static const String faqScreen = 'faq';
