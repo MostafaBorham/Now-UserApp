@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_product_item_view.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
 import '../../../../../core/presentation/widgets/store_invoice_summary_card.dart';
 
@@ -9,12 +9,12 @@ class CheckoutProductsDetailsView extends StatelessWidget {
   const CheckoutProductsDetailsView({super.key, this.order});
 
   /// Draft order whose items and pricing drive the expanded card.
-  final DraftOrderModel? order;
+  final OrderModel? order;
 
   @override
   Widget build(BuildContext context) {
-    final List<DraftOrderItemModel> items =
-        order?.items ?? const <DraftOrderItemModel>[];
+    final List<OrderItemModel> items =
+        order?.items ?? const <OrderItemModel>[];
     return Column(
       spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.start,

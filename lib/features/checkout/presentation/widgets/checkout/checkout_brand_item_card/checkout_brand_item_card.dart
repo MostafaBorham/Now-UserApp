@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_details_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_products_images_list_view.dart';
@@ -13,7 +13,7 @@ class CheckoutBrandItemCard extends StatefulWidget {
   });
 
   /// The single store's draft order rendered by this card.
-  final DraftOrderModel? order;
+  final OrderModel? order;
   final bool? readyToCheckout;
 
   @override

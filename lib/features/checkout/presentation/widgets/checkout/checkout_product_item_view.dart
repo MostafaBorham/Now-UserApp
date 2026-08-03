@@ -4,13 +4,13 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
 class CheckoutProductItemView extends StatelessWidget {
   const CheckoutProductItemView({super.key, this.item});
 
   /// Draft order line whose data drives this row.
-  final DraftOrderItemModel? item;
+  final OrderItemModel? item;
 
   @override
   Widget build(BuildContext context) {

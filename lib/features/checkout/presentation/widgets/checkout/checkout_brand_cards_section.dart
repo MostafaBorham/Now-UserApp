@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/checkout_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_shimmers.dart';
 
@@ -18,7 +19,7 @@ class CheckoutBrandCardsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // `null` while the draft is loading — the model provider itself is null
     // until then.
-    final List<DraftOrderModel>? orders = ref.watch(
+    final List<OrderModel>? orders = ref.watch(
       checkoutModelProvider.select(
         (CheckoutModel? checkout) => checkout?.orderGroup.orders,
       ),
@@ -29,7 +30,7 @@ class CheckoutBrandCardsSection extends ConsumerWidget {
     return Column(
       spacing: 16,
       children: orders
-          .map((DraftOrderModel order) => CheckoutBrandItemCard(order: order))
+          .map((OrderModel order) => CheckoutBrandItemCard(order: order))
           .toList(),
     );
   }
