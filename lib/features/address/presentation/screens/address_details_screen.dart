@@ -50,9 +50,15 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   late final TextEditingController _apartmentController;
   late final TextEditingController _instructionsController;
 
-  // Stable label identifiers sent to the backend, aligned with the segmented
-  // selector order (home / work / other).
-  static const List<String> _labels = <String>['home', 'work', 'other'];
+  // Localized label translation maps sent to the backend, aligned with the
+  // segmented selector order (home / work / other). Each map mirrors the API
+  // translation shape (`{'en': ..., 'ar': ...}`) so the label round-trips as a
+  // localized value rather than a bare identifier.
+  static const List<Map<String, String>> _labels = <Map<String, String>>[
+    <String, String>{'en': 'Home', 'ar': 'المنزل'},
+    <String, String>{'en': 'Work', 'ar': 'العمل'},
+    <String, String>{'en': 'Other', 'ar': 'أخرى'},
+  ];
   int _selectedLabelIndex = 0;
 
   /// Drives the Save button between its disabled and active states. Only the
@@ -82,9 +88,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     );
 
     if (widget.isEditScreen) {
-      // Restore the selected label; fall back to the first segment (home) when
-      // the stored label is missing or unrecognized.
-      final int labelIndex = _labels.indexOf(widget.address.label ?? '');
+      // Restore the selected label by matching the stored English value against
+      // our segment maps; fall back to the first segment (home) when the stored
+      // label is missing or unrecognized.
+      final String? storedLabel = widget.address.label?['en']?.toString();
+      final int labelIndex = _labels.indexWhere(
+        (Map<String, String> label) => label['en'] == storedLabel,
+      );
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
 
       // An existing address was already validated when it was saved, so the

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
@@ -90,7 +91,9 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                             const SizedBox(height: 16),
                         itemBuilder: (BuildContext context, int index) =>
                             AddressCard(
-                              title: addresses[index].label ?? '',
+                              title: context.getLocalizedApiText(
+                                addresses[index].label,
+                              ),
                               address: addresses[index].fullAddress ?? '',
                               isDefault: addresses[index].isDefault ?? false,
                               onSelect: () {

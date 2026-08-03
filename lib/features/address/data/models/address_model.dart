@@ -4,7 +4,10 @@ import 'package:equatable/equatable.dart';
 class AddressModel extends Equatable {
   final int? id;
   final int? userId;
-  final String? label;
+
+  /// Localized address label as an API translation map (`{'en': ..., 'ar': ...}`).
+  /// Resolve it for display with `context.getLocalizedApiText(label)`.
+  final Map<String, dynamic>? label;
   final String? phone;
   final String? country;
   final String? city;
@@ -52,7 +55,9 @@ class AddressModel extends Equatable {
     return AddressModel(
       id: (json['id'] as num?)?.toInt(),
       userId: (json['user_id'] as num?)?.toInt(),
-      label: json['label']?.toString(),
+      label: (json['label'] is String)
+          ? {'ar': json['label'] as String, 'en': json['label'] as String}
+          : json['label'],
       phone: json['phone']?.toString(),
       country: json['country']?.toString(),
       city: json['city']?.toString(),
@@ -75,7 +80,7 @@ class AddressModel extends Equatable {
   AddressModel copyWith({
     int? id,
     int? userId,
-    String? label,
+    Map<String, dynamic>? label,
     String? phone,
     String? country,
     String? city,
