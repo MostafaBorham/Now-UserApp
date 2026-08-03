@@ -25,12 +25,17 @@ class PaginationModel<T> {
     Map<String, dynamic> json,
     List<T> dataList) {
 
+    final int currentPage = json['current_page'] as int? ?? 1;
+    final int lastPage = json['last_page'] as int? ?? 1;
+
     return PaginationModel<T>(
-      currentPage: json['current_page'] as int? ?? 1,
-      lastPage: json['last_page'] as int? ?? 1,
+      currentPage: currentPage,
+      lastPage: lastPage,
       perPage: json['per_page'] as int? ?? dataList.length,
       total: json['total'] as int? ?? dataList.length,
-      hasMore: json['has_more'] as bool? ?? false,
+      // Endpoints that don't send `has_more` (e.g. `/api/v1/my/orders`) still
+      // send the page counters, which say the same thing.
+      hasMore: json['has_more'] as bool? ?? currentPage < lastPage,
       data: dataList,
     );
   }
