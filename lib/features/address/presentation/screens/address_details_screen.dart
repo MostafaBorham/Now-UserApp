@@ -88,9 +88,14 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     ref.listen<AsyncValue<AddressModel?>>(addAddressProvider, (previous, next) {
       next.whenOrNull(
         data: (AddressModel? created) {
-          // Report the save back to the map (if any) so it can pop itself too;
-          // harmless when opened from the address list, which ignores it.
-          if (created != null) context.pop(true);
+          if (created == null) return;
+          // Return to the My Address screen. Pop this details screen, plus the
+          // map underneath it when we came from there, so the map is removed
+          // from the stack rather than left behind. Capture the router first —
+          // context lookups are unsafe once the first page is popped.
+          final GoRouter router = GoRouter.of(context);
+          router.pop();
+          if (widget.cameFromMap) router.pop();
         },
         error: (Object error, _) {
           ErrorSnackBar.show(context, error.toString());

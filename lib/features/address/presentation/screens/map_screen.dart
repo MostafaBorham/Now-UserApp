@@ -101,16 +101,13 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     );
 
     // Push (not replace) so this map stays underneath: the "Change" action on
-    // the details screen pops back to it instead of building a fresh map.
-    // A `true` result means the address was saved there, so tear the map down
-    // too and return to whatever opened it (the address list).
-    final bool? saved = await context.pushNamed<bool>(
+    // the details screen pops back to it instead of building a fresh map. On a
+    // successful save the details screen pops this map itself, returning to the
+    // address list.
+    await context.pushNamed<void>(
       AppRoutes.addressDetailsScreen,
       extra: (address: address, fromMap: true),
     );
-
-    if (!mounted || saved != true) return;
-    context.pop();
   }
 
   @override
