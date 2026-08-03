@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
@@ -128,25 +129,33 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
           ),
         ],
       ),
-      body: AppMap(
-        // The selected point, not the constructor argument, so a location
-        // picked in the search screen moves the pin.
-        currentLocation: _selectedLocation,
-        onLocationChanged: (LatLng location) {
-          setState(() {
-            _selectedLocation = location;
-          });
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: AppMap(
+              // The selected point, not the constructor argument, so a location
+              // picked in the search screen moves the pin.
+              currentLocation: _selectedLocation,
+              onLocationChanged: (LatLng location) {
+                setState(() {
+                  _selectedLocation = location;
+                });
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: AspectRatio(
+              aspectRatio: 8,
+              child: _selectedLocation!=null? PrimaryAppButton(
+                title: LangKeys.enterAddressKey.tr(),
+                isLoading: _resolvingAddress,
+                onTap: _onEnterAddressTapped,
+              ) : PrimaryAppDisabledButton(title: LangKeys.enterAddressKey.tr(),),
+            ),
+          ),
+        ],
       ),
-      persistentFooterDecoration: BoxDecoration(color: colors.onPrimary),
-      persistentFooterAlignment: AlignmentDirectional.center,
-      persistentFooterButtons: [
-        PrimaryAppButton(
-          title: LangKeys.enterAddressKey.tr(),
-          isLoading: _resolvingAddress,
-          onTap: _onEnterAddressTapped,
-        ),
-      ],
     );
   }
 }
