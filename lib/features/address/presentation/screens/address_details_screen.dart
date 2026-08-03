@@ -14,6 +14,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/edit_address_vm.dart';
 import '../../../settings/app_colors.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
@@ -23,6 +24,7 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
     super.key,
     required this.address,
     this.cameFromMap = false,
+    this.isEditScreen = false,
   });
 
   final AddressModel address;
@@ -30,6 +32,11 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
   /// True when this screen was pushed from the map, which is therefore still
   /// in the stack — "Change" pops back to it instead of opening a new map.
   final bool cameFromMap;
+
+  /// True when editing an existing address (opened from the address list),
+  /// false when creating a new one. Drives the app bar title, the prefilled
+  /// field values, and which viewmodel the Save button submits to.
+  final bool isEditScreen;
 
   @override
   ConsumerState<AddressDetailsScreen> createState() =>
@@ -55,11 +62,36 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _phoneController = TextEditingController();
-    _floorNumberController = TextEditingController();
-    _buildingNameController = TextEditingController();
-    _apartmentController = TextEditingController();
-    _instructionsController = TextEditingController();
+    // Prefill from the existing address when editing. The floor field maps to
+    // building_number and the building field maps to floor — the same swap the
+    // save payload applies, mirrored here so a round-trip stays consistent.
+    _phoneController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.phone : null,
+    );
+    _floorNumberController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.buildingNumber : null,
+    );
+    _buildingNameController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.floor : null,
+    );
+    _apartmentController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.apartment : null,
+    );
+    _instructionsController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.notes : null,
+    );
+
+    if (widget.isEditScreen) {
+      // Restore the selected label; fall back to the first segment (home) when
+      // the stored label is missing or unrecognized.
+      final int labelIndex = _labels.indexOf(widget.address.label ?? '');
+      _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
+
+      // An existing address was already validated when it was saved, so the
+      // Save button starts enabled. Live validation still runs the moment any
+      // required field changes (see [_onRequiredFieldChanged]).
+      _isFormValid = true;
+    }
 
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
@@ -101,7 +133,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       label: _labels[_selectedLabelIndex],
     );
 
-    ref.read(addAddressProvider.notifier).addAddress(address: address);
+    if (widget.isEditScreen) {
+      ref
+          .read(editAddressProvider.notifier)
+          .editAddress(addressId: widget.address.id ?? 0, address: address);
+    } else {
+      ref.read(addAddressProvider.notifier).addAddress(address: address);
+    }
   }
 
   @override
@@ -109,7 +147,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final String? area = widget.address.area;
 
-    ref.listen<AsyncValue<AddressModel?>>(addAddressProvider, (previous, next) {
+    // Both viewmodels expose the same AsyncValue<AddressModel?> shape, so the
+    // screen watches/listens through one handle and only the submit call in
+    // [_saveAddress] differs between add and edit.
+    final ProviderListenable<AsyncValue<AddressModel?>> statusProvider =
+        widget.isEditScreen ? editAddressProvider : addAddressProvider;
+
+    ref.listen<AsyncValue<AddressModel?>>(statusProvider, (previous, next) {
       next.whenOrNull(
         data: (AddressModel? created) {
           if (created == null) return;
@@ -127,12 +171,14 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       );
     });
 
-    final bool isSaving = ref.watch(addAddressProvider).isLoading;
+    final bool isSaving = ref.watch(statusProvider).isLoading;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: AppWavedView(
-        appBarTitle: LangKeys.addressDetails.tr(),
+        appBarTitle: widget.isEditScreen
+            ? LangKeys.editAddress.tr()
+            : LangKeys.addressDetails.tr(),
         body: SingleChildScrollView(
           child: Column(
             spacing: 10,
@@ -165,6 +211,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
                 selectedColor: colors.primary,
+                initialIndex: _selectedLabelIndex,
                 onChanged: (int index) => _selectedLabelIndex = index,
               ),
               Column(

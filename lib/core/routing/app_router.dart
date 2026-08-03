@@ -272,9 +272,10 @@ abstract class AppRouter {
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
         builder: (context, state) {
-          // Opened either from the address list (extra is the AddressModel) or
-          // from the map (extra is a record carrying the fromMap flag, so the
-          // "Change" action can pop back to the map still in the stack).
+          // Opened either from the address list (extra is the AddressModel —
+          // editing an existing address) or from the map (extra is a record
+          // carrying the fromMap flag, so the "Change" action can pop back to
+          // the map still in the stack — creating a new address).
           final Object? extra = state.extra;
           if (extra is ({AddressModel address, bool fromMap})) {
             return AddressDetailsScreen(
@@ -282,7 +283,10 @@ abstract class AppRouter {
               cameFromMap: extra.fromMap,
             );
           }
-          return AddressDetailsScreen(address: extra as AddressModel);
+          return AddressDetailsScreen(
+            address: extra as AddressModel,
+            isEditScreen: true,
+          );
         },
       ),
       GoRoute(
