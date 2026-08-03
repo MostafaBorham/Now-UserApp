@@ -10,8 +10,10 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/place_suggestion_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/places_shimmer_view.dart';
@@ -42,10 +44,9 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
   String _query = '';
 
-  /// Set while the coordinates of a picked suggestion are being fetched, so a
-  /// second tap cannot start a parallel navigation. Deliberately invisible:
-  /// picking a place goes straight back to the map instead of showing a
-  /// spinner in place of the tile's search icon.
+  /// Set while the coordinates of a picked suggestion are being fetched. Drives
+  /// a [BlockingLoadingOverlay] that both signals the wait and swallows taps, so
+  /// a second tap cannot start a parallel navigation.
   bool _isResolving = false;
 
   bool get _hasQuery => _query.trim().isNotEmpty;
@@ -82,7 +83,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
   /// the address details.
   Future<void> _onSuggestionTapped(PlaceSuggestionModel suggestion) async {
     if (_isResolving) return;
-    _isResolving = true;
+    setState(() => _isResolving = true);
 
     // A term that led to a pick is worth remembering, and re-adding one that
     // is already stored moves it back to the front.
@@ -100,7 +101,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
         );
 
     if (!mounted) return;
-    _isResolving = false;
+    setState(() => _isResolving = false);
 
     result.fold(
       (Failure failure) => ErrorSnackBar.show(context, failure.message),
@@ -124,93 +125,99 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: AppWavedView(
-        appBarTitle: LangKeys.addNewAddress.tr(),
-        canPop: context.canPop(),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          children: <Widget>[
-            AppSearchField(
-              autofocus: true,
-              navigateToSearchOnTap: false,
-              controller: _searchController,
-              hintText: LangKeys.searchForAddressKey.tr(),
-              enableRecentKeywords: true,
-              // Recents belong to the empty-query state only: handing the
-              // field an empty list is what closes them once the user types.
-              recentKeywords: _hasQuery ? const <String>[] : recentSearches,
-              recentClearLabel: LangKeys.deleteKey.tr(),
-              onChanged: _onQueryChanged,
-              onSubmitted: _onSubmitted,
-              // The field has already filled itself and unfocused, so the
-              // recents are gone; all that is left is to search for the term.
-              onRecentSelect: _onQueryChanged,
-              onRecentRemove: recentVm.removeSearchKey,
-              onRecentClear: recentVm.clearAll,
-            ),
-            Expanded(
-              child: !_hasQuery
-                  ? const SizedBox(width: double.infinity)
-                  : suggestions.when(
-                      loading: () => const PlacesShimmerView(),
-                      // `Failure.message` is a LangKeys key or a raw message
-                      // from Google — `.tr()` leaves the latter untouched.
-                      error: (Object error, StackTrace _) =>
-                          ServerConnectionErrorWidget(
-                            message: error.toString(),
-                            onRetry: () => _onQueryChanged(_query),
-                          ),
-                      data: (List<PlaceSuggestionModel> results) =>
-                          results.isEmpty
-                          ? NoItemsWidget(
-                              emptyMessage: LangKeys.noAddressResultsKey.tr(),
-                            )
-                          : ListView.separated(
-                              keyboardDismissBehavior:
-                                  ScrollViewKeyboardDismissBehavior.onDrag,
-                              padding: EdgeInsets.zero,
-                              itemCount: results.length,
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const SizedBox(height: 4),
-                              itemBuilder: (BuildContext context, int index) {
-                                final PlaceSuggestionModel suggestion =
-                                    results[index];
-
-                                return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  onTap: () => _onSuggestionTapped(suggestion),
-                                  leading: SizedBox.square(
-                                    dimension: 24,
-                                    child: Assets.media.images.svg.searchIcon
-                                        .svg(),
-                                  ),
-                                  title: Text(
-                                    suggestion.mainText,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.style16Medium.copyWith(
-                                      color: colors.onSecondary,
-                                    ),
-                                  ),
-                                  subtitle: suggestion.secondaryText.isEmpty
-                                      ? null
-                                      : Text(
-                                          suggestion.secondaryText,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: AppTextStyles.style14Regular
-                                              .copyWith(
-                                                color: colors.tertiaryContainer,
-                                              ),
-                                        ),
-                                );
-                              },
+      body: BlockingLoadingOverlay(
+        isLoading: _isResolving,
+        child: AppWavedView(
+          appBarTitle: LangKeys.addNewAddress.tr(),
+          canPop: context.canPop(),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 20,
+            children: <Widget>[
+              AppSearchField(
+                autofocus: true,
+                navigateToSearchOnTap: false,
+                controller: _searchController,
+                hintText: LangKeys.searchForAddressKey.tr(),
+                enableRecentKeywords: true,
+                // Recents belong to the empty-query state only: handing the
+                // field an empty list is what closes them once the user types.
+                recentKeywords: _hasQuery ? const <String>[] : recentSearches,
+                recentClearLabel: LangKeys.deleteKey.tr(),
+                onChanged: _onQueryChanged,
+                onSubmitted: _onSubmitted,
+                // The field has already filled itself and unfocused, so the
+                // recents are gone; all that is left is to search for the term.
+                onRecentSelect: _onQueryChanged,
+                onRecentRemove: recentVm.removeSearchKey,
+                onRecentClear: recentVm.clearAll,
+              ),
+              Expanded(
+                child: !_hasQuery
+                    ? const SizedBox(width: double.infinity)
+                    : suggestions.when(
+                        loading: () => const PlacesShimmerView(),
+                        // `Failure.message` is a LangKeys key or a raw message
+                        // from Google — `.tr()` leaves the latter untouched.
+                        error: (Object error, StackTrace _) =>
+                            ServerConnectionErrorWidget(
+                              message: error.toString(),
+                              onRetry: () => _onQueryChanged(_query),
                             ),
-                    ),
-            ),
-          ],
+                        data: (List<PlaceSuggestionModel> results) =>
+                            results.isEmpty
+                            ? NoItemsWidget(
+                                emptyMessage: LangKeys.noAddressResultsKey.tr(),
+                              )
+                            : ListView.separated(
+                                keyboardDismissBehavior:
+                                    ScrollViewKeyboardDismissBehavior.onDrag,
+                                padding: EdgeInsets.zero,
+                                itemCount: results.length,
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        const SizedBox(height: 4),
+                                itemBuilder: (BuildContext context, int index) {
+                                  final PlaceSuggestionModel suggestion =
+                                      results[index];
+
+                                  return ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    onTap: () =>
+                                        _onSuggestionTapped(suggestion),
+                                    leading: ReverseWidget(
+                                      child: SizedBox.square(
+                                        dimension: 24,
+                                        child: Assets.media.images.svg.searchIcon
+                                            .svg(),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      suggestion.mainText,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyles.style16Medium
+                                          .copyWith(color: colors.onSecondary),
+                                    ),
+                                    subtitle: suggestion.secondaryText.isEmpty
+                                        ? null
+                                        : Text(
+                                            suggestion.secondaryText,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: AppTextStyles.style14Regular
+                                                .copyWith(
+                                                  color:
+                                                      colors.tertiaryContainer,
+                                                ),
+                                          ),
+                                  );
+                                },
+                              ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
