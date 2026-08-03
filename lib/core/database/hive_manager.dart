@@ -20,6 +20,7 @@ class HiveManager {
     if (_initialized) return;
     await Hive.initFlutter();
     await Hive.openBox<dynamic>(HiveBoxes.recentSearches);
+    await Hive.openBox<dynamic>(HiveBoxes.recentAddressSearches);
     _initialized = true;
   }
 

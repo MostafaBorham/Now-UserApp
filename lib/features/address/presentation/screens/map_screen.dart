@@ -40,6 +40,22 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     _selectedLocation = widget.currentLocation;
   }
 
+  // Opens the address search and waits for the address the user picks there.
+  // The search pops its result back instead of pushing a second map, so the
+  // pin simply moves on the map already on screen.
+  Future<void> _onSearchTapped() async {
+    final LatLng? picked = await context.pushNamed<LatLng>(
+      AppRoutes.addressSearchScreen,
+      extra: _selectedLocation,
+    );
+
+    if (!mounted || picked == null) return;
+
+    setState(() {
+      _selectedLocation = picked;
+    });
+  }
+
   // Reverse-geocode the picked point before navigating. Builds an
   // [AddressModel] from the resolved placemark and the picked [LatLng], then
   // continues to the details screen. Only proceeds when a placemark is
@@ -109,14 +125,15 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
         ),
         actions: [
           IconButton(
-            onPressed: () =>
-                context.pushNamed(AppRoutes.addressSearchScreen),
+            onPressed: _onSearchTapped,
             icon: Assets.media.images.svg.search.svg(),
           ),
         ],
       ),
       body: AppMap(
-        currentLocation: widget.currentLocation,
+        // The selected point, not the constructor argument, so a location
+        // picked in the search screen moves the pin.
+        currentLocation: _selectedLocation,
         onLocationChanged: (LatLng location) {
           setState(() {
             _selectedLocation = location;
@@ -219,6 +236,25 @@ class _AppMapState extends State<AppMap> {
     final target = _target;
     if (controller == null || target == null) return;
     controller.animateCamera(CameraUpdate.newLatLngZoom(target, _targetZoom));
+  }
+
+  @override
+  void didUpdateWidget(covariant AppMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The parent can move the pin from outside — an address picked in the
+    // search screen. Ignore the echo of our own onTap updates, which come back
+    // down already equal to [_target].
+    final LatLng? incoming = widget.currentLocation;
+    if (incoming == null ||
+        incoming == oldWidget.currentLocation ||
+        incoming == _target) {
+      return;
+    }
+
+    setState(() {
+      _target = incoming;
+    });
+    _animateToTarget();
   }
 
   @override

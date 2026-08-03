@@ -25,6 +25,7 @@ class AppSearchField extends ConsumerStatefulWidget {
     this.onRecentSelect,
     this.onRecentRemove,
     this.onRecentClear,
+    this.recentClearLabel,
     this.hasFilter = false,
     this.onFilterTap,
     this.navigateToSearchOnTap = true,
@@ -51,6 +52,10 @@ class AppSearchField extends ConsumerStatefulWidget {
   final ValueChanged<String>? onRecentSelect;
   final ValueChanged<String>? onRecentRemove;
   final VoidCallback? onRecentClear;
+
+  /// Label of the recents "remove them all" action. Defaults to
+  /// [LangKeys.clearKey]; the address search passes [LangKeys.deleteKey].
+  final String? recentClearLabel;
   final GestureTapCallback? onFilterTap;
   @override
   ConsumerState<AppSearchField> createState() => _AppSearchFieldState();
@@ -217,6 +222,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                     padding: const EdgeInsets.only(top: 20),
                     child: RecentSearchWidget(
                       keywords: keywords,
+                      clearLabel: widget.recentClearLabel,
                       onSelect: _onRecentSelect,
                       onRemove: widget.onRecentRemove,
                       onClear: widget.onRecentClear,

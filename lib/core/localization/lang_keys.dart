@@ -340,4 +340,8 @@ abstract class LangKeys {
   static const String sampleBrandNameKey = 'sampleBrandName';
   static const String sampleBrandDescriptionKey = 'sampleBrandDescription';
   static const String thousandSuffixKey = 'thousandSuffix';
+
+  // Address search
+  static const String searchForAddressKey = 'searchForAddress';
+  static const String noAddressResultsKey = 'noAddressResults';
 }

@@ -301,5 +301,7 @@
   "sampleBrandCategory": "شوكولاتة داكنة",
   "sampleBrandName": "دارك جالاكسي",
   "sampleBrandDescription": "شوكولاتة داكنة غنية بنسبة 70% كاكاو. لعشاق النكهة العميقة والأصيلة.",
-  "thousandSuffix": "ألف"
+  "thousandSuffix": "ألف",
+  "searchForAddress": "ابحث عن منطقة أو شارع",
+  "noAddressResults": "لا توجد عناوين مطابقة"
 }

@@ -288,7 +288,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
-        builder: (context, state) => const AddressSearchScreen(),
+        builder: (context, state) =>
+            AddressSearchScreen(currentLocation: state.extra as LatLng?),
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,
