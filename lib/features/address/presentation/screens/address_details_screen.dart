@@ -35,8 +35,10 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
+  late final TextEditingController _phoneController;
   late final TextEditingController _floorNumberController;
   late final TextEditingController _buildingNameController;
+  late final TextEditingController _apartmentController;
   late final TextEditingController _instructionsController;
 
   // Stable label identifiers sent to the backend, aligned with the segmented
@@ -47,32 +49,47 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    _phoneController = TextEditingController();
     _floorNumberController = TextEditingController();
     _buildingNameController = TextEditingController();
+    _apartmentController = TextEditingController();
     _instructionsController = TextEditingController();
   }
 
   @override
   void dispose() {
+    _phoneController.dispose();
     _floorNumberController.dispose();
     _buildingNameController.dispose();
+    _apartmentController.dispose();
     _instructionsController.dispose();
     super.dispose();
   }
 
   void _saveAddress() {
+    final String phone = _phoneController.text.trim();
+    final bool isPhoneEmpty = phone.isEmpty;
     final bool isFloorEmpty = _floorNumberController.text.trim().isEmpty;
     final bool isBuildingEmpty = _buildingNameController.text.trim().isEmpty;
-    if (isFloorEmpty || isBuildingEmpty) {
+    if (isPhoneEmpty || isFloorEmpty || isBuildingEmpty) {
       ErrorSnackBar.show(context, LangKeys.completeAddressInfo);
+      return;
+    }
+
+    // Egyptian mobile numbers: 11 digits starting with 01.
+    final bool isPhoneValid = RegExp(r'^01[0-9]{9}$').hasMatch(phone);
+    if (!isPhoneValid) {
+      ErrorSnackBar.show(context, LangKeys.invalidPhone);
       return;
     }
 
     // The floor field maps to building_number and the building field maps to
     // floor by product intent — keep that swap here at the boundary.
     final AddressModel address = widget.address.copyWith(
+      phone: phone,
       buildingNumber: _floorNumberController.text.trim(),
       floor: _buildingNameController.text.trim(),
+      apartment: _apartmentController.text.trim(),
       notes: _instructionsController.text.trim(),
       label: _labels[_selectedLabelIndex],
     );
@@ -148,6 +165,15 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 spacing: 16,
                 children: [
                   AddressField(
+                    hintText: LangKeys.phoneNumber.tr(),
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(11),
+                    ],
+                  ),
+                  AddressField(
                     hintText: LangKeys.floor.tr(),
                     controller: _floorNumberController,
                     keyboardType: TextInputType.number,
@@ -156,6 +182,12 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   AddressField(
                     hintText: LangKeys.building.tr(),
                     controller: _buildingNameController,
+                  ),
+                  AddressField(
+                    hintText: LangKeys.apartment.tr(),
+                    controller: _apartmentController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   AddressField(
                     hintText: LangKeys.instructions.tr(),
