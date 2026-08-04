@@ -43,6 +43,18 @@ class CartView extends ConsumerStatefulWidget {
 }
 
 class _CartViewState extends ConsumerState<CartView> {
+  @override
+  void initState() {
+    super.initState();
+    // Load the cart the first time it's opened, or retry if a previous open
+    // failed; an already-loaded cart is kept as-is (no refetch).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!ref.read(getCartProvider).hasValue) {
+        ref.read(getCartProvider.notifier).getCart();
+      }
+    });
+  }
+
   /// Drafts an order group and, only if the server accepted it, drops what was
   /// checked out from the cart and opens the checkout screen.
   ///

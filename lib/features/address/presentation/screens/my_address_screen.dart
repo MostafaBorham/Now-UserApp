@@ -22,18 +22,6 @@ import '../../../settings/app_colors.dart';
 import '../widgets/add_address_button.dart';
 import '../widgets/address_card.dart';
 
-/// "My Address" screen.
-///
-/// On open, addresses are loaded from [getMyAddressesProvider]:
-///   - while loading  → an [AddressCardShimmer] skeleton list.
-///   - on success     → one [AddressCard] per saved address (empty → [NoItemsWidget]).
-///   - on failure     → a [ServerConnectionErrorWidget] with retry.
-///
-/// Tapping a non-default card asks the backend to make it the default
-/// ([defaultAddressProvider]): the list is covered by a
-/// [BlockingLoadingOverlay] until the response arrives, then the highlight moves
-/// to the new address on success, or stays where it was and an error snackbar is
-/// shown on failure.
 class MyAddressScreen extends ConsumerStatefulWidget {
   const MyAddressScreen({super.key});
 
@@ -42,6 +30,18 @@ class MyAddressScreen extends ConsumerStatefulWidget {
 }
 
 class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Load the saved addresses the first time this screen opens, or retry if a
+    // previous open failed; an already-loaded list is kept as-is (no refetch).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!ref.read(getMyAddressesProvider).hasValue) {
+        ref.read(getMyAddressesProvider.notifier).getMyAddresses();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final AsyncValue<List<AddressModel>> addressesState = ref.watch(
