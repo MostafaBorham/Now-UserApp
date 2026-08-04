@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -13,13 +12,26 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
+/// One placed order in the my-orders list, rendered from [orderModel].
 class OrderListItem extends ConsumerWidget {
-  const OrderListItem({super.key});
+  const OrderListItem({super.key, required this.orderModel});
+
+  final OrderModel orderModel;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+
+    // The lifecycle timestamps arrive as raw ISO-8601 strings; show the date
+    // part of whichever is furthest along (delivered → created).
+    final String rawDate = orderModel.deliveredAt ?? orderModel.createdAt ?? '';
+    final String orderDate = rawDate.contains('T')
+        ? rawDate.split('T').first
+        : rawDate;
+
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -45,9 +57,8 @@ class OrderListItem extends ConsumerWidget {
               children: [
                 ClipRRect(
                   borderRadius: AppBorderRadius.brCircular12,
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
+                  child: AppCachedNetworkImage(
+                    imageUrl: orderModel.vendor.logoUrl ?? '',
                     width: 88,
                     height: 88,
                     fit: BoxFit.cover,
@@ -57,14 +68,14 @@ class OrderListItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
-                      '#ORD-458921',
+                      '#${orderModel.orderNumber ?? ''}',
                       style: AppTextStyles.style18SemiBold.copyWith(
                         color: colors.black,
                       ),
                     ),
                     4.hSpace,
                     AutoSizeText(
-                      '${LangKeys.deliveredOnKey.tr()} March 12, 2026',
+                      '${LangKeys.deliveredOnKey.tr()} $orderDate',
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),
@@ -84,7 +95,7 @@ class OrderListItem extends ConsumerWidget {
                             borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
-                            '5 ${LangKeys.itemsKey.tr()}',
+                            '${orderModel.items.length} ${LangKeys.itemsKey.tr()}',
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.black,
                             ),
@@ -105,7 +116,7 @@ class OrderListItem extends ConsumerWidget {
                             borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
-                            LangKeys.pendingKey.tr(),
+                            orderModel.status ?? LangKeys.pendingKey.tr(),
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.onErrorContainer,
                             ),
@@ -128,7 +139,7 @@ class OrderListItem extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '20.00',
+                      orderModel.total.toStringAsFixed(2),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.primary500Main,
                       ),

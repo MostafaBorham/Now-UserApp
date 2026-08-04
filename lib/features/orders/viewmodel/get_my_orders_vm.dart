@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/features/orders/data/repo/orders_repo.dart'
 /// The first page is kicked off on first watch; `loadNextPage()` and
 /// `loadFirstPage()` (refresh / retry) come from [PaginatedViewModel].
 final getMyOrdersProvider =
-    StateNotifierProvider.autoDispose<
+    StateNotifierProvider<
       GetMyOrdersViewModel,
       AsyncValue<PaginationModel<OrderModel>>
     >((Ref ref) => GetMyOrdersViewModel()..loadFirstPage());
