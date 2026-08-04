@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
@@ -34,7 +35,7 @@ class AppWavedView extends StatelessWidget {
   final EdgeInsets? bodyPadding;
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final Size screenSize = MediaQuery.sizeOf(context);
     return Container(
       width: double.infinity,
