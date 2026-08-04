@@ -105,7 +105,6 @@ class OrderModel {
       orderGroupId: (json['order_group_id'] as num?)?.toInt(),
       vendorId: (json['vendor_id'] as num?)?.toInt(),
       branchId: (json['branch_id'] as num?)?.toInt(),
-      // Same lite slice the cart pulls from its own `vendor` object.
       vendor: StoreModel.fromJson(<String, dynamic>{
         'id': vendor?['id'],
         'name': vendor?['name'],
