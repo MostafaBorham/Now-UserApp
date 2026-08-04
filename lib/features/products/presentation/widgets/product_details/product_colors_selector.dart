@@ -58,7 +58,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
             Text(
               title,
               style: AppTextStyles.style16Bold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
             if (widget.isRequired)
@@ -103,7 +103,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: isSelected
-                                ? Border.all(color: colors.primary, width: 2)
+                                ? Border.all(color: colors.primary500Main, width: 2)
                                 : Border.all(color: Colors.transparent, width: 2),
                           ),
                           child: Container(
@@ -117,11 +117,11 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                         ),
                         if(isSelected)Container(
                           decoration: BoxDecoration(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                             shape: BoxShape.circle,
-                            border: Border.all(width: 2,color: colors.onPrimary)
+                            border: Border.all(width: 2,color: colors.white)
                           ),
-                          child: Center(child: Icon(Icons.check,color: colors.onPrimary,size: 15,)),
+                          child: Center(child: Icon(Icons.check,color: colors.white,size: 15,)),
                         )
                       ],
                     ),
@@ -134,8 +134,8 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                               .copyWith(
                                 fontSize: 11,
                                 color: isSelected
-                                    ? colors.onSecondary
-                                    : colors.onSurface,
+                                    ? colors.black
+                                    : colors.neutral500,
                               ),
                     ),
                   ],

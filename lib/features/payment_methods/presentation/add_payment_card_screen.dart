@@ -41,7 +41,7 @@ class AddPaymentCardScreen extends StatelessWidget {
                   ),
                 ),
                 child: AddCardForm(
-                  lableColor: colors.onPrimary,
+                  lableColor: colors.white,
                   hintColor: Colors.white,
                 ),
               ),

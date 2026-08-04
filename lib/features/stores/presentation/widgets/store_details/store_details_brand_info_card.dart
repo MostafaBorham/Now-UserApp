@@ -24,11 +24,11 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
         vertical: 30,
       ),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: AppBorderRadius.brCircular20,
         boxShadow: [
           BoxShadow(
-            color: colors.onSecondary.withValues(
+            color: colors.black.withValues(
               alpha: 0.08,
             ),
             blurRadius: 12,
@@ -48,20 +48,20 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                 Text(
                   LangKeys.sampleBrandCategoryKey.tr(),
                   style: AppTextStyles.style12Medium.copyWith(
-                    color: colors.onSurface,
+                    color: colors.neutral500,
                   ),
                 ),
                 Text(
                   LangKeys.sampleBrandNameKey.tr(),
                   style: AppTextStyles.style20Bold.copyWith(
-                    color: colors.onTertiaryFixed,
+                    color: colors.neutral1200,
                   ),
                 ),
                 Text(
                   LangKeys.sampleBrandDescriptionKey.tr(),
                   maxLines: 5,
                   style: AppTextStyles.style14Regular.copyWith(
-                    color: colors.onSurface,
+                    color: colors.neutral500,
                   ),
                 ),
                 Align(
@@ -73,7 +73,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                       Text(
                         '4.8 (2.5${LangKeys.thousandSuffixKey.tr()})',
                         style: TextStyle(
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                             fontWeight: FontWeight.w400,
                             fontSize: 15
                         ),
@@ -95,7 +95,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Divider(
-              color: colors.surfaceContainerLow,
+              color: colors.neutral200,
               height: 20,
             ),
           ),
@@ -115,7 +115,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                       spacing: 8,
                       children: [
                         OldPriceWidget(
-                          color: colors.inversePrimary,
+                          color: colors.neutral400,
                           price: '13',
                           size: 14,
                         ),
@@ -136,14 +136,14 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                             style: AppTextStyles
                                 .style12SemiBold
                                 .copyWith(
-                              color: colors.onPrimary,
+                              color: colors.white,
                             ),
                           ),
                         ),
                       ],
                     ),
                     NewPriceWidget(
-                      color: colors.onSecondary,
+                      color: colors.black,
                       price: '10',
                       size: 28,
                     ),

@@ -19,7 +19,7 @@ class PrimaryAppPostfixIconButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-            color: colors.primary,
+            color: colors.primary500Main,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
                 color:  Colors.transparent,
@@ -36,7 +36,7 @@ class PrimaryAppPostfixIconButton extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.style14Medium.copyWith(
-                  color: colors.onPrimary,
+                  color: colors.white,
                 ),
               ),
               postfixIcon??SizedBox.shrink(),

@@ -106,7 +106,7 @@ class _SegmentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Color labelColor = isSelected
-        ? (selectedLabelColor ?? colors.onPrimary)
+        ? (selectedLabelColor ?? colors.white)
         : unselectedLabelColor;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

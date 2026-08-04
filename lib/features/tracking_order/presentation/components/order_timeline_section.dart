@@ -23,8 +23,8 @@ class OrderTimelineSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final Color reached = colors.primary;
-    final Color pending = colors.surfaceContainerLow;
+    final Color reached = colors.primary500Main;
+    final Color pending = colors.neutral200;
 
     final List<_TimelineStepData> steps = [
       _TimelineStepData(
@@ -70,7 +70,7 @@ class OrderTimelineSection extends StatelessWidget {
             Text(
               LangKeys.trackOrderKey.tr(),
               style: AppTextStyles.style16SemiBold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
             const Spacer(),
@@ -82,13 +82,13 @@ class OrderTimelineSection extends StatelessWidget {
                     TextSpan(
                       text: '${LangKeys.estimatedDeliveryTimeKey.tr()}  ',
                       style: AppTextStyles.style10Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                     ),
                     TextSpan(
                       text: estimatedTime,
                       style: AppTextStyles.style10SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ],

@@ -26,7 +26,7 @@ class TopBrandsScreen extends StatelessWidget {
             Text(
               context.tr(LangKeys.categoriesKey),
               style: AppTextStyles.style14SemiBold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
             Expanded(
@@ -38,12 +38,12 @@ class TopBrandsScreen extends StatelessWidget {
                   TopBrandsView(),
                   TopBrandsView(),
                 ],
-                selectedTabColor: colors.secondary.withValues(alpha: 0.8),
-                unSelectedTabColor: colors.inversePrimary.withValues(
+                selectedTabColor: colors.secondary600.withValues(alpha: 0.8),
+                unSelectedTabColor: colors.neutral400.withValues(
                   alpha: 0.2,
                 ),
-                selectedLabelColor: colors.onSecondary,
-                unSelectedLabelColor: colors.onSecondary,
+                selectedLabelColor: colors.black,
+                unSelectedLabelColor: colors.black,
               ),
             ),
           ],

@@ -46,7 +46,7 @@ class AnimatedCartCounterView extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
           borderRadius: AppBorderRadius.brCircular8,
-          color: colors.primary,
+          color: colors.primary500Main,
         ),
         child: Row(
           spacing: 15,
@@ -59,7 +59,7 @@ class AnimatedCartCounterView extends StatelessWidget {
                 opacity: canIncrement ? 1 : 0.4,
                 child: Assets.media.images.png.increamentIcon.image(
                   width: 15,
-                  color: colors.onPrimary,
+                  color: colors.white,
                 ),
               ),
             ),
@@ -75,7 +75,7 @@ class AnimatedCartCounterView extends StatelessWidget {
                   child: AutoSizeText(
                     counter.toString(),
                     style: AppTextStyles.style12Medium.copyWith(
-                      color: colors.onPrimary,
+                      color: colors.white,
                     ),
                   ),
                 ),
@@ -84,7 +84,7 @@ class AnimatedCartCounterView extends StatelessWidget {
                   child: isLoading
                       ? CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: colors.onPrimary,
+                          color: colors.white,
                         )
                       : null,
                 ),
@@ -95,14 +95,14 @@ class AnimatedCartCounterView extends StatelessWidget {
                     onTap: isLoading ? null : onDelete,
                     child: Assets.media.images.png.removeIcon.image(
                       width: 15,
-                      color: colors.onPrimary,
+                      color: colors.white,
                     ),
                   )
                 : InkWell(
                     onTap: isLoading ? null : onDec,
                     child: Assets.media.images.png.decrementIcon.image(
                       width: 15,
-                      color: colors.onPrimary,
+                      color: colors.white,
                     ),
                   ),
           ],

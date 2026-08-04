@@ -63,7 +63,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           style: AppTextStyles.style20Bold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
             fontSize: 22,
           ),
         ),
@@ -86,7 +86,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
         PrimaryButton(
           title: LangKeys.yesCancelOrderKey.tr(),
           buttonColor: colors.errorContainer,
-          titleColor: colors.onPrimary,
+          titleColor: colors.white,
           buttonPadding: 16,
           onTap: onConfirm,
         ),
@@ -94,7 +94,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
         UnPrimaryButton(
           title: LangKeys.keepOrderKey.tr(),
           buttonPadding: 16,
-          borderColor: colors.surfaceContainerLow,
+          borderColor: colors.neutral200,
           onTap: onKeep,
         ),
         const SizedBox(height: 8),
@@ -134,7 +134,7 @@ class _OrderSummaryCard extends StatelessWidget {
                 Text(
                   '${LangKeys.orderKey.tr()} $orderNumber',
                   style: AppTextStyles.style14Bold.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
                 const SizedBox(height: 6),

@@ -122,7 +122,7 @@ class _FieldLabel extends StatelessWidget {
     return Text(
       text,
       style: AppTextStyles.style14Medium.copyWith(
-        color: color ?? colors.onSecondary,
+        color: color ?? colors.black,
       ),
     );
   }
@@ -152,11 +152,11 @@ class _CardInputField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
-          color: hintColor ?? colors.onSurface,
+          color: hintColor ?? colors.neutral500,
           fontSize: 15,
         ),
         filled: true,
-        fillColor: fieldColor ?? colors.onPrimary.withValues(alpha: 0.33),
+        fillColor: fieldColor ?? colors.white.withValues(alpha: 0.33),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 10,

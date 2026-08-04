@@ -13,14 +13,14 @@ class CircularCartButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: CircleAvatar(
-        backgroundColor: colors.onPrimary,
+        backgroundColor: colors.white,
         radius: size??25,
         child: Center(
           child: Assets.media.images.svg.shoppingCartIcon.svg(
             fit: BoxFit.contain,
             width: size??25,
             colorFilter: ColorFilter.mode(
-              colors.onSecondary,
+              colors.black,
               BlendMode.srcIn,
             ),
           ),

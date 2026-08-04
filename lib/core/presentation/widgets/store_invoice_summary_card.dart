@@ -26,7 +26,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.onSurface.withValues(alpha: 0.15),
+        color: colors.neutral500.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -48,12 +48,12 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     child: Text(
                       LangKeys.subtotalKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${subtotal ?? 0}',
                     size: 13,
                   ),
@@ -65,12 +65,12 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     child: Text(
                       LangKeys.vatFivePercentKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${tax ?? 0}',
                     size: 13,
                   ),
@@ -82,12 +82,12 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     child: Text(
                       LangKeys.deliveryFeesKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${deliveryFee ?? 0}',
                     size: 13,
                   ),
@@ -99,7 +99,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     child: Text(
                       LangKeys.discountLabelKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),

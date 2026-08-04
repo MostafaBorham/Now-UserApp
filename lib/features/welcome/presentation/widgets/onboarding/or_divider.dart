@@ -18,7 +18,7 @@ class OrDivider extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            color: colors.inversePrimary,
+            color: colors.neutral400,
             height: 1,
           ),
         ),
@@ -26,13 +26,13 @@ class OrDivider extends StatelessWidget {
           fit: BoxFit.scaleDown,
           child: Text(LangKeys.orKey.tr(),
             style: textThemes.bodyLarge?.copyWith(
-              color: colors.inversePrimary,
+              color: colors.neutral400,
               fontWeight: FontWeight.w500
           )),
         ),
         Expanded(
           child: Container(
-            color: colors.inversePrimary,
+            color: colors.neutral400,
             height: 1,
           ),
         ),

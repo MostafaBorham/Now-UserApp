@@ -66,7 +66,7 @@ class ConfirmedOrderCard extends StatelessWidget {
                           child: Text(
                             orderNumber,
                             style: AppTextStyles.style18SemiBold.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                         ),
@@ -79,7 +79,7 @@ class ConfirmedOrderCard extends StatelessWidget {
                               height: 12,
                               fit: BoxFit.contain,
                               colorFilter: ColorFilter.mode(
-                                colors.primary,
+                                colors.primary500Main,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -87,7 +87,7 @@ class ConfirmedOrderCard extends StatelessWidget {
                             Text(
                               price,
                               style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.primary,
+                                color: colors.primary500Main,
                               ),
                             ),
                           ],
@@ -98,7 +98,7 @@ class ConfirmedOrderCard extends StatelessWidget {
                     Text(
                       '${LangKeys.deliveredOnKey.tr()} $deliveryDate',
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                     ),
                     10.hSpace,
@@ -108,8 +108,8 @@ class ConfirmedOrderCard extends StatelessWidget {
                       children: [
                         _Chip(
                           label: '$itemsCount ${LangKeys.itemsKey.tr()}',
-                          background: colors.onSurface.withValues(alpha: 0.1),
-                          textColor: colors.onSecondary,
+                          background: colors.neutral500.withValues(alpha: 0.1),
+                          textColor: colors.black,
                         ),
                         _Chip(
                           label: LangKeys.pendingKey.tr(),

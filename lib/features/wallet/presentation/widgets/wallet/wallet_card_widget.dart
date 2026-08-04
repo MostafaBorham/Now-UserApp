@@ -20,7 +20,7 @@ class WalletCardWidget extends StatelessWidget {
         gradient: LinearGradient(
           begin: AlignmentDirectional.centerStart,
           end: AlignmentDirectional.centerEnd,
-          colors: [colors.primary, colors.primaryContainer],
+          colors: [colors.primary500Main, colors.primaryContainer],
         ),
         borderRadius: AppBorderRadius.brCircular16,
       ),
@@ -29,7 +29,7 @@ class WalletCardWidget extends StatelessWidget {
           Assets.media.images.svg.nowWalletCard.svg(
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              colors.primary,
+              colors.primary500Main,
               BlendMode.srcIn,
             ),
           ),
@@ -45,7 +45,7 @@ class WalletCardWidget extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: AppBorderRadius.brCircular30,
-                        color: colors.onPrimary,
+                        color: colors.white,
                       ),
                       padding: EdgeInsets.symmetric(
                         vertical: 3,
@@ -54,7 +54,7 @@ class WalletCardWidget extends StatelessWidget {
                       child: AutoSizeText(
                         '10.00',
                         style: AppTextStyles.style20SemiBold.copyWith(
-                          color: colors.onPrimaryFixedVariant,
+                          color: colors.primary700,
                         ),
                       ),
                     ),
@@ -62,7 +62,7 @@ class WalletCardWidget extends StatelessWidget {
                       child: Text(
                         LangKeys.nowCreditKey.tr(),
                         style: AppTextStyles.style14Medium.copyWith(
-                          color: colors.onPrimary,
+                          color: colors.white,
                         ),
                       ),
                     ),

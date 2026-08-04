@@ -65,7 +65,7 @@ class AppCustomAlertDialog extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: colors.onPrimary,
+            color: colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -88,7 +88,7 @@ class AppCustomAlertDialog extends StatelessWidget {
                 message,
                 overflow: TextOverflow.visible,
                 style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.onSurface,
+                  color: colors.neutral500,
                   overflow: TextOverflow.visible,
                 ),
               ),
@@ -114,7 +114,7 @@ class AppCustomAlertDialog extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppTextStyles.style14Medium.copyWith(
                           overflow: TextOverflow.visible,
-                          color: colors.onSurface.withValues(
+                          color: colors.neutral500.withValues(
                             alpha: isLoading ? 0.4 : 1,
                           ),
                         ),

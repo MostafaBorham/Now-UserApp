@@ -13,7 +13,7 @@ class AppFilterIcon extends StatelessWidget {
       onTap:
           onTap,
       child: CircleAvatar(
-        backgroundColor: colors.tertiary.withValues(alpha: 0.3),
+        backgroundColor: colors.primary200.withValues(alpha: 0.3),
         radius: size,
         child: Assets.media.images.svg.filterIcon.svg(width: size),
       ),

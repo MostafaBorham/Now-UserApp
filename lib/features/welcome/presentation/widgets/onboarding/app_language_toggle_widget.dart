@@ -57,7 +57,7 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
               cornerRadius: 36,
               borderType: OpticalBorder(borderSolidity: 5),
               lightDirection: 20,
-              lightColor: colors.onPrimary,
+              lightColor: colors.white,
             ),
           ),
           child: Padding(
@@ -85,7 +85,7 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
                                 gradient: LinearGradient(
                                   colors: [
                                     colors.secondaryFixed,
-                                    colors.primary,
+                                    colors.primary500Main,
                                   ],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
@@ -151,7 +151,7 @@ class _LanguageItem extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             style: AppTextStyles.style12Medium.copyWith(
-              color: selected ? colors.onPrimary : colors.tertiaryContainer,
+              color: selected ? colors.white : colors.tertiaryContainer,
             ),
             child: Text(title),
           ),

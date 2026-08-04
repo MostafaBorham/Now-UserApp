@@ -19,7 +19,7 @@ class RatingCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: AppBorderRadius.brCircular14,
         border: Border.all(
-          color: colors.primary,
+          color: colors.primary500Main,
           width: 1.5,
         ),
       ),
@@ -30,7 +30,7 @@ class RatingCard extends StatelessWidget {
            Text(
             title,
             style: AppTextStyles.style18Medium.copyWith(
-              color: colors.onSecondary
+              color: colors.black
             ),
           ),
           Text(
@@ -38,7 +38,7 @@ class RatingCard extends StatelessWidget {
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
             style: AppTextStyles.style14Regular.copyWith(
-                color: colors.onSurface
+                color: colors.neutral500
             ),
           ),
 
@@ -48,7 +48,7 @@ class RatingCard extends StatelessWidget {
               gradient: LinearGradient(
                 begin: AlignmentDirectional.centerStart,
                 end: AlignmentDirectional.centerEnd,
-                colors: [ colors.onTertiaryFixedVariant,colors.onSurfaceVariant,],
+                colors: [ colors.secondary100,colors.primary100,],
               ),
               borderRadius: BorderRadius.circular(30),
             ),
@@ -56,7 +56,7 @@ class RatingCard extends StatelessWidget {
             LangKeys.ratingGoodKey.tr(),
               textDirection: TextDirection.rtl,
               style: AppTextStyles.style14Regular.copyWith(
-                color: colors.onSecondary
+                color: colors.black
               ),
             ),
           ),
@@ -67,7 +67,7 @@ class RatingCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
               child: Assets.media.images.svg.orderStarRate.svg(
                 width: 20,
-                colorFilter: ColorFilter.mode(colors.inversePrimary.withValues(alpha: 0.3), BlendMode.srcIn)
+                colorFilter: ColorFilter.mode(colors.neutral400.withValues(alpha: 0.3), BlendMode.srcIn)
               ),
             ),
             fullWidget: Padding(

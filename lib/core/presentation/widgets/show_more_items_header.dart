@@ -23,7 +23,7 @@ class ShowMoreItemsHeader extends StatelessWidget {
             Text(
               headerTitle,
               style: AppTextStyles.style18SemiBold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
                 fontSize: con.maxWidth*0.05
               ),
             ),
@@ -32,7 +32,7 @@ class ShowMoreItemsHeader extends StatelessWidget {
               child: Text(
                 LangKeys.showMoreKey.tr(),
                 style: AppTextStyles.style14SemiBold.copyWith(
-                  color: colors.primary,
+                  color: colors.primary500Main,
                     fontSize: con.maxWidth*0.035
                 ),
               ),

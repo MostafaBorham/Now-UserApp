@@ -66,11 +66,11 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
       child: Container(
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: colors.onPrimary,
+          color: colors.white,
           borderRadius: AppBorderRadius.brCircular20,
           boxShadow: [
             BoxShadow(
-              color: colors.onSurface.withValues(alpha: .3),
+              color: colors.neutral500.withValues(alpha: .3),
               blurRadius: 2,
               spreadRadius: 1,
             ),
@@ -150,7 +150,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: colors.onPrimary,
+                                  color: colors.white,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -192,7 +192,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       child: Text(
                                         '4.7',
                                         style: AppTextStyles.style14Medium.copyWith(
-                                          color: colors.onSecondary,
+                                          color: colors.black,
                                           fontSize: widthCon * 0.1,
                                         ),
                                       ),
@@ -249,7 +249,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       flex: 3,
                                       child: FittedBox(
                                         child: OldPriceWidget(
-                                          color: colors.onSurface,
+                                          color: colors.neutral500,
                                           price:
                                               '${widget.productModel?.comparePrice}',
                                         ),
@@ -259,7 +259,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       flex: 4,
                                       child: FittedBox(
                                         child: NewPriceWidget(
-                                          color: colors.onSecondary,
+                                          color: colors.black,
                                           price:
                                               '${widget.productModel?.price}',
                                         ),
@@ -272,7 +272,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     widget.productModel?.name,
                                   ),
                                   style: AppTextStyles.style12SemiBold.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                     fontSize: widthCon * 0.09,
                                   ),
                                 ),

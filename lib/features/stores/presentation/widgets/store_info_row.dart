@@ -27,14 +27,14 @@ class StoreInfoRow extends StatelessWidget {
         Assets.media.images.svg.timeIcon.svg(
           width: infoIconSize,
           colorFilter: ColorFilter.mode(
-            colors.onSurface,
+            colors.neutral500,
             BlendMode.srcIn,
           ),
         ),
         Text(
           '${deliveryTime ?? 0}',
           style: AppTextStyles.style12Medium.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
               fontSize: infoFontSize
           ),
         ),
@@ -42,14 +42,14 @@ class StoreInfoRow extends StatelessWidget {
         Assets.media.images.svg.locationIcon.svg(
           width: infoIconSize,
           colorFilter: ColorFilter.mode(
-            colors.onSurface,
+            colors.neutral500,
             BlendMode.srcIn,
           ),
         ),
         Text(
           '${distance ?? 0}',
           style: AppTextStyles.style12Medium.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
               fontSize: infoFontSize
           ),
         ),
@@ -58,13 +58,13 @@ class StoreInfoRow extends StatelessWidget {
           child: Assets.media.images.svg.shippingIcon.svg(
             width: infoIconSize,
             colorFilter: ColorFilter.mode(
-              colors.onSurface,
+              colors.neutral500,
               BlendMode.srcIn,
             ),
           ),
         ),
         NewPriceWidget(
-          color: colors.onSecondary,
+          color: colors.black,
           price: '${deliveryFee ?? 0}',
           size: infoFontSize,
         ),

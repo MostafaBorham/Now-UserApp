@@ -27,7 +27,7 @@ class HomeProductItem extends StatelessWidget {
           child: CachedNetworkImage(imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg',fit: BoxFit.cover,),
         ),
         AutoSizeText('product123',style: AppTextStyles.style14SemiBold.copyWith(
-          color: colors.onTertiaryFixed
+          color: colors.neutral1200
         ),),
         Row(
           mainAxisSize: MainAxisSize.min,

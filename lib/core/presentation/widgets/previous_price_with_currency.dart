@@ -20,10 +20,10 @@ class PreviousPriceWithCurrency extends StatelessWidget {
             width: 14,
             height: 14,
             fit: BoxFit.contain,
-            colorFilter: ColorFilter.mode(colors.inversePrimary, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(colors.neutral400, BlendMode.srcIn),
           ),
           AutoSizeText('10',style: AppTextStyles.style14Medium.copyWith(
-              color: colors.inversePrimary,
+              color: colors.neutral400,
             height: 1
           ),),
 

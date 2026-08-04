@@ -30,7 +30,7 @@ class ErrorSnackBar {
     return SnackBar(
       content: Text(
         message.tr(),
-        style: AppTextStyles.style16SemiBold.copyWith(color: colors.onPrimary),
+        style: AppTextStyles.style16SemiBold.copyWith(color: colors.white),
       ),
       behavior: SnackBarBehavior.floating,
       elevation: 4,

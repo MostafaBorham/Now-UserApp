@@ -47,7 +47,7 @@ class OldPriceWidget extends StatelessWidget {
               angle: -0.3,
               child: Container(
                 height: 2,
-                color: colors.inversePrimary,
+                color: colors.neutral400,
               ),
             ),
           ),

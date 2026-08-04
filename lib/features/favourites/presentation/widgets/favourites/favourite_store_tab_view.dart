@@ -35,7 +35,7 @@ class FavouriteStoreTabView extends StatelessWidget {
                   ),
             )
                 .toList(),
-            selectedLabelColor: colors.onPrimary,
+            selectedLabelColor: colors.white,
             selectedTabColor: colors.tertiaryContainer,
             unSelectedTabColor: colors.primaryFixed,
           ),

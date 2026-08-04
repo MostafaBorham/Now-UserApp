@@ -27,14 +27,14 @@ class UnPrimaryButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: borderColor?? colors.inversePrimary.withValues(alpha: 0.5), width: 1),
+          border: Border.all(color: borderColor?? colors.neutral400.withValues(alpha: 0.5), width: 1),
         ),
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(color: titleColor?? colors.onSecondary),
+            style: AppTextStyles.style14Medium.copyWith(color: titleColor?? colors.black),
           ),
         ),
       ),

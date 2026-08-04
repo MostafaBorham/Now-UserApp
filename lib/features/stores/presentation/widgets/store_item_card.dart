@@ -69,7 +69,7 @@ class StoreItemCard extends StatelessWidget {
                                           '25%',
                                           maxLines: 1,
                                           style: TextStyle(
-                                            color: colors.onPrimary,
+                                            color: colors.white,
                                             fontWeight: FontWeight.w600,
                                             fontSize: con.maxHeight * 0.1,
                                           ),
@@ -109,7 +109,7 @@ class StoreItemCard extends StatelessWidget {
                                       child: Text(
                                         'Panda',
                                         style: AppTextStyles.style18Bold.copyWith(
-                                          color: colors.onSecondary,
+                                          color: colors.black,
                                           fontSize: con.maxHeight*0.12
                                         ),
                                       ),
@@ -118,7 +118,7 @@ class StoreItemCard extends StatelessWidget {
                                       starColor: colors.onSecondaryContainer,
                                       rateRatio: '4.5',
                                       rateCount: '4',
-                                      rateColor: colors.onSurface,
+                                      rateColor: colors.neutral500,
                                       size: con.maxHeight*0.1,
                                     ),
                                   ],
@@ -141,7 +141,7 @@ class StoreItemCard extends StatelessWidget {
                             Text(
                               'Panda is supermarket contain everything',
                               style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.onSurface,
+                                color: colors.neutral500,
                                 fontSize: con.maxWidth*0.04
                               ),
                             ),

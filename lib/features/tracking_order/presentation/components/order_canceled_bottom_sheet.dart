@@ -50,7 +50,7 @@ class OrderCanceledBottomSheet extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           style: AppTextStyles.style20Bold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
             fontSize: 22,
           ),
         ),
@@ -73,7 +73,7 @@ class OrderCanceledBottomSheet extends StatelessWidget {
         UnPrimaryButton(
           title: LangKeys.viewOrdersKey.tr(),
           buttonPadding: 16,
-          borderColor: colors.surfaceContainerLow,
+          borderColor: colors.neutral200,
           onTap: onViewOrders,
         ),
         const SizedBox(height: 8),

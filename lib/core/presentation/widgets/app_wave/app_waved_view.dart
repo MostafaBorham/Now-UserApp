@@ -70,7 +70,7 @@ class AppWavedView extends StatelessWidget {
                               child: ReverseWidget(
                                 applyReverse: context.isRTL,
                                 child: CircleAvatar(
-                                  backgroundColor: colors.onPrimary,
+                                  backgroundColor: colors.white,
                                   radius: screenSize.width * 0.05,
                                   child: Center(
                                     child: Assets.media.images.svg.appBackArrow
@@ -106,7 +106,7 @@ class AppWavedView extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.style24SemiBold.copyWith(
-                                color: colors.onSecondary,
+                                color: colors.black,
                               ),
                             ),
                     ),
@@ -165,7 +165,7 @@ class AppWavedView extends StatelessWidget {
                         vertical: 57,
                       ).copyWith(bottom: 20),
                   decoration: BoxDecoration(
-                    color: colors.onPrimary,
+                    color: colors.white,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black,

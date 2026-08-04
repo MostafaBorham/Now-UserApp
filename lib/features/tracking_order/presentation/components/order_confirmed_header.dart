@@ -30,14 +30,14 @@ class OrderConfirmedHeader extends StatelessWidget {
           LangKeys.orderConfirmedTitleKey.tr(),
           textAlign: TextAlign.center,
           maxLines: 2,
-          style: AppTextStyles.style18Bold.copyWith(color: colors.onSecondary),
+          style: AppTextStyles.style18Bold.copyWith(color: colors.black),
         ),
         8.hSpace,
         Text(
           LangKeys.orderConfirmedSubtitleKey.tr(),
           textAlign: TextAlign.center,
           maxLines: 3,
-          style: AppTextStyles.style14Regular.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style14Regular.copyWith(color: colors.neutral500),
         ),
       ],
     );

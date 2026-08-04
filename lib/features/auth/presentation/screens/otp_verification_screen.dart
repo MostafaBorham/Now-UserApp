@@ -90,7 +90,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 content: Text(
                   error.toString().tr(),
                   style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.onPrimary,
+                    color: colors.white,
                   ),
                 ),
                 behavior: SnackBarBehavior.floating,

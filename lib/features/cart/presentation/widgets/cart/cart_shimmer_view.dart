@@ -25,7 +25,7 @@ class CartShimmerView extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: colors.onPrimary.withValues(alpha: 0.4),
+                    color: colors.white.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -40,7 +40,7 @@ class CartShimmerView extends StatelessWidget {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -49,7 +49,7 @@ class CartShimmerView extends StatelessWidget {
                             width: 120,
                             height: 14,
                             decoration: BoxDecoration(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -58,7 +58,7 @@ class CartShimmerView extends StatelessWidget {
                             width: 24,
                             height: 24,
                             decoration: BoxDecoration(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
@@ -74,7 +74,7 @@ class CartShimmerView extends StatelessWidget {
                               width: 56,
                               height: 56,
                               decoration: BoxDecoration(
-                                color: colors.onPrimary,
+                                color: colors.white,
                                 borderRadius: BorderRadius.circular(6),
                               ),
                             ),
@@ -86,7 +86,7 @@ class CartShimmerView extends StatelessWidget {
                         width: double.infinity,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: colors.onPrimary,
+                          color: colors.white,
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),

@@ -221,7 +221,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   Assets.media.images.svg.workSelected.svg(),
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
-                selectedColor: colors.primary,
+                selectedColor: colors.primary500Main,
                 initialIndex: _selectedLabelIndex,
                 onChanged: (int index) => _selectedLabelIndex = index,
               ),

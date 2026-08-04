@@ -33,11 +33,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
       placeholder: (context, url) {
         switch (placeholderType) {
           case PlaceholderTypes.circular:
-            return Center(child: CircularProgressIndicator(color: colors.primary));
+            return Center(child: CircularProgressIndicator(color: colors.primary500Main));
           case PlaceholderTypes.shimmer || null:
             return Shimmer.fromColors(
-              baseColor: colors.onSurface.withValues(alpha: 0.6),
-              highlightColor: colors.onSurface.withValues(alpha: 0.3),
+              baseColor: colors.neutral500.withValues(alpha: 0.6),
+              highlightColor: colors.neutral500.withValues(alpha: 0.3),
               child: Container(width: double.infinity, color: colors.onPrimary),
             );
         }
@@ -87,7 +87,7 @@ class AppCachedNetworkImage extends StatelessWidget {
               child: SizedBox(
                 width: circularProgressSize ?? ((width ?? 30) * 0.7),
                 height: circularProgressSize ?? ((width ?? 30) * 0.7),
-                child: CircularProgressIndicator(color: colors.primary),
+                child: CircularProgressIndicator(color: colors.primary500Main),
               ),
             );
           case LoadingViewTypes.shimmer || null:
@@ -95,7 +95,7 @@ class AppCachedNetworkImage extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 height: height,
-                color: colors.onPrimary,
+                color: colors.white,
               ),
             );
         }
@@ -106,7 +106,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         height: height ?? double.infinity,
         decoration: BoxDecoration(
-          color: colors.onSurface.withValues(alpha: 0.3),
+          color: colors.neutral500.withValues(alpha: 0.3),
         ),
         child: Assets.media.images.png.noImageAvail.image(
           fit: BoxFit.contain,

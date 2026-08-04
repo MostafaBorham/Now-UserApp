@@ -25,7 +25,7 @@ class OrderConfirmedScreen extends StatelessWidget {
             gradient: RadialGradient(
               center: AlignmentGeometry.topCenter,
               radius: 0.9,
-              colors: [colors.tertiary, colors.onSurfaceVariant, Colors.white],
+              colors: [colors.primary200, colors.primary100, Colors.white],
             ),
           ),
           child: Padding(

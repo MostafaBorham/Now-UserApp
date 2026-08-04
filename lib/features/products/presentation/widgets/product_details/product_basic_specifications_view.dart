@@ -36,7 +36,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
         Text(
           LangKeys.basicSpecificationsKey.tr(),
           style: AppTextStyles.style16Bold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         Container(
@@ -44,7 +44,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
           decoration: BoxDecoration(
             color: colors.onPrimaryContainer,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: colors.surfaceContainerLow),
+            border: Border.all(color: colors.neutral200),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -56,7 +56,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                     border: i == entries.length - 1
                         ? null
                         : Border(
-                            bottom: BorderSide(color: colors.surfaceContainerLow),
+                            bottom: BorderSide(color: colors.neutral200),
                           ),
                   ),
                   child: Row(
@@ -66,7 +66,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                       Text(
                         entries[i].key,
                         style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.onSurface,
+                          color: colors.neutral500,
                           fontSize: 13,
                           height: 1.5,
                         ),
@@ -76,7 +76,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                           entries[i].value,
                           textAlign: TextAlign.end,
                           style: AppTextStyles.style14SemiBold.copyWith(
-                            color: colors.onSecondary,
+                            color: colors.black,
                             fontSize: 13,
                             height: 1.5,
                           ),

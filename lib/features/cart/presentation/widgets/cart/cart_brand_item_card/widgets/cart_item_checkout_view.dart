@@ -31,8 +31,8 @@ class CartItemCheckoutView extends StatelessWidget {
           begin: AlignmentDirectional.centerStart,
           end: AlignmentDirectional.centerEnd,
           colors: [
-            colors.onTertiaryFixedVariant,
-            colors.onSurfaceVariant,
+            colors.secondary100,
+            colors.primary100,
           ],
         ),
         borderRadius: BorderRadius.circular(999),
@@ -52,7 +52,7 @@ class CartItemCheckoutView extends StatelessWidget {
                   ),
                 ),
                 NewPriceWidget(
-                  color: colors.onSecondary,
+                  color: colors.black,
                   price: total,
                   size: 17,
                 ),

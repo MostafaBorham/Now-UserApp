@@ -23,7 +23,7 @@ class StoreDetailsAppBar extends StatelessWidget {
                 ? InkWell(
               onTap: () => context.pop(),
               child: CircleAvatar(
-                backgroundColor: colors.onPrimary,
+                backgroundColor: colors.white,
                 radius: 25,
                 child: Center(
                   child: Assets.media.images.svg.appBackArrow
@@ -44,7 +44,7 @@ class StoreDetailsAppBar extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.style24SemiBold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
                 // fontSize: screenSize.width*0.06
               ),
             ),
@@ -58,7 +58,7 @@ class StoreDetailsAppBar extends StatelessWidget {
               child: InkWell(
                 onTap: () => context.pop(),
                 child: CircleAvatar(
-                  backgroundColor: colors.onPrimary,
+                  backgroundColor: colors.white,
                   radius: 25,
                   child: Center(
                     child: Assets.media.images.svg.shoppingCartIcon
@@ -66,7 +66,7 @@ class StoreDetailsAppBar extends StatelessWidget {
                       fit: BoxFit.contain,
                       width: 25,
                       colorFilter: ColorFilter.mode(
-                        colors.onSecondary,
+                        colors.black,
                         BlendMode.srcIn,
                       ),
                     ),

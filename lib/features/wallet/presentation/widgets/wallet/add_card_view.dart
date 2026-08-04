@@ -34,12 +34,12 @@ class _AddCardViewState extends State<AddCardView> {
               AutoSizeText(
                 LangKeys.addCardKey.tr(),
                 style: AppTextStyles.style18Medium.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
               IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
                 context.pop();
-              }, icon: Icon(Icons.clear,size: 20,color: colors.onSecondary,))
+              }, icon: Icon(Icons.clear,size: 20,color: colors.black,))
             ],
           ),
           Expanded(child: AddCardForm()),

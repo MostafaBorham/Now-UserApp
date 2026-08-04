@@ -107,7 +107,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
               content: Text(
                 error.toString().tr(),
                 style: AppTextStyles.style16SemiBold.copyWith(
-                  color: colors.onPrimary,
+                  color: colors.white,
                 ),
               ),
               behavior: SnackBarBehavior.floating,
@@ -257,12 +257,12 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                     children: [
                       if ((widget.product?.comparePrice ?? 0) > 0)
                         OldPriceWidget(
-                          color: colors.onSurface,
+                          color: colors.neutral500,
                           price: '${widget.product?.comparePrice}',
                           size: 10,
                         ),
                       NewPriceWidget(
-                        color: colors.onSecondary,
+                        color: colors.black,
                         price: '${widget.product?.price}',
                         size: 14,
                       ),
@@ -281,13 +281,13 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.add_rounded,
                               size: 16,
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                         ),
@@ -301,7 +301,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                     height: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                     ),
                                   )
                                 : Text(
@@ -322,13 +322,13 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.remove_rounded,
                               size: 16,
-                              color: colors.onSurface,
+                              color: colors.neutral500,
                             ),
                           ),
                         ),

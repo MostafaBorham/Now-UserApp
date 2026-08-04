@@ -33,7 +33,7 @@ class _CategoriesStoreTabViewState
         Text(
           LangKeys.filtersKey.tr(),
           style: AppTextStyles.style16SemiBold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         Expanded(
@@ -55,8 +55,8 @@ class _CategoriesStoreTabViewState
             views: StoresSortType.values.map((sortType) {
               return CategoryStoresView(sortType: sortType);
             }).toList(),
-            selectedTabColor: colors.onTertiaryFixed,
-            unSelectedTabColor: colors.onSurface.withValues(alpha: 0.2),
+            selectedTabColor: colors.neutral1200,
+            unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
         ),
       ],

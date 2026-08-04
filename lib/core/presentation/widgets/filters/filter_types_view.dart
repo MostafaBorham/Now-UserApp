@@ -21,18 +21,18 @@ class FilterTypesView extends StatelessWidget {
         Text(
           LangKeys.storeTypeKey.tr(),
           style: AppTextStyles.style16Medium.copyWith(
-            color: colors.onTertiaryFixed,
+            color: colors.neutral1200,
           ),
         ),
         AppSelector(
           items: StoresSortType.values.map((type) => type.label.tr()).toList(),
           initialIndex: null,
           onChanged: (index) => onChanged?.call(StoresSortType.values[index]),
-          labelColor: colors.onSecondary,
+          labelColor: colors.black,
           selectedColor: colors.tertiaryContainer,
           radius: 999,
           borderColor: Colors.transparent,
-          unselectedColor: colors.onSurface.withValues(alpha: 0.1),
+          unselectedColor: colors.neutral500.withValues(alpha: 0.1),
         )
       ],
     );

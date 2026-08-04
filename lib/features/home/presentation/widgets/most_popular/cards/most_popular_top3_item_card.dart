@@ -29,14 +29,14 @@ class MostPopularTop3ItemCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: colors.onSurface.withValues(alpha: 0.2), // #00000014
+                color: colors.neutral500.withValues(alpha: 0.2), // #00000014
                 offset: const Offset(0, 4),
                 blurRadius: 8,
                 spreadRadius: 0,
               ),
             ],
             border: Border.all(
-              color: colors.onSurface.withValues(alpha: 0.2),
+              color: colors.neutral500.withValues(alpha: 0.2),
               width: 1.5,
             ),
           ),
@@ -70,7 +70,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                         child: Text(
                           '#2',
                           style: AppTextStyles.style10Medium.copyWith(
-                              color: colors.onPrimary,
+                              color: colors.white,
                               fontSize: con.maxWidth*0.06
                           ),
                         ),
@@ -83,7 +83,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 7,vertical: 5),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: colors.onPrimary,
+                          color: colors.white,
                           borderRadius: BorderRadius.circular(con.maxWidth*0.07),
                         ),
                         child: Text(
@@ -124,7 +124,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                                 Text(
                                   'VALENTINO',
                                   style: AppTextStyles.style10Regular.copyWith(
-                                      color: colors.onSurface,
+                                      color: colors.neutral500,
                                       letterSpacing: 1.2,
                                       fontSize: con.maxWidth*0.05
                                   ),
@@ -133,7 +133,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                                   'Valentino Uomo Noir',
                                   maxLines: 1,
                                   style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.onTertiaryFixed,
+                                      color: colors.neutral1200,
                                       fontSize:  con.maxWidth*0.08
                                   ),
                                 ),
@@ -155,7 +155,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                           Text(
                             '4.9',
                             style: AppTextStyles.style14SemiBold.copyWith(
-                                color: colors.onTertiaryFixed,
+                                color: colors.neutral1200,
                                 fontSize: con.maxWidth*0.07
                             ),
                           ),
@@ -174,7 +174,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                                 size: con.maxWidth*0.15,
                               ),
                               OldPriceWidget(
-                                color: colors.onSurface,
+                                color: colors.neutral500,
                                 price: '10',
                                 size: con.maxWidth*0.07,
                               ),
@@ -191,7 +191,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                               ),
                               child: Icon(
                                 Icons.add,
-                                color: colors.onPrimary,
+                                color: colors.white,
                                 size: con.maxWidth * 0.1,
                               ),
                             ),

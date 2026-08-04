@@ -30,7 +30,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
           child: Card(
             elevation: 2,
             shadowColor: colors.onTertiaryContainer.withValues(alpha: 0.4),
-            color: colors.onPrimary,
+            color: colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: AppBorderRadius.brCircular18,
             ),
@@ -81,7 +81,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                       AutoSizeText(
                         'متجر الباندا',
                         style: AppTextStyles.style18SemiBold.copyWith(
-                          color: colors.onSecondary,
+                          color: colors.black,
                         ),
                       ),
                       2.hSpace,
@@ -92,20 +92,20 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                           Assets.media.images.svg.shippingIcon.svg(
                             width: 16,
                             colorFilter: ColorFilter.mode(
-                              colors.onSurface,
+                              colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                           Assets.media.images.svg.realSaudiCurrency.svg(
                             width: 15,
                             colorFilter: ColorFilter.mode(
-                              colors.onSecondary,
+                              colors.black,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -126,7 +126,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                                 AutoSizeText(
                                   '4.5 (12)',
                                   style: AppTextStyles.style14Medium.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ],
@@ -141,28 +141,28 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                           Assets.media.images.svg.timeIcon.svg(
                             width: 16,
                             colorFilter: ColorFilter.mode(
-                              colors.onSurface,
+                              colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                           5.wSpace,
                           Assets.media.images.svg.locationIcon.svg(
                             width: 14,
                             colorFilter: ColorFilter.mode(
-                              colors.onSurface,
+                              colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
                           AutoSizeText(
                             '10',
                             style: AppTextStyles.style12Medium.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                         ],

@@ -50,7 +50,7 @@ class ItemInformationSection extends StatelessWidget {
                   name,
                   maxLines: 2,
                   style: AppTextStyles.style16Medium.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
                 6.hSpace,
@@ -61,7 +61,7 @@ class ItemInformationSection extends StatelessWidget {
                       height: 12,
                       fit: BoxFit.contain,
                       colorFilter: ColorFilter.mode(
-                        colors.onSecondary,
+                        colors.black,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -69,7 +69,7 @@ class ItemInformationSection extends StatelessWidget {
                     Text(
                       price,
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ],
@@ -81,7 +81,7 @@ class ItemInformationSection extends StatelessWidget {
           Text(
             'x$quantity',
             style: AppTextStyles.style16Medium.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
         ],

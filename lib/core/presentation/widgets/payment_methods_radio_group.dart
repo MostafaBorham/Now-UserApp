@@ -71,7 +71,7 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                     child: Icon(
                       method.icon,
                       size: 24,
-                      color: method.solid ? colors.onPrimary : method.color,
+                      color: method.solid ? colors.white : method.color,
                     ),
                   ),
                   Expanded(
@@ -90,7 +90,7 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                           Text(
                             method.subtitle!,
                             style: AppTextStyles.style14Regular.copyWith(
-                              color: colors.onSurface,
+                              color: colors.neutral500,
                             ),
                           ),
                       ],
@@ -104,8 +104,8 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: selected
-                            ? colors.primary
-                            : colors.surfaceContainerLow,
+                            ? colors.primary500Main
+                            : colors.neutral200,
                         width: 1.5,
                       ),
                     ),
@@ -114,7 +114,7 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                             width: 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: colors.primary,
+                              color: colors.primary500Main,
                               shape: BoxShape.circle,
                             ),
                           )

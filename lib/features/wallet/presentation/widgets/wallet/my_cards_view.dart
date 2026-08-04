@@ -36,7 +36,7 @@ class _MyCardsViewState extends State<MyCardsView> {
               AutoSizeText(
                 LangKeys.myCardsKey.tr(),
                 style: AppTextStyles.style18Medium.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
               IconButton(
@@ -45,7 +45,7 @@ class _MyCardsViewState extends State<MyCardsView> {
                 onPressed: () {
                   context.pop();
                 },
-                icon: Icon(Icons.clear, size: 20, color: colors.onSecondary),
+                icon: Icon(Icons.clear, size: 20, color: colors.black),
               ),
             ],
           ),

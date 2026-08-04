@@ -43,7 +43,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           child: Text(
             LangKeys.paymentMethodKey.tr(),
             style: AppTextStyles.style14Medium.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
         ),
@@ -100,7 +100,7 @@ class NowRadioTile extends StatelessWidget {
           curve: Curves.easeOut,
           padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           decoration: BoxDecoration(
-            color: colors.onSurface.withValues(alpha: 0.1),
+            color: colors.neutral500.withValues(alpha: 0.1),
             borderRadius: AppBorderRadius.brCircular12,
           ),
           child: Row(
@@ -147,7 +147,7 @@ class _RadioIndicator extends StatelessWidget {
         border: Border.all(
           color: selected
               ? colors.primaryContainer.withValues(alpha: 0.5)
-              : colors.onSurface,
+              : colors.neutral500,
           width: 1.5,
         ),
       ),
@@ -170,7 +170,7 @@ class _NameBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: 0.15),
+        color: colors.primary500Main.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -178,7 +178,7 @@ class _NameBadge extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: colors.primary,
+          color: colors.primary500Main,
         ),
       ),
     );

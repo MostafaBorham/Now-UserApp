@@ -85,7 +85,7 @@ class DiscountCodeItem extends StatelessWidget {
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [colors.tertiary.withValues(alpha: 0.2),colors.tertiary.withValues(alpha: 0.4),],
+                                  colors: [colors.primary200.withValues(alpha: 0.2),colors.primary200.withValues(alpha: 0.4),],
                                 ),
                               ),
                               child: Column(
@@ -104,7 +104,7 @@ class DiscountCodeItem extends StatelessWidget {
                                     maxLines: 2,
                                     textAlign: TextAlign.center,
                                     style: AppTextStyles.style8Medium.copyWith(
-                                      color: colors.onSurface,
+                                      color: colors.neutral500,
                                     ),
                                   ),
                                   Assets.media.images.svg.appLogo.svg(

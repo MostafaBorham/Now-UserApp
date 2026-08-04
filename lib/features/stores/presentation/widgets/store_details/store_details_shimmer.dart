@@ -42,7 +42,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: colors.onPrimary,
+                                color: colors.white,
                               ),
                               child: AppShimmer(
                                 child: CircleAvatar(
@@ -101,7 +101,7 @@ class StoreDetailsShimmer extends StatelessWidget {
             ),
           ),
           Container(
-            color: colors.onPrimary,
+            color: colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.infinity,
             child: Column(
@@ -156,11 +156,11 @@ class StoreDetailsShimmer extends StatelessWidget {
                       horizontal: 20,
                     ),
                     decoration: BoxDecoration(
-                      color: colors.onPrimary,
+                      color: colors.white,
                       borderRadius: AppBorderRadius.brCircular20,
                       boxShadow: [
                         BoxShadow(
-                          color: colors.onSecondary.withValues(alpha: 0.08),
+                          color: colors.black.withValues(alpha: 0.08),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

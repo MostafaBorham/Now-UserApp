@@ -22,7 +22,7 @@ class FilterHeaderView extends StatelessWidget {
             width: 42,
             height: 4,
             decoration: BoxDecoration(
-              color: colors.surfaceContainerLow,
+              color: colors.neutral200,
               borderRadius: AppBorderRadius.brCircular2,
             ),
           ),
@@ -33,7 +33,7 @@ class FilterHeaderView extends StatelessWidget {
             Text(
               LangKeys.moreFiltersKey.tr(),
               style: AppTextStyles.style20SemiBold.copyWith(
-                color: colors.onTertiaryFixed,
+                color: colors.neutral1200,
               ),
             ),
             InkWell(
@@ -41,7 +41,7 @@ class FilterHeaderView extends StatelessWidget {
               child: Icon(
                 Icons.close,
                 size: 20,
-                color: colors.onTertiaryFixed,
+                color: colors.neutral1200,
               ),
             ),
           ],

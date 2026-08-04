@@ -88,8 +88,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           placeholder: (context, url) =>
                               CircularProgressIndicator(
                                 padding: EdgeInsets.all(10),
-                                backgroundColor: colors.onPrimary,
-                                color: colors.primary,
+                                backgroundColor: colors.white,
+                                color: colors.primary500Main,
                               ),
                           errorWidget: (context, url, error) => Assets
                               .media
@@ -106,7 +106,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           AutoSizeText(
                             'Guest 123',
                             style: AppTextStyles.style20SemiBold.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                             maxLines: 1,
                           ),
@@ -118,14 +118,14 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 width: 16,
                                 height: 16,
                                 colorFilter: ColorFilter.mode(
-                                  colors.onSecondary,
+                                  colors.black,
                                   BlendMode.srcIn,
                                 ),
                               ),
                               AutoSizeText(
                                 'gada, saudia 23 st',
                                 style: AppTextStyles.style12Regular.copyWith(
-                                  color: colors.onSecondary,
+                                  color: colors.black,
                                 ),
                                 maxLines: 1,
                               ),
@@ -140,7 +140,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         child: Badge.count(
                           count: 2,
                           offset: Offset(1, 1),
-                          textColor: colors.onPrimary,
+                          textColor: colors.white,
                           textStyle: AppTextStyles.style14SemiBold,
                           padding: EdgeInsets.all(3),
                           backgroundColor: colors.errorContainer,
@@ -180,7 +180,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   ),
                 ),
                 Container(
-                  color: colors.onPrimary,
+                  color: colors.white,
                   margin: const EdgeInsets.only(top: 50.0),
                   child: Column(
                     spacing: 20,
@@ -225,13 +225,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       AutoSizeText(
                                         'Big Grocery Sale',
                                         style: AppTextStyles.style20Bold
-                                            .copyWith(color: colors.onPrimary),
+                                            .copyWith(color: colors.white),
                                         maxLines: 1,
                                       ),
                                       AutoSizeText(
                                         'Buy 1 Get 1 Free',
                                         style: AppTextStyles.style12Medium
-                                            .copyWith(color: colors.onPrimary),
+                                            .copyWith(color: colors.white),
                                         maxLines: 1,
                                       ),
                                     ],
@@ -239,7 +239,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   CircularBrandLogo(
                                     radius: 35,
                                     elevation: 1,
-                                    backgroundColor: colors.onPrimary,
+                                    backgroundColor: colors.white,
                                     logoUrl:
                                         'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
                                   ),
@@ -253,13 +253,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     horizontal: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: colors.onPrimary,
+                                    color: colors.white,
                                     borderRadius: AppBorderRadius.brCircular8,
                                   ),
                                   child: AutoSizeText(
                                     LangKeys.shopNowKey.tr(),
                                     style: AppTextStyles.style16SemiBold.copyWith(
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                     ),
                                     maxLines: 1,
                                   ),

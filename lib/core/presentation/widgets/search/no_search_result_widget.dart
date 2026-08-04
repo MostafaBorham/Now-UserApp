@@ -15,7 +15,7 @@ class NoSearchResultWidget extends StatelessWidget {
       children: [
         Assets.media.images.svg.noSearchResultIcon.svg(),
         Text('No Result Found',style: AppTextStyles.style24SemiBold.copyWith(
-          color: colors.onSecondary
+          color: colors.black
         ),)
       ],
     );

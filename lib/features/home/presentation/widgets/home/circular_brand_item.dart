@@ -15,7 +15,7 @@ class CircularBrandItem extends StatelessWidget {
       children: [
         CircularBrandLogo(radius: 50,logoUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',),
         AutoSizeText('Panda',style: AppTextStyles.style16SemiBold.copyWith(
-          color: colors.onSecondary,
+          color: colors.black,
         ),),
       ],
     );

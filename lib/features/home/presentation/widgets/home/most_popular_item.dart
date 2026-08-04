@@ -107,7 +107,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                                       vertical: 7,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: colors.onPrimaryFixedVariant,
+                                      color: colors.primary700,
                                       borderRadius:
                                           BorderRadiusDirectional.only(
                                             topEnd: Radius.circular(15),
@@ -188,7 +188,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                 height: constraints.maxHeight * 0.38,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.white,
                   borderRadius: AppBorderRadius.brCircular12,
                 ),
                 child: Row(
@@ -203,7 +203,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                         AutoSizeText(
                           'sdsd',
                           style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.onTertiaryFixed,
+                            color: colors.neutral1200,
                           ),
                         ),
                         Row(
@@ -211,7 +211,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                           spacing: 10,
                           children: [
                             PriceWithCurrency(
-                              color: colors.onPrimaryFixedVariant,
+                              color: colors.primary700,
                               price: '20',
                             ),
                             PreviousPriceWithCurrency(),
@@ -225,7 +225,7 @@ class _MostPopularItemState extends State<MostPopularItem> {
                             AutoSizeText(
                               '4',
                               style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.onTertiaryFixed,
+                                color: colors.neutral1200,
                               ),
                             ),
                           ],

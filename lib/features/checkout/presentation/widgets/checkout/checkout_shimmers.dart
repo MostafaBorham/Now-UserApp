@@ -70,7 +70,7 @@ class InvoiceSummaryShimmer extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return _ShimmerCard(
       padding: const EdgeInsets.all(16),
-      color: colors.onSurface.withValues(alpha: 0.2),
+      color: colors.neutral500.withValues(alpha: 0.2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
@@ -87,7 +87,7 @@ class InvoiceSummaryShimmer extends StatelessWidget {
           Divider(
             height: 2,
             thickness: 1,
-            color: colors.onSurface.withValues(alpha: 0.3),
+            color: colors.neutral500.withValues(alpha: 0.3),
           ),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

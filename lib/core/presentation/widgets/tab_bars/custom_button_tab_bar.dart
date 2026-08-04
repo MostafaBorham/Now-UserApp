@@ -104,9 +104,9 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                               fontSize: con.maxWidth * 0.04,
                               color: isSelected
                                   ? widget.selectedLabelColor ??
-                                        colors.onPrimary
+                                        colors.white
                                   : widget.unSelectedLabelColor ??
-                                        colors.onSecondary,
+                                        colors.black,
                             ),
                           ),
                         ),

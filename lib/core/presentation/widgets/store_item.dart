@@ -42,7 +42,7 @@ class _StoreItemState extends State<StoreItem> {
       child: Container(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
-          color: colors.onPrimary,
+          color: colors.white,
           borderRadius: AppBorderRadius.brCircular20,
           boxShadow: [
             BoxShadow(
@@ -90,10 +90,10 @@ class _StoreItemState extends State<StoreItem> {
                           shape: CircleBorder(),
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           elevation: 1,
-                          shadowColor: colors.onSurface.withValues(alpha: 0.5),
+                          shadowColor: colors.neutral500.withValues(alpha: 0.5),
                           child: CircularBrandLogo(
                             radius: stackCon.maxHeight * 0.25,
-                            backgroundColor: colors.onPrimary,
+                            backgroundColor: colors.white,
                             logoUrl: widget.storeModel?.logoUrl ?? '',
                           ),
                         ),
@@ -118,7 +118,7 @@ class _StoreItemState extends State<StoreItem> {
                         AutoSizeText(
                           context.getLocalizedApiText(widget.storeModel?.name),
                           style: AppTextStyles.style18Bold.copyWith(
-                            color: colors.onSecondary,
+                            color: colors.black,
                           ),
                         ),
                         AutoSizeText(
@@ -127,7 +127,7 @@ class _StoreItemState extends State<StoreItem> {
                           ),
                           maxLines: 1,
                           style: AppTextStyles.style12Medium.copyWith(
-                            color: colors.onSurface.withValues(alpha: 0.8),
+                            color: colors.neutral500.withValues(alpha: 0.8),
                           ),
                         ),
                         5.hSpace,
@@ -148,7 +148,7 @@ class _StoreItemState extends State<StoreItem> {
                                           .shippingIcon
                                           .svg(
                                             colorFilter: ColorFilter.mode(
-                                              colors.onSurface,
+                                              colors.neutral500,
                                               BlendMode.srcIn,
                                             ),
                                             width:
@@ -157,7 +157,7 @@ class _StoreItemState extends State<StoreItem> {
                                           ),
                                     ),
                                     NewPriceWidget(
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                       price:
                                           '${widget.storeModel?.deliveryFee}',
                                       size: categoryDetailsCon.maxWidth * 0.045,
@@ -166,7 +166,7 @@ class _StoreItemState extends State<StoreItem> {
                                     ReverseWidget(
                                       child: Assets.media.images.svg.timeIcon.svg(
                                         colorFilter: ColorFilter.mode(
-                                          colors.onSurface,
+                                          colors.neutral500,
                                           BlendMode.srcIn,
                                         ),
                                         width:
@@ -177,7 +177,7 @@ class _StoreItemState extends State<StoreItem> {
                                       '${widget.storeModel?.deliveryTime}',
                                       style: AppTextStyles.style12Medium
                                           .copyWith(
-                                            color: colors.onSecondary,
+                                            color: colors.black,
                                             fontSize:
                                                 categoryDetailsCon.maxWidth *
                                                 0.035,
@@ -187,7 +187,7 @@ class _StoreItemState extends State<StoreItem> {
                                     ReverseWidget(
                                       child: Assets.media.images.svg.locationIcon.svg(
                                         colorFilter: ColorFilter.mode(
-                                          colors.onSurface,
+                                          colors.neutral500,
                                           BlendMode.srcIn,
                                         ),
                                         width: categoryDetailsCon.maxWidth*0.04,
@@ -196,7 +196,7 @@ class _StoreItemState extends State<StoreItem> {
                                     AutoSizeText(
                                       '${widget.storeModel?.distance}',
                                       style: AppTextStyles.style12Medium
-                                          .copyWith(color: colors.onSecondary,fontSize: categoryDetailsCon.maxWidth*0.035,),
+                                          .copyWith(color: colors.black,fontSize: categoryDetailsCon.maxWidth*0.035,),
                                     ),
                                   ],
                                 ),
@@ -216,7 +216,7 @@ class _StoreItemState extends State<StoreItem> {
                                   rateRatio: '${widget.storeModel?.rating}',
                                   rateCount:
                                       '${widget.storeModel?.ratingCount}',
-                                  rateColor: colors.onSecondary.withValues(
+                                  rateColor: colors.black.withValues(
                                     alpha: 0.7,
                                   ),
                                   size: categoryDetailsCon.maxWidth*0.04,

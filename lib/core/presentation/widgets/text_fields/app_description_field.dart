@@ -11,7 +11,7 @@ class AppDescriptionField extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return TextFormField(
       maxLines: 4,
-      style: AppTextStyles.style14Regular.copyWith(color: colors.onSecondary),
+      style: AppTextStyles.style14Regular.copyWith(color: colors.black),
       decoration: InputDecoration(
         filled: true,
         fillColor: colors.onPrimaryContainer,

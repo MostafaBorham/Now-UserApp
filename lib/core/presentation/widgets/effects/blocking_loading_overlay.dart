@@ -30,9 +30,9 @@ class BlockingLoadingOverlay extends StatelessWidget {
         if (isLoading)
           Positioned.fill(
             child: ColoredBox(
-              color: colors.onPrimary.withValues(alpha: 0.6),
+              color: colors.white.withValues(alpha: 0.6),
               child: Center(
-                child: CircularProgressIndicator(color: colors.primary),
+                child: CircularProgressIndicator(color: colors.primary500Main),
               ),
             ),
           ),

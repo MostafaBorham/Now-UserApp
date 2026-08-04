@@ -26,7 +26,7 @@ class OrderAmountCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: AppBorderRadius.brCircular12,
         border: Border.all(color: AppColors.divider),
       ),
@@ -45,7 +45,7 @@ class OrderAmountCard extends StatelessWidget {
               Text(
                 orderNumber,
                 style: AppTextStyles.style14Bold.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
             ],
@@ -68,7 +68,7 @@ class OrderAmountCard extends StatelessWidget {
                 height: 12,
                 fit: BoxFit.contain,
                 colorFilter: ColorFilter.mode(
-                  colors.onSecondary,
+                  colors.black,
                   BlendMode.srcIn,
                 ),
               ),
@@ -76,7 +76,7 @@ class OrderAmountCard extends StatelessWidget {
               Text(
                 amount,
                 style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
             ],

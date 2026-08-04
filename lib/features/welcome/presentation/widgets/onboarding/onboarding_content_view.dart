@@ -37,7 +37,7 @@ class OnBoardingContentView extends ConsumerWidget {
                 content: Text(
                   error.toString().tr(),
                   style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.onPrimary,
+                    color: colors.white,
                   ),
                 ),
                 behavior: SnackBarBehavior.floating,
@@ -57,7 +57,7 @@ class OnBoardingContentView extends ConsumerWidget {
         .isLoading;
 
     final Gradient screenGradient = LinearGradient(
-      colors: [colors.secondaryFixed, colors.primary],
+      colors: [colors.secondaryFixed, colors.primary500Main],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       stops: [0.2, 1],
@@ -67,11 +67,11 @@ class OnBoardingContentView extends ConsumerWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
         border: Border.symmetric(
           horizontal: BorderSide(
-            color: colors.inversePrimary.withValues(alpha: 0.3),
+            color: colors.neutral400.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -85,7 +85,7 @@ class OnBoardingContentView extends ConsumerWidget {
           Text(
             LangKeys.onBoardingTitleKey.tr(),
             style: AppTextStyles.style24Bold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
               fontSize: heightFactor * 0.03,
             ),
             overflow: TextOverflow.ellipsis,
@@ -133,13 +133,13 @@ class OnBoardingContentView extends ConsumerWidget {
                         style: AppTextStyles.style24SemiBold.copyWith(
                           height: 1,
                           fontSize: heightFactor * 0.03,
-                          color: colors.primary,
+                          color: colors.primary500Main,
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.only(left: heightFactor * 0.015),
                         height: 5,
-                        color: colors.primary,
+                        color: colors.primary500Main,
                       ),
                     ],
                   ),
@@ -151,7 +151,7 @@ class OnBoardingContentView extends ConsumerWidget {
           Text(
             LangKeys.onBoardingSubTitleKey.tr(),
             style: AppTextStyles.style12Medium.copyWith(
-              color: colors.onSecondary.withValues(alpha: 0.8),
+              color: colors.black.withValues(alpha: 0.8),
               fontSize: heightFactor * 0.015,
             ),
             overflow: TextOverflow.ellipsis,

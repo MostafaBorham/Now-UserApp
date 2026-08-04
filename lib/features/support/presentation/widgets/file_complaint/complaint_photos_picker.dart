@@ -86,7 +86,7 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
       spacing: 16,
       children: [
         Text(LangKeys.complaintPhotosKey.tr(),style: AppTextStyles.style16Medium.copyWith(
-          color: colors.onSecondary
+          color: colors.black
         ),),
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.start,
@@ -135,7 +135,7 @@ class _AddImageTile extends StatelessWidget {
           onTap: isLoading ? null : onTap,
           child: Ink(
             decoration: BoxDecoration(
-              color: colors.inversePrimary.withValues(alpha: 0.2),
+              color: colors.neutral400.withValues(alpha: 0.2),
               borderRadius: AppBorderRadius.brCircular6,
             ),
             child: Center(
@@ -207,7 +207,7 @@ class _PickedImageTile extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Icon(
                   Icons.close,
-                  color: colors.onPrimary,
+                  color: colors.white,
                   size: 14,
                 ),
               ),

@@ -28,7 +28,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.onSurface.withValues(alpha: 0.2),
+        color: colors.neutral500.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -50,12 +50,12 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     child: Text(
                       LangKeys.subtotalKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${orderGroup.subtotal}',
                     size: 13,
                   ),
@@ -67,12 +67,12 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     child: Text(
                       LangKeys.vatFivePercentKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${orderGroup.tax}',
                     size: 13,
                   ),
@@ -84,12 +84,12 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     child: Text(
                       LangKeys.deliveryFeesKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${orderGroup.deliveryFee}',
                     size: 13,
                   ),
@@ -101,7 +101,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     child: Text(
                       LangKeys.discountLabelKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
@@ -117,7 +117,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
           Divider(
             height: 2,
             thickness: 1,
-            color: colors.onSurface.withValues(alpha: 0.3),
+            color: colors.neutral500.withValues(alpha: 0.3),
           ),
           Row(
             children: [
@@ -125,12 +125,12 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 child: Text(
                   LangKeys.totalKey.tr(),
                   style: AppTextStyles.style14SemiBold.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
               ),
               NewPriceWidget(
-                color: colors.primary,
+                color: colors.primary500Main,
                 price: '${orderGroup.total}',
                 size: 13,
               ),

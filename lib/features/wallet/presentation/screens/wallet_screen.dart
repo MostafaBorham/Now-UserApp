@@ -41,7 +41,7 @@ class WalletScreen extends StatelessWidget {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
-                        backgroundColor: colors.onPrimary,
+                        backgroundColor: colors.white,
                         builder: (context) => ConstrainedBox(
                           constraints: BoxConstraints(
                             maxHeight: screenHeight * 0.6,
@@ -61,7 +61,7 @@ class WalletScreen extends StatelessWidget {
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
-                        backgroundColor: colors.onPrimary,
+                        backgroundColor: colors.white,
                         builder: (context) => ConstrainedBox(
                           constraints: BoxConstraints(
                             maxHeight: screenHeight * 0.6,
@@ -81,7 +81,7 @@ class WalletScreen extends StatelessWidget {
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
-                        backgroundColor: colors.onPrimary,
+                        backgroundColor: colors.white,
                         builder: (context) => ConstrainedBox(
                           constraints: BoxConstraints(
                             maxHeight: screenHeight * 0.6,
@@ -103,7 +103,7 @@ class WalletScreen extends StatelessWidget {
                 Text(
                   LangKeys.walletRecordKey.tr(),
                   style: AppTextStyles.style18SemiBold.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     fontSize: screenSize.width * 0.04,
                   ),
                 ),

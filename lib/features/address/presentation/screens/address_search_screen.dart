@@ -206,7 +206,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
                                             overflow: TextOverflow.ellipsis,
                                             style: AppTextStyles.style16Medium
                                                 .copyWith(
-                                                  color: colors.onSecondary,
+                                                  color: colors.black,
                                                 ),
                                           ),
                                           subtitle:

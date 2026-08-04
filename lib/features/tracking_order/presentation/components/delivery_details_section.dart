@@ -61,7 +61,7 @@ class DeliveryDetailsSection extends StatelessWidget {
                   height: 14,
                   fit: BoxFit.contain,
                   colorFilter: ColorFilter.mode(
-                    colors.onSecondary,
+                    colors.black,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -69,7 +69,7 @@ class DeliveryDetailsSection extends StatelessWidget {
                 Text(
                   amount,
                   style: AppTextStyles.style14SemiBold.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
               ],

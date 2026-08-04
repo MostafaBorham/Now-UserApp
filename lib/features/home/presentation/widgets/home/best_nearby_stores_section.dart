@@ -23,7 +23,7 @@ class BestNearbyStoresSection extends StatelessWidget {
         spacing: 10,
         children: [
           AutoSizeText(LangKeys.topNearbyStoresKey.tr(),style: AppTextStyles.style20SemiBold.copyWith(
-              color: colors.onTertiaryFixed
+              color: colors.neutral1200
           ),),
           Expanded(
             child: ListView.separated(

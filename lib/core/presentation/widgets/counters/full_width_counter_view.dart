@@ -32,7 +32,7 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: colors.onSurface.withValues(alpha: 0.3)),
+        border: Border.all(color: colors.neutral500.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +48,7 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
             child: Icon(
               size: 20,
               Icons.remove,
-              color: colors.onSurface.withValues(alpha: 0.7),
+              color: colors.neutral500.withValues(alpha: 0.7),
             ),
           ),
           Text(
@@ -68,7 +68,7 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
             child: Icon(
               size: 20,
               Icons.add,
-              color: colors.onSecondary.withValues(alpha: 0.6),
+              color: colors.black.withValues(alpha: 0.6),
             ),
           ),
         ],

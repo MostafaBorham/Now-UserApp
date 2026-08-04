@@ -19,14 +19,14 @@ class ProductKeyFeaturesView extends StatelessWidget {
         Text(
           LangKeys.keyFeaturesKey.tr(),
           style: AppTextStyles.style16Bold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: colors.onSurface.withValues(alpha: 0.1),
+            color: colors.neutral500.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -40,7 +40,7 @@ class ProductKeyFeaturesView extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 5.0),
                     child: CircleAvatar(
                       radius: 2,
-                      backgroundColor: colors.onSecondary,
+                      backgroundColor: colors.black,
                     ),
                   ),
                   Expanded(
@@ -49,7 +49,7 @@ class ProductKeyFeaturesView extends StatelessWidget {
                       softWrap: true,
                       overflow: TextOverflow.visible,
                       style: AppTextStyles.style14Medium.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                         height: 1.5,
                       ),
                     ),

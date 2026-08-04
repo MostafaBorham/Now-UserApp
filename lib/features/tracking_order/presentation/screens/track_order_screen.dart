@@ -40,7 +40,7 @@ class TrackOrderScreen extends StatelessWidget {
               PrimaryButton(
                 title: LangKeys.cancelOrderKey.tr(),
                 buttonColor: colors.errorContainer,
-                titleColor: colors.onPrimary,
+                titleColor: colors.white,
                 buttonPadding: 16,
                 onTap: () => CancelOrderBottomSheet.show(context),
               ),

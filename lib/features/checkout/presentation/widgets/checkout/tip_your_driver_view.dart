@@ -88,7 +88,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.onSurface.withValues(alpha: 0.2),
+        color: colors.neutral500.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -119,7 +119,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
                     : double.tryParse(_tips[index]) ?? 0,
               );
             },
-            labelColor: colors.onSurface,
+            labelColor: colors.neutral500,
             selectedColor: colors.tertiaryContainer,
             radius: 999,
             borderColor: Colors.transparent,

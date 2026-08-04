@@ -37,7 +37,7 @@ class _RetryPaymentMethodsSectionState
         Text(
           LangKeys.tryAnotherPaymentMethodKey.tr(),
           style: AppTextStyles.style16SemiBold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         14.hSpace,

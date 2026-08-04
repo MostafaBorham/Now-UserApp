@@ -30,8 +30,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       begin: AlignmentDirectional.centerStart,
       end: AlignmentDirectional.centerEnd,
       colors: [
-        colors.onTertiaryFixedVariant,
-        colors.onSurfaceVariant.withValues(alpha: 0.3),
+        colors.secondary100,
+        colors.primary100.withValues(alpha: 0.3),
       ],
     );
     return Scaffold(
@@ -70,13 +70,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         Text(
                           LangKeys.orderNumberKey.tr(),
                           style: AppTextStyles.style12Medium.copyWith(
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                           ),
                         ),
                         Text(
                           'Order #458741',
                           style: AppTextStyles.style18SemiBold.copyWith(
-                            color: colors.onSecondary,
+                            color: colors.black,
                           ),
                         ),
                       ],
@@ -85,13 +85,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     decoration: BoxDecoration(
-                      color: colors.primary.withValues(alpha: 0.1),
+                      color: colors.primary500Main.withValues(alpha: 0.1),
                       borderRadius: AppBorderRadius.brCircular20,
                     ),
                     child: Text(
                       LangKeys.deliveredKey.tr(),
                       style: AppTextStyles.style12Medium.copyWith(
-                        color: colors.primary,
+                        color: colors.primary500Main,
                       ),
                     ),
                   ),
@@ -113,7 +113,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                             borderRadius: AppBorderRadius.brCircular8,
                           ),
                           child: Row(
@@ -142,13 +142,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: colors.primary.withValues(alpha: 0.1),
+                          color: colors.primary500Main.withValues(alpha: 0.1),
                           borderRadius: AppBorderRadius.brCircular20,
                         ),
                         child: Text(
                           'Delivered',
                           style: AppTextStyles.style12Medium.copyWith(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                           ),
                         ),
                       ),
@@ -159,7 +159,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  /*    color: colors.secondary.withValues(
+                  /*    color: colors.secondary600.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
@@ -171,7 +171,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Text(
                       LangKeys.generalInformationKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     12.hSpace,
@@ -179,7 +179,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colors.onPrimary,
+                        color: colors.white,
                         borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
@@ -190,14 +190,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.orderNumberKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSurface,
+                                    color: colors.neutral500,
                                   ),
                                 ),
                               ),
                               Text(
                                 '#6734856854',
                                 style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.onSecondary,
+                                  color: colors.black,
                                 ),
                               ),
                             ],
@@ -209,14 +209,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.orderDateKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSurface,
+                                    color: colors.neutral500,
                                   ),
                                 ),
                               ),
                               Text(
                                 '12 March 2026',
                                 style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.onSecondary,
+                                  color: colors.black,
                                 ),
                               ),
                             ],
@@ -228,14 +228,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.paymentMethodKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSurface,
+                                    color: colors.neutral500,
                                   ),
                                 ),
                               ),
                               Text(
                                 LangKeys.cashOnDeliveryKey.tr(),
                                 style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.primary,
+                                  color: colors.primary500Main,
                                 ),
                               ),
                             ],
@@ -247,14 +247,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.productKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSurface,
+                                    color: colors.neutral500,
                                   ),
                                 ),
                               ),
                               Text(
                                 '1',
                                 style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.primary,
+                                  color: colors.primary500Main,
                                 ),
                               ),
                             ],
@@ -268,7 +268,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  /*    color: colors.secondary.withValues(
+                  /*    color: colors.secondary600.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
@@ -280,7 +280,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Text(
                       LangKeys.itemInformationKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     12.hSpace,
@@ -288,7 +288,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colors.onPrimary,
+                        color: colors.white,
                         borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Row(
@@ -313,7 +313,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 AutoSizeText(
                                   'Orange',
                                   style: AppTextStyles.style16Medium.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                                 Row(
@@ -325,14 +325,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           height: 12,
                                           fit: BoxFit.contain,
                                           colorFilter: ColorFilter.mode(
-                                            colors.onSecondary,
+                                            colors.black,
                                             BlendMode.srcIn,
                                           ),
                                         ),
                                     AutoSizeText(
                                       '20.00',
                                       style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.onSecondary),
+                                          .copyWith(color: colors.black),
                                     ),
                                   ],
                                 ),
@@ -344,7 +344,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             child: AutoSizeText(
                               'x3',
                               style: AppTextStyles.style16Medium.copyWith(
-                                color: colors.onSecondary,
+                                color: colors.black,
                               ),
                             ),
                           ),
@@ -357,7 +357,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  /*    color: colors.secondary.withValues(
+                  /*    color: colors.secondary600.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
@@ -369,7 +369,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Text(
                       LangKeys.deliveryDetailsKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     12.hSpace,
@@ -377,7 +377,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colors.onPrimary,
+                        color: colors.white,
                         borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
@@ -389,7 +389,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 width: 44,
                                 height: 44,
                                 decoration: BoxDecoration(
-                                  color: colors.primary,
+                                  color: colors.primary500Main,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
@@ -397,7 +397,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     width: 20,
                                     height: 20,
                                     colorFilter: ColorFilter.mode(
-                                      colors.onPrimary,
+                                      colors.white,
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -411,13 +411,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     Text(
                                       LangKeys.fromKey.tr(),
                                       style: AppTextStyles.style12Medium
-                                          .copyWith(color: colors.onSecondary),
+                                          .copyWith(color: colors.black),
                                     ),
                                     2.hSpace,
                                     Text(
                                       'Panda Store',
                                       style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.onSurface),
+                                          .copyWith(color: colors.neutral500),
                                     ),
                                   ],
                                 ),
@@ -427,7 +427,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           Container(
                             width: 2,
                             height: 15,
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                             margin: EdgeInsetsDirectional.symmetric(
                               horizontal: 25,
                               vertical: 5,
@@ -448,7 +448,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                         width: 20,
                                         height: 20,
                                         colorFilter: ColorFilter.mode(
-                                          colors.onSecondary,
+                                          colors.black,
                                           BlendMode.srcIn,
                                         ),
                                       ),
@@ -462,13 +462,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     Text(
                                       LangKeys.toKey.tr(),
                                       style: AppTextStyles.style12Medium
-                                          .copyWith(color: colors.onSecondary),
+                                          .copyWith(color: colors.black),
                                     ),
                                     2.hSpace,
                                     Text(
                                       '7468 Al Olaya, Riyadh',
                                       style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.onSurface),
+                                          .copyWith(color: colors.neutral500),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -490,7 +490,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  /*    color: colors.secondary.withValues(
+                  /*    color: colors.secondary600.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
@@ -502,7 +502,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Text(
                       LangKeys.paymentMethodKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     12.hSpace,
@@ -510,7 +510,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colors.onPrimary,
+                        color: colors.white,
                         borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Row(
@@ -536,7 +536,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 AutoSizeText(
                                   'Apple Pay',
                                   style: AppTextStyles.style16Medium.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                                 Row(
@@ -548,14 +548,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                           height: 12,
                                           fit: BoxFit.contain,
                                           colorFilter: ColorFilter.mode(
-                                            colors.onSurface,
+                                            colors.neutral500,
                                             BlendMode.srcIn,
                                           ),
                                         ),
                                     AutoSizeText(
                                       '20.00',
                                       style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.onSurface),
+                                          .copyWith(color: colors.neutral500),
                                     ),
                                   ],
                                 ),
@@ -571,7 +571,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  /*    color: colors.secondary.withValues(
+                  /*    color: colors.secondary600.withValues(
                                 alpha: 0.1,
                               ),*/
                   gradient: screenGradient,
@@ -584,14 +584,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     Text(
                       LangKeys.invoiceSummaryKey.tr(),
                       style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colors.onPrimary,
+                        color: colors.white,
                         borderRadius: AppBorderRadius.brCircular8,
                       ),
                       child: Column(
@@ -603,7 +603,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.subtotalKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ),
@@ -615,14 +615,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
-                                      colors.onSecondary,
+                                      colors.black,
                                       BlendMode.srcIn,
                                     ),
                                   ),
                                   AutoSizeText(
                                     '10',
                                     style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                     ),
                                   ),
                                 ],
@@ -635,7 +635,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.vatFivePercentKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ),
@@ -647,14 +647,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
-                                      colors.onSecondary,
+                                      colors.black,
                                       BlendMode.srcIn,
                                     ),
                                   ),
                                   AutoSizeText(
                                     '10',
                                     style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                     ),
                                   ),
                                 ],
@@ -667,7 +667,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.deliveryFeesKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ),
@@ -679,14 +679,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
-                                      colors.onSecondary,
+                                      colors.black,
                                       BlendMode.srcIn,
                                     ),
                                   ),
                                   AutoSizeText(
                                     '10',
                                     style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.onSecondary,
+                                      color: colors.black,
                                     ),
                                   ),
                                 ],
@@ -699,7 +699,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 child: Text(
                                   LangKeys.discountLabelKey.tr(),
                                   style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ),
@@ -725,14 +725,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ),
                             ],
                           ),
-                          Divider(color: colors.inversePrimary, thickness: 0.5),
+                          Divider(color: colors.neutral400, thickness: 0.5),
                           Row(
                             children: [
                               Expanded(
                                 child: Text(
                                   LangKeys.totalKey.tr(),
                                   style: AppTextStyles.style14SemiBold.copyWith(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                   ),
                                 ),
                               ),
@@ -744,14 +744,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     height: 15,
                                     fit: BoxFit.contain,
                                     colorFilter: ColorFilter.mode(
-                                      colors.primary,
+                                      colors.primary500Main,
                                       BlendMode.srcIn,
                                     ),
                                   ),
                                   AutoSizeText(
                                     '10',
                                     style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.primary,
+                                      color: colors.primary500Main,
                                     ),
                                   ),
                                 ],

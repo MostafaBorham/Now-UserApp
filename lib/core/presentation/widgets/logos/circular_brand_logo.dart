@@ -36,7 +36,7 @@ class CircularBrandLogo extends StatelessWidget {
                 width: radius * 0.7,
                 height: radius * 0.7,
                 child: CircularProgressIndicator(
-                  color: colors.primary,
+                  color: colors.primary500Main,
                   strokeWidth: radius * 0.1,
                 ),
               ),

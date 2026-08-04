@@ -61,7 +61,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
         Text(
           LangKeys.topUpAmountKey.tr(),
           style: AppTextStyles.style14Medium.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         10.hSpace,
@@ -92,8 +92,8 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? colors.primary
-                          : colors.onSurface.withValues(alpha: 0.1),
+                          ? colors.primary500Main
+                          : colors.neutral500.withValues(alpha: 0.1),
                       borderRadius: AppBorderRadius.brCircular20,
                     ),
                     child: Row(
@@ -102,15 +102,15 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                       children: [  Assets.media.images.svg.realSaudiCurrency.svg(
                         width: 10,
                         color: isSelected
-                            ? colors.onPrimary
-                            : colors.onSecondary,
+                            ? colors.white
+                            : colors.black,
                       ),
                         Text(
                           item,
                           style: AppTextStyles.style12Regular.copyWith(
                             color: isSelected
-                                ? colors.onPrimary
-                                : colors.onSecondary,
+                                ? colors.white
+                                : colors.black,
                           ),
                         ),
 
@@ -134,16 +134,16 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                 ),
                 decoration: BoxDecoration(
                   color: isOtherSelected
-                      ? colors.primary
-                      : colors.onSurface.withValues(alpha: 0.1),
+                      ? colors.primary500Main
+                      : colors.neutral500.withValues(alpha: 0.1),
                   borderRadius: AppBorderRadius.brCircular20,
                 ),
                 child: Text(
                   LangKeys.otherKey.tr(),
                   style: AppTextStyles.style12Regular.copyWith(
                     color: isOtherSelected
-                        ? colors.onPrimary
-                        : colors.onSecondary,
+                        ? colors.white
+                        : colors.black,
                   ),
                 ),
               ),
@@ -161,9 +161,9 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                     Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        color: colors.onSurface.withValues(alpha: 0.1),
+                        color: colors.neutral500.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(28),
-                        border: Border.all(color: colors.primary, width: 1),
+                        border: Border.all(color: colors.primary500Main, width: 1),
                       ),
                       child: TextField(
                         controller: amountController,
@@ -174,7 +174,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         decoration: InputDecoration(
                           hintText: LangKeys.enterAmountKey.tr(),
                           hintStyle: AppTextStyles.style14Regular.copyWith(
-                            color: colors.onSurface.withValues(alpha: 0.3),
+                            color: colors.neutral500.withValues(alpha: 0.3),
                           ),
                           border: InputBorder.none,
                           isDense: true,
@@ -193,11 +193,11 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         Text(
                           LangKeys.maximumKey.tr(),
                           style: AppTextStyles.style14Regular.copyWith(
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                           ),
                         ),
                         PriceWithCurrency(
-                          color: colors.onSecondary,
+                          color: colors.black,
                           price: widget.maxAmount.toString(),
                         ),
                       ],

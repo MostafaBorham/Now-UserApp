@@ -84,7 +84,7 @@ class StoreDetailsScreen extends ConsumerWidget {
                             [
                               SliverToBoxAdapter(
                                 child: Container(
-                                  color: colors.onPrimary,
+                                  color: colors.white,
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 16,
                                   ),
@@ -122,7 +122,7 @@ class StoreDetailsScreen extends ConsumerWidget {
                               ),
                             ],
                         body: Container(
-                          color: colors.onPrimary,
+                          color: colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: LayoutBuilder(
                             builder:
@@ -163,12 +163,12 @@ class StoreDetailsScreen extends ConsumerWidget {
                                           selectedTabColor:
                                               colors.tertiaryContainer,
                                           unSelectedTabColor: colors
-                                              .inversePrimary
+                                              .neutral400
                                               .withValues(alpha: 0.2),
                                           selectedLabelColor:
-                                              colors.onPrimary,
+                                              colors.white,
                                           unSelectedLabelColor:
-                                              colors.onSecondary,
+                                              colors.black,
                                         ),
                                       ),
                                     ),

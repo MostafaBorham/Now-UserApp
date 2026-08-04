@@ -54,7 +54,7 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
             Text(
               title,
               style: AppTextStyles.style16Bold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
             if (widget.isRequired)
@@ -78,8 +78,8 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
           items: sizeOptions,
           initialIndex: widget.initialSelectedIndex,
           selectedColor: colors.tertiaryContainer,
-          unselectedColor: colors.onPrimary,
-          borderColor: colors.onSurface.withValues(alpha: 0.3),
+          unselectedColor: colors.white,
+          borderColor: colors.neutral500.withValues(alpha: 0.3),
           radius: 14,
           height: 45,
         ),

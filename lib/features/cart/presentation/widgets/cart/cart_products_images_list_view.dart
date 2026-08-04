@@ -42,14 +42,14 @@ class CartProductsImagesListView extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(
               child: Text(
                 '+',
                 style: AppTextStyles.style28Medium.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
             ),

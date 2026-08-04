@@ -49,7 +49,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                 child: Text(
                   widget.seeMoreText,
                   style: TextStyle(
-                    color: colors.primary,
+                    color: colors.primary500Main,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

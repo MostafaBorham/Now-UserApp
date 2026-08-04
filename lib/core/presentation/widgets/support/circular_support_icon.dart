@@ -13,14 +13,14 @@ class CircularSupportIcon extends StatelessWidget {
       onTap: onTap,
       customBorder: const CircleBorder(),
       child: CircleAvatar(
-        backgroundColor: colors.onPrimary,
+        backgroundColor: colors.white,
         radius: size ?? 25,
         child: Center(
           child: Assets.media.images.svg.supportCallIcon.svg(
             fit: BoxFit.contain,
             width: size ?? 25,
             colorFilter: ColorFilter.mode(
-              colors.onSecondary,
+              colors.black,
               BlendMode.srcIn,
             ),
           ),

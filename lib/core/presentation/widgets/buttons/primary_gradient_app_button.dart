@@ -35,7 +35,7 @@ class PrimaryGradientAppButton extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: AppTextStyles.style24SemiBold.copyWith(
-              color: colors.onPrimary,
+              color: colors.white,
             ),
           ),
         ),

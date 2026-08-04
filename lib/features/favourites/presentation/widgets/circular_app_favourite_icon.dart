@@ -105,7 +105,7 @@ class _CircularAppFavouriteIconState
         shape: const CircleBorder(),
         child: CircleAvatar(
           radius: widget.size,
-          backgroundColor: colors.onPrimary,
+          backgroundColor: colors.white,
           child: state.isLoading
               ? SizedBox.square(
                   dimension: widget.size,
@@ -122,7 +122,7 @@ class _CircularAppFavouriteIconState
                       colorFilter: ColorFilter.mode(
                         isFavourite
                             ? colors.errorContainer
-                            : colors.onTertiaryFixed,
+                            : colors.neutral1200,
                         BlendMode.srcIn,
                       ),
                     ),

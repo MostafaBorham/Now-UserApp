@@ -84,7 +84,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                               AutoSizeText(
                                 '4',
                                 style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.onSurface,
+                                  color: colors.neutral500,
                                 ),
                               ),
                             ],
@@ -112,7 +112,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                               child: Text(
                                 '50%',
                                 style: TextStyle(
-                                  color: colors.onPrimary,
+                                  color: colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -151,13 +151,13 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
                   spacing: 7,
                   children: [
                     AutoSizeText('sdsd',style: AppTextStyles.style18SemiBold.copyWith(
-                        color: colors.onTertiaryFixed
+                        color: colors.neutral1200
                     ),),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        PriceWithCurrency(color: colors.onPrimaryFixedVariant,price: '20',),
+                        PriceWithCurrency(color: colors.primary700,price: '20',),
                         PreviousPriceWithCurrency(),
                       ],
                     ),

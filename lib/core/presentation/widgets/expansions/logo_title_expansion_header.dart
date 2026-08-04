@@ -48,7 +48,7 @@ class LogoTitleExpansionHeader extends StatelessWidget {
               Text(
                 title,
                 style: AppTextStyles.style16Medium.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
             ],
@@ -58,7 +58,7 @@ class LogoTitleExpansionHeader extends StatelessWidget {
                 ? Icons.keyboard_arrow_up_rounded
                 : Icons.keyboard_arrow_down_rounded,
             size: 24,
-            color: colors.onSurface.withValues(alpha: 0.7),
+            color: colors.neutral500.withValues(alpha: 0.7),
           ),
         ],
       ),

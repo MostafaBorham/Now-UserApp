@@ -88,7 +88,7 @@ class NotificationsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: colors.onTertiaryContainer,
                         shape: BoxShape.circle,
-                        border: Border.all(color: colors.surfaceContainerLow),
+                        border: Border.all(color: colors.neutral200),
                       ),
                       child: AppCachedNetworkImage(
                         imageUrl:
@@ -112,7 +112,7 @@ class NotificationsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: colors.onTertiaryContainer,
                         shape: BoxShape.circle,
-                        border: Border.all(color: colors.surfaceContainerLow),
+                        border: Border.all(color: colors.neutral200),
                       ),
                       child: AppCachedNetworkImage(
                         imageUrl:

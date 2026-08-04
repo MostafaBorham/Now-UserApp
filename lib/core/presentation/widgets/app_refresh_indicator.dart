@@ -14,8 +14,8 @@ class AppRefreshIndicator extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return RefreshIndicator(
       onRefresh: onRefresh,
-      color: colors.primary,
-      backgroundColor: colors.onPrimary,
+      color: colors.primary500Main,
+      backgroundColor: colors.white,
       child: child,
     );
   }

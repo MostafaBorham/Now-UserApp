@@ -70,8 +70,8 @@ class OrderTimelineStep extends StatelessWidget {
                   maxLines: 2,
                   style: AppTextStyles.style14Medium.copyWith(
                     color: status == OrderStepStatus.pending
-                        ? colors.onSurface
-                        : colors.onSecondary,
+                        ? colors.neutral500
+                        : colors.black,
                   ),
                 ),
               ),
@@ -100,7 +100,7 @@ class OrderTimelineStep extends StatelessWidget {
           height: 18,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: colors.primary.withValues(alpha: 0.18),
+            color: colors.primary500Main.withValues(alpha: 0.18),
           ),
           child: Center(
             child: Container(
@@ -108,7 +108,7 @@ class OrderTimelineStep extends StatelessWidget {
               height: 11,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: colors.primary,
+                color: colors.primary500Main,
               ),
             ),
           ),
@@ -119,7 +119,7 @@ class OrderTimelineStep extends StatelessWidget {
           height: 12,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: colors.surfaceContainerLow,
+            color: colors.neutral200,
           ),
         );
     }

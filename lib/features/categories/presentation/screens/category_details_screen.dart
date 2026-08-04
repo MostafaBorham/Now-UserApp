@@ -26,7 +26,7 @@ class CategoryDetailsScreen extends StatelessWidget {
           body: AppTabBar(
             tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],
-            selectedTabColor: colors.primary,
+            selectedTabColor: colors.primary500Main,
           ),
           appBarTitle: context.getLocalizedApiText(category.name),
           canPop: context.canPop(),

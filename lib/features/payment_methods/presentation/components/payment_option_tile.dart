@@ -38,8 +38,8 @@ class PaymentOptionTile extends StatelessWidget {
           color: isSelected ? _selectedBackground : Colors.white,
           borderRadius: AppBorderRadius.brCircular16,
           border: isSelected
-              ? Border.all(color: colors.primary, width: 1.25)
-              : Border.all(color: colors.surfaceContainerLow, width: 1.25),
+              ? Border.all(color: colors.primary500Main, width: 1.25)
+              : Border.all(color: colors.neutral200, width: 1.25),
         ),
         child: Row(
           children: [

@@ -40,7 +40,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
         builder: (context, con) {
           return Card(
             elevation: 3,
-            color: colors.onPrimary,
+            color: colors.white,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             shape: RoundedRectangleBorder(
               borderRadius: AppBorderRadius.brCircular16,
@@ -79,7 +79,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 AppRateWidget(
                                   starColor: colors.onSecondaryContainer,
                                   rateRatio: '4.2',
-                                  rateColor: colors.onSurface,
+                                  rateColor: colors.neutral500,
                                   size: con.maxWidth * 0.08,
                                 ),
                               ],
@@ -111,7 +111,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       child: Text(
                                         '${widget.product?.activeDeal?.discountValue??0}%',
                                         style: TextStyle(
-                                          color: colors.onPrimary,
+                                          color: colors.white,
                                           fontSize: con.maxWidth * 0.06,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -142,7 +142,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         child: CircularBrandLogo(
                           elevation: 0,
                           radius: con.maxWidth * 0.1,
-                          backgroundColor: colors.onPrimary,
+                          backgroundColor: colors.white,
                           logoUrl:
                               widget.product?.vendor?.logoUrl ??
                               'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
@@ -164,7 +164,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.style18Bold.copyWith(
-                          color: colors.onTertiaryFixed,
+                          color: colors.neutral1200,
                           fontSize: con.maxWidth * 0.09,
                         ),
                       ),
@@ -180,7 +180,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 spacing: 2,
                                 children: [
                                     OldPriceWidget(
-                                      color: colors.inversePrimary,
+                                      color: colors.neutral400,
                                       price:
                                           widget.product?.comparePrice
                                               ?.toStringAsFixed(0) ??
@@ -188,7 +188,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       size: con.maxWidth * 0.04,
                                     ),
                                   NewPriceWidget(
-                                    color: colors.onSecondary,
+                                    color: colors.black,
                                     price:
                                         '${widget.product?.price}',
                                     size: con.maxWidth * 0.08,

@@ -78,11 +78,11 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.white,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: colors.onSurface.withValues(alpha: 0.3),
+                      color: colors.neutral500.withValues(alpha: 0.3),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -100,7 +100,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                       child: Icon(
                         Icons.chevron_left,
                         size: 24,
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
@@ -113,11 +113,11 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.white,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: colors.onSurface.withValues(alpha: 0.3),
+                      color: colors.neutral500.withValues(alpha: 0.3),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -135,7 +135,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                       child: Icon(
                         Icons.chevron_right,
                         size: 24,
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                   ),
@@ -147,7 +147,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
         DotsIndicator(
           currentIndex: _currentIndex,
           itemCount: widget.itemCount,
-          activeColor: widget.activeDotColor ?? colors.primary,
+          activeColor: widget.activeDotColor ?? colors.primary500Main,
           inactiveColor: widget.dotColor ?? colors.onTertiary,
         ),
       ],

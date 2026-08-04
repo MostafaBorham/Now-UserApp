@@ -30,7 +30,7 @@ class _FilterSeparateOptionsViewState extends State<FilterSeparateOptionsView> {
         Text(
           LangKeys.separateOptionsKey.tr(),
           style: AppTextStyles.style16Medium.copyWith(
-            color: colors.onTertiaryFixed,
+            color: colors.neutral1200,
           ),
         ),
         ...List.generate((options.length / 2).ceil(), (row) {
@@ -66,13 +66,13 @@ class _FilterSeparateOptionsViewState extends State<FilterSeparateOptionsView> {
                           shape: BoxShape.circle,
                           border: isSelected
                               ? null
-                              : Border.all(color: colors.inversePrimary),
+                              : Border.all(color: colors.neutral400),
                         ),
                         child: isSelected
                             ? FittedBox(
                                 child: Icon(
                                   Icons.check_outlined,
-                                  color: colors.onPrimary,
+                                  color: colors.white,
                                 ),
                               )
                             : null,
@@ -82,7 +82,7 @@ class _FilterSeparateOptionsViewState extends State<FilterSeparateOptionsView> {
                           option.label,
                           maxLines: 2,
                           style: AppTextStyles.style14Regular.copyWith(
-                            color: colors.onTertiaryFixed,
+                            color: colors.neutral1200,
                           ),
                         ),
                       ),

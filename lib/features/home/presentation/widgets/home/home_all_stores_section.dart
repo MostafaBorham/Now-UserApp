@@ -29,7 +29,7 @@ class HomeAllStoresSection extends StatelessWidget {
               AutoSizeText(
                 'All Stores',
                 style: AppTextStyles.style20SemiBold.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
               InkWell(
@@ -39,7 +39,7 @@ class HomeAllStoresSection extends StatelessWidget {
                 child: AutoSizeText(
                   LangKeys.seeAllKey.tr(),
                   style: AppTextStyles.style12SemiBold.copyWith(
-                    color: colors.primary,
+                    color: colors.primary500Main,
                   ),
                 ),
               ),

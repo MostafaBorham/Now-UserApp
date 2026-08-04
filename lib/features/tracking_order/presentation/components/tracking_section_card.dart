@@ -30,8 +30,8 @@ class TrackingSectionCard extends StatelessWidget {
           begin: AlignmentDirectional.centerStart,
           end: AlignmentDirectional.centerEnd,
           colors: [
-            colors.onTertiaryFixedVariant,
-            colors.onSurfaceVariant.withValues(alpha: 0.3),
+            colors.secondary100,
+            colors.primary100.withValues(alpha: 0.3),
           ],
         ),
         borderRadius: AppBorderRadius.brCircular12,
@@ -42,7 +42,7 @@ class TrackingSectionCard extends StatelessWidget {
           Text(
             title,
             style: AppTextStyles.style16SemiBold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
           12.hSpace,
@@ -50,7 +50,7 @@ class TrackingSectionCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               borderRadius: AppBorderRadius.brCircular8,
             ),
             child: child,

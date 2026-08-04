@@ -48,7 +48,7 @@ class _PaymentMethodsCardState
       ),
       (
         icon: Icons.apple,
-        color: colors.onSecondary,
+        color: colors.black,
         solid: true,
         title: LangKeys.applePayKey.tr(),
         subtitle: null,
@@ -95,9 +95,9 @@ class _PaymentMethodsCardState
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
               decoration: BoxDecoration(
-                color: colors.onPrimary,
+                color: colors.white,
                 borderRadius: AppBorderRadius.brCircular8,
-                border: Border.all(color: colors.surfaceContainerLow),
+                border: Border.all(color: colors.neutral200),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ class _PaymentMethodsCardState
                   Text(
                     LangKeys.addNewCardKey.tr(),
                     style: AppTextStyles.style16Medium.copyWith(
-                      color: colors.onTertiaryFixed,
+                      color: colors.neutral1200,
                     ),
                   ),
                 ],

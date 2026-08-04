@@ -30,13 +30,13 @@ class MostPopularSliderItemCard extends StatelessWidget {
         color: colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [BoxShadow(
-          color: colors.onSurface.withValues(alpha: 0.3), // #00000014
+          color: colors.neutral500.withValues(alpha: 0.3), // #00000014
           offset: const Offset(0, 4),
           blurRadius: 10,
           spreadRadius: 0,
         )],
         border: Border.all(
-          color: colors.onSurface.withValues(alpha: 0.2),
+          color: colors.neutral500.withValues(alpha: 0.2),
           width: 1.5
         ),
       ),
@@ -58,7 +58,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
                   buttonRadius: 16,
                   buttonColor: colors.primaryFixedDim,
                   prefixIcon: Assets.media.images.svg.addToCartIcon.svg(
-                    colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
                   ),
                 ),
               ],
@@ -91,7 +91,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               borderRadius: AppBorderRadius.brCircular30,
               boxShadow: AppBoxShadows.blackBottomShadow2,
             ),
@@ -133,7 +133,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
               child: Text(
                 '-21%',
                 style: AppTextStyles.style12Bold.copyWith(
-                  color: colors.onPrimary,
+                  color: colors.white,
                 ),
               ),
             ),
@@ -162,14 +162,14 @@ class MostPopularSliderItemCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: AppBorderRadius.brCircular30,
         boxShadow: AppBoxShadows.blackBottomShadow2,
       ),
       child: Text(
         label,
         style: AppTextStyles.style12SemiBold.copyWith(
-          color: colors.onTertiaryFixed,
+          color: colors.neutral1200,
         ),
       ),
     );
@@ -187,7 +187,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
               Text(
                 'VALENTINO',
                 style: AppTextStyles.style12Medium.copyWith(
-                  color: colors.onSurface,
+                  color: colors.neutral500,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -196,7 +196,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
                 'Valentino Uomo Noir',
                 maxLines: 1,
                 style: AppTextStyles.style20Bold.copyWith(
-                  color: colors.onTertiaryFixed,
+                  color: colors.neutral1200,
                 ),
               ),
             ],
@@ -208,7 +208,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
           spacing: 4,
           children: [
             NewPriceWidget(color: colors.primaryFixedDim, price: '10'),
-            OldPriceWidget(color: colors.onSurface, price: '10'),
+            OldPriceWidget(color: colors.neutral500, price: '10'),
           ],
         ),
       ],
@@ -231,24 +231,24 @@ class MostPopularSliderItemCard extends StatelessWidget {
         Text(
           '4.9',
           style: AppTextStyles.style14SemiBold.copyWith(
-            color: colors.onTertiaryFixed,
+            color: colors.neutral1200,
           ),
         ),
         5.wSpace,
         Text(
           '(2,841)',
-          style: AppTextStyles.style12Regular.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style12Regular.copyWith(color: colors.neutral500),
         ),
         8.wSpace,
         Text(
           '·',
-          style: AppTextStyles.style14Bold.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style14Bold.copyWith(color: colors.neutral500),
         ),
         8.wSpace,
         Text(
           textDirection: TextDirection.ltr,
           '12.4k ${LangKeys.soldKey.tr()}',
-          style: AppTextStyles.style12Regular.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style12Regular.copyWith(color: colors.neutral500),
         ),
       ],
     );

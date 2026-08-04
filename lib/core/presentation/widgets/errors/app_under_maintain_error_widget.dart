@@ -26,7 +26,7 @@ class AppUnderMaintainErrorWidget extends StatelessWidget {
             maxLines: 2,
             textAlign: TextAlign.center,
             style: AppTextStyles.style24Bold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
           AutoSizeText(
@@ -38,7 +38,7 @@ class AppUnderMaintainErrorWidget extends StatelessWidget {
           15.hSpace,
           PrimaryAppPostfixIconButton(title: LangKeys.notifyMeWhenDoneKey.tr(),onTap: () {
 
-          },postfixIcon: Assets.media.images.svg.alertErrorIcon.svg(colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn)),)
+          },postfixIcon: Assets.media.images.svg.alertErrorIcon.svg(colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn)),)
         ],
       ),
     );

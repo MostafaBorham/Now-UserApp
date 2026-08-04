@@ -59,7 +59,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 8),
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -70,7 +70,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
                 Text(
                   LangKeys.addMoreItemsKey.tr(),
                   style: AppTextStyles.style14Medium.copyWith(
-                    color: colors.onTertiaryFixed,
+                    color: colors.neutral1200,
                   ),
                 ),
               ],

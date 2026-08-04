@@ -133,7 +133,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                    color: colors.onPrimary,
+                    color: colors.white,
                     borderRadius: AppBorderRadius.brCircular30,
                     boxShadow: AppBoxShadows.blackBottomShadow1,
                   ),
@@ -150,7 +150,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                                 onFieldSubmitted: _onSubmitted,
                                 textInputAction: TextInputAction.search,
                                 style: AppTextStyles.style16Regular.copyWith(
-                                  color: colors.onSecondary,
+                                  color: colors.black,
                                   fontSize: con.maxWidth * 0.05,
                                 ),
                                 textAlignVertical: TextAlignVertical.center,
@@ -202,7 +202,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                             ),
                             child: Assets.media.images.svg.filterIcon.svg(
                               colorFilter: ColorFilter.mode(
-                                colors.onSecondary,
+                                colors.black,
                                 BlendMode.srcIn,
                               ),
                             ),

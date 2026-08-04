@@ -95,7 +95,7 @@ class RateSelectorItem extends StatelessWidget {
           starColor: starColor ?? colors.surface,
           rateRatio: rateRatio,
           size: starSize,
-          rateColor: labelColor ?? colors.onSecondary,
+          rateColor: labelColor ?? colors.black,
         ),
       ),
     );

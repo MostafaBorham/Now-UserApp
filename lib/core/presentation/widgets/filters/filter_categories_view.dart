@@ -23,7 +23,7 @@ class FilterCategoriesView extends StatelessWidget {
         Text(
           LangKeys.categoriesKey.tr(),
           style: AppTextStyles.style16Medium.copyWith(
-            color: colors.onTertiaryFixed,
+            color: colors.neutral1200,
           ),
         ),
         AppSelector(
@@ -31,12 +31,12 @@ class FilterCategoriesView extends StatelessWidget {
           initialIndex: 0,
           onChanged: (index) {
           },
-          labelColor: colors.onSecondary,
+          labelColor: colors.black,
           selectedColor: colors.surfaceContainerHigh,
           radius: 999,
-          selectedLabelColor: colors.onSecondary,
+          selectedLabelColor: colors.black,
           borderColor: Colors.transparent,
-          unselectedColor: colors.onSurface.withValues(alpha: 0.1),
+          unselectedColor: colors.neutral500.withValues(alpha: 0.1),
         )
       ],
     );

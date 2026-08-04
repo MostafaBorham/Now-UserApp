@@ -28,7 +28,7 @@ class FilterRatingsView extends StatelessWidget {
         AppRateSelector(
           ratings: ratings,
           onChanged: (index) => onChanged?.call(ratings[index]),
-          labelColor: colors.onSecondary,
+          labelColor: colors.black,
           starColor: colors.surface,
           selectedColor: colors.tertiaryFixed,
           unselectedColor: colors.onPrimaryContainer,

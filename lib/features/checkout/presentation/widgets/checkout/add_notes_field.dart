@@ -18,16 +18,16 @@ class AddNotesField extends StatelessWidget {
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
       minLines: 3,
       style: AppTextStyles.style16Medium.copyWith(
-          color: colors.onSecondary
+          color: colors.black
       ),
       maxLines: 8,
       decoration: InputDecoration(
         hintText: LangKeys.addNotesHintKey.tr(),
         hintStyle: AppTextStyles.style16Medium.copyWith(
-            color: colors.onSurface.withValues(alpha: 0.7)
+            color: colors.neutral500.withValues(alpha: 0.7)
         ),
         filled: true,
-        fillColor: colors.onSurface.withValues(alpha: 0.2),
+        fillColor: colors.neutral500.withValues(alpha: 0.2),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,

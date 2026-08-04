@@ -64,7 +64,7 @@ class SearchScreen extends ConsumerWidget {
                       Text(
                         LangKeys.bestCategoriesKey.tr(),
                         style: AppTextStyles.style18SemiBold.copyWith(
-                          color: colors.onSecondary,
+                          color: colors.black,
                           fontSize: screenWidth * 0.05,
                         ),
                       ),
@@ -75,7 +75,7 @@ class SearchScreen extends ConsumerWidget {
                         child: Text(
                           LangKeys.seeAllKey.tr(),
                           style: AppTextStyles.style14Medium.copyWith(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                             fontSize: screenWidth * 0.035,
                           ),
                         ),
@@ -117,7 +117,7 @@ class SearchScreen extends ConsumerWidget {
                       Text(
                         LangKeys.mostPopularKey.tr(),
                         style: AppTextStyles.style18SemiBold.copyWith(
-                          color: colors.onSecondary,
+                          color: colors.black,
                           fontSize: screenWidth * 0.05,
                         ),
                       ),
@@ -128,7 +128,7 @@ class SearchScreen extends ConsumerWidget {
                         child: Text(
                           LangKeys.seeAllKey.tr(),
                           style: AppTextStyles.style14Medium.copyWith(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                             fontSize: screenWidth * 0.035,
                           ),
                         ),

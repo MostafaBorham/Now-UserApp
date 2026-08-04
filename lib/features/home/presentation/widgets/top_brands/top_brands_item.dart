@@ -17,14 +17,14 @@ class TopBrandsItem extends StatelessWidget {
               child: Container(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 decoration: BoxDecoration(
-                  color: colors.inversePrimary.withValues(alpha: 0.2),
+                  color: colors.neutral400.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: AppCachedNetworkImage(imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',fit: BoxFit.contain,width: con.maxWidth*0.3,),
               ),
             ),
             Text('Panda',style: TextStyle(
-              color: colors.onSecondary,
+              color: colors.black,
               fontSize: con.maxWidth*0.08,
               fontWeight: FontWeight.w500
             ),)

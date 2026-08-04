@@ -51,7 +51,7 @@ class AppBottomNavBar extends StatelessWidget {
                     child: _NavItem(
                       isSelected: currentIndex == 0,
                       label: LangKeys.homeKey.tr(),
-                      selectedColor: colors.primary,
+                      selectedColor: colors.primary500Main,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(0),
                       child: Column(
@@ -61,7 +61,7 @@ class AppBottomNavBar extends StatelessWidget {
                               ? Assets.media.images.svg.filledHomeIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
-                                    colors.secondary,
+                                    colors.secondary600,
                                     BlendMode.srcIn,
                                   ),
                                 )
@@ -77,7 +77,7 @@ class AppBottomNavBar extends StatelessWidget {
                             LangKeys.homeKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: currentIndex == 0
-                                  ? colors.secondary
+                                  ? colors.secondary600
                                   : colors.tertiaryContainer,
                             ),
                           ),
@@ -90,7 +90,7 @@ class AppBottomNavBar extends StatelessWidget {
                     child: _NavItem(
                       isSelected: currentIndex == 1,
                       label: LangKeys.favouriteKey.tr(),
-                      selectedColor: colors.primary,
+                      selectedColor: colors.primary500Main,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(1),
                       child: Column(
@@ -100,7 +100,7 @@ class AppBottomNavBar extends StatelessWidget {
                               ? Assets.media.images.svg.filledFavouriteIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
-                                    colors.secondary,
+                                    colors.secondary600,
                                     BlendMode.srcIn,
                                   ),
                                 )
@@ -116,7 +116,7 @@ class AppBottomNavBar extends StatelessWidget {
                             LangKeys.favouriteKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: currentIndex == 1
-                                  ? colors.secondary
+                                  ? colors.secondary600
                                   : colors.tertiaryContainer,
                             ),
                           ),
@@ -134,11 +134,11 @@ class AppBottomNavBar extends StatelessWidget {
                           width: stackCon.maxWidth * 0.15,
                           height: stackCon.maxWidth * 0.15,
                           decoration: BoxDecoration(
-                            color: colors.primary,
+                            color: colors.primary500Main,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: colors.onSurface.withValues(alpha: 0.3),
+                                color: colors.neutral500.withValues(alpha: 0.3),
                                 spreadRadius: 5,
                                 blurRadius: 6,
                               ),
@@ -146,12 +146,12 @@ class AppBottomNavBar extends StatelessWidget {
                           ),
                           child: currentIndex==2? Assets.media.images.svg.filledCartIcon.svg(
                             colorFilter: ColorFilter.mode(
-                              colors.onPrimary,
+                              colors.white,
                               BlendMode.srcIn,
                             ),
                           ) : Assets.media.images.svg.shoppingCartIcon.svg(
                             colorFilter: ColorFilter.mode(
-                              colors.onPrimary,
+                              colors.white,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -164,7 +164,7 @@ class AppBottomNavBar extends StatelessWidget {
                     child: _NavItem(
                       isSelected: currentIndex == 3,
                       label: LangKeys.ordersKey.tr(),
-                      selectedColor: colors.secondary,
+                      selectedColor: colors.secondary600,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(3),
                       child: Column(
@@ -174,7 +174,7 @@ class AppBottomNavBar extends StatelessWidget {
                               ? Assets.media.images.svg.filledOrdersIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
-                                    colors.secondary,
+                                    colors.secondary600,
                                     BlendMode.srcIn,
                                   ),
                                 )
@@ -190,7 +190,7 @@ class AppBottomNavBar extends StatelessWidget {
                             LangKeys.ordersKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: currentIndex == 3
-                                  ? colors.secondary
+                                  ? colors.secondary600
                                   : colors.tertiaryContainer,
                             ),
                           ),
@@ -203,7 +203,7 @@ class AppBottomNavBar extends StatelessWidget {
                     child: _NavItem(
                       isSelected: currentIndex == 4,
                       label: LangKeys.profileKey.tr(),
-                      selectedColor: colors.secondary,
+                      selectedColor: colors.secondary600,
                       unselectedColor: colors.tertiaryContainer,
                       onTap: () => _changeIndex(4),
                       child: Column(
@@ -213,7 +213,7 @@ class AppBottomNavBar extends StatelessWidget {
                               ? Assets.media.images.svg.filledAccountIcon.svg(
                                   width: stackCon.maxWidth * 0.05,
                                   colorFilter: ColorFilter.mode(
-                                    colors.secondary,
+                                    colors.secondary600,
                                     BlendMode.srcIn,
                                   ),
                                 )
@@ -229,7 +229,7 @@ class AppBottomNavBar extends StatelessWidget {
                             LangKeys.profileKey.tr(),
                             style: AppTextStyles.style12Medium.copyWith(
                               color: currentIndex == 4
-                                  ? colors.secondary
+                                  ? colors.secondary600
                                   : colors.tertiaryContainer,
                             ),
                           ),

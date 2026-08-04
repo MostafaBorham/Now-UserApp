@@ -30,7 +30,7 @@ class PaymentFailedHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           style: AppTextStyles.style20Bold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
             fontSize: 22,
           ),
         ),

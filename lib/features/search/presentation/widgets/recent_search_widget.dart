@@ -64,7 +64,7 @@ class _RecentSearchWidgetState extends State<RecentSearchWidget> {
             Text(
               LangKeys.recentKey.tr(),
               style: AppTextStyles.style18SemiBold.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
             InkWell(

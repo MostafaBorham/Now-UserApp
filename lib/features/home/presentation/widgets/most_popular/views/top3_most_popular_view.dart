@@ -18,7 +18,7 @@ class Top3MostPopularView extends StatelessWidget {
         Text(
           categoryName,
           style: TextStyle(
-            color: colors.onSecondary,
+            color: colors.black,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),

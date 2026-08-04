@@ -53,7 +53,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.visible,
                     style: AppTextStyles.style14SemiBold.copyWith(
-                      color: colors.onSecondary,
+                      color: colors.black,
                     ),
                   ),
                 ],

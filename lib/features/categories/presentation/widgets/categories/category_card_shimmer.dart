@@ -19,7 +19,7 @@ class CategoryCardShimmer extends StatelessWidget {
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               borderRadius: AppBorderRadius.brCircular12,
             ),
           ),
@@ -28,7 +28,7 @@ class CategoryCardShimmer extends StatelessWidget {
           width: 80,
           height: 14,
           decoration: BoxDecoration(
-            color: colors.onPrimary,
+            color: colors.white,
             borderRadius: AppBorderRadius.brCircular4,
           ),
         ),

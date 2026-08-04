@@ -31,7 +31,7 @@ class LabeledDetailRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTextStyles.style14Regular.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style14Regular.copyWith(color: colors.neutral500),
         ),
         12.wSpace,
         Expanded(
@@ -46,7 +46,7 @@ class LabeledDetailRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.style14Medium.copyWith(
-                    color: valueColor ?? colors.onSecondary,
+                    color: valueColor ?? colors.black,
                   ),
                 ),
         ),

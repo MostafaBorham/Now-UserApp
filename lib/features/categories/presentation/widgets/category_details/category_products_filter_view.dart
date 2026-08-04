@@ -52,7 +52,7 @@ class _CategoryProductsFilterViewState
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),

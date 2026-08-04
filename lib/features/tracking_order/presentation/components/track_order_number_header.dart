@@ -33,14 +33,14 @@ class TrackOrderNumberHeader extends StatelessWidget {
               Text(
                 LangKeys.orderNumberKey.tr(),
                 style: AppTextStyles.style12Medium.copyWith(
-                  color: colors.onSurface,
+                  color: colors.neutral500,
                 ),
               ),
               4.hSpace,
               Text(
                 orderNumber,
                 style: AppTextStyles.style18SemiBold.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                 ),
               ),
             ],

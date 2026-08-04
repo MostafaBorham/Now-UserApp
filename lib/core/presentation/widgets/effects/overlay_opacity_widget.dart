@@ -25,7 +25,7 @@ class OverlayOpacityWidget extends StatelessWidget {
             Positioned.fill(
               child: ColoredBox(
                 color: overlayColor ??
-                    colors.onPrimary.withValues(alpha: 0.8),
+                    colors.white.withValues(alpha: 0.8),
               ),
             ),
         ],

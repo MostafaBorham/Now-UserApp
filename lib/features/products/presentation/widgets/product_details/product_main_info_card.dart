@@ -59,11 +59,11 @@ class ProductMainInfoCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.onPrimary,
+        color: colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: colors.onSurface.withValues(
+            color: colors.neutral500.withValues(
               alpha: 0.3,
             ), // #0000000F (black 6%)
             offset: const Offset(0, 2),
@@ -88,7 +88,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: colors.onSurfaceVariant,
+                    color: colors.primary100,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Row(
@@ -98,12 +98,12 @@ class ProductMainInfoCard extends ConsumerWidget {
                       Text(
                         trustedBadgeLabel ?? LangKeys.trustedProductKey.tr(),
                         style: AppTextStyles.style12SemiBold.copyWith(
-                          color: colors.onPrimaryFixedVariant,
+                          color: colors.primary700,
                         ),
                       ),
                       Assets.media.images.svg.trustIcon.svg(
                         colorFilter: ColorFilter.mode(
-                          colors.primary,
+                          colors.primary500Main,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -142,7 +142,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: productQuantity < maxQuantity
                               ? colors.tertiaryContainer
-                              : colors.surfaceContainerLow,
+                              : colors.neutral200,
                           shape: BoxShape.circle,
                           boxShadow: AppBoxShadows.blackBottomShadow2,
                         ),
@@ -150,7 +150,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                           child: Icon(
                             Icons.add,
                             size: 14,
-                            color: colors.onPrimary,
+                            color: colors.white,
                           ),
                         ),
                       ),
@@ -161,7 +161,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                         productQuantity.toString(),
                         textAlign: TextAlign.center,
                         style: AppTextStyles.style16Bold.copyWith(
-                          color: colors.onSecondary,
+                          color: colors.black,
                           fontSize: 15,
                         ),
                       ),
@@ -177,14 +177,14 @@ class ProductMainInfoCard extends ConsumerWidget {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: colors.surfaceContainerLow,
+                          color: colors.neutral200,
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Icon(
                             Icons.remove,
                             size: 14,
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                           ),
                         ),
                       ),
@@ -202,7 +202,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                 context.getLocalizedApiText(product.name),
                 overflow: TextOverflow.visible,
                 style: AppTextStyles.style24Bold.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                   fontSize: 22,
                 ),
               ),
@@ -217,7 +217,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                   Text(
                     context.getLocalizedApiText(product.vendor?.name),
                     style: AppTextStyles.style14Regular.copyWith(
-                      color: colors.onSurface,
+                      color: colors.neutral500,
                       fontSize: 13,
                     ),
                   ),
@@ -234,13 +234,13 @@ class ProductMainInfoCard extends ConsumerWidget {
                         spacing: 4,
                         children: [
                           OldPriceWidget(
-                            color: colors.onSurface,
+                            color: colors.neutral500,
                             size: con.maxWidth * 0.04,
                             price: '${product.comparePrice}',
                           ),
                           NewPriceWidget(
                             size: con.maxWidth * 0.07,
-                            color: colors.onTertiaryFixed,
+                            color: colors.neutral1200,
                             price: '${product.price}',
                           ),
                         ],
@@ -275,14 +275,14 @@ class ProductMainInfoCard extends ConsumerWidget {
               Text(
                 LangKeys.descriptionKey.tr(),
                 style: AppTextStyles.style16Bold.copyWith(
-                  color: colors.onSecondary,
+                  color: colors.black,
                   fontSize: 15,
                 ),
               ),
               ExpandableText(
                 text: context.getLocalizedApiText(product.description),
                 style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.onSurface,
+                  color: colors.neutral500,
                 ),
                 maxCharacters: 150,
                 seeMoreText: LangKeys.seeMoreKey.tr(),

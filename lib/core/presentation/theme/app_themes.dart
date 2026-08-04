@@ -54,7 +54,7 @@ abstract class AppThemes {
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),
-      primaryContainer: Color(0xff255625),
+      primaryContainer: Color(0xff2B6B2A),
       secondaryContainer: Color(0xff4A90E2),
       onPrimary: Colors.black,
       onSurfaceVariant: Color(0xffDBF1DB),

@@ -57,7 +57,7 @@ class CategoryCard extends StatelessWidget {
                         '${category.descendantsCount} % ${LangKeys.discountKey.tr()}',
                         maxLines: 1,
                         style: AppTextStyles.style18SemiBold.copyWith(
-                          color: colors.onPrimary,
+                          color: colors.white,
                         ),
                       ),
                     ),
@@ -71,7 +71,7 @@ class CategoryCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.style14Medium.copyWith(
-              color: colors.onTertiaryFixed,
+              color: colors.neutral1200,
             ),
           ),
         ],

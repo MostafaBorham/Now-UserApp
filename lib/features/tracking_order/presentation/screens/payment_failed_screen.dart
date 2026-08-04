@@ -59,7 +59,7 @@ class PaymentFailedScreen extends StatelessWidget {
                   width: 18,
                   height: 18,
                   colorFilter: ColorFilter.mode(
-                    colors.onPrimary,
+                    colors.white,
                     BlendMode.srcIn,
                   ),
                 ),

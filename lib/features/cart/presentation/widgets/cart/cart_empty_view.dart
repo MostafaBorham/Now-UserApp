@@ -36,7 +36,7 @@ class CartEmptyView extends ConsumerWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: con.maxWidth * 0.06,
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
                 Text(

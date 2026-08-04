@@ -25,7 +25,7 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-            color: buttonColor?? colors.primary,
+            color: buttonColor?? colors.primary500Main,
             borderRadius: BorderRadius.circular(buttonRadius??8),
             border: Border.all(
                 color:  Colors.transparent,
@@ -39,7 +39,7 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
-                    color: colors.onPrimary,
+                    color: colors.white,
                   ),
                 ),
               )
@@ -53,7 +53,7 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
               textAlign: TextAlign.center,
               minFontSize: 10,
               style: AppTextStyles.style14Medium.copyWith(
-                color: colors.onPrimary,
+                color: colors.white,
               ),
             ),
           ],

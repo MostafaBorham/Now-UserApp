@@ -88,7 +88,7 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
                 child: Text(
                   LangKeys.editKey.tr(),
                   style: AppTextStyles.style14Regular.copyWith(
-                    color: colors.primary,
+                    color: colors.primary500Main,
                   ),
                 ),
               ),
@@ -98,7 +98,7 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
             fullAddress ?? LangKeys.noAddressKey.tr(),
             maxLines: 3,
             style: AppTextStyles.style14Regular.copyWith(
-              color: fullAddress != null ? colors.onSurface : colors.error,
+              color: fullAddress != null ? colors.neutral500 : colors.error,
             ),
           ),
         ],

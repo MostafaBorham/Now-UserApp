@@ -25,7 +25,7 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
         curve: Curves.easeOut,
         padding: EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         decoration: BoxDecoration(
-          color: colors.onSurface.withValues(alpha: 0.1),
+          color: colors.neutral500.withValues(alpha: 0.1),
           borderRadius: AppBorderRadius.brCircular12,
         ),
         child: IntrinsicHeight(
@@ -39,11 +39,11 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                 width: 26,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? colors.primary : Colors.transparent,
+                  color: isSelected ? colors.primary500Main : Colors.transparent,
                   border: Border.all(
                     color: isSelected
                         ? colors.primaryContainer.withValues(alpha: 0.5)
-                        : colors.onSurface,
+                        : colors.neutral500,
                     width: 1.5,
                   ),
                 ),
@@ -65,14 +65,14 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                     Text(
                       cardItem.cardHolder,
                       style: AppTextStyles.style16Medium.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     Text(
                       cardItem.cardNumber,
                       maxLines: 1,
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

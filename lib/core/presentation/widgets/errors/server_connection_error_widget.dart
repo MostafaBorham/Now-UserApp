@@ -37,7 +37,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             style: AppTextStyles.style24Bold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
           AutoSizeText(
@@ -47,7 +47,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 4,
             style: AppTextStyles.style18Medium.copyWith(
-              color: colors.onSurface,
+              color: colors.neutral500,
             ),
           ),
           if (onRetry != null) ...[
@@ -56,7 +56,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
               title: LangKeys.retryKey.tr(),
               onTap: onRetry,
               prefixIcon: Assets.media.images.svg.retryIcon.svg(
-                colorFilter: ColorFilter.mode(colors.onPrimary, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
               ),
             ),
           ],

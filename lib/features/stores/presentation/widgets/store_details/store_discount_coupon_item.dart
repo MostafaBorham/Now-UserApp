@@ -122,14 +122,14 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                       validityText,
                                       maxLines: 1,
                                       style: AppTextStyles.style10Regular.copyWith(
-                                        color: colors.onSurface,
+                                        color: colors.neutral500,
                                       ),
                                     ),
                                   Text(
                                     '${coupon.description}',
                                     maxLines: 1,
                                     style: AppTextStyles.style12Regular.copyWith(
-                                      color: colors.onSurface,
+                                      color: colors.neutral500,
                                     ),
                                   ),
                                 ],
@@ -146,7 +146,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: colors.onSurfaceVariant,
+                                    color: colors.primary100,
                                     borderRadius: AppBorderRadius.brCircular30,
                                   ),
                                   child: Row(

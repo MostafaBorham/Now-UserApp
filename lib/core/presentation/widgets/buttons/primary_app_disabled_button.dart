@@ -20,7 +20,7 @@ class PrimaryAppDisabledButton extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(buttonPadding!),
       decoration: BoxDecoration(
-        color: colors.onSurface.withValues(alpha: 0.3),
+        color: colors.neutral500.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.transparent, width: 2),
       ),
@@ -29,7 +29,7 @@ class PrimaryAppDisabledButton extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           minFontSize: 10,
-          style: AppTextStyles.style14Medium.copyWith(color: colors.onSurface),
+          style: AppTextStyles.style14Medium.copyWith(color: colors.neutral500),
         ),
       ),
     );

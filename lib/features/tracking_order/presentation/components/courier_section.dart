@@ -48,14 +48,14 @@ class CourierSection extends StatelessWidget {
                 Text(
                   LangKeys.courierKey.tr(),
                   style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.onSecondary,
+                    color: colors.black,
                   ),
                 ),
                 2.hSpace,
                 Text(
                   courierName,
                   style: AppTextStyles.style14Regular.copyWith(
-                    color: colors.onSurface,
+                    color: colors.neutral500,
                   ),
                 ),
               ],

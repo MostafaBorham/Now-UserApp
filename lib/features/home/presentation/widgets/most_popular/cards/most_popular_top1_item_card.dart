@@ -31,7 +31,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
             borderRadius: AppBorderRadius.brCircular16,
             boxShadow: AppBoxShadows.greyElevation2,
             border: Border.all(
-              color: colors.onSurface.withValues(alpha: 0.08),
+              color: colors.neutral500.withValues(alpha: 0.08),
               width: 1,
             ),
           ),
@@ -66,7 +66,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                         child: Text(
                           '#1',
                           style: AppTextStyles.style10Medium.copyWith(
-                            color: colors.onPrimary,
+                            color: colors.white,
                             fontSize: con.maxWidth*0.04
                           ),
                         ),
@@ -95,7 +95,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                 'VALENTINO',
                                 maxLines: 1,
                                 style: AppTextStyles.style10Regular.copyWith(
-                                  color: colors.onSurface,
+                                  color: colors.neutral500,
                                   letterSpacing: 1,
                                   fontSize: con.maxWidth*0.03
                                 ),
@@ -107,14 +107,14 @@ class MostPopularTop1ItemCard extends StatelessWidget {
 
                               },
                             ),
-                            // Icon(Icons.favorite_outline, color: colors.onSurface, size: con.maxWidth*0.06),
+                            // Icon(Icons.favorite_outline, color: colors.neutral500, size: con.maxWidth*0.06),
                           ],
                         ),
                         Text(
                           'Valentino Uomo Noir',
                           maxLines: 1,
                           style: AppTextStyles.style16Bold.copyWith(
-                            color: colors.onTertiaryFixed,
+                            color: colors.neutral1200,
                               fontSize: con.maxWidth*0.04
                           ),
                         ),
@@ -161,7 +161,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                 Text(
                                   '4.9',
                                   style: AppTextStyles.style12SemiBold.copyWith(
-                                      color: colors.onTertiaryFixed,
+                                      color: colors.neutral1200,
                                       fontSize: con.maxWidth*0.03
                                   ),
                                 ),
@@ -170,7 +170,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                   '· 12.4k ${LangKeys.soldKey.tr()}',
                                   maxLines: 1,
                                   style: AppTextStyles.style12Regular.copyWith(
-                                      color: colors.onSurface,
+                                      color: colors.neutral500,
                                       fontSize: con.maxWidth*0.03
                                   ),
                                 ),
@@ -187,7 +187,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                   size: con.maxWidth*0.06,
                                 ),
                                 OldPriceWidget(
-                                  color: colors.onSurface,
+                                  color: colors.neutral500,
                                   price: '10',
                                   size: con.maxWidth*0.03,
                                 ),
@@ -202,7 +202,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                               color: colors.primaryFixedDim,
                               borderRadius: BorderRadiusGeometry.circular(con.maxWidth*0.04),
                             ),
-                            child: Icon(Icons.add,color: colors.onPrimary,size: con.maxWidth*0.05,),
+                            child: Icon(Icons.add,color: colors.white,size: con.maxWidth*0.05,),
                           ),
                         ),
                       ],
@@ -264,7 +264,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                     'VALENTINO',
                                     maxLines: 1,
                                     style: AppTextStyles.style10Regular.copyWith(
-                                      color: colors.onSurface,
+                                      color: colors.neutral500,
                                       letterSpacing: 1,
                                     ),
                                   ),
@@ -273,7 +273,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                     'Valentino Uomo Noir',
                                     maxLines: 1,
                                     style: AppTextStyles.style16Bold.copyWith(
-                                      color: colors.onTertiaryFixed,
+                                      color: colors.neutral1200,
                                     ),
                                   ),
                                 ],
@@ -284,7 +284,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                               width: 18,
                               height: 18,
                               colorFilter: ColorFilter.mode(
-                                colors.onSurface,
+                                colors.neutral500,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -332,7 +332,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                   Text(
                                     '4.9',
                                     style: AppTextStyles.style12SemiBold.copyWith(
-                                      color: colors.onTertiaryFixed,
+                                      color: colors.neutral1200,
                                     ),
                                   ),
                                   4.wSpace,
@@ -341,7 +341,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                                       '· 12.4k ${LangKeys.soldKey.tr()}',
                                       maxLines: 1,
                                       style: AppTextStyles.style12Regular.copyWith(
-                                        color: colors.onSurface,
+                                        color: colors.neutral500,
                                       ),
                                     ),
                                   ),

@@ -23,11 +23,11 @@ class CircleBackButton extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: colors.onPrimary,
+          color: colors.white,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: colors.onSurface.withValues(alpha: 0.12),
+              color: colors.neutral500.withValues(alpha: 0.12),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

@@ -28,7 +28,7 @@ class PrimaryAppButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-          color: colors.primary,
+          color: colors.primary500Main,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
@@ -39,7 +39,7 @@ class PrimaryAppButton extends StatelessWidget {
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
-                    color: colors.onPrimary,
+                    color: colors.white,
                   ),
                 ),
               )
@@ -49,7 +49,7 @@ class PrimaryAppButton extends StatelessWidget {
                   title,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.onPrimary,
+                    color: colors.white,
                   ),
                 ),
               ),

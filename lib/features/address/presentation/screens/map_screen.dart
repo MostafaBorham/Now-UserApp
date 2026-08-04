@@ -119,7 +119,7 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
         title: Text(
           LangKeys.addNewAddress.tr(),
           style: AppTextStyles.style24SemiBold.copyWith(
-            color: colors.onSecondary,
+            color: colors.black,
           ),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,

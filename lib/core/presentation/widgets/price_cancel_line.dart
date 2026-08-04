@@ -23,7 +23,7 @@ class PriceCancelLine extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   height: 2,
-                  color: colors.inversePrimary,
+                  color: colors.neutral400,
                 ),
               ),
             ),
@@ -31,7 +31,7 @@ class PriceCancelLine extends StatelessWidget {
         ),
 /*        Transform.rotate(
           angle: -0.3,
-          child: Container(width: 60, height: 1.5, color: colors.inversePrimary),
+          child: Container(width: 60, height: 1.5, color: colors.neutral400),
         ),*/
       ],
     );

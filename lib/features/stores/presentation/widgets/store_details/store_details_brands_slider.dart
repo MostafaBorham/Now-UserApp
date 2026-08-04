@@ -35,19 +35,19 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
                     AlignmentDirectional.centerStart,
                     end: AlignmentDirectional.centerEnd,
                     colors: [
-                      colors.onPrimary.withValues(
+                      colors.white.withValues(
                         alpha: 0.9,
                       ),
-                      colors.onPrimary.withValues(
+                      colors.white.withValues(
                         alpha: 0.75,
                       ),
-                      colors.onPrimary.withValues(
+                      colors.white.withValues(
                         alpha: 0.5,
                       ),
-                      colors.onPrimary.withValues(
+                      colors.white.withValues(
                         alpha: 0.3,
                       ),
-                      colors.onPrimary.withValues(
+                      colors.white.withValues(
                         alpha: 0.1,
                       ),
                       Colors.transparent,
@@ -86,7 +86,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
           sliderSpace: 8,
           itemAspectRatio: 1.5,
           activeDotColor: colors.secondaryFixedDim,
-          dotColor: colors.onPrimary,
+          dotColor: colors.white,
         ),
       ],
     );

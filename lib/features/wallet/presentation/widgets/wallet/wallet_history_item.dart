@@ -18,7 +18,7 @@ class WalletHistoryItem extends StatelessWidget {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
           decoration: BoxDecoration(
-            color: colors.onSurface.withValues(alpha: 0.1),
+            color: colors.neutral500.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(con.maxWidth * 0.1),
           ),
           child: Row(
@@ -33,7 +33,7 @@ class WalletHistoryItem extends StatelessWidget {
                       radius: con.maxWidth * 0.07,
                       logoUrl:
                           'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                      backgroundColor: colors.onPrimary,
+                      backgroundColor: colors.white,
                     ),
                     Expanded(
                       child: Column(
@@ -43,7 +43,7 @@ class WalletHistoryItem extends StatelessWidget {
                           Text(
                             'Shaworma',
                             style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                               fontSize: con.maxWidth * 0.04,
                             ),
                           ),

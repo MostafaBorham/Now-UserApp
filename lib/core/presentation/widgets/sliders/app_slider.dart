@@ -44,7 +44,7 @@ class AppSlider extends ConsumerWidget {
           effect: WormEffect(
             dotHeight: 10,
             dotWidth: 10,
-            activeDotColor: activeDotColor?? colors.primary,
+            activeDotColor: activeDotColor?? colors.primary500Main,
             dotColor: dotColor?? colors.onTertiary,
           ),
         )

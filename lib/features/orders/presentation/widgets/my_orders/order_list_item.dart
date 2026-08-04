@@ -27,7 +27,7 @@ class OrderListItem extends ConsumerWidget {
         borderRadius: AppBorderRadius.brCircular16,
         boxShadow: [
           BoxShadow(
-            color: colors.onSurface.withValues(alpha: 0.08),
+            color: colors.neutral500.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -59,14 +59,14 @@ class OrderListItem extends ConsumerWidget {
                     AutoSizeText(
                       '#ORD-458921',
                       style: AppTextStyles.style18SemiBold.copyWith(
-                        color: colors.onSecondary,
+                        color: colors.black,
                       ),
                     ),
                     4.hSpace,
                     AutoSizeText(
                       '${LangKeys.deliveredOnKey.tr()} March 12, 2026',
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                     ),
                     10.hSpace,
@@ -80,13 +80,13 @@ class OrderListItem extends ConsumerWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: colors.onSurface.withValues(alpha: 0.1),
+                            color: colors.neutral500.withValues(alpha: 0.1),
                             borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
                             '5 ${LangKeys.itemsKey.tr()}',
                             style: AppTextStyles.style14Regular.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                         ),
@@ -123,14 +123,14 @@ class OrderListItem extends ConsumerWidget {
                       height: 12,
                       fit: BoxFit.contain,
                       colorFilter: ColorFilter.mode(
-                        colors.primary,
+                        colors.primary500Main,
                         BlendMode.srcIn,
                       ),
                     ),
                     Text(
                       '20.00',
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.primary,
+                        color: colors.primary500Main,
                       ),
                     ),
                   ],

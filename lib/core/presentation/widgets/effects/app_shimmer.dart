@@ -21,8 +21,8 @@ class AppShimmer extends StatelessWidget {
     final AppColorScheme colors = context.colors;
 
     return Shimmer.fromColors(
-      baseColor: colors.onSurface.withValues(alpha: 0.6),
-      highlightColor: colors.onSurface.withValues(alpha: 0.3),
+      baseColor: colors.neutral500.withValues(alpha: 0.6),
+      highlightColor: colors.neutral500.withValues(alpha: 0.3),
       child: child,
     );
   }

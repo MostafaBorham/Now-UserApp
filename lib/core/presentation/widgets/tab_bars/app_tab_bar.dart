@@ -47,7 +47,7 @@ class AppTabBar extends StatelessWidget {
                 color: selectedTabColor,
                 borderRadius: BorderRadius.circular(25),
               ),
-              labelColor: colors.onPrimary,
+              labelColor: colors.white,
               labelStyle: AppTextStyles.style14SemiBold,
               unselectedLabelColor: Color(0xFF212121),
               tabs: List.generate(tabs.length, (i) {
@@ -64,7 +64,7 @@ class AppTabBar extends StatelessWidget {
                             final Color color =
                                 IconTheme.of(context).color ??
                                 DefaultTextStyle.of(context).style.color ??
-                                colors.onPrimary;
+                                colors.white;
                             return ColorFiltered(
                               colorFilter: ColorFilter.mode(
                                 color,

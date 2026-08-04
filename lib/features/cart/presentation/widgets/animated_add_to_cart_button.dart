@@ -36,7 +36,7 @@ class AnimatedAddToCartButton extends StatelessWidget {
           textDirection: TextDirection.rtl,
           textAlign: TextAlign.center,
           style: AppTextStyles.style12SemiBold.copyWith(
-            color: colors.onPrimary,
+            color: colors.white,
             fontSize: MediaQuery.sizeOf(context).width*0.045
           ),
         ),

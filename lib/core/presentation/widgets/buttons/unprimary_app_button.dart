@@ -26,13 +26,13 @@ class UnPrimaryAppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: colors.primary, width: 1.5),
+          border: Border.all(color: colors.primary500Main, width: 1.5),
         ),
         child: AutoSizeText(
           title,
           textAlign: TextAlign.center,
           minFontSize: 10,
-          style: AppTextStyles.style14Medium.copyWith(color: colors.primary),
+          style: AppTextStyles.style14Medium.copyWith(color: colors.primary500Main),
         ),
       ),
     );

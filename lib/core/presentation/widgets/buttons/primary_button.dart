@@ -26,7 +26,7 @@ class PrimaryButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-          color: buttonColor?? colors.onSecondary.withValues(alpha: 0.9),
+          color: buttonColor?? colors.black.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
@@ -35,7 +35,7 @@ class PrimaryButton extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(color: titleColor??colors.onPrimary),
+            style: AppTextStyles.style14Medium.copyWith(color: titleColor??colors.white),
           ),
         ),
       ),

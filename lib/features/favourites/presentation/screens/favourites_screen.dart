@@ -17,7 +17,7 @@ class FavouritesScreen extends StatelessWidget {
       body: AppTabBar(
         tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
         views: [FavouriteProductTabView(), FavouriteStoreTabView()],
-        selectedTabColor: colors.primary,
+        selectedTabColor: colors.primary500Main,
       ),
       appBarTitle: LangKeys.favouriteKey.tr(),
       canPop: context.canPop(),

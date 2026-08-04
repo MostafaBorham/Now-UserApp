@@ -18,7 +18,7 @@ class HomeOffersSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: 0.2)
+        color: colors.primary500Main.withValues(alpha: 0.2)
       ),
       child: Column(
         spacing: 10,

@@ -69,7 +69,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 child: SizedBox(
                   width: MediaQuery.sizeOf(context).width * 0.1,
                   height: MediaQuery.sizeOf(context).width * 0.1,
-                  child: CircularProgressIndicator(color: colors.secondary),
+                  child: CircularProgressIndicator(color: colors.secondary600),
                 ),
               ),
           ],

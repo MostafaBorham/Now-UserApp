@@ -50,7 +50,7 @@ class CheckoutProductItemView extends StatelessWidget {
                 'x${item?.quantity ?? 0}',
                 maxLines: 1,
                 style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.onSurface,
+                  color: colors.neutral500,
                 ),
               ),
               10.hSpace,
@@ -60,7 +60,7 @@ class CheckoutProductItemView extends StatelessWidget {
                 spacing: 4,
                 children: [
                   NewPriceWidget(
-                    color: colors.onSecondary,
+                    color: colors.black,
                     price: '${item?.price ?? 0}',
                     size: 14,
                   ),

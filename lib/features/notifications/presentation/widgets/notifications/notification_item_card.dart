@@ -87,7 +87,7 @@ class NotificationItemCard extends StatelessWidget {
                       child: Text(
                         actionLabel,
                         style: AppTextStyles.style14Medium.copyWith(
-                          color: colors.primary,
+                          color: colors.primary500Main,
                         ),
                       ),
                     ),

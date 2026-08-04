@@ -40,7 +40,7 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: colors.onPrimary,
+                      color: colors.white,
                     ),
                     child: CircularBrandLogo(
                       radius: con.maxHeight*0.13,

@@ -110,7 +110,7 @@ class _ApplyDiscountCodeViewState
                     controller: _controller,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     style: AppTextStyles.style14Regular.copyWith(
-                      color: colors.onSecondary,
+                      color: colors.black,
                     ),
                     decoration: InputDecoration(
                       isCollapsed: true,
@@ -118,7 +118,7 @@ class _ApplyDiscountCodeViewState
                       border: InputBorder.none,
                       hintText: widget.hintText ?? LangKeys.discount.tr(),
                       hintStyle: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                     ),
                   ),
@@ -141,13 +141,13 @@ class _ApplyDiscountCodeViewState
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           )
                         : Text(
                             LangKeys.applyKey.tr(),
                             style: AppTextStyles.style14Medium.copyWith(
-                              color: colors.onSecondary,
+                              color: colors.black,
                             ),
                           ),
                   ),

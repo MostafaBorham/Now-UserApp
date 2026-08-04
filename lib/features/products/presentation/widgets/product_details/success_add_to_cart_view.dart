@@ -80,7 +80,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: colors.primary.withValues(alpha: 0.1),
+              color: colors.primary500Main.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
           ),
@@ -90,11 +90,11 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
             height: 96,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colors.onPrimary,
+              color: colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: colors.primary.withValues(alpha: 0.35),
+                  color: colors.primary500Main.withValues(alpha: 0.35),
                   offset: const Offset(0, 10),
                   blurRadius: 30,
                 ),
@@ -115,13 +115,13 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                color: colors.primary,
+                color: colors.primary500Main,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.check,
                 size: 14,
-                color: colors.onPrimary,
+                color: colors.white,
               ),
             ),
           ),
@@ -136,7 +136,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
               widget.productName,
               textAlign: TextAlign.center,
               style: AppTextStyles.style14Medium.copyWith(
-                color: colors.onSecondary,
+                color: colors.black,
               ),
             ),
           ),
@@ -145,7 +145,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
             widget.title ?? LangKeys.inTheShoppingCartKey.tr(),
             textAlign: TextAlign.center,
             style: AppTextStyles.style20Bold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
             ),
           ),
           8.hSpace,

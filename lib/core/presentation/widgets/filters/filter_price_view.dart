@@ -47,7 +47,7 @@ class _FilterPriceViewState extends State<FilterPriceView> {
     final AppColorScheme colors = context.colors;
     final OutlineInputBorder limitFieldBorder = OutlineInputBorder(
       borderRadius: AppBorderRadius.brCircular8,
-      borderSide: BorderSide(color: colors.tertiaryFixedDim),
+      borderSide: BorderSide(color: colors.neutral300),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,14 +56,14 @@ class _FilterPriceViewState extends State<FilterPriceView> {
         Text(
           LangKeys.priceKey.tr(),
           style: AppTextStyles.style14SemiBold.copyWith(
-            color: colors.onTertiaryFixed,
+            color: colors.neutral1200,
           ),
         ),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             trackHeight: 4,
             activeTrackColor: colors.secondaryFixed,
-            inactiveTrackColor: colors.onTertiaryFixedVariant,
+            inactiveTrackColor: colors.secondary100,
             overlayShape: SliderComponentShape.noOverlay,
             rangeThumbShape: _FilterSliderThumbShape(
               thumbColor: colors.secondaryFixed,
@@ -93,7 +93,7 @@ class _FilterPriceViewState extends State<FilterPriceView> {
                   Text(
                     LangKeys.maximumLimitKey.tr(),
                     style: AppTextStyles.style14Medium.copyWith(
-                      color: colors.onTertiaryFixed,
+                      color: colors.neutral1200,
                     ),
                   ),
                   TextFormField(
@@ -102,19 +102,19 @@ class _FilterPriceViewState extends State<FilterPriceView> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onTapOutside: (event) => FocusScope.of(context).unfocus(),
                     style: AppTextStyles.style14Regular.copyWith(
-                      color: colors.onTertiaryFixed,
+                      color: colors.neutral1200,
                     ),
                     decoration: InputDecoration(
                       isDense: true,
                       hintText: LangKeys.maximumLimitKey.tr(),
                       hintStyle: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                       contentPadding: const EdgeInsets.all(12),
                       border: limitFieldBorder,
                       enabledBorder: limitFieldBorder,
                       focusedBorder: limitFieldBorder.copyWith(
-                        borderSide: BorderSide(color: colors.primary),
+                        borderSide: BorderSide(color: colors.primary500Main),
                       ),
                     ),
                     onChanged: (value) {
@@ -139,7 +139,7 @@ class _FilterPriceViewState extends State<FilterPriceView> {
                   Text(
                     LangKeys.minimumLimitKey.tr(),
                     style: AppTextStyles.style14Medium.copyWith(
-                      color: colors.onTertiaryFixed,
+                      color: colors.neutral1200,
                     ),
                   ),
                   TextFormField(
@@ -148,19 +148,19 @@ class _FilterPriceViewState extends State<FilterPriceView> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onTapOutside: (event) => FocusScope.of(context).unfocus(),
                     style: AppTextStyles.style14Regular.copyWith(
-                      color: colors.onTertiaryFixed,
+                      color: colors.neutral1200,
                     ),
                     decoration: InputDecoration(
                       isDense: true,
                       hintText: LangKeys.minimumLimitKey.tr(),
                       hintStyle: AppTextStyles.style14Regular.copyWith(
-                        color: colors.onSurface,
+                        color: colors.neutral500,
                       ),
                       contentPadding: const EdgeInsets.all(12),
                       border: limitFieldBorder,
                       enabledBorder: limitFieldBorder,
                       focusedBorder: limitFieldBorder.copyWith(
-                        borderSide: BorderSide(color: colors.primary),
+                        borderSide: BorderSide(color: colors.primary500Main),
                       ),
                     ),
                     onChanged: (value) {

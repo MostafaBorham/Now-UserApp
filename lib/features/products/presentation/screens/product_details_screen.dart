@@ -74,7 +74,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      backgroundColor: colors.onPrimary,
+                      backgroundColor: colors.white,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(24),
@@ -130,7 +130,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                                 child: Text(
                                   '${product.activeDeal?.discountValue ?? 0}%',
                                   style: AppTextStyles.style14Bold.copyWith(
-                                    color: colors.onPrimary,
+                                    color: colors.white,
                                   ),
                                 ),
                               ),
@@ -188,7 +188,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                             child: ProductBasicSpecificationsView(),
                           ),
                           Container(
-                            color: colors.onSurface.withValues(alpha: 0.3),
+                            color: colors.neutral500.withValues(alpha: 0.3),
                             width: double.infinity,
                             height: 1,
                             padding: EdgeInsets.symmetric(vertical: 15),
@@ -227,7 +227,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                                         .svg(
                                           width: 20,
                                           colorFilter: ColorFilter.mode(
-                                            colors.onPrimary,
+                                            colors.white,
                                             BlendMode.srcIn,
                                           ),
                                         ),

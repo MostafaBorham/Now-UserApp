@@ -36,7 +36,7 @@ class PlacesShimmerView extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: colors.onSecondary,
+                color: colors.black,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -50,7 +50,7 @@ class PlacesShimmerView extends StatelessWidget {
                     height: 14,
                     width: screenWidth * 0.3,
                     decoration: BoxDecoration(
-                      color: colors.onSecondary,
+                      color: colors.black,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -58,7 +58,7 @@ class PlacesShimmerView extends StatelessWidget {
                   Container(
                     height: 12,
                     decoration: BoxDecoration(
-                      color: colors.onSurface,
+                      color: colors.neutral500,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),

@@ -29,7 +29,7 @@ class NoItemsWidget extends StatelessWidget {
           children: [
             Assets.media.images.svg.noItemsIcon.svg(fit: BoxFit.contain,width: MediaQuery.sizeOf(context).width*0.5),
             Text(emptyMessage?? LangKeys.noItemsYetKey.tr(),style: AppTextStyles.style24SemiBold.copyWith(
-              color: colors.onSecondary,
+              color: colors.black,
               fontSize: MediaQuery.sizeOf(context).width*0.04
             ),)
           ],

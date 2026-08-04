@@ -95,12 +95,12 @@ class SelectorItem extends StatelessWidget {
               ? (selectedColor ?? colors.surfaceContainerHigh)
               : (unselectedColor ?? colors.onPrimaryContainer),
           borderRadius: BorderRadius.circular(radius!),
-          border: Border.all(color: borderColor??colors.onSecondary)
+          border: Border.all(color: borderColor??colors.black)
         ),
         child: Text(
           label,
           style: AppTextStyles.style14Medium.copyWith(
-            color: isSelected? selectedLabelColor??colors.onPrimary : labelColor??colors.onSecondary,
+            color: isSelected? selectedLabelColor??colors.white : labelColor??colors.black,
           ),
         ),
       ),

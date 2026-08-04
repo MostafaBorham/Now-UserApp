@@ -38,9 +38,9 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(buttonPadding!),
           decoration: BoxDecoration(
-            color: backgroundColor ?? colors.onPrimary,
+            color: backgroundColor ?? colors.white,
             borderRadius: BorderRadius.circular(8),
-            // border: Border.all(color: colors.primary, width: 2),
+            // border: Border.all(color: colors.primary500Main, width: 2),
           ),
           child: isLoading
               ? Center(
@@ -49,7 +49,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      color: colors.primary,
+                      color: colors.primary500Main,
                     ),
                   ),
                 )

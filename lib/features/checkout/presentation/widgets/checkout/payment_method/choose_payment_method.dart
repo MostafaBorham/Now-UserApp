@@ -72,7 +72,7 @@ class ChoosePaymentMethod extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
