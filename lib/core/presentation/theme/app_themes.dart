@@ -18,7 +18,6 @@ abstract class AppThemes {
       secondary: Color(0xffEAD800),
       secondaryFixed: Color(0xffACD52E),
       inversePrimary: Color(0xffB8B8B8),
-      inverseSurface: Color(0xff01CE21),
       errorContainer: Color(0xffE7000B),
       primaryFixedDim: Color(0xffFF5C35),
       secondaryFixedDim: Color(0xff6B4423),
@@ -41,15 +40,12 @@ abstract class AppThemes {
       onTertiaryContainer: Color(0xffF8F8F8),
       onErrorContainer: Color(0xff923E0E),
       tertiaryContainer: Color(0xff262626),
-      onInverseSurface: Colors.orange,
       surface: Color(0xffFBBB24),
       surfaceContainerHigh: Color(0xffFEE86A),
       surfaceContainerHighest: Color(0xffFFED89),
-      surfaceContainer: Color(0xffFEE765),
       surfaceContainerLowest: Color(0xffFCEFEA),
       surfaceContainerLow: Color(0xffE5E5E5),
       outline: Color(0xff737373),
-      surfaceDim: Color(0xffEEEEEE),
     ),
   );
   //////////////////////////////////////////////////////////////////////////////
@@ -81,9 +77,7 @@ abstract class AppThemes {
       primaryFixedDim: Color(0xffFF5C35),
       secondary: Color(0xffEAD800),
       inversePrimary: Color(0xffB8B8B8),
-      inverseSurface: Color(0xff01CE21),
       primaryFixed: Color(0xffFAFAFA),
-      onInverseSurface: Colors.orange,
       errorContainer: Color(0xffE7000B),
       onSecondaryContainer: Color(0xffFD9A00),
       tertiary: Color(0xffB7E2B6),
@@ -96,22 +90,13 @@ abstract class AppThemes {
       surface: Color(0xffFBBB24),
       surfaceContainerHigh: Color(0xffFEE86A),
       surfaceContainerHighest: Color(0xffFFED89),
-      surfaceContainer: Color(0xffFEE765),
       surfaceContainerLowest: Color(0xffFCEFEA),
       surfaceContainerLow: Color(0xffE5E5E5),
       outline: Color(0xff737373),
-      surfaceDim: Color(0xffEEEEEE),
     ),
   );
 }
 
-/// Colors introduced by the order-tracking flow
-/// (Order Confirmed, Track Order and Payment Failed screens).
-///
-/// Only colors that aren't already expressed by the theme [ColorScheme]
-/// (green `primary`, black `onSecondary`, grey `onSurface`, red
-/// `errorContainer` …) or by `AppColors` live here — screens keep pulling the
-/// shared palette from the theme and add these screen-specific tones on top.
 class TrackingOrderColors {
   TrackingOrderColors._();
 
