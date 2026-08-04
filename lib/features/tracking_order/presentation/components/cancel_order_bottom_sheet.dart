@@ -6,7 +6,6 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
@@ -94,7 +93,7 @@ class CancelOrderBottomSheet extends StatelessWidget {
         UnPrimaryButton(
           title: LangKeys.keepOrderKey.tr(),
           buttonPadding: 16,
-          borderColor: TrackingOrderColors.border2,
+          borderColor: colors.surfaceContainerLow,
           onTap: onKeep,
         ),
         const SizedBox(height: 8),

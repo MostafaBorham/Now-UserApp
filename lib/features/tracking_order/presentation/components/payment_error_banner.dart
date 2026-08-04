@@ -5,21 +5,27 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 
 /// Red banner on the Payment Failed screen explaining why the charge failed
 /// (declined card + error code), with a trailing info glyph.
 class PaymentErrorBanner extends StatelessWidget {
   const PaymentErrorBanner({super.key});
 
+  /// Pale-red banner fill — no equivalent in the theme [ColorScheme].
+  static const Color _bannerBackground = Color(0xffFFF5F5);
+
+  /// Pale-red banner border — no equivalent in the theme [ColorScheme].
+  static const Color _bannerBorder = Color(0xffFEE2E2);
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: TrackingOrderColors.errorBannerBackground,
+        color: _bannerBackground,
         borderRadius: AppBorderRadius.brCircular16,
-        border: Border.all(color: TrackingOrderColors.errorBannerBorder),
+        border: Border.all(color: _bannerBorder),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +37,7 @@ class PaymentErrorBanner extends StatelessWidget {
                 Text(
                   LangKeys.cardDeclinedTitleKey.tr(),
                   style: AppTextStyles.style14SemiBold.copyWith(
-                    color: TrackingOrderColors.errorBannerTitle,
+                    color: colors.onError,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
@@ -41,7 +47,7 @@ class PaymentErrorBanner extends StatelessWidget {
                   LangKeys.cardDeclinedBodyKey.tr(),
                   maxLines: 3,
                   style: AppTextStyles.style12Regular.copyWith(
-                    color: TrackingOrderColors.errorBannerBody,
+                    color: colors.error,
                   ),
                 ),
               ],

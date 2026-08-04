@@ -5,7 +5,6 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 
 /// Courier card on the Track Order screen: the courier/store badge plus the
 /// chat and call actions (the chat & call SVGs are self-contained coloured
@@ -28,7 +27,7 @@ class CourierSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: TrackingOrderColors.courierCardBackground,
+        color: colors.onPrimaryContainer,
         borderRadius: AppBorderRadius.brCircular16,
       ),
       child: Row(

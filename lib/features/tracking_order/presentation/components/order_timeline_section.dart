@@ -4,7 +4,6 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 
 import 'order_timeline_step.dart';
 
@@ -24,7 +23,7 @@ class OrderTimelineSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final Color reached = colors.primary;
-    final Color pending = TrackingOrderColors.timelinePending;
+    final Color pending = colors.surfaceContainerLow;
 
     final List<_TimelineStepData> steps = [
       _TimelineStepData(

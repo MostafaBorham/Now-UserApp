@@ -5,12 +5,15 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 
 import 'tracking_section_card.dart';
 
 /// "Item Information" section: the ordered product with its price and quantity.
 class ItemInformationSection extends StatelessWidget {
+  /// Pale-blue fill behind a product thumbnail that has no image yet —
+  /// no equivalent in the theme [ColorScheme].
+  static const Color _imagePlaceholder = Color(0xFFDCE6F7);
+
   const ItemInformationSection({
     super.key,
     this.name = 'Almarai Milk 2 Liters',
@@ -33,7 +36,7 @@ class ItemInformationSection extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: TrackingOrderColors.itemImagePlaceholder,
+              color: _imagePlaceholder,
               borderRadius: AppBorderRadius.brCircular12,
             ),
           ),

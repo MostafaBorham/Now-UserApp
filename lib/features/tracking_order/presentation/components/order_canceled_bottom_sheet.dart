@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
@@ -73,7 +72,7 @@ class OrderCanceledBottomSheet extends StatelessWidget {
         UnPrimaryButton(
           title: LangKeys.viewOrdersKey.tr(),
           buttonPadding: 16,
-          borderColor: TrackingOrderColors.border2,
+          borderColor: colors.surfaceContainerLow,
           onTap: onViewOrders,
         ),
         const SizedBox(height: 8),
