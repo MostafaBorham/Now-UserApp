@@ -1,6 +1,7 @@
-import 'package:nowdelivery_user_app/features/categories/data/models/active_deal_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
+import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 class ProductModel {
   final int? id;
@@ -78,12 +79,8 @@ class ProductModel {
       id: json['id'] as int?,
       productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
-      name: (json['name'] is String)
-          ? {'ar': json['name'] as String, 'en': json['name'] as String}
-          : json['name'],
-      description: (json['description'] is String)
-          ? {'ar': json['description'] as String, 'en': json['description'] as String}
-          : json['description'],
+      name: json.localized('name'),
+      description: json.localized('description'),
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null

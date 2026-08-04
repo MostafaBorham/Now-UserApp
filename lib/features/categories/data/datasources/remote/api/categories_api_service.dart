@@ -19,48 +19,36 @@ class CategoriesApiService {
   void cancelRequests() => _canceller.cancel();
 
   Future<Response> getAppCategories({required int page}) {
-    CategoriesEndpoints.page = page;
     return _dio.get(
       CategoriesEndpoints.getAppCategories,
-      queryParameters: CategoriesEndpoints.getAppCategoriesQuery,
+      queryParameters: CategoriesEndpoints.appCategoriesQuery(page),
       cancelToken: _canceller.token,
     );
   }
 
-  Future<Response> getProductSubCategories() {
+  Future<Response> getCategoryStores({
+    required String categorySlug,
+    required int? categoryId,
+    required int page,
+  }) {
     return _dio.get(
-      CategoriesEndpoints.getProductSubCategories,
-      queryParameters: CategoriesEndpoints.getProductSubCategoriesQuery,
+      CategoriesEndpoints.categoryStores(categorySlug),
+      queryParameters: CategoriesEndpoints.categoryStoresQuery(
+        page: page,
+        categoryId: categoryId,
+      ),
       cancelToken: _canceller.token,
     );
   }
 
-  Future<Response> getStoreSubCategories() {
+  Future<Response> getCategoryProducts({
+    required String categorySlug,
+    required int? categoryId,
+    required int page,
+  }) {
     return _dio.get(
-      CategoriesEndpoints.getStoreSubCategories,
-      queryParameters: CategoriesEndpoints.getStoreSubCategoriesQuery,
-      cancelToken: _canceller.token,
-    );
-  }
-
-  Future<Response> getCategoryStores({required String categorySlug, required int? categoryId, required int page}) {
-    CategoriesEndpoints.appCategorySlug = categorySlug;
-    CategoriesEndpoints.categoryId = categoryId;
-    CategoriesEndpoints.page = page;
-    return _dio.get(
-      CategoriesEndpoints.getCategoryStores,
-      queryParameters: CategoriesEndpoints.getCategoryStoresQuery,
-      cancelToken: _canceller.token,
-    );
-  }
-
-  Future<Response> getCategoryProducts({required String categorySlug,required int? categoryId,required int page}) {
-    CategoriesEndpoints.appCategorySlug = categorySlug;
-    CategoriesEndpoints.categoryId = categoryId;
-    CategoriesEndpoints.page = page;
-    return _dio.get(
-      CategoriesEndpoints.getCategoryProducts,
-      queryParameters: CategoriesEndpoints.getCategoryProductsQuery,
+      CategoriesEndpoints.categoryProducts(categorySlug),
+      queryParameters: CategoriesEndpoints.categoryProductsQuery(page),
       cancelToken: _canceller.token,
     );
   }

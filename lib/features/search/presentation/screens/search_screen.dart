@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
@@ -69,7 +69,7 @@ class SearchScreen extends ConsumerWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          context.pushNamed(AppRoutes.categoryDetailsScreen);
+                          context.pushNamed(AppRoutes.categoriesScreen);
                         },
                         child: Text(
                           LangKeys.seeAllKey.tr(),

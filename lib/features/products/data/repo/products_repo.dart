@@ -5,10 +5,10 @@ import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/categories/data/datasources/remote/api/categories_api_service.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
 import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 /// All data operations of the categories feature.
 ///

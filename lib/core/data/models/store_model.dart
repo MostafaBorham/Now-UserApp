@@ -1,10 +1,7 @@
-
-import 'dart:convert';
-
-import 'package:nowdelivery_user_app/features/categories/data/models/banner_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class StoreModel {
   final int? id;

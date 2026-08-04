@@ -5,8 +5,8 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/data/datasources/remote/api/stores_api_service.dart';
 
 /// All data operations of the stores feature.

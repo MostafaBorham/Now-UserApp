@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
@@ -15,10 +14,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 /// scroll, pull-to-refresh, loading, empty and error states) lives in
 /// [PaginatedView] and [GetCategoryProductsViewModel].
 class CategoryProductsView extends ConsumerStatefulWidget {
-  const CategoryProductsView({super.key, this.subCategory});
-
-  /// Narrows the grid to one sub-category; null shows the whole category.
-  final CategoryModel? subCategory;
+  const CategoryProductsView({super.key});
 
   @override
   ConsumerState<CategoryProductsView> createState() =>
@@ -48,7 +44,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   Future<void> _fetchProducts() {
     return _productsViewModel.getCategoryProducts(
       categorySlug: ref.read(categoryProvider).slug ?? '',
-      categoryId: widget.subCategory?.id,
+      categoryId: null,
     );
   }
 

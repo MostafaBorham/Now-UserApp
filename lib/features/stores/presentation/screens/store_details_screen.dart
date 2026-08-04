@@ -10,9 +10,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/banner_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_banner.dart';

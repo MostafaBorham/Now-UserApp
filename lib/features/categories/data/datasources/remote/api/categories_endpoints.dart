@@ -1,53 +1,38 @@
 /// API endpoints owned by the categories feature.
+///
+/// Paths and query maps are built from the caller's arguments — the class holds
+/// no request state of its own, so concurrent requests (e.g. the Products and
+/// Stores tabs paging at the same time) can't clobber each other.
 abstract class CategoriesEndpoints {
+  static const int _perPage = 15;
+
   static const String getAppCategories = '/api/v1/categories/tree';
-  static const String getProductSubCategories = '/api/v1/categories/tree';
-  static const String getStoreSubCategories = '/api/v1/categories/tree';
 
-  static String get getCategoryStores =>
-      '/api/v1/categories/$appCategorySlug/stores';
+  static String categoryStores(String categorySlug) =>
+      '/api/v1/categories/$categorySlug/stores';
 
-  static String get getCategoryProducts =>
-      '/api/v1/categories/$appCategorySlug/products';
+  static String categoryProducts(String categorySlug) =>
+      '/api/v1/categories/$categorySlug/products';
 
-  static String appCategorySlug = '';
-  static int? categoryId;
-  static String? search;
-  static int perPage = 15;
-  static int page = 1;
-
-  /// Query parameters for getAppCategories
-  static Map<String, dynamic> get getAppCategoriesQuery => {
+  static Map<String, dynamic> appCategoriesQuery(int page) => {
     'max_depth': 1,
-    'per_page': perPage,
+    'per_page': _perPage,
     'page': page,
   };
 
-  /// Query parameters for getProductSubCategories
-  static const Map<String, dynamic> getProductSubCategoriesQuery = {
-    'max_depth': 1,
-  };
-
-  /// Query parameters for getStoreSubCategories
-  static const Map<String, dynamic> getStoreSubCategoriesQuery = {
-    'max_depth': 1,
-  };
-
-  /// Query parameters for getCategoryStores
-  static Map<String, dynamic> get getCategoryStoresQuery => {
-    'search': search,
-    'per_page': perPage,
+  static Map<String, dynamic> categoryStoresQuery({
+    required int page,
+    int? categoryId,
+  }) => {
+    'per_page': _perPage,
     'page': page,
     'category_id': categoryId,
   };
 
-  /// Query parameters for getCategoryProducts
-  static Map<String, dynamic> get getCategoryProductsQuery => {
-    'search': search,
-    'per_page': perPage,
+  static Map<String, dynamic> categoryProductsQuery(int page) => {
+    'per_page': _perPage,
     'page': page,
     'sort': 'price',
     'direction': 'asc',
-    // 'category_id': categoryId,
   };
 }

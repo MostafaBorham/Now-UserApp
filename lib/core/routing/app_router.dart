@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/features/address/presentation/screens/addre
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/map_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/my_address_screen.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';

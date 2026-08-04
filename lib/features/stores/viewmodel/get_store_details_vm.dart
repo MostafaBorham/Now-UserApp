@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/data/repo/stores_repo.dart';
 
 /// Single task: fetch the details of one store for the store details screen.

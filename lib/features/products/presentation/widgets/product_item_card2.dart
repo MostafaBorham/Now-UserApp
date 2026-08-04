@@ -23,7 +23,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 

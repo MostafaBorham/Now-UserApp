@@ -1,5 +1,5 @@
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 /// A single store's order, with its own totals and [items]. Used both for the
 /// draft group in checkout and for placed orders in the orders feature.

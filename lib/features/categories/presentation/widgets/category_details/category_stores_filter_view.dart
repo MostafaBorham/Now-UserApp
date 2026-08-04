@@ -1,11 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_bottom_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_ratings_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_types_view.dart';
 
@@ -38,57 +33,19 @@ class _CategoryStoresFilterViewState extends State<CategoryStoresFilterView> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+    return FilterBottomSheet(
+      onApply: () => widget.onApply?.call(selectedType, selectedRating),
+      onReset: resetFilters,
+      filters: [
+        FilterTypesView(
+          key: ValueKey('types_$filtersKey'),
+          onChanged: (type) => selectedType = type,
         ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          children: [
-            FilterHeaderView(onClose: () => context.pop()),
-            FilterTypesView(
-              key: ValueKey('types_$filtersKey'),
-              onChanged: (type) => selectedType = type,
-            ),
-            FilterRatingsView(
-              key: ValueKey('ratings_$filtersKey'),
-              onChanged: (rating) => selectedRating = rating,
-            ),
-            Row(
-              spacing: 16,
-              children: [
-                Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.applyFiltersKey.tr(),
-                    onTap: () {
-                      widget.onApply?.call(
-                        selectedType,
-                        selectedRating,
-                      );
-                      context.pop();
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: UnPrimaryAppButton(
-                    title: LangKeys.resetFilterKey.tr(),
-                    onTap: resetFilters,
-                  ),
-                ),
-              ],
-            ),
-          ],
+        FilterRatingsView(
+          key: ValueKey('ratings_$filtersKey'),
+          onChanged: (rating) => selectedRating = rating,
         ),
-      ),
+      ],
     );
   }
 }

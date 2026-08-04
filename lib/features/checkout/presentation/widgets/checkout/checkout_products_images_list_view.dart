@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class CheckoutProductsImagesListView extends StatelessWidget {
   const CheckoutProductsImagesListView({super.key, this.items});
