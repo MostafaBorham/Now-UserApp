@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -13,7 +14,7 @@ class StoreItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return LayoutBuilder(
       builder: (context, storeItemConstraints) {
         return Container(

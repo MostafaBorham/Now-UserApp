@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_arrow_slider.dart';
 
@@ -10,7 +11,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Column(
       children: [
         Stack(

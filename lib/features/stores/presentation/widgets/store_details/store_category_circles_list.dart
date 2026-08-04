@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -14,7 +15,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final StoreModel store = ref.watch(storeProvider);
     final List<CategoryModel> categories = store.categories ?? const [];
 

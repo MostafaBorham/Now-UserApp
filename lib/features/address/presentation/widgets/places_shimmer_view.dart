@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 /// Loading view for the address search results.
@@ -17,7 +18,7 @@ class PlacesShimmerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     return ListView.separated(

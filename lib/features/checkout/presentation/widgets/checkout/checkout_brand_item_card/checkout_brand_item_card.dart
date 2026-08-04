@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
@@ -25,7 +26,7 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart' as easy_locale;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -21,7 +22,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
 
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -69,7 +70,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
   }
 
   /// Product image with rank badge, discount circle and feature tags.
-  Widget _imageSection(ColorScheme colors) {
+  Widget _imageSection(AppColorScheme colors) {
     return Stack(
       children: [
         AppCachedNetworkImage(
@@ -157,7 +158,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
     );
   }
 
-  Widget _featureTag(ColorScheme colors, String label) {
+  Widget _featureTag(AppColorScheme colors, String label) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -175,7 +176,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
   }
 
   /// Brand + product name on the start side, current/previous price on the end.
-  Widget _titleAndPriceSection(ColorScheme colors) {
+  Widget _titleAndPriceSection(AppColorScheme colors) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,7 +216,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
   }
 
   /// Rating, review count and units-sold metadata.
-  Widget _ratingRow(ColorScheme colors) {
+  Widget _ratingRow(AppColorScheme colors) {
     return Row(
       children: [
         Assets.media.images.svg.starRate.svg(

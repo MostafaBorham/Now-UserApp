@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/cards/most_popular_top1_item_card.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/most_popular/cards/most_popular_top2_item_card.dart';
 
@@ -9,7 +10,7 @@ class Top3MostPopularView extends StatelessWidget {
   final String categoryName;
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,

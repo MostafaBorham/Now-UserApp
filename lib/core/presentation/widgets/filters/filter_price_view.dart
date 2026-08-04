@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -43,7 +44,7 @@ class _FilterPriceViewState extends State<FilterPriceView> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final OutlineInputBorder limitFieldBorder = OutlineInputBorder(
       borderRadius: AppBorderRadius.brCircular8,
       borderSide: BorderSide(color: colors.tertiaryFixedDim),

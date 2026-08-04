@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class ExpandableText extends StatefulWidget {
   const ExpandableText({
@@ -23,7 +24,7 @@ class _ExpandableTextState extends State<ExpandableText> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final bool shouldTrim =
         widget.text.length > widget.maxCharacters && !_expanded;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 /// A value selector shaped like [AppTabBar]: a rounded grey track with a
@@ -103,7 +104,7 @@ class _SegmentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final Color labelColor = isSelected
         ? (selectedLabelColor ?? colors.onPrimary)
         : unselectedLabelColor;

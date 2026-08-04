@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -16,7 +17,7 @@ class AddPaymentCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Scaffold(
       body: AppWavedView(
         body: SingleChildScrollView(
@@ -102,7 +103,7 @@ class MultiRadioTile<T> extends StatelessWidget {
     this.groupValue,
   });
 
-  final ColorScheme colors;
+  final AppColorScheme colors;
   final ValueChanged<T?> onSelected;
   final List<PaymentMethodItem<T>> items;
   final T? groupValue;

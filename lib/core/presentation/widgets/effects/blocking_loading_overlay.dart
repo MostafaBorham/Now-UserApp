@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Wraps [child] and, while [isLoading] is true, covers it with a translucent
 /// barrier holding a centered progress indicator.
@@ -21,7 +22,7 @@ class BlockingLoadingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
 
     return Stack(
       children: [

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -38,7 +39,7 @@ class _CategoryStoresFilterViewState extends State<CategoryStoresFilterView> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(

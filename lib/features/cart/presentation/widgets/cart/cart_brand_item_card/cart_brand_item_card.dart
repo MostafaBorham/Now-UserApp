@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_products_images_list_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -27,7 +28,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final CartVendorPricingModel pricing = widget.cartVendor.pricing;
     return Container(
       width: double.infinity,

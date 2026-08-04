@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class AppRefreshIndicator extends StatelessWidget {
   const AppRefreshIndicator({
@@ -10,7 +11,7 @@ class AppRefreshIndicator extends StatelessWidget {
   final RefreshCallback onRefresh;
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return RefreshIndicator(
       onRefresh: onRefresh,
       color: colors.primary,

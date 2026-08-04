@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -42,7 +43,7 @@ class _AppLanguageToggleWidgetState extends State<AppLanguageToggleWidget> {
   @override
   Widget build(BuildContext context) {
     final bool isEnglish = _selectedLanguage == AppLanguage.en;
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final borderRadius = BorderRadius.circular(999);
 
     return Directionality(
@@ -139,7 +140,7 @@ class _LanguageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: InkWell(

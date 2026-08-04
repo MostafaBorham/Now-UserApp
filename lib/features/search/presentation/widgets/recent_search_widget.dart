@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
@@ -51,7 +52,7 @@ class _RecentSearchWidgetState extends State<RecentSearchWidget> {
   @override
   Widget build(BuildContext context) {
     if (_keywords.isEmpty) return const SizedBox.shrink();
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

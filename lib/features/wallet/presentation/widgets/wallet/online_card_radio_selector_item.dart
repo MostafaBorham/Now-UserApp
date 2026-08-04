@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
 import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -16,7 +17,7 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
   final bool isSelected;
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Material(
       color: Colors.transparent,
       child: AnimatedContainer(

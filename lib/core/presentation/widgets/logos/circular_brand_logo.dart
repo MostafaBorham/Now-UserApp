@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 class CircularBrandLogo extends StatelessWidget {
@@ -18,7 +19,7 @@ class CircularBrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Material(
       elevation: elevation!,
       shape: CircleBorder(),

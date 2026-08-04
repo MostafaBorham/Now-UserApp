@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -98,7 +99,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
           () => _quantity = widget.product?.quantity ?? widget.initialQuantity,
         );
 
-        final ColorScheme colors = Theme.of(context).colorScheme;
+        final AppColorScheme colors = context.colors;
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
@@ -165,7 +166,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     final ProductModel? product = widget.product;
 
     final int? productId = product?.productId;

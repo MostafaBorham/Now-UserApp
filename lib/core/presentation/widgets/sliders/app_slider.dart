@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_controller.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -14,7 +15,7 @@ class AppSlider extends ConsumerWidget {
   final HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return sliderItems.isEmpty? const SizedBox.shrink() : Column(
       spacing: 20,
       children: [

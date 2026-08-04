@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Paints the app's shimmer loading effect over [child], masked to the exact
@@ -17,7 +18,7 @@ class AppShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!enabled) return child;
 
-    final colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
 
     return Shimmer.fromColors(
       baseColor: colors.onSurface.withValues(alpha: 0.6),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 /// Skeleton placeholder for the checkout screen's store cards, mirroring a
@@ -66,7 +67,7 @@ class InvoiceSummaryShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return _ShimmerCard(
       padding: const EdgeInsets.all(16),
       color: colors.onSurface.withValues(alpha: 0.2),
@@ -114,7 +115,7 @@ class _ShimmerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Container(
       width: double.infinity,
       padding: padding,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class OverlayOpacityWidget extends StatelessWidget {
   const OverlayOpacityWidget({
@@ -14,7 +15,7 @@ class OverlayOpacityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return IgnorePointer(
       ignoring: disabled,
       child: Stack(

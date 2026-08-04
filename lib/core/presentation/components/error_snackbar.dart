@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 /// App-wide error snackbar.
@@ -15,7 +16,7 @@ class ErrorSnackBar {
   /// Shows the error snackbar on the nearest [ScaffoldMessenger], replacing any
   /// snackbar currently on screen.
   static void show(BuildContext context, String message) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -25,7 +26,7 @@ class ErrorSnackBar {
   /// Builds the styled [SnackBar]. Exposed for callers that need the raw
   /// snackbar (e.g. their own [ScaffoldMessenger] handling); most callers should
   /// use [show].
-  static SnackBar _build(ColorScheme colors, String message) {
+  static SnackBar _build(AppColorScheme colors, String message) {
     return SnackBar(
       content: Text(
         message.tr(),

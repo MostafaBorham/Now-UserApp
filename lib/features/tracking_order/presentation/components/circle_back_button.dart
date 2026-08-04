@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
@@ -14,7 +15,7 @@ class CircleBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return InkWell(
       borderRadius: BorderRadius.circular(100),
       onTap: onTap ?? () => context.pop(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -15,7 +16,7 @@ class OrderConfirmedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     void goToTracking() =>
         context.pushNamed(AppRoutes.trackOrderScreen);
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

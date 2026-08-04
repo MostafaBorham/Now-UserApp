@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class AppArrowSlider extends StatefulWidget {
   const AppArrowSlider({
@@ -29,7 +30,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
+    final AppColorScheme colors = context.colors;
     return Column(
       spacing: 20,
       children: [
