@@ -13,11 +13,29 @@ import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.
 /// Lists the signed-in user's orders. All the paging behaviour — first-page
 /// shimmer, error, empty state, infinite scroll and pull-to-refresh — lives in
 /// [PaginatedView]; this screen only says what one order looks like.
-class MyOrderScreen extends ConsumerWidget {
+class MyOrderScreen extends ConsumerStatefulWidget {
   const MyOrderScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyOrderScreen> createState() => _MyOrderScreenState();
+}
+
+class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Load the orders the first time this screen opens (cache-first, so an
+    // already-cached or already-loaded list needs no request); onRefresh/retry
+    // below still force a fresh API fetch.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!ref.read(getMyOrdersProvider).hasValue) {
+        ref.read(getMyOrdersProvider.notifier).loadOrders();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final GetMyOrdersViewModel viewModel = ref.read(
       getMyOrdersProvider.notifier,
     );

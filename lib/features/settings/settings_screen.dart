@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
 import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
@@ -53,6 +54,11 @@ class SettingsScreen extends ConsumerWidget {
             // `getCartProvider` and `checkoutProvider`).
             ref.invalidate(getCartProvider);
             ref.invalidate(checkoutProvider);
+            // Orders are also app-lifetime and cache-backed: clear the Hive
+            // cache first, then reset the provider, so the next user never sees
+            // the previous user's orders.
+            ref.read(getMyOrdersProvider.notifier).clearCache();
+            ref.invalidate(getMyOrdersProvider);
             context.goNamed(AppRoutes.onBoardingScreen);
           }
         },

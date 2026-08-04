@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -84,15 +85,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     }
   }
 
-  /// Once the logo animation ends, request the location permission and, when the
-  /// user has answered, move on to the next screen.
+  /// Once the logo animation ends, warm up the app and, when done, move on to
+  /// the next screen.
   ///
-  /// Backend-backed dependencies (addresses, cart) are **not** fetched here:
-  /// each is loaded lazily the first time a screen that needs it opens (see
-  /// `EnsureLoadedRefX.ensureLoaded`), so splash no longer waits on them.
+  /// - Orders are prefetched **cache-first**: [GetMyOrdersViewModel.loadOrders]
+  ///   reads Hive and only hits the API when nothing is cached, so a warm cache
+  ///   costs no request here.
+  /// - Cart and addresses are **not** fetched here — each is loaded lazily the
+  ///   first time a screen that needs it opens.
   Future<void> _initAppDependencies() async {
     setState(() => showLoader = true);
-    await LocationManager.requestPermissions().whenComplete(() {
+    await Future.wait(<Future<void>>[
+      LocationManager.requestPermissions(),
+      ref.read(getMyOrdersProvider.notifier).loadOrders(),
+    ]).whenComplete(() {
       if (mounted) {
         context.goNamed(AppRoutes.onBoardingScreen);
       }

@@ -10,4 +10,8 @@ abstract class HiveKeys {
   /// Key inside [HiveBoxes.recentAddressSearches] holding the `List<String>` of
   /// recent address search keywords (most-recent first).
   static const String recentAddressSearchKeywords = 'address_keywords';
+
+  /// Key inside [HiveBoxes.myOrders] holding the cached orders as a JSON string
+  /// (`{'orders': [...], 'pagination': {...}}` — the raw API payload).
+  static const String myOrders = 'orders';
 }
