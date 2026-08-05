@@ -21,7 +21,6 @@ class HiveManager {
     await Hive.initFlutter();
     await Hive.openBox<dynamic>(HiveBoxes.recentSearches);
     await Hive.openBox<dynamic>(HiveBoxes.recentAddressSearches);
-    await Hive.openBox<dynamic>(HiveBoxes.myOrders);
     _initialized = true;
   }
 

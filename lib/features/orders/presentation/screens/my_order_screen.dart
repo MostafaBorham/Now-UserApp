@@ -24,9 +24,9 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   void initState() {
     super.initState();
-    // Load the orders the first time this screen opens (cache-first, so an
-    // already-cached or already-loaded list needs no request); onRefresh/retry
-    // below still force a fresh API fetch.
+    // Load the orders the first time this screen opens. The splash usually
+    // prefetched them already, so this only fetches when nothing is loaded yet;
+    // onRefresh/retry below always force a fresh server fetch.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyOrdersProvider).hasValue) {
         ref.read(getMyOrdersProvider.notifier).loadOrders();

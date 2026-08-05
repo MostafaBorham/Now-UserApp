@@ -49,16 +49,6 @@ class SettingsScreen extends ConsumerWidget {
         // Logged out: reset the stack so onboarding is the only screen left.
         data: (dynamic value) {
           if (value != null) {
-            // Tear down the app-lifetime cart and checkout state so the next
-            // user starts with a fresh cart and no leftover order draft (see
-            // `getCartProvider` and `checkoutProvider`).
-            ref.invalidate(getCartProvider);
-            ref.invalidate(checkoutProvider);
-            // Orders are also app-lifetime and cache-backed: clear the Hive
-            // cache first, then reset the provider, so the next user never sees
-            // the previous user's orders.
-            ref.read(getMyOrdersProvider.notifier).clearCache();
-            ref.invalidate(getMyOrdersProvider);
             context.goNamed(AppRoutes.onBoardingScreen);
           }
         },
