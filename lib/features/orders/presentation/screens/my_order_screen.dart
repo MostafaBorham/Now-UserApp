@@ -22,9 +22,14 @@ class MyOrderScreen extends ConsumerStatefulWidget {
 }
 
 class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
+  final ScrollController _scrollController = ScrollController();
+  late final GetMyOrdersViewModel viewModel;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+    viewModel = ref.read(getMyOrdersProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyOrdersProvider).hasValue) {
         ref.read(getMyOrdersProvider.notifier).getOrders();
@@ -33,10 +38,23 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  /// Loads the next page once the user scrolls within 200px of the bottom.
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      viewModel.getOrders();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final GetMyOrdersViewModel viewModel = ref.read(
-      getMyOrdersProvider.notifier,
-    );
     final AsyncValue<PaginationModel<OrderModel>> ordersState = ref.watch(
       getMyOrdersProvider,
     );
@@ -64,16 +82,38 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
             onRefresh: viewModel.getOrders,
             child: items.isEmpty
                 ? const NoItemsWidget(isScrollable: true)
-                : ListView.separated(
-                    padding: const EdgeInsets.all(3),
-                    itemCount: items.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const SizedBox(height: 20),
-                    itemBuilder: (BuildContext context, int index) =>
-                        AspectRatio(
-                          aspectRatio: 2,
-                          child: OrderListItem(orderModel: items[index]),
-                        ),
+                : ValueListenableBuilder<AsyncValue<bool>>(
+                    valueListenable: viewModel.loadMoreState,
+                    builder:
+                        (
+                          BuildContext context,
+                          AsyncValue<bool> value,
+                          Widget? child,
+                        ) {
+                      return Column(
+                        spacing: 10,
+                        children: [
+                          Expanded(
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(3),
+                              itemCount: items.length,
+                              separatorBuilder: (BuildContext context, int index) =>
+                              const SizedBox(height: 20),
+                              itemBuilder: (BuildContext context, int index) {
+                                return AspectRatio(
+                                  aspectRatio: 2,
+                                  child: OrderListItem(orderModel: items[index]),
+                                );
+                              },
+                            ),
+                          ),
+                          value.isLoading? Column(
+                            children: List.generate(4, (index) => OrderListItemShimmer(),),
+                          ) : SizedBox.shrink()
+                        ],
+                      );
+                        },
                   ),
           );
         },
