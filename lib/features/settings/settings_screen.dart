@@ -12,10 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custo
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
-import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
-import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
-import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 
 import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
@@ -77,7 +74,9 @@ class SettingsScreen extends ConsumerWidget {
     });
 
     final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
-    final bool isUser = ref.watch(sessionTypeProvider) == SessionType.user;
+    final bool isUser =
+        ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
+        SessionType.user;
 
     return Scaffold(
       backgroundColor: AppColors.background,

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
-import 'package:nowdelivery_user_app/features/auth/viewmodel/session_type_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 
 /// Provider for the "continue" button on the OTP verification screen.
 ///
@@ -41,10 +41,12 @@ class VerifyOtpViewModel extends StateNotifier<AsyncValue<UserModel?>> {
         state = AsyncValue.error(failure.message, StackTrace.current);
       },
       (UserModel user) async {
-        // The auth token now replaces the guest token, so the session type has
-        // changed — refresh it before exposing the logged-in user, so anything
-        // watching the session type sees the new value.
-        await _ref.read(sessionTypeProvider.notifier).getSessionType();
+        // The auth token now replaces the guest token, so the session flipped
+        // to a logged-in user. Push it through the orchestrator before exposing
+        // the user: it refreshes the session type (so anything watching it sees
+        // the new value) and, off the guest→user change, fires every
+        // session-dependent request (getMyOrders, …) on our behalf.
+        await _ref.read(authSessionProvider.notifier).resolveSession();
 
         if (!mounted) return;
 
