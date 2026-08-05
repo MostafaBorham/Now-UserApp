@@ -1,18 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
-/// Lists the signed-in user's orders. All the paging behaviour — first-page
-/// shimmer, error, empty state, infinite scroll and pull-to-refresh — lives in
-/// [PaginatedView]; this screen only says what one order looks like.
+/// Lists the signed-in user's orders in a single, non-paged list: a first-load
+/// shimmer, an error state with retry, an empty state and pull-to-refresh.
 class MyOrderScreen extends ConsumerStatefulWidget {
   const MyOrderScreen({super.key});
 
@@ -24,9 +25,6 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   @override
   void initState() {
     super.initState();
-    // Load the orders the first time this screen opens. The splash usually
-    // prefetched them already, so this only fetches when nothing is loaded yet;
-    // onRefresh/retry below always force a fresh server fetch.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyOrdersProvider).hasValue) {
         ref.read(getMyOrdersProvider.notifier).loadOrders();
@@ -39,32 +37,47 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     final GetMyOrdersViewModel viewModel = ref.read(
       getMyOrdersProvider.notifier,
     );
+    final AsyncValue<PaginationModel<OrderModel>> ordersState = ref.watch(
+      getMyOrdersProvider,
+    );
 
     return AppWavedView(
       appBarTitle: LangKeys.myOrdersKey.tr(),
-      body: PaginatedView<OrderModel>(
-        provider: getMyOrdersProvider,
-        onRefresh: viewModel.loadFirstPage,
-        onLoadNextPage: viewModel.loadNextPage,
-        layout: const PaginatedListLayout(
-          padding: EdgeInsets.all(3),
-          separatorBuilder: _separatorBuilder,
+      body: ordersState.when(
+        loading: () => ListView.separated(
+          padding: const EdgeInsets.all(3),
+          itemCount: 4,
+          separatorBuilder: (BuildContext context, int index) =>
+              const SizedBox(height: 20),
+          itemBuilder: (BuildContext context, int index) =>
+              const AspectRatio(aspectRatio: 2, child: OrderListItemShimmer()),
         ),
-        // Fills the list while the first page loads and trails it while the
-        // next page does, so the skeleton always matches the real cards.
-        placeholderBuilder: (BuildContext context) => const AspectRatio(
-          aspectRatio: 2,
-          child: OrderListItemShimmer(),
-        ),
-        itemBuilder: (BuildContext context, OrderModel order, int index) =>
-            AspectRatio(
-              aspectRatio: 2,
-              child: OrderListItem(orderModel: order),
+        error: (Object error, StackTrace stackTrace) =>
+            ServerConnectionErrorWidget(
+              message: error.toString(),
+              onRetry: viewModel.loadFirstPage,
             ),
+        data: (PaginationModel<OrderModel> orders) {
+          final List<OrderModel> items = orders.data;
+
+          return AppRefreshIndicator(
+            onRefresh: viewModel.loadFirstPage,
+            child: items.isEmpty
+                ? const NoItemsWidget(isScrollable: true)
+                : ListView.separated(
+                    padding: const EdgeInsets.all(3),
+                    itemCount: items.length,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const SizedBox(height: 20),
+                    itemBuilder: (BuildContext context, int index) =>
+                        AspectRatio(
+                          aspectRatio: 2,
+                          child: OrderListItem(orderModel: items[index]),
+                        ),
+                  ),
+          );
+        },
       ),
     );
   }
-
-  static Widget _separatorBuilder(BuildContext context, int index) =>
-      const SizedBox(height: 20);
 }
