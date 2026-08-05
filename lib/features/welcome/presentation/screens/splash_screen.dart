@@ -18,12 +18,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _logoController;
 
-  bool showLoader = false;
-
-  /// Guards against a second navigation once the dependencies are ready (the
-  /// listener could otherwise fire again on a later state change).
-  bool _navigated = false;
-
   @override
   void initState() {
     super.initState();
@@ -35,18 +29,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // The circular loader below is driven by the orchestrator: while it fetches
-    // the logged-in user's dependencies the state is `loading`, and the moment
-    // they all settle (or there are none, for a guest) it turns `ready` — which
-    // is our cue to leave for onboarding.
+    // Leave for onboarding the moment the orchestrator reports its
+    // dependencies are ready (immediately for a guest, once every request has
+    // settled for a logged-in user).
     ref.listen(authSessionProvider.select((s) => s.dependenciesStatus), (
       AppDependenciesStatus? previous,
       AppDependenciesStatus next,
     ) {
       if (next == AppDependenciesStatus.ready) {
-        _goToOnboarding();
+        context.goNamed(AppRoutes.onBoardingScreen);
       }
     });
+
+    // The loader is bound straight to the orchestrator's state: it shows only
+    // while the logged-in user's dependencies are being fetched — no local flag.
+    final bool isLoadingDependencies = ref.watch(
+      authSessionProvider.select(
+        (s) => s.dependenciesStatus == AppDependenciesStatus.loading,
+      ),
+    );
 
     return Scaffold(
       body: Container(
@@ -73,7 +74,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 },
               ),
             ),
-            if (showLoader)
+            if (isLoadingDependencies)
               Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.sizeOf(context).width * 0.6,
@@ -103,28 +104,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     }
   }
 
-  /// Once the logo animation ends, show the loader and warm the app up: request
-  /// the (splash-scoped) location permissions, then hand off to the session
-  /// orchestrator — this is the first time [AuthSessionViewModel.resolveSession]
-  /// is needed, so we trigger it here. We do **not** await it: navigation is
-  /// driven by the `ready` status the loader is listening to in [build], which
-  /// lands once every session-dependent request has settled (immediately, for a
-  /// guest, since it has none).
   Future<void> _warmUp() async {
-    setState(() => showLoader = true);
-
     await LocationManager.requestPermissions();
 
     if (!mounted) return;
 
     ref.read(authSessionProvider.notifier).resolveSession();
-  }
-
-  /// Leaves for onboarding exactly once, when the orchestrator reports its
-  /// dependencies are ready.
-  void _goToOnboarding() {
-    if (_navigated || !mounted) return;
-    _navigated = true;
-    context.goNamed(AppRoutes.onBoardingScreen);
   }
 }
