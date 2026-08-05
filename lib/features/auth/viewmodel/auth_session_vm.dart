@@ -123,7 +123,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// to the wait list here rather than firing them from a screen.
   Future<void> _loadUserDependencies() async {
     await Future.wait(<Future<void>>[
-      _ref.read(getMyOrdersProvider.notifier).loadOrders(),
+      _ref.read(getMyOrdersProvider.notifier).getOrders(),
     ]);
 
     if (!mounted) return;

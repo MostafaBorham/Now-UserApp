@@ -27,7 +27,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyOrdersProvider).hasValue) {
-        ref.read(getMyOrdersProvider.notifier).loadOrders();
+        ref.read(getMyOrdersProvider.notifier).getOrders();
       }
     });
   }
@@ -55,13 +55,13 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         error: (Object error, StackTrace stackTrace) =>
             ServerConnectionErrorWidget(
               message: error.toString(),
-              onRetry: viewModel.loadFirstPage,
+              onRetry: viewModel.getOrders,
             ),
         data: (PaginationModel<OrderModel> orders) {
           final List<OrderModel> items = orders.data;
 
           return AppRefreshIndicator(
-            onRefresh: viewModel.loadFirstPage,
+            onRefresh: viewModel.getOrders,
             child: items.isEmpty
                 ? const NoItemsWidget(isScrollable: true)
                 : ListView.separated(
