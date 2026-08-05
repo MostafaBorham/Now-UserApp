@@ -21,68 +21,76 @@ class GetMyOrdersViewModel
   final ValueNotifier<AsyncValue<bool>> loadMoreState =
       ValueNotifier<AsyncValue<bool>>(const AsyncValue<bool>.data(true));
 
-  /// Loads orders one page at a time. Pass [refresh] `true` (e.g. from
-  /// pull-to-refresh) to discard the current pages and reload from page 1
-  /// regardless of the pagination state.
-  Future<void> getOrders({bool refresh = false}) async {
-    final PaginationModel<OrderModel>? currentPage = refresh
-        ? null
-        : state.valueOrNull;
+  /// Loads the first page (always page 1) and drives the full-screen [state].
+  ///
+  /// Used on screen open, pull-to-refresh and retry-from-error — every case
+  /// that should reload the list from scratch. Always starts from a plain
+  /// loading state (shimmer) and ends in either data or error; it never touches
+  /// pagination. Subsequent pages are the job of [loadMore].
+  Future<void> getOrders() async {
+    state = const AsyncValue<PaginationModel<OrderModel>>.loading();
 
-    final int nextPage;
-    if (currentPage == null) {
-      nextPage = 1;
-    } else if (currentPage.hasMore) {
-      nextPage = currentPage.currentPage + 1;
-    } else {
-      return;
-    }
-
-    // The first page owns the full-screen loading/error via [state]; every
-    // subsequent page reports its progress through [loadMoreState] instead.
-    final bool isFirstPage = currentPage == null;
-
-    if (isFirstPage) {
-      // A first-page load (initial, retry-from-error, or refresh) never has a
-      // data value to preserve, so use a plain loading state. Wrapping it with
-      // [copyWithPrevious] would carry over a previous error and make [when]
-      // treat it as "refreshing" (skipLoadingOnRefresh), suppressing the
-      // shimmer and jumping error → list with no loading state in between.
-      state = const AsyncValue<PaginationModel<OrderModel>>.loading();
-    } else {
-      loadMoreState.value = const AsyncValue<bool>.loading();
-    }
-
-    final Either<Failure, PaginationModel<OrderModel>> result = await _repo
-        .getMyOrders(page: nextPage);
+    final Either<Failure, PaginationModel<OrderModel>> result =
+        await _fetchPage(1);
 
     if (!mounted) return;
 
     result.fold(
       (Failure failure) {
-        if (isFirstPage) {
-          // Plain error (no [copyWithPrevious]): the previous state is a plain
-          // loading, and copying it over would carry the isLoading flag onto
-          // the error, keeping [when] stuck on the shimmer instead of showing
-          // the error state.
-          state = AsyncValue<PaginationModel<OrderModel>>.error(
-            failure.message,
-            StackTrace.current,
-          );
-        } else {
-          loadMoreState.value = AsyncValue<bool>.error(
-            failure.message,
-            StackTrace.current,
-          );
-        }
+        state = AsyncValue<PaginationModel<OrderModel>>.error(
+          failure.message,
+          StackTrace.current,
+        );
+      },
+      (PaginationModel<OrderModel> firstPage) {
+        state = AsyncValue<PaginationModel<OrderModel>>.data(firstPage);
+        loadMoreState.value = AsyncValue<bool>.data(firstPage.hasMore);
+      },
+    );
+  }
+
+  /// Loads the next page and appends it to the list, reporting its progress
+  /// through [loadMoreState] (never through [state], so the visible list is
+  /// never replaced by a shimmer). Called when the list reaches its end.
+  ///
+  /// No-ops when there is no first page yet, when there are no more pages, or
+  /// when a load-more request is already in flight.
+  Future<void> loadMore() async {
+    final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
+
+    if (currentPage == null ||
+        !currentPage.hasMore ||
+        loadMoreState.value.isLoading) {
+      return;
+    }
+
+    loadMoreState.value = const AsyncValue<bool>.loading();
+
+    final Either<Failure, PaginationModel<OrderModel>> result =
+        await _fetchPage(currentPage.currentPage + 1);
+
+    if (!mounted) return;
+
+    result.fold(
+      (Failure failure) {
+        loadMoreState.value = AsyncValue<bool>.error(
+          failure.message,
+          StackTrace.current,
+        );
       },
       (PaginationModel<OrderModel> newPage) {
         state = AsyncValue<PaginationModel<OrderModel>>.data(
-          isFirstPage ? newPage : currentPage.appendPage(newPage),
+          currentPage.appendPage(newPage),
         );
         loadMoreState.value = AsyncValue<bool>.data(newPage.hasMore);
       },
     );
+  }
+
+  /// Shared single-page request against the repo. Both [getOrders] and
+  /// [loadMore] go through here so the actual API call lives in one place.
+  Future<Either<Failure, PaginationModel<OrderModel>>> _fetchPage(int page) {
+    return _repo.getMyOrders(page: page);
   }
 
   @override

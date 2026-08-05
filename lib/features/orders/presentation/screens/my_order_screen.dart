@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -30,13 +31,6 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     viewModel = ref.read(getMyOrdersProvider.notifier);
-    // Kick off the first load synchronously (not in a post-frame callback) so
-    // [getOrders] flips the state to loading before the first frame is built.
-    // Otherwise a stale error state would flash for one frame before the
-    // shimmer appears.
-    if (!ref.read(getMyOrdersProvider).hasValue) {
-      viewModel.getOrders();
-    }
   }
 
   @override
@@ -51,7 +45,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      viewModel.getOrders();
+      viewModel.loadMore();
     }
   }
 
@@ -64,39 +58,51 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     return AppWavedView(
       appBarTitle: LangKeys.myOrdersKey.tr(),
       body: ordersState.when(
-        loading: () => ListView.separated(
-          padding: const EdgeInsets.all(3),
-          itemCount: 4,
-          separatorBuilder: (BuildContext context, int index) =>
-              const SizedBox(height: 20),
-          itemBuilder: (BuildContext context, int index) =>
-              const AspectRatio(aspectRatio: 2, child: OrderListItemShimmer()),
-        ),
+        loading: () => OrderListViewShimmer(),
         error: (Object error, StackTrace stackTrace) =>
             ServerConnectionErrorWidget(
               message: error.toString(),
-              onRetry: () => viewModel.getOrders(refresh: true),
+              onRetry: viewModel.getOrders,
             ),
         data: (PaginationModel<OrderModel> orders) {
           final List<OrderModel> items = orders.data;
 
           return AppRefreshIndicator(
-            onRefresh: () => viewModel.getOrders(refresh: true),
+            onRefresh: viewModel.getOrders,
             child: items.isEmpty
                 ? const NoItemsWidget(isScrollable: true)
-                : ListView.separated(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(3),
-                    itemCount: items.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const SizedBox(height: 20),
-                    itemBuilder: (BuildContext context, int index) {
-                      return AspectRatio(
-                        aspectRatio: 2,
-                        child: OrderListItem(orderModel: items[index]),
-                      );
-                    },
+                : ValueListenableBuilder<AsyncValue<bool>>(
+                    valueListenable: viewModel.loadMoreState,
+                    builder:
+                        (
+                          BuildContext context,
+                          AsyncValue<bool> value,
+                          Widget? child,
+                        ) {
+                          final loadingItemsCount = value.isLoading ? 4 : 0;
+                          return ListView.separated(
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(3),
+                            itemCount: items.length + loadingItemsCount,
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const SizedBox(height: 20),
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index > items.length) {
+                                return AspectRatio(
+                                  aspectRatio: 2,
+
+                                  child: OrderListItemShimmer(),
+                                );
+                              }
+                              return AspectRatio(
+                                aspectRatio: 2,
+                                child: OrderListItem(orderModel: items[index]),
+                              );
+                            },
+                          );
+                        },
                   ),
           );
         },
