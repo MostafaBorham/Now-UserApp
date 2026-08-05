@@ -244,6 +244,8 @@ abstract class LangKeys {
   static const String saveRecentSearchesFailedKey = 'saveRecentSearchesFailed';
   static const String clearRecentSearchesFailedKey =
       'clearRecentSearchesFailed';
+  static const String readCachedOrdersFailedKey = 'readCachedOrdersFailed';
+  static const String ordersCacheStateFailedKey = 'ordersCacheStateFailed';
   static const String appUnderMaintenanceKey = 'appUnderMaintenance';
   static const String appUnderMaintenanceSubtitleKey =
       'appUnderMaintenanceSubtitle';

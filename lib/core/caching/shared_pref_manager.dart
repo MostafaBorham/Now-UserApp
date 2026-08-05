@@ -31,6 +31,14 @@ class SharedPrefManager {
 
   static String? getString(String key) => _instance.getString(key);
 
+  /// Returns `true` when the value was persisted successfully.
+  static Future<bool> setBool(String key, bool value) =>
+      _instance.setBool(key, value);
+
+  /// The stored flag, or `null` when nothing has been stored under [key] yet —
+  /// so callers pick their own default instead of guessing from `false`.
+  static bool? getBool(String key) => _instance.getBool(key);
+
   static bool containsKey(String key) => _instance.containsKey(key);
 
   /// Returns `true` when the value was removed successfully.

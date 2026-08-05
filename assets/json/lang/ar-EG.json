@@ -191,6 +191,8 @@
   "readRecentSearchesFailed": "فشل تحميل عمليات البحث الأخيرة، يرجى المحاولة مرة أخرى.",
   "saveRecentSearchesFailed": "فشل حفظ عمليات البحث الأخيرة، يرجى المحاولة مرة أخرى.",
   "clearRecentSearchesFailed": "فشل مسح عمليات البحث الأخيرة، يرجى المحاولة مرة أخرى.",
+  "readCachedOrdersFailed": "فشل تحميل طلباتك المحفوظة، يرجى المحاولة مرة أخرى.",
+  "ordersCacheStateFailed": "فشل حفظ طلباتك للاستخدام بدون إنترنت، يرجى المحاولة مرة أخرى.",
   "appUnderMaintenance": "التطبيق قيد الصيانة",
   "appUnderMaintenanceSubtitle": "نعمل على تحسين تجربتك. سنعود قريبًا. شكرًا لصبرك.",
   "notifyMeWhenDone": "أبلغني عند الانتهاء",

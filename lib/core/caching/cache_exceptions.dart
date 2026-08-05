@@ -24,6 +24,11 @@ class CacheException implements Exception {
   static const String clearUserSessionFailedMessage =
       LangKeys.clearUserSessionFailedKey;
 
+  /// Message key used when the my-orders cache-freshness flag cannot be read,
+  /// written or cleared.
+  static const String ordersCacheStateFailedMessage =
+      LangKeys.ordersCacheStateFailedKey;
+
   final String message;
 
   const CacheException(this.message);

@@ -189,6 +189,8 @@
   "readRecentSearchesFailed": "Failed to load recent searches, please try again.",
   "saveRecentSearchesFailed": "Failed to save recent searches, please try again.",
   "clearRecentSearchesFailed": "Failed to clear recent searches, please try again.",
+  "readCachedOrdersFailed": "Failed to load your saved orders, please try again.",
+  "ordersCacheStateFailed": "Failed to save your orders for offline use, please try again.",
   "appUnderMaintenance": "App is under maintenance",
   "appUnderMaintenanceSubtitle": "We’re working to improve your experience. We’ll be back soon. Thank you for your patience.",
   "notifyMeWhenDone": "Notify me when it’s done",
