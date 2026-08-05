@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -31,14 +31,25 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     viewModel = ref.read(getMyOrdersProvider.notifier);
+    viewModel.loadMoreState.addListener(_onLoadMoreStateChanged);
   }
 
   @override
   void dispose() {
+    viewModel.loadMoreState.removeListener(_onLoadMoreStateChanged);
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
+  }
+
+  /// Surfaces a load-more failure as an error snackbar, so a paging error is
+  /// shown without replacing the already-visible list with a full-screen error.
+  void _onLoadMoreStateChanged() {
+    final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
+    if (loadMoreState.hasError && mounted) {
+      ErrorSnackBar.show(context, loadMoreState.error.toString());
+    }
   }
 
   /// Loads the next page once the user scrolls within 200px of the bottom.
