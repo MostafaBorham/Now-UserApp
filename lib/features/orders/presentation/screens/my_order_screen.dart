@@ -73,13 +73,13 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         error: (Object error, StackTrace stackTrace) =>
             ServerConnectionErrorWidget(
               message: error.toString(),
-              onRetry: viewModel.getOrders,
+              onRetry: () => viewModel.getOrders(refresh: true),
             ),
         data: (PaginationModel<OrderModel> orders) {
           final List<OrderModel> items = orders.data;
 
           return AppRefreshIndicator(
-            onRefresh: viewModel.getOrders,
+            onRefresh: () => viewModel.getOrders(refresh: true),
             child: items.isEmpty
                 ? const NoItemsWidget(isScrollable: true)
                 : ListView.separated(

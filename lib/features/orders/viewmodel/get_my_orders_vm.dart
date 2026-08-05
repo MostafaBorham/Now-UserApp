@@ -21,8 +21,13 @@ class GetMyOrdersViewModel
   final ValueNotifier<AsyncValue<bool>> loadMoreState =
       ValueNotifier<AsyncValue<bool>>(const AsyncValue<bool>.data(true));
 
-  Future<void> getOrders() async {
-    final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
+  /// Loads orders one page at a time. Pass [refresh] `true` (e.g. from
+  /// pull-to-refresh) to discard the current pages and reload from page 1
+  /// regardless of the pagination state.
+  Future<void> getOrders({bool refresh = false}) async {
+    final PaginationModel<OrderModel>? currentPage = refresh
+        ? null
+        : state.valueOrNull;
 
     final int nextPage;
     if (currentPage == null) {
@@ -38,8 +43,12 @@ class GetMyOrdersViewModel
     final bool isFirstPage = currentPage == null;
 
     if (isFirstPage) {
-      state = const AsyncValue<PaginationModel<OrderModel>>.loading()
-          .copyWithPrevious(state);
+      // A refresh wants the full loading state (shimmer), so drop the previous
+      // value; a normal first load keeps it via [copyWithPrevious].
+      state = refresh
+          ? const AsyncValue<PaginationModel<OrderModel>>.loading()
+          : const AsyncValue<PaginationModel<OrderModel>>.loading()
+                .copyWithPrevious(state);
     } else {
       loadMoreState.value = const AsyncValue<bool>.loading();
     }
