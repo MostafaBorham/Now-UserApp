@@ -30,11 +30,13 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     viewModel = ref.read(getMyOrdersProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.read(getMyOrdersProvider).hasValue) {
-        ref.read(getMyOrdersProvider.notifier).getOrders();
-      }
-    });
+    // Kick off the first load synchronously (not in a post-frame callback) so
+    // [getOrders] flips the state to loading before the first frame is built.
+    // Otherwise a stale error state would flash for one frame before the
+    // shimmer appears.
+    if (!ref.read(getMyOrdersProvider).hasValue) {
+      viewModel.getOrders();
+    }
   }
 
   @override

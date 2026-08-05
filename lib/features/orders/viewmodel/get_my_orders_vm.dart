@@ -43,12 +43,12 @@ class GetMyOrdersViewModel
     final bool isFirstPage = currentPage == null;
 
     if (isFirstPage) {
-      // A refresh wants the full loading state (shimmer), so drop the previous
-      // value; a normal first load keeps it via [copyWithPrevious].
-      state = refresh
-          ? const AsyncValue<PaginationModel<OrderModel>>.loading()
-          : const AsyncValue<PaginationModel<OrderModel>>.loading()
-                .copyWithPrevious(state);
+      // A first-page load (initial, retry-from-error, or refresh) never has a
+      // data value to preserve, so use a plain loading state. Wrapping it with
+      // [copyWithPrevious] would carry over a previous error and make [when]
+      // treat it as "refreshing" (skipLoadingOnRefresh), suppressing the
+      // shimmer and jumping error → list with no loading state in between.
+      state = const AsyncValue<PaginationModel<OrderModel>>.loading();
     } else {
       loadMoreState.value = const AsyncValue<bool>.loading();
     }
@@ -61,10 +61,14 @@ class GetMyOrdersViewModel
     result.fold(
       (Failure failure) {
         if (isFirstPage) {
+          // Plain error (no [copyWithPrevious]): the previous state is a plain
+          // loading, and copying it over would carry the isLoading flag onto
+          // the error, keeping [when] stuck on the shimmer instead of showing
+          // the error state.
           state = AsyncValue<PaginationModel<OrderModel>>.error(
             failure.message,
             StackTrace.current,
-          ).copyWithPrevious(state);
+          );
         } else {
           loadMoreState.value = AsyncValue<bool>.error(
             failure.message,
