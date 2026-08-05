@@ -78,44 +78,22 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         data: (PaginationModel<OrderModel> orders) {
           final List<OrderModel> items = orders.data;
 
-          return AppRefreshIndicator(
-            onRefresh: viewModel.getOrders,
-            child: items.isEmpty
-                ? const NoItemsWidget(isScrollable: true)
-                : ValueListenableBuilder<AsyncValue<bool>>(
-                    valueListenable: viewModel.loadMoreState,
-                    builder:
-                        (
-                          BuildContext context,
-                          AsyncValue<bool> value,
-                          Widget? child,
-                        ) {
-                      return Column(
-                        spacing: 10,
-                        children: [
-                          Expanded(
-                            child: ListView.separated(
-                              controller: _scrollController,
-                              padding: const EdgeInsets.all(3),
-                              itemCount: items.length,
-                              separatorBuilder: (BuildContext context, int index) =>
-                              const SizedBox(height: 20),
-                              itemBuilder: (BuildContext context, int index) {
-                                return AspectRatio(
-                                  aspectRatio: 2,
-                                  child: OrderListItem(orderModel: items[index]),
-                                );
-                              },
-                            ),
-                          ),
-                          value.isLoading? Column(
-                            children: List.generate(4, (index) => OrderListItemShimmer(),),
-                          ) : SizedBox.shrink()
-                        ],
-                      );
-                        },
-                  ),
-          );
+          return items.isEmpty
+              ? const NoItemsWidget(isScrollable: true)
+              : ListView.separated(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(3),
+                  itemCount: items.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const SizedBox(height: 20),
+                  itemBuilder: (BuildContext context, int index) {
+                    return AspectRatio(
+                      aspectRatio: 2,
+                      child: OrderListItem(orderModel: items[index]),
+                    );
+                  },
+                );
         },
       ),
     );

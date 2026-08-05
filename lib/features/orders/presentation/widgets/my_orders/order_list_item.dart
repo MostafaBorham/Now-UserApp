@@ -57,11 +57,15 @@ class OrderListItem extends ConsumerWidget {
               children: [
                 ClipRRect(
                   borderRadius: AppBorderRadius.brCircular12,
-                  child: AppCachedNetworkImage(
-                    imageUrl: orderModel.vendor.logoUrl ?? '',
+                  child: SizedBox(
                     width: 88,
                     height: 88,
-                    fit: BoxFit.cover,
+                    child: AppCachedNetworkImage(
+                      imageUrl: orderModel.vendor.logoUrl ?? '',
+                      width: 88,
+                      height: 88,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 Column(
