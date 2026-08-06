@@ -112,6 +112,16 @@ abstract class PaginatedViewModel<T>
     final int removed = current.data.length - remaining.length;
     if (removed == 0) return;
 
+    // The visible page emptied out but the server still has more: reload the
+    // first page (a fresh page, replaying the current filters) rather than
+    // showing the empty state. loadFirstPage — not loadNextPage — because a
+    // deletion shifts the server-side page offsets, so asking for "the next
+    // page" would skip the items that moved down into the first one.
+    if (remaining.isEmpty && current.hasMore) {
+      loadFirstPage();
+      return;
+    }
+
     state = AsyncValue<PaginationModel<T>>.data(
       PaginationModel<T>(
         currentPage: current.currentPage,

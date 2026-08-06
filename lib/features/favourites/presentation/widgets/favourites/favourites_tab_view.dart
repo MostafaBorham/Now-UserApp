@@ -8,11 +8,9 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_sort_sheet.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 
 /// The chrome shared by both favourites tabs: an in-place search field, the
@@ -86,7 +84,7 @@ class _FavouritesTabViewState extends ConsumerState<FavouritesTabView> {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (BuildContext context) => _FavouriteSortSheet(
+      builder: (BuildContext context) => FavouriteSortSheet(
         initial: _sort,
         onApply: (FavouriteSortOption option) {
           if (option == _sort) return;
@@ -204,135 +202,6 @@ class _Chip extends StatelessWidget {
             color: selected ? colors.onPrimary : colors.onSecondary,
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Sort sheet — the four orders the favourites endpoint understands, in the
-/// shared filter-sheet chrome. Commits the pick through [onApply] before the
-/// sheet pops itself.
-class _FavouriteSortSheet extends StatefulWidget {
-  const _FavouriteSortSheet({required this.initial, required this.onApply});
-
-  final FavouriteSortOption initial;
-  final ValueChanged<FavouriteSortOption> onApply;
-
-  @override
-  State<_FavouriteSortSheet> createState() => _FavouriteSortSheetState();
-}
-
-class _FavouriteSortSheetState extends State<_FavouriteSortSheet> {
-  late FavouriteSortOption _selected = widget.initial;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-
-    // Mirrors FilterBottomSheet's chrome; the shared widget only takes a flat
-    // list of controls, so the single-select sort list is rendered here.
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          children: <Widget>[
-            FilterHeaderView(onClose: Navigator.of(context).pop),
-            Text(
-              LangKeys.sortOptionsKey.tr(),
-              style: AppTextStyles.style16Medium.copyWith(
-                color: colors.onTertiaryFixed,
-              ),
-            ),
-            ...FavouriteSortOption.values.map(
-              (FavouriteSortOption option) => _SortOptionTile(
-                label: option.label,
-                selected: option == _selected,
-                onTap: () => setState(() => _selected = option),
-              ),
-            ),
-            Row(
-              spacing: 16,
-              children: <Widget>[
-                Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.applyFiltersKey.tr(),
-                    onTap: () {
-                      widget.onApply(_selected);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: UnPrimaryAppButton(
-                    title: LangKeys.resetFilterKey.tr(),
-                    onTap: () => setState(
-                      () => _selected = FavouriteSortOption.defaultOption,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SortOptionTile extends StatelessWidget {
-  const _SortOptionTile({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    return InkWell(
-      borderRadius: AppBorderRadius.brCircular30,
-      onTap: onTap,
-      child: Row(
-        spacing: 8,
-        children: <Widget>[
-          Container(
-            width: 24,
-            height: 24,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: selected ? colors.secondaryFixed : Colors.transparent,
-              shape: BoxShape.circle,
-              border: selected ? null : Border.all(color: colors.inversePrimary),
-            ),
-            child: selected
-                ? FittedBox(
-                    child: Icon(Icons.check_outlined, color: colors.onPrimary),
-                  )
-                : null,
-          ),
-          Expanded(
-            child: Text(
-              label,
-              style: AppTextStyles.style14Regular.copyWith(
-                color: colors.onTertiaryFixed,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
