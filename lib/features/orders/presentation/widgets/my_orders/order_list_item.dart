@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -49,33 +50,45 @@ class OrderListItem extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         spacing: 10,
         children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: AppBorderRadius.brCircular12,
-                  child: SizedBox(
+          Row(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: AppBorderRadius.brCircular12,
+                child: SizedBox(
+                  width: 88,
+                  height: 88,
+                  child: AppCachedNetworkImage(
+                    imageUrl: orderModel.vendor.logoUrl ?? '',
                     width: 88,
                     height: 88,
-                    child: AppCachedNetworkImage(
-                      imageUrl: orderModel.vendor.logoUrl ?? '',
-                      width: 88,
-                      height: 88,
-                      fit: BoxFit.cover,
-                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
-                Column(
+              ),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AutoSizeText(
-                      '#${orderModel.orderNumber ?? ''}',
-                      style: AppTextStyles.style18SemiBold.copyWith(
-                        color: colors.black,
-                      ),
+                    Row(
+                      spacing: 10,
+                      children: [
+                        Expanded(
+                          child: AutoSizeText(
+                            textDirection: TextDirection.ltr,
+                            '#${orderModel.orderNumber ?? ''}',
+                            style: AppTextStyles.style18SemiBold.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                        ),
+                        NewPriceWidget(
+                          color: colors.primary500Main,
+                          price: orderModel.total.toStringAsFixed(2),
+                          size: 14,
+                        ),
+                      ],
                     ),
                     4.hSpace,
                     AutoSizeText(
@@ -130,46 +143,34 @@ class OrderListItem extends ConsumerWidget {
                     ),
                   ],
                 ),
-                Row(
-                  spacing: 5,
-                  children: [
-                    Assets.media.images.svg.realSaudiCurrency.svg(
-                      width: 12,
-                      height: 12,
-                      fit: BoxFit.contain,
-                      colorFilter: ColorFilter.mode(
-                        colors.primary500Main,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    Text(
-                      orderModel.total.toStringAsFixed(2),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.primary500Main,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           Row(
             children: [
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 4.3,
-                  child: PrimaryAppButton( title: LangKeys.viewDetailsKey.tr(),buttonPadding : 8, onTap: () {
-                    context.pushNamed(AppRoutes.orderDetailsScreen);
-                  },),
+                  child: PrimaryAppButton(
+                    title: LangKeys.viewDetailsKey.tr(),
+                    buttonPadding: 8,
+                    onTap: () {
+                      context.pushNamed(AppRoutes.orderDetailsScreen);
+                    },
+                  ),
                 ),
               ),
               12.wSpace,
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 4.3,
-                  child: UnPrimaryButton( title: LangKeys.trackOrderKey.tr(),buttonPadding : 8, onTap: () {
-                    context.pushNamed(AppRoutes.trackOrderScreen);
-                  },),
+                  child: UnPrimaryButton(
+                    title: LangKeys.trackOrderKey.tr(),
+                    buttonPadding: 8,
+                    onTap: () {
+                      context.pushNamed(AppRoutes.trackOrderScreen);
+                    },
+                  ),
                 ),
               ),
             ],

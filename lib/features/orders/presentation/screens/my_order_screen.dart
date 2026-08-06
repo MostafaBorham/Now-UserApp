@@ -116,7 +116,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                                 (BuildContext context, int index) =>
                                     const SizedBox(height: 20),
                             itemBuilder: (BuildContext context, int index) {
-                              if (index > items.length) {
+                              if (index >= items.length) {
                                 return AspectRatio(
                                   aspectRatio: 2,
 
