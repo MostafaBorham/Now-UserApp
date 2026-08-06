@@ -82,7 +82,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       next.whenOrNull(
         data: (CheckoutModel? confirmed) {
           if (confirmed == null) return;
-          context.pushReplacementNamed(AppRoutes.orderConfirmedScreen);
+          context.pushReplacementNamed(
+            AppRoutes.orderConfirmedScreen,
+            extra: confirmed.orderGroup.orders,
+          );
         },
         error: (Object error, StackTrace stackTrace) =>
             ErrorSnackBar.show(context, error.toString()),

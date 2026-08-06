@@ -51,9 +51,9 @@ abstract class CheckoutEndpoints {
   }) =>
       <String, dynamic>{
         'address_id': addressId,
-        if(paymentMethod!=null && paymentMethod.isNotEmpty) 'payment_method': paymentMethod,
         'driver_tip': ?driverTip,
         'notes': ?notes,
+        'payment_method' : paymentMethod??'wallet',
         if (coupons != null && coupons.isNotEmpty)
           'coupons': coupons.map(
             (int vendorId, String couponCode) =>

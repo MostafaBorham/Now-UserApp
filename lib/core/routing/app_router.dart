@@ -26,6 +26,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/screens/most_pop
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
@@ -240,7 +241,9 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.orderConfirmedScreen,
         path: '/${AppRoutes.orderConfirmedScreen}',
-        builder: (context, state) => const OrderConfirmedScreen(),
+        builder: (context, state) => OrderConfirmedScreen(
+          orders: state.extra as List<OrderModel>? ?? const <OrderModel>[],
+        ),
       ),
       GoRoute(
         name: AppRoutes.trackOrderScreen,

@@ -19,10 +19,13 @@ class ConfirmedOrderCard extends StatelessWidget {
     this.price = '20.00',
     this.deliveryDate = 'March 12, 2026',
     this.itemsCount = 5,
-    this.imageUrl =
-        'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
+    this.imageUrl = fallbackImageUrl,
     this.onTrack,
   });
+
+  /// Placeholder thumbnail used when an order carries no vendor logo.
+  static const String fallbackImageUrl =
+      'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg';
 
   final String orderNumber;
   final String price;
