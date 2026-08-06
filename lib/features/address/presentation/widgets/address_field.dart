@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A single, label-less rounded input used on the Address Details form.
 ///
@@ -28,20 +27,26 @@ class AddressField extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
-        color: AppColors.inputFill,
+        color: context.colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(14),
       ),
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
-        style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
+        style: TextStyle(
+          fontSize: 16,
+          color: context.colors.tertiaryContainer,
+        ),
         decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.zero,
           border: InputBorder.none,
           hintText: hintText,
-          hintStyle: const TextStyle(fontSize: 16, color: AppColors.hintText),
+          hintStyle: TextStyle(
+            fontSize: 16,
+            color: context.colors.neutral500,
+          ),
         ),
       ),
     );

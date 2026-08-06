@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Rounded input that fills grey and turns white with a green border on focus.
 class RoundedField extends StatefulWidget {
@@ -53,15 +53,17 @@ class _RoundedFieldState extends State<RoundedField> {
       focusNode: _focusNode,
       keyboardType: widget.keyboardType,
       maxLength: widget.maxLength,
-      style: AppTextStyles.style16Medium.copyWith(color: AppColors.optionTitle),
+      style: AppTextStyles.style16Medium.copyWith(
+        color: context.colors.tertiaryContainer,
+      ),
       decoration: InputDecoration(
         counterText: '',
         isDense: true,
         filled: true,
-        fillColor: AppColors.fieldFill,
+        fillColor: context.colors.onPrimaryContainer,
         hintText: widget.hint,
         hintStyle: AppTextStyles.style14Regular.copyWith(
-          color: AppColors.mutedLabel,
+          color: context.colors.neutral500,
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -71,8 +73,8 @@ class _RoundedFieldState extends State<RoundedField> {
         enabledBorder: base,
         focusedBorder: OutlineInputBorder(
           borderRadius: AppBorderRadius.brCircular30,
-          borderSide: const BorderSide(
-            color: AppColors.selectedIndicator,
+          borderSide: BorderSide(
+            color: context.colors.primary500Main,
             width: 1.5,
           ),
         ),

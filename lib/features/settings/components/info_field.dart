@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A single read-only row on the Personal Information screen: a small grey
 /// label with its value (or a greyed-out hint when empty) and an optional
@@ -33,9 +32,9 @@ class InfoField extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.fieldLabel,
+                  color: context.colors.neutral500,
                 ),
               ),
               const SizedBox(height: 8),
@@ -44,14 +43,16 @@ class InfoField extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: hasValue ? AppColors.textPrimary : AppColors.hintText,
+                  color: hasValue
+                      ? context.colors.tertiaryContainer
+                      : context.colors.neutral500,
                 ),
               ),
             ],
           ),
         ),
         if (showDivider)
-          const Divider(height: 1, thickness: 1, color: AppColors.divider),
+          Divider(height: 1, thickness: 1, color: context.colors.neutral200),
       ],
     );
   }

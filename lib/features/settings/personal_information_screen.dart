@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-import 'app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'components/info_field.dart';
 import 'components/primary_button.dart';
 import 'components/profile_avatar.dart';
@@ -24,7 +24,7 @@ class PersonalInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: Column(
         children: [
           CommonHeader(
@@ -44,7 +44,7 @@ class PersonalInformationScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Material(
-                          color: AppColors.cardBackground,
+                          color: context.colors.onTertiaryContainer,
                           borderRadius: BorderRadius.circular(16),
                           clipBehavior: Clip.antiAlias,
                           child: const Padding(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Full-width green call-to-action button (used for "Edit" and "Save").
 class PrimaryButton extends StatelessWidget {
@@ -20,7 +19,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.primaryGreen,
+      color: context.colors.primary500Main,
       borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -30,20 +29,20 @@ class PrimaryButton extends StatelessWidget {
           width: double.infinity,
           child: Center(
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 24,
                     width: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      color: AppColors.buttonForeground,
+                      color: context.colors.white,
                     ),
                   )
                 : Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.buttonForeground,
+                      color: context.colors.white,
                     ),
                   ),
           ),

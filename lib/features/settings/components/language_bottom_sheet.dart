@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/constants.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Bottom sheet for picking the app language, opened from the "Language"
 /// row on the Profile/Settings screen.
@@ -16,7 +15,7 @@ class LanguageBottomSheet extends StatelessWidget {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -48,7 +47,7 @@ class LanguageBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.chevron,
+                color: context.colors.neutral500,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -59,30 +58,34 @@ class LanguageBottomSheet extends StatelessWidget {
               Expanded(
                 child: Text(
                   LangKeys.language.tr(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ),
               InkWell(
                 onTap: () => context.pop(),
                 customBorder: const CircleBorder(),
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(Icons.close, size: 24, color: AppColors.textPrimary),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.close,
+                    size: 24,
+                    color: context.colors.tertiaryContainer,
+                  ),
                 ),
               ),
             ],
           ),
-          const Divider(height: 24, color: AppColors.divider),
+          Divider(height: 24, color: context.colors.neutral200),
           _LanguageOption(
             label: LangKeys.languageAr.tr(),
             selected: isArabic,
             onTap: () => select(LocalizationConstants.arabicLocale),
           ),
-          const Divider(height: 1, color: AppColors.divider),
+          Divider(height: 1, color: context.colors.neutral200),
           _LanguageOption(
             label: LangKeys.languageEn.tr(),
             selected: !isArabic,
@@ -116,7 +119,10 @@ class _LanguageOption extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: context.colors.tertiaryContainer,
+                ),
               ),
             ),
             if (selected) Assets.media.images.svg.tickCircle.svg(),

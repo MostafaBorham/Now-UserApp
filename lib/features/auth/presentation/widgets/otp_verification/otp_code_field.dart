@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A row of boxes that displays an OTP. A single transparent field overlaid on
 /// top captures all input (typing, backspace and paste); the boxes are
@@ -134,8 +134,8 @@ class _OtpBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isActive
-              ? AppColors.selectedIndicator
-              : AppColors.unselectedIndicator,
+              ? context.colors.primary500Main
+              : context.colors.neutral300,
           width: isActive ? 2 : 1,
         ),
       ),
@@ -143,11 +143,11 @@ class _OtpBox extends StatelessWidget {
           ? Text(
               char,
               style: AppTextStyles.style24SemiBold.copyWith(
-                color: AppColors.optionTitle,
+                color: context.colors.tertiaryContainer,
               ),
             )
           : isActive
-          ? Container(width: 2, height: 26, color: AppColors.selectedIndicator)
+          ? Container(width: 2, height: 26, color: context.colors.primary500Main)
           : null,
     );
   }

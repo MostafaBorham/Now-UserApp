@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 
 /// A single selectable payment row — a saved card or an alternative payment
 /// method. Shows a leading brand badge, a title (+ optional subtitle) and a
@@ -53,7 +52,7 @@ class PaymentOptionTile extends StatelessWidget {
                   Text(
                     title,
                     style: AppTextStyles.style16SemiBold.copyWith(
-                      color: AppColors.optionTitle,
+                      color: colors.tertiaryContainer,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -61,7 +60,7 @@ class PaymentOptionTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: AppTextStyles.style14Regular.copyWith(
-                        color: AppColors.mutedLabel,
+                        color: colors.neutral500,
                       ),
                     ),
                   ],
@@ -86,6 +85,7 @@ class _SelectionIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
     return Container(
       width: 22,
       height: 22,
@@ -93,8 +93,8 @@ class _SelectionIndicator extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           color: isSelected
-              ? AppColors.selectedIndicator
-              : AppColors.unselectedIndicator,
+              ? colors.primary500Main
+              : colors.neutral300,
           width: 2,
         ),
       ),
@@ -103,9 +103,9 @@ class _SelectionIndicator extends StatelessWidget {
               child: Container(
                 width: 12,
                 height: 12,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.selectedIndicator,
+                  color: colors.primary500Main,
                 ),
               ),
             )

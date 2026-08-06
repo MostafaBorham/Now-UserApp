@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -109,11 +108,11 @@ class _BottomActions extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Divider(height: 1, thickness: 1, color: AppColors.divider),
+        Divider(height: 1, thickness: 1, color: context.colors.neutral200),
         const SizedBox(height: 14),
         AddNewCardButton(onTap: () => AddNewCardBottomSheet.show(context)),
         const SizedBox(height: 14),
-        const Divider(height: 1, thickness: 1, color: AppColors.divider),
+        Divider(height: 1, thickness: 1, color: context.colors.neutral200),
         const SizedBox(height: 14),
         PrimaryAppButton(
           title: LangKeys.continueKey.tr(),

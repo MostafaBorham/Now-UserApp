@@ -14,7 +14,6 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 
-import 'app_colors.dart';
 import 'components/language_bottom_sheet.dart';
 import 'components/logout_button.dart';
 import 'components/profile_header.dart';
@@ -79,7 +78,7 @@ class SettingsScreen extends ConsumerWidget {
         SessionType.user;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.profileKey.tr(),
         body: SingleChildScrollView(

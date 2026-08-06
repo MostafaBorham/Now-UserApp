@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Large title + supporting subtitle shown at the top of the verification
 /// screens. [subtitle] is a widget so callers can inline coloured spans
@@ -23,14 +23,14 @@ class VerificationHeadline extends StatelessWidget {
         Text(
           title,
           style: AppTextStyles.style24SemiBold.copyWith(
-            color: AppColors.sectionTitle,
+            color: context.colors.tertiaryContainer,
           ),
         ),
         const SizedBox(height: 12),
         DefaultTextStyle.merge(
           maxLines: 2,
           style: AppTextStyles.style14Regular.copyWith(
-            color: AppColors.mutedLabel,
+            color: context.colors.neutral500,
           ),
           child: subtitle,
         ),

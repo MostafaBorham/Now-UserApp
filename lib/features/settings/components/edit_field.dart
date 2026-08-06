@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A labelled, editable field on the Edit Information screen.
 ///
@@ -47,12 +46,15 @@ class EditField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [_labelRow(), const SizedBox(height: 8), _pill()],
+      children: [_labelRow(context), const SizedBox(height: 8), _pill(context)],
     );
   }
 
-  Widget _labelRow() {
-    const labelStyle = TextStyle(fontSize: 13, color: AppColors.fieldLabel);
+  Widget _labelRow(BuildContext context) {
+    final labelStyle = TextStyle(
+      fontSize: 13,
+      color: context.colors.neutral500,
+    );
     if (!showCounter || controller == null) {
       return Text(label, style: labelStyle);
     }
@@ -69,7 +71,7 @@ class EditField extends StatelessWidget {
     );
   }
 
-  Widget _pill() {
+  Widget _pill(BuildContext context) {
     final List<Widget> children = [];
 
     if (leadingAsset != null) {
@@ -89,7 +91,9 @@ class EditField extends StatelessWidget {
             hasValue ? valueText! : (hintText ?? ''),
             style: TextStyle(
               fontSize: 16,
-              color: hasValue ? AppColors.textPrimary : AppColors.hintText,
+              color: hasValue
+                  ? context.colors.tertiaryContainer
+                  : context.colors.neutral500,
             ),
           ),
         ),
@@ -108,15 +112,18 @@ class EditField extends StatelessWidget {
                   required int? maxLength,
                   required bool isFocused,
                 }) => null,
-            style: const TextStyle(fontSize: 16, color: AppColors.textPrimary),
+            style: TextStyle(
+              fontSize: 16,
+              color: context.colors.tertiaryContainer,
+            ),
             decoration: InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.zero,
               border: InputBorder.none,
               hintText: hintText,
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 fontSize: 16,
-                color: AppColors.hintText,
+                color: context.colors.neutral500,
               ),
             ),
           ),
@@ -137,7 +144,7 @@ class EditField extends StatelessWidget {
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.inputFill,
+        color: context.colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(100),
       ),
       child: Row(children: children),

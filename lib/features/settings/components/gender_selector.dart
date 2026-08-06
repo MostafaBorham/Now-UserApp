@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A pill-shaped segmented control used across the app.
 ///
@@ -63,7 +62,8 @@ class CommonScreenTabs extends StatefulWidget {
   /// Fill color of the selected segment. Defaults to [Colors.green].
   final Color? activeColor;
 
-  /// Color of the track behind the segments. Defaults to [AppColors.grey].
+  /// Color of the track behind the segments. Defaults to a light grey from
+  /// the theme (`context.colors.onPrimaryContainer`).
   final Color? backgroundColor;
 
   /// Size of the leading icon when [icons] is provided.
@@ -89,7 +89,7 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
   Widget build(BuildContext context) {
     final Color activeFont = widget.activeFontColor ?? const Color(0xffEC5B13);
     final Color inactiveFont =
-        widget.inactiveFontColor ?? AppColors.datePillText;
+        widget.inactiveFontColor ?? context.colors.primary500Main;
 
     return Container(
       width: double.maxFinite,
@@ -97,7 +97,7 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
       padding: widget.padding,
       margin: EdgeInsetsDirectional.symmetric(horizontal: widget.margin),
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? AppColors.grey,
+        color: widget.backgroundColor ?? context.colors.onPrimaryContainer,
         borderRadius: BorderRadiusDirectional.circular(widget.radius ?? 100),
       ),
       child: LayoutBuilder(

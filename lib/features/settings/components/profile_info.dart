@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Avatar + name + "member since" date pill, centered under the header.
 ///
@@ -40,25 +39,25 @@ class ProfileInfo extends StatelessWidget {
         const SizedBox(height: 14),
         Text(
           name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: context.colors.tertiaryContainer,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.datePillBackground,
+            color: context.colors.primary100,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             memberSince,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.datePillText,
+              color: context.colors.primary500Main,
             ),
           ),
         ),

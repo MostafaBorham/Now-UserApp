@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Shared frame for the Cancel Order bottom sheets: a drag handle, the
 /// "Cancel Order" title with a close button, and a scrollable body that hosts
@@ -30,7 +30,7 @@ class CancelSheetScaffold extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.unselectedIndicator,
+                color: context.colors.neutral300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -42,19 +42,19 @@ class CancelSheetScaffold extends StatelessWidget {
                 child: Text(
                   LangKeys.cancelOrderKey.tr(),
                   style: AppTextStyles.style18SemiBold.copyWith(
-                    color: AppColors.sectionTitle,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ),
               InkWell(
                 onTap: () => context.pop(),
                 customBorder: const CircleBorder(),
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
                   child: Icon(
                     Icons.close,
                     size: 24,
-                    color: AppColors.sectionTitle,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ),

@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// "I did not receive the code (mm:ss) Resend" with a live countdown, plus a
 /// "Paste Code" pill. Resend only fires once the countdown reaches zero, then
@@ -96,21 +96,21 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
           child: Text.rich(
             TextSpan(
               style: AppTextStyles.style12SemiBold.copyWith(
-                color: AppColors.sectionTitle,
+                color: context.colors.tertiaryContainer,
               ),
               children: [
                 TextSpan(text: '${LangKeys.didNotReceiveCodeKey.tr()} '),
                 TextSpan(
                   text: '($_formatted) ',
-                  style: TextStyle(color: AppColors.selectedIndicator),
+                  style: TextStyle(color: context.colors.primary500Main),
                 ),
                 TextSpan(
                   text: LangKeys.resendKey.tr(),
                   style: TextStyle(
                     decoration: TextDecoration.underline,
                     color: canResend
-                        ? AppColors.sectionTitle
-                        : AppColors.mutedLabel,
+                        ? context.colors.tertiaryContainer
+                        : context.colors.neutral500,
                   ),
                   recognizer: _resendRecognizer,
                 ),
@@ -138,7 +138,7 @@ class _PasteCodeButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.pasteCodeBackground,
+          color: context.colors.primary100,
           borderRadius: AppBorderRadius.brCircular12,
         ),
         child: Row(
@@ -147,8 +147,8 @@ class _PasteCodeButton extends StatelessWidget {
             Assets.media.images.svg.clipboard.svg(
               width: 18,
               height: 18,
-              colorFilter: const ColorFilter.mode(
-                AppColors.selectedIndicator,
+              colorFilter: ColorFilter.mode(
+                context.colors.primary500Main,
                 BlendMode.srcIn,
               ),
             ),
@@ -156,7 +156,7 @@ class _PasteCodeButton extends StatelessWidget {
             Text(
               LangKeys.pasteCodeKey.tr(),
               style: AppTextStyles.style14Medium.copyWith(
-                color: AppColors.selectedIndicator,
+                color: context.colors.primary500Main,
               ),
             ),
           ],

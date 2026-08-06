@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// The "Add New Card" entry form — a light card holding the cardholder name,
 /// card number (with brand logos), expiry date and CVV, split by hairlines.
@@ -16,7 +16,7 @@ class AddNewCardForm extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       decoration: BoxDecoration(
-        color: AppColors.tileBackground,
+        color: context.colors.onTertiaryContainer,
         borderRadius: AppBorderRadius.brCircular20,
       ),
       child: Column(
@@ -52,10 +52,10 @@ class AddNewCardForm extends StatelessWidget {
                     keyboardType: TextInputType.datetime,
                   ),
                 ),
-                const VerticalDivider(
+                VerticalDivider(
                   width: 32,
                   thickness: 1,
-                  color: AppColors.divider,
+                  color: context.colors.neutral200,
                 ),
                 Expanded(
                   child: _CardField(
@@ -97,7 +97,7 @@ class _CardField extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.style14Regular.copyWith(
-            color: AppColors.mutedLabel,
+            color: context.colors.neutral500,
           ),
         ),
         const SizedBox(height: 6),
@@ -108,7 +108,7 @@ class _CardField extends StatelessWidget {
                 initialValue: initialValue,
                 keyboardType: keyboardType,
                 style: AppTextStyles.style16Medium.copyWith(
-                  color: AppColors.fieldValue,
+                  color: context.colors.tertiaryContainer,
                 ),
                 decoration: const InputDecoration(
                   isDense: true,
@@ -133,9 +133,9 @@ class _FormDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 14),
-      child: Divider(height: 1, thickness: 1, color: AppColors.divider),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Divider(height: 1, thickness: 1, color: context.colors.neutral200),
     );
   }
 }

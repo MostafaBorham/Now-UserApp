@@ -16,7 +16,6 @@ import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/edit_address_vm.dart';
-import '../../../settings/app_colors.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
 
@@ -185,7 +184,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     final bool isSaving = ref.watch(statusProvider).isLoading;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: widget.isEditScreen
             ? LangKeys.editAddress.tr()

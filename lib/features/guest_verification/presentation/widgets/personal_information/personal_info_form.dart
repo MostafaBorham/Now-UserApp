@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/text_field.dart';
 
 /// Personal-information card: name (first + last) with a live character counter
@@ -44,7 +44,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.tileBackground,
+        color: context.colors.onTertiaryContainer,
         borderRadius: AppBorderRadius.brCircular20,
       ),
       child: Column(
@@ -56,14 +56,14 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                 child: Text(
                   LangKeys.nameKey.tr(),
                   style: AppTextStyles.style14Medium.copyWith(
-                    color: AppColors.mutedLabel,
+                    color: context.colors.neutral500,
                   ),
                 ),
               ),
               Text(
                 '$_nameLength/${widget.maxNameLength}',
                 style: AppTextStyles.style12Regular.copyWith(
-                  color: AppColors.mutedLabel,
+                  color: context.colors.neutral500,
                 ),
               ),
             ],
@@ -92,7 +92,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
           Text(
             LangKeys.emailOptionalKey.tr(),
             style: AppTextStyles.style14Medium.copyWith(
-              color: AppColors.mutedLabel,
+              color: context.colors.neutral500,
             ),
           ),
           const SizedBox(height: 8),

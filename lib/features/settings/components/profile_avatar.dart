@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Circular avatar built from the provided `person.png` placeholder.
 ///
@@ -31,7 +30,7 @@ class ProfileAvatar extends StatelessWidget {
             Container(
               width: size,
               height: size,
-              color: AppColors.avatarPlaceholder,
+              color: context.colors.neutral200,
               child: Assets.media.images.svg.personPng.image(
                 fit: BoxFit.cover,
                 width: size,
@@ -48,7 +47,7 @@ class ProfileAvatar extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   onTap: onCameraTap,
                   child: Container(
-                    color: AppColors.avatarOverlay,
+                    color: context.colors.black.withValues(alpha: 0.4),
                     alignment: Alignment.center,
                     child: Assets.media.images.svg.camera.svg(
                       width: 24,

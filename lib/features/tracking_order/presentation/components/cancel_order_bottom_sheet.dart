@@ -6,7 +6,6 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
@@ -122,7 +121,7 @@ class _OrderSummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.tileBackground,
+        color: colors.onTertiaryContainer,
         borderRadius: AppBorderRadius.brCircular16,
       ),
       child: Row(

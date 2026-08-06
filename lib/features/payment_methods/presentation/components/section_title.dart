@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Section header reused across the Payment Methods screen
 /// ("Saved Cards", "Another Payment Method", "Add New Card").
@@ -14,7 +14,7 @@ class SectionTitle extends StatelessWidget {
     return Text(
       title,
       style: AppTextStyles.style16SemiBold.copyWith(
-        color: AppColors.sectionTitle,
+        color: context.colors.tertiaryContainer,
       ),
     );
   }

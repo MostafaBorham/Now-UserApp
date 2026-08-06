@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Data model describing a single tappable row inside a [SettingsSection].
 class SettingsItem {
@@ -56,17 +55,17 @@ class SettingsTile extends StatelessWidget {
             Expanded(
               child: Text(
                 item.label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary,
+                  color: context.colors.tertiaryContainer,
                 ),
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppColors.chevron,
+              color: context.colors.neutral500,
             ),
           ],
         ),

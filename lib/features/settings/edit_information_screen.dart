@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-import 'app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'components/edit_field.dart';
 import 'components/gender_selector.dart';
 import 'components/primary_button.dart';
@@ -84,7 +84,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: Column(
         children: [
           CommonHeader(
@@ -130,11 +130,11 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                           keyboardType: TextInputType.emailAddress,
                         ),
                         const SizedBox(height: _fieldGap),
-                        const Text(
+                        Text(
                           'Gender',
                           style: TextStyle(
                             fontSize: 13,
-                            color: AppColors.fieldLabel,
+                            color: context.colors.neutral500,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -142,7 +142,7 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                           height: 49,
                           tabsName: ["Male", "Female"],
                           activeFontColor: Colors.white,
-                          inactiveFontColor: AppColors.textPrimary,
+                          inactiveFontColor: context.colors.tertiaryContainer,
                           onTaptab: (currentTab) {},
                           radius: 100,
                           tapRadius: 100,
@@ -186,9 +186,9 @@ class _SaveBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-        border: Border(top: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.colors.white,
+        border: Border(top: BorderSide(color: context.colors.neutral200)),
       ),
       child: SafeArea(
         top: false,

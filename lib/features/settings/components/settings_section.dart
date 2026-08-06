@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-import '../app_colors.dart';
 import 'settings_tile.dart';
 
 /// A titled group of setting rows (e.g. "General", "Support").
@@ -26,15 +26,15 @@ class SettingsSection extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 12),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.colors.tertiaryContainer,
             ),
           ),
         ),
         Material(
-          color: AppColors.cardBackground,
+          color: context.colors.onTertiaryContainer,
           borderRadius: BorderRadius.circular(16),
           clipBehavior: Clip.antiAlias,
           child: Padding(

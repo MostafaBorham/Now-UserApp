@@ -2,8 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Grey "Area" summary row pinned to the top of the Address Details form.
 ///
@@ -31,7 +30,7 @@ class AreaSelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.inputFill,
+        color: context.colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -40,8 +39,8 @@ class AreaSelector extends StatelessWidget {
           Assets.media.images.svg.addressCuttedGrey.svg(
             width: 22,
             height: 22,
-            colorFilter: const ColorFilter.mode(
-              AppColors.hintText,
+            colorFilter: ColorFilter.mode(
+              context.colors.neutral500,
               BlendMode.srcIn,
             ),
           ),
@@ -53,9 +52,9 @@ class AreaSelector extends StatelessWidget {
               children: [
                 Text(
                   LangKeys.area.tr(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.fieldLabel,
+                    color: context.colors.neutral500,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -63,10 +62,10 @@ class AreaSelector extends StatelessWidget {
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ],
@@ -83,7 +82,7 @@ class AreaSelector extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryGreen,
+                  color: context.colors.primary500Main,
                 ),
               ),
             ),

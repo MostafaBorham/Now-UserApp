@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Data for a single discount coupon shown as a ticket card.
 class DiscountCoupon {
@@ -66,15 +65,17 @@ class DiscountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color valuePanel = dark
-        ? AppColors.couponDark
-        : AppColors.primaryYellow;
-    final Color bodyPanel = dark ? AppColors.couponCream : AppColors.couponMint;
+        ? context.colors.surfaceBright
+        : context.colors.surface;
+    final Color bodyPanel = dark
+        ? context.colors.secondary100
+        : context.colors.primary100;
     final Color percentColor = dark
-        ? AppColors.primaryYellow
-        : AppColors.couponDeepGreen;
+        ? context.colors.surface
+        : context.colors.primaryContainer;
     final Color scopeColor = dark
-        ? AppColors.buttonForeground
-        : AppColors.textPrimary;
+        ? context.colors.white
+        : context.colors.tertiaryContainer;
 
     return PhysicalShape(
       clipper: const _TicketClipper(
@@ -156,10 +157,10 @@ class DiscountCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         coupon.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.couponDeepGreen,
+                          color: context.colors.primaryContainer,
                         ),
                       ),
                     ),
@@ -168,10 +169,10 @@ class DiscountCard extends StatelessWidget {
                       coupon.validity,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 10,
-                        color: AppColors.hintText,
+                        color: context.colors.neutral500,
                       ),
                     ),
 
@@ -179,9 +180,9 @@ class DiscountCard extends StatelessWidget {
                       coupon.minPurchase,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.hintText,
+                        color: context.colors.neutral500,
                       ),
                     ),
 
@@ -219,7 +220,7 @@ class _CodeChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
-          color: AppColors.couponChipBg,
+          color: context.colors.primary100,
           borderRadius: BorderRadius.circular(100),
         ),
         child: Row(
@@ -229,10 +230,10 @@ class _CodeChip extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               code,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
-                color: AppColors.couponDeepGreen,
+                color: context.colors.primaryContainer,
               ),
             ),
           ],

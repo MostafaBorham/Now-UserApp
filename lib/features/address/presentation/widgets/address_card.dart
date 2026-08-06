@@ -2,8 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A single saved address (Home, Office, …) rendered as a selectable card.
 ///
@@ -54,19 +53,19 @@ class AddressCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(_radius),
-          color: isDefault ? null : AppColors.cardBackground,
+          color: isDefault ? null : context.colors.onTertiaryContainer,
           gradient: isDefault
-              ? const LinearGradient(
+              ? LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.selectedAddressStart,
-                    AppColors.selectedAddressEnd,
+                    context.colors.scrim,
+                    context.colors.primary100,
                   ],
                 )
               : null,
           border: isDefault
-              ? Border.all(color: AppColors.selectedAddressBorder)
+              ? Border.all(color: context.colors.primary100)
               : null,
         ),
         child: InkWell(
@@ -88,10 +87,10 @@ class AddressCard extends StatelessWidget {
                             : title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: context.colors.tertiaryContainer,
                         ),
                       ),
                     ),
@@ -115,11 +114,11 @@ class AddressCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         address,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           height: 1.3,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.addressText,
+                          color: context.colors.onPrimaryFixed,
                         ),
                       ),
                     ),
@@ -148,7 +147,9 @@ class _Radio extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected ? AppColors.primaryGreen : AppColors.radioUnselected,
+          color: selected
+              ? context.colors.primary500Main
+              : context.colors.neutral300,
           width: selected ? 2 : 1.5,
         ),
       ),
@@ -157,9 +158,9 @@ class _Radio extends StatelessWidget {
               child: Container(
                 width: 9,
                 height: 9,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryGreen,
+                  color: context.colors.primary500Main,
                 ),
               ),
             )

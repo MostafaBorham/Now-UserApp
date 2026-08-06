@@ -5,7 +5,6 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
@@ -50,19 +49,19 @@ class AddNewCardBottomSheet extends StatelessWidget {
                 child: Text(
                   LangKeys.addNewPaymentCardKey.tr(),
                   style: AppTextStyles.style18SemiBold.copyWith(
-                    color: AppColors.sectionTitle,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ),
               InkWell(
                 onTap: () => context.pop(),
                 customBorder: const CircleBorder(),
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
                   child: Icon(
                     Icons.close,
                     size: 24,
-                    color: AppColors.sectionTitle,
+                    color: context.colors.tertiaryContainer,
                   ),
                 ),
               ),
@@ -99,7 +98,7 @@ class _DragHandle extends StatelessWidget {
         width: 40,
         height: 4,
         decoration: BoxDecoration(
-          color: AppColors.unselectedIndicator,
+          color: context.colors.neutral300,
           borderRadius: BorderRadius.circular(2),
         ),
       ),

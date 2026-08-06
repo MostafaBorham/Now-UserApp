@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/features/address/presentation/widgets/my_ad
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
-import '../../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import '../widgets/add_address_button.dart';
 import '../widgets/address_card.dart';
 
@@ -60,7 +60,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.myAddress.tr(),
         body: addressesState.when(

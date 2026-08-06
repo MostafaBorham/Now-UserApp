@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Yellow header at the top of the screen.
 ///
@@ -34,8 +33,8 @@ class CommonHeader extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          const Positioned.fill(
-            child: ColoredBox(color: AppColors.primaryYellow),
+          Positioned.fill(
+            child: ColoredBox(color: context.colors.surface),
           ),
           Positioned(
             top: topInset + 25,
@@ -46,10 +45,10 @@ class CommonHeader extends StatelessWidget {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: context.colors.tertiaryContainer,
                 ),
               ),
             ),
@@ -86,10 +85,10 @@ class _BackButton extends StatelessWidget {
     return Container(
       width: 44,
       height: 44,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.background,
-        boxShadow: [
+        color: context.colors.white,
+        boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
             blurRadius: 8,

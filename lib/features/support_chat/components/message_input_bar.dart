@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Bottom message composer: a rounded text field plus the green send button.
 ///
@@ -16,7 +15,7 @@ class MessageInputBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.background,
+      color: context.colors.white,
       child: SafeArea(
         top: false,
         child: Padding(
@@ -29,26 +28,26 @@ class MessageInputBar extends StatelessWidget {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: context.colors.white,
                     borderRadius: BorderRadius.circular(100),
-                    border: Border.all(color: AppColors.divider),
+                    border: Border.all(color: context.colors.neutral200),
                   ),
                   child: TextField(
                     controller: controller,
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => onSend?.call(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
-                      color: AppColors.textPrimary,
+                      color: context.colors.tertiaryContainer,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       isDense: true,
                       contentPadding: EdgeInsets.zero,
                       border: InputBorder.none,
                       hintText: 'Write Your Message Here..',
                       hintStyle: TextStyle(
                         fontSize: 15,
-                        color: AppColors.hintText,
+                        color: context.colors.neutral500,
                       ),
                     ),
                   ),

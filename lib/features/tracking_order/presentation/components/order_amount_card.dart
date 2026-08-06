@@ -6,7 +6,6 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
 
 /// Outlined summary card on the Payment Failed screen: the order number and the
 /// amount still due.
@@ -28,7 +27,7 @@ class OrderAmountCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.white,
         borderRadius: AppBorderRadius.brCircular12,
-        border: Border.all(color: AppColors.divider),
+        border: Border.all(color: colors.neutral200),
       ),
       child: Column(
         children: [
@@ -51,7 +50,7 @@ class OrderAmountCard extends StatelessWidget {
             ],
           ),
           12.hSpace,
-          const Divider(height: 1, thickness: 1, color: AppColors.divider),
+          Divider(height: 1, thickness: 1, color: colors.neutral200),
           12.hSpace,
           Row(
             children: [

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-import '../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A single chat message.
 class ChatMessage {
@@ -39,7 +38,9 @@ class ChatBubble extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: agent ? AppColors.inputFill : AppColors.primaryGreen,
+          color: agent
+              ? context.colors.onPrimaryContainer
+              : context.colors.primary500Main,
           borderRadius: BorderRadius.circular(18),
         ),
         child: Text(
@@ -48,7 +49,9 @@ class ChatBubble extends StatelessWidget {
             fontSize: 16,
             height: 1.3,
             fontWeight: agent ? FontWeight.w400 : FontWeight.w500,
-            color: agent ? AppColors.textPrimary : AppColors.buttonForeground,
+            color: agent
+                ? context.colors.tertiaryContainer
+                : context.colors.white,
           ),
         ),
       ),
@@ -77,7 +80,7 @@ class ChatBubble extends StatelessWidget {
               : const EdgeInsets.only(left: _avatar + _gap),
           child: Text(
             message.time,
-            style: const TextStyle(fontSize: 12, color: AppColors.hintText),
+            style: TextStyle(fontSize: 12, color: context.colors.neutral500),
           ),
         ),
       ],
@@ -115,9 +118,9 @@ class _NowAvatar extends StatelessWidget {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.grey,
+        color: context.colors.onPrimaryContainer,
       ),
       child: Assets.media.images.svg.logoHorizontal.svg(width: 26),
     );

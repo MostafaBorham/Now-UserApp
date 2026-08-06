@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// A single FAQ question and its answer.
 class FaqItem {
@@ -27,7 +26,9 @@ class FaqTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: expanded ? AppColors.faqExpandedBg : AppColors.cardBackground,
+      color: expanded
+          ? context.colors.primary100
+          : context.colors.onTertiaryContainer,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -42,11 +43,11 @@ class FaqTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item.question,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         height: 1.3,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: context.colors.tertiaryContainer,
                       ),
                     ),
                   ),
@@ -56,7 +57,7 @@ class FaqTile extends StatelessWidget {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     size: 24,
-                    color: AppColors.chevron,
+                    color: context.colors.neutral500,
                   ),
                 ],
               ),
@@ -64,10 +65,10 @@ class FaqTile extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   item.answer,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     height: 1.45,
-                    color: AppColors.hintText,
+                    color: context.colors.neutral500,
                   ),
                 ),
               ],

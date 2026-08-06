@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
@@ -71,7 +71,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: AppBorderRadius.brCircular16,
-        border: Border.all(color: AppColors.outlinedButtonBorder),
+        border: Border.all(color: context.colors.neutral200),
         boxShadow: AppBoxShadows.greyElevation2,
       ),
       child: Row(
@@ -86,7 +86,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                 Text(
                   LangKeys.mobileNumberKey.tr(),
                   style: AppTextStyles.style14Regular.copyWith(
-                    color: AppColors.mutedLabel,
+                    color: context.colors.neutral500,
                   ),
                 ),
                 TextFormField(
@@ -94,7 +94,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                   maxLength: 14,
                   keyboardType: TextInputType.phone,
                   style: AppTextStyles.style16Medium.copyWith(
-                    color: AppColors.optionTitle,
+                    color: context.colors.tertiaryContainer,
                   ),
                   decoration: InputDecoration(
                     isDense: true,
@@ -102,7 +102,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                     isCollapsed: true,
                     hintText: widget.hint ?? '+966 5X XXX XXXX',
                     hintStyle: AppTextStyles.style16Medium.copyWith(
-                      color: AppColors.mutedLabel,
+                      color: context.colors.neutral500,
                     ),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,

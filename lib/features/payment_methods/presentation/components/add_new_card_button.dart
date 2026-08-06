@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Outlined "Add New Card" action shown beneath the form — a light bordered
 /// button with a leading plus-circle icon.
@@ -24,7 +24,7 @@ class AddNewCardButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: AppBorderRadius.brCircular12,
-          border: Border.all(color: AppColors.outlinedButtonBorder),
+          border: Border.all(color: context.colors.neutral200),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class AddNewCardButton extends StatelessWidget {
             Text(
               LangKeys.addNewCardKey.tr(),
               style: AppTextStyles.style16Medium.copyWith(
-                color: AppColors.sectionTitle,
+                color: context.colors.tertiaryContainer,
               ),
             ),
           ],

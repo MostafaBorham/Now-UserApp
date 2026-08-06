@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
-import '../settings/app_colors.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import '../settings/components/profile_header.dart';
 import 'components/chat_bubble.dart';
 import 'components/message_input_bar.dart';
@@ -86,7 +86,7 @@ class _SupportScreenState extends State<SupportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.support.tr(),
         body: Column(

@@ -45,7 +45,7 @@ The intended shape of a feature is three layers: `presentation/` (`screens/`, `w
 Features do **not** use interface/barrel files — import feature files directly by their full path (e.g. `features/stores/presentation/screens/store_details_screen.dart`). Do not create `<x>_interface.dart` files; this pattern was deliberately removed.
 
 **Known deviations (fix opportunistically, don't copy):**
-- Several newer features (`address`, `discount`, `faq`, `privacy`, `settings`, `support_chat`) are flat — screens and `components/` sit directly in the feature root with no `presentation/` layer. `settings` even carries its own `app_colors.dart` instead of using the core design system. Restructure toward the standard layout when doing non-trivial work in them.
+- Several newer features (`address`, `discount`, `faq`, `privacy`, `settings`, `support_chat`) are flat — screens and `components/` sit directly in the feature root with no `presentation/` layer. Restructure toward the standard layout when doing non-trivial work in them. (Both the former `AppColors` palettes — the core one and `settings`' own — have been removed; all colors now come from the theme via `context.colors`.)
 
 ### Data flow pattern (see `features/categories/`)
 
