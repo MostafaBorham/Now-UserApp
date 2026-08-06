@@ -14,12 +14,12 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 
-import 'components/language_bottom_sheet.dart';
-import 'components/logout_button.dart';
-import 'components/profile_header.dart';
-import 'components/profile_info.dart';
-import 'components/settings_section.dart';
-import 'components/settings_tile.dart';
+import '../widgets/language_bottom_sheet.dart';
+import '../widgets/logout_button.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/profile_info.dart';
+import '../widgets/settings_section.dart';
+import '../widgets/settings_tile.dart';
 
 /// Profile screen.
 ///

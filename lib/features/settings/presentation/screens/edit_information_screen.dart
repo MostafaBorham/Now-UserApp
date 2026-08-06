@@ -3,11 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'components/edit_field.dart';
-import 'components/gender_selector.dart';
-import 'components/primary_button.dart';
-import 'components/profile_avatar.dart';
-import 'components/profile_header.dart';
+import '../widgets/edit_field.dart';
+import '../widgets/gender_selector.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/profile_avatar.dart';
+import '../widgets/profile_header.dart';
 
 /// Editable "Edit Information" screen, reached from the Edit button on the
 /// Personal Information screen.

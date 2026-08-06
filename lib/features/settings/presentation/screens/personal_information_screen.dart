@@ -3,10 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'components/info_field.dart';
-import 'components/primary_button.dart';
-import 'components/profile_avatar.dart';
-import 'components/profile_header.dart';
+import '../widgets/info_field.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/profile_avatar.dart';
+import '../widgets/profile_header.dart';
 
 /// Read-only "Personal Information" screen, shown when the user taps the
 /// Personal Information tile on the profile screen.

@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/features/main/presentation/controllers/main
 import 'package:nowdelivery_user_app/features/main/presentation/widgets/app_bottom_nav_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/my_order_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/settings_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/screens/settings_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 
 class MainScreen extends ConsumerStatefulWidget {

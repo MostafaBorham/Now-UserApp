@@ -20,7 +20,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/features/settings/components/profile_header.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/widgets/profile_header.dart';
 
 class AddNewAddressFromMap extends StatefulWidget {
   const AddNewAddressFromMap({super.key, this.currentLocation});
