@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.dart';
 
 /// Single task: confirm a draft order group — the final checkout step.
@@ -11,13 +10,13 @@ import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.d
 /// (`AsyncValue.data(null)`) and the screen triggers it with
 /// `ref.read(confirmOrderProvider.notifier).confirmOrder(...)`, then renders
 /// the resulting [AsyncValue] (loading → data/error).
-final confirmOrderProvider = StateNotifierProvider.autoDispose<
-    ConfirmOrderViewModel, AsyncValue<CheckoutModel?>>(
+final confirmOrderProvider =
+    StateNotifierProvider.autoDispose<ConfirmOrderViewModel, AsyncValue<void>>(
   (Ref ref) => ConfirmOrderViewModel(),
 );
 
-class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
-  ConfirmOrderViewModel() : super(const AsyncValue<CheckoutModel?>.data(null));
+class ConfirmOrderViewModel extends StateNotifier<AsyncValue<void>> {
+  ConfirmOrderViewModel() : super(const AsyncValue<void>.data(null));
 
   final CheckoutRepo _repo = CheckoutRepo();
 
@@ -35,9 +34,9 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
   /// applies codes; folding it into the `vendor id → code` map the request
   /// expects is this layer's job, so callers never assemble the map themselves.
   ///
-  /// On success the confirmed group is swapped into [state] and `null` is
-  /// returned; on failure [state] becomes an error and the message is also
-  /// returned so the caller can surface it — e.g. in a snackbar.
+  /// On success [state] becomes `data(null)` and `null` is returned; on failure
+  /// [state] becomes an error and the message is also returned so the caller
+  /// can surface it — e.g. in a snackbar.
   Future<String?> confirmOrder({
     required String orderGroupUuid,
     int? addressId,
@@ -46,7 +45,7 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
     String? notes,
     List<AppliedCouponModel> coupons = const <AppliedCouponModel>[],
   }) async {
-    state = const AsyncValue<CheckoutModel?>.loading();
+    state = const AsyncValue<void>.loading();
 
     final result = await _repo.confirmOrder(
       orderGroupUuid: orderGroupUuid,
@@ -64,14 +63,11 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
 
     return result.fold(
       (Failure failure) {
-        state = AsyncValue<CheckoutModel?>.error(
-          failure.message,
-          StackTrace.current,
-        );
+        state = AsyncValue<void>.error(failure.message, StackTrace.current);
         return failure.message;
       },
-      (CheckoutModel confirmed) {
-        state = AsyncValue<CheckoutModel?>.data(confirmed);
+      (_) {
+        state = const AsyncValue<void>.data(null);
         return null;
       },
     );

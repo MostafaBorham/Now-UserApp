@@ -110,7 +110,7 @@ class CheckoutRepo {
   }
 
 
-  Future<Either<Failure, CheckoutModel>> confirmOrder({
+  Future<Either<Failure, void>> confirmOrder({
     required String orderGroupUuid,
     int? addressId,
     String? paymentMethod,
@@ -140,11 +140,7 @@ class CheckoutRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      final CheckoutModel checkout = CheckoutModel.fromJson(
-        body['data'] as Map<String, dynamic>?,
-      );
-
-      return Right(checkout);
+      return const Right(null);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 
 /// The checkout screen's confirm button. It watches only the *loading slice* of
@@ -20,7 +19,7 @@ class ConfirmOrderButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLoading = ref.watch(
       confirmOrderProvider.select(
-        (AsyncValue<CheckoutModel?> state) => state.isLoading,
+        (AsyncValue<void> state) => state.isLoading,
       ),
     );
 

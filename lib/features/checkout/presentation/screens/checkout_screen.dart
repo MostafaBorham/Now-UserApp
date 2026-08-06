@@ -21,6 +21,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 
@@ -75,16 +76,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     // confirmation screen, on failure surface the message via the shared
     // error snackbar. Uses `listen` (not `watch`) so this fires only on state
     // transitions, never on unrelated rebuilds.
-    ref.listen<AsyncValue<CheckoutModel?>>(confirmOrderProvider, (
-      AsyncValue<CheckoutModel?>? previous,
-      AsyncValue<CheckoutModel?> next,
+    ref.listen<AsyncValue<void>>(confirmOrderProvider, (
+      AsyncValue<void>? previous,
+      AsyncValue<void> next,
     ) {
       next.whenOrNull(
-        data: (CheckoutModel? confirmed) {
-          if (confirmed == null) return;
+        // `listen` fires only on transitions, so reaching `data` here means the
+        // confirm request just succeeded (never the initial idle state).
+        data: (_) {
+          final CheckoutModel? checkout =
+              ref.read(checkoutProvider).valueOrNull;
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
-            extra: confirmed.orderGroup.orders,
+            extra: checkout?.orderGroup.orders ?? const <OrderModel>[],
           );
         },
         error: (Object error, StackTrace stackTrace) =>
