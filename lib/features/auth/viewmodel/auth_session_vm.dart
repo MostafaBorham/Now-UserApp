@@ -117,10 +117,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     }
   }
 
-  /// Fetches every request a logged-in user needs, in parallel, and marks the
-  /// dependencies [AppDependenciesStatus.ready] once they all settle. This is
-  /// the app's single init point for session-dependent data — add new providers
-  /// to the wait list here rather than firing them from a screen.
   Future<void> _loadUserDependencies() async {
     await Future.wait(<Future<void>>[
       _ref.read(getMyOrdersProvider.notifier).getOrders(),
@@ -130,11 +126,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
 
     state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
   }
-
-  /// Invalidates every app-level provider that holds session-dependent data, so
-  /// a logout leaves none of the previous user's data behind. The **only**
-  /// invalidation site in the app — add new session-dependent providers here.
-  /// The auth/session provider itself is never invalidated: it must stay alive.
   void _disposeUserDependencies() {
     _ref.invalidate(getMyOrdersProvider);
   }

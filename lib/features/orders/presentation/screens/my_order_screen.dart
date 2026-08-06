@@ -52,7 +52,6 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     }
   }
 
-  /// Loads the next page once the user scrolls within 200px of the bottom.
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {

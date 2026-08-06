@@ -21,12 +21,6 @@ class GetMyOrdersViewModel
   final ValueNotifier<AsyncValue<bool>> loadMoreState =
       ValueNotifier<AsyncValue<bool>>(const AsyncValue<bool>.data(true));
 
-  /// Loads the first page (always page 1) and drives the full-screen [state].
-  ///
-  /// Used on screen open, pull-to-refresh and retry-from-error — every case
-  /// that should reload the list from scratch. Always starts from a plain
-  /// loading state (shimmer) and ends in either data or error; it never touches
-  /// pagination. Subsequent pages are the job of [loadMore].
   Future<void> getOrders() async {
     state = const AsyncValue<PaginationModel<OrderModel>>.loading();
 
@@ -49,12 +43,7 @@ class GetMyOrdersViewModel
     );
   }
 
-  /// Loads the next page and appends it to the list, reporting its progress
-  /// through [loadMoreState] (never through [state], so the visible list is
-  /// never replaced by a shimmer). Called when the list reaches its end.
-  ///
-  /// No-ops when there is no first page yet, when there are no more pages, or
-  /// when a load-more request is already in flight.
+
   Future<void> loadMore() async {
     final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
 
@@ -79,6 +68,7 @@ class GetMyOrdersViewModel
         );
       },
       (PaginationModel<OrderModel> newPage) {
+        // Append the freshly fetched page to the visible list.
         state = AsyncValue<PaginationModel<OrderModel>>.data(
           currentPage.appendPage(newPage),
         );
@@ -87,8 +77,7 @@ class GetMyOrdersViewModel
     );
   }
 
-  /// Shared single-page request against the repo. Both [getOrders] and
-  /// [loadMore] go through here so the actual API call lives in one place.
+
   Future<Either<Failure, PaginationModel<OrderModel>>> _fetchPage(int page) {
     return _repo.getMyOrders(page: page);
   }
