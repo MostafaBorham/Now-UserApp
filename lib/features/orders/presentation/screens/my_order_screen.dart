@@ -26,6 +26,12 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   final ScrollController _scrollController = ScrollController();
   late final GetMyOrdersViewModel viewModel;
 
+  /// Guards the one-shot auto-retry: the app pre-fetches orders on session
+  /// start, and if that failed the screen opens on a stale error state. We
+  /// silently retry once (showing the shimmer, not the error widget) and only
+  /// surface the error widget if that retry also fails.
+  bool _didAutoRetry = false;
+
   @override
   void initState() {
     super.initState();
@@ -69,11 +75,22 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
       appBarTitle: LangKeys.myOrdersKey.tr(),
       body: ordersState.when(
         loading: () => OrderListViewShimmer(),
-        error: (Object error, StackTrace stackTrace) =>
-            ServerConnectionErrorWidget(
-              message: error.toString(),
-              onRetry: viewModel.getOrders,
-            ),
+        error: (Object error, StackTrace stackTrace) {
+          // First time we land on an error state (a stale pre-fetch failure),
+          // show the shimmer and silently retry once — after this frame, since
+          // a provider cannot be modified during build.
+          if (!_didAutoRetry) {
+            _didAutoRetry = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) viewModel.getOrders();
+            });
+            return OrderListViewShimmer();
+          }
+          return ServerConnectionErrorWidget(
+            message: error.toString(),
+            onRetry: viewModel.getOrders,
+          );
+        },
         data: (PaginationModel<OrderModel> orders) {
           final List<OrderModel> items = orders.data;
 
