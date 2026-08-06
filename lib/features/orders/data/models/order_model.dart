@@ -30,7 +30,11 @@ class OrderModel {
   /// carries (`id`, `name`, `phone`) — not the authenticated-user model.
   final OrderUserModel user;
 
-  final String? status;
+  /// The order status. The API may send it either as a plain string or as a
+  /// translation map (`{'ar': ..., 'en': ...}`); a plain string is normalized
+  /// to a map with both languages set to it, so the presentation layer always
+  /// reads it through [BuildContext.getLocalizedApiText].
+  final Map<String, dynamic>? status;
   final String? paymentStatus;
   final double subtotal;
   final double tax;
@@ -50,10 +54,15 @@ class OrderModel {
   final String? acceptedAt;
   final String? preparedAt;
   final String? pickedUpAt;
-  final String? deliveredAt;
   final String? cancelledAt;
   final String? createdAt;
   final String? updatedAt;
+
+  /// The delivered-at value. Like [status], the API may send it as a plain
+  /// string or as a translation map (`{'ar': ..., 'en': ...}`); a plain string
+  /// is normalized to a map with both languages set to it, so the presentation
+  /// layer reads it through [BuildContext.getLocalizedApiText].
+  final Map<String, dynamic>? deliveredAt;
 
   final List<ProductModel> items;
 
@@ -111,7 +120,9 @@ class OrderModel {
         'logo_url': vendor?['logo_url'],
       }),
       user: OrderUserModel.fromJson(json['user'] as Map<String, dynamic>?),
-      status: json['status']?.toString(),
+      status: (json['status'] is String)
+          ? {'ar': json['status'] as String, 'en': json['status'] as String}
+          : json['status'],
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:
@@ -141,7 +152,12 @@ class OrderModel {
       acceptedAt: json['accepted_at']?.toString(),
       preparedAt: json['prepared_at']?.toString(),
       pickedUpAt: json['picked_up_at']?.toString(),
-      deliveredAt: json['delivered_at']?.toString(),
+      deliveredAt: (json['delivered_at'] is String)
+          ? {
+              'ar': json['delivered_at'] as String,
+              'en': json['delivered_at'] as String,
+            }
+          : json['delivered_at'],
       cancelledAt: json['cancelled_at']?.toString(),
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),

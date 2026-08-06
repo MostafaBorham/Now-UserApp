@@ -23,20 +23,7 @@ import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dar
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
-/// The checkout screen is deliberately *not* wrapped in a top-level
-/// `AsyncValue.when`: the whole page would then be discarded and rebuilt every
-/// time the draft resolves or refreshes (applying a coupon, for one), throwing
-/// away the local state of the tip picker, the notes field and the payment list.
-///
-/// Instead the body is built exactly once and the draft is pushed down through
-/// [checkoutModelProvider], so each section subscribes to just the slice it
-/// renders. Only [CheckoutBrandCardsSection] and [InvoiceSummarySection] have a
-/// loading state — everything else shows real content from the first frame.
-///
-/// The draft itself is *not* requested here: the cart screen fires it and only
-/// navigates once it resolved, so [checkoutProvider] already holds the data on
-/// the first frame. [storeId] is kept only to re-fire the very same request
-/// when the user retries after a failure.
+
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key, this.storeId});
 
@@ -49,13 +36,11 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
-  /// Owned here — and mutated through callbacks without `setState` — so the
-  /// widgets reporting them are never rebuilt by their own input.
+
   double _driverTip = 0;
   String _notes = '';
 
-  /// The default-address id reported by [DeliveryAddressCard], used at confirm
-  /// time instead of reading it from the order group.
+
   int? _addressId;
 
   void _onConfirmOrder() {
@@ -96,8 +81,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     ) {
       next.whenOrNull(
         data: (CheckoutModel? confirmed) {
-          // The idle state is `AsyncData(null)`; only the real, non-null
-          // response should trigger navigation.
           if (confirmed == null) return;
           context.pushReplacementNamed(AppRoutes.orderConfirmedScreen);
         },

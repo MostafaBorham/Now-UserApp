@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -26,12 +27,20 @@ class OrderListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
 
-    // The lifecycle timestamps arrive as raw ISO-8601 strings; show the date
-    // part of whichever is furthest along (delivered → created).
-    final String rawDate = orderModel.deliveredAt ?? orderModel.createdAt ?? '';
+    // deliveredAt may be a localized text map; createdAt is a raw ISO-8601
+    // string. Show the delivered value when present, otherwise fall back to the
+    // created date, taking the date part of whichever is furthest along.
+    final String deliveredText = context.getLocalizedApiText(
+      orderModel.deliveredAt,
+    );
+    final String rawDate = deliveredText.isNotEmpty
+        ? deliveredText
+        : (orderModel.createdAt ?? '');
     final String orderDate = rawDate.contains('T')
         ? rawDate.split('T').first
         : rawDate;
+
+    final String statusText = context.getLocalizedApiText(orderModel.status);
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -133,7 +142,9 @@ class OrderListItem extends ConsumerWidget {
                             borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
-                            orderModel.status ?? LangKeys.pendingKey.tr(),
+                            statusText.isEmpty
+                                ? LangKeys.pendingKey.tr()
+                                : statusText,
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.onErrorContainer,
                             ),
