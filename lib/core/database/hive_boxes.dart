@@ -9,4 +9,9 @@ abstract class HiveBoxes {
   /// Box storing the user's recent *address* search keywords. Kept apart from
   /// [recentSearches] so a picked area never shows up as a product keyword.
   static const String recentAddressSearches = 'recent_address_searches_box';
+
+  /// Box storing the signed-in user's cached my-orders list (the accumulated
+  /// paginated payload) together with its freshness flag, so the orders screen
+  /// can render from local storage when the server is unreachable.
+  static const String myOrders = 'my_orders_box';
 }
