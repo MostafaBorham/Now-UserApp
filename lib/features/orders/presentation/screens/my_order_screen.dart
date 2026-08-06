@@ -59,8 +59,12 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    // Only load more once the very end of the list is fully visible on screen.
+    // `extentAfter` is the amount of scrollable content still hidden below the
+    // viewport, so it reaches 0 exactly when no part of the list tail is
+    // clipped off-screen — unlike a fixed pixel threshold, which re-fires while
+    // the user is still near (but not at) the bottom with the tail cut off.
+    if (_scrollController.position.extentAfter <= 0) {
       viewModel.loadMore();
     }
   }
