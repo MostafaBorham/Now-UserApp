@@ -12,14 +12,18 @@ class FavouritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return AppWavedView(
-      body: AppTabBar(
-        tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
-        views: [FavouriteProductTabView(), FavouriteStoreTabView()],
-        selectedTabColor: colors.primary,
+    // Scaffold supplies the Material ancestor the card InkWells need — the same
+    // wrapper CategoryDetailsScreen uses around AppWavedView.
+    return Scaffold(
+      body: AppWavedView(
+        body: AppTabBar(
+          tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
+          views: const [FavouriteProductTabView(), FavouriteStoreTabView()],
+          selectedTabColor: colors.primary,
+        ),
+        appBarTitle: LangKeys.favouriteKey.tr(),
+        canPop: context.canPop(),
       ),
-      appBarTitle: LangKeys.favouriteKey.tr(),
-      canPop: context.canPop(),
     );
   }
 }

@@ -28,6 +28,24 @@ void main() {
       expect(ProductModel.fromJson({'id': 1}).images, isEmpty);
     });
 
+    test('falls back to primary_image when the gallery is absent (list cards)',
+        () {
+      final model = ProductModel.fromJson({
+        'primary_image': {'download_url': 'primary.png'},
+      });
+      expect(model.images, ['primary.png']);
+    });
+
+    test('gallery wins over primary_image when both are present', () {
+      final model = ProductModel.fromJson({
+        'images': [
+          {'download_url': 'a.png'},
+        ],
+        'primary_image': {'download_url': 'primary.png'},
+      });
+      expect(model.images, ['a.png']);
+    });
+
     test('price parses from a string and falls back to 0.0 when absent', () {
       expect(ProductModel.fromJson({'price': '12.50'}).price, 12.5);
       expect(ProductModel.fromJson({'price': 10}).price, 10.0);

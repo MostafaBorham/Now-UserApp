@@ -18,9 +18,19 @@ import '../../../features/favourites/presentation/widgets/circular_app_favourite
 import 'rate/app_rate_widget.dart';
 
 class StoreItem extends StatefulWidget {
-  const StoreItem({super.key, this.storeModel, this.onTap});
+  const StoreItem({
+    super.key,
+    this.storeModel,
+    this.onTap,
+    this.onFavouriteChanged,
+  });
   final StoreModel? storeModel;
   final VoidCallback? onTap;
+
+  /// Forwarded to the heart button — fired with the new status after a
+  /// successful favourite toggle. Lets a list remove the card when it is
+  /// unfavourited (see the favourites screen).
+  final ValueChanged<bool>? onFavouriteChanged;
   @override
   State<StoreItem> createState() => _StoreItemState();
 }
@@ -79,7 +89,7 @@ class _StoreItemState extends State<StoreItem> {
                             favouriteType: FavouriteType.store,
                             itemId: widget.storeModel?.id,
                             isFavourite: widget.storeModel?.isFavorite,
-                            onFavouriteChanged: (currentFavourite) {},
+                            onFavouriteChanged: widget.onFavouriteChanged,
                           ),
                         ),
                       ),
