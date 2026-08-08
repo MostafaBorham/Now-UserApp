@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single FAQ question and its answer.
-class FaqItem {
-  const FaqItem({required this.question, required this.answer});
-
-  final String question;
-  final String answer;
-}
-
-/// An expandable FAQ card: the question with a chevron, and — when [expanded]
-/// — the answer beneath. Tapping anywhere toggles it via [onTap].
+/// An expandable FAQ card: the [question] with a chevron, and — when [expanded]
+/// — the [answer] beneath. Tapping anywhere toggles it via [onTap].
 class FaqTile extends StatelessWidget {
   const FaqTile({
     super.key,
-    required this.item,
+    required this.question,
+    required this.answer,
     required this.expanded,
     this.onTap,
   });
 
-  final FaqItem item;
+  final String question;
+  final String answer;
   final bool expanded;
   final VoidCallback? onTap;
 
@@ -42,7 +36,7 @@ class FaqTile extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      item.question,
+                      question,
                       style: TextStyle(
                         fontSize: 16,
                         height: 1.3,
@@ -64,7 +58,7 @@ class FaqTile extends StatelessWidget {
               if (expanded) ...[
                 const SizedBox(height: 10),
                 Text(
-                  item.answer,
+                  answer,
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.45,

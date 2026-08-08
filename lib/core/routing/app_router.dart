@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/features/categories/presentation/screens/ca
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nowdelivery_user_app/features/discount/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
-import 'package:nowdelivery_user_app/features/privacy/privacy_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';

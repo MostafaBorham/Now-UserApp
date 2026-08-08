@@ -232,6 +232,7 @@ abstract class LangKeys {
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';
+  static const String noFaqsYetKey = 'noFaqsYet';
   static const String serverConnectionFailedKey = 'serverConnectionFailed';
   static const String unableToReachServersKey = 'unableToReachServers';
   static const String retryKey = 'retry';

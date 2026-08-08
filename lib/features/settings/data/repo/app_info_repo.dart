@@ -14,9 +14,6 @@ import 'package:nowdelivery_user_app/features/settings/data/models/app_info_mode
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class AppInfoRepo {
   final AppInfoApiService _appInfoApiService = AppInfoApiService();
-
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _appInfoApiService.cancelRequests();
 
   Future<Either<Failure, AppInfoModel>> getAppInfo() async {
