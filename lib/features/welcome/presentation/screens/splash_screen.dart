@@ -6,6 +6,8 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
+import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
+import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -17,12 +19,30 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _logoController;
+  ProviderSubscription<AsyncValue<AppInfoModel>>? _appInfoSub;
 
   @override
   void initState() {
     super.initState();
     _logoController = AnimationController(vsync: this);
     _logoController.addStatusListener(_logoAnimationListener);
+
+    // Always warm up the (kept-alive) application-information provider here so
+    // the FAQ/privacy screens reuse the data instead of refetching. If the
+    // warm-up fails, drop this subscription first, then invalidate the errored
+    // instance — so it is disposed with no listeners and gets recreated (and
+    // refetched) automatically the next time a screen opens it, rather than
+    // inheriting the cached error.
+    _appInfoSub = ref.listenManual(
+      getAppInfoProvider,
+      (AsyncValue<AppInfoModel>? previous, AsyncValue<AppInfoModel> next) {
+        if (next is AsyncError) {
+          _appInfoSub?.close();
+          _appInfoSub = null;
+          ref.invalidate(getAppInfoProvider);
+        }
+      },
+    );
   }
 
   @override
@@ -93,6 +113,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
+    _appInfoSub?.close();
     _logoController.removeStatusListener(_logoAnimationListener);
     _logoController.dispose();
     super.dispose();

@@ -15,12 +15,7 @@ import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm
 import '../widgets/faq_tile.dart';
 import '../widgets/faq_tile_shimmer.dart';
 
-/// FAQ screen: a list of expandable question cards fed by [getAppInfoProvider].
-///
-/// Watches the application-information [AsyncValue] and renders the FAQ list
-/// from [FaqModel]; localized `question` / `answer` maps are resolved for the
-/// current locale via [LocaleExt.getLocalizedApiText]. Any number of tiles can
-/// be open and the first one is open by default.
+
 class FaqScreen extends ConsumerStatefulWidget {
   const FaqScreen({super.key});
 
@@ -37,8 +32,6 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
     });
   }
 
-  /// Single entry point for (re)loading the application information — shared by
-  /// the error-state retry and the pull-to-refresh gesture.
   Future<void> _loadAppInfo() =>
       ref.read(getAppInfoProvider.notifier).getAppInfo();
 

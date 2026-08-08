@@ -22,8 +22,6 @@ class PrivacyPolicyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<AppInfoModel> appInfoState = ref.watch(getAppInfoProvider);
 
-    /// Single entry point for (re)loading the application information — shared
-    /// by the error-state retry and the pull-to-refresh gesture.
     Future<void> loadAppInfo() =>
         ref.read(getAppInfoProvider.notifier).getAppInfo();
 
@@ -62,8 +60,6 @@ class PrivacyPolicyScreen extends ConsumerWidget {
                 terms.isEmpty && privacy.isEmpty && about.isEmpty;
             final TextStyle titleStyle = AppTextStyles.style18Medium;
 
-            // The header text is static; only the effective date is dynamic,
-            // taken from the privacy block's `updated_at` (parsed in the model).
             final DateTime? updatedAt = DateTime.tryParse(
               content?.privacyUpdatedAt ?? '',
             );

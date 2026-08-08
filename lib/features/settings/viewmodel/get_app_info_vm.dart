@@ -6,18 +6,19 @@ import 'package:nowdelivery_user_app/features/settings/data/repo/app_info_repo.d
 /// Single task: fetch the application information (FAQs + terms/privacy/about)
 /// for the settings, FAQ and privacy screens.
 ///
-/// The fetch starts as soon as the provider is first watched, so screens only
-/// need to `ref.watch(getAppInfoProvider)` and render the [AsyncValue].
-/// Retry with `ref.read(getAppInfoProvider.notifier).getAppInfo()`.
+/// Kept alive (not `autoDispose`) so the fetched data is preloaded once on the
+/// splash screen and reused across the settings/FAQ/privacy screens. The fetch
+/// fires as soon as the view model is constructed — the first time the provider
+/// is read/watched — so screens only need to `ref.watch(getAppInfoProvider)`
+/// and render the [AsyncValue]. Retry with
+/// `ref.read(getAppInfoProvider.notifier).getAppInfo()`.
 final getAppInfoProvider =
-    StateNotifierProvider.autoDispose<GetAppInfoViewModel,
-        AsyncValue<AppInfoModel>>(
-  (Ref ref) =>
-      GetAppInfoViewModel(const AsyncValue.loading())..getAppInfo(),
+    StateNotifierProvider<GetAppInfoViewModel, AsyncValue<AppInfoModel>>(
+  (Ref ref) => GetAppInfoViewModel()..getAppInfo(),
 );
 
 class GetAppInfoViewModel extends StateNotifier<AsyncValue<AppInfoModel>> {
-  GetAppInfoViewModel(super.initialState);
+  GetAppInfoViewModel() : super(const AsyncValue.loading());
 
   final AppInfoRepo _repo = AppInfoRepo();
 
