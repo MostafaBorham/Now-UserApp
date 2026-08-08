@@ -264,6 +264,7 @@
   "deliveryAddress": "Delivery Address",
   "edit": "Edit",
   "noAddress": "No Address",
+  "pleaseSelectAddress": "Please select a delivery address first",
   "choosePaymentMethod": "Choose Payment Method",
   "addWallet": "+ Add Wallet",
   "tipYourDriver": "Tip your driver",

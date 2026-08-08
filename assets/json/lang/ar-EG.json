@@ -265,6 +265,7 @@
   "deliveryAddress": "عنوان التسليم",
   "edit": "تعديل",
   "noAddress": "لا يوجد عنوان",
+  "pleaseSelectAddress": "من فضلك اختر عنوان التسليم أولاً",
   "choosePaymentMethod": "اختر طريقة الدفع",
   "addWallet": "+ إضافة محفظة",
   "tipYourDriver": "إكرامية السائق",

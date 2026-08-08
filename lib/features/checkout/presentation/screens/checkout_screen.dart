@@ -51,6 +51,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     if (checkout == null) return;
 
+    // Block the order until a delivery address is resolved: with no default (or
+    // chosen) address there's no id to send, so surface an error and stop here
+    // instead of firing the request with a placeholder id.
+    if (_addressId == null) {
+      ErrorSnackBar.show(context, LangKeys.pleaseSelectAddressKey.tr());
+      return;
+    }
+
     final String? orderGroupUuid = checkout.orderGroup.uuid;
     final String? paymentMethod = checkout.orderGroup.paymentMethod;
     final List<AppliedCouponModel> coupons = ref.read(appliedCouponsProvider);
@@ -59,7 +67,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         .read(confirmOrderProvider.notifier)
         .confirmOrder(
           orderGroupUuid: orderGroupUuid ?? '',
-          addressId: _addressId ?? 3,
+          addressId: _addressId!,
           paymentMethod: paymentMethod,
           driverTip: _driverTip,
           notes: _notes.trim().isEmpty ? null : _notes.trim(),
