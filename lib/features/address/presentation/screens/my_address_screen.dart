@@ -44,6 +44,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
     final AsyncValue<List<AddressModel>> addressesState = ref.watch(
       getMyAddressesProvider,
     );
@@ -77,6 +78,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
+                spacing: screenSize.width*0.05,
                 children: [
                   if (addresses.isEmpty)
                     const NoItemsWidget(emptyMessage: 'No Addresses Yet')

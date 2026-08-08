@@ -28,6 +28,20 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
     super.dispose();
   }
 
+
+  void setDefaultFromAddresses({required List<AddressModel> addresses}) {
+    AddressModel? defaultAddress;
+
+    for (final AddressModel address in addresses) {
+      if (address.isDefault ?? false) {
+        defaultAddress = address;
+        break;
+      }
+    }
+
+    state = AsyncValue.data(defaultAddress);
+  }
+
   Future<void> setDefaultAddress({required int addressId}) async {
     state = const AsyncValue.loading();
 

@@ -39,6 +39,9 @@ class GetMyAddressesViewModel
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (List<AddressModel> addresses) {
+        _ref
+            .read(defaultAddressProvider.notifier)
+            .setDefaultFromAddresses(addresses: addresses);
         return AsyncValue.data(addresses);
       },
     );
