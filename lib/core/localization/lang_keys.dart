@@ -44,6 +44,15 @@ abstract class LangKeys {
   static const String privacyPolicy = 'privacyPolicy';
   static const String logout = 'logout';
 
+  // Privacy screen header (static labels; the date comes from the backend)
+  static const String privacyEffectiveDate = 'privacyEffectiveDate';
+  static const String privacyIntro = 'privacyIntro';
+
+  // Privacy screen section titles (content comes from the app-info backend)
+  static const String appTerms = 'appTerms';
+  static const String appPrivacy = 'appPrivacy';
+  static const String appAbout = 'appAbout';
+
   // Categories & favourites
   static const String productsKey = 'products';
   static const String storesKey = 'stores';
