@@ -77,6 +77,18 @@ abstract class AppRouter {
     return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
   }
 
+  /// Wraps every routed screen so the OS/system back affordance (Android
+  /// hardware button, iOS edge-swipe, predictive back) is swallowed on any
+  /// screen that has something to pop. In-app back is left solely to each
+  /// screen's circular app-bar button, which pops via [GoRouter.pop] — a forced
+  /// navigator pop that [PopScope] does not block.
+  ///
+  /// Root screens (nothing below them in the stack, e.g. splash / onboarding /
+  /// main) keep the default behaviour so the hardware back still exits the app
+  /// instead of trapping the user on a screen with no back button.
+  static Widget _blockSystemBack(BuildContext context, Widget child) =>
+      PopScope(canPop: !context.canPop(), child: child);
+
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     errorBuilder: (context, state) => const SizedBox.shrink(),
@@ -84,7 +96,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.splashScreen,
         path: '/',
-        builder: (context, state) => const SplashScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const SplashScreen()),
       ),
       GoRoute(
         name: AppRoutes.onBoardingScreen,
@@ -98,27 +111,32 @@ abstract class AppRouter {
 
           return hasToken ? '/${AppRoutes.mainScreen}' : null;
         },
-        builder: (context, state) => const OnBoardingScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const OnBoardingScreen()),
       ),
       GoRoute(
         name: AppRoutes.cartScreen,
         path: '/${AppRoutes.cartScreen}',
-        builder: (context, state) => const CartScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const CartScreen()),
       ),
       GoRoute(
         name: AppRoutes.mainScreen,
         path: '/${AppRoutes.mainScreen}',
-        builder: (context, state) => const MainScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const MainScreen()),
       ),
       GoRoute(
         name: AppRoutes.orderDetailsScreen,
         path: '/${AppRoutes.orderDetailsScreen}',
-        builder: (context, state) => const OrderDetailsScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const OrderDetailsScreen()),
       ),
       GoRoute(
         name: AppRoutes.categoriesScreen,
         path: '/${AppRoutes.categoriesScreen}',
-        builder: (context, state) => const CategoriesScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const CategoriesScreen()),
       ),
       GoRoute(
         name: AppRoutes.categoryDetailsScreen,
@@ -126,55 +144,67 @@ abstract class AppRouter {
         builder: (context, state) {
           final category = state.extra as CategoryModel;
 
-          return CategoryDetailsScreen(category: category);
+          return _blockSystemBack(
+            context,
+            CategoryDetailsScreen(category: category),
+          );
         },
       ),
       GoRoute(
         name: AppRoutes.favouritesScreen,
         path: '/${AppRoutes.favouritesScreen}',
-        builder: (context, state) => const FavouritesScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const FavouritesScreen()),
       ),
       GoRoute(
         name: AppRoutes.walletScreen,
         path: '/${AppRoutes.walletScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const WalletScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const WalletScreen()),
       ),
       GoRoute(
         name: AppRoutes.fileComplaintScreen,
         path: '/${AppRoutes.fileComplaintScreen}',
-        builder: (context, state) => const FileComplaintScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const FileComplaintScreen()),
       ),
       GoRoute(
         name: AppRoutes.topBrandsScreen,
         path: '/${AppRoutes.topBrandsScreen}',
-        builder: (context, state) => const TopBrandsScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const TopBrandsScreen()),
       ),
       GoRoute(
         name: AppRoutes.mostPopularScreen,
         path: '/${AppRoutes.mostPopularScreen}',
-        builder: (context, state) => const MostPopularScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const MostPopularScreen()),
       ),
       GoRoute(
         name: AppRoutes.offersCannotWaitScreen,
         path: '/${AppRoutes.offersCannotWaitScreen}',
-        builder: (context, state) => const OffersCannotWaitScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const OffersCannotWaitScreen()),
       ),
       GoRoute(
         name: AppRoutes.notificationsScreen,
         path: '/${AppRoutes.notificationsScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const NotificationsScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const NotificationsScreen()),
       ),
       GoRoute(
         name: AppRoutes.searchScreen,
         path: '/${AppRoutes.searchScreen}',
-        builder: (context, state) => const SearchScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const SearchScreen()),
       ),
       GoRoute(
         name: AppRoutes.allStoresScreen,
         path: '/${AppRoutes.allStoresScreen}',
-        builder: (context, state) => const AllStoresScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const AllStoresScreen()),
       ),
       GoRoute(
         name: AppRoutes.viewStoreCategoryProductsScreen,
@@ -182,9 +212,12 @@ abstract class AppRouter {
         builder: (context, state) {
           final args = state.extra as ({int storeId, CategoryModel category})?;
 
-          return ViewStoreCategoryProductsScreen(
-            storeId: args?.storeId ?? 0,
-            category: args?.category ?? const CategoryModel(),
+          return _blockSystemBack(
+            context,
+            ViewStoreCategoryProductsScreen(
+              storeId: args?.storeId ?? 0,
+              category: args?.category ?? const CategoryModel(),
+            ),
           );
         },
       ),
@@ -194,7 +227,10 @@ abstract class AppRouter {
         builder: (context, state) {
           final storeId = state.extra as int?;
 
-          return StoreDetailsScreen(storeId: storeId ?? 0);
+          return _blockSystemBack(
+            context,
+            StoreDetailsScreen(storeId: storeId ?? 0),
+          );
         },
       ),
       GoRoute(
@@ -203,24 +239,30 @@ abstract class AppRouter {
         builder: (context, state) {
           final productSlug = state.extra as String?;
 
-          return ProductDetailsScreen(productSlug: productSlug ?? '');
+          return _blockSystemBack(
+            context,
+            ProductDetailsScreen(productSlug: productSlug ?? ''),
+          );
         },
       ),
       GoRoute(
         name: AppRoutes.addPaymentCard,
         path: '/${AppRoutes.addPaymentCard}',
-        builder: (context, state) => const AddPaymentCardScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const AddPaymentCardScreen()),
       ),
       GoRoute(
         name: AppRoutes.paymentMethodsScreen,
         path: '/${AppRoutes.paymentMethodsScreen}',
-        builder: (context, state) => const PaymentMethodsScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const PaymentMethodsScreen()),
       ),
       GoRoute(
         name: AppRoutes.phoneVerificationScreen,
         path: '/${AppRoutes.phoneVerificationScreen}',
         redirect: _redirectLoggedInUserToMain,
-        builder: (context, state) => const PhoneVerificationScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const PhoneVerificationScreen()),
       ),
       GoRoute(
         name: AppRoutes.otpVerificationScreen,
@@ -229,31 +271,40 @@ abstract class AppRouter {
         builder: (context, state) {
           final phoneNumber = state.extra as String?;
 
-          return OtpVerificationScreen(phoneNumber: phoneNumber ?? '');
+          return _blockSystemBack(
+            context,
+            OtpVerificationScreen(phoneNumber: phoneNumber ?? ''),
+          );
         },
       ),
       GoRoute(
         name: AppRoutes.personalInformationScreen,
         path: '/${AppRoutes.personalInformationScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const PersonalInformationScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const PersonalInformationScreen()),
       ),
       GoRoute(
         name: AppRoutes.orderConfirmedScreen,
         path: '/${AppRoutes.orderConfirmedScreen}',
-        builder: (context, state) => OrderConfirmedScreen(
-          orders: state.extra as List<OrderModel>? ?? const <OrderModel>[],
+        builder: (context, state) => _blockSystemBack(
+          context,
+          OrderConfirmedScreen(
+            orders: state.extra as List<OrderModel>? ?? const <OrderModel>[],
+          ),
         ),
       ),
       GoRoute(
         name: AppRoutes.trackOrderScreen,
         path: '/${AppRoutes.trackOrderScreen}',
-        builder: (context, state) => const TrackOrderScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const TrackOrderScreen()),
       ),
       GoRoute(
         name: AppRoutes.paymentFailedScreen,
         path: '/${AppRoutes.paymentFailedScreen}',
-        builder: (context, state) => const PaymentFailedScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const PaymentFailedScreen()),
       ),
       GoRoute(
         name: AppRoutes.checkoutScreen,
@@ -262,14 +313,17 @@ abstract class AppRouter {
         // (isGuest == true) or no session at all is rerouted to phone
         // verification to log in; a registered user continues to checkout.
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            CheckoutScreen(storeId: state.extra as int?),
+        builder: (context, state) => _blockSystemBack(
+          context,
+          CheckoutScreen(storeId: state.extra as int?),
+        ),
       ),
       GoRoute(
         name: AppRoutes.myAddressScreen,
         path: '/${AppRoutes.myAddressScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const MyAddressScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const MyAddressScreen()),
       ),
       GoRoute(
         name: AppRoutes.addressDetailsScreen,
@@ -281,14 +335,20 @@ abstract class AppRouter {
           // the map still in the stack — creating a new address).
           final Object? extra = state.extra;
           if (extra is ({AddressModel address, bool fromMap})) {
-            return AddressDetailsScreen(
-              address: extra.address,
-              cameFromMap: extra.fromMap,
+            return _blockSystemBack(
+              context,
+              AddressDetailsScreen(
+                address: extra.address,
+                cameFromMap: extra.fromMap,
+              ),
             );
           }
-          return AddressDetailsScreen(
-            address: extra as AddressModel,
-            isEditScreen: true,
+          return _blockSystemBack(
+            context,
+            AddressDetailsScreen(
+              address: extra as AddressModel,
+              isEditScreen: true,
+            ),
           );
         },
       ),
@@ -297,41 +357,50 @@ abstract class AppRouter {
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
         builder: (context, state) {
           final currentLocation = state.extra as LatLng?;
-          return AddNewAddressFromMap(currentLocation: currentLocation);
+          return _blockSystemBack(
+            context,
+            AddNewAddressFromMap(currentLocation: currentLocation),
+          );
         },
       ),
       GoRoute(
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
-        builder: (context, state) =>
-            AddressSearchScreen(currentLocation: state.extra as LatLng?),
+        builder: (context, state) => _blockSystemBack(
+          context,
+          AddressSearchScreen(currentLocation: state.extra as LatLng?),
+        ),
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,
         path: '/${AppRoutes.discountCodeScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const DiscountCodeScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const DiscountCodeScreen()),
       ),
       GoRoute(
         name: AppRoutes.supportScreen,
         path: '/${AppRoutes.supportScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const SupportScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const SupportScreen()),
       ),
       GoRoute(
         name: AppRoutes.faqScreen,
         path: '/${AppRoutes.faqScreen}',
-        builder: (context, state) => const FaqScreen(),
+        builder: (context, state) => _blockSystemBack(context, const FaqScreen()),
       ),
       GoRoute(
         name: AppRoutes.privacyPolicyScreen,
         path: '/${AppRoutes.privacyPolicyScreen}',
-        builder: (context, state) => const PrivacyPolicyScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const PrivacyPolicyScreen()),
       ),
       GoRoute(
         name: AppRoutes.editInformationScreen,
         path: '/${AppRoutes.editInformationScreen}',
-        builder: (context, state) => const EditInformationScreen(),
+        builder: (context, state) =>
+            _blockSystemBack(context, const EditInformationScreen()),
       ),
     ],
   );
