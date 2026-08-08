@@ -14,4 +14,10 @@ abstract class HiveBoxes {
   /// paginated payload) together with its freshness flag, so the orders screen
   /// can render from local storage when the server is unreachable.
   static const String myOrders = 'my_orders_box';
+
+  /// Box storing the cached application-information payload (the `content`
+  /// text blocks and FAQs from `GET /api/v1/application-information`), so the
+  /// privacy / FAQ screens can render from local storage when the server is
+  /// unreachable.
+  static const String appInfo = 'app_info_box';
 }

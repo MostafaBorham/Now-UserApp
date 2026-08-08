@@ -22,4 +22,10 @@ abstract class HiveKeys {
   /// fetch, `false` when a cache write failed and the local copy no longer
   /// matches the server.
   static const String myOrdersIsUpdated = 'orders_is_updated';
+
+  /// Key inside [HiveBoxes.appInfo] holding the JSON-encoded `String` payload of
+  /// the application-information response (`AppInfoModel.toJson`). Stored as a
+  /// JSON string so it round-trips through `AppInfoModel.fromJson` with proper
+  /// `String`-keyed maps.
+  static const String appInfoPayload = 'app_info_payload';
 }
