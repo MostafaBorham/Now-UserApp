@@ -3,7 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
 
 abstract class AppThemes {
   static ThemeData getLightModeTheme() => ThemeData(
-    fontFamily: FontFamily.ibmPlexSans,
+    fontFamily: FontFamily.cairo,
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Color(0xff4BB749),
@@ -50,7 +50,7 @@ abstract class AppThemes {
   );
   //////////////////////////////////////////////////////////////////////////////
   static ThemeData getDarkModeTheme() => ThemeData(
-    fontFamily: FontFamily.ibmPlexSans,
+    fontFamily: FontFamily.cairo,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),

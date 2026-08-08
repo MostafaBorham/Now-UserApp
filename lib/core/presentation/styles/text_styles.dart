@@ -119,7 +119,7 @@ class AppTextStyles {
 
   static TextStyle get style24SemiBold => TextStyle(
     fontSize: 24,
-    fontFamily: FontFamily.ibmPlexSans,
+    fontFamily: FontFamily.cairo,
     fontWeight: FontWeight.w600,
     overflow: TextOverflow.ellipsis,
   );
