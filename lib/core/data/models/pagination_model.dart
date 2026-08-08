@@ -40,6 +40,20 @@ class PaginationModel<T> {
     );
   }
 
+  /// Returns a copy holding [data] in place of the current items while keeping
+  /// every page counter untouched. Used for in-place list edits (optimistic
+  /// add / update / remove) that don't change which page is loaded.
+  PaginationModel<T> copyWithData(List<T> data) {
+    return PaginationModel<T>(
+      currentPage: currentPage,
+      lastPage: lastPage,
+      perPage: perPage,
+      total: total,
+      hasMore: hasMore,
+      data: data,
+    );
+  }
+
   /// Merges a freshly fetched [nextPage] into this one: the counters come from
   /// [nextPage] (it is the page now loaded), the items are this page's followed
   /// by the new ones.

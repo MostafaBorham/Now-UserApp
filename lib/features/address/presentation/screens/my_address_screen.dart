@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -14,12 +15,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/widgets/address_card_shimmer.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/my_addresses_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import '../widgets/add_address_button.dart';
 import '../widgets/address_card.dart';
 
 class MyAddressScreen extends ConsumerStatefulWidget {
@@ -30,22 +31,57 @@ class MyAddressScreen extends ConsumerStatefulWidget {
 }
 
 class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
+  final ScrollController _scrollController = ScrollController();
+  late final GetMyAddressesViewModel viewModel;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+    viewModel = ref.read(getMyAddressesProvider.notifier);
+    viewModel.loadMoreState.addListener(_onLoadMoreStateChanged);
     // Load the saved addresses the first time this screen opens, or retry if a
     // previous open failed; an already-loaded list is kept as-is (no refetch).
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyAddressesProvider).hasValue) {
-        ref.read(getMyAddressesProvider.notifier).getMyAddresses();
+        viewModel.getMyAddresses();
       }
     });
   }
 
   @override
+  void dispose() {
+    viewModel.loadMoreState.removeListener(_onLoadMoreStateChanged);
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  /// Surfaces a load-more failure as an error snackbar, so a paging error is
+  /// shown without replacing the already-visible list with a full-screen error.
+  void _onLoadMoreStateChanged() {
+    final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
+    if (loadMoreState.hasError && mounted) {
+      ErrorSnackBar.show(context, loadMoreState.error.toString());
+    }
+  }
+
+  void _onScroll() {
+    // Only load more once the very end of the list is fully visible on screen.
+    // `extentAfter` is the amount of scrollable content still hidden below the
+    // viewport, so it reaches 0 exactly when no part of the list tail is
+    // clipped off-screen — unlike a fixed pixel threshold, which re-fires while
+    // the user is still near (but not at) the bottom with the tail cut off.
+    if (_scrollController.position.extentAfter <= 0) {
+      viewModel.loadMore();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final AsyncValue<List<AddressModel>> addressesState = ref.watch(
+    final AsyncValue<PaginationModel<AddressModel>> addressesState = ref.watch(
       getMyAddressesProvider,
     );
     final bool isSettingDefault = ref.watch(defaultAddressProvider).isLoading;
@@ -69,63 +105,98 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
           error: (Object error, StackTrace stackTrace) =>
               ServerConnectionErrorWidget(
                 message: error.toString(),
-                onRetry: () =>
-                    ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
+                onRetry: viewModel.getMyAddresses,
               ),
-          data: (List<AddressModel> addresses) => AppRefreshIndicator(
-            onRefresh: () async =>
-                ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                spacing: screenSize.width*0.05,
-                children: [
-                  if (addresses.isEmpty)
-                    const NoItemsWidget(emptyMessage: 'No Addresses Yet')
-                  else
-                    BlockingLoadingOverlay(
-                      isLoading: isSettingDefault,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: addresses.length,
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const SizedBox(height: 16),
-                        itemBuilder: (BuildContext context, int index) =>
-                            AddressCard(
-                              title: context.getLocalizedApiText(
-                                addresses[index].label,
-                              ),
-                              address: addresses[index].fullAddress ?? '',
-                              isDefault: addresses[index].isDefault ?? false,
-                              onSelect: () {
-                                if (addresses[index].isDefault ?? false) return;
-                                ref
-                                    .read(defaultAddressProvider.notifier)
-                                    .setDefaultAddress(
-                                      addressId: addresses[index].id ?? -1,
-                                    );
+          data: (PaginationModel<AddressModel> page) {
+            final List<AddressModel> addresses = page.data;
+
+            return AppRefreshIndicator(
+              onRefresh: viewModel.getMyAddresses,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  spacing: screenSize.width * 0.05,
+                  children: [
+                    if (addresses.isEmpty)
+                      const NoItemsWidget(emptyMessage: 'No Addresses Yet')
+                    else
+                      BlockingLoadingOverlay(
+                        isLoading: isSettingDefault,
+                        child: ValueListenableBuilder<AsyncValue<bool>>(
+                          valueListenable: viewModel.loadMoreState,
+                          builder:
+                              (
+                                BuildContext context,
+                                AsyncValue<bool> value,
+                                Widget? child,
+                              ) {
+                                final int loadingItemsCount = value.isLoading
+                                    ? 3
+                                    : 0;
+                                return ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                      addresses.length + loadingItemsCount,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const SizedBox(height: 16),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                        if (index >= addresses.length) {
+                                          return const AddressCardShimmer();
+                                        }
+                                        return AddressCard(
+                                          title: context.getLocalizedApiText(
+                                            addresses[index].label,
+                                          ),
+                                          address:
+                                              addresses[index].fullAddress ??
+                                              '',
+                                          isDefault:
+                                              addresses[index].isDefault ??
+                                              false,
+                                          onSelect: () {
+                                            if (addresses[index].isDefault ??
+                                                false) {
+                                              return;
+                                            }
+                                            ref
+                                                .read(
+                                                  defaultAddressProvider
+                                                      .notifier,
+                                                )
+                                                .setDefaultAddress(
+                                                  addressId:
+                                                      addresses[index].id ?? -1,
+                                                );
+                                          },
+                                          onEdit: () => context.pushNamed(
+                                            AppRoutes.addressDetailsScreen,
+                                            extra: addresses[index],
+                                          ),
+                                        );
+                                      },
+                                );
                               },
-                              onEdit: () => context.pushNamed(
-                                AppRoutes.addressDetailsScreen,
-                                extra: addresses[index],
-                              ),
-                            ),
+                        ),
+                      ),
+                    PrimaryAppPrefixIconButton(
+                      onTap: () => context.pushNamed(
+                        AppRoutes.addNewAddressFromMapScreen,
+                      ),
+                      title: LangKeys.addNewAddress.tr(),
+                      prefixIcon: Assets.media.images.svg.addCircle.svg(
+                        width: 24,
+                        height: 24,
                       ),
                     ),
-                  PrimaryAppPrefixIconButton(
-                    onTap: () =>
-                        context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
-                    title: LangKeys.addNewAddress.tr(),
-                    prefixIcon: Assets.media.images.svg.addCircle.svg(
-                      width: 24,
-                      height: 24,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

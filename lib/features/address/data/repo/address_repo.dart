@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -16,13 +17,16 @@ class AddressRepo {
   final AddressApiService _addressApiService = AddressApiService();
   void cancelRequests() => _addressApiService.cancelRequests();
 
-  Future<Either<Failure, List<AddressModel>>> getMyAddresses() async {
+  Future<Either<Failure, PaginationModel<AddressModel>>> getMyAddresses({
+    required int page,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _addressApiService.getMyAddresses();
+      final Response response =
+          await _addressApiService.getMyAddresses(page: page);
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
@@ -30,7 +34,11 @@ class AddressRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> data =
+          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+
+      final Map<String, dynamic> paginationData =
+          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
       final List<dynamic> rawAddresses =
           data['addresses'] as List<dynamic>? ?? <dynamic>[];
 
@@ -38,7 +46,9 @@ class AddressRepo {
           .map((dynamic e) => AddressModel.fromJson(e as Map<String, dynamic>))
           .toList();
 
-      return Right(addresses);
+      return Right(
+        PaginationModel<AddressModel>.fromJson(paginationData, addresses),
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =

@@ -19,9 +19,11 @@ class AddressApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getMyAddresses() {
+  Future<Response> getMyAddresses({required int page}) {
+    AddressEndpoints.page = page;
     return _dio.get(
       AddressEndpoints.addresses,
+      queryParameters: AddressEndpoints.getMyAddressesQuery,
       cancelToken: _canceller.token,
     );
   }

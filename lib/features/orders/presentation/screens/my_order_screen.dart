@@ -49,8 +49,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
     super.dispose();
   }
 
-  /// Surfaces a load-more failure as an error snackbar, so a paging error is
-  /// shown without replacing the already-visible list with a full-screen error.
+
   void _onLoadMoreStateChanged() {
     final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
     if (loadMoreState.hasError && mounted) {
