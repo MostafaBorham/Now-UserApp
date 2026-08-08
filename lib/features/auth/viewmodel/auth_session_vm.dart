@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
@@ -120,6 +122,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   Future<void> _loadUserDependencies() async {
     await Future.wait(<Future<void>>[
       _ref.read(getMyOrdersProvider.notifier).getOrders(),
+      _ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
     ]);
 
     if (!mounted) return;
@@ -128,5 +131,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   }
   void _disposeUserDependencies() {
     _ref.invalidate(getMyOrdersProvider);
+    _ref.invalidate(getMyAddressesProvider);
+    _ref.invalidate(defaultAddressProvider);
   }
 }
