@@ -17,6 +17,9 @@ abstract class LangKeys {
   static const String categoriesTitleKey = 'categoriesTitle';
   static const String discountKey = 'discount';
   static const String discountTitle = 'discountScreenTitle';
+  static const String discountValidity = 'discountValidity';
+  static const String discountMinPurchase = 'discountMinPurchase';
+  static const String discountOnAllStores = 'discountOnAllStores';
   static const String rankKey = 'rank';
   static const String newArrivalKey = 'newArrival';
   static const String exclusiveKey = 'exclusive';

@@ -17,7 +17,7 @@ final getCouponsProvider =
     StateNotifierProvider<
       GetCouponsViewModel,
       AsyncValue<PaginationModel<CouponModel>>
-    >((Ref ref) => GetCouponsViewModel(const AsyncValue.loading())..getCoupons());
+    >((Ref ref) => GetCouponsViewModel(const AsyncValue.loading()));
 
 class GetCouponsViewModel
     extends StateNotifier<AsyncValue<PaginationModel<CouponModel>>> {

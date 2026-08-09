@@ -1,42 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-
-/// Data for a single discount coupon shown as a ticket card.
-class DiscountCoupon {
-  const DiscountCoupon({
-    required this.percent,
-    required this.scope,
-    required this.title,
-    required this.validity,
-    required this.minPurchase,
-    required this.code,
-  });
-
-  /// Discount amount without the percent sign, e.g. "20".
-  final String percent;
-
-  /// Where the coupon applies, e.g. "On all stores".
-  final String scope;
-
-  /// Card heading, e.g. "Discount Code".
-  final String title;
-
-  /// Validity window, e.g. "From January 10 to January 31, 2026".
-  final String validity;
-
-  /// Minimum-purchase requirement line.
-  final String minPurchase;
-
-  /// The redeemable code, e.g. "ST-V2586".
-  final String code;
-}
+import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/ticket_clipper.dart';
 
 /// A discount coupon rendered as a perforated "ticket".
 ///
 /// The left value panel shows the percentage and scope; the right body panel
 /// shows the code details plus the vertical "now" brand logo. A semicircular
-/// notch is punched into the top and bottom edges (see [_TicketClipper]) so
+/// notch is punched into the top and bottom edges (see [TicketClipper]) so
 /// stacked cards read as tear-off tickets.
 ///
 /// Two variants alternate down the list:
@@ -50,26 +25,62 @@ class DiscountCard extends StatelessWidget {
     this.onCopy,
   });
 
-  final DiscountCoupon coupon;
+  final CouponModel coupon;
   final bool dark;
 
   /// Called when the code chip is tapped.
   final VoidCallback? onCopy;
 
-  static const double _radius = 16;
-  static const double _notchRadius = 17;
+  /// Renders a number without a trailing `.0` (`25.0` → `25`, `12.5` → `12.5`).
+  static String _formatAmount(double? value) {
+    if (value == null) return '';
+    return value == value.roundToDouble()
+        ? value.toInt().toString()
+        : value.toString();
+  }
 
-  /// Horizontal position of the perforation, as a fraction of the card width.
-  static const double _notchFraction = 0.69;
+  static String _formatValidity(String? startsAt, String? expiresAt) {
+    final String start = _dateOnly(startsAt);
+    final String end = _dateOnly(expiresAt);
+    if (start.isEmpty && end.isEmpty) return '';
+    return LangKeys.discountValidity.tr(
+      namedArgs: {'start': start, 'end': end},
+    );
+  }
+
+  static String _dateOnly(String? isoDate) {
+    if (isoDate == null || isoDate.isEmpty) return '';
+    final int tIndex = isoDate.indexOf('T');
+    return tIndex == -1 ? isoDate : isoDate.substring(0, tIndex);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String percent = _formatAmount(coupon.discountValue);
+    final String scope = coupon.type == 'Public'
+        ? LangKeys.discountOnAllStores.tr()
+        : (coupon.type ?? '');
+    final String validity = _formatValidity(coupon.startsAt, coupon.expiresAt);
+    final String minPurchase = LangKeys.discountMinPurchase.tr(
+      namedArgs: {'amount': _formatAmount(coupon.minOrderValue)},
+    );
+    final String code = coupon.code ?? '';
+
     final Color valuePanel = dark
         ? context.colors.surfaceBright
         : context.colors.surface;
-    final Color bodyPanel = dark
-        ? context.colors.secondary100
-        : context.colors.primary100;
+    // Body background is a linear gradient — two amber tints when [dark], two
+    // mint/green tints otherwise — sourced from the app palette.
+    final LinearGradient bodyGradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: dark
+          ? <Color>[
+              context.colors.secondary100.withValues(alpha: 0.2),
+              context.colors.surfaceContainerHighest.withValues(alpha: 0.2),
+            ]
+          : <Color>[context.colors.primary100.withValues(alpha: 0.2), context.colors.primary200.withValues(alpha: 0.2)],
+    );
     final Color percentColor = dark
         ? context.colors.surface
         : context.colors.primaryContainer;
@@ -78,128 +89,120 @@ class DiscountCard extends StatelessWidget {
         : context.colors.tertiaryContainer;
 
     return PhysicalShape(
-      clipper: const _TicketClipper(
-        radius: _radius,
-        notchRadius: _notchRadius,
-        notchFraction: _notchFraction,
-      ),
+      clipper: TicketClipper(textDirection: Directionality.of(context)),
       clipBehavior: Clip.antiAlias,
-      color: bodyPanel,
+      color: bodyGradient.colors.first,
       elevation: 1.5,
       shadowColor: const Color(0x14000000),
-      child: AspectRatio(
-        aspectRatio: 16 / 6,
-        child: Row(
-          children: [
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) => Container(
-                  height: constraints.maxHeight,
-                  color: valuePanel,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: coupon.percent,
-                            style: TextStyle(
-                              fontSize: 40,
-                              height: 1,
-                              fontWeight: FontWeight.w800,
-                              color: percentColor,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: '%',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: percentColor,
-                                ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(gradient: bodyGradient),
+        child: AspectRatio(
+          aspectRatio: 16 / 6,
+          child: Row(
+            children: [
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Container(
+                    height: constraints.maxHeight,
+                    color: valuePanel,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: percent,
+                              style: TextStyle(
+                                fontSize: 40,
+                                height: 1,
+                                fontWeight: FontWeight.w800,
+                                color: percentColor,
                               ),
-                            ],
+                              children: [
+                                TextSpan(
+                                  text: '%',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: percentColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          coupon.scope,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: scopeColor,
+                          const SizedBox(height: 6),
+                          Text(
+                            scope,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: scopeColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // Body panel (right).
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                child: Column(
-                  spacing: 6,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        coupon.title,
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  child: Column(
+                    spacing: 6,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LangKeys.discountTitle.tr(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: context.colors.primaryContainer,
                         ),
                       ),
-                    ),
-
-                    Text(
-                      coupon.validity,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 10,
-                        color: context.colors.neutral500,
+                      Text(
+                        validity,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          color: context.colors.neutral500,
+                        ),
                       ),
-                    ),
-
-                    Text(
-                      coupon.minPurchase,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: context.colors.neutral500,
+                      Text(
+                        minPurchase,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.colors.neutral500,
+                        ),
                       ),
-                    ),
-
-                    _CodeChip(code: coupon.code, onCopy: onCopy),
-                  ],
+                      2.hSpace,
+                      _CodeChip(code: code, onCopy: onCopy),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 14, left: 4),
-              child: Center(
-                child: Assets.media.images.svg.logoVertical.svg(
-                  height: 64,
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 14, start: 4),
+                child: Center(
+                  child: Assets.media.images.svg.logoVertical.svg(height: 90),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -241,40 +244,4 @@ class _CodeChip extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Clips a rounded rectangle with a semicircular notch punched out of the
-/// centre of its top and bottom edges, at [notchFraction] of the width — the
-/// classic tear-off ticket silhouette.
-class _TicketClipper extends CustomClipper<Path> {
-  const _TicketClipper({
-    required this.radius,
-    required this.notchRadius,
-    required this.notchFraction,
-  });
-
-  final double radius;
-  final double notchRadius;
-  final double notchFraction;
-
-  @override
-  Path getClip(Size size) {
-    final double dx = size.width * notchFraction;
-    final Path base = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)),
-      );
-    final Path notches = Path()
-      ..addOval(Rect.fromCircle(center: Offset(dx, 0), radius: notchRadius))
-      ..addOval(
-        Rect.fromCircle(center: Offset(dx, size.height), radius: notchRadius),
-      );
-    return Path.combine(PathOperation.difference, base, notches);
-  }
-
-  @override
-  bool shouldReclip(_TicketClipper oldClipper) =>
-      oldClipper.radius != radius ||
-      oldClipper.notchRadius != notchRadius ||
-      oldClipper.notchFraction != notchFraction;
 }
