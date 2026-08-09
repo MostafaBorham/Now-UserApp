@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 
 class StoreDiscountCouponItem extends StatelessWidget {
   const StoreDiscountCouponItem({super.key, required this.coupon});

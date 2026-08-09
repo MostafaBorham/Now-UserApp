@@ -99,6 +99,41 @@ abstract class PaginatedViewModel<T>
     );
   }
 
+  /// Drops the already-loaded items matching [test] from the current page in
+  /// place, without refetching — for when an item leaves the list as a side
+  /// effect of something on the screen (e.g. unfavouriting on the favourites
+  /// screen). A no-op before the first page loads or when nothing matches.
+  void removeItemsWhere(bool Function(T item) test) {
+    final PaginationModel<T>? current = state.valueOrNull;
+    if (current == null) return;
+
+    final List<T> remaining =
+        current.data.where((T item) => !test(item)).toList();
+    final int removed = current.data.length - remaining.length;
+    if (removed == 0) return;
+
+    // The visible page emptied out but the server still has more: reload the
+    // first page (a fresh page, replaying the current filters) rather than
+    // showing the empty state. loadFirstPage — not loadNextPage — because a
+    // deletion shifts the server-side page offsets, so asking for "the next
+    // page" would skip the items that moved down into the first one.
+    if (remaining.isEmpty && current.hasMore) {
+      loadFirstPage();
+      return;
+    }
+
+    state = AsyncValue<PaginationModel<T>>.data(
+      PaginationModel<T>(
+        currentPage: current.currentPage,
+        lastPage: current.lastPage,
+        perPage: current.perPage,
+        total: (current.total - removed).clamp(0, current.total),
+        hasMore: current.hasMore,
+        data: remaining,
+      ),
+    );
+  }
+
   /// The current state read as pagination flags — the same reading the widget
   /// layer uses, so "may another page be requested?" is answered in one place.
   PaginationStatus<T> get status => PaginationStatus<T>.from(state);

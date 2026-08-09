@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
 class BannerModel extends Equatable {
   final int? id;
@@ -25,8 +26,7 @@ class BannerModel extends Equatable {
       type: json['type']?.toString(),
       linkType: json['link_type']?.toString(),
       defaultUrl: json['default_url']?.toString(),
-      image: (json['image'] as Map<String, dynamic>?)?['download_url']
-          ?.toString(),
+      image: json.downloadUrl('image'),
     );
   }
 

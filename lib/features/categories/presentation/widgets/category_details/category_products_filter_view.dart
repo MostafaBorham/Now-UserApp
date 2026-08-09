@@ -1,12 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/separate_option.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_bottom_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_price_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_ratings_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_separate_options_view.dart';
@@ -48,66 +42,31 @@ class _CategoryProductsFilterViewState
 
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+    return FilterBottomSheet(
+      onApply: () => widget.onApply?.call(
+        selectedSeparateOption,
+        maxPrice,
+        minPrice,
+        selectedRating,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          children: [
-            FilterHeaderView(onClose: () => context.pop()),
-            FilterSeparateOptionsView(
-              key: ValueKey('separateOptions_$filtersKey'),
-              onChanged: (option) => selectedSeparateOption = option,
-            ),
-            FilterPriceView(
-              key: ValueKey('price_$filtersKey'),
-              onChanged: (values) {
-                minPrice = values.start;
-                maxPrice = values.end;
-              },
-            ),
-            FilterRatingsView(
-              key: ValueKey('ratings_$filtersKey'),
-              onChanged: (rating) => selectedRating = rating,
-            ),
-            Row(
-              spacing: 16,
-              children: [
-                Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.applyFiltersKey.tr(),
-                    onTap: () {
-                      widget.onApply?.call(
-                        selectedSeparateOption,
-                        maxPrice,
-                        minPrice,
-                        selectedRating,
-                      );
-                      context.pop();
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: UnPrimaryAppButton(
-                    title: LangKeys.resetFilterKey.tr(),
-                    onTap: resetFilters,
-                  ),
-                ),
-              ],
-            ),
-          ],
+      onReset: resetFilters,
+      filters: [
+        FilterSeparateOptionsView(
+          key: ValueKey('separateOptions_$filtersKey'),
+          onChanged: (option) => selectedSeparateOption = option,
         ),
-      ),
+        FilterPriceView(
+          key: ValueKey('price_$filtersKey'),
+          onChanged: (values) {
+            minPrice = values.start;
+            maxPrice = values.end;
+          },
+        ),
+        FilterRatingsView(
+          key: ValueKey('ratings_$filtersKey'),
+          onChanged: (rating) => selectedRating = rating,
+        ),
+      ],
     );
   }
 }

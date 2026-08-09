@@ -1,6 +1,7 @@
-import 'package:nowdelivery_user_app/features/categories/data/models/active_deal_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
+import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 class ProductModel {
   final int? id;
@@ -78,12 +79,8 @@ class ProductModel {
       id: json['id'] as int?,
       productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
-      name: (json['name'] is String)
-          ? {'ar': json['name'] as String, 'en': json['name'] as String}
-          : json['name'],
-      description: (json['description'] is String)
-          ? {'ar': json['description'] as String, 'en': json['description'] as String}
-          : json['description'],
+      name: json.localized('name'),
+      description: json.localized('description'),
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
@@ -103,13 +100,8 @@ class ProductModel {
       // metaTitle: json['meta_title'] as String?,
       // metaDescription: json['meta_description'] as String?,
       searchKeywords: json['search_keywords'] as String?,
-      // primaryImage: json['primary_image'] as String?,
       // imageUrl: json['image_url'] as String?,
-      images: (json['images'] as List<dynamic>?)
-          ?.map((e) => e['download_url'])
-          .whereType<String>()
-          .toList() ??
-          [],
+      images: _imagesFrom(json),
       hasVariants: json['has_variants'] as bool?,
       /*      category: json['category'] == null
           ? null
@@ -125,6 +117,23 @@ class ProductModel {
       isFavorite: json['is_favorite'] as bool?,
       subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
     );
+  }
+
+  /// Image URLs for the product. Prefers the `images` gallery (sent by the
+  /// product-details endpoint), and falls back to the single `primary_image`
+  /// (all list endpoints send only that) so list cards always have an image.
+  static List<String> _imagesFrom(Map<String, dynamic> json) {
+    final List<String> gallery = (json['images'] as List<dynamic>?)
+            ?.map((e) => e['download_url'])
+            .whereType<String>()
+            .toList() ??
+        <String>[];
+    if (gallery.isNotEmpty) return gallery;
+
+    final String? primary =
+        (json['primary_image'] as Map<String, dynamic>?)?['download_url']
+            as String?;
+    return primary == null ? <String>[] : <String>[primary];
   }
 
   Map<String, dynamic> toJson() {

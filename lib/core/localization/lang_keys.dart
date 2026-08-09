@@ -270,6 +270,7 @@ abstract class LangKeys {
   // Search
   static const String searchKey = 'search';
   static const String recentKey = 'recent';
+  static const String oldestKey = 'oldest';
   static const String clearKey = 'clear';
   static const String bestCategoriesKey = 'bestCategories';
   static const String seeAllKey = 'seeAll';

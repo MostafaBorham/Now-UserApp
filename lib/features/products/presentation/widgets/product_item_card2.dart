@@ -24,14 +24,24 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
-  const ProductItemCard2({super.key, this.productModel, this.onTap});
+  const ProductItemCard2({
+    super.key,
+    this.productModel,
+    this.onTap,
+    this.onFavouriteChanged,
+  });
   final ProductModel? productModel;
   final GestureTapCallback? onTap;
+
+  /// Forwarded to the heart button — fired with the new status after a
+  /// successful favourite toggle. Lets a list remove the card when it is
+  /// unfavourited (see the favourites screen).
+  final ValueChanged<bool>? onFavouriteChanged;
   @override
   State<ProductItemCard2> createState() => _ProductItemCard2State();
 }
@@ -117,7 +127,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             itemId: widget.productModel?.id,
                             isFavourite:
                                 widget.productModel?.isFavorite ?? false,
-                            onFavouriteChanged: (currentFavourite) {},
+                            onFavouriteChanged: widget.onFavouriteChanged,
                           ),
                         ),
                       ),

@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/features/categories/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
@@ -46,7 +46,11 @@ class CategoryCard extends StatelessWidget {
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
-                  if (category.descendantsCount! < 0)
+                  // ponytail: placeholder discount badge. CategoryModel has no
+                  // discount field yet, so `hasOffer` is never set true and the
+                  // badge stays hidden. Wire to a real discount value from the
+                  // API, then the text below can stop borrowing descendantsCount.
+                  if (hasOffer)
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(

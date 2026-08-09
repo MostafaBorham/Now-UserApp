@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
 /// A single category node from `GET /api/v1/categories/tree`.
 ///
@@ -59,9 +60,7 @@ class CategoryModel extends Equatable {
 
     return CategoryModel(
       id: (json['id'] as num?)?.toInt(),
-      name: (json['name'] is String)
-          ? {'ar': json['name'] as String, 'en': json['name'] as String}
-          : json['name'],
+      name: json.localized('name'),
       description: json['description']?.toString(),
       slug: json['slug']?.toString(),
       parentId: (json['parent_id'] as num?)?.toInt(),
@@ -78,8 +77,7 @@ class CategoryModel extends Equatable {
       childrenCount: (json['children_count'] as num?)?.toInt(),
       descendantsCount: (json['descendants_count'] as num?)?.toInt(),
       productsCount: (json['products_count'] as num?)?.toInt(),
-      image: (json['image'] as Map<String, dynamic>?)?['download_url']
-          ?.toString(),
+      image: json.downloadUrl('image'),
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
       deletedAt: json['deleted_at']?.toString(),
