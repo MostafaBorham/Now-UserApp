@@ -8,13 +8,6 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import '../../../settings/presentation/widgets/profile_header.dart';
 import '../widgets/discount_code/discount_card.dart';
 
-/// Discount Code screen.
-///
-/// Sections (see `components/`):
-///   1. [CommonHeader]  – yellow header + wave + back button + title
-///                         (shared with the Profile / Settings screens).
-///   2. [DiscountCard] × N – a scrolling list of coupon "tickets"; the amber
-///                           and dark color variants alternate down the list.
 class DiscountCodeScreen extends StatelessWidget {
   const DiscountCodeScreen({super.key});
 
