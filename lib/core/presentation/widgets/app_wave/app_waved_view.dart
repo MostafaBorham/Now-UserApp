@@ -158,24 +158,31 @@ class AppWavedView extends StatelessWidget {
               child: ClipPath(
                 clipper: TopWaveClipper(),
                 child: Container(
-                  padding:
-                      bodyPadding ??
-                      EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 57,
-                      ).copyWith(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 20,
-                        spreadRadius: 0,
-                        offset: const Offset(0, -8), // Shadow to the top
+                  color: colors.neutral500.withValues(alpha: 0.05),
+                  padding: EdgeInsets.only(top: 5),
+                  child: ClipPath(
+                    clipper: TopWaveClipper(),
+                    child: Container(
+                      padding:
+                          bodyPadding ??
+                          EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 57,
+                          ).copyWith(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 20,
+                            spreadRadius: 0,
+                            offset: const Offset(0, -8), // Shadow to the top
+                          ),
+                        ],
                       ),
-                    ],
+                      child: body,
+                    ),
                   ),
-                  child: body,
                 ),
               ),
             ),

@@ -85,11 +85,13 @@ class AppTabBar extends StatelessWidget {
             child: TabBarView(
               children: views
                   .map(
-                    (v) => Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 5,
+                    (v) => _KeepAliveView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                        ),
+                        child: v,
                       ),
-                      child: v,
                     ),
                   )
                   .toList(),
@@ -98,5 +100,30 @@ class AppTabBar extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Keeps its [child] alive across tab switches so a view is built (and its
+/// data loaded) only the first time its tab is opened. `TabBarView` still
+/// builds each view lazily on first open, then honors this keep-alive request
+/// instead of disposing the view when another tab is selected.
+class _KeepAliveView extends StatefulWidget {
+  const _KeepAliveView({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_KeepAliveView> createState() => _KeepAliveViewState();
+}
+
+class _KeepAliveViewState extends State<_KeepAliveView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
