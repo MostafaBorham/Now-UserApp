@@ -37,7 +37,7 @@ class AddressApiService {
     return _dio.post(
       AddressEndpoints.addresses,
       data: <String, dynamic>{
-        'label': address.label,
+        'label': address.label?['en'],
         'phone': address.phone,
         'country': address.country,
         'city': address.city,
@@ -67,7 +67,7 @@ class AddressApiService {
     return _dio.put(
       AddressEndpoints.editAddress(addressId),
       data: <String, dynamic>{
-        'label': address.label,
+        'label': address.label?['en'],
         'phone': address.phone,
         'country': address.country,
         'city': address.city,

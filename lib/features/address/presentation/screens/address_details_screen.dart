@@ -262,9 +262,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
               AspectRatio(
                 aspectRatio: 7,
                 child: !_isFormValid && !isSaving
-                    ? PrimaryAppDisabledButton(
-                        title: LangKeys.saveAddress.tr(),
-                      )
+                    ? PrimaryAppDisabledButton(title: LangKeys.saveAddress.tr())
                     : PrimaryAppButton(
                         title: LangKeys.saveAddress.tr(),
                         isLoading: isSaving,

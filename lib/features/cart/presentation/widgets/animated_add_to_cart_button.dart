@@ -17,7 +17,7 @@ class AnimatedAddToCartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       children: [
         ReverseWidget(
           applyReverse: !context.isRTL,

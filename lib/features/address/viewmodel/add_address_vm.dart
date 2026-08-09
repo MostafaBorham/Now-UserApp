@@ -38,11 +38,9 @@ class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (AddressModel created) {
-        // Push the newly created address into the loaded list before flipping
-        // to success, so any screen watching the list updates in the same frame.
         _ref
             .read(getMyAddressesProvider.notifier)
-            .addNewAddress(address: created);
+            .getMyAddresses();
         return AsyncValue.data(created);
       },
     );
