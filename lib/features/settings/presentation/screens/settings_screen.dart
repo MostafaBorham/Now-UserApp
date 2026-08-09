@@ -21,15 +21,6 @@ import '../widgets/profile_info.dart';
 import '../widgets/settings_section.dart';
 import '../widgets/settings_tile.dart';
 
-/// Profile screen.
-///
-/// Composed of independent sections (see `components/`):
-///   1. [CommonHeader]  – yellow header + wave + title
-///   2. [ProfileInfo]    – avatar, name and "member since" date
-///   3. [SettingsSection] x3 – General / Promotional Activity / Support
-///   4. [LogoutButton]   – red log out action
-///
-/// The bottom navigation bar is intentionally NOT included here.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
