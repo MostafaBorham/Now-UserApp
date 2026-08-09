@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -9,23 +8,17 @@ import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
-
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-
 import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
@@ -191,7 +184,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: SizedBox(
-                                width: widthCon*0.6,
+                                width: widthCon * 0.6,
                                 child: Row(
                                   spacing: 5,
                                   children: [
@@ -201,10 +194,11 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     Expanded(
                                       child: Text(
                                         '4.7',
-                                        style: AppTextStyles.style14Medium.copyWith(
-                                          color: colors.black,
-                                          fontSize: widthCon * 0.1,
-                                        ),
+                                        style: AppTextStyles.style14Medium
+                                            .copyWith(
+                                              color: colors.black,
+                                              fontSize: widthCon * 0.1,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -220,13 +214,14 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 ),
                                 child: (widget.productModel?.stock ?? 1) < 1
                                     ? Align(
-                                  alignment: AlignmentDirectional.centerEnd,
-                                      child: Text(
+                                        alignment:
+                                            AlignmentDirectional.centerEnd,
+                                        child: Text(
                                           LangKeys.outOfStockKey.tr(),
                                           style: AppTextStyles.style12Medium
                                               .copyWith(color: colors.onError),
                                         ),
-                                    )
+                                      )
                                     : AnimatedCartButton(
                                         productId:
                                             widget.productModel?.productId ??

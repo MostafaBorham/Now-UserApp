@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
@@ -64,9 +65,9 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
 }
 
 class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
-  /// Last quantity confirmed by the server (or by a local tap when not
-  /// integrated). `AsyncLoading` / `AsyncError` carry no value, so this is what
-  /// the counter shows while a request runs and after it fails.
+  /// Local-only quantity for non-integrated cards (no [productId]): the last
+  /// value a local tap set. Integrated cards ignore this and read their
+  /// quantity from the shared cart instead — see [_quantityFrom].
   late int _counter = widget.productQuantity ?? 0;
 
   bool _showCounterView = false;
@@ -75,15 +76,18 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
   bool get _isIntegrated => widget.productId != null;
 
-  @override
-  void didUpdateWidget(covariant AnimatedCartButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // The parent re-renders with a fresh quantity when the cart changes
-    // elsewhere; follow that server truth.
-    final int? newQuantity = widget.productQuantity;
-    if (newQuantity != null && newQuantity != oldWidget.productQuantity) {
-      _counter = newQuantity;
-    }
+  /// The quantity to display.
+  ///
+  /// Integrated cards read it from the shared cart ([getCartProvider]) — the
+  /// single source of truth that survives the card scrolling out of the list
+  /// and back, so a change made here is no longer lost on rebuild. Until the
+  /// cart is first loaded ([cart] is `null`) the listing seed
+  /// ([AnimatedCartButton.productQuantity]) stands in, which is itself the cart
+  /// quantity at list-fetch time. Non-integrated cards count locally.
+  int _quantityFrom(CartModel? cart) {
+    if (!_isIntegrated) return _counter;
+    if (cart == null) return widget.productQuantity ?? 0;
+    return _quantityOf(cart);
   }
 
   @override
@@ -95,6 +99,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   @override
   Widget build(BuildContext context) {
     bool isUpdating = false;
+    CartModel? cart;
 
     if (_isIntegrated) {
       final AutoDisposeStateNotifierProvider<
@@ -109,31 +114,36 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
             _onUpdateStateChanged(next),
       );
       isUpdating = ref.watch(provider).isLoading;
+
+      // The shared cart is the source of truth for this product's quantity, so
+      // a change survives the card scrolling out of the list and back.
+      cart = ref.watch(getCartProvider).valueOrNull;
     }
 
+    final int counter = _quantityFrom(cart);
+
     final bool showCounterView =
-        _showCounterView && (isUpdating || _counter > 0);
+        _showCounterView && (isUpdating || counter > 0);
 
     // The counter never climbs past the available stock; a null stock leaves it
     // uncapped.
-    final bool canIncrement =
-        widget.stock == null || _counter < widget.stock!;
+    final bool canIncrement = widget.stock == null || counter < widget.stock!;
 
     // Both children size themselves naturally — it is up to the card to give
     // this control a stable slot to flip inside of.
     return showCounterView
         ? AnimatedCartCounterView(
-            counter: _counter,
+            counter: counter,
             isLoading: isUpdating,
             canIncrement: canIncrement,
-            onInc: canIncrement ? () => _updateQuantity(_counter + 1) : null,
-            onDec: _decrement,
+            onInc: canIncrement ? () => _updateQuantity(counter + 1) : null,
+            onDec: () => _decrement(counter),
             onDelete: () => _updateQuantity(0),
           )
         : InkWell(
             onTap: () => setState(() => _isRotate = !_isRotate),
             child: AnimatedAddToCartButton(
-              text: _counter < 1 ? '+' : _counter.toString(),
+              text: counter < 1 ? '+' : counter.toString(),
               isRotate: _isRotate,
               onEnd: () {
                 // The rotation has finished: open the counter.
@@ -145,7 +155,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
                 // reveals the counter, and the request is left to the
                 // counter's own icons. With no stock left there is nothing to
                 // add, so the counter just collapses back to the button.
-                if (_counter < 1) {
+                if (counter < 1) {
                   canIncrement ? _updateQuantity(1) : _collapse();
                 } else {
                   _startCollapseTimer();
@@ -155,10 +165,10 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
           );
   }
 
-  /// One unit less, floored at 1 — dropping the last unit is the delete icon's
-  /// job. The counter view only offers this icon from 2 upwards anyway, so the
-  /// floor is just a safety net.
-  void _decrement() => _updateQuantity(_counter > 1 ? _counter - 1 : 1);
+  /// One unit less than [counter], floored at 1 — dropping the last unit is the
+  /// delete icon's job. The counter view only offers this icon from 2 upwards
+  /// anyway, so the floor is just a safety net.
+  void _decrement(int counter) => _updateQuantity(counter > 1 ? counter - 1 : 1);
 
   /// Asks the server to set this product's cart line to [newQuantity] (`0`
   /// removes it). The counter is deliberately left untouched — it only moves
@@ -178,20 +188,21 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         .updateCartProductQuantity(newQuantity);
   }
 
-  /// Applies a settled update: a success adopts the quantity the fresh cart
-  /// reports and collapses the counter, a failure only surfaces its message and
-  /// leaves the quantity where it was.
+  /// Applies a settled update: a success collapses the counter (or keeps it open
+  /// briefly) based on the quantity the fresh cart reports, a failure only
+  /// surfaces its message and leaves the quantity where it was.
+  ///
+  /// The displayed number is not touched here — the counter is driven straight
+  /// off the shared cart in [build], which the VM already refreshed before
+  /// emitting this state. This callback only decides whether the counter view
+  /// stays open.
   void _onUpdateStateChanged(AsyncValue<CartModel?> state) {
     state.whenOrNull(
       data: (CartModel? cart) {
         // The idle seed of the viewmodel, not a response.
         if (cart == null) return;
 
-        // The VM already pushed the fresh cart into getCartProvider before
-        // emitting this state, so the shared cart is already up to date.
         final int newQuantity = _quantityOf(cart);
-        setState(() => _counter = newQuantity);
-
         newQuantity < 1 ? _collapse() : _startCollapseTimer();
       },
       error: (Object error, StackTrace _) {
@@ -199,10 +210,12 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
         ErrorSnackBar.show(context, error.toString());
 
-        // Same rule as a success: with no quantity left to show there is no
-        // point keeping the counter open — e.g. a failed first add, where the
-        // counter is still at 0.
-        _counter < 1 ? _collapse() : _startCollapseTimer();
+        // A failure leaves the cart untouched, so fall back to the last
+        // confirmed quantity. Same rule as a success: with no quantity left to
+        // show there is no point keeping the counter open — e.g. a failed first
+        // add, where the quantity is still 0.
+        final int current = _quantityFrom(ref.read(getCartProvider).valueOrNull);
+        current < 1 ? _collapse() : _startCollapseTimer();
       },
     );
   }
