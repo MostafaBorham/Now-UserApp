@@ -40,18 +40,19 @@ class _FavouriteProductTabViewState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final GetFavouriteProductsViewModel viewModel =
-        ref.read(getFavouriteProductsProvider.notifier);
+    final GetFavouriteProductsViewModel viewModel = ref.read(
+      getFavouriteProductsProvider.notifier,
+    );
 
     return FavouritesTabView(
       type: 'product',
       searchHintKey: LangKeys.searchForAProductKey,
       onFiltersChanged: (String? search, List<int> categoryIds, String? sort) =>
           viewModel.applyFilters(
-        search: search,
-        categoryIds: categoryIds,
-        sort: sort,
-      ),
+            search: search,
+            categoryIds: categoryIds,
+            sort: sort,
+          ),
       child: PaginatedView<ProductModel>(
         provider: getFavouriteProductsProvider,
         onRefresh: viewModel.loadFirstPage,
@@ -64,17 +65,15 @@ class _FavouriteProductTabViewState
             AppShimmer(child: ProductItemCard2(onTap: () {})),
         itemBuilder: (BuildContext context, ProductModel product, int index) =>
             ProductItemCard2(
-          productModel: product,
-          // Unfavouriting from the list removes the card right away instead of
-          // waiting for a refresh.
-          onFavouriteChanged: (bool isFavourite) {
-            if (!isFavourite && product.id != null) {
-              viewModel.removeItemsWhere(
-                (ProductModel p) => p.id == product.id,
-              );
-            }
-          },
-        ),
+              productModel: product,
+              onFavouriteChanged: (bool isFavourite) {
+                if (!isFavourite && product.id != null) {
+                  viewModel.removeItemsWhere(
+                    (ProductModel p) => p.id == product.id,
+                  );
+                }
+              },
+            ),
       ),
     );
   }
