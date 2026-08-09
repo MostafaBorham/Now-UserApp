@@ -1,19 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/auth/data/datasources/local/cache/auth_cache_service.dart';
 import 'package:nowdelivery_user_app/features/auth/data/datasources/remote/api/auth_api_service.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 
 class AuthRepo {
   final AuthApiService _authApiService = AuthApiService();
-  final AuthCacheService _authCacheService = AuthCacheService();
+  final TokenCacheService _tokenCache = TokenCacheService();
 
 
   void cancelRequests() => _authApiService.cancelRequests();
@@ -69,13 +68,21 @@ class AuthRepo {
       }
 
       final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final String authToken = data['access_token'] as String? ?? '';
+      final String accessToken = data['access_token'] as String? ?? '';
+      final String refreshToken = data['refresh_token'] as String? ?? '';
 
-      if (authToken.isEmpty) {
+      if (accessToken.isEmpty) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      await _authCacheService.saveToken(token: authToken, isGuest: false);
+      // Logging in as a user overrides any guest session: save the access +
+      // refresh pair and drop the guest token so the interceptor stops sending
+      // `X-Guest-Token`.
+      await _tokenCache.saveUserTokens(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      );
+      await _tokenCache.clearGuestToken();
 
       final UserModel user = UserModel.fromMap(
         data['user'] as Map<String, dynamic>,
@@ -117,7 +124,7 @@ class AuthRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      await _authCacheService.clearToken();
+      await _tokenCache.clearUserTokens();
 
       return const Right(unit);
     } on CacheException catch (exception) {
@@ -135,17 +142,9 @@ class AuthRepo {
 
   Future<Either<Failure, SessionType>> getSessionType() async {
     try {
-      final Map<String, dynamic> session = _authCacheService.getSession();
-
-      final bool isGuest = session[CacheKeys.isGuest] as bool? ?? true;
-
-      if (isGuest) {
-        return const Right(SessionType.guest);
-      }
-
-      return const Right(SessionType.user);
-    } on CacheException catch (exception) {
-      return Left(Failure(exception.message));
+      return Right(
+        _tokenCache.hasAccessToken ? SessionType.user : SessionType.guest,
+      );
     } catch (exception) {
       return Left(Failure(exception.toString()));
     }

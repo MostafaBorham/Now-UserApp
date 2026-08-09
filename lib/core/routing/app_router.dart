@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
-import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
@@ -51,30 +50,26 @@ import 'app_routes.dart';
 abstract class AppRouter {
   /// Shared redirect of the verification flow (phone + OTP screens).
   ///
-  /// Those screens exist only to log a guest in, so once a user token is
-  /// cached (token present and `isGuest == false`) they redirect to the main
-  /// screen. Checking the token alone is not enough — a guest session also
-  /// stores a (guest) token, and guests are exactly who these screens are
-  /// for.
+  /// Those screens exist only to log a guest in, so once an access token is
+  /// cached (a logged-in user) they redirect to the main screen. A guest
+  /// session stores only a guest token, and guests are exactly who these
+  /// screens are for.
   static String? _redirectLoggedInUserToMain(
     BuildContext context,
     GoRouterState state,
   ) {
-    final Map<String, dynamic> tokenData = WelcomeCacheService().getToken();
-    final String token = tokenData[CacheKeys.tokenValue] as String? ?? '';
-    final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-    return token.isNotEmpty && !isGuest ? '/${AppRoutes.mainScreen}' : null;
+    return TokenCacheService().hasAccessToken
+        ? '/${AppRoutes.mainScreen}'
+        : null;
   }
 
   static FutureOr<String?> _redirectToLogin(
     BuildContext context,
     GoRouterState state,
   ) {
-    final Map<String, dynamic> tokenData = WelcomeCacheService().getToken();
-    final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-    return isGuest ? '/${AppRoutes.phoneVerificationScreen}' : null;
+    return TokenCacheService().hasAccessToken
+        ? null
+        : '/${AppRoutes.phoneVerificationScreen}';
   }
 
   /// Wraps every routed screen so the OS/system back affordance (Android
@@ -103,11 +98,12 @@ abstract class AppRouter {
         name: AppRoutes.onBoardingScreen,
         path: '/${AppRoutes.onBoardingScreen}',
         redirect: (context, state) {
-          bool hasToken;
-          final Map<String, dynamic> tokenData = WelcomeCacheService()
-              .getToken();
-          final String token = tokenData[CacheKeys.tokenValue] as String? ?? '';
-          hasToken = token.isNotEmpty;
+          // Onboarding is only for a brand-new install with no session yet.
+          // Once any token exists — a guest token or a logged-in user's access
+          // token — skip straight to the main screen.
+          final TokenCacheService tokenCache = TokenCacheService();
+          final bool hasToken =
+              tokenCache.hasAccessToken || tokenCache.hasGuestToken;
 
           return hasToken ? '/${AppRoutes.mainScreen}' : null;
         },

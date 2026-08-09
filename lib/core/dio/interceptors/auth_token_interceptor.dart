@@ -1,64 +1,40 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
-import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 
 /// Authenticates every outgoing request from the cached session, with no
 /// per-request configuration needed anywhere in the app.
 ///
-/// On each request the cached `{'token', 'isGuest'}` map is read straight from
-/// the cache (never through a feature data source), so the header always
-/// reflects the latest session:
+/// On each request the cached tokens are read straight from the store (never
+/// through a feature data source), so the header always reflects the latest
+/// session:
 ///
-/// * `isGuest == true`  → `X-Guest-Token: <token>` (the guest session)
-/// * `isGuest == false` → `Authorization: Bearer <token>` (the logged-in user)
+/// * an access token is cached → `Authorization: Bearer <accessToken>`
+///   (the logged-in user); it always wins over a leftover guest token.
+/// * otherwise a guest token is cached → `X-Guest-Token: <guestToken>`.
 ///
-/// The token flips from the guest token to the user token automatically once
-/// `AuthRepo.verifyOtp` overwrites the cache. When no token is cached yet (e.g.
+/// The header flips from the guest token to the bearer automatically once OTP
+/// verification saves the access token. When neither token is cached yet (e.g.
 /// the guest-token request itself), no auth header is attached.
 class AuthTokenInterceptor extends Interceptor {
   static const String _guestHeaderKey = 'X-Guest-Token';
   static const String _authHeaderKey = 'Authorization';
+
+  final TokenCacheService _tokenCache = TokenCacheService();
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) {
-    final _Session session = _readCachedSession();
-    if (session.token.isNotEmpty) {
-      if (session.isGuest) {
-        options.headers[_guestHeaderKey] = session.token;
-      } else {
-        options.headers[_authHeaderKey] = 'Bearer ${session.token}';
+    final String accessToken = _tokenCache.getAccessToken() ?? '';
+    if (accessToken.isNotEmpty) {
+      options.headers[_authHeaderKey] = 'Bearer $accessToken';
+    } else {
+      final String guestToken = _tokenCache.getGuestToken() ?? '';
+      if (guestToken.isNotEmpty) {
+        options.headers[_guestHeaderKey] = guestToken;
       }
     }
     handler.next(options);
   }
-
-  /// Reads the cached `{'token', 'isGuest'}` map, returning an empty-token
-  /// session when nothing is stored or the cache is malformed. Never throws —
-  /// a bad cache must not block the request.
-  _Session _readCachedSession() {
-    final String? raw = SharedPrefManager.getString(CacheKeys.token);
-    if (raw == null || raw.isEmpty) return const _Session('', false);
-    try {
-      final Map<String, dynamic> map = jsonDecode(raw) as Map<String, dynamic>;
-      return _Session(
-        map[CacheKeys.tokenValue] as String? ?? '',
-        map[CacheKeys.isGuest] as bool? ?? false,
-      );
-    } catch (_) {
-      return const _Session('', false);
-    }
-  }
-}
-
-/// The cached session values relevant to authenticating a request.
-class _Session {
-  const _Session(this.token, this.isGuest);
-
-  final String token;
-  final bool isGuest;
 }

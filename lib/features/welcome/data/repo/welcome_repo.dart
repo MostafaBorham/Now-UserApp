@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/remote/api/welcome_api_service.dart';
 
 /// All data operations of the welcome feature.
@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/features/welcome/data/datasources/remote/ap
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class WelcomeRepo {
   final WelcomeApiService _welcomeApiService = WelcomeApiService();
-  final WelcomeCacheService _welcomeCacheService = WelcomeCacheService();
+  final TokenCacheService _tokenCache = TokenCacheService();
 
   /// Cancels every in-flight request of this repo. The actual cancellation
   /// mechanism (CancelToken) lives entirely inside the data source layer.
@@ -46,7 +46,7 @@ class WelcomeRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      await _welcomeCacheService.saveToken(token: guestToken, isGuest: true);
+      await _tokenCache.saveGuestToken(guestToken);
 
       return Right(guestToken);
     } on CacheException catch (exception) {

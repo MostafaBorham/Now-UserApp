@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interceptor.dart';
 
 class DioFactory {
   DioFactory._();
@@ -39,9 +40,12 @@ class DioFactory {
     );
 
     // Order matters: attach the token first so the logger prints the final
-    // outgoing headers.
+    // outgoing headers, then let the logger record the response/error, and
+    // finally give the refresh interceptor the last word so it can turn a
+    // logged `401` into a transparent token refresh + replay.
     dio.interceptors.add(AuthTokenInterceptor());
     dio.interceptors.add(DioLogger.logger);
+    dio.interceptors.add(TokenRefreshInterceptor(dio));
 
     return dio;
   }

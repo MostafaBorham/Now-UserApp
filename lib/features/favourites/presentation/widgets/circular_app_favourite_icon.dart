@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/product_favourite_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/store_favourite_vm.dart';
-import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 
 /// Circular favourite (heart) button.
 ///
@@ -175,10 +174,7 @@ class _CircularAppFavouriteIconState
   /// Sends guests to phone verification instead of favouriting. Returns whether
   /// the tap was consumed by that redirect.
   bool _redirectedToLogin() {
-    final Map<String, dynamic> tokenData = WelcomeCacheService().getToken();
-    final bool isGuest = tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-    if (isGuest) {
+    if (!TokenCacheService().hasAccessToken) {
       context.pushNamed(AppRoutes.phoneVerificationScreen);
       return true;
     }
