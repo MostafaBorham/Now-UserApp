@@ -8,11 +8,18 @@ import 'package:nowdelivery_user_app/features/promotion/data/repo/promotion_repo
 
 /// Single task: fetch the available coupons, one page at a time.
 ///
-/// The first page is fetched as soon as the provider is first watched, so
-/// screens only need to `ref.watch(getCouponsProvider)` and render the
-/// [AsyncValue]. Later pages are pulled in with [loadMore], whose progress is
-/// exposed separately through [GetCouponsViewModel.loadMoreState] so the
-/// already-visible list is never replaced by a full-screen loading/error state.
+/// [getCoupons] is never tied to this provider's creation — callers fire it when
+/// they actually need the data (the auth orchestrator once a user session is
+/// confirmed, and [DiscountCodeScreen] when it opens). The starting state is
+/// therefore [AsyncValue.loading] until someone kicks the first page off.
+///
+/// The provider is kept alive (not `autoDispose`). It never invalidates itself:
+/// dropping a failed instance is the caller's job (see the auth orchestrator and
+/// [DiscountCodeScreen]), so this VM only reports the error through its state and
+/// lets whoever fired the fetch decide to invalidate. Later pages are pulled in
+/// with [loadMore], whose progress is exposed separately through
+/// [GetCouponsViewModel.loadMoreState] so the already-visible list is never
+/// replaced by a full-screen loading/error state.
 final getCouponsProvider =
     StateNotifierProvider<
       GetCouponsViewModel,

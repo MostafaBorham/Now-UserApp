@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
+import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
 
 /// Where the app's session-dependent dependencies stand.
 ///
@@ -123,9 +124,17 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     await Future.wait(<Future<void>>[
       _ref.read(getMyOrdersProvider.notifier).getOrders(),
       _ref.read(getMyAddressesProvider.notifier).getMyAddresses(),
+      _ref.read(getCouponsProvider.notifier).getCoupons(),
     ]);
 
     if (!mounted) return;
+
+    // A failed background coupons load must not stick to this kept-alive
+    // provider: drop it from the outside so the next open (DiscountCodeScreen)
+    // gets a fresh VM in the `loading` state and fetches again.
+    if (_ref.read(getCouponsProvider).hasError) {
+      _ref.invalidate(getCouponsProvider);
+    }
 
     state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
   }
@@ -133,5 +142,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     _ref.invalidate(getMyOrdersProvider);
     _ref.invalidate(getMyAddressesProvider);
     _ref.invalidate(defaultAddressProvider);
+    _ref.invalidate(getCouponsProvider);
   }
 }

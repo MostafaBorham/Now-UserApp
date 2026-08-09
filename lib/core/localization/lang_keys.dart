@@ -39,6 +39,7 @@ abstract class LangKeys {
   static const String myAddress = 'myAddress';
   static const String proActivity = 'promotionalActivity';
   static const String discount = 'discountCode';
+  static const String discountCodes = 'discountCodes';
   static const String descriptionKey = 'description';
   static const String myWallet = 'myWallet';
   static const String supportLabel = 'support';

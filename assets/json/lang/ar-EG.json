@@ -62,6 +62,7 @@
   "didNotReceiveCode": "لم أستلم الرمز",
   "discount": "خصم",
   "discountCode": "كود الخصم",
+  "discountCodes": "أكواد الخصم",
   "discountCoupon": "كوبون خصم",
   "discountLabel": "الخصم",
   "discountMinPurchase": "الحد الأدنى للشراء {amount}",

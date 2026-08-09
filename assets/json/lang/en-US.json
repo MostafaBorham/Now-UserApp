@@ -61,6 +61,7 @@
   "didNotReceiveCode": "I did not receive the code",
   "discount": "Off",
   "discountCode": "Discount Code",
+  "discountCodes": "Discount Codes",
   "discountCoupon": "Discount Coupon",
   "discountLabel": "Discount",
   "discountMinPurchase": "Minimum purchase {amount}",

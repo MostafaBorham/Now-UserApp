@@ -49,6 +49,14 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
+    // Leaving on a failed load: drop the kept-alive provider from the outside so
+    // the next open starts fresh in `loading` and refetches, instead of
+    // reopening onto the stale error. Doing it here (not while watching) avoids
+    // recreating the provider under a live listener, so there is no permanent
+    // shimmer and no refetch loop.
+    if (ref.read(getCouponsProvider).hasError) {
+      ref.invalidate(getCouponsProvider);
+    }
     super.dispose();
   }
 
@@ -93,7 +101,7 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
-        appBarTitle: LangKeys.discountTitle.tr(),
+        appBarTitle: LangKeys.discountCodes.tr(),
         body: couponsState.when(
           loading: () => const DiscountCouponsShimmerView(),
           error: (Object error, StackTrace stackTrace) =>
