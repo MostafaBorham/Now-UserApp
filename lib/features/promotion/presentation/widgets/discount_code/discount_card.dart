@@ -1,22 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/ticket_clipper.dart';
 
-/// A discount coupon rendered as a perforated "ticket".
-///
-/// The left value panel shows the percentage and scope; the right body panel
-/// shows the code details plus the vertical "now" brand logo. A semicircular
-/// notch is punched into the top and bottom edges (see [TicketClipper]) so
-/// stacked cards read as tear-off tickets.
-///
-/// Two variants alternate down the list:
-///   * [dark] == false → amber value panel on a mint body.
-///   * [dark] == true  → dark-green value panel on a cream body.
 class DiscountCard extends StatelessWidget {
   const DiscountCard({
     super.key,
@@ -27,12 +19,9 @@ class DiscountCard extends StatelessWidget {
 
   final CouponModel coupon;
   final bool dark;
-
-  /// Called when the code chip is tapped.
   final VoidCallback? onCopy;
 
-  /// Renders a number without a trailing `.0` (`25.0` → `25`, `12.5` → `12.5`).
-  static String _formatAmount(double? value) {
+  /*  static String _formatAmount(double? value) {
     if (value == null) return '';
     return value == value.roundToDouble()
         ? value.toInt().toString()
@@ -52,18 +41,18 @@ class DiscountCard extends StatelessWidget {
     if (isoDate == null || isoDate.isEmpty) return '';
     final int tIndex = isoDate.indexOf('T');
     return tIndex == -1 ? isoDate : isoDate.substring(0, tIndex);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    final String percent = _formatAmount(coupon.discountValue);
+    // final String percent = _formatAmount(coupon.discountValue);
     final String scope = coupon.type == 'Public'
         ? LangKeys.discountOnAllStores.tr()
         : (coupon.type ?? '');
-    final String validity = _formatValidity(coupon.startsAt, coupon.expiresAt);
+    /*    final String validity = _formatValidity(coupon.startsAt, coupon.expiresAt);
     final String minPurchase = LangKeys.discountMinPurchase.tr(
       namedArgs: {'amount': _formatAmount(coupon.minOrderValue)},
-    );
+    );*/
     final String code = coupon.code ?? '';
 
     final Color valuePanel = dark
@@ -79,7 +68,10 @@ class DiscountCard extends StatelessWidget {
               context.colors.secondary100.withValues(alpha: 0.2),
               context.colors.surfaceContainerHighest.withValues(alpha: 0.2),
             ]
-          : <Color>[context.colors.primary100.withValues(alpha: 0.2), context.colors.primary200.withValues(alpha: 0.2)],
+          : <Color>[
+              context.colors.primary100.withValues(alpha: 0.2),
+              context.colors.primary200.withValues(alpha: 0.2),
+            ],
     );
     final Color percentColor = dark
         ? context.colors.surface
@@ -116,7 +108,7 @@ class DiscountCard extends StatelessWidget {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: percent,
+                              text: '${formatDouble(coupon.discountValue)}',
                               style: TextStyle(
                                 fontSize: 40,
                                 height: 1,
@@ -171,7 +163,7 @@ class DiscountCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        validity,
+                        '${LangKeys.fromKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.startsAt)} ${LangKeys.toKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.expiresAt)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -181,7 +173,7 @@ class DiscountCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        minPurchase,
+                        '${LangKeys.discountMinPurchase.tr()} ${formatDouble(coupon.minOrderValue)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -209,7 +201,6 @@ class DiscountCard extends StatelessWidget {
   }
 }
 
-/// The rounded, copyable code pill (copy icon + code text).
 class _CodeChip extends StatelessWidget {
   const _CodeChip({required this.code, this.onCopy});
 

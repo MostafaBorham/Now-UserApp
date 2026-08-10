@@ -101,7 +101,7 @@ class OrderListItem extends ConsumerWidget {
                     ),
                     4.hSpace,
                     AutoSizeText(
-                      '${LangKeys.deliveredOnKey.tr()} $orderDate',
+                      '${LangKeys.deliveredOnKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: orderDate)}',
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),
