@@ -325,6 +325,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get delivered =>
       const SvgGenImage('assets/media/images/svg/delivered.svg');
 
+  /// File path: assets/media/images/svg/delivery man_motocycle.svg
+  SvgGenImage get deliveryManMotocycle =>
+      const SvgGenImage('assets/media/images/svg/delivery man_motocycle.svg');
+
   /// File path: assets/media/images/svg/delivery_icon.svg
   SvgGenImage get deliveryIcon =>
       const SvgGenImage('assets/media/images/svg/delivery_icon.svg');
@@ -375,9 +379,17 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get filterIcon =>
       const SvgGenImage('assets/media/images/svg/filter-icon.svg');
 
+  /// File path: assets/media/images/svg/home-location-icon.svg
+  SvgGenImage get homeLocationIcon =>
+      const SvgGenImage('assets/media/images/svg/home-location-icon.svg');
+
   /// File path: assets/media/images/svg/home-offers-background.svg
   SvgGenImage get homeOffersBackground =>
       const SvgGenImage('assets/media/images/svg/home-offers-background.svg');
+
+  /// File path: assets/media/images/svg/home_header_background.svg
+  SvgGenImage get homeHeaderBackground =>
+      const SvgGenImage('assets/media/images/svg/home_header_background.svg');
 
   /// File path: assets/media/images/svg/home_selected.svg
   SvgGenImage get homeSelected =>
@@ -557,6 +569,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get privacy =>
       const SvgGenImage('assets/media/images/svg/privacy.svg');
 
+  /// File path: assets/media/images/svg/quick_deliver_arabic.svg
+  SvgGenImage get quickDeliverArabic =>
+      const SvgGenImage('assets/media/images/svg/quick_deliver_arabic.svg');
+
   /// File path: assets/media/images/svg/rank-icon.svg
   SvgGenImage get rankIcon =>
       const SvgGenImage('assets/media/images/svg/rank-icon.svg');
@@ -576,6 +592,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/search-icon.svg
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/media/images/svg/search-icon.svg');
+
+  /// File path: assets/media/images/svg/search-normal-icon.svg
+  SvgGenImage get searchNormalIcon =>
+      const SvgGenImage('assets/media/images/svg/search-normal-icon.svg');
 
   /// File path: assets/media/images/svg/search.svg
   SvgGenImage get search =>
@@ -634,6 +654,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/trust-icon.svg
   SvgGenImage get trustIcon =>
       const SvgGenImage('assets/media/images/svg/trust-icon.svg');
+
+  /// File path: assets/media/images/svg/view_all_arabic.svg
+  SvgGenImage get viewAllArabic =>
+      const SvgGenImage('assets/media/images/svg/view_all_arabic.svg');
 
   /// File path: assets/media/images/svg/visa-logo.svg
   SvgGenImage get visaLogo =>
@@ -701,6 +725,7 @@ class $AssetsMediaImagesSvgGen {
     date,
     deleteIcon,
     delivered,
+    deliveryManMotocycle,
     deliveryIcon,
     discount,
     edit,
@@ -714,7 +739,9 @@ class $AssetsMediaImagesSvgGen {
     filledHomeIcon,
     filledOrdersIcon,
     filterIcon,
+    homeLocationIcon,
     homeOffersBackground,
+    homeHeaderBackground,
     homeSelected,
     homeUnselected,
     infoRed,
@@ -760,11 +787,13 @@ class $AssetsMediaImagesSvgGen {
     personalInfo,
     pin,
     privacy,
+    quickDeliverArabic,
     rankIcon,
     realSaudiCurrency,
     retryIcon,
     rightArrowBrokenIcon,
     searchIcon,
+    searchNormalIcon,
     search,
     send,
     serverFailIcon,
@@ -780,6 +809,7 @@ class $AssetsMediaImagesSvgGen {
     tickCircle,
     timeIcon,
     trustIcon,
+    viewAllArabic,
     visaLogo,
     visa,
     wallet,
