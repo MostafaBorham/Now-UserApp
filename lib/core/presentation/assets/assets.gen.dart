@@ -25,6 +25,10 @@ class $AssetsFontsGen {
 class $AssetsJsonGen {
   const $AssetsJsonGen();
 
+  /// File path: assets/json/delivery man_motorcycle.json
+  LottieGenImage get deliveryManMotorcycle =>
+      const LottieGenImage('assets/json/delivery man_motorcycle.json');
+
   /// Directory path: assets/json/lang
   $AssetsJsonLangGen get lang => const $AssetsJsonLangGen();
 
@@ -35,7 +39,7 @@ class $AssetsJsonGen {
   LottieGenImage get splash => const LottieGenImage('assets/json/splash.json');
 
   /// List of all assets
-  List<dynamic> get values => [map, splash];
+  List<dynamic> get values => [deliveryManMotorcycle, map, splash];
 }
 
 class $AssetsMediaGen {

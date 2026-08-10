@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "12.1.0"
+  anim_svg:
+    dependency: "direct main"
+    description:
+      name: anim_svg
+      sha256: c9404dc501dd437f17964b9ed87911f69883ba4f95c0997f1d92ec30c9eba581
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   animated_bottom_navigation_bar:
     dependency: "direct main"
     description:
@@ -1458,6 +1466,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  thorvg_plus:
+    dependency: transitive
+    description:
+      name: thorvg_plus
+      sha256: babb43b8d0ce6eda703bec1dfdea9ce8cd39ece3353b166ffe22b0285ffd86d2
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   time:
     dependency: transitive
     description:
@@ -1522,6 +1538,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:

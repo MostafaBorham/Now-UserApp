@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/app_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_search_field.dart';
 
 class HomeHeaderView extends StatelessWidget {
@@ -69,7 +70,8 @@ class HomeHeaderView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  HomeSearchField()
+                  HomeSearchField(),
+                  AnimatedDeliveryManMotorcycleView()
                 ],
               ),
             )
