@@ -1,16 +1,15 @@
-import 'package:anim_svg/anim_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
 /// Plays the delivery-man-on-a-motorcycle SVG with its native CSS `@keyframes`
 /// animation intact.
 ///
 /// `flutter_svg` renders only a single static frame of a CSS-animated SVG, so
-/// we use [AnimSvgView], which transpiles the SVG to Lottie at runtime and
-/// plays it. It already frees its native handle while off-screen; we add a
+/// we use [FSvgPicture], which auto-detects the embedded animation and plays
+/// it on every platform (pure Dart, no native build step). We wrap it in a
 /// [RepaintBoundary] so the looping animation never repaints the rest of the
-/// home page, and fall back to the static SVG if the native conversion is
-/// unavailable on the current platform.
+/// home page, and show the static SVG while the animation is being prepared.
 class AnimatedDeliveryManMotorcycleView extends StatelessWidget {
   const AnimatedDeliveryManMotorcycleView({super.key, this.width});
 
@@ -30,26 +29,19 @@ class AnimatedDeliveryManMotorcycleView extends StatelessWidget {
         final double h = w / _aspectRatio;
         final String path = Assets.media.images.svg.deliveryManMotocycle.path;
 
-        Widget staticFallback() =>
-            Assets.media.images.svg.deliveryManMotocycle.svg(
-              width: w,
-              height: h,
-              fit: BoxFit.contain,
-            );
-
         return RepaintBoundary(
-          child: AnimSvgView.asset(
+          child: FSvgPicture.asset(
             path,
             width: w,
             height: h,
             fit: BoxFit.contain,
-            animate: true,
-            repeat: true,
-            loadingBuilder: (BuildContext context) => staticFallback(),
-            placeholderBuilder: (BuildContext context) => staticFallback(),
-            errorBuilder:
-                (BuildContext context, Object error, StackTrace? stack) =>
-                    staticFallback(),
+            autoPlay: true,
+            placeholderBuilder: (BuildContext context) =>
+                Assets.media.images.svg.deliveryManMotocycle.svg(
+                  width: w,
+                  height: h,
+                  fit: BoxFit.contain,
+                ),
           ),
         );
       },

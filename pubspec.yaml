@@ -15,7 +15,7 @@ dependencies:
   equatable: ^2.0.8
   dio: ^5.10.0
   flutter_riverpod: ^2.6.1
-  anim_svg:
+  full_svg_flutter: ^1.4.0
   shared_preferences: ^2.5.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0

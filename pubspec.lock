@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "12.1.0"
-  anim_svg:
-    dependency: "direct main"
-    description:
-      name: anim_svg
-      sha256: c9404dc501dd437f17964b9ed87911f69883ba4f95c0997f1d92ec30c9eba581
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.5"
   animated_bottom_navigation_bar:
     dependency: "direct main"
     description:
@@ -385,6 +377,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.8"
+  es_compression:
+    dependency: transitive
+    description:
+      name: es_compression
+      sha256: c1ff7af54802631cf5c3942cb67bb99daadcc087f573ca99a9de91002d1a7ece
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.15"
   fake_async:
     dependency: transitive
     description:
@@ -565,6 +565,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  full_svg_flutter:
+    dependency: "direct main"
+    description:
+      name: full_svg_flutter
+      sha256: "6c58e0f7935d1580e4ca78990b3281ef0479bae7f05defa9cab9055ce62c5bd0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   geoclue:
     dependency: transitive
     description:
@@ -1221,6 +1229,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  quickjs_engine:
+    dependency: transitive
+    description:
+      name: quickjs_engine
+      sha256: "45570de3db1834462b42ff27e9bb5e00f4d1406c1e464f623d14ed7cb216aaf2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   record_use:
     dependency: transitive
     description:
@@ -1442,6 +1458,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  sync_http:
+    dependency: transitive
+    description:
+      name: sync_http
+      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   synchronized:
     dependency: transitive
     description:
@@ -1466,14 +1490,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  thorvg_plus:
-    dependency: transitive
-    description:
-      name: thorvg_plus
-      sha256: babb43b8d0ce6eda703bec1dfdea9ce8cd39ece3353b166ffe22b0285ffd86d2
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   time:
     dependency: transitive
     description:
@@ -1538,14 +1554,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
-  visibility_detector:
-    dependency: transitive
-    description:
-      name: visibility_detector
-      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:
@@ -1594,6 +1602,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.3.0"
+  woff2:
+    dependency: transitive
+    description:
+      name: woff2
+      sha256: a2dd1505feb0f28b12df27e59ae7fa0a13eb2fe6cd6a715d9073e446eab03bfe
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   xdg_directories:
     dependency: transitive
     description:
