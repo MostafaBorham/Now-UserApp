@@ -5,27 +5,44 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 
+// Ticket geometry from the design: 121 x 158 with a 60-tall coloured head and
+// a 32px notch centred on both side edges, 46 above the bottom.
+const double _ticketWidth = 121;
+const double _ticketHeight = 158;
+const double _headHeight = 60;
+const double _notchSize = 32;
+const double _notchFromBottom = 46;
+
+// Body fills read off the design; the theme carries no equivalent tokens.
+const List<Color> _creamBody = [Color(0xffFEFAEA), Color(0xffFEF4D0)];
+const List<Color> _greenBody = [Color(0xffF4FAF3), Color(0xffE8F5E7)];
+
 class StoreDiscountCouponItem extends StatelessWidget {
-  const StoreDiscountCouponItem({super.key, required this.coupon});
+  const StoreDiscountCouponItem({
+    super.key,
+    required this.coupon,
+    required this.storeName,
+    this.darkHead = false,
+  });
+
   final CouponModel coupon;
+  final String storeName;
+
+  /// The design alternates a dark-green and a yellow head down the list.
+  final bool darkHead;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
-/*    final double discountValue = coupon.discountValue ?? 0;
-    final String discountText = discountValue % 1 == 0
-        ? discountValue.toStringAsFixed(0)
-        : discountValue.toString();
-    final String discountLabel =
-        coupon.isPercentage == true ? '$discountText%' : discountText;*/
-
     final DateTime? startsAt = DateTime.tryParse(coupon.startsAt ?? '');
     final DateTime? expiresAt = DateTime.tryParse(coupon.expiresAt ?? '');
-    final loc.DateFormat dateFormat =
-        loc.DateFormat.yMMMMd(context.locale.toString());
+    final loc.DateFormat dateFormat = loc.DateFormat.yMMMMd(
+      context.locale.toString(),
+    );
     final String validityText = [
       if (startsAt != null)
         '${LangKeys.fromKey.tr()} ${dateFormat.format(startsAt)}',
@@ -33,186 +50,135 @@ class StoreDiscountCouponItem extends StatelessWidget {
         '${LangKeys.toKey.tr()} ${dateFormat.format(expiresAt)}',
     ].join(' ');
 
-    final double minOrderValue = coupon.minOrderValue ?? 0;
-    final String minOrderText = minOrderValue % 1 == 0
-        ? minOrderValue.toStringAsFixed(0)
-        : minOrderValue.toString();
+    final Color headColor = darkHead
+        ? colors.surfaceBright
+        : colors.onSecondaryFixedVariant;
+    final Color discountColor = darkHead
+        ? colors.onSecondaryFixedVariant
+        : colors.primaryContainer;
+    final Color storeNameColor = darkHead
+        ? colors.onPrimary
+        : colors.tertiaryContainer;
+    final String discountValue = '${coupon.discountValue?.toInt() ?? 0}';
 
-    return Container(
-      width: 325,
-      height: 130,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: AppBorderRadius.brCircular16,
-      ),
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 77,
-                height: double.infinity,
-                alignment: Alignment.center,
-                color: colors.surfaceBright,
-                child: Row(
-                  textDirection: TextDirection.ltr,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    coupon.isPercentage!? SizedBox() : Assets.media.images.svg.realSaudiCurrency.svg(),
-                    Text(
-                      '${coupon.discountValue?.toInt()}',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.style20Bold.copyWith(
-                        color: colors.onSecondaryFixedVariant,
-                      ),
-                    ),
-                    coupon.isPercentage!? Text(
-                      '%',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.style20Bold.copyWith(
-                        color: colors.onSecondaryFixedVariant,
-                      ),
-                    ) : SizedBox()
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        colors.surfaceContainerHighest.withValues(alpha: 0.2),
-                        colors.surfaceContainerHighest.withValues(alpha: 0.6),
-                      ],
-                    ),
-                  ),
-                  child: Row(
+    return InkWell(
+      // The design has no code chip, so the whole ticket copies the code.
+      onTap: coupon.code == null
+          ? null
+          : () => Clipboard.setData(ClipboardData(text: coupon.code!)),
+      child: Container(
+        width: _ticketWidth,
+        height: _ticketHeight,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(borderRadius: AppBorderRadius.brCircular16),
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Container(
+                  height: _headHeight,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  color: headColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 2,
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 20,
-                            right: 16,
-                            top: 12,
-                            bottom: 12,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 6,
-                            children: [
-                              Text(
-                                coupon.name ?? LangKeys.discountCouponKey.tr(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.style16Medium.copyWith(
-                                  color: colors.primaryContainer,
-                                ),
+                      coupon.isPercentage ?? true
+                          ? Text(
+                              '$discountValue%',
+                              textDirection: TextDirection.ltr,
+                              style: AppTextStyles.style20SemiBold.copyWith(
+                                color: discountColor,
+                                height: 1,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 2,
-                                children: [
-                                  if (validityText.isNotEmpty)
-                                    Text(
-                                      validityText,
-                                      maxLines: 1,
-                                      style: AppTextStyles.style10Regular.copyWith(
-                                        color: colors.onSurface,
-                                      ),
-                                    ),
-                                  Text(
-                                    '${coupon.description}',
-                                    maxLines: 1,
-                                    style: AppTextStyles.style12Regular.copyWith(
-                                      color: colors.onSurface,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              InkWell(
-                                onTap: coupon.code == null
-                                    ? null
-                                    : () => Clipboard.setData(
-                                          ClipboardData(text: coupon.code!),
-                                        ),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: colors.onSurfaceVariant,
-                                    borderRadius: AppBorderRadius.brCircular30,
-                                  ),
-                                  child: Row(
-                                    textDirection: TextDirection.ltr,
-                                    mainAxisSize: MainAxisSize.min,
-                                    spacing: 4,
-                                    children: [
-                                      Text(
-                                        coupon.code ?? '',
-                                        style: AppTextStyles.style12Regular
-                                            .copyWith(
-                                              color: colors.primaryContainer,
-                                            ),
-                                      ),
-                                      Assets.media.images.svg.copyCouponCodeIcon.svg(
-                                        width: 16,
-                                        colorFilter: ColorFilter.mode(colors.primaryContainer,BlendMode.srcIn)
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: RotatedBox(
-                          quarterTurns: 3,
-                          child: Assets.media.images.svg.appLogo.svg(
-                            height: 28,
-                          ),
+                            )
+                          : NewPriceWidget(
+                              color: discountColor,
+                              price: discountValue,
+                              size: 20,
+                            ),
+                      Text(
+                        '${LangKeys.inStoreKey.tr()} $storeName',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.style12SemiBold.copyWith(
+                          color: storeNameColor,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          PositionedDirectional(
-            end: 60,
-            top: -16,
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                shape: BoxShape.circle,
-              ),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: darkHead ? _creamBody : _greenBody,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 4,
+                      children: [
+                        Text(
+                          coupon.name ?? LangKeys.discountCouponKey.tr(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.style16Medium.copyWith(
+                            color: colors.primaryContainer,
+                          ),
+                        ),
+                        if (validityText.isNotEmpty)
+                          Text(
+                            validityText,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.style10Medium.copyWith(
+                              color: colors.onSurface,
+                            ),
+                          ),
+                        Assets.media.images.svg.appLogo.svg(width: 64),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          PositionedDirectional(
-            end: 60,
-            bottom: -16,
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                shape: BoxShape.circle,
-              ),
+            // Half-discs painted in the page colour: the ticket clips away the
+            // outer half, leaving a notch punched into each side edge.
+            Positioned(
+              left: -_notchSize / 2,
+              top: _notchTop,
+              child: _notch(context),
             ),
-          ),
-        ],
+            Positioned(
+              right: -_notchSize / 2,
+              top: _notchTop,
+              child: _notch(context),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  static const double _notchTop =
+      _ticketHeight - _notchFromBottom - _notchSize / 2;
+
+  Widget _notch(BuildContext context) => Container(
+    width: _notchSize,
+    height: _notchSize,
+    decoration: BoxDecoration(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      shape: BoxShape.circle,
+    ),
+  );
 }

@@ -13,49 +13,33 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Stack(
-          children: [
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'GALAXY',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 90,
-                  color: colors.secondaryFixedDim,
-                ),
+        // The wordmark is painted with the design's diagonal white-to-brand
+        // gradient, so it fades into the page on the left. Left-to-right in
+        // both locales — the word itself is always latin.
+        ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (Rect bounds) => LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: const [0.08, 0.63],
+            colors: [
+              colors.onPrimary.withValues(alpha: 0.8),
+              colors.secondaryFixedDim,
+            ],
+          ).createShader(bounds),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'GALAXY',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 96,
+                letterSpacing: -4,
+                height: 1,
+                color: colors.secondaryFixedDim,
               ),
             ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin:
-                    AlignmentDirectional.centerStart,
-                    end: AlignmentDirectional.centerEnd,
-                    colors: [
-                      colors.onPrimary.withValues(
-                        alpha: 0.9,
-                      ),
-                      colors.onPrimary.withValues(
-                        alpha: 0.75,
-                      ),
-                      colors.onPrimary.withValues(
-                        alpha: 0.5,
-                      ),
-                      colors.onPrimary.withValues(
-                        alpha: 0.3,
-                      ),
-                      colors.onPrimary.withValues(
-                        alpha: 0.1,
-                      ),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
         AppArrowSlider(
           sliderItem: Container(
@@ -67,10 +51,9 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: colors.secondaryFixedDim
-                      .withValues(alpha: 0.3),
-                  offset: Offset(0, 10),
-                  spreadRadius: 15,
-                  blurRadius: 25,
+                      .withValues(alpha: 0.4),
+                  offset: Offset(0, 20),
+                  blurRadius: 100,
                 ),
               ],
             ),
@@ -83,7 +66,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
             ),
           ),
           sliderSpace: 8,
-          itemAspectRatio: 1.5,
+          itemAspectRatio: 1.3,
           activeDotColor: colors.secondaryFixedDim,
           dotColor: colors.onPrimary,
         ),

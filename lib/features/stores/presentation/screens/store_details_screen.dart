@@ -57,7 +57,9 @@ class StoreDetailsScreen extends ConsumerWidget {
                   spacing: 16,
                   children: [
                     AspectRatio(
-                      aspectRatio: 1.5,
+                      // Design: 240 tall on a 390 wide frame (cover + logo
+                      // overhang + description + delivery row).
+                      aspectRatio: 390 / 240,
                       child: AppRefreshIndicator(
                         onRefresh: () => ref
                             .read(getStoreDetailsProvider(storeId).notifier)
@@ -101,7 +103,7 @@ class StoreDetailsScreen extends ConsumerWidget {
                                                       ),
                                                 )
                                                 .toList(),
-                                        itemAspectRatio: 2.8,
+                                        itemAspectRatio: 3.4,
                                       ),
                                       StoreDetailsBrandsSlider(),
                                       Padding(
@@ -159,15 +161,13 @@ class StoreDetailsScreen extends ConsumerWidget {
                                                     ),
                                               )
                                               .toList(),
-                                          selectedTabColor:
-                                              colors.tertiaryContainer,
-                                          unSelectedTabColor: colors
-                                              .inversePrimary
-                                              .withValues(alpha: 0.2),
+                                          selectedTabColor: colors.primary,
+                                          unSelectedTabColor:
+                                              colors.primaryFixed,
                                           selectedLabelColor:
                                               colors.onPrimary,
                                           unSelectedLabelColor:
-                                              colors.onSecondary,
+                                              colors.tertiaryContainer,
                                         ),
                                       ),
                                     ),

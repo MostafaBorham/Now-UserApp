@@ -23,9 +23,10 @@ class StoreDetailsProductsView extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 14,
-          mainAxisSpacing: 14,
-          childAspectRatio: 0.65
+          crossAxisSpacing: 18,
+          mainAxisSpacing: 16,
+          // Design card: 170 x 280.
+          childAspectRatio: 170 / 280
       ),
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) =>

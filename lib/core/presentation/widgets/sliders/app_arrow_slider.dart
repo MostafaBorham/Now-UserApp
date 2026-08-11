@@ -77,12 +77,15 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.onPrimary.withValues(alpha: 0.85),
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: colors.onSecondary.withValues(alpha: 0.08),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: colors.onSurface.withValues(alpha: 0.3),
-                      blurRadius: 6,
+                      color: colors.onSecondary.withValues(alpha: 0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -98,7 +101,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                     child: Center(
                       child: Icon(
                         Icons.chevron_left,
-                        size: 24,
+                        size: 18,
                         color: colors.onSecondary,
                       ),
                     ),
@@ -112,12 +115,15 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colors.onPrimary,
+                  color: colors.onPrimary.withValues(alpha: 0.85),
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: colors.onSecondary.withValues(alpha: 0.08),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: colors.onSurface.withValues(alpha: 0.3),
-                      blurRadius: 6,
+                      color: colors.onSecondary.withValues(alpha: 0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -133,7 +139,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                     child: Center(
                       child: Icon(
                         Icons.chevron_right,
-                        size: 24,
+                        size: 18,
                         color: colors.onSecondary,
                       ),
                     ),

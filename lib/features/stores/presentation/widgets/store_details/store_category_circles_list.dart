@@ -45,14 +45,15 @@ class StoreCategoryCirclesList extends ConsumerWidget {
                 children: [
                   CircularBrandLogo(
                     radius: 40,
+                    logoScale: 1.2,
                     logoUrl: categories[index].image ?? '',
                   ),
                   Text(
                     context.getLocalizedApiText(categories[index].name),
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.visible,
-                    style: AppTextStyles.style14SemiBold.copyWith(
-                      color: colors.onSecondary,
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.tertiaryContainer,
                     ),
                   ),
                 ],
