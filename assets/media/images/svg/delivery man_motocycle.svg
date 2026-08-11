@@ -11,9 +11,22 @@
     transform: translateX(-118px) translateY(0px);
   }
 }
+@keyframes kf_Untitled-1_2__Vectorized__1_opacity_fadeout {
+  0% {
+    opacity: 1;
+  }
+  86.25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 #Untitled-1_2__Vectorized__1 {
   transform-origin: 0 0;
-  animation: kf_Untitled-1_2__Vectorized__1_transform_0 2s linear infinite;
+  animation:
+    kf_Untitled-1_2__Vectorized__1_transform_0 2s linear forwards,
+    kf_Untitled-1_2__Vectorized__1_opacity_fadeout 2s linear forwards;
 }
 @keyframes kf_Smoke_transform_0 {
   0% {
@@ -63,8 +76,8 @@
 #Smoke {
   transform-origin: 0 0;
   animation:
-    kf_Smoke_transform_0 2s linear infinite,
-    kf_Smoke_opacity_0 2s linear infinite;
+    kf_Smoke_transform_0 2s linear forwards,
+    kf_Smoke_opacity_0 2s linear forwards;
 }
 @keyframes kf_Smoke_2_transform_0 {
   0% {
@@ -105,8 +118,8 @@
 #Smoke_2 {
   transform-origin: 0 0;
   animation:
-    kf_Smoke_2_transform_0 2s linear infinite,
-    kf_Smoke_2_opacity_0 2s linear infinite;
+    kf_Smoke_2_transform_0 2s linear forwards,
+    kf_Smoke_2_opacity_0 2s linear forwards;
 }
 @keyframes kf_Smoke_3_transform_0 {
   0% {
@@ -147,8 +160,8 @@
 #Smoke_3 {
   transform-origin: 0 0;
   animation:
-    kf_Smoke_3_transform_0 2s linear infinite,
-    kf_Smoke_3_opacity_0 2s linear infinite;
+    kf_Smoke_3_transform_0 2s linear forwards,
+    kf_Smoke_3_opacity_0 2s linear forwards;
 }
 @keyframes kf_Smoke_4_transform_0 {
   0% {
@@ -189,8 +202,8 @@
 #Smoke_4 {
   transform-origin: 0 0;
   animation:
-    kf_Smoke_4_transform_0 2s linear infinite,
-    kf_Smoke_4_opacity_0 2s linear infinite;
+    kf_Smoke_4_transform_0 2s linear forwards,
+    kf_Smoke_4_opacity_0 2s linear forwards;
 }
 @keyframes kf_Smoke_5_transform_0 {
   0% {
@@ -231,8 +244,8 @@
 #Smoke_5 {
   transform-origin: 0 0;
   animation:
-    kf_Smoke_5_transform_0 2s linear infinite,
-    kf_Smoke_5_opacity_0 2s linear infinite;
+    kf_Smoke_5_transform_0 2s linear forwards,
+    kf_Smoke_5_opacity_0 2s linear forwards;
 }
 @keyframes kf_Front_Wheel_transform_0 {
   0% {
@@ -253,7 +266,7 @@
 }
 #Front_Wheel {
   transform-origin: 0 0;
-  animation: kf_Front_Wheel_transform_0 2s linear infinite;
+  animation: kf_Front_Wheel_transform_0 2s linear forwards;
 }
 </style>
 <g id="Untitled-1_2__Vectorized__1" clip-path="url(#clip0_6649_12434)">
@@ -399,27 +412,27 @@
 </g>
 </g>
 <defs>
-<filter id="filter0_f_6649_12434" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+<filter id="filter0_f_6649_12434" x="-12" y="-12" width="54" height="46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_6649_12434"/>
 </filter>
-<filter id="filter1_f_6649_12434" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+<filter id="filter1_f_6649_12434" x="-12" y="-12" width="54" height="46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_6649_12434"/>
 </filter>
-<filter id="filter2_f_6649_12434" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+<filter id="filter2_f_6649_12434" x="-12" y="-12" width="54" height="46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_6649_12434"/>
 </filter>
-<filter id="filter3_f_6649_12434" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+<filter id="filter3_f_6649_12434" x="-12" y="-12" width="54" height="46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_6649_12434"/>
 </filter>
-<filter id="filter4_f_6649_12434" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+<filter id="filter4_f_6649_12434" x="-12" y="-12" width="54" height="46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_6649_12434"/>

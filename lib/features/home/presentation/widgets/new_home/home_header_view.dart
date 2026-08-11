@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -18,14 +19,18 @@ class HomeHeaderView extends StatelessWidget {
           children: [
             ReverseWidget(
               applyReverse: !context.isRTL,
-              child: Assets.media.images.svg.homeHeaderBackground.svg(
-                fit: BoxFit.cover,
-                width: con.maxWidth
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 15),
+                child: Assets.media.images.svg.homeHeaderBackground.svg(
+                  fit: BoxFit.cover,
+                  width: con.maxWidth
+                ),
               ),
             ),
-            SafeArea(
-              child: Column(
-                children: [
+            Positioned.fill(
+              child: SafeArea(
+                child: Column(
+                  children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,8 +73,17 @@ class HomeHeaderView extends StatelessWidget {
                     ],
                   ),
                   HomeSearchField(),
-                  AnimatedDeliveryManMotorcycleView()
-                ],
+                  AnimatedDeliveryManMotorcycleView(),
+                  const Spacer(),
+                    AnimatedSvgPicture.asset(
+                      Assets.media.images.svg.viewAllArabic.path,
+                      fit: BoxFit.contain,
+                      playbackRate: 1,
+                      autoPlay: true,
+                      placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+                    )
+                  ],
+                ),
               ),
             )
           ],

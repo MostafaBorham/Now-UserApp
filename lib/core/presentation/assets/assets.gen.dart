@@ -25,21 +25,20 @@ class $AssetsFontsGen {
 class $AssetsJsonGen {
   const $AssetsJsonGen();
 
-  /// File path: assets/json/delivery man_motorcycle.json
-  LottieGenImage get deliveryManMotorcycle =>
-      const LottieGenImage('assets/json/delivery man_motorcycle.json');
-
   /// Directory path: assets/json/lang
   $AssetsJsonLangGen get lang => const $AssetsJsonLangGen();
 
   /// File path: assets/json/map.json
   String get map => 'assets/json/map.json';
 
+  /// File path: assets/json/quick_deliver_arabic.json
+  String get quickDeliverArabic => 'assets/json/quick_deliver_arabic.json';
+
   /// File path: assets/json/splash.json
   LottieGenImage get splash => const LottieGenImage('assets/json/splash.json');
 
   /// List of all assets
-  List<dynamic> get values => [deliveryManMotorcycle, map, splash];
+  List<dynamic> get values => [map, quickDeliverArabic, splash];
 }
 
 class $AssetsMediaGen {
