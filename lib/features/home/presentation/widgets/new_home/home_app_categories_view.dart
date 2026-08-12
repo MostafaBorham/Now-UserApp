@@ -112,8 +112,9 @@ class _CategoryCarouselItem extends StatelessWidget {
         builder: (context, child) {
           final bool ready =
               controller.hasClients && controller.position.haveDimensions;
-          final double page =
-              ready ? controller.page! : controller.initialPage.toDouble();
+          final double page = ready
+              ? controller.page!
+              : controller.initialPage.toDouble();
           final double distance = (page - index).abs().clamp(0.0, 1.0);
           final double scale = 1.0 - distance * 0.32; // center 1.0 → side 0.68
           return Transform.scale(scale: scale, child: child);
@@ -127,21 +128,15 @@ class _CategoryCarouselItem extends StatelessWidget {
               height: diameter,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: colors.primaryFixed,
+                gradient: LinearGradient(
+                  colors: [colors.white, colors.onSecondaryFixed],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.5,1]
+                ),
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.primary200.withValues(alpha: 0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
               ),
-              child: Icon(
-                icon,
-                size: diameter * 0.5,
-                color: colors.primary700,
-              ),
+              child: Icon(icon, size: diameter * 0.5, color: colors.primary700),
             ),
             SizedBox(height: width * 0.02),
             Text(

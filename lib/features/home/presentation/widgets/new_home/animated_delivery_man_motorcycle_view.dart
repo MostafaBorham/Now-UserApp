@@ -20,27 +20,34 @@ class _AnimatedDeliveryManMotorcycleViewState
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        RepaintBoundary(
-          child: AnimatedSvgPicture.asset(
-            Assets.media.images.svg.deliveryManMotocycle.path,
-            fit: BoxFit.contain,
-            playbackRate: 1,
-            autoPlay: true,
-            placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+    return LayoutBuilder(
+      builder: (context,con) {
+        return SizedBox(
+          height: con.maxWidth*0.2,
+          child: Stack(
+            children: [
+              RepaintBoundary(
+                child: AnimatedSvgPicture.asset(
+                  Assets.media.images.svg.deliveryManMotocycle.path,
+                  fit: BoxFit.contain,
+                  playbackRate: 1,
+                  autoPlay: true,
+                  placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+                ),
+              ),
+              RepaintBoundary(
+                child: AnimatedSvgPicture.asset(
+                  Assets.media.images.svg.quickDeliverArabic.path,
+                  fit: BoxFit.contain,
+                  playbackRate: 1,
+                  autoPlay: true,
+                  placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+                ),
+              )
+            ],
           ),
-        ),
-        RepaintBoundary(
-          child: AnimatedSvgPicture.asset(
-            Assets.media.images.svg.quickDeliverArabic.path,
-            fit: BoxFit.contain,
-            playbackRate: 1,
-            autoPlay: true,
-            placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
-          ),
-        )
-      ],
+        );
+      }
     );
   }
 }
