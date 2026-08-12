@@ -90,13 +90,18 @@ class HomeHeaderView extends StatelessWidget {
                     AnimatedDeliveryManMotorcycleView(),
                     HomeAppCategoriesView(),
                     const Spacer(),
-                    AnimatedSvgPicture.asset(
-                      Assets.media.images.svg.viewAllArabic.path,
-                      fit: BoxFit.contain,
-                      playbackRate: 1,
-                      autoPlay: true,
-                      placeholderBuilder: (BuildContext context) =>
-                          SizedBox.shrink(),
+                    // RepaintBoundary isolates this continuously-playing SVG so
+                    // its per-frame repaints don't dirty the rest of the header
+                    // layer (background, greeting, search field, carousel).
+                    RepaintBoundary(
+                      child: AnimatedSvgPicture.asset(
+                        Assets.media.images.svg.viewAllArabic.path,
+                        fit: BoxFit.contain,
+                        playbackRate: 1,
+                        autoPlay: true,
+                        placeholderBuilder: (BuildContext context) =>
+                            SizedBox.shrink(),
+                      ),
                     ),
                   ],
                 ),
