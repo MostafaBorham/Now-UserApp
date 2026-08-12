@@ -14,7 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
-import '../../../features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'rate/app_rate_widget.dart';
 
 class StoreItem extends StatefulWidget {

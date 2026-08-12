@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 
 class OffersCannotWaitView extends StatelessWidget {
   const OffersCannotWaitView({super.key});

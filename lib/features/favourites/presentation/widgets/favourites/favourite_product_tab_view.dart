@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagina
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourites_tab_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/get_favourite_products_vm.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
 
 /// The caller's favourited products: search + category chips + sort over an
 /// infinite-scrolling grid. The filter chrome lives in [FavouritesTabView]; the

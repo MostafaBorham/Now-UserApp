@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagina
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_category_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/view_store_category_products/store_id_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';

@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
-import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'product_colors_selector.dart';

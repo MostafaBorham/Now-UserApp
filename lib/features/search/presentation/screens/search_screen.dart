@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card1.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
 
 class SearchScreen extends ConsumerWidget {

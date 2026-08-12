@@ -1,3 +1,6 @@
+// ponytail: lives in core but still imports features/cart for the cart button;
+// decoupling means relocating the cart viewmodel too — do that when cart is
+// refactored, not before.
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
@@ -8,16 +11,12 @@ import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -25,7 +24,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
-import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
   const ProductItemCard2({
