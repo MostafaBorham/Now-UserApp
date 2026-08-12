@@ -37,7 +37,7 @@ class HomeView extends StatelessWidget {
         children: [
           HomeHeaderView(),
           HomeOffersSectionView(),
-          HomeMostPopularBrandsView()
+          HomeMostPopularBrandsView(),
         ],
       ),
     );

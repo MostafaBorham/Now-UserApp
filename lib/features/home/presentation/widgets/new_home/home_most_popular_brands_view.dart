@@ -1,21 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 class HomeMostPopularBrandsView extends StatelessWidget {
   const HomeMostPopularBrandsView({super.key});
 
-  static const List<({String name, String logo})> _brands = [
-    (name: 'Jarir', logo: 'https://picsum.photos/seed/jarir/100'),
-    (name: 'KFC', logo: 'https://picsum.photos/seed/kfc/100'),
-    (name: 'Starbucks', logo: 'https://picsum.photos/seed/starbucks/100'),
-    (name: 'Dunkin', logo: 'https://picsum.photos/seed/dunkin/100'),
-    (name: 'McDonald\'s', logo: 'https://picsum.photos/seed/mcdonalds/100'),
-    (name: 'Pizza Hut', logo: 'https://picsum.photos/seed/pizzahut/100'),
-    (name: 'Burger King', logo: 'https://picsum.photos/seed/burgerking/100'),
-    (name: 'Baskin', logo: 'https://picsum.photos/seed/baskin/100'),
-  ];
+  // TODO: temporary placeholder count until brands are fetched from the API.
+  static const int _brandsCount = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +17,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
         final double cardWidth = con.maxWidth * 0.4;
         final double logoSize = con.maxWidth * 0.13;
         final double cardHeight = logoSize + 24;
-        final int columnCount = (_brands.length / 2).ceil();
+        final int columnCount = (_brandsCount / 2).ceil();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -38,22 +30,43 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Best Brands',
+                    'Most Popular Brands',
                     style: TextStyle(
-                      fontSize: con.maxWidth * 0.052,
+                      fontSize: con.maxWidth * 0.05,
                       color: colors.black,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Text(
-                    'View All',
-                    style: TextStyle(
-                      fontSize: con.maxWidth * 0.032,
-                      color: colors.black,
-                      fontWeight: FontWeight.w800,
-                      decoration: TextDecoration.underline,
-                      decorationColor: colors.black,
-                    ),
+                  Stack(
+                    alignment: AlignmentDirectional.centerStart,
+                    children: [
+                      Positioned.fill(
+                        child: FractionallySizedBox(
+                          widthFactor: 0.8,
+                          heightFactor: 0.6,
+                          alignment: AlignmentDirectional.bottomEnd,
+                          child: Container(
+                            height: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(100),
+                              gradient: LinearGradient(
+                                colors: [colors.white,colors.onSecondaryContainer.withValues(alpha: 0.4)],
+                                begin: AlignmentDirectional.centerStart,
+                                end: AlignmentDirectional.centerEnd,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'View All',
+                        style: TextStyle(
+                          fontSize: con.maxWidth * 0.035,
+                          color: colors.black,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -64,22 +77,17 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                   itemCount: columnCount,
                   separatorBuilder: (context, index) => 12.wSpace,
                   itemBuilder: (context, index) {
-                    final int topIndex = index * 2;
-                    final int bottomIndex = topIndex + 1;
+                    final int bottomIndex = index * 2 + 1;
                     return Column(
                       spacing: 12,
                       children: [
                         _BrandCard(
-                          name: _brands[topIndex].name,
-                          logo: _brands[topIndex].logo,
                           width: cardWidth,
                           height: cardHeight,
                           logoSize: logoSize,
                         ),
-                        if (bottomIndex < _brands.length)
+                        if (bottomIndex < _brandsCount)
                           _BrandCard(
-                            name: _brands[bottomIndex].name,
-                            logo: _brands[bottomIndex].logo,
                             width: cardWidth,
                             height: cardHeight,
                             logoSize: logoSize,
@@ -99,15 +107,16 @@ class HomeMostPopularBrandsView extends StatelessWidget {
 
 class _BrandCard extends StatelessWidget {
   const _BrandCard({
-    required this.name,
-    required this.logo,
     required this.width,
     required this.height,
     required this.logoSize,
   });
 
-  final String name;
-  final String logo;
+  // TODO: temporary placeholder values until brands are fetched from the API.
+  static const String _name = 'KFC';
+  static const String _logo =
+      'https://www.image2url.com/r2/default/images/1786549005240-05cb0498-26b3-4404-b85b-e936af77e34d.png';
+
   final double width;
   final double height;
   final double logoSize;
@@ -118,34 +127,38 @@ class _BrandCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
+      alignment: Alignment.center,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colors.black.withValues(alpha: 0.05),
+        color: colors.neutral500.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         spacing: 8,
         children: [
+          SizedBox(
+            width: width / 3,
+            height: logoSize,
+            child: CachedNetworkImage(
+              imageUrl: _logo,
+              width: width / 3,
+              height: logoSize,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const SizedBox.shrink(),
+              errorWidget: (context, url, error) => const SizedBox.shrink(),
+            ),
+          ),
           Expanded(
             child: Text(
-              name,
+              _name,
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: width * 0.13,
+                fontSize: width * 0.1,
                 color: colors.black,
                 fontWeight: FontWeight.w500,
               ),
-            ),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: AppCachedNetworkImage(
-              imageUrl: logo,
-              width: logoSize,
-              height: logoSize,
-              fit: BoxFit.cover,
             ),
           ),
         ],

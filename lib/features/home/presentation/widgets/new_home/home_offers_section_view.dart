@@ -121,7 +121,7 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
             borderRadius: BorderRadius.circular(18),
             child: const AppCachedNetworkImage(
               imageUrl:
-                  'ttps://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
+                  'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -217,12 +217,27 @@ class _AnimatedOffersBannerState extends State<_AnimatedOffersBanner>
         position: _offset,
         child: AspectRatio(
           aspectRatio: 3,
-          child: const AppCachedNetworkImage(
-            imageUrl:
-                'ttps://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.black.withValues(alpha: 0.25),
+                  offset: Offset.zero,
+                  blurRadius: 4,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: const AppCachedNetworkImage(
+              imageUrl:
+                  'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

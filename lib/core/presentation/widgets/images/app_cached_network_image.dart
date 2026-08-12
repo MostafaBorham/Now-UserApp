@@ -106,7 +106,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         height: height ?? double.infinity,
         decoration: BoxDecoration(
-          color: colors.neutral500.withValues(alpha: 0.3),
+          color: colors.onPrimaryContainer,
         ),
         child: Assets.media.images.png.noImageAvail.image(
           fit: BoxFit.contain,
