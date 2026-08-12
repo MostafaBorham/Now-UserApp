@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/mos
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -36,6 +37,7 @@ class HomeView extends StatelessWidget {
         children: [
           HomeHeaderView(),
           HomeOffersSectionView(),
+          HomeMostPopularBrandsView()
         ],
       ),
     );
