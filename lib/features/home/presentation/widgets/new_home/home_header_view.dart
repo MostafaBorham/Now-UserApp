@@ -87,20 +87,37 @@ class HomeHeaderView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    AnimatedDeliveryManMotorcycleView(),
-                    HomeAppCategoriesView(),
-                    const Spacer(),
+                    // The background SVG drives the Stack height. Every section
+                    // below the fixed header is wrapped in Expanded so its slot
+                    // is computed purely from the layout constraints, never from
+                    // its child's content. This matters for the async SVGs
+                    // (motorcycle, view-all) that render an empty placeholder
+                    // until they load: their reserved height stays constant, so
+                    // when they finally appear no sibling (e.g. the categories
+                    // carousel) jumps or shifts. The flex weights 2:4:1 roughly
+                    // preserve the original height ratio between the sections.
+                    Expanded(
+                      flex: 2,
+                      child: AnimatedDeliveryManMotorcycleView(),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: HomeAppCategoriesView(),
+                    ),
                     // RepaintBoundary isolates this continuously-playing SVG so
                     // its per-frame repaints don't dirty the rest of the header
                     // layer (background, greeting, search field, carousel).
-                    RepaintBoundary(
-                      child: AnimatedSvgPicture.asset(
-                        Assets.media.images.svg.viewAllArabic.path,
-                        fit: BoxFit.contain,
-                        playbackRate: 1,
-                        autoPlay: true,
-                        placeholderBuilder: (BuildContext context) =>
-                            SizedBox.shrink(),
+                    Expanded(
+                      flex: 1,
+                      child: RepaintBoundary(
+                        child: AnimatedSvgPicture.asset(
+                          Assets.media.images.svg.viewAllArabic.path,
+                          fit: BoxFit.contain,
+                          playbackRate: 1,
+                          autoPlay: true,
+                          placeholderBuilder: (BuildContext context) =>
+                              SizedBox.shrink(),
+                        ),
                       ),
                     ),
                   ],
