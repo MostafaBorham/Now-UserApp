@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/mos
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -29,11 +30,14 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Column(
-      spacing: 10,
-      children: [
-        HomeHeaderView()
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        spacing: 16,
+        children: [
+          HomeHeaderView(),
+          HomeOffersSectionView(),
+        ],
+      ),
     );
   }
 }
