@@ -50,29 +50,7 @@ class HomeOffersSectionView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  AspectRatio(
-                    aspectRatio: 3,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadiusGeometry.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: colors.black.withValues(alpha: 0.25),
-                            offset: Offset.zero,
-                            blurRadius: 4,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  const _AnimatedOffersBanner(),
                 ],
               ),
             ],
@@ -153,6 +131,114 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
       ),
       separatorBuilder: (context, index) => 12.wSpace,
       itemCount: widget.itemCount,
+    );
+  }
+}
+
+/// Isolated so its loop never rebuilds the surrounding section.
+///
+/// Timeline (repeats forever): starts off-screen at the page's start (leading)
+/// edge; [_initialDelay] after load it slides in, stays for [_visibleDwell],
+/// then vanishes instantly (snaps off-side, no animation); after [_hiddenDwell]
+/// it slides in again.
+///
+/// The [AnimationController] runs only during the ~600 ms slide itself and sits
+/// idle through both dwells — a plain [Timer] wakes it — so it stays cheap. The
+/// motion is a [SlideTransition] (a `Transform`, no `saveLayer`), wrapped in a
+/// [RepaintBoundary] to keep its repaints local.
+class _AnimatedOffersBanner extends StatefulWidget {
+  const _AnimatedOffersBanner();
+
+  @override
+  State<_AnimatedOffersBanner> createState() => _AnimatedOffersBannerState();
+}
+
+class _AnimatedOffersBannerState extends State<_AnimatedOffersBanner>
+    with SingleTickerProviderStateMixin {
+  static const Duration _slide = Duration(milliseconds: 600);
+  static const Duration _initialDelay = Duration(seconds: 2);
+  static const Duration _visibleDwell = Duration(seconds: 6);
+  static const Duration _hiddenDwell = Duration(seconds: 2);
+
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: _slide,
+  );
+  late Animation<Offset> _offset;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addStatusListener(_onStatus);
+    // Stays hidden off-side; slides in for the first time after the delay.
+    _timer = Timer(_initialDelay, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Enter from the page's start (leading) side, direction-aware (RTL/LTR).
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    _offset = Tween<Offset>(
+      begin: Offset(isRtl ? 1.15 : -1.15, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+  }
+
+  void _onStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      // Fully visible -> hold, then vanish instantly (snap off-side, no anim).
+      _timer = Timer(_visibleDwell, () {
+        if (mounted) _controller.reset();
+      });
+    } else if (status == AnimationStatus.dismissed) {
+      // Fully hidden -> wait, then slide in again. Loops forever.
+      _timer = Timer(_hiddenDwell, () {
+        if (mounted) _controller.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return RepaintBoundary(
+      child: SlideTransition(
+        position: _offset,
+        child: AspectRatio(
+          aspectRatio: 3,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: NetworkImage(
+                  'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
+                ),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.black.withValues(alpha: 0.25),
+                  offset: Offset.zero,
+                  blurRadius: 4,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
