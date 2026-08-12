@@ -4,10 +4,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 /// Lightweight home search bar. The static shell (border, chip, icon) is a
@@ -70,10 +72,13 @@ class HomeSearchField extends StatelessWidget {
                 color: colors.primary500Main,
                 borderRadius: AppBorderRadius.brCircular16,
               ),
-              child: Assets.media.images.svg.searchNormalIcon.svg(
-                width: 16,
-                height: 16,
-                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+              child: ReverseWidget(
+                applyReverse: !context.isRTL,
+                child: Assets.media.images.svg.searchNormalIcon.svg(
+                  width: 16,
+                  height: 16,
+                  colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+                ),
               ),
             ),
           ],

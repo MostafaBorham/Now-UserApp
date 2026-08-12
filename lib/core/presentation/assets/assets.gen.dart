@@ -123,6 +123,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get decrementIcon =>
       const AssetGenImage('assets/media/images/png/decrement-icon.png');
 
+  /// File path: assets/media/images/png/default-category-png.png
+  AssetGenImage get defaultCategoryPng =>
+      const AssetGenImage('assets/media/images/png/default-category-png.png');
+
   /// File path: assets/media/images/png/increament-icon.png
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
@@ -177,6 +181,7 @@ class $AssetsMediaImagesPngGen {
     appLogo,
     bottomNavBarBackground,
     decrementIcon,
+    defaultCategoryPng,
     increamentIcon,
     map,
     masterCardLogo,
@@ -226,6 +231,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/alert-icon.svg
   SvgGenImage get alertIcon =>
       const SvgGenImage('assets/media/images/svg/alert-icon.svg');
+
+  /// Directory path: assets/media/images/svg/app-logos
+  $AssetsMediaImagesSvgAppLogosGen get appLogos =>
+      const $AssetsMediaImagesSvgAppLogosGen();
 
   /// File path: assets/media/images/svg/app-orange-logo.svg
   SvgGenImage get appOrangeLogo =>
@@ -822,6 +831,18 @@ class $AssetsMediaImagesSvgGen {
     workSelected,
     workUnselected,
   ];
+}
+
+class $AssetsMediaImagesSvgAppLogosGen {
+  const $AssetsMediaImagesSvgAppLogosGen();
+
+  /// File path: assets/media/images/svg/app-logos/home-white-app-logo.svg
+  SvgGenImage get homeWhiteAppLogo => const SvgGenImage(
+    'assets/media/images/svg/app-logos/home-white-app-logo.svg',
+  );
+
+  /// List of all assets
+  List<SvgGenImage> get values => [homeWhiteAppLogo];
 }
 
 class Assets {

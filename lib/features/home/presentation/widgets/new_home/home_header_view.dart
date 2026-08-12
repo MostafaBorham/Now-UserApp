@@ -31,53 +31,62 @@ class HomeHeaderView extends StatelessWidget {
             Positioned.fill(
               child: SafeArea(
                 child: Column(
+                  spacing: 10,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          spacing: 5,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'hala wallah .. naortna!',
-                              style: TextStyle(
-                                color: colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: con.maxWidth * 0.04,
-                              ),
-                            ),
-                            Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.homeLocationIcon.svg(
-                                  width: con.maxWidth * 0.05,
-                                ),
-                                Text(
-                                  'olya , saudi arabia 2321',
-                                  style: TextStyle(
-                                    color: colors.black,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: con.maxWidth * 0.03,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        spacing: 12,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'hala wallah .. naortna!',
+                                    style: TextStyle(
+                                      color: colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: con.maxWidth * 0.04,
+                                    ),
                                   ),
-                                ),
-                                RotatedBox(
-                                  quarterTurns: 1,
-                                  child: Assets.media.images.svg.arrowBrokenIcon
-                                      .svg(width: con.maxWidth * 0.04),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Assets.media.images.svg.appOrangeLogo.svg(
-                          fit: BoxFit.contain,
-                          width: con.maxWidth * 0.3,
-                        ),
-                      ],
+                                  Row(
+                                    spacing: 5,
+                                    children: [
+                                      Assets.media.images.svg.homeLocationIcon.svg(
+                                        width: con.maxWidth * 0.05,
+                                      ),
+                                      Text(
+                                        'olya , saudi arabia 2321',
+                                        style: TextStyle(
+                                          color: colors.black,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: con.maxWidth * 0.03,
+                                        ),
+                                      ),
+                                      RotatedBox(
+                                        quarterTurns: 1,
+                                        child: Assets.media.images.svg.arrowBrokenIcon
+                                            .svg(width: con.maxWidth * 0.04),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Assets.media.images.svg.appLogos.homeWhiteAppLogo.svg(
+                                fit: BoxFit.contain,
+                                width: con.maxWidth * 0.3,
+                              ),
+                            ],
+                          ),
+                          HomeSearchField(),
+                        ],
+                      ),
                     ),
-                    HomeSearchField(),
                     AnimatedDeliveryManMotorcycleView(),
                     HomeAppCategoriesView(),
                     const Spacer(),

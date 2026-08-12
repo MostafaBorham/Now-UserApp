@@ -77,6 +77,7 @@ flutter:
     - assets/json/lang/
     - assets/media/images/png/
     - assets/media/images/svg/
+    - assets/media/images/svg/app-logos/
     - assets/media/sounds/
     - assets/media/videos/
 

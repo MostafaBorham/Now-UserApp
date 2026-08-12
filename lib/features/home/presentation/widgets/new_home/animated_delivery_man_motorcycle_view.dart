@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 
 class AnimatedDeliveryManMotorcycleView extends StatefulWidget {
@@ -27,12 +29,15 @@ class _AnimatedDeliveryManMotorcycleViewState
           child: Stack(
             children: [
               RepaintBoundary(
-                child: AnimatedSvgPicture.asset(
-                  Assets.media.images.svg.deliveryManMotocycle.path,
-                  fit: BoxFit.contain,
-                  playbackRate: 1,
-                  autoPlay: true,
-                  placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+                child: ReverseWidget(
+                  applyReverse: !context.isRTL,
+                  child: AnimatedSvgPicture.asset(
+                    Assets.media.images.svg.deliveryManMotocycle.path,
+                    fit: BoxFit.contain,
+                    playbackRate: 1,
+                    autoPlay: true,
+                    placeholderBuilder: (BuildContext context) => SizedBox.shrink(),
+                  ),
                 ),
               ),
               RepaintBoundary(
