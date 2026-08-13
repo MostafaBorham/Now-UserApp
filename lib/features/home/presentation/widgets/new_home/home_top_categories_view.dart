@@ -11,7 +11,7 @@ class HomeTopCategoriesView extends StatelessWidget {
     return CarouselSlider.builder(
       itemCount: 3,
       itemBuilder: (_, index, _) {
-        return HomeTopCategoryItem();
+          return HomeTopCategoryItem();
         return Container(
           color: index==0? Colors.red : Colors.blue,
         );

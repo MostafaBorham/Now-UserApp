@@ -62,7 +62,7 @@ class GlassProductItemView extends StatelessWidget {
                         lightIntensity: 0,
                       ),
                       appearance: LiquidGlassAppearance(
-                        blur: LiquidGlassBlur(sigmaX: 5, sigmaY: 5,),
+                        blur: LiquidGlassBlur(sigmaX: 5, sigmaY: 5),
                       ),
                       refraction: LiquidGlassRefraction(
                         distortionWidth: 0,
@@ -74,7 +74,11 @@ class GlassProductItemView extends StatelessWidget {
                     // edges stay borderless.
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border(top: BorderSide(color: colors.white.withValues(alpha: 0.3))),
+                        border: Border(
+                          top: BorderSide(
+                            color: colors.white.withValues(alpha: 0.3),
+                          ),
+                        ),
                       ),
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -108,7 +112,14 @@ class GlassProductItemView extends StatelessWidget {
                                 price: '2000',
                                 size: 16,
                               ),
-                              AnimatedCartButton(),
+                              // Reserve the slot the cart control occupies so
+                              // the price keeps its place. The real control is a
+                              // Stack overlay below, so its counter can expand
+                              // over the price/name without shifting them.
+                              SizedBox.square(
+                                dimension:
+                                    MediaQuery.sizeOf(context).width * 0.075,
+                              ),
                             ],
                           ),
                         ],
@@ -116,6 +127,17 @@ class GlassProductItemView extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              // The cart control floats at its original bottom-end corner.
+              // Living in the card Stack (not the price Row) lets the counter
+              // grow up and inward over the price and name when it opens —
+              // on top of them and without moving them — while staying fully
+              // tappable inside the card bounds. Insets match the glass
+              // panel's padding so it lines up with the reserved slot above.
+              const PositionedDirectional(
+                bottom: 8,
+                end: 8,
+                child: AnimatedCartButton(),
               ),
             ],
           ),
