@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -15,70 +16,111 @@ class GlassProductItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
-      builder: (context,con) {
+      builder: (context, con) {
         return Container(
-          padding: EdgeInsets.all(5),
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: colors.primaryFixed,
+            color: colors.white,
             borderRadius: BorderRadiusGeometry.circular(8),
-            image: DecorationImage(
-              image: NetworkImage(
-                'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png',
-              ),
-              fit: BoxFit.contain,
-            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ReverseWidget(
-                      applyReverse: !context.isRTL,
-                      child: Assets.media.images.svg.discountTicketIcon.svg(
-                        width: con.maxWidth*0.15
-                      )),
-                  CircularAppFavouriteIcon(
-                    size: con.maxWidth*0.1,
+              Positioned.fill(
+                child: Center(
+                  child: Image.network(
+                    'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png',
+                    width: con.maxWidth * 0.6,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
                   ),
-                ],
+                ),
               ),
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Iphone',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: colors.black,
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ReverseWidget(
+                          applyReverse: !context.isRTL,
+                          child: Assets.media.images.svg.discountTicketIcon.svg(
+                            width: con.maxWidth * 0.18,
+                          ),
                         ),
-                      ),
-                      AppRateWidget(
-                        starColor: colors.onSecondaryContainer,
-                        rateRatio: '4.9',
-                        rateColor: colors.black,
-                        rateCount: '45',
-                        size: 14,
-                      ),
-                    ],
+                        CircularAppFavouriteIcon(size: con.maxWidth * 0.1),
+                      ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      NewPriceWidget(color: colors.black, price: '2000',size: 16,),
-                      AnimatedCartButton()
-                    ],
-                  )
+                  LiquidGlassLens(
+                    style: const LiquidGlassStyle(
+                      shape: LiquidGlassShape.roundedRectangle(
+                        cornerRadius: 0,
+                        borderWidth: 0,
+                        lightIntensity: 0,
+                      ),
+                      appearance: LiquidGlassAppearance(
+                        blur: LiquidGlassBlur(sigmaX: 5, sigmaY: 5,),
+                      ),
+                      refraction: LiquidGlassRefraction(
+                        distortionWidth: 0,
+                        magnification: 1,
+                      ),
+                    ),
+                    // The lens hugs this Column exactly — same width and height.
+                    // A single white line on the top edge only; the other
+                    // edges stay borderless.
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(top: BorderSide(color: colors.white.withValues(alpha: 0.3))),
+                      ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        spacing: 5,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Iphone',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: colors.black,
+                                ),
+                              ),
+                              AppRateWidget(
+                                starColor: colors.onSecondaryContainer,
+                                rateRatio: '4.9',
+                                rateColor: colors.black,
+                                rateCount: '45',
+                                size: 14,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              NewPriceWidget(
+                                color: colors.black,
+                                price: '2000',
+                                size: 16,
+                              ),
+                              AnimatedCartButton(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
         );
-      }
+      },
     );
   }
 }

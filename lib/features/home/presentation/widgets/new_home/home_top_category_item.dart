@@ -25,7 +25,7 @@ class HomeTopCategoryItem extends StatelessWidget {
               image: DecorationImage(
                 image: AssetImage(Assets.media.images.png.starsBackground.path),
                 colorFilter: ColorFilter.mode(
-                  colors.neutral300,
+                  colors.neutral500.withValues(alpha: 0.5),
                   BlendMode.srcIn,
                 ),
               ),
