@@ -159,6 +159,14 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get removeIcon =>
       const AssetGenImage('assets/media/images/png/remove-icon.png');
 
+  /// File path: assets/media/images/png/star-pattern.png
+  AssetGenImage get starPattern =>
+      const AssetGenImage('assets/media/images/png/star-pattern.png');
+
+  /// File path: assets/media/images/png/stars-background.png
+  AssetGenImage get starsBackground =>
+      const AssetGenImage('assets/media/images/png/stars-background.png');
+
   /// File path: assets/media/images/png/wave-clip-background.png
   AssetGenImage get waveClipBackground =>
       const AssetGenImage('assets/media/images/png/wave-clip-background.png');
@@ -190,6 +198,8 @@ class $AssetsMediaImagesPngGen {
     profileImgPlacholder,
     realSaudiCurrency,
     removeIcon,
+    starPattern,
+    starsBackground,
     waveClipBackground,
     whiteAppLogoAndroid12,
     whiteAppLogo,

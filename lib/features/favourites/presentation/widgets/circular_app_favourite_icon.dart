@@ -101,10 +101,11 @@ class _CircularAppFavouriteIconState
       },
       child: Material(
         elevation: 1,
+        color: colors.white.withValues(alpha: 0.6),
         shape: const CircleBorder(),
         child: CircleAvatar(
           radius: widget.size,
-          backgroundColor: colors.white,
+          backgroundColor: colors.white.withValues(alpha: 0.6),
           child: state.isLoading
               ? SizedBox.square(
                   dimension: widget.size,

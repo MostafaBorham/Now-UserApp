@@ -64,8 +64,8 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
           infoFontSize: 15,
           infoIconSize: 20,
           deliveryTime: store.deliveryTime,
-          distance: store.distance,
-          deliveryFee: store.deliveryFee,
+          distance: store.distance?.toString(),
+          deliveryFee: store.deliveryFee?.toString(),
         ),
       ],
     );

@@ -9,17 +9,20 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 class StoreInfoRow extends StatelessWidget {
   const StoreInfoRow({
     super.key, required this.infoFontSize, required this.infoIconSize,
-    this.deliveryTime, this.distance, this.deliveryFee,
+    this.deliveryTime, this.distance, this.deliveryFee, this.color,
   });
   final double infoFontSize;
   final double infoIconSize;
   final String? deliveryTime;
-  final double? distance;
-  final double? deliveryFee;
+  final String? distance;
+  final String? deliveryFee;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color iconColor = color ?? colors.neutral500;
+    final Color textColor = color ?? colors.black;
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 5,
@@ -27,14 +30,14 @@ class StoreInfoRow extends StatelessWidget {
         Assets.media.images.svg.timeIcon.svg(
           width: infoIconSize,
           colorFilter: ColorFilter.mode(
-            colors.neutral500,
+            iconColor,
             BlendMode.srcIn,
           ),
         ),
         Text(
           '${deliveryTime ?? 0}',
           style: AppTextStyles.style12Medium.copyWith(
-              color: colors.black,
+              color: textColor,
               fontSize: infoFontSize
           ),
         ),
@@ -42,14 +45,14 @@ class StoreInfoRow extends StatelessWidget {
         Assets.media.images.svg.locationIcon.svg(
           width: infoIconSize,
           colorFilter: ColorFilter.mode(
-            colors.neutral500,
+            iconColor,
             BlendMode.srcIn,
           ),
         ),
         Text(
-          '${distance ?? 0}',
+          distance ?? '0',
           style: AppTextStyles.style12Medium.copyWith(
-              color: colors.black,
+              color: textColor,
               fontSize: infoFontSize
           ),
         ),
@@ -58,14 +61,14 @@ class StoreInfoRow extends StatelessWidget {
           child: Assets.media.images.svg.shippingIcon.svg(
             width: infoIconSize,
             colorFilter: ColorFilter.mode(
-              colors.neutral500,
+              iconColor,
               BlendMode.srcIn,
             ),
           ),
         ),
         NewPriceWidget(
-          color: colors.black,
-          price: '${deliveryFee ?? 0}',
+          color: textColor,
+          price: deliveryFee ?? '0',
           size: infoFontSize,
         ),
       ],
