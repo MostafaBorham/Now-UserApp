@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/widgets/app_bottom_nav_bar.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/my_order_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/settings_screen.dart';
 
@@ -40,11 +38,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: AppBottomNavBar(
           currentIndex: currentPageIndex,
           onIndexChanged: (int value) {
-            if (_loginRequiredTabs.contains(value)) {
-              if (!TokenCacheService().hasAccessToken) {
-                context.pushNamed(AppRoutes.phoneVerificationScreen);
-                return;
-              }
+            if (_loginRequiredTabs.contains(value) &&
+                redirectGuestToLogin(context)) {
+              return;
             }
             ref.read(mainTabIndexProvider.notifier).state = value;
           },
