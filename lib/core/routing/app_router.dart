@@ -112,6 +112,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.orderDetailsScreen,
         path: '/${AppRoutes.orderDetailsScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const OrderDetailsScreen(),
       ),
       GoRoute(
@@ -131,6 +132,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.favouritesScreen,
         path: '/${AppRoutes.favouritesScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const FavouritesScreen(),
       ),
       GoRoute(
@@ -142,6 +144,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.fileComplaintScreen,
         path: '/${AppRoutes.fileComplaintScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const FileComplaintScreen(),
       ),
       GoRoute(
@@ -208,11 +211,13 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addPaymentCard,
         path: '/${AppRoutes.addPaymentCard}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const AddPaymentCardScreen(),
       ),
       GoRoute(
         name: AppRoutes.paymentMethodsScreen,
         path: '/${AppRoutes.paymentMethodsScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const PaymentMethodsScreen(),
       ),
       GoRoute(
@@ -240,16 +245,19 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.orderConfirmedScreen,
         path: '/${AppRoutes.orderConfirmedScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const OrderConfirmedScreen(),
       ),
       GoRoute(
         name: AppRoutes.trackOrderScreen,
         path: '/${AppRoutes.trackOrderScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const TrackOrderScreen(),
       ),
       GoRoute(
         name: AppRoutes.paymentFailedScreen,
         path: '/${AppRoutes.paymentFailedScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const PaymentFailedScreen(),
       ),
       GoRoute(
@@ -271,6 +279,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) {
           // Opened either from the address list (extra is the AddressModel —
           // editing an existing address) or from the map (extra is a record
@@ -292,6 +301,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addNewAddressFromMapScreen,
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) {
           final currentLocation = state.extra as LatLng?;
           return AddNewAddressFromMap(currentLocation: currentLocation);
@@ -300,6 +310,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) =>
             AddressSearchScreen(currentLocation: state.extra as LatLng?),
       ),
@@ -328,6 +339,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.editInformationScreen,
         path: '/${AppRoutes.editInformationScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) => const EditInformationScreen(),
       ),
     ],

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/widgets/app_bottom_nav_bar.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/my_order_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/settings_screen.dart';
-import 'package:nowdelivery_user_app/features/welcome/data/datasources/local/cache/welcome_cache_service.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -41,16 +38,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: AppBottomNavBar(
           currentIndex: currentPageIndex,
           onIndexChanged: (int value) {
-            if (_loginRequiredTabs.contains(value)) {
-              final Map<String, dynamic> tokenData = WelcomeCacheService()
-                  .getToken();
-              final bool isGuest =
-                  tokenData[CacheKeys.isGuest] as bool? ?? true;
-
-              if (isGuest) {
-                context.pushNamed(AppRoutes.phoneVerificationScreen);
-                return;
-              }
+            if (_loginRequiredTabs.contains(value) &&
+                redirectGuestToLogin(context)) {
+              return;
             }
             ref.read(mainTabIndexProvider.notifier).state = value;
           },
