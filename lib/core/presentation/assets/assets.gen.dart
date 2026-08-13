@@ -345,6 +345,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get deliveryIcon =>
       const SvgGenImage('assets/media/images/svg/delivery_icon.svg');
 
+  /// File path: assets/media/images/svg/discount-ticket-icon.svg
+  SvgGenImage get discountTicketIcon =>
+      const SvgGenImage('assets/media/images/svg/discount-ticket-icon.svg');
+
   /// File path: assets/media/images/svg/discount.svg
   SvgGenImage get discount =>
       const SvgGenImage('assets/media/images/svg/discount.svg');
@@ -640,6 +644,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get starRate =>
       const SvgGenImage('assets/media/images/svg/star-rate.svg');
 
+  /// File path: assets/media/images/svg/stars-background.svg
+  SvgGenImage get starsBackground =>
+      const SvgGenImage('assets/media/images/svg/stars-background.svg');
+
   /// File path: assets/media/images/svg/stc.svg
   SvgGenImage get stc => const SvgGenImage('assets/media/images/svg/stc.svg');
 
@@ -739,6 +747,7 @@ class $AssetsMediaImagesSvgGen {
     delivered,
     deliveryManMotocycle,
     deliveryIcon,
+    discountTicketIcon,
     discount,
     edit,
     emptyAddToCart,
@@ -814,6 +823,7 @@ class $AssetsMediaImagesSvgGen {
     starIcon,
     starOutlineIcon,
     starRate,
+    starsBackground,
     stc,
     stepDone,
     supportCallIcon,

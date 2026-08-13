@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class HomeMostPopularBrandsView extends StatelessWidget {
   const HomeMostPopularBrandsView({super.key});
 
-  // TODO: temporary placeholder count until brands are fetched from the API.
   static const int _brandsCount = 8;
 
   @override
@@ -17,7 +15,6 @@ class HomeMostPopularBrandsView extends StatelessWidget {
         final double cardWidth = con.maxWidth * 0.4;
         final double logoSize = con.maxWidth * 0.13;
         final double cardHeight = logoSize + 24;
-        final int columnCount = (_brandsCount / 2).ceil();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -72,27 +69,19 @@ class HomeMostPopularBrandsView extends StatelessWidget {
               ),
               SizedBox(
                 height: cardHeight * 2 + 12,
-                child: ListView.separated(
+                child: GridView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: columnCount,
-                  separatorBuilder: (context, index) => 12.wSpace,
+                  itemCount: _brandsCount,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: cardWidth,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
                   itemBuilder: (context, index) {
-                    final int bottomIndex = index * 2 + 1;
-                    return Column(
-                      spacing: 12,
-                      children: [
-                        _BrandCard(
-                          width: cardWidth,
-                          height: cardHeight,
-                          logoSize: logoSize,
-                        ),
-                        if (bottomIndex < _brandsCount)
-                          _BrandCard(
-                            width: cardWidth,
-                            height: cardHeight,
-                            logoSize: logoSize,
-                          ),
-                      ],
+                    return _BrandCard(
+                      width: cardWidth,
+                      height: cardHeight,
                     );
                   },
                 ),
@@ -109,17 +98,15 @@ class _BrandCard extends StatelessWidget {
   const _BrandCard({
     required this.width,
     required this.height,
-    required this.logoSize,
   });
 
   // TODO: temporary placeholder values until brands are fetched from the API.
   static const String _name = 'KFC';
   static const String _logo =
-      'https://www.image2url.com/r2/default/images/1786549005240-05cb0498-26b3-4404-b85b-e936af77e34d.png';
+      'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png';
 
   final double width;
   final double height;
-  final double logoSize;
 
   @override
   Widget build(BuildContext context) {
@@ -127,22 +114,19 @@ class _BrandCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      alignment: Alignment.center,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colors.neutral500.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         spacing: 8,
         children: [
-          SizedBox(
-            width: width / 3,
-            height: logoSize,
+          AspectRatio(
+            aspectRatio: 1,
             child: CachedNetworkImage(
               imageUrl: _logo,
-              width: width / 3,
-              height: logoSize,
               fit: BoxFit.contain,
               placeholder: (context, url) => const SizedBox.shrink(),
               errorWidget: (context, url, error) => const SizedBox.shrink(),
@@ -152,7 +136,6 @@ class _BrandCard extends StatelessWidget {
             child: Text(
               _name,
               maxLines: 1,
-              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: width * 0.1,

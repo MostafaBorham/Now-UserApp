@@ -57,9 +57,8 @@ class HomeHeaderView extends StatelessWidget {
                                   Row(
                                     spacing: 5,
                                     children: [
-                                      Assets.media.images.svg.homeLocationIcon.svg(
-                                        width: con.maxWidth * 0.05,
-                                      ),
+                                      Assets.media.images.svg.homeLocationIcon
+                                          .svg(width: con.maxWidth * 0.05),
                                       Text(
                                         'olya , saudi arabia 2321',
                                         style: TextStyle(
@@ -70,43 +69,33 @@ class HomeHeaderView extends StatelessWidget {
                                       ),
                                       RotatedBox(
                                         quarterTurns: 1,
-                                        child: Assets.media.images.svg.arrowBrokenIcon
+                                        child: Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .arrowBrokenIcon
                                             .svg(width: con.maxWidth * 0.04),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              Assets.media.images.svg.appLogos.homeWhiteAppLogo.svg(
-                                fit: BoxFit.contain,
-                                width: con.maxWidth * 0.3,
-                              ),
+                              Assets.media.images.svg.appLogos.homeWhiteAppLogo
+                                  .svg(
+                                    fit: BoxFit.contain,
+                                    width: con.maxWidth * 0.3,
+                                  ),
                             ],
                           ),
                           HomeSearchField(),
                         ],
                       ),
                     ),
-                    // The background SVG drives the Stack height. Every section
-                    // below the fixed header is wrapped in Expanded so its slot
-                    // is computed purely from the layout constraints, never from
-                    // its child's content. This matters for the async SVGs
-                    // (motorcycle, view-all) that render an empty placeholder
-                    // until they load: their reserved height stays constant, so
-                    // when they finally appear no sibling (e.g. the categories
-                    // carousel) jumps or shifts. The flex weights 2:4:1 roughly
-                    // preserve the original height ratio between the sections.
                     Expanded(
                       flex: 2,
                       child: AnimatedDeliveryManMotorcycleView(),
                     ),
-                    Expanded(
-                      flex: 4,
-                      child: HomeAppCategoriesView(),
-                    ),
-                    // RepaintBoundary isolates this continuously-playing SVG so
-                    // its per-frame repaints don't dirty the rest of the header
-                    // layer (background, greeting, search field, carousel).
+                    Expanded(flex: 4, child: HomeAppCategoriesView()),
                     Expanded(
                       flex: 1,
                       child: RepaintBoundary(

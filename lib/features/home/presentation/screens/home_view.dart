@@ -24,6 +24,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_l
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_categories_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_category_item.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -38,6 +40,7 @@ class HomeView extends StatelessWidget {
           HomeHeaderView(),
           HomeOffersSectionView(),
           HomeMostPopularBrandsView(),
+          HomeTopCategoriesView()
         ],
       ),
     );
