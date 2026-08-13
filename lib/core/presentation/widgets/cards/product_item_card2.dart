@@ -1,9 +1,12 @@
+// ponytail: lives in core but still imports features/cart for the cart button;
+// decoupling means relocating the cart viewmodel too — do that when cart is
+// refactored, not before.
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -14,12 +17,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/diognal_
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-import '../../../favourites/presentation/widgets/circular_app_favourite_icon.dart';
+
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 
 class ProductItemCard2 extends StatefulWidget {
   const ProductItemCard2({
@@ -58,7 +63,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
 
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return InkWell(
       onTap:
           widget.onTap ??
@@ -69,11 +74,11 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
       child: Container(
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: colors.white,
+          color: colors.onPrimary,
           borderRadius: AppBorderRadius.brCircular20,
           boxShadow: [
             BoxShadow(
-              color: colors.neutral500.withValues(alpha: .3),
+              color: colors.onSurface.withValues(alpha: .3),
               blurRadius: 2,
               spreadRadius: 1,
             ),
@@ -153,7 +158,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: colors.white,
+                                  color: colors.onPrimary,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -184,7 +189,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                             Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: SizedBox(
-                                width: widthCon * 0.6,
+                                width: widthCon*0.6,
                                 child: Row(
                                   spacing: 5,
                                   children: [
@@ -194,11 +199,10 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     Expanded(
                                       child: Text(
                                         '4.7',
-                                        style: AppTextStyles.style14Medium
-                                            .copyWith(
-                                              color: colors.black,
-                                              fontSize: widthCon * 0.1,
-                                            ),
+                                        style: AppTextStyles.style14Medium.copyWith(
+                                          color: colors.onSecondary,
+                                          fontSize: widthCon * 0.1,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -214,14 +218,13 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                 ),
                                 child: (widget.productModel?.stock ?? 1) < 1
                                     ? Align(
-                                        alignment:
-                                            AlignmentDirectional.centerEnd,
-                                        child: Text(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                      child: Text(
                                           LangKeys.outOfStockKey.tr(),
                                           style: AppTextStyles.style12Medium
                                               .copyWith(color: colors.onError),
                                         ),
-                                      )
+                                    )
                                     : AnimatedCartButton(
                                         productId:
                                             widget.productModel?.productId ??
@@ -254,7 +257,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       flex: 3,
                                       child: FittedBox(
                                         child: OldPriceWidget(
-                                          color: colors.neutral500,
+                                          color: colors.onSurface,
                                           price:
                                               '${widget.productModel?.comparePrice}',
                                         ),
@@ -264,7 +267,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                       flex: 4,
                                       child: FittedBox(
                                         child: NewPriceWidget(
-                                          color: colors.black,
+                                          color: colors.onSecondary,
                                           price:
                                               '${widget.productModel?.price}',
                                         ),
@@ -277,7 +280,7 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                     widget.productModel?.name,
                                   ),
                                   style: AppTextStyles.style12SemiBold.copyWith(
-                                    color: colors.black,
+                                    color: colors.onSecondary,
                                     fontSize: widthCon * 0.09,
                                   ),
                                 ),

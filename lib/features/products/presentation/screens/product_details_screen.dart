@@ -19,7 +19,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
-import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';

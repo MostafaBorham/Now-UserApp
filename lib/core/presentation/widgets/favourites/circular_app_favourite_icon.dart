@@ -1,3 +1,6 @@
+// ponytail: lives in core but still imports the favourites viewmodels and the
+// welcome cache service; decoupling means relocating those too — do that when
+// favourites is refactored, not before.
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

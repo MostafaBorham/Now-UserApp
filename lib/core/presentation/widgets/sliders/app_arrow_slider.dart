@@ -80,6 +80,9 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 decoration: BoxDecoration(
                   color: colors.white,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: colors.black.withValues(alpha: 0.08),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: colors.neutral500.withValues(alpha: 0.3),
@@ -115,6 +118,9 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                 decoration: BoxDecoration(
                   color: colors.white,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: colors.black.withValues(alpha: 0.08),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: colors.neutral500.withValues(alpha: 0.3),
@@ -188,19 +194,15 @@ class DotsIndicator extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(
         itemCount,
-            (index) => Padding(
+        (index) => Padding(
           padding: EdgeInsets.symmetric(horizontal: spacing / 2),
           child: AnimatedContainer(
             duration: duration,
             curve: Curves.easeInOut,
-            width: currentIndex == index
-                ? activeWidth
-                : inactiveWidth,
+            width: currentIndex == index ? activeWidth : inactiveWidth,
             height: height,
             decoration: BoxDecoration(
-              color: currentIndex == index
-                  ? activeColor
-                  : inactiveColor,
+              color: currentIndex == index ? activeColor : inactiveColor,
               borderRadius: BorderRadius.circular(height),
             ),
           ),

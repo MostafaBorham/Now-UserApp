@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_store_tab_view.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
 
 import '../../../../helpers/favourites_test_harness.dart';
 
