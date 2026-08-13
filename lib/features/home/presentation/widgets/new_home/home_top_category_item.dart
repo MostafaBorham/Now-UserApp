@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/controllers/top_categories_controller.dart'
+    show currentTopCategoryIndexProvider, topCategoriesCountProvider;
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/glass_product_item_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
-class HomeTopCategoryItem extends StatelessWidget {
+class HomeTopCategoryItem extends ConsumerWidget {
   const HomeTopCategoryItem({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     return Stack(
       children: [
@@ -112,13 +115,13 @@ class HomeTopCategoryItem extends StatelessWidget {
                     spacing: 8,
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(
-                      3,
+                      ref.read(topCategoriesCountProvider),
                       (index) => Container(
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: index == 0 ? colors.white : Colors.transparent,
+                          color: index == ref.watch(currentTopCategoryIndexProvider) ? colors.white : Colors.transparent,
                           border: Border.all(color: colors.white),
                         ),
                       ),

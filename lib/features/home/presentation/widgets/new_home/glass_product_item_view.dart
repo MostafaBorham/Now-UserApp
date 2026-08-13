@@ -44,11 +44,35 @@ class GlassProductItemView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ReverseWidget(
-                          applyReverse: !context.isRTL,
-                          child: Assets.media.images.svg.discountTicketIcon.svg(
-                            width: con.maxWidth * 0.18,
-                          ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            ReverseWidget(
+                              applyReverse: !context.isRTL,
+                              child: Assets.media.images.svg.discountTicketIcon
+                                  .svg(width: con.maxWidth * 0.18),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Transform.rotate(
+                                angle: (context.isRTL ? 1 : -1) * 2,
+                                child: SizedBox(
+                                  width: con.maxWidth * 0.18 * 0.62,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      '50%',
+                                      style: TextStyle(
+                                        color: colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: con.maxWidth * 0.05,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         CircularAppFavouriteIcon(size: con.maxWidth * 0.1),
                       ],
