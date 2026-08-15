@@ -46,7 +46,7 @@ class HomeOffersSectionView extends StatelessWidget {
                         ),
                         SizedBox(
                           height: con.maxWidth * 0.4,
-                          child: const _AutoScrollOffersList(itemCount: 30),
+                          child: const _AutoScrollOffersList(itemCount: 10),
                         ),
                       ],
                     ),
@@ -73,8 +73,10 @@ class _AutoScrollOffersList extends StatefulWidget {
 }
 
 class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
-  static const Duration _dwell = Duration(seconds: 4);
-  static const Duration _step = Duration(milliseconds: 600);
+  static const Duration _dwell = Duration(seconds: 3);
+  static const Duration _step = Duration(milliseconds: 900);
+  static const double _separator = 12;
+  static const double _aspectRatio = 0.7;
 
   final ScrollController _controller = ScrollController();
   Timer? _timer;
@@ -94,9 +96,16 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
     final double max = position.maxScrollExtent;
     if (max <= 0) return;
 
+    // Advance by exactly one card so each step hides the current first
+    // visible item. The card width is derived from the list's height
+    // (its cross-axis extent) and the card's aspect ratio.
+    final double listHeight = context.size?.height ?? 0;
+    if (listHeight <= 0) return;
+    final double itemExtent = listHeight * _aspectRatio + _separator;
+
     final double target = position.pixels >= max - 1.0
         ? 0.0
-        : (position.pixels + position.viewportDimension).clamp(0.0, max);
+        : (position.pixels + itemExtent).clamp(0.0, max);
 
     _controller.animateTo(target, duration: _step, curve: Curves.easeInOut);
   }
