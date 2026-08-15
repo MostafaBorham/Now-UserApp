@@ -45,8 +45,8 @@ class HomeView extends StatelessWidget {
               aspectRatio: 1.47,
               child: BestNearbyStoresSection()),
           AspectRatio(
-              aspectRatio: 1.5,
-              child: HomeNeverMissOffersSection())
+              aspectRatio: .7,
+              child: HomeNeverMissOffersSection()),
         ],
       ),
     );

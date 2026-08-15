@@ -127,6 +127,16 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get defaultCategoryPng =>
       const AssetGenImage('assets/media/images/png/default-category-png.png');
 
+  /// File path: assets/media/images/png/home-never-miss-offers-background.png
+  AssetGenImage get homeNeverMissOffersBackground => const AssetGenImage(
+    'assets/media/images/png/home-never-miss-offers-background.png',
+  );
+
+  /// File path: assets/media/images/png/home-never-miss-offers-logo.png
+  AssetGenImage get homeNeverMissOffersLogo => const AssetGenImage(
+    'assets/media/images/png/home-never-miss-offers-logo.png',
+  );
+
   /// File path: assets/media/images/png/increament-icon.png
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
@@ -186,6 +196,8 @@ class $AssetsMediaImagesPngGen {
     bottomNavBarBackground,
     decrementIcon,
     defaultCategoryPng,
+    homeNeverMissOffersBackground,
+    homeNeverMissOffersLogo,
     increamentIcon,
     map,
     masterCardLogo,

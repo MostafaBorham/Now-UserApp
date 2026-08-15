@@ -1,16 +1,20 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/card_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_currency.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
@@ -19,234 +23,186 @@ class HomeNeverMissOffersItem extends StatefulWidget {
   const HomeNeverMissOffersItem({super.key});
 
   @override
-  State<HomeNeverMissOffersItem> createState() => _HomeNeverMissOffersItemState();
+  State<HomeNeverMissOffersItem> createState() =>
+      _HomeNeverMissOffersItemState();
 }
 
 class _HomeNeverMissOffersItemState extends State<HomeNeverMissOffersItem> {
-  bool isRotate = false;
-  bool showAddToCartCounter = false;
-  int counter = 0;
-  Timer? _timer;
-  bool isFavorite = false;
-
-  void startTimer() {
-    _timer?.cancel();
-
-    _timer = Timer(const Duration(seconds: 2), () {
-      showAddToCartCounter = false;
-      isRotate = false;
-      setState(() {});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SizedBox(
-          width: 170,
-          child: Column(
-            spacing: 5,
+    return Column(
+      spacing: 5,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: Stack(
+            alignment: AlignmentDirectional.bottomEnd,
             children: [
-              Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  ClipPath(
-                    clipper: BreadCardClipper(),
-                    child: Container(
-                      height: constraints.maxHeight * 0.6,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16).copyWith(
-                          bottomLeft: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                            'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg',
+              Positioned.fill(
+                child: ClipPath(
+                  clipper: BreadCardClipper(),
+                  child: LayoutBuilder(
+                    builder: (context, con) {
+                      return Container(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16).copyWith(
+                            bottomLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
                           ),
-                          fit: BoxFit.cover,
+                          image: const DecorationImage(
+                            image: NetworkImage(
+                              'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: colors.black.withValues(alpha: 0.15),
+                              offset: Offset(0, 0),
+                              blurRadius: 4,
+                              spreadRadius: 0,
+                            ),
+                          ],
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                spacing: 5,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: colors.errorContainer,
-                                      borderRadius:
-                                          BorderRadiusDirectional.only(
-                                            bottomEnd: Radius.circular(16),
-                                          ),
-                                    ),
-                                    child: const AutoSizeText(
-                                      '50%',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  spacing: 5,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: colors.errorContainer,
+                                        borderRadius:
+                                            BorderRadiusDirectional.only(
+                                              bottomEnd: Radius.circular(16),
+                                            ),
+                                      ),
+                                      child: const AutoSizeText(
+                                        '50%',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                     ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CircularAppFavouriteIcon(
+                                    isFavourite: false,
+                                    onFavouriteChanged: (currentFavourite) {},
+                                    size: con.maxWidth * 0.1,
                                   ),
-                                  /*Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 7,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: colors.primary700,
-                                      borderRadius:
-                                          BorderRadiusDirectional.only(
-                                            topEnd: Radius.circular(15),
-                                            bottomEnd: Radius.circular(15),
-                                          ),
-                                    ),
-                                    child: Text(
-                                      'الأكثر مبيعاً',
-                                      style: TextStyle(
-                                        color: colors.onPrimary,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),*/
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CircularAppFavouriteIcon(
-                                  isFavourite: false,
-                                  onFavouriteChanged: (currentFavourite) {
-
-                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Transform.scale(
+                scale: 1.2,
+                alignment: AlignmentDirectional.bottomEnd,
+                child: AnimatedCartButton(),
+              ),
+            ],
+          ),
+        ),
+        LayoutBuilder(
+          builder: (context,con) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              decoration: BoxDecoration(
+                color: colors.white,
+                borderRadius: BorderRadiusGeometry.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.black.withValues(alpha: 0.15),
+                    offset: Offset(0, 0),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                spacing: 7,
+                children: [
+                  Text(
+                    'Coffee Machine',
+                    maxLines: 1,
+                    style: AppTextStyles.style16SemiBold.copyWith(
+                      color: colors.neutral1200,
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 7,
+                        children: [
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 4,
+                            children: [
+                              NewPriceWidget(color: colors.black, price: '10',size: con.maxWidth*0.1,),
+                              OldPriceWidget(color: colors.neutral500, price: '15',size: con.maxWidth*0.08)
+                            ],
+                          ),
+                          Wrap(
+                            spacing: 7,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Assets.media.images.svg.starRate.svg(width: 20),
+                              AutoSizeText(
+                                '4.7',
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: colors.neutral1200,
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  showAddToCartCounter
-                      ? AnimatedScale(
-                          scale: showAddToCartCounter ? 1 : 0,
-                          duration: const Duration(seconds: 2),
-                          curve: Curves.linear,
-                          onEnd: () {},
-                          child: AnimatedCartCounterView(
-                            counter: counter,
-                            onInc: () {
-                              startTimer();
-                              counter++;
-                              setState(() {});
-                            },
-                            onDec: () {
-                              startTimer();
-                              counter--;
-                              setState(() {});
-                            },
-                            onDelete: () {
-                              showAddToCartCounter = false;
-                              counter--;
-                              isRotate = false;
-                              setState(() {});
-                            },
-                          ),
-                        )
-                      : InkWell(
-                          onTap: () {
-                            isRotate = !isRotate;
-                            setState(() {});
-                          },
-                          child: AnimatedAddToCartButton(
-                            text: counter < 1 ? '+' : counter.toString(),
-                            onEnd: () {
-                              startTimer();
-                              if(counter<1) counter++ ;
-                              showAddToCartCounter = true;
-                              setState(() {});
-                            },
-                            isRotate: isRotate,
-                          ),
+                      SizedBox(
+                        width: con.maxWidth*0.25,
+                        height: con.maxWidth*0.25,
+                        child: CachedNetworkImage(
+                          imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) => const SizedBox.shrink(),
+                          errorWidget: (context, url, error) => const SizedBox.shrink(),
                         ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-              Container(
-                height: constraints.maxHeight * 0.38,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                decoration: BoxDecoration(
-                  color: colors.white,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 7,
-                      children: [
-                        AutoSizeText(
-                          'sdsd',
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.neutral1200,
-                          ),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 10,
-                          children: [
-                            PriceWithCurrency(
-                              color: colors.primary700,
-                              price: '20',
-                            ),
-                            PreviousPriceWithCurrency(),
-                          ],
-                        ),
-                        Row(
-                          spacing: 7,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Assets.media.images.svg.starRate.svg(width: 20),
-                            AutoSizeText(
-                              '4',
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.neutral1200,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.bottomEnd,
-                      child: CircularBrandLogo(
-                        radius: 25,
-                        logoUrl:
-                            'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            );
+          }
+        ),
+      ],
     );
   }
 }

@@ -12,6 +12,7 @@ class AppColorScheme {
   Color get primaryFixed => _scheme.primaryFixed;
   Color get primaryFixedDim => _scheme.primaryFixedDim;
   Color get onPrimaryFixed => _scheme.onPrimaryFixed;
+  Color get inverseSurface => _scheme.inverseSurface;
   Color get primary700 => _scheme.onPrimaryFixedVariant;
   Color get neutral400 => _scheme.inversePrimary;
 

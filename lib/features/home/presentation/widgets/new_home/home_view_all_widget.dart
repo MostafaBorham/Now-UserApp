@@ -4,11 +4,13 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 class HomeViewAllWidget extends StatelessWidget {
   const HomeViewAllWidget({
     super.key,
-    required this.size, required this.backgroundColor,
+    required this.size, required this.startBackgroundColor, this.endBackgroundColor, this.textColor,
   });
 
   final double size;
-  final Color backgroundColor;
+  final Color startBackgroundColor;
+  final Color? endBackgroundColor;
+  final Color? textColor;
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -25,7 +27,7 @@ class HomeViewAllWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadiusGeometry.circular(100),
                 gradient: LinearGradient(
-                  colors: [colors.white,backgroundColor],
+                  colors: [endBackgroundColor?? colors.white,startBackgroundColor],
                   begin: AlignmentDirectional.centerStart,
                   end: AlignmentDirectional.centerEnd,
                 ),
@@ -37,7 +39,7 @@ class HomeViewAllWidget extends StatelessWidget {
           'View All',
           style: TextStyle(
             fontSize: size,
-            color: colors.black,
+            color: textColor?? colors.black,
             fontWeight: FontWeight.w800,
           ),
         ),
