@@ -3,6 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/lists/infinite_auto_scroll_list.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 
@@ -64,15 +65,18 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsetsDirectional.only(bottom: 4,),
-                      itemBuilder: (context, index) => AspectRatio(
-                        aspectRatio: 0.55,
-                        child: const HomeNeverMissOffersItem(),
-                      ),
-                      separatorBuilder: (context, index) => 10.wSpace,
-                      itemCount: 10,
+                    child: LayoutBuilder(
+                      builder: (context, listCon) {
+                        final double itemHeight = listCon.maxHeight - 4;
+                        return InfiniteAutoScrollList(
+                          itemCount: 10,
+                          itemWidth: itemHeight * 0.55,
+                          separatorWidth: 10,
+                          padding: const EdgeInsetsDirectional.only(bottom: 4),
+                          itemBuilder: (context, index) =>
+                              const HomeNeverMissOffersItem(),
+                        );
+                      },
                     ),
                   ),
                   25.hSpace,
