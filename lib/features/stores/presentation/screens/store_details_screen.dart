@@ -1,19 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_banner.dart';
@@ -58,7 +58,9 @@ class StoreDetailsScreen extends ConsumerWidget {
                   spacing: 16,
                   children: [
                     AspectRatio(
-                      aspectRatio: 1.5,
+                      // Design: 240 tall on a 390 wide frame (cover + logo
+                      // overhang + description + delivery row).
+                      aspectRatio: 390 / 240,
                       child: AppRefreshIndicator(
                         onRefresh: () => ref
                             .read(getStoreDetailsProvider(storeId).notifier)
@@ -80,47 +82,43 @@ class StoreDetailsScreen extends ConsumerWidget {
                     ),
                     Expanded(
                       child: NestedScrollView(
-                        headerSliverBuilder: (context, innerBoxIsScrolled) =>
-                            [
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  color: colors.white,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16,
+                        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                          SliverToBoxAdapter(
+                            child: Container(
+                              color: colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              width: double.infinity,
+                              child: Column(
+                                spacing: 15,
+                                children: [
+                                  AppSlider(
+                                    sliderItems: (store.banners ?? const [])
+                                        .map(
+                                          (BannerModel banner) =>
+                                              StoreDetailsBanner(
+                                                banner: banner,
+                                              ),
+                                        )
+                                        .toList(),
+                                    itemAspectRatio: 3.4,
                                   ),
-                                  width: double.infinity,
-                                  child: Column(
-                                    spacing: 15,
-                                    children: [
-                                      AppSlider(
-                                        sliderItems:
-                                            (store.banners ?? const [])
-                                                .map(
-                                                  (BannerModel banner) =>
-                                                      StoreDetailsBanner(
-                                                        banner: banner,
-                                                      ),
-                                                )
-                                                .toList(),
-                                        itemAspectRatio: 2.8,
-                                      ),
-                                      StoreDetailsBrandsSlider(),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0,
-                                        ),
-                                        child: StoreDetailsBrandInfoCard(),
-                                      ),
-                                      5.hSpace,
-                                      StoreDiscountCouponsList(),
-                                      5.hSpace,
-                                      StoreCategoryCirclesList(),
-                                      2.hSpace,
-                                    ],
+                                  StoreDetailsBrandsSlider(),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0,
+                                    ),
+                                    child: StoreDetailsBrandInfoCard(),
                                   ),
-                                ),
+                                  5.hSpace,
+                                  StoreDiscountCouponsList(),
+                                  5.hSpace,
+                                  StoreCategoryCirclesList(),
+                                  2.hSpace,
+                                ],
                               ),
-                            ],
+                            ),
+                          ),
+                        ],
                         body: Container(
                           color: colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -133,8 +131,7 @@ class StoreDetailsScreen extends ConsumerWidget {
                                   const double minTabBarHeight = 70;
                                   return ClipRect(
                                     child: OverflowBox(
-                                      alignment:
-                                          AlignmentDirectional.topStart,
+                                      alignment: AlignmentDirectional.topStart,
                                       minHeight: 0,
                                       maxHeight: double.infinity,
                                       child: SizedBox(
@@ -162,13 +159,10 @@ class StoreDetailsScreen extends ConsumerWidget {
                                               .toList(),
                                           selectedTabColor:
                                               colors.tertiaryContainer,
-                                          unSelectedTabColor: colors
-                                              .neutral400
+                                          unSelectedTabColor: colors.neutral400
                                               .withValues(alpha: 0.2),
-                                          selectedLabelColor:
-                                              colors.white,
-                                          unSelectedLabelColor:
-                                              colors.black,
+                                          selectedLabelColor: colors.white,
+                                          unSelectedLabelColor: colors.black,
                                         ),
                                       ),
                                     ),

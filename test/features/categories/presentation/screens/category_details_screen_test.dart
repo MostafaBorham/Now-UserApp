@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_item_card2.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 

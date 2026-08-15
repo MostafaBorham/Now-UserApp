@@ -1,12 +1,13 @@
+// ponytail: lives in core but still imports the favourites viewmodels;
+// decoupling means relocating those too — do that when favourites is
+// refactored, not before.
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/product_favourite_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/store_favourite_vm.dart';
 
@@ -95,9 +96,11 @@ class _CircularAppFavouriteIconState
     final bool isFavourite = state.valueOrNull ?? _isFavourite;
 
     return InkWell(
-      overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent,),
+      overlayColor: WidgetStateColor.resolveWith(
+        (states) => Colors.transparent,
+      ),
       onTap: () {
-        if(!state.isLoading)_onTap(isFavourite);
+        if (!state.isLoading) _onTap(isFavourite);
       },
       child: Material(
         elevation: 1,
@@ -146,7 +149,7 @@ class _CircularAppFavouriteIconState
   }
 
   void _onTap(bool isFavourite) {
-    if (_redirectedToLogin()) return;
+    if (redirectGuestToLogin(context)) return;
 
     if (!_isIntegrated) {
       setState(() => _isFavourite = !isFavourite);
@@ -170,16 +173,5 @@ class _CircularAppFavouriteIconState
     );
 
     isFavourite ? notifier.removeFromFavourites() : notifier.addToFavourites();
-  }
-
-  /// Sends guests to phone verification instead of favouriting. Returns whether
-  /// the tap was consumed by that redirect.
-  bool _redirectedToLogin() {
-    if (!TokenCacheService().hasAccessToken) {
-      context.pushNamed(AppRoutes.phoneVerificationScreen);
-      return true;
-    }
-
-    return false;
   }
 }

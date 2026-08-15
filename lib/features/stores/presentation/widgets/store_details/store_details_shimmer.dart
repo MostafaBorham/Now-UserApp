@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 class StoreDetailsShimmer extends StatelessWidget {
@@ -15,7 +15,7 @@ class StoreDetailsShimmer extends StatelessWidget {
         children: [
           // Store info header: cover image + overlapping logo + description + info row
           AspectRatio(
-            aspectRatio: 1.5,
+            aspectRatio: 390 / 240,
             child: LayoutBuilder(
               builder: (context, con) {
                 return Column(
@@ -27,9 +27,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                           alignment: Alignment.bottomCenter,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(
-                                bottom: coverCon.maxHeight * 0.13,
-                              ),
+                              padding: const EdgeInsets.only(bottom: 32),
                               child: AppShimmer(
                                 child: Container(
                                   width: double.infinity,
@@ -39,15 +37,13 @@ class StoreDetailsShimmer extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: colors.white,
                               ),
                               child: AppShimmer(
-                                child: CircleAvatar(
-                                  radius: coverCon.maxHeight * 0.13,
-                                ),
+                                child: const CircleAvatar(radius: 28),
                               ),
                             ),
                           ],
@@ -110,7 +106,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                 // Banner slider
                 AppShimmer(
                   child: AspectRatio(
-                    aspectRatio: 2.8,
+                    aspectRatio: 3.4,
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black,
@@ -135,7 +131,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                         ),
                       ),
                       AspectRatio(
-                        aspectRatio: 1.5,
+                        aspectRatio: 1.3,
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.black,
@@ -151,17 +147,14 @@ class StoreDetailsShimmer extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 30,
-                      horizontal: 20,
-                    ),
+                    padding: const EdgeInsets.all(23),
                     decoration: BoxDecoration(
                       color: colors.white,
-                      borderRadius: AppBorderRadius.brCircular20,
+                      borderRadius: BorderRadius.circular(26),
                       boxShadow: [
                         BoxShadow(
                           color: colors.black.withValues(alpha: 0.08),
-                          blurRadius: 12,
+                          blurRadius: 30,
                           offset: const Offset(0, 4),
                         ),
                       ],
@@ -258,15 +251,15 @@ class StoreDetailsShimmer extends StatelessWidget {
                 // Discount coupons horizontal list
                 AppShimmer(
                   child: SizedBox(
-                    height: 130,
+                    height: 158,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
-                      itemCount: 2,
-                      separatorBuilder: (_, _) => const SizedBox(width: 12),
+                      itemCount: 3,
+                      separatorBuilder: (_, _) => const SizedBox(width: 16),
                       itemBuilder: (_, _) => Container(
-                        width: 325,
+                        width: 121,
                         decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: AppBorderRadius.brCircular16,
@@ -329,9 +322,9 @@ class StoreDetailsShimmer extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 14,
-                    childAspectRatio: 0.65,
+                    crossAxisSpacing: 18,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 170 / 280,
                   ),
                   itemCount: 4,
                   itemBuilder: (_, _) => AppShimmer(

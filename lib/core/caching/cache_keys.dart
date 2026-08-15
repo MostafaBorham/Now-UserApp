@@ -16,4 +16,8 @@ abstract class CacheKeys {
   /// [accessToken] when the server answers `401`. Issued alongside the access
   /// token by OTP verification and by the refresh endpoint itself.
   static const String refreshToken = 'refresh_token';
+
+  static const String isGuest = 'isGuest';
+  static const String token = 'token';
+  static const String tokenValue = 'token';
 }

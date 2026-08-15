@@ -4,43 +4,42 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
-import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/map_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/my_address_screen.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
+import 'package:nowdelivery_user_app/features/auth/presentation/screens/phone_verification_screen.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
-import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/edit_information_screen.dart';
-import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
+import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
-import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
-import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
-import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/personal_information_screen.dart';
-import 'package:nowdelivery_user_app/features/auth/presentation/screens/phone_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
+import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/screens/edit_information_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/view_store_category_products_screen.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/file_complaint_screen.dart';
+import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/order_confirmed_screen.dart';
-import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/track_order_screen.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/payment_failed_screen.dart';
+import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/track_order_screen.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/screens/wallet_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/screens/on_boarding_screen.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/screens/splash_screen.dart';
@@ -125,8 +124,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.orderDetailsScreen,
         path: '/${AppRoutes.orderDetailsScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const OrderDetailsScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const OrderDetailsScreen(),
       ),
       GoRoute(
         name: AppRoutes.categoriesScreen,
@@ -149,8 +148,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.favouritesScreen,
         path: '/${AppRoutes.favouritesScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const FavouritesScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const FavouritesScreen(),
       ),
       GoRoute(
         name: AppRoutes.walletScreen,
@@ -162,8 +161,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.fileComplaintScreen,
         path: '/${AppRoutes.fileComplaintScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const FileComplaintScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const FileComplaintScreen(),
       ),
       GoRoute(
         name: AppRoutes.topBrandsScreen,
@@ -244,14 +243,14 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addPaymentCard,
         path: '/${AppRoutes.addPaymentCard}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const AddPaymentCardScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const AddPaymentCardScreen(),
       ),
       GoRoute(
         name: AppRoutes.paymentMethodsScreen,
         path: '/${AppRoutes.paymentMethodsScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const PaymentMethodsScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const PaymentMethodsScreen(),
       ),
       GoRoute(
         name: AppRoutes.phoneVerificationScreen,
@@ -283,24 +282,20 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.orderConfirmedScreen,
         path: '/${AppRoutes.orderConfirmedScreen}',
-        builder: (context, state) => _blockSystemBack(
-          context,
-          OrderConfirmedScreen(
-            orders: state.extra as List<OrderModel>? ?? const <OrderModel>[],
-          ),
-        ),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const OrderConfirmedScreen(),
       ),
       GoRoute(
         name: AppRoutes.trackOrderScreen,
         path: '/${AppRoutes.trackOrderScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const TrackOrderScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const TrackOrderScreen(),
       ),
       GoRoute(
         name: AppRoutes.paymentFailedScreen,
         path: '/${AppRoutes.paymentFailedScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const PaymentFailedScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const PaymentFailedScreen(),
       ),
       GoRoute(
         name: AppRoutes.checkoutScreen,
@@ -324,6 +319,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addressDetailsScreen,
         path: '/${AppRoutes.addressDetailsScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) {
           // Opened either from the address list (extra is the AddressModel —
           // editing an existing address) or from the map (extra is a record
@@ -351,6 +347,7 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addNewAddressFromMapScreen,
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
+        redirect: _redirectToLogin,
         builder: (context, state) {
           final currentLocation = state.extra as LatLng?;
           return _blockSystemBack(
@@ -362,10 +359,9 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
-        builder: (context, state) => _blockSystemBack(
-          context,
-          AddressSearchScreen(currentLocation: state.extra as LatLng?),
-        ),
+        redirect: _redirectToLogin,
+        builder: (context, state) =>
+            AddressSearchScreen(currentLocation: state.extra as LatLng?),
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,
@@ -384,7 +380,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.faqScreen,
         path: '/${AppRoutes.faqScreen}',
-        builder: (context, state) => _blockSystemBack(context, const FaqScreen()),
+        builder: (context, state) =>
+            _blockSystemBack(context, const FaqScreen()),
       ),
       GoRoute(
         name: AppRoutes.privacyPolicyScreen,
@@ -395,8 +392,8 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.editInformationScreen,
         path: '/${AppRoutes.editInformationScreen}',
-        builder: (context, state) =>
-            _blockSystemBack(context, const EditInformationScreen()),
+        redirect: _redirectToLogin,
+        builder: (context, state) => const EditInformationScreen(),
       ),
     ],
   );
