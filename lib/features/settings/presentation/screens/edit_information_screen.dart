@@ -1,13 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+
 import '../widgets/edit_field.dart';
 import '../widgets/gender_selector.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/profile_avatar.dart';
-import '../widgets/profile_header.dart';
 
 /// Editable "Edit Information" screen, reached from the Edit button on the
 /// Personal Information screen.
@@ -28,7 +30,6 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
 
   DateTime? _dob;
 
-  static const double _hPadding = 20;
   static const double _fieldGap = 18;
   static const List<String> _months = [
     'January',
@@ -85,26 +86,22 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colors.white,
-      body: Column(
-        children: [
-          CommonHeader(
-            title: 'Edit Information',
-            onBack: () => context.pop(),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  const Center(
-                    child: ProfileAvatar(size: 112, showCameraOverlay: true),
-                  ),
-                  const SizedBox(height: 28),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: _hPadding),
-                    child: Column(
+      body: AppWavedView(
+        appBarTitle: LangKeys.personalInformationKey.tr(),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 24),
+                    const Center(
+                      child: ProfileAvatar(size: 112, showCameraOverlay: true),
+                    ),
+                    const SizedBox(height: 28),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         EditField(
@@ -165,13 +162,13 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          _SaveBar(onSave: () => context.pop()),
-        ],
+            _SaveBar(onSave: () => context.pop()),
+          ],
+        ),
       ),
     );
   }
@@ -192,10 +189,7 @@ class _SaveBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-          child: PrimaryButton(label: 'Save', onPressed: onSave),
-        ),
+        child: PrimaryButton(label: 'Save', onPressed: onSave),
       ),
     );
   }
