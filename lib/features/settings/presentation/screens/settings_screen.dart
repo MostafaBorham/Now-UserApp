@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custo
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
 import '../widgets/language_bottom_sheet.dart';
 import '../widgets/logout_button.dart';
@@ -74,7 +75,19 @@ class SettingsScreen extends ConsumerWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const ProfileInfo(),
+              // Logged-in users see their real name (fetched once, shared with
+              // the Personal Information screen); guests keep the default label
+              // and never hit /user/profile.
+              isUser
+                  ? ProfileInfo(
+                      name: ref
+                              .watch(getProfileProvider)
+                              .valueOrNull
+                              ?.profile
+                              .fullName ??
+                          '',
+                    )
+                  : const ProfileInfo(),
               const SizedBox(height: 32),
               SettingsSection(
                 title: LangKeys.general.tr(),
