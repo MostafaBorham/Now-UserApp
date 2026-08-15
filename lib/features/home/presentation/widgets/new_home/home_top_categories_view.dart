@@ -18,7 +18,7 @@ class HomeTopCategoriesView extends ConsumerWidget {
         },
         enlargeCenterPage: false,
         autoPlay: true,
-        aspectRatio: 0.8,
+        aspectRatio: 0.75,
         viewportFraction: 1,
       ),
     );

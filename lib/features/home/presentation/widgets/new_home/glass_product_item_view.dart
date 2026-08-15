@@ -3,11 +3,11 @@ import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
-import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/circular_app_favourite_icon.dart';
 
 class GlassProductItemView extends StatelessWidget {
   const GlassProductItemView({super.key});
@@ -50,14 +50,14 @@ class GlassProductItemView extends StatelessWidget {
                             ReverseWidget(
                               applyReverse: !context.isRTL,
                               child: Assets.media.images.svg.discountTicketIcon
-                                  .svg(width: con.maxWidth * 0.18),
+                                  .svg(width: con.maxWidth * 0.2),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 4.0),
                               child: Transform.rotate(
                                 angle: (context.isRTL ? 1 : -1) * 2,
                                 child: SizedBox(
-                                  width: con.maxWidth * 0.18 * 0.62,
+                                  width: con.maxWidth*0.1,
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Text(
@@ -65,7 +65,7 @@ class GlassProductItemView extends StatelessWidget {
                                       style: TextStyle(
                                         color: colors.white,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: con.maxWidth * 0.05,
+                                        fontSize: con.maxWidth * 0.08,
                                       ),
                                     ),
                                   ),
@@ -74,7 +74,7 @@ class GlassProductItemView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        CircularAppFavouriteIcon(size: con.maxWidth * 0.1),
+                        CircularAppFavouriteIcon(size: con.maxWidth * 0.1,),
                       ],
                     ),
                   ),
