@@ -47,10 +47,7 @@ class _HomeNeverMissOffersItemState extends State<HomeNeverMissOffersItem> {
                       return Container(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16).copyWith(
-                            bottomLeft: Radius.circular(8),
-                            bottomRight: Radius.circular(8),
-                          ),
+                          borderRadius: BorderRadius.circular(8),
                           image: const DecorationImage(
                             image: NetworkImage(
                               'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1280px-Tomato_je.jpg',

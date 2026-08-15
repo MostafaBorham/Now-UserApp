@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class BreadCardClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    const double outerRadius = 20;
+    const double outerRadius = 8;
     const double notchSize = 36;
     const double notchRadius = 12;
 
