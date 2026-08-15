@@ -21,4 +21,12 @@ class ProfileApiService {
   Future<Response> getProfile() {
     return _dio.get(ProfileEndpoints.profile, cancelToken: _canceller.token);
   }
+
+  Future<Response> updateProfile(Map<String, dynamic> body) {
+    return _dio.put(
+      ProfileEndpoints.profile,
+      data: body,
+      cancelToken: _canceller.token,
+    );
+  }
 }

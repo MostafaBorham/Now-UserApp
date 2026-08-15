@@ -1,10 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/update_profile_vm.dart';
 
 import '../widgets/edit_field.dart';
 import '../widgets/gender_selector.dart';
@@ -14,20 +19,26 @@ import '../widgets/profile_avatar.dart';
 /// Editable "Edit Information" screen, reached from the Edit button on the
 /// Personal Information screen.
 ///
-/// The form scrolls between a fixed header and a pinned "Save" bar.
-class EditInformationScreen extends StatefulWidget {
+/// Prefilled once from the already-loaded [getProfileProvider] data. Saving
+/// sends the editable fields to `PUT /api/v1/user/profile` via
+/// [updateProfileProvider]; on success it pops (the read screen refreshes
+/// itself). Phone is read-only (it is the OTP identity) and the avatar is a
+/// placeholder — avatar editing is deferred.
+class EditInformationScreen extends ConsumerStatefulWidget {
   const EditInformationScreen({super.key});
 
   @override
-  State<EditInformationScreen> createState() => _EditInformationScreenState();
+  ConsumerState<EditInformationScreen> createState() =>
+      _EditInformationScreenState();
 }
 
-class _EditInformationScreenState extends State<EditInformationScreen> {
+class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   late final TextEditingController _fullName;
-  late final TextEditingController _phone;
   late final TextEditingController _email;
   late final TextEditingController _nationality;
 
+  String? _phone; // read-only display
+  String? _gender; // 'male' | 'female' | original value if untouched
   DateTime? _dob;
 
   static const double _fieldGap = 18;
@@ -49,16 +60,19 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
   @override
   void initState() {
     super.initState();
-    _fullName = TextEditingController(text: 'Guest 123');
-    _phone = TextEditingController(text: '(239) 555-0108');
-    _email = TextEditingController();
-    _nationality = TextEditingController();
+    // Prefill once from the profile the read screen already loaded.
+    final ProfileModel? p = ref.read(getProfileProvider).valueOrNull?.profile;
+    _fullName = TextEditingController(text: p?.fullName ?? '');
+    _email = TextEditingController(text: p?.email ?? '');
+    _nationality = TextEditingController(text: p?.nationality ?? '');
+    _phone = p?.phone;
+    _gender = p?.gender;
+    _dob = p?.birthday == null ? null : DateTime.tryParse(p!.birthday!);
   }
 
   @override
   void dispose() {
     _fullName.dispose();
-    _phone.dispose();
     _email.dispose();
     _nationality.dispose();
     super.dispose();
@@ -82,8 +96,46 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
     }
   }
 
+  String? _clean(String text) {
+    final String trimmed = text.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+
+  /// DateTime → 'YYYY-MM-DD' for the API.
+  String _apiDate(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
+  Future<void> _save() async {
+    FocusScope.of(context).unfocus();
+
+    final ProfileModel edited = ProfileModel(
+      fullName: _clean(_fullName.text),
+      email: _clean(_email.text),
+      gender: _gender,
+      birthday: _dob == null ? null : _apiDate(_dob!),
+      nationality: _clean(_nationality.text),
+    );
+
+    final bool ok = await ref.read(updateProfileProvider.notifier).save(edited);
+    if (!mounted) return;
+
+    if (ok) {
+      context.pop();
+    } else {
+      final Object? error = ref.read(updateProfileProvider).error;
+      ErrorSnackBar.show(
+        context,
+        error?.toString() ?? LangKeys.serverConnectionFailedKey,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool saving = ref.watch(updateProfileProvider).isLoading;
+
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
@@ -101,72 +153,69 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
                       child: ProfileAvatar(size: 112, showCameraOverlay: true),
                     ),
                     const SizedBox(height: 28),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        EditField(
-                          label: 'Full Name',
-                          controller: _fullName,
-                          leadingAsset: Assets.media.images.svg.pen.path,
-                          showCounter: true,
-                          maxLength: 40,
-                        ),
-                        const SizedBox(height: _fieldGap),
-                        EditField(
-                          label: 'Phone',
-                          controller: _phone,
-                          leadingAsset: Assets.media.images.svg.pen.path,
-                          keyboardType: TextInputType.phone,
-                        ),
-                        const SizedBox(height: _fieldGap),
-                        EditField(
-                          label: 'Email',
-                          controller: _email,
-                          hintText: 'Enter email address',
-                          leadingAsset: Assets.media.images.svg.pen.path,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: _fieldGap),
-                        Text(
-                          'Gender',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: context.colors.neutral500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        CommonScreenTabs(
-                          height: 49,
-                          tabsName: ["Male", "Female"],
-                          activeFontColor: Colors.white,
-                          inactiveFontColor: context.colors.tertiaryContainer,
-                          onTaptab: (currentTab) {},
-                          radius: 100,
-                          tapRadius: 100,
-                        ),
-                        const SizedBox(height: _fieldGap),
-                        EditField(
-                          label: 'Date of Birth',
-                          hintText: 'Select Date of Birth',
-                          valueText: _dobText,
-                          trailingAsset: Assets.media.images.svg.date.path,
-                          readOnly: true,
-                          onTap: _pickDate,
-                        ),
-                        const SizedBox(height: _fieldGap),
-                        EditField(
-                          label: 'Nationality',
-                          controller: _nationality,
-                          hintText: 'Enter your nationality',
-                          trailingAsset: Assets.media.images.svg.pen.path,
-                        ),
-                      ],
+                    EditField(
+                      label: 'Full Name',
+                      controller: _fullName,
+                      leadingAsset: Assets.media.images.svg.pen.path,
+                      showCounter: true,
+                      maxLength: 40,
+                    ),
+                    const SizedBox(height: _fieldGap),
+                    EditField(
+                      label: 'Phone',
+                      valueText: _phone,
+                      hintText: '—',
+                      readOnly: true,
+                    ),
+                    const SizedBox(height: _fieldGap),
+                    EditField(
+                      label: 'Email',
+                      controller: _email,
+                      hintText: 'Enter email address',
+                      leadingAsset: Assets.media.images.svg.pen.path,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: _fieldGap),
+                    Text(
+                      'Gender',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: context.colors.neutral500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    CommonScreenTabs(
+                      height: 49,
+                      tabsName: const ["Male", "Female"],
+                      initialIndex: _gender == 'female' ? 1 : 0,
+                      activeFontColor: Colors.white,
+                      inactiveFontColor: context.colors.tertiaryContainer,
+                      onTaptab: (currentTab) =>
+                          _gender = currentTab == 1 ? 'female' : 'male',
+                      radius: 100,
+                      tapRadius: 100,
+                    ),
+                    const SizedBox(height: _fieldGap),
+                    EditField(
+                      label: 'Date of Birth',
+                      hintText: 'Select Date of Birth',
+                      valueText: _dobText,
+                      trailingAsset: Assets.media.images.svg.date.path,
+                      readOnly: true,
+                      onTap: _pickDate,
+                    ),
+                    const SizedBox(height: _fieldGap),
+                    EditField(
+                      label: 'Nationality',
+                      controller: _nationality,
+                      hintText: 'Enter your nationality',
+                      trailingAsset: Assets.media.images.svg.pen.path,
                     ),
                   ],
                 ),
               ),
             ),
-            _SaveBar(onSave: () => context.pop()),
+            _SaveBar(isLoading: saving, onSave: _save),
           ],
         ),
       ),
@@ -176,9 +225,10 @@ class _EditInformationScreenState extends State<EditInformationScreen> {
 
 /// Pinned bottom bar holding the green "Save" button.
 class _SaveBar extends StatelessWidget {
-  const _SaveBar({required this.onSave});
+  const _SaveBar({required this.onSave, required this.isLoading});
 
   final VoidCallback onSave;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +239,11 @@ class _SaveBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: PrimaryButton(label: 'Save', onPressed: onSave),
+        child: PrimaryButton(
+          label: 'Save',
+          isLoading: isLoading,
+          onPressed: onSave,
+        ),
       ),
     );
   }

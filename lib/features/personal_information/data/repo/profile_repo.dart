@@ -25,4 +25,18 @@ class ProfileRepo with BaseRepo {
       ),
     );
   }
+
+  /// Persists the edited [body] (from [ProfileModel.toUpdateJson]) and returns
+  /// the updated profile. The response mirrors the GET envelope; parse the
+  /// nested `user` when present, otherwise the `data` map itself.
+  Future<Either<Failure, ProfileModel>> updateProfile(
+    Map<String, dynamic> body,
+  ) {
+    return guard(() => _api.updateProfile(body), (data) {
+      final dynamic user = data['user'];
+      return ProfileModel.fromJson(
+        user is Map<String, dynamic> ? user : data,
+      );
+    });
+  }
 }

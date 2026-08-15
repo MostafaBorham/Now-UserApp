@@ -38,6 +38,17 @@ class ProfileModel extends Equatable {
     );
   }
 
+  /// Body for `PUT /api/v1/user/profile` — only the server-editable keys.
+  /// `phone` is the OTP identity and is intentionally omitted (not updatable
+  /// here); avatar lives in a separate subsystem and is deferred.
+  Map<String, dynamic> toUpdateJson() => {
+    'full_name': fullName,
+    'email': email,
+    'gender': gender,
+    'birthday': birthday,
+    'nationality': nationality,
+  };
+
   @override
   List<Object?> get props =>
       [id, fullName, email, phone, gender, birthday, nationality];
