@@ -15,14 +15,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price_with_curren
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/previous_price_with_currency.dart';
 
-class MostPopularItem extends StatefulWidget {
-  const MostPopularItem({super.key});
+class HomeNeverMissOffersItem extends StatefulWidget {
+  const HomeNeverMissOffersItem({super.key});
 
   @override
-  State<MostPopularItem> createState() => _MostPopularItemState();
+  State<HomeNeverMissOffersItem> createState() => _HomeNeverMissOffersItemState();
 }
 
-class _MostPopularItemState extends State<MostPopularItem> {
+class _HomeNeverMissOffersItemState extends State<HomeNeverMissOffersItem> {
   bool isRotate = false;
   bool showAddToCartCounter = false;
   int counter = 0;

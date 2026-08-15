@@ -404,6 +404,16 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get homeLocationIcon =>
       const SvgGenImage('assets/media/images/svg/home-location-icon.svg');
 
+  /// File path: assets/media/images/svg/home-never-miss-offers-background.svg
+  SvgGenImage get homeNeverMissOffersBackground => const SvgGenImage(
+    'assets/media/images/svg/home-never-miss-offers-background.svg',
+  );
+
+  /// File path: assets/media/images/svg/home-never-miss-offers-logo.svg
+  SvgGenImage get homeNeverMissOffersLogo => const SvgGenImage(
+    'assets/media/images/svg/home-never-miss-offers-logo.svg',
+  );
+
   /// File path: assets/media/images/svg/home-offers-background.svg
   SvgGenImage get homeOffersBackground =>
       const SvgGenImage('assets/media/images/svg/home-offers-background.svg');
@@ -766,6 +776,8 @@ class $AssetsMediaImagesSvgGen {
     filledOrdersIcon,
     filterIcon,
     homeLocationIcon,
+    homeNeverMissOffersBackground,
+    homeNeverMissOffersLogo,
     homeOffersBackground,
     homeHeaderBackground,
     homeSelected,

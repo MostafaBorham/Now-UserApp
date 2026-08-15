@@ -6,11 +6,11 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/show_more_items_header.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_item.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 
 
-class MostPopularSection extends StatelessWidget {
-  const MostPopularSection({super.key});
+class HomeNeverMissOffersSection extends StatelessWidget {
+  const HomeNeverMissOffersSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class MostPopularSection extends StatelessWidget {
               itemBuilder: (context, index) {
                 return InkWell(
                     onTap: () => context.pushNamed(AppRoutes.productDetailsScreen),
-                    child: MostPopularItem());
+                    child: HomeNeverMissOffersItem());
               },
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) {

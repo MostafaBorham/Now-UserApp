@@ -8,6 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 
 class BestNearbyStoresListItem extends StatefulWidget {
   const BestNearbyStoresListItem({super.key});
@@ -26,7 +28,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
     return LayoutBuilder(
       builder: (context, constrains) {
         return SizedBox(
-          width: 280,
+          width: constrains.maxHeight * 1.1,
           child: Card(
             elevation: 2,
             shadowColor: colors.onTertiaryContainer.withValues(alpha: 0.4),
@@ -36,7 +38,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Column(
-              spacing: 8,
+              spacing: 16,
               children: [
                 Expanded(
                   child: Stack(
@@ -57,15 +59,13 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                         ),
                       ),
                       Align(
-                        alignment: AlignmentDirectional.topStart,
+                        alignment: AlignmentDirectional.topEnd,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CircularAppFavouriteIcon(
-                            size: constrains.maxHeight*0.08,
+                            size: constrains.maxHeight * 0.08,
                             isFavourite: false,
-                            onFavouriteChanged: (currentFavourite) {
-
-                            },
+                            onFavouriteChanged: (currentFavourite) {},
                           ),
                         ),
                       ),
@@ -79,7 +79,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AutoSizeText(
-                        'متجر الباندا',
+                        'Panda Store',
                         style: AppTextStyles.style18SemiBold.copyWith(
                           color: colors.black,
                         ),
@@ -90,46 +90,32 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                         spacing: 5,
                         children: [
                           Assets.media.images.svg.shippingIcon.svg(
-                            width: 16,
+                            width: constrains.maxHeight*0.08,
                             colorFilter: ColorFilter.mode(
                               colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
-                          AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.black,
-                            ),
+                          NewPriceWidget(
+                            color: colors.black,
+                            price: '10',
+                            size: constrains.maxHeight * 0.08,
                           ),
-                          Assets.media.images.svg.realSaudiCurrency.svg(
-                            width: 15,
-                            colorFilter: ColorFilter.mode(
-                              colors.black,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          5.wSpace,
                           Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 8,
-                              vertical: 3,
+                              vertical: 4,
                             ),
                             decoration: BoxDecoration(
                               color: colors.tertiaryFixed,
-                              borderRadius: AppBorderRadius.brCircular20,
+                              borderRadius: BorderRadius.circular(999),
                             ),
-                            child: Row(
-                              spacing: 5,
-                              children: [
-                                Assets.media.images.svg.starRate.svg(),
-                                AutoSizeText(
-                                  '4.5 (12)',
-                                  style: AppTextStyles.style14Medium.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                              ],
+                            child: AppRateWidget(
+                              starColor: colors.surface,
+                              rateRatio: '4.5',
+                              rateCount: '12',
+                              rateColor: colors.black,
+                              size: constrains.maxHeight * 0.07,
                             ),
                           ),
                         ],
@@ -139,29 +125,28 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
                         spacing: 5,
                         children: [
                           Assets.media.images.svg.timeIcon.svg(
-                            width: 16,
+                            width: constrains.maxHeight*0.08,
                             colorFilter: ColorFilter.mode(
                               colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
                           AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style12Medium.copyWith(
+                            '40-50 mins',
+                            style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),
                           ),
-                          5.wSpace,
                           Assets.media.images.svg.locationIcon.svg(
-                            width: 14,
+                            width: constrains.maxHeight*0.07,
                             colorFilter: ColorFilter.mode(
                               colors.neutral500,
                               BlendMode.srcIn,
                             ),
                           ),
                           AutoSizeText(
-                            '10',
-                            style: AppTextStyles.style12Medium.copyWith(
+                            '40-50 km',
+                            style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),
                           ),

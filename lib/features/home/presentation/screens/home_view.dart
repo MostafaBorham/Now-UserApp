@@ -11,14 +11,14 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/best_nearby_stores_section.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_all_stores_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_categories_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_offers_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/most_popular_section.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
@@ -40,7 +40,13 @@ class HomeView extends StatelessWidget {
           HomeHeaderView(),
           HomeOffersSectionView(),
           HomeMostPopularBrandsView(),
-          HomeTopCategoriesView()
+          HomeTopCategoriesView(),
+          AspectRatio(
+              aspectRatio: 1.47,
+              child: BestNearbyStoresSection()),
+          AspectRatio(
+              aspectRatio: 1.5,
+              child: HomeNeverMissOffersSection())
         ],
       ),
     );
