@@ -17,7 +17,6 @@ import 'package:nowdelivery_user_app/features/categories/presentation/screens/ca
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-// import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
@@ -26,12 +25,12 @@ import 'package:nowdelivery_user_app/features/notifications/presentation/screens
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
+import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/edit_information_screen.dart';
+import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
