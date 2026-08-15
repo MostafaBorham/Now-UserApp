@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
+import 'home_view_all_widget.dart';
+
 class HomeMostPopularBrandsView extends StatelessWidget {
   const HomeMostPopularBrandsView({super.key});
 
@@ -34,37 +36,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Stack(
-                    alignment: AlignmentDirectional.centerStart,
-                    children: [
-                      Positioned.fill(
-                        child: FractionallySizedBox(
-                          widthFactor: 0.8,
-                          heightFactor: 0.6,
-                          alignment: AlignmentDirectional.bottomEnd,
-                          child: Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadiusGeometry.circular(100),
-                              gradient: LinearGradient(
-                                colors: [colors.white,colors.onSecondaryContainer.withValues(alpha: 0.4)],
-                                begin: AlignmentDirectional.centerStart,
-                                end: AlignmentDirectional.centerEnd,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'View All',
-                        style: TextStyle(
-                          fontSize: con.maxWidth * 0.035,
-                          color: colors.black,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
+                  HomeViewAllWidget(size: con.maxWidth * 0.035,backgroundColor: colors.onSecondaryContainer.withValues(alpha: 0.4),),
                 ],
               ),
               SizedBox(
