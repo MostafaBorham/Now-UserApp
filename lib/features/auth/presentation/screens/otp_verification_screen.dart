@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
@@ -70,7 +71,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
     ref.listen<AsyncValue<UserModel?>>(verifyOtpProvider, (
       AsyncValue<UserModel?>? previous,
       AsyncValue<UserModel?> next,
@@ -81,27 +81,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
             _leaveVerificationFlow();
           }
         },
-        error: (Object error, StackTrace stackTrace) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  error.toString().tr(),
-                  style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.white,
-                  ),
-                ),
-                behavior: SnackBarBehavior.floating,
-                elevation: 4,
-                padding: EdgeInsets.all(16),
-                backgroundColor: colors.onError,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(100),
-                ),
-              ),
-            );
-        },
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
       );
     });
     final bool isVerifyOtpLoading = ref.watch(verifyOtpProvider).isLoading;

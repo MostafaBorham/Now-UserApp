@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -26,8 +26,6 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppColorScheme colors = context.colors;
-
     ref.listen<AsyncValue<dynamic>>(logoutProvider, (
       AsyncValue<dynamic>? previous,
       AsyncValue<dynamic> next,
@@ -39,27 +37,8 @@ class SettingsScreen extends ConsumerWidget {
             context.goNamed(AppRoutes.onBoardingScreen);
           }
         },
-        error: (Object error, StackTrace stackTrace) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  error.toString().tr(),
-                  style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.white,
-                  ),
-                ),
-                behavior: SnackBarBehavior.floating,
-                elevation: 4,
-                padding: const EdgeInsets.all(16),
-                backgroundColor: colors.onError,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-            );
-        },
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
       );
     });
 
