@@ -10,12 +10,12 @@ class HomeTopCategoriesView extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return CarouselSlider.builder(
       itemCount: ref.read(topCategoriesCountProvider),
-      itemBuilder: (_, index, _) => const HomeTopCategoryItem(),
+      itemBuilder: (_, index, _) => const RepaintBoundary(
+        child: HomeTopCategoryItem(),
+      ),
       options: CarouselOptions(
-        onPageChanged: (index, reason) {
-          debugPrint('changed$index');
-          return ref.read(currentTopCategoryIndexProvider.notifier).state = index;
-        },
+        onPageChanged: (index, reason) =>
+            ref.read(currentTopCategoryIndexProvider.notifier).state = index,
         enlargeCenterPage: false,
         autoPlay: true,
         aspectRatio: 0.75,

@@ -8,10 +8,10 @@ import 'package:nowdelivery_user_app/features/home/presentation/controllers/top_
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/glass_product_item_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
-class HomeTopCategoryItem extends ConsumerWidget {
+class HomeTopCategoryItem extends StatelessWidget {
   const HomeTopCategoryItem({super.key});
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Stack(
       children: [
@@ -114,22 +114,7 @@ class HomeTopCategoryItem extends ConsumerWidget {
                         },
                       ),
                     ),
-                    Row(
-                      spacing: 8,
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                        ref.read(topCategoriesCountProvider),
-                        (index) => Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: index == ref.watch(currentTopCategoryIndexProvider) ? colors.white : Colors.transparent,
-                            border: Border.all(color: colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
+                    const _TopCategoriesIndicator(),
                   ],
                 );
               }
@@ -137,6 +122,38 @@ class HomeTopCategoryItem extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The page-indicator dots. Isolated as the only widget that watches the
+/// current index so an auto-play page change rebuilds just these dots — never
+/// the slide's gradient, avatar, or product grid. Wrapped in a
+/// [RepaintBoundary] so its repaints stay local.
+class _TopCategoriesIndicator extends ConsumerWidget {
+  const _TopCategoriesIndicator();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppColorScheme colors = context.colors;
+    final int currentIndex = ref.watch(currentTopCategoryIndexProvider);
+    return RepaintBoundary(
+      child: Row(
+        spacing: 8,
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+          ref.read(topCategoriesCountProvider),
+          (index) => Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: index == currentIndex ? colors.white : Colors.transparent,
+              border: Border.all(color: colors.white),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
