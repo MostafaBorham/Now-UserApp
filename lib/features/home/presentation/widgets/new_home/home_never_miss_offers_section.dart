@@ -24,8 +24,8 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                 stops: [0, 0.7],
               ),
             ),
-            child: Assets.media.images.png.homeNeverMissOffersBackground.image(
-              fit: BoxFit.cover,
+            child: Assets.media.images.svg.homeNeverMissOffersBackground.svg(
+              fit: BoxFit.contain,
               alignment: Alignment.topCenter,
             ),
           ),
