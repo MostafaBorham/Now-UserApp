@@ -11,16 +11,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 
-class BestNearbyStoresListItem extends StatefulWidget {
+class BestNearbyStoresListItem extends StatelessWidget {
   const BestNearbyStoresListItem({super.key});
-
-  @override
-  State<BestNearbyStoresListItem> createState() =>
-      _BestNearbyStoresListItemState();
-}
-
-class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
-  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +28,7 @@ class _BestNearbyStoresListItemState extends State<BestNearbyStoresListItem> {
             shape: RoundedRectangleBorder(
               borderRadius: AppBorderRadius.brCircular18,
             ),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
+            clipBehavior: Clip.antiAlias,
             child: Column(
               spacing: 16,
               children: [

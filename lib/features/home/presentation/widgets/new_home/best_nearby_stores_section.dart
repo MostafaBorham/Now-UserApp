@@ -29,8 +29,9 @@ class BestNearbyStoresSection extends StatelessWidget {
             child: ListView.separated(
               itemBuilder: (context, index) {
                 return InkWell(
-                     onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-                    child: BestNearbyStoresListItem());
+                  onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
+                  child: const BestNearbyStoresListItem(),
+                );
               },
               scrollDirection: Axis.horizontal,
               separatorBuilder: (context, index) {
