@@ -47,7 +47,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   late final TextEditingController _phoneController;
   late final TextEditingController _floorNumberController;
   late final TextEditingController _buildingNameController;
-  late final TextEditingController _apartmentController;
   late final TextEditingController _instructionsController;
 
   // Localized label translation maps sent to the backend, aligned with the
@@ -59,10 +58,21 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     <String, String>{'en': 'Work', 'ar': 'العمل'},
     <String, String>{'en': 'Other', 'ar': 'أخرى'},
   ];
+
+  /// Placeholders for the first two fields, per selected label. A work address
+  /// asks for a company name, an "other" one for a room/house — the values they
+  /// collect stay the same, only the wording changes.
+  static const List<List<String>> _fieldHints = <List<String>>[
+    <String>[LangKeys.floor, LangKeys.building],
+    <String>[LangKeys.floorWork, LangKeys.buildingWork],
+    <String>[LangKeys.floorOther, LangKeys.building],
+  ];
+
   int _selectedLabelIndex = 0;
 
   /// Drives the Save button between its disabled and active states. Only the
-  /// required fields (phone / floor / building) feed it.
+  /// required fields (floor / building) feed it; the phone is optional but
+  /// must still be well-formed once something is typed into it.
   bool _isFormValid = false;
 
   @override
@@ -79,9 +89,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     );
     _buildingNameController = TextEditingController(
       text: widget.isEditScreen ? widget.address.floor : null,
-    );
-    _apartmentController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.apartment : null,
     );
     _instructionsController = TextEditingController(
       text: widget.isEditScreen ? widget.address.notes : null,
@@ -109,8 +116,9 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   }
 
   void _onRequiredFieldChanged() {
+    final String phone = _phoneController.text.trim();
     final bool isValid =
-        AppValidator.isValidSaudiPhone(_phoneController.text.trim()) &&
+        (phone.isEmpty || AppValidator.isValidSaudiPhone(phone)) &&
         _floorNumberController.text.trim().isNotEmpty &&
         _buildingNameController.text.trim().isNotEmpty;
     if (isValid != _isFormValid) {
@@ -123,7 +131,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     _phoneController.dispose();
     _floorNumberController.dispose();
     _buildingNameController.dispose();
-    _apartmentController.dispose();
     _instructionsController.dispose();
     super.dispose();
   }
@@ -138,7 +145,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       phone: _phoneController.text.trim(),
       buildingNumber: _floorNumberController.text.trim(),
       floor: _buildingNameController.text.trim(),
-      apartment: _apartmentController.text.trim(),
       notes: _instructionsController.text.trim(),
       label: _labels[_selectedLabelIndex],
     );
@@ -156,6 +162,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final String? area = widget.address.area;
+    final List<String> hints = _fieldHints[_selectedLabelIndex];
 
     // Both viewmodels expose the same AsyncValue<AddressModel?> shape, so the
     // screen watches/listens through one handle and only the submit call in
@@ -191,7 +198,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
             : LangKeys.addressDetails.tr(),
         body: SingleChildScrollView(
           child: Column(
-            spacing: 10,
+            spacing: 16,
             children: [
               AreaSelector(
                 value: (area == null || area.isEmpty)
@@ -221,54 +228,40 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
                 selectedColor: colors.primary500Main,
+                // 4px track padding around a 44px pill, per the design.
+                height: 52,
                 initialIndex: _selectedLabelIndex,
-                onChanged: (int index) => _selectedLabelIndex = index,
+                onChanged: (int index) =>
+                    setState(() => _selectedLabelIndex = index),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 16,
-                children: [
-                  AddressField(
-                    hintText: LangKeys.phoneNumber.tr(),
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
-                      LengthLimitingTextInputFormatter(14),
-                    ],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.floor.tr(),
-                    controller: _floorNumberController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.building.tr(),
-                    controller: _buildingNameController,
-                  ),
-                  AddressField(
-                    hintText: LangKeys.apartment.tr(),
-                    controller: _apartmentController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.instructions.tr(),
-                    controller: _instructionsController,
-                  ),
+              AddressField(
+                hintText: hints[0].tr(),
+                controller: _floorNumberController,
+              ),
+              AddressField(
+                hintText: hints[1].tr(),
+                controller: _buildingNameController,
+              ),
+              AddressField(
+                hintText: LangKeys.instructions.tr(),
+                controller: _instructionsController,
+              ),
+              AddressField(
+                hintText: LangKeys.phoneNumberOptional.tr(),
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
+                  LengthLimitingTextInputFormatter(14),
                 ],
               ),
-              AspectRatio(
-                aspectRatio: 7,
-                child: !_isFormValid && !isSaving
-                    ? PrimaryAppDisabledButton(title: LangKeys.saveAddress.tr())
-                    : PrimaryAppButton(
-                        title: LangKeys.saveAddress.tr(),
-                        isLoading: isSaving,
-                        onTap: _saveAddress,
-                      ),
-              ),
+              !_isFormValid && !isSaving
+                  ? PrimaryAppDisabledButton(title: LangKeys.saveAddress.tr())
+                  : PrimaryAppButton(
+                      title: LangKeys.saveAddress.tr(),
+                      isLoading: isSaving,
+                      onTap: _saveAddress,
+                    ),
             ],
           ),
         ),

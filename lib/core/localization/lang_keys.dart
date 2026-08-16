@@ -79,10 +79,15 @@ abstract class LangKeys {
   static const String homeAddressSelector = 'homeAddressSelector';
   static const String workAddressSelector = 'workAddressSelector';
   static const String otherAddressSelector = 'otherAddressSelector';
+  // First two address fields are re-labelled per selected label (home/work/other).
   static const String floor = 'floor';
+  static const String floorWork = 'floorWork';
+  static const String floorOther = 'floorOther';
   static const String building = 'building';
+  static const String buildingWork = 'buildingWork';
   static const String apartment = 'apartment';
   static const String phoneNumber = 'phoneNumber';
+  static const String phoneNumberOptional = 'phoneNumberOptional';
   static const String instructions = 'instructions';
   static const String inKey = 'in';
   static const String saveAddress = 'saveAddress';
