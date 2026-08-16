@@ -18,9 +18,24 @@ class HomeAppCategorySectionView extends StatelessWidget {
         Positioned.fill(
           child: ReverseWidget(
             applyReverse: !context.isRTL,
-            child: Assets.media.images.svg.oneWaveBackground.svg(
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(colors.onInverseSurface.withValues(alpha: 0.2),BlendMode.srcIn)
+            child: ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (Rect bounds) => LinearGradient(
+                begin: !context.isRTL
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                end: !context.isRTL
+                    ? Alignment.centerLeft
+                    : Alignment.centerRight,
+                stops: [0, 0.5],
+                colors: [
+                  colors.onInverseSurface.withValues(alpha: 0.2),
+                  colors.onInverseSurface.withValues(alpha: 0.02),
+                ],
+              ).createShader(bounds),
+              child: Assets.media.images.svg.oneWaveBackground.svg(
+                fit: BoxFit.fill,
+              ),
             ),
           ),
         ),

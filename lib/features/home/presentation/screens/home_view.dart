@@ -34,6 +34,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+
     return SingleChildScrollView(
       child: Column(
         spacing: 16,
@@ -48,6 +49,12 @@ class HomeView extends StatelessWidget {
           AspectRatio(
               aspectRatio: .7,
               child: HomeNeverMissOffersSection()),
+          AspectRatio(
+              aspectRatio: 1.1,
+              child: HomeAppCategorySectionView()),
+          AspectRatio(
+              aspectRatio: 1.1,
+              child: HomeAppCategorySectionView()),
           AspectRatio(
               aspectRatio: 1.1,
               child: HomeAppCategorySectionView()),
