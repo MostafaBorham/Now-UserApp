@@ -145,14 +145,16 @@ class ProductItem3View extends StatelessWidget {
                                 price: '10.00',
                                 size: con.maxWidth*0.13,
                               ),
-                        Text(
-                          'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: con.maxWidth*0.1,
-                            fontWeight: FontWeight.w600,
-                            color: colors.black,
+                        Expanded(
+                          child: Text(
+                            'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: con.maxWidth*0.1,
+                              fontWeight: FontWeight.w600,
+                              color: colors.black,
+                            ),
                           ),
                         ),
                       ],
