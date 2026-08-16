@@ -21,6 +21,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/hom
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_offers_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_with_logo_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
@@ -45,54 +46,68 @@ class HomeView extends StatelessWidget {
           HomeOffersSectionView(),
           HomeMostPopularBrandsView(),
           HomeTopCategoriesView(),
+          AspectRatio(aspectRatio: 1.47, child: BestNearbyStoresSection()),
+          AspectRatio(aspectRatio: .7, child: HomeNeverMissOffersSection()),
           AspectRatio(
-              aspectRatio: 1.47,
-              child: BestNearbyStoresSection()),
+            aspectRatio: 1.1,
+            child: HomeAppCategorySectionView(
+              categoryModel: const CategoryModel(
+                name: {'en': 'Electronics', 'ar': 'إلكترونيات'},
+              ),
+              productModels: const [
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+              ],
+            ),
+          ),
           AspectRatio(
-              aspectRatio: .7,
-              child: HomeNeverMissOffersSection()),
+            aspectRatio: 1.1,
+            child: HomeAppCategorySectionView(
+              categoryModel: const CategoryModel(
+                name: {'en': 'Fashion', 'ar': 'الموضة'},
+              ),
+              productModels: const [
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+              ],
+            ),
+          ),
           AspectRatio(
-              aspectRatio: 1.1,
-              child: HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Electronics', 'ar': 'إلكترونيات'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              )),
+            aspectRatio: 1.1,
+            child: HomeAppCategoryWithLogoSectionView(
+              categoryModel: const CategoryModel(
+                name: {'en': 'Perfume', 'ar': 'عطور'},
+              ),
+              productModels: const [
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+              ],
+            ),
+          ),
           AspectRatio(
-              aspectRatio: 1.1,
-              child: HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Fashion', 'ar': 'الموضة'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              )),
-          AspectRatio(
-              aspectRatio: 1.1,
-              child: HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Vegetables', 'ar': 'الخضروات'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              )),
+            aspectRatio: 1.1,
+            child: HomeAppCategorySectionView(
+              categoryModel: const CategoryModel(
+                name: {'en': 'Vegetables', 'ar': 'الخضروات'},
+              ),
+              productModels: const [
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+                ProductModel(),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -706,6 +706,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get trustIcon =>
       const SvgGenImage('assets/media/images/svg/trust-icon.svg');
 
+  /// File path: assets/media/images/svg/two-wave-background.svg
+  SvgGenImage get twoWaveBackground =>
+      const SvgGenImage('assets/media/images/svg/two-wave-background.svg');
+
   /// File path: assets/media/images/svg/view_all_arabic.svg
   SvgGenImage get viewAllArabic =>
       const SvgGenImage('assets/media/images/svg/view_all_arabic.svg');
@@ -869,6 +873,7 @@ class $AssetsMediaImagesSvgGen {
     tickCircle,
     timeIcon,
     trustIcon,
+    twoWaveBackground,
     viewAllArabic,
     visaLogo,
     visa,
