@@ -82,7 +82,7 @@ class HomeView extends StatelessWidget {
             aspectRatio: 1.1,
             child: HomeAppCategoryWithLogoSectionView(
               categoryModel: const CategoryModel(
-                name: {'en': 'Perfume', 'ar': 'عطور'},
+                name: {'en': 'Perfume', 'ar': 'عطور '},
               ),
               productModels: const [
                 ProductModel(),
