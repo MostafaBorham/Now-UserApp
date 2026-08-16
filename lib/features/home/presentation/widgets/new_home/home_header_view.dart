@@ -47,7 +47,7 @@ class HomeHeaderView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'hala wallah .. naortna!',
+                                    'يا هلا وحياك الله .. نورتنا!',
                                     style: TextStyle(
                                       color: colors.black,
                                       fontWeight: FontWeight.bold,
@@ -60,7 +60,8 @@ class HomeHeaderView extends StatelessWidget {
                                       Assets.media.images.svg.homeLocationIcon
                                           .svg(width: con.maxWidth * 0.05),
                                       Text(
-                                        'olya , saudi arabia 2321',
+                                        '7468 العليا، الرياض',
+                                        textDirection: TextDirection.ltr,
                                         style: TextStyle(
                                           color: colors.black,
                                           fontWeight: FontWeight.w400,

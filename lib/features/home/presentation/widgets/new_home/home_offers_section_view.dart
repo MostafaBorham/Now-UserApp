@@ -37,7 +37,7 @@ class HomeOffersSectionView extends StatelessWidget {
                       spacing: 12,
                       children: [
                         Text(
-                          'Special Offers',
+                          'عروض مميزة',
                           style: TextStyle(
                             fontSize: con.maxWidth * 0.05,
                             color: colors.black,

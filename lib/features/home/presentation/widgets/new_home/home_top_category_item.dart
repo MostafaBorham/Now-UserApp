@@ -62,7 +62,7 @@ class HomeTopCategoryItem extends StatelessWidget {
                             spacing: 6,
                             children: [
                               Text(
-                                'Electronics Market',
+                                'سوق الالكترونيات',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -76,8 +76,8 @@ class HomeTopCategoryItem extends StatelessWidget {
                                 child: StoreInfoRow(
                                   infoFontSize: con.maxWidth*0.04,
                                   infoIconSize: con.maxWidth*0.045,
-                                  deliveryTime: '40-50 mins',
-                                  distance: '40-50 km',
+                                  deliveryTime: '40-50 دقيقة',
+                                  distance: '40-50 كم',
                                   deliveryFee: '10',
                                   color: colors.white,
                                 ),

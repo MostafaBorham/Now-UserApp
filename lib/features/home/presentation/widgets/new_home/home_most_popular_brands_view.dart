@@ -29,7 +29,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Most Popular Brands',
+                    'أفضل العلامات التجارية',
                     style: TextStyle(
                       fontSize: con.maxWidth * 0.05,
                       color: colors.black,
@@ -73,7 +73,7 @@ class _BrandCard extends StatelessWidget {
   });
 
   // TODO: temporary placeholder values until brands are fetched from the API.
-  static const String _name = 'KFC';
+  static const String _name = 'كنتاكى';
   static const String _logo =
       'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png';
 

@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circul
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class BestNearbyStoresListItem extends StatelessWidget {
   const BestNearbyStoresListItem({super.key});
@@ -71,7 +72,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AutoSizeText(
-                        'Panda Store',
+                        'متجر بنده',
                         style: AppTextStyles.style18SemiBold.copyWith(
                           color: colors.black,
                         ),
@@ -81,11 +82,13 @@ class BestNearbyStoresListItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         spacing: 5,
                         children: [
-                          Assets.media.images.svg.shippingIcon.svg(
-                            width: constrains.maxHeight*0.08,
-                            colorFilter: ColorFilter.mode(
-                              colors.neutral500,
-                              BlendMode.srcIn,
+                          ReverseWidget(
+                            child: Assets.media.images.svg.shippingIcon.svg(
+                              width: constrains.maxHeight*0.08,
+                              colorFilter: ColorFilter.mode(
+                                colors.neutral500,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                           NewPriceWidget(
@@ -124,7 +127,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                           AutoSizeText(
-                            '40-50 mins',
+                            '40-50 دقيقة',
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),
@@ -137,7 +140,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                           AutoSizeText(
-                            '40-50 km',
+                            '40-50 كم',
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),

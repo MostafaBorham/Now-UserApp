@@ -30,12 +30,8 @@ class HomeAppCategorySectionView extends StatelessWidget {
             child: ShaderMask(
               blendMode: BlendMode.srcIn,
               shaderCallback: (Rect bounds) => LinearGradient(
-                begin: !context.isRTL
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                end: !context.isRTL
-                    ? Alignment.centerLeft
-                    : Alignment.centerRight,
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
                 stops: [0, 0.5],
                 colors: [
                   colors.onInverseSurface.withValues(alpha: 0.2),

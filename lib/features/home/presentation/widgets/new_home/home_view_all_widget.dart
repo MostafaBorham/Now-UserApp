@@ -36,7 +36,7 @@ class HomeViewAllWidget extends StatelessWidget {
           ),
         ),
         Text(
-          'View All',
+          'عرض الكل',
           style: TextStyle(
             fontSize: size,
             color: textColor?? colors.black,

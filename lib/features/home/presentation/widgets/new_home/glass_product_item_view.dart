@@ -55,7 +55,7 @@ class GlassProductItemView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 4.0),
                               child: Transform.rotate(
-                                angle: (context.isRTL ? 1 : -1) * 2,
+                                angle: context.isRTL? -1.1 : 1.1,
                                 child: SizedBox(
                                   width: con.maxWidth*0.1,
                                   child: FittedBox(
@@ -112,7 +112,7 @@ class GlassProductItemView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Iphone',
+                                'ماك بو اير3',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,

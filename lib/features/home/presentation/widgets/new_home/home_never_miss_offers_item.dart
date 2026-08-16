@@ -145,7 +145,7 @@ class _HomeNeverMissOffersItemState extends State<HomeNeverMissOffersItem> {
                 spacing: 7,
                 children: [
                   Text(
-                    'Coffee Machine',
+                    'آبل آيفون 15 برو',
                     maxLines: 1,
                     style: AppTextStyles.style16SemiBold.copyWith(
                       color: colors.neutral1200,

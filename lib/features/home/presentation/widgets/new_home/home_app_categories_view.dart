@@ -111,12 +111,10 @@ class _CategoryCarouselItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double diameter = width * 0.26;
-    // Image sizes: side items keep the image inside the circle; the centre item
-    // grows the image past the circle so it overflows and sits over it.
-    final double minImageSize = diameter * 0.5; // side slot — inside the circle
-    final double maxImageSize = diameter * 1.2; // centre — exceeds the circle
-    // RepaintBoundary keeps each item's per-frame scaling from repainting its
-    // neighbours; only the Transform + image rebuild while the list slides.
+
+    final double minImageSize = diameter * 0.5;
+    final double maxImageSize = diameter * 1.2;
+
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: controller,
@@ -129,10 +127,15 @@ class _CategoryCarouselItem extends StatelessWidget {
           final double distance = (page - index).abs().clamp(0.0, 1.0);
           final double proximity = 1.0 - distance; // 0 at side → 1 at centre
           final double scale = 1.0 - distance * 0.32; // center 1.0 → side 0.68
-          // As the item slides toward the centre the image grows from inside
-          // the circle up to overflowing it, and shrinks back on the way out.
-          final double imageSize =
+          final double rawImageSize =
               minImageSize + (maxImageSize - minImageSize) * proximity;
+          // The centre item is free to overflow the circle; every other item
+          // is kept inside it with padding between the image and the edge.
+          final bool isCentered = rawImageSize > diameter;
+          final double padding = diameter * 0.14;
+          final double imageSize = isCentered
+              ? rawImageSize
+              : rawImageSize.clamp(minImageSize, diameter - padding * 2);
           return Transform.scale(
             scale: scale,
             child: Column(
@@ -142,11 +145,7 @@ class _CategoryCarouselItem extends StatelessWidget {
                 Container(
                   width: diameter,
                   height: diameter,
-                  // Clip the image to the circle for every normal item so it
-                  // stays inside; only release the clip once the image has
-                  // grown past the diameter (the centre item) so it can spill
-                  // out. At the crossover the image exactly fills the circle,
-                  // so toggling the clip is visually seamless.
+                  padding: EdgeInsets.all(diameter*0.1),
                   clipBehavior:
                       imageSize > diameter ? Clip.none : Clip.antiAlias,
                   decoration: BoxDecoration(
@@ -158,8 +157,6 @@ class _CategoryCarouselItem extends StatelessWidget {
                     ),
                     shape: BoxShape.circle,
                   ),
-                  // OverflowBox frees the image from the circle's size limit so
-                  // the centre item can grow past the diameter, kept centred.
                   child: OverflowBox(
                     maxWidth: double.infinity,
                     maxHeight: double.infinity,
@@ -175,28 +172,21 @@ class _CategoryCarouselItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                child!,
+                SizedBox(height: width * 0.02),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: width * 0.042,
+                    fontWeight: isCentered ? FontWeight.w800 : FontWeight.w600,
+                    color: colors.black,
+                  ),
+                ),
               ],
             ),
           );
         },
-        // Static label subtree: reused across frames, never rebuilt.
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: width * 0.02),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: width * 0.042,
-                fontWeight: FontWeight.w600,
-                color: colors.black,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
