@@ -40,6 +40,7 @@ class AppColorScheme {
   Color get onErrorContainer => _scheme.onErrorContainer;
 
   Color get surface => _scheme.surface;
+  Color get onInverseSurface => _scheme.onInverseSurface;
   Color get neutral500 => _scheme.onSurface;
   Color get surfaceBright => _scheme.surfaceBright;
   Color get primary100 => _scheme.onSurfaceVariant;

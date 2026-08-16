@@ -16,128 +16,153 @@ class ProductItem3View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Card(
-      elevation: 2,
-      shadowColor: colors.black.withValues(alpha: 0.25),
-      color: colors.white,
-      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.brCircular16),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        spacing: 12,
-        children: [
-          Expanded(
-            child: Stack(
+    return AspectRatio(
+      aspectRatio: 0.65,
+      child: LayoutBuilder(
+        builder: (context,con) {
+          return Card(
+            elevation: 2,
+            shadowColor: colors.black.withValues(alpha: 0.25),
+            color: colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppBorderRadius.brCircular12,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
               children: [
-                Positioned.fill(
-                  child: CachedNetworkImage(
-                    width: double.infinity,
-                    height: double.infinity,
-                    imageUrl:
-                        'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1',
-                    fit: BoxFit.fill,
+                Expanded(
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        width: double.infinity,
+                        height: double.infinity,
+                        imageUrl:
+                            'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1',
+                        fit: BoxFit.fill,
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CircularBrandLogo(
+                                radius: con.maxWidth*0.1,
+                                logoUrl:
+                                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                              ),
+                              CircularAppFavouriteIcon(
+                                size: con.maxWidth*0.08,
+                                isFavourite: false,
+                                onFavouriteChanged: (currentFavourite) {},
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      PositionedDirectional(
+                        end: 5,
+                        bottom: 5,
+                        child: AnimatedCartButton(
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Align(
-                  alignment: AlignmentDirectional.topStart,
-                  child: CircularBrandLogo(
-                    radius: 24,
-                    logoUrl:
-                        'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                  ),
-                ),
-                Align(
-                  alignment: AlignmentDirectional.topEnd,
+                Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CircularAppFavouriteIcon(
-                      size: 24,
-                      isFavourite: false,
-                      onFavouriteChanged: (currentFavourite) {},
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  child: AnimatedCartButton(),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0).copyWith(top: 0),
-            child: Column(
-              spacing: 3,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AppRateWidget(
-                      starColor: colors.surface,
-                      rateRatio: '4.5',
-                      rateCount: '12',
-                      rateColor: colors.black,
-                      size: 15,
-                    ),
-                    true? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: colors.onError,
-                        borderRadius: BorderRadiusGeometry.circular(4),
-                      ),
-                      child: Row(
-                        spacing: 3,
-                        children: [
-                          Assets.media.images.svg.zigzagArrowIcon.svg(),
-                          Text('10%'),
-                        ],
-                      ),
-                    ) : SizedBox.shrink(),
-                  ],
-                ),
-                true
-                    ? Row(
-                        spacing: 4,
-                        children: [
-                          NewPriceWidget(
-                            color: colors.primary500Main,
-                            price: '10.00',
-                            size: 20,
-                          ),
-                          Text(
-                            '15.00',
-                            style: TextStyle(
-                              color: colors.neutral500,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.lineThrough,
-                              decorationThickness: 1,
-                              decorationColor: colors.neutral500.withValues(
-                                alpha: 0.6,
-                              ),
+                    child: Column(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppRateWidget(
+                              starColor: colors.onSecondaryContainer,
+                              rateRatio: '4.5',
+                              rateColor: colors.black,
+                              size: con.maxWidth*0.1,
                             ),
+                            true
+                                ? Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: colors.errorContainer,
+                                      borderRadius: BorderRadiusGeometry.circular(5),
+                                    ),
+                                    child: Row(
+                                      spacing: 3,
+                                      children: [
+                                        Assets.media.images.svg.zigzagArrowIcon.svg(
+                                          colorFilter: ColorFilter.mode(colors.white,BlendMode.srcIn),
+                                          width: con.maxWidth*0.04
+                                        ),
+                                        Text('10%',style: TextStyle(
+                                          color: colors.white,
+                                          fontSize: con.maxWidth*0.07,
+                                          fontWeight: FontWeight.w700
+                                        ),),
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox.shrink(),
+                          ],
+                        ),
+                        true
+                            ? Row(
+                                spacing: 4,
+                                children: [
+                                  NewPriceWidget(
+                                    color: colors.primary700,
+                                    price: '10.00',
+                                    size: con.maxWidth*0.12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  Text(
+                                    '15.00',
+                                    style: TextStyle(
+                                      color: colors.neutral500,
+                                      fontSize: con.maxWidth*0.09,
+                                      fontWeight: FontWeight.w700,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationThickness: 1,
+                                      decorationColor: colors.neutral500.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : NewPriceWidget(
+                                color: colors.black,
+                                price: '10.00',
+                                size: con.maxWidth*0.13,
+                              ),
+                        Text(
+                          'Panda Store',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: con.maxWidth*0.12,
+                            fontWeight: FontWeight.w600,
+                            color: colors.black,
                           ),
-                        ],
-                      )
-                    : NewPriceWidget(
-                        color: colors.black,
-                        price: '10.00',
-                        size: 20,
-                      ),
-                Text(
-                  'Panda Store',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        }
       ),
     );
   }
