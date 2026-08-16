@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BreadCardClipper extends CustomClipper<Path> {
+  const BreadCardClipper({this.textDirection = TextDirection.ltr});
+
+  final TextDirection textDirection;
+
   @override
   Path getClip(Size size) {
     const double outerRadius = 8;
@@ -79,9 +83,20 @@ class BreadCardClipper extends CustomClipper<Path> {
 
     path.close();
 
+    // Mirror the notch to the opposite corner for RTL layouts.
+    if (textDirection == TextDirection.rtl) {
+      return path.transform(
+        (Matrix4.identity()
+              ..translate(size.width, 0.0)
+              ..scale(-1.0, 1.0))
+            .storage,
+      );
+    }
+
     return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(BreadCardClipper oldClipper) =>
+      oldClipper.textDirection != textDirection;
 }

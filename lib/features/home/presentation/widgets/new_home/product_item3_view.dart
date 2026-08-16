@@ -146,11 +146,11 @@ class ProductItem3View extends StatelessWidget {
                                 size: con.maxWidth*0.13,
                               ),
                         Text(
-                          'Panda Store',
+                          'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: con.maxWidth*0.12,
+                            fontSize: con.maxWidth*0.1,
                             fontWeight: FontWeight.w600,
                             color: colors.black,
                           ),

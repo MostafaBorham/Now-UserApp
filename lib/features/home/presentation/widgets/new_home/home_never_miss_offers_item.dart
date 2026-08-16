@@ -41,7 +41,9 @@ class _HomeNeverMissOffersItemState extends State<HomeNeverMissOffersItem> {
             children: [
               Positioned.fill(
                 child: ClipPath(
-                  clipper: BreadCardClipper(),
+                  clipper: BreadCardClipper(
+                    textDirection: Directionality.of(context),
+                  ),
                   child: LayoutBuilder(
                     builder: (context, con) {
                       return Container(
