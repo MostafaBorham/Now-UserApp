@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -8,7 +10,14 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
 class HomeAppCategorySectionView extends StatelessWidget {
-  const HomeAppCategorySectionView({super.key});
+  const HomeAppCategorySectionView({
+    super.key,
+    required this.categoryModel,
+    required this.productModels,
+  });
+
+  final CategoryModel categoryModel;
+  final List<ProductModel> productModels;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +58,7 @@ class HomeAppCategorySectionView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Electronics',
+                    context.getLocalizedApiText(categoryModel.name),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -78,7 +87,7 @@ class HomeAppCategorySectionView extends StatelessWidget {
                   return ProductItem3View();
                 },
                 separatorBuilder: (context, index) => 4.wSpace,
-                itemCount: 5,
+                itemCount: productModels.length,
               ),
             ),
           ],

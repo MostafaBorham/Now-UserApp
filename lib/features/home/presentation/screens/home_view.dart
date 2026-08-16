@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -51,13 +53,46 @@ class HomeView extends StatelessWidget {
               child: HomeNeverMissOffersSection()),
           AspectRatio(
               aspectRatio: 1.1,
-              child: HomeAppCategorySectionView()),
+              child: HomeAppCategorySectionView(
+                categoryModel: const CategoryModel(
+                  name: {'en': 'Electronics', 'ar': 'إلكترونيات'},
+                ),
+                productModels: const [
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                ],
+              )),
           AspectRatio(
               aspectRatio: 1.1,
-              child: HomeAppCategorySectionView()),
+              child: HomeAppCategorySectionView(
+                categoryModel: const CategoryModel(
+                  name: {'en': 'Fashion', 'ar': 'الموضة'},
+                ),
+                productModels: const [
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                ],
+              )),
           AspectRatio(
               aspectRatio: 1.1,
-              child: HomeAppCategorySectionView()),
+              child: HomeAppCategorySectionView(
+                categoryModel: const CategoryModel(
+                  name: {'en': 'Vegetables', 'ar': 'الخضروات'},
+                ),
+                productModels: const [
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                  ProductModel(),
+                ],
+              )),
         ],
       ),
     );
