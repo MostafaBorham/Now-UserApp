@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slide
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_categories_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/home_offers_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
@@ -47,6 +48,7 @@ class HomeView extends StatelessWidget {
           AspectRatio(
               aspectRatio: .7,
               child: HomeNeverMissOffersSection()),
+          HomeAppCategorySectionView()
         ],
       ),
     );

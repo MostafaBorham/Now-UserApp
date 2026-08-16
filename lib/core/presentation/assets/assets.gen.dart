@@ -546,6 +546,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
 
+  /// File path: assets/media/images/svg/one-wave-background.svg
+  SvgGenImage get oneWaveBackground =>
+      const SvgGenImage('assets/media/images/svg/one-wave-background.svg');
+
   /// File path: assets/media/images/svg/order-icon.svg
   SvgGenImage get orderIcon =>
       const SvgGenImage('assets/media/images/svg/order-icon.svg');
@@ -736,6 +740,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get workUnselected =>
       const SvgGenImage('assets/media/images/svg/work_unselected.svg');
 
+  /// File path: assets/media/images/svg/zigzag-arrow-icon.svg
+  SvgGenImage get zigzagArrowIcon =>
+      const SvgGenImage('assets/media/images/svg/zigzag-arrow-icon.svg');
+
   /// List of all assets
   List<dynamic> get values => [
     icon1,
@@ -820,6 +828,7 @@ class $AssetsMediaImagesSvgGen {
     onBoardingLogo,
     onTheWay,
     onboardingBackground,
+    oneWaveBackground,
     orderIcon,
     orderStarRate,
     order,
@@ -869,6 +878,7 @@ class $AssetsMediaImagesSvgGen {
     whiteWaveBackground,
     workSelected,
     workUnselected,
+    zigzagArrowIcon,
   ];
 }
 
