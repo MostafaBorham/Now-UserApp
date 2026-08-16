@@ -275,6 +275,7 @@
   "deliveryAddress": "عنوان التسليم",
   "edit": "تعديل",
   "noAddress": "لا يوجد عنوان",
+  "noSavedAddresses": "لا توجد عناوين محفوظة",
   "pleaseSelectAddress": "من فضلك اختر عنوان التسليم أولاً",
   "choosePaymentMethod": "اختر طريقة الدفع",
   "addWallet": "+ إضافة محفظة",

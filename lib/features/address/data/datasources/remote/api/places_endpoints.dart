@@ -16,9 +16,9 @@ abstract class PlacesEndpoints {
   static const String placeDetailsFieldMask = 'id,location,formattedAddress';
 
   /// Countries the suggestions are limited to (ISO 3166-1 alpha-2, lowercase).
-  /// The app only delivers inside Egypt, so results are filtered rather than
-  /// merely biased — widen this list when delivery expands.
-  static const List<String> includedRegionCodes = <String>['eg'];
+  /// The app only delivers inside Saudi Arabia, so results are filtered rather
+  /// than merely biased — widen this list when delivery expands.
+  static const List<String> includedRegionCodes = <String>['sa'];
 
   /// Radius, in metres, of the circle the results are biased towards when the
   /// caller knows where the map is currently looking.

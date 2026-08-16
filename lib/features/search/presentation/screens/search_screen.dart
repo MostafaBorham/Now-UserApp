@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_s
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
 
 class SearchScreen extends ConsumerWidget {
@@ -23,7 +24,7 @@ class SearchScreen extends ConsumerWidget {
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     // Recent search keywords (loaded on first watch by the provider).
-    final RecentSearchViewModel recentVm = ref.read(
+    final RecentKeywordsViewModel recentVm = ref.read(
       recentSearchProvider.notifier,
     );
     final List<String> recentSearches =

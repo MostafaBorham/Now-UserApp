@@ -274,6 +274,7 @@
   "deliveryAddress": "Delivery Address",
   "edit": "Edit",
   "noAddress": "No Address",
+  "noSavedAddresses": "No Addresses Yet",
   "pleaseSelectAddress": "Please select a delivery address first",
   "choosePaymentMethod": "Choose Payment Method",
   "addWallet": "+ Add Wallet",

@@ -49,16 +49,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   late final TextEditingController _buildingNameController;
   late final TextEditingController _instructionsController;
 
-  // Localized label translation maps sent to the backend, aligned with the
-  // segmented selector order (home / work / other). Each map mirrors the API
-  // translation shape (`{'en': ..., 'ar': ...}`) so the label round-trips as a
-  // localized value rather than a bare identifier.
-  static const List<Map<String, String>> _labels = <Map<String, String>>[
-    <String, String>{'en': 'Home', 'ar': 'المنزل'},
-    <String, String>{'en': 'Work', 'ar': 'العمل'},
-    <String, String>{'en': 'Other', 'ar': 'أخرى'},
-  ];
-
   /// Placeholders for the first two fields, per selected label. A work address
   /// asks for a company name, an "other" one for a room/house — the values they
   /// collect stay the same, only the wording changes.
@@ -99,7 +89,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       // our segment maps; fall back to the first segment (home) when the stored
       // label is missing or unrecognized.
       final String? storedLabel = widget.address.label?['en']?.toString();
-      final int labelIndex = _labels.indexWhere(
+      final int labelIndex = AddressModel.labelOptions.indexWhere(
         (Map<String, String> label) => label['en'] == storedLabel,
       );
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
@@ -146,7 +136,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       buildingNumber: _floorNumberController.text.trim(),
       floor: _buildingNameController.text.trim(),
       notes: _instructionsController.text.trim(),
-      label: _labels[_selectedLabelIndex],
+      label: AddressModel.labelOptions[_selectedLabelIndex],
     );
 
     if (widget.isEditScreen) {
@@ -220,7 +210,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 items: [
                   LangKeys.homeAddressSelector.tr(),
                   LangKeys.workAddressSelector.tr(),
-                  LangKeys.otherKey.tr(),
+                  LangKeys.otherAddressSelector.tr(),
                 ],
                 itemIcons: [
                   Assets.media.images.svg.homeSelected.svg(),
@@ -256,7 +246,17 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 ],
               ),
               !_isFormValid && !isSaving
-                  ? PrimaryAppDisabledButton(title: LangKeys.saveAddress.tr())
+                  // Tappable while disabled, so the button can say why instead
+                  // of just refusing to react.
+                  ? GestureDetector(
+                      onTap: () => ErrorSnackBar.show(
+                        context,
+                        LangKeys.completeAddressInfo,
+                      ),
+                      child: PrimaryAppDisabledButton(
+                        title: LangKeys.saveAddress.tr(),
+                      ),
+                    )
                   : PrimaryAppButton(
                       title: LangKeys.saveAddress.tr(),
                       isLoading: isSaving,

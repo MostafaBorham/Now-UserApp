@@ -1,81 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/search/data/repo/search_repo.dart';
+import 'package:nowdelivery_user_app/core/data/repo/recent_keywords_repo.dart';
+import 'package:nowdelivery_user_app/core/database/hive_boxes.dart';
+import 'package:nowdelivery_user_app/core/database/hive_keys.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 
-/// Manages the user's recent search keywords for the search screen.
+/// The user's recent product-search keywords.
 ///
-/// Exposes the list as `AsyncValue<List<String>>` and loads it as soon as the
-/// provider is first watched, so screens only need to
-/// `ref.watch(recentSearchProvider)` and render the [AsyncValue]. The four
-/// operations map one-to-one to the recents view:
-/// [getRecentSearches], [addSearchKey], [removeSearchKey] and [clearAll].
-/// Each mutation persists through the repo and replaces the state with the
-/// up-to-date list.
-///
-/// Not yet wired into the search UI — that happens in a later task.
+/// Loads as soon as the provider is first watched, so screens only need to
+/// `ref.watch(recentSearchProvider)` and render the [AsyncValue].
 final recentSearchProvider =
     StateNotifierProvider.autoDispose<
-      RecentSearchViewModel,
+      RecentKeywordsViewModel,
       AsyncValue<List<String>>
     >(
-      (Ref ref) =>
-          RecentSearchViewModel(const AsyncValue.loading())
-            ..getRecentSearches(),
+      (Ref ref) => RecentKeywordsViewModel(
+        RecentKeywordsRepo(
+          boxName: HiveBoxes.recentSearches,
+          key: HiveKeys.recentSearchKeywords,
+          maxKeywords: 10,
+        ),
+      )..getRecentSearches(),
     );
-
-class RecentSearchViewModel extends StateNotifier<AsyncValue<List<String>>> {
-  RecentSearchViewModel(super.initialState);
-
-  final SearchRepo _repo = SearchRepo();
-
-  /// Loads the stored recent keywords. Synchronous read (Hive), so no
-  /// `mounted` guard is needed.
-  void getRecentSearches() {
-    state = const AsyncValue.loading();
-    state = _repo.getRecentSearches().fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  /// Filters the recent keywords by [searchKey] and replaces the state with the
-  /// matches. Synchronous read (Hive), so no `mounted` guard is needed.
-  void filterRecentSearch(String searchKey) {
-    state = _repo.filterRecentSearch(searchKey).fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> addSearchKey(String keyword) async {
-    final result = await _repo.addSearchKey(keyword);
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> removeSearchKey(String keyword) async {
-    final result = await _repo.removeSearchKey(keyword);
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> clearAll() async {
-    final result = await _repo.clearAll();
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-}

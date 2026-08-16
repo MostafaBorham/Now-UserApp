@@ -38,9 +38,9 @@ class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (AddressModel created) {
-        _ref
-            .read(getMyAddressesProvider.notifier)
-            .getMyAddresses();
+        // Refetch rather than append: the server assigns the id and decides
+        // where the new address lands in the list order.
+        _ref.read(getMyAddressesProvider.notifier).loadFirstPage();
         return AsyncValue.data(created);
       },
     );

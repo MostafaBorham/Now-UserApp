@@ -1,18 +1,23 @@
 import 'dart:ui' as ui;
 
+// `show Either`: dartz also exports a `State` monad, which would shadow
+// Flutter's `State` and break every widget in this file.
+import 'package:dartz/dartz.dart' show Either;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/arrow_back_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
@@ -20,20 +25,20 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/widgets/profile_header.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/resolve_map_address_vm.dart';
 
-class AddNewAddressFromMap extends StatefulWidget {
+class AddNewAddressFromMap extends ConsumerStatefulWidget {
   const AddNewAddressFromMap({super.key, this.currentLocation});
 
   final LatLng? currentLocation;
 
   @override
-  State<AddNewAddressFromMap> createState() => _AddNewAddressFromMapState();
+  ConsumerState<AddNewAddressFromMap> createState() =>
+      _AddNewAddressFromMapState();
 }
 
-class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
+class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
   LatLng? _selectedLocation;
-  bool _resolvingAddress = false;
 
   @override
   void initState() {
@@ -56,10 +61,9 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     });
   }
 
-  // Reverse-geocode the picked point before navigating. Builds an
-  // [AddressModel] from the resolved placemark and the picked [LatLng], then
-  // continues to the details screen. Only proceeds when a placemark is
-  // resolved; otherwise surfaces an error and stays on the map.
+  // Resolve the picked point into an address before navigating, and continue
+  // to the details screen with it. Only proceeds when the point resolves;
+  // otherwise surfaces an error and stays on the map.
   Future<void> _onEnterAddressTapped() async {
     final LatLng? location = _selectedLocation;
     if (location == null) {
@@ -67,53 +71,31 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       return;
     }
 
-    setState(() {
-      _resolvingAddress = true;
-    });
-
-    final Placemark? placemark = await LocationManager.getAddressFromLocation(
-      location,
-    );
+    final Either<Failure, AddressModel> result = await ref
+        .read(resolveMapAddressProvider.notifier)
+        .resolve(location);
 
     if (!mounted) return;
 
-    setState(() {
-      _resolvingAddress = false;
-    });
-
-    if (placemark == null) {
-      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
-      return;
-    }
-
-    final String area = [
-      placemark.subLocality,
-      placemark.locality,
-      placemark.administrativeArea,
-    ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
-
-    final AddressModel address = AddressModel(
-      country: placemark.country,
-      city: placemark.locality,
-      area: area.isEmpty ? placemark.name : area,
-      street: placemark.street,
-      latitude: location.latitude.toString(),
-      longitude: location.longitude.toString(),
-    );
-
-    // Push (not replace) so this map stays underneath: the "Change" action on
-    // the details screen pops back to it instead of building a fresh map. On a
-    // successful save the details screen pops this map itself, returning to the
-    // address list.
-    await context.pushNamed<void>(
-      AppRoutes.addressDetailsScreen,
-      extra: (address: address, fromMap: true),
+    result.fold(
+      (Failure failure) => ErrorSnackBar.show(context, failure.message),
+      // Push (not replace) so this map stays underneath: the "Change" action on
+      // the details screen pops back to it instead of building a fresh map. On
+      // a successful save the details screen pops this map itself, returning to
+      // the address list.
+      (AddressModel address) => context.pushNamed<void>(
+        AppRoutes.addressDetailsScreen,
+        extra: (address: address, fromMap: true),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final bool isResolvingAddress = ref
+        .watch(resolveMapAddressProvider)
+        .isLoading;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -152,11 +134,15 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
             padding: const EdgeInsets.all(20.0),
             child: AspectRatio(
               aspectRatio: 7,
-              child: _selectedLocation!=null? PrimaryAppButton(
-                title: LangKeys.enterAddressKey.tr(),
-                isLoading: _resolvingAddress,
-                onTap: _onEnterAddressTapped,
-              ) : PrimaryAppDisabledButton(title: LangKeys.enterAddressKey.tr(),),
+              child: _selectedLocation != null
+                  ? PrimaryAppButton(
+                      title: LangKeys.enterAddressKey.tr(),
+                      isLoading: isResolvingAddress,
+                      onTap: _onEnterAddressTapped,
+                    )
+                  : PrimaryAppDisabledButton(
+                      title: LangKeys.enterAddressKey.tr(),
+                    ),
             ),
           ),
         ],
@@ -176,7 +162,9 @@ class AppMap extends StatefulWidget {
 }
 
 class _AppMapState extends State<AppMap> {
-  static const LatLng _fallbackTarget = LatLng(30.115508, 31.403403);
+  /// Shown only when the device location cannot be resolved at all. Central
+  /// Riyadh — the delivery market — so the pin never starts outside it.
+  static const LatLng _fallbackTarget = LatLng(24.713552, 46.675297);
   static const double _targetZoom = 16;
 
   GoogleMapController? _mapController;
@@ -213,7 +201,7 @@ class _AppMapState extends State<AppMap> {
 
   @override
   void dispose() {
-_mapController?.dispose();
+    _mapController?.dispose();
     super.dispose();
   }
 

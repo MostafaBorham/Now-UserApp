@@ -8,7 +8,8 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 ///
 /// Each method only performs the request and returns the Dio [Response].
 /// Error handling and response parsing are intentionally left to the caller
-/// (the repository layer).
+/// (the repository layer), and the request body is the model's own
+/// [AddressModel.toRequestJson].
 ///
 /// Cancellation is fully encapsulated here: every request carries the token
 /// of [_canceller], and callers only see the plain [cancelRequests] method.
@@ -20,67 +21,28 @@ class AddressApiService {
   void cancelRequests() => _canceller.cancel();
 
   Future<Response> getMyAddresses({required int page}) {
-    AddressEndpoints.page = page;
     return _dio.get(
       AddressEndpoints.addresses,
-      queryParameters: AddressEndpoints.getMyAddressesQuery,
+      queryParameters: AddressEndpoints.myAddressesQuery(page),
       cancelToken: _canceller.token,
     );
   }
 
-  /// Creates a new address for the current user.
-  ///
-  /// The request body is shaped from [address], sending only the fields the
-  /// backend accepts on creation (server-owned fields such as `id`,
-  /// `user_id`, `full_address` and timestamps are omitted).
   Future<Response> addAddress({required AddressModel address}) {
     return _dio.post(
       AddressEndpoints.addresses,
-      data: <String, dynamic>{
-        'label': address.label?['en'],
-        'phone': address.phone,
-        'country': address.country,
-        'city': address.city,
-        'area': address.area,
-        'street': address.street,
-        'building_number': address.buildingNumber,
-        'floor': address.floor,
-        'apartment': address.apartment,
-        'latitude': double.tryParse(address.latitude ?? ''),
-        'longitude': double.tryParse(address.longitude ?? ''),
-        'notes': address.notes,
-        'is_default': address.isDefault ?? false,
-      },
+      data: address.toRequestJson(),
       cancelToken: _canceller.token,
     );
   }
 
-  /// Updates the address identified by [addressId].
-  ///
-  /// The request body mirrors [addAddress]: only the client-owned fields are
-  /// sent (server-owned fields such as `id`, `user_id`, `full_address` and
-  /// timestamps are omitted).
   Future<Response> editAddress({
     required int addressId,
     required AddressModel address,
   }) {
     return _dio.put(
       AddressEndpoints.editAddress(addressId),
-      data: <String, dynamic>{
-        'label': address.label?['en'],
-        'phone': address.phone,
-        'country': address.country,
-        'city': address.city,
-        'area': address.area,
-        'street': address.street,
-        'building_number': address.buildingNumber,
-        'floor': address.floor,
-        'apartment': address.apartment,
-        'latitude': double.tryParse(address.latitude ?? ''),
-        'longitude': double.tryParse(address.longitude ?? ''),
-        'notes': address.notes,
-        'is_default': address.isDefault ?? false,
-      },
+      data: address.toRequestJson(),
       cancelToken: _canceller.token,
     );
   }

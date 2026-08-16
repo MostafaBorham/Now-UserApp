@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/place_suggestion_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/places_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/place_autocomplete_vm.dart';
@@ -116,7 +117,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
     final List<String> recentSearches =
         ref.watch(recentAddressSearchProvider).valueOrNull ?? const <String>[];
-    final RecentAddressSearchViewModel recentVm = ref.read(
+    final RecentKeywordsViewModel recentVm = ref.read(
       recentAddressSearchProvider.notifier,
     );
 

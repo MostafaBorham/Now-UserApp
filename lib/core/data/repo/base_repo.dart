@@ -24,7 +24,9 @@ mixin BaseRepo {
       final Response response = await request();
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
-      if (response.statusCode != 200) {
+      // Any 2xx is a success, not just 200: creating an address answers 201.
+      final int statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 

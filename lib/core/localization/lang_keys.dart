@@ -97,6 +97,7 @@ abstract class LangKeys {
   static const String addNewAddress = 'addNewAddress';
   static const String enterAddressKey = 'enterAddress';
   static const String defaultAddress = 'defaultAddress';
+  static const String noSavedAddresses = 'noSavedAddresses';
 
   // Bottom navigation
   static const String homeKey = 'home';
