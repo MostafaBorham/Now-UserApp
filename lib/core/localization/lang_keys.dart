@@ -116,6 +116,7 @@ abstract class LangKeys {
   static const String allStoresKey = 'allStores';
   static const String appliancesKey = 'appliances';
   static const String shoesKey = 'shoes';
+  static const String devicesKey = 'devices';
   static const String perfumeTaglineKey = 'perfumeTagline';
 
   // Onboarding

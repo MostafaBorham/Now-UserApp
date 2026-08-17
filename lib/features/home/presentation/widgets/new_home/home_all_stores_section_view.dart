@@ -62,9 +62,9 @@ class HomeAllStoresSectionView extends StatelessWidget {
                   filterWidget: AppFilterIcon(),
                   tabs: [
                     LangKeys.allKey.tr(),
-                    LangKeys.appliancesKey.tr(),
-                    LangKeys.shoesKey.tr(),
                     LangKeys.clothesKey.tr(),
+                    LangKeys.shoesKey.tr(),
+                    LangKeys.devicesKey.tr(),
                   ],
                   views: [
                     HomeStoresListView(),
