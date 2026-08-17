@@ -66,7 +66,7 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                         children: [
                           Column(
                             mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: context.isRTL? CrossAxisAlignment.start : CrossAxisAlignment.center,
                             children: [
                               Text(
                                 formatArabicKashida(

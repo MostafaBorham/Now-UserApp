@@ -42,7 +42,7 @@ class _AnimatedDeliveryManMotorcycleViewState
               ),
               RepaintBoundary(
                 child: AnimatedSvgPicture.asset(
-                  Assets.media.images.svg.quickDeliverArabic.path,
+                  context.isRTL? Assets.media.images.svg.quickDeliverArabic.path : Assets.media.images.svg.englishAnimatedQuickDelivery.path,
                   fit: BoxFit.contain,
                   playbackRate: 1,
                   autoPlay: true,

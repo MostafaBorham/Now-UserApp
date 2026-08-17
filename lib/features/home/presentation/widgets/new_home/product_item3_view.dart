@@ -98,17 +98,18 @@ class ProductItem3View extends StatelessWidget {
                                       borderRadius: BorderRadiusGeometry.circular(5),
                                     ),
                                     child: Row(
+                                      textDirection: TextDirection.ltr,
                                       spacing: 3,
                                       children: [
+                                        Text('10%',style: TextStyle(
+                                            color: colors.white,
+                                            fontSize: con.maxWidth*0.07,
+                                            fontWeight: FontWeight.w700
+                                        ),),
                                         Assets.media.images.svg.zigzagArrowIcon.svg(
                                           colorFilter: ColorFilter.mode(colors.white,BlendMode.srcIn),
                                           width: con.maxWidth*0.04
                                         ),
-                                        Text('10%',style: TextStyle(
-                                          color: colors.white,
-                                          fontSize: con.maxWidth*0.07,
-                                          fontWeight: FontWeight.w700
-                                        ),),
                                       ],
                                     ),
                                   )

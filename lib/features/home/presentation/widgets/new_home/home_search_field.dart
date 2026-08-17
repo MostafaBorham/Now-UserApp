@@ -72,13 +72,10 @@ class HomeSearchField extends StatelessWidget {
                 color: colors.primary500Main,
                 borderRadius: AppBorderRadius.brCircular16,
               ),
-              child: ReverseWidget(
-                applyReverse: !context.isRTL,
-                child: Assets.media.images.svg.searchNormalIcon.svg(
-                  width: 16,
-                  height: 16,
-                  colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
-                ),
+              child: Assets.media.images.svg.searchNormalIcon.svg(
+                width: 16,
+                height: 16,
+                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
               ),
             ),
           ],

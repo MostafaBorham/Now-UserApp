@@ -42,46 +42,50 @@ class HomeHeaderView extends StatelessWidget {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 8,
                             children: [
-                              Column(
-                                spacing: 5,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    LangKeys.homeGreetingKey.tr(),
-                                    style: TextStyle(
-                                      color: colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: con.maxWidth * 0.04,
+                              Expanded(
+                                child: Column(
+                                  spacing: 5,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      LangKeys.homeGreetingKey.tr(),
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                        color: colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: con.maxWidth * 0.04,
+                                      ),
                                     ),
-                                  ),
-                                  Row(
-                                    spacing: 5,
-                                    children: [
-                                      Assets.media.images.svg.homeLocationIcon
-                                          .svg(width: con.maxWidth * 0.05),
-                                      Text(
-                                        '7468 العليا، الرياض',
-                                        textDirection: TextDirection.ltr,
-                                        style: TextStyle(
-                                          color: colors.black,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: con.maxWidth * 0.03,
+                                    Row(
+                                      spacing: 5,
+                                      children: [
+                                        Assets.media.images.svg.homeLocationIcon
+                                            .svg(width: con.maxWidth * 0.05),
+                                        Text(
+                                          '7468 العليا، الرياض',
+                                          textDirection: TextDirection.ltr,
+                                          style: TextStyle(
+                                            color: colors.black,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: con.maxWidth * 0.03,
+                                          ),
                                         ),
-                                      ),
-                                      RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Assets
-                                            .media
-                                            .images
-                                            .svg
-                                            .arrowBrokenIcon
-                                            .svg(width: con.maxWidth * 0.04),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        RotatedBox(
+                                          quarterTurns: 1,
+                                          child: Assets
+                                              .media
+                                              .images
+                                              .svg
+                                              .arrowBrokenIcon
+                                              .svg(width: con.maxWidth * 0.04),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                               Assets.media.images.svg.appLogos.homeWhiteAppLogo
                                   .svg(

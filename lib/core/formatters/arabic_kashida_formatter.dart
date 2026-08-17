@@ -4,8 +4,9 @@ import 'package:flutter/widgets.dart';
 /// e.g. "عطور" -> "عطـــــــور". [count] is the number of tatweel characters
 /// inserted at that single join between two connecting letters.
 ///
-/// The input must be Arabic; if it contains no Arabic letters an empty string
-/// is returned.
+/// Accepts text in any language: the Kashida is applied only when the text is
+/// Arabic and has a valid join. Non-Arabic text (e.g. English), or Arabic text
+/// with no connectable letters, is returned unchanged.
 String formatArabicKashida(String text, {int count = 6}) {
   const String tatweel = 'ـ';
 
@@ -20,10 +21,10 @@ String formatArabicKashida(String text, {int count = 6}) {
 
   final List<String> chars = text.characters.toList();
 
-  // Must be Arabic, otherwise return an empty string.
+  // Not Arabic -> return the text unchanged (any other language passes through).
   final bool hasArabic =
       chars.any((String c) => isArabicLetter(c.runes.first));
-  if (!hasArabic) return '';
+  if (!hasArabic) return text;
 
   // Find the last valid join (a forward-joining letter followed by a letter).
   int lastJoinIndex = -1;

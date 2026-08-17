@@ -53,7 +53,7 @@ class GlassProductItemView extends StatelessWidget {
                                   .svg(width: con.maxWidth * 0.2),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
+                              padding: const EdgeInsetsDirectional.only(top: 5.0,start: 3),
                               child: Transform.rotate(
                                 angle: context.isRTL? -1.1 : 1.1,
                                 child: SizedBox(
