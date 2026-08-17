@@ -324,14 +324,17 @@ abstract class AppRouter {
           // Opened either from the address list (extra is the AddressModel —
           // editing an existing address) or from the map (extra is a record
           // carrying the fromMap flag, so the "Change" action can pop back to
-          // the map still in the stack — creating a new address).
+          // the map still in the stack). Coming from the map covers both
+          // creating a new address and relocating an existing one, which is
+          // what isEdit distinguishes.
           final Object? extra = state.extra;
-          if (extra is ({AddressModel address, bool fromMap})) {
+          if (extra is ({AddressModel address, bool fromMap, bool isEdit})) {
             return _blockSystemBack(
               context,
               AddressDetailsScreen(
                 address: extra.address,
                 cameFromMap: extra.fromMap,
+                isEditScreen: extra.isEdit,
               ),
             );
           }

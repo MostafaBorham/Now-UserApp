@@ -93,10 +93,38 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
       // the details screen pops back to it instead of building a fresh map. On
       // a successful save the details screen pops this map itself, returning to
       // the address list.
-      (AddressModel address) => context.pushNamed<void>(
+      (AddressModel resolved) => context.pushNamed<void>(
         AppRoutes.addressDetailsScreen,
-        extra: (address: address, fromMap: true),
+        extra: (
+          address: _merge(resolved),
+          fromMap: true,
+          isEdit: widget.address != null,
+        ),
       ),
+    );
+  }
+
+  /// The address to hand to the details screen: the freshly geocoded one when
+  /// adding, or the address being changed carrying the new location when the
+  /// map was opened from its "Change" action.
+  ///
+  /// Built on top of [resolved] rather than the other way round so every
+  /// location field is the new one — the geocoder leaves fields it cannot fill
+  /// null, and `copyWith` would keep the stale value for those.
+  AddressModel _merge(AddressModel resolved) {
+    final AddressModel? editing = widget.address;
+    if (editing == null) return resolved;
+
+    return resolved.copyWith(
+      id: editing.id,
+      userId: editing.userId,
+      label: editing.label,
+      phone: editing.phone,
+      buildingNumber: editing.buildingNumber,
+      floor: editing.floor,
+      apartment: editing.apartment,
+      notes: editing.notes,
+      isDefault: editing.isDefault,
     );
   }
 
