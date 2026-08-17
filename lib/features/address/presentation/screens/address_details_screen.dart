@@ -46,16 +46,18 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
 class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   late final TextEditingController _phoneController;
   late final TextEditingController _floorNumberController;
+  late final TextEditingController _apartmentController;
   late final TextEditingController _buildingNameController;
   late final TextEditingController _instructionsController;
 
   /// Placeholders for the first two fields, per selected label. A work address
-  /// asks for a company name, an "other" one for a room/house — the values they
-  /// collect stay the same, only the wording changes.
+  /// asks for a company name and a floor number where home and "other" ask for
+  /// a floor/villa and an apartment — the values they collect stay the same,
+  /// only the wording changes. Home and "other" read identically.
   static const List<List<String>> _fieldHints = <List<String>>[
-    <String>[LangKeys.floor, LangKeys.building],
-    <String>[LangKeys.floorWork, LangKeys.buildingWork],
-    <String>[LangKeys.floorOther, LangKeys.building],
+    <String>[LangKeys.floor, LangKeys.apartment],
+    <String>[LangKeys.floorWork, LangKeys.floorNumberOptional],
+    <String>[LangKeys.floor, LangKeys.apartment],
   ];
 
   int _selectedLabelIndex = 0;
@@ -76,6 +78,9 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     );
     _floorNumberController = TextEditingController(
       text: widget.isEditScreen ? widget.address.buildingNumber : null,
+    );
+    _apartmentController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.apartment : null,
     );
     _buildingNameController = TextEditingController(
       text: widget.isEditScreen ? widget.address.floor : null,
@@ -120,6 +125,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   void dispose() {
     _phoneController.dispose();
     _floorNumberController.dispose();
+    _apartmentController.dispose();
     _buildingNameController.dispose();
     _instructionsController.dispose();
     super.dispose();
@@ -134,6 +140,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     final AddressModel address = widget.address.copyWith(
       phone: _phoneController.text.trim(),
       buildingNumber: _floorNumberController.text.trim(),
+      apartment: _apartmentController.text.trim(),
       floor: _buildingNameController.text.trim(),
       notes: _instructionsController.text.trim(),
       label: AddressModel.labelOptions[_selectedLabelIndex],
@@ -230,6 +237,10 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
               ),
               AddressField(
                 hintText: hints[1].tr(),
+                controller: _apartmentController,
+              ),
+              AddressField(
+                hintText: LangKeys.building.tr(),
                 controller: _buildingNameController,
               ),
               AddressField(
