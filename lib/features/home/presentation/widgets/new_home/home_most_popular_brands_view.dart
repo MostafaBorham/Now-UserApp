@@ -36,7 +36,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  HomeViewAllWidget(size: con.maxWidth * 0.035,startBackgroundColor: colors.onSecondaryContainer.withValues(alpha: 0.4),),
+                  HomeViewAllWidget(size: con.maxWidth * 0.035,startBackgroundColor: colors.amber500.withValues(alpha: 0.4),),
                 ],
               ),
               SizedBox(

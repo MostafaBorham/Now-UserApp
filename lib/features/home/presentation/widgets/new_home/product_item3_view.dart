@@ -82,7 +82,7 @@ class ProductItem3View extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             AppRateWidget(
-                              starColor: colors.onSecondaryContainer,
+                              starColor: colors.amber500,
                               rateRatio: '4.5',
                               rateColor: colors.black,
                               size: con.maxWidth*0.1,

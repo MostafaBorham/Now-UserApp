@@ -56,7 +56,7 @@ class NotificationsScreen extends StatelessWidget {
                           width: 20,
                           height: 20,
                           colorFilter: ColorFilter.mode(
-                            colors.onSecondaryContainer,
+                            colors.amber500,
                             BlendMode.srcIn,
                           ),
                         ),

@@ -4,8 +4,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_store_item_view.dart';
 
 class HomeAllStoresSectionView extends StatelessWidget {
   const HomeAllStoresSectionView({super.key});
@@ -13,52 +13,55 @@ class HomeAllStoresSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Column(
-      spacing: 16,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'جميع المتاجر',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: colors.black,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        spacing: 16,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'جميع المتاجر',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: colors.black,
+                ),
               ),
-            ),
-            Text(
-              'عرض الكل',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: colors.black,
+              Text(
+                'عرض الكل',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: colors.black,
+                ),
               ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: CustomButtonTabBar(
-            filterWidget: AppFilterIcon(),
-            tabs: [
-              LangKeys.allKey.tr(),
-              ...['الأجهزة', 'الأحذية', 'الملابس'],
             ],
-            views: [
-              HomeStoresListView(),
-              HomeStoresListView(),
-              HomeStoresListView(),
-              HomeStoresListView(),
-            ],
-            selectedTabColor: colors.primary500Main,
-            unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
-        ),
-      ],
+          Expanded(
+            child: CustomButtonTabBar(
+              filterWidget: AppFilterIcon(),
+              tabs: [
+                LangKeys.allKey.tr(),
+                ...['الأجهزة', 'الأحذية', 'الملابس'],
+              ],
+              views: [
+                HomeStoresListView(),
+                HomeStoresListView(),
+                HomeStoresListView(),
+                HomeStoresListView(),
+              ],
+              selectedTabColor: colors.primary500Main,
+              unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -69,8 +72,9 @@ class HomeStoresListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      itemBuilder: (context, index) =>
-      const AspectRatio(aspectRatio: 2, child: StoreItem()),
+      addRepaintBoundaries: true,
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) => const HomeStoreItemView(),
       separatorBuilder: (context, index) => 15.hSpace,
       itemCount: 5,
     );

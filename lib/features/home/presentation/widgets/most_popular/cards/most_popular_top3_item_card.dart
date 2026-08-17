@@ -147,7 +147,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                           Assets.media.images.svg.starRate.svg(
                             width: con.maxWidth*0.07,
                             colorFilter: ColorFilter.mode(
-                              colors.onSecondaryContainer,
+                              colors.amber500,
                               BlendMode.srcIn,
                             ),
                           ),

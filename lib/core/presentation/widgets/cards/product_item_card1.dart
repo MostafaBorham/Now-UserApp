@@ -79,7 +79,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                   ),
                                 ),
                                 AppRateWidget(
-                                  starColor: colors.onSecondaryContainer,
+                                  starColor: colors.amber500,
                                   rateRatio: '4.2',
                                   rateColor: colors.neutral500,
                                   size: con.maxWidth * 0.08,

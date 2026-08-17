@@ -63,7 +63,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                         padding: EdgeInsets.all(5),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: colors.onSecondaryContainer,
+                          color: colors.amber500,
                           shape: BoxShape.circle,
                         ),
                         child: Text(
@@ -94,7 +94,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                           textDirection: TextDirection.ltr,
                           '-22%',
                           style: AppTextStyles.style10Medium.copyWith(
-                            color: colors.onSecondaryContainer,
+                            color: colors.amber500,
                             fontSize: con.maxWidth * 0.06,
                           ),
                         ),
@@ -151,7 +151,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                           Assets.media.images.svg.starRate.svg(
                             width: con.maxWidth * 0.07,
                             colorFilter: ColorFilter.mode(
-                              colors.onSecondaryContainer,
+                              colors.amber500,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -173,7 +173,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               NewPriceWidget(
-                                color: colors.onSecondaryContainer,
+                                color: colors.amber500,
                                 price: '10',
                                 size: con.maxWidth * 0.15,
                               ),
@@ -188,7 +188,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                             child: Container(
                               padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: colors.onSecondaryContainer,
+                                color: colors.amber500,
                                 borderRadius: BorderRadiusGeometry.circular(
                                   con.maxWidth * 0.09,
                                 ),

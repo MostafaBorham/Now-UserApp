@@ -120,7 +120,7 @@ class GlassProductItemView extends StatelessWidget {
                                 ),
                               ),
                               AppRateWidget(
-                                starColor: colors.onSecondaryContainer,
+                                starColor: colors.amber500,
                                 rateRatio: '4.9',
                                 rateColor: colors.black,
                                 rateCount: '45',

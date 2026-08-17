@@ -75,7 +75,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                         5,
                         (index) => Assets.media.images.svg.starIcon.svg(
                           colorFilter: ColorFilter.mode(
-                            colors.onSecondaryContainer,
+                            colors.amber500,
                             BlendMode.srcIn,
                           ),
                           width: 12,

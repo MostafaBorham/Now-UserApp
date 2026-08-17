@@ -19,7 +19,7 @@ class AppColorScheme {
   Color get secondary600 => _scheme.secondary;
   Color get black => _scheme.onSecondary;
   Color get secondaryContainer => _scheme.secondaryContainer;
-  Color get onSecondaryContainer => _scheme.onSecondaryContainer;
+  Color get amber500 => _scheme.onSecondaryContainer;
   Color get secondaryFixed => _scheme.secondaryFixed;
   Color get secondaryFixedDim => _scheme.secondaryFixedDim;
   Color get onSecondaryFixed => _scheme.onSecondaryFixed;
