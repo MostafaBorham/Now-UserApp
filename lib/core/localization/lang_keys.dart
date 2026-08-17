@@ -110,6 +110,13 @@ abstract class LangKeys {
   static const String topNearbyStoresKey = 'topNearbyStores';
   static const String dontMissTheseOffersKey = 'dontMissTheseOffers';
   static const String offersYouCannotWaitForKey = 'offersYouCannotWaitFor';
+  static const String homeGreetingKey = 'homeGreeting';
+  static const String bestNearbyStoresKey = 'bestNearbyStores';
+  static const String specialOffersKey = 'specialOffers';
+  static const String allStoresKey = 'allStores';
+  static const String appliancesKey = 'appliances';
+  static const String shoesKey = 'shoes';
+  static const String perfumeTaglineKey = 'perfumeTagline';
 
   // Onboarding
   static const String thatSuitKey = 'thatSuit';

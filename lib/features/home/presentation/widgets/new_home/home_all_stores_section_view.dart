@@ -35,7 +35,7 @@ class HomeAllStoresSectionView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'جميع المتاجر',
+                    LangKeys.allStoresKey.tr(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -45,7 +45,7 @@ class HomeAllStoresSectionView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'عرض الكل',
+                    LangKeys.seeAllKey.tr(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -62,7 +62,9 @@ class HomeAllStoresSectionView extends StatelessWidget {
                   filterWidget: AppFilterIcon(),
                   tabs: [
                     LangKeys.allKey.tr(),
-                    ...['الأجهزة', 'الأحذية', 'الملابس'],
+                    LangKeys.appliancesKey.tr(),
+                    LangKeys.shoesKey.tr(),
+                    LangKeys.clothesKey.tr(),
                   ],
                   views: [
                     HomeStoresListView(),

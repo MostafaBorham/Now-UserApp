@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -38,7 +40,7 @@ class HomeOffersSectionView extends StatelessWidget {
                       spacing: 12,
                       children: [
                         Text(
-                          'عروض مميزة',
+                          LangKeys.specialOffersKey.tr(),
                           style: TextStyle(
                             fontSize: con.maxWidth * 0.05,
                             color: colors.black,

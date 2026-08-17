@@ -127,6 +127,11 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get defaultCategoryPng =>
       const AssetGenImage('assets/media/images/png/default-category-png.png');
 
+  /// File path: assets/media/images/png/english-offers-cannot-miss-logo.png
+  AssetGenImage get englishOffersCannotMissLogo => const AssetGenImage(
+    'assets/media/images/png/english-offers-cannot-miss-logo.png',
+  );
+
   /// File path: assets/media/images/png/home-never-miss-offers-background.png
   AssetGenImage get homeNeverMissOffersBackground => const AssetGenImage(
     'assets/media/images/png/home-never-miss-offers-background.png',
@@ -196,6 +201,7 @@ class $AssetsMediaImagesPngGen {
     bottomNavBarBackground,
     decrementIcon,
     defaultCategoryPng,
+    englishOffersCannotMissLogo,
     homeNeverMissOffersBackground,
     homeNeverMissOffersLogo,
     increamentIcon,
@@ -380,6 +386,15 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/empty-cart-img.svg
   SvgGenImage get emptyCartImg =>
       const SvgGenImage('assets/media/images/svg/empty-cart-img.svg');
+
+  /// File path: assets/media/images/svg/english-animated-quick-delivery.svg
+  SvgGenImage get englishAnimatedQuickDelivery => const SvgGenImage(
+    'assets/media/images/svg/english-animated-quick-delivery.svg',
+  );
+
+  /// File path: assets/media/images/svg/english-animated-see-all.svg
+  SvgGenImage get englishAnimatedSeeAll =>
+      const SvgGenImage('assets/media/images/svg/english-animated-see-all.svg');
 
   /// File path: assets/media/images/svg/faq.svg
   SvgGenImage get faq => const SvgGenImage('assets/media/images/svg/faq.svg');
@@ -791,6 +806,8 @@ class $AssetsMediaImagesSvgGen {
     edit,
     emptyAddToCart,
     emptyCartImg,
+    englishAnimatedQuickDelivery,
+    englishAnimatedSeeAll,
     faq,
     favouriteIcon,
     filledAccountIcon,

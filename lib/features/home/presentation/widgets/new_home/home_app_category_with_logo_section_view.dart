@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/arabic_kashida_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -67,7 +69,10 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                formatArabicKashida('عطور',count: 20),
+                                formatArabicKashida(
+                                  context.getLocalizedApiText(categoryModel.name),
+                                  count: 20,
+                                ),
                                 style: TextStyle(
                                   fontSize: con.maxWidth*0.04,
                                   fontWeight: FontWeight.bold,
@@ -77,7 +82,10 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsetsDirectional.only(start: 12.0),
                                 child: Text(
-                                  formatArabicKashida('تسبقك',count: 20),
+                                  formatArabicKashida(
+                                    LangKeys.perfumeTaglineKey.tr(),
+                                    count: 20,
+                                  ),
                                   style: TextStyle(
                                     fontSize: con.maxWidth*0.04,
                                     fontWeight: FontWeight.bold,

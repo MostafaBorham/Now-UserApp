@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 import 'home_view_all_widget.dart';
@@ -29,7 +31,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'أفضل العلامات التجارية',
+                    LangKeys.topBrandsKey.tr(),
                     style: TextStyle(
                       fontSize: con.maxWidth * 0.05,
                       color: colors.black,

@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -47,7 +49,7 @@ class HomeHeaderView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'يا هلا وحياك الله .. نورتنا!',
+                                    LangKeys.homeGreetingKey.tr(),
                                     style: TextStyle(
                                       color: colors.black,
                                       fontWeight: FontWeight.bold,

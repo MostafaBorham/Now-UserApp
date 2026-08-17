@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class HomeViewAllWidget extends StatelessWidget {
@@ -36,7 +38,7 @@ class HomeViewAllWidget extends StatelessWidget {
           ),
         ),
         Text(
-          'عرض الكل',
+          LangKeys.seeAllKey.tr(),
           style: TextStyle(
             fontSize: size,
             color: textColor?? colors.black,

@@ -22,7 +22,7 @@ class BestNearbyStoresSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12,
         children: [
-          AutoSizeText('أفضل المتاجر القريبة',style: AppTextStyles.style20SemiBold.copyWith(
+          AutoSizeText(LangKeys.bestNearbyStoresKey.tr(),style: AppTextStyles.style20SemiBold.copyWith(
               color: colors.neutral1200
           ),),
           Expanded(
