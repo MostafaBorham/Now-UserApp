@@ -28,9 +28,13 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 import 'package:nowdelivery_user_app/features/address/viewmodel/resolve_map_address_vm.dart';
 
 class AddNewAddressFromMap extends ConsumerStatefulWidget {
-  const AddNewAddressFromMap({super.key, this.currentLocation});
+  const AddNewAddressFromMap({super.key, this.address});
 
-  final LatLng? currentLocation;
+  /// The address whose location is being changed, when the map was opened from
+  /// the details screen's "Change" action. Null when adding a new address —
+  /// which is what switches this screen between its two titles and its pin
+  /// between the stored location and the device's.
+  final AddressModel? address;
 
   @override
   ConsumerState<AddNewAddressFromMap> createState() =>
@@ -43,7 +47,13 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.currentLocation;
+    // Start on the address being changed, so the map opens on the pin the user
+    // came to move rather than resolving the device location again.
+    final double? lat = double.tryParse(widget.address?.latitude ?? '');
+    final double? lng = double.tryParse(widget.address?.longitude ?? '');
+    if (lat != null && lng != null) {
+      _selectedLocation = LatLng(lat, lng);
+    }
   }
 
   // Opens the address search and waits for the address the user picks there.
@@ -96,10 +106,16 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
     final bool isResolvingAddress = ref
         .watch(resolveMapAddressProvider)
         .isLoading;
+    final bool isChangingAddress = widget.address != null;
+    final String confirmLabel = isChangingAddress
+        ? LangKeys.changeAddress.tr()
+        : LangKeys.enterAddressKey.tr();
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          LangKeys.addNewAddress.tr(),
+          isChangingAddress
+              ? LangKeys.changeAddress.tr()
+              : LangKeys.addNewAddress.tr(),
           style: AppTextStyles.style24SemiBold.copyWith(
             color: colors.black,
           ),
@@ -136,13 +152,11 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
               aspectRatio: 7,
               child: _selectedLocation != null
                   ? PrimaryAppButton(
-                      title: LangKeys.enterAddressKey.tr(),
+                      title: confirmLabel,
                       isLoading: isResolvingAddress,
                       onTap: _onEnterAddressTapped,
                     )
-                  : PrimaryAppDisabledButton(
-                      title: LangKeys.enterAddressKey.tr(),
-                    ),
+                  : PrimaryAppDisabledButton(title: confirmLabel),
             ),
           ),
         ],

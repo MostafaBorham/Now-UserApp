@@ -209,6 +209,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   } else {
                     context.pushReplacementNamed(
                       AppRoutes.addNewAddressFromMapScreen,
+                      extra: widget.address,
                     );
                   }
                 },

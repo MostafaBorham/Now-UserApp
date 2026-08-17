@@ -349,10 +349,11 @@ abstract class AppRouter {
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) {
-          final currentLocation = state.extra as LatLng?;
+          // Non-null only when changing an existing address's location.
+          final address = state.extra as AddressModel?;
           return _blockSystemBack(
             context,
-            AddNewAddressFromMap(currentLocation: currentLocation),
+            AddNewAddressFromMap(address: address),
           );
         },
       ),
