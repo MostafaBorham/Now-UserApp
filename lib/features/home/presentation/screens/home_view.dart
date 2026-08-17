@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -23,6 +24,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_s
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_all_stores_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_with_logo_section_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/home/top_brands_section.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/white_app_logo.dart';
@@ -48,7 +50,11 @@ class HomeView extends StatelessWidget {
           HomeMostPopularBrandsView(),
           HomeTopCategoriesView(),
           AspectRatio(aspectRatio: 1.47, child: BestNearbyStoresSection()),
-          AspectRatio(aspectRatio: .7, child: HomeNeverMissOffersSection()),
+          AspectRatio(aspectRatio: 1, child: HomeNeverMissOffersSection()),
+          2.hSpace,
+          AspectRatio(
+              aspectRatio: 3.5,
+              child: HomeBannerView()),
           HomeAppCategorySectionView(
             categoryModel: const CategoryModel(
               name: {'en': 'Electronics', 'ar': 'الإلكترونيات'},
@@ -99,8 +105,11 @@ class HomeView extends StatelessWidget {
               ProductModel(),
               ProductModel(),
             ],
-            showBanner: true,
           ),
+          2.hSpace,
+          AspectRatio(
+              aspectRatio: 3.5,
+              child: HomeBannerView()),
           AspectRatio(aspectRatio: 0.6, child: HomeAllStoresSectionView())
         ],
       ),

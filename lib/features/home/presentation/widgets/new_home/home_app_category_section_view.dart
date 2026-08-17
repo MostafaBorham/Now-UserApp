@@ -5,7 +5,6 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
@@ -15,12 +14,10 @@ class HomeAppCategorySectionView extends StatelessWidget {
     super.key,
     required this.categoryModel,
     required this.productModels,
-    this.showBanner = false,
   });
 
   final CategoryModel categoryModel;
   final List<ProductModel> productModels;
-  final bool showBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -94,32 +91,6 @@ class HomeAppCategorySectionView extends StatelessWidget {
                     itemCount: productModels.length,
                   ),
                 ),
-                if (showBanner)
-                  AspectRatio(
-                    aspectRatio: 3.5,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: colors.black.withValues(alpha: 0.25),
-                            offset: Offset.zero,
-                            blurRadius: 4,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: const AppCachedNetworkImage(
-                        imageUrl:
-                            'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
               ],
             ),
           ],

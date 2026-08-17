@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
 
 class HomeOffersSectionView extends StatelessWidget {
   const HomeOffersSectionView({super.key});
@@ -226,28 +227,7 @@ class _AnimatedOffersBannerState extends State<_AnimatedOffersBanner>
         position: _offset,
         child: AspectRatio(
           aspectRatio: 3,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.black.withValues(alpha: 0.25),
-                  offset: Offset.zero,
-                  blurRadius: 4,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: const AppCachedNetworkImage(
-              imageUrl:
-                  'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
+          child: HomeBannerView(),
         ),
       ),
     );
