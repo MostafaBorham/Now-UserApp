@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -148,8 +150,8 @@ class HomeStoreItemView extends StatelessWidget {
                       ),
                     ),
                     StoreInfoRow(
-                      deliveryTime: '40-50 دقيقة',
-                      distance: '40 - 50 كم',
+                      deliveryTime: '40-50 ${LangKeys.minutesKey.tr()}',
+                      distance: '40 - 50 ${LangKeys.kmKey.tr()}',
                       deliveryFee: '10',
                       infoIconSize: w * 0.045,
                       infoFontSize: w * 0.04,

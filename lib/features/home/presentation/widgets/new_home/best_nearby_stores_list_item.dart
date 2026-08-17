@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -127,7 +129,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                           AutoSizeText(
-                            '40-50 دقيقة',
+                            '40-50 ${LangKeys.minutesKey.tr()}',
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),
@@ -140,7 +142,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                           ),
                           AutoSizeText(
-                            '40-50 كم',
+                            '40-50 ${LangKeys.kmKey.tr()}',
                             style: AppTextStyles.style14Medium.copyWith(
                               color: colors.black,
                             ),

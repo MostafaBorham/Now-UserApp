@@ -118,6 +118,9 @@ abstract class LangKeys {
   static const String shoesKey = 'shoes';
   static const String devicesKey = 'devices';
   static const String perfumeTaglineKey = 'perfumeTagline';
+  static const String perfumesKey = 'perfumes';
+  static const String minutesKey = 'minutes';
+  static const String kmKey = 'km';
 
   // Onboarding
   static const String thatSuitKey = 'thatSuit';

@@ -70,7 +70,7 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                             children: [
                               Text(
                                 formatArabicKashida(
-                                  context.getLocalizedApiText(categoryModel.name),
+                                  LangKeys.perfumesKey.tr(),
                                   count: 20,
                                 ),
                                 style: TextStyle(

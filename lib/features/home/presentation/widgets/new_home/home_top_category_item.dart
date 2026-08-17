@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -76,8 +78,8 @@ class HomeTopCategoryItem extends StatelessWidget {
                                 child: StoreInfoRow(
                                   infoFontSize: con.maxWidth*0.04,
                                   infoIconSize: con.maxWidth*0.045,
-                                  deliveryTime: '40-50 دقيقة',
-                                  distance: '40-50 كم',
+                                  deliveryTime: '40-50 ${LangKeys.minutesKey.tr()}',
+                                  distance: '40-50 ${LangKeys.kmKey.tr()}',
                                   deliveryFee: '10',
                                   color: colors.white,
                                 ),
