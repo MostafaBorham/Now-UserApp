@@ -36,8 +36,8 @@ svg { overflow: visible; }
 #image_2 {
   transform-origin: 0 0;
   animation:
-    kf_image_2_transform_0 2s linear infinite,
-    kf_image_2_opacity_0 2s linear infinite;
+    kf_image_2_transform_0 2s linear forwards,
+    kf_image_2_opacity_0 2s linear forwards;
 }
 </style>
 <g id="Frame_2147228169">

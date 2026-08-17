@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -46,7 +47,9 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Spacer(),
-                        Assets.media.images.png.homeNeverMissOffersLogo.image(
+                        context.isRTL? Assets.media.images.png.homeNeverMissOffersLogo.image(
+                          width: con.maxWidth*0.35,
+                        ) : Assets.media.images.png.englishOffersCannotMissLogo.image(
                           width: con.maxWidth*0.35,
                         ),
                         Expanded(

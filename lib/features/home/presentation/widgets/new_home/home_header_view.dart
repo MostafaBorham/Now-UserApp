@@ -107,7 +107,7 @@ class HomeHeaderView extends StatelessWidget {
                       flex: 1,
                       child: RepaintBoundary(
                         child: AnimatedSvgPicture.asset(
-                          Assets.media.images.svg.viewAllArabic.path,
+                          context.isRTL? Assets.media.images.svg.viewAllArabic.path : Assets.media.images.svg.englishAnimatedSeeAll.path,
                           fit: BoxFit.contain,
                           playbackRate: 1,
                           autoPlay: true,
