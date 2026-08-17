@@ -28,9 +28,6 @@ class StoreItem extends StatefulWidget {
   final StoreModel? storeModel;
   final VoidCallback? onTap;
 
-  /// Forwarded to the heart button — fired with the new status after a
-  /// successful favourite toggle. Lets a list remove the card when it is
-  /// unfavourited (see the favourites screen).
   final ValueChanged<bool>? onFavouriteChanged;
   @override
   State<StoreItem> createState() => _StoreItemState();
