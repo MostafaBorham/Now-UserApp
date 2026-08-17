@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
@@ -28,12 +30,25 @@ class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
     super.dispose();
   }
 
-  /// Saves [edited]. Returns true on success (caller pops); on failure returns
+  /// Saves [edited]. When an [avatar] file is picked or [removeAvatar] is set,
+  /// the whole update goes through POST + multipart; otherwise text-only via
+  /// PUT + JSON. Returns true on success (caller pops); on failure returns
   /// false and leaves the error message in [state].
-  Future<bool> save(ProfileModel edited) async {
+  Future<bool> save(
+    ProfileModel edited, {
+    File? avatar,
+    bool removeAvatar = false,
+  }) async {
     state = const AsyncValue.loading();
 
-    final result = await _repo.updateProfile(edited.toUpdateJson());
+    final bool hasMedia = avatar != null || removeAvatar;
+    final result = hasMedia
+        ? await _repo.updateProfileWithMedia(
+            fields: _nonNull(edited.toUpdateJson()),
+            avatar: avatar,
+            removeAvatar: removeAvatar,
+          )
+        : await _repo.updateProfile(edited.toUpdateJson());
 
     if (!mounted) return false;
 
@@ -49,4 +64,11 @@ class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
       },
     );
   }
+
+  /// Multipart can't carry null (an empty string fails the email/gender/date
+  /// rules), so only send the fields the user actually filled.
+  Map<String, dynamic> _nonNull(Map<String, dynamic> source) => {
+    for (final MapEntry<String, dynamic> e in source.entries)
+      if (e.value != null) e.key: e.value,
+  };
 }

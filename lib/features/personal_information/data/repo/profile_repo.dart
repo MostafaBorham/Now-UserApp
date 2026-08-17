@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:nowdelivery_user_app/core/data/repo/base_repo.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -27,17 +29,36 @@ class ProfileRepo with BaseRepo {
     });
   }
 
-  /// Persists the edited [body] (from [ProfileModel.toUpdateJson]) and returns
-  /// the updated profile. The response mirrors the GET envelope; parse the
-  /// nested `user` when present, otherwise the `data` map itself.
+  /// Persists the edited [body] (from [ProfileModel.toUpdateJson]) — text only,
+  /// via PUT + JSON — and returns the updated profile.
   Future<Either<Failure, ProfileModel>> updateProfile(
     Map<String, dynamic> body,
   ) {
-    return guard(() => _api.updateProfile(body), (data) {
-      final dynamic user = data['user'];
-      return ProfileModel.fromJson(
-        user is Map<String, dynamic> ? user : data,
-      );
-    });
+    return guard(() => _api.updateProfile(body), _parseUser);
+  }
+
+  /// Persists text [fields] together with an avatar change (a new [avatar] file
+  /// or [removeAvatar]) via POST + multipart. [fields] must already exclude
+  /// nulls — multipart can't carry them.
+  Future<Either<Failure, ProfileModel>> updateProfileWithMedia({
+    required Map<String, dynamic> fields,
+    File? avatar,
+    bool removeAvatar = false,
+  }) {
+    return guard(
+      () => _api.updateProfileMultipart(
+        fields: fields,
+        avatar: avatar,
+        removeAvatar: removeAvatar,
+      ),
+      _parseUser,
+    );
+  }
+
+  /// The update response mirrors the GET envelope; parse the nested `user`
+  /// when present, otherwise the `data` map itself.
+  ProfileModel _parseUser(Map<String, dynamic> data) {
+    final dynamic user = data['user'];
+    return ProfileModel.fromJson(user is Map<String, dynamic> ? user : data);
   }
 }

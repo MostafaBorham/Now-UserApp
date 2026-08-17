@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
@@ -20,10 +23,9 @@ import '../widgets/profile_avatar.dart';
 /// Personal Information screen.
 ///
 /// Prefilled once from the already-loaded [getProfileProvider] data. Saving
-/// sends the editable fields to `PUT /api/v1/user/profile` via
-/// [updateProfileProvider]; on success it pops (the read screen refreshes
-/// itself). Phone is read-only (it is the OTP identity) and the avatar is a
-/// placeholder — avatar editing is deferred.
+/// sends the editable fields via [updateProfileProvider] (PUT + JSON, or POST +
+/// multipart when the avatar changed); on success it pops (the read screen
+/// refreshes itself). Phone is read-only (it is the OTP identity).
 class EditInformationScreen extends ConsumerStatefulWidget {
   const EditInformationScreen({super.key});
 
@@ -40,6 +42,10 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   String? _phone; // read-only display
   String? _gender; // 'male' | 'female' | original value if untouched
   DateTime? _dob;
+
+  String? _currentAvatarUrl; // existing remote avatar, shown until changed
+  File? _pickedAvatar; // newly picked file to upload
+  bool _removeAvatar = false; // user chose to clear the picture
 
   static const double _fieldGap = 18;
   static const List<String> _months = [
@@ -61,13 +67,15 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   void initState() {
     super.initState();
     // Prefill once from the profile the read screen already loaded.
-    final ProfileModel? p = ref.read(getProfileProvider).valueOrNull?.profile;
+    final data = ref.read(getProfileProvider).valueOrNull;
+    final ProfileModel? p = data?.profile;
     _fullName = TextEditingController(text: p?.fullName ?? '');
     _email = TextEditingController(text: p?.email ?? '');
     _nationality = TextEditingController(text: p?.nationality ?? '');
     _phone = p?.phone;
     _gender = p?.gender;
     _dob = p?.birthday == null ? null : DateTime.tryParse(p!.birthday!);
+    _currentAvatarUrl = data?.avatarUrl;
   }
 
   @override
@@ -96,6 +104,56 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     }
   }
 
+  Future<void> _onAvatarTap() async {
+    FocusScope.of(context).unfocus();
+    final bool hasAvatar = _pickedAvatar != null ||
+        (!_removeAvatar && (_currentAvatarUrl?.isNotEmpty ?? false));
+
+    final _AvatarAction? action = await showModalBottomSheet<_AvatarAction>(
+      context: context,
+      builder: (BuildContext sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('Choose from gallery'),
+              onTap: () => Navigator.pop(sheetContext, _AvatarAction.pick),
+            ),
+            if (hasAvatar)
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const Text('Remove photo'),
+                onTap: () => Navigator.pop(sheetContext, _AvatarAction.remove),
+              ),
+          ],
+        ),
+      ),
+    );
+
+    if (action == _AvatarAction.pick) {
+      await _pickAvatar();
+    } else if (action == _AvatarAction.remove) {
+      setState(() {
+        _pickedAvatar = null;
+        _removeAvatar = true;
+      });
+    }
+  }
+
+  Future<void> _pickAvatar() async {
+    final XFile? picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (picked != null) {
+      setState(() {
+        _pickedAvatar = File(picked.path);
+        _removeAvatar = false;
+      });
+    }
+  }
+
   String? _clean(String text) {
     final String trimmed = text.trim();
     return trimmed.isEmpty ? null : trimmed;
@@ -118,7 +176,11 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       nationality: _clean(_nationality.text),
     );
 
-    final bool ok = await ref.read(updateProfileProvider.notifier).save(edited);
+    final bool ok = await ref.read(updateProfileProvider.notifier).save(
+          edited,
+          avatar: _pickedAvatar,
+          removeAvatar: _removeAvatar,
+        );
     if (!mounted) return;
 
     if (ok) {
@@ -149,8 +211,16 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 24),
-                    const Center(
-                      child: ProfileAvatar(size: 112, showCameraOverlay: true),
+                    Center(
+                      child: ProfileAvatar(
+                        size: 112,
+                        showCameraOverlay: true,
+                        imageFile: _pickedAvatar,
+                        imageUrl: (_pickedAvatar == null && !_removeAvatar)
+                            ? _currentAvatarUrl
+                            : null,
+                        onCameraTap: _onAvatarTap,
+                      ),
                     ),
                     const SizedBox(height: 28),
                     EditField(
@@ -248,3 +318,6 @@ class _SaveBar extends StatelessWidget {
     );
   }
 }
+
+/// Result of the avatar action sheet.
+enum _AvatarAction { pick, remove }

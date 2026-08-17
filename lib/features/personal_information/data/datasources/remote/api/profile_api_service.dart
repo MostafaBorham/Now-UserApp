@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
@@ -26,6 +28,32 @@ class ProfileApiService {
     return _dio.put(
       ProfileEndpoints.profile,
       data: body,
+      cancelToken: _canceller.token,
+    );
+  }
+
+  /// Update with an avatar change. Multipart requires POST (PHP can't parse
+  /// multipart on PUT), so the whole update — text [fields] plus the [avatar]
+  /// file or [removeAvatar] flag — goes through the POST alias.
+  Future<Response> updateProfileMultipart({
+    required Map<String, dynamic> fields,
+    File? avatar,
+    bool removeAvatar = false,
+  }) {
+    final FormData form = FormData.fromMap({
+      ...fields,
+      if (removeAvatar) 'remove_avatar': '1',
+      if (avatar != null)
+        'avatar': MultipartFile.fromFileSync(
+          avatar.path,
+          filename: avatar.uri.pathSegments.last,
+        ),
+    });
+
+    return _dio.post(
+      ProfileEndpoints.profile,
+      data: form,
+      options: Options(contentType: Headers.multipartFormDataContentType),
       cancelToken: _canceller.token,
     );
   }
