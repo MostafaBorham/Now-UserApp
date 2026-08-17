@@ -18,12 +18,13 @@ class ProfileRepo with BaseRepo {
   /// Fetches the authenticated user's profile and wraps it in the screen state.
   /// Avatar is deferred, so `avatarUrl` is left null.
   Future<Either<Failure, PersonalInformationData>> getProfile() {
-    return guard(
-      _api.getProfile,
-      (data) => PersonalInformationData(
-        profile: ProfileModel.fromJson(data['user'] as Map<String, dynamic>?),
-      ),
-    );
+    return guard(_api.getProfile, (data) {
+      final Map<String, dynamic>? user = data['user'] as Map<String, dynamic>?;
+      return PersonalInformationData(
+        profile: ProfileModel.fromJson(user),
+        avatarUrl: user?['avatar_url']?.toString(),
+      );
+    });
   }
 
   /// Persists the edited [body] (from [ProfileModel.toUpdateJson]) and returns

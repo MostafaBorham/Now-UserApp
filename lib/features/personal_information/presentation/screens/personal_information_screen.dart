@@ -39,7 +39,8 @@ class PersonalInformationScreen extends ConsumerWidget {
             message: error.toString(),
             onRetry: () => ref.read(getProfileProvider.notifier).getProfile(),
           ),
-          data: (data) => _ProfileBody(profile: data.profile),
+          data: (data) =>
+              _ProfileBody(profile: data.profile, avatarUrl: data.avatarUrl),
         ),
       ),
     );
@@ -47,9 +48,10 @@ class PersonalInformationScreen extends ConsumerWidget {
 }
 
 class _ProfileBody extends StatelessWidget {
-  const _ProfileBody({required this.profile});
+  const _ProfileBody({required this.profile, this.avatarUrl});
 
   final ProfileModel profile;
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class _ProfileBody extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24),
-          const ProfileAvatar(size: 112),
+          ProfileAvatar(size: 112, imageUrl: avatarUrl),
           const SizedBox(height: 28),
           Material(
             color: context.colors.onTertiaryContainer,

@@ -57,6 +57,7 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.placeholderType = LoadingViewTypes.shimmer,
     this.circularProgressSize,
+    this.httpHeaders,
   });
 
   final String imageUrl;
@@ -66,12 +67,17 @@ class AppCachedNetworkImage extends StatelessWidget {
   final BoxFit fit;
   final LoadingViewTypes? placeholderType;
 
+  /// Headers forwarded to the image request — needed for auth-protected
+  /// images (e.g. the private-disk profile avatar, which requires the bearer).
+  final Map<String, String>? httpHeaders;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
+      httpHeaders: httpHeaders,
       fit: fit,
       imageBuilder: (context, imageProvider) => Center(
         child: SizedBox(

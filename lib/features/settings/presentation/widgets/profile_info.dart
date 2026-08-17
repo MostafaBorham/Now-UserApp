@@ -1,39 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/features/personal_information/presentation/widgets/profile_avatar.dart';
 
 /// Avatar + name, centered under the header.
 ///
-/// The avatar is rendered from the provided `person.svg` placeholder inside
-/// a clipped circle.
+/// The avatar shows the user's real picture when [avatarUrl] is provided
+/// (rendered by [ProfileAvatar], which attaches the bearer token), otherwise
+/// the placeholder.
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({
     super.key,
     this.name = 'Guest 123',
+    this.avatarUrl,
   });
 
   final String name;
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Assets.media.images.svg.personPng.image(),
-        Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(shape: BoxShape.circle),
-          child: AppCachedNetworkImage(
-            // width: 120,
-            // height: 120,
-            placeholderType: LoadingViewTypes.shimmer,
-            fit: BoxFit.cover,
-            width: 120,
-            height: 120,
-            imageUrl:
-                "https://cdn-icons-png.flaticon.com/512/17552/17552522.png",
-          ),
-        ),
+        ProfileAvatar(size: 120, imageUrl: avatarUrl),
         const SizedBox(height: 14),
         Text(
           name,

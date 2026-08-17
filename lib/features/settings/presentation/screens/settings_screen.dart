@@ -46,6 +46,10 @@ class SettingsScreen extends ConsumerWidget {
     final bool isUser =
         ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
         SessionType.user;
+    // Fetched once and shared with the Personal Information screen; only for
+    // logged-in users (guests have no /user/profile).
+    final profileData =
+        isUser ? ref.watch(getProfileProvider).valueOrNull : null;
 
     return Scaffold(
       backgroundColor: context.colors.white,
@@ -54,17 +58,12 @@ class SettingsScreen extends ConsumerWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // Logged-in users see their real name (fetched once, shared with
-              // the Personal Information screen); guests keep the default label
-              // and never hit /user/profile.
+              // Logged-in users see their real name + avatar; guests keep the
+              // default label and never hit /user/profile.
               isUser
                   ? ProfileInfo(
-                      name: ref
-                              .watch(getProfileProvider)
-                              .valueOrNull
-                              ?.profile
-                              .fullName ??
-                          '',
+                      name: profileData?.profile.fullName ?? '',
+                      avatarUrl: profileData?.avatarUrl,
                     )
                   : const ProfileInfo(),
               const SizedBox(height: 32),
