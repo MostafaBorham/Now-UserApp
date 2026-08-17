@@ -43,7 +43,7 @@ class HomeView extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
-        spacing: 16,
+        spacing: 24,
         children: [
           HomeHeaderView(),
           HomeOffersSectionView(),
@@ -106,7 +106,6 @@ class HomeView extends StatelessWidget {
               ProductModel(),
             ],
           ),
-          2.hSpace,
           AspectRatio(
               aspectRatio: 3.5,
               child: HomeBannerView()),

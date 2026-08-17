@@ -34,7 +34,7 @@ class _HomeAppCategoriesViewState extends State<HomeAppCategoriesView> {
   // Start far from 0 so the list can slide in both directions endlessly.
   static const int _initialPage = 10000;
   static const Duration _slideInterval = Duration(seconds: 3);
-  static const Duration _slideDuration = Duration(milliseconds: 650);
+  static const Duration _slideDuration = Duration(milliseconds: 900);
 
   late final PageController _controller;
   Timer? _autoSlideTimer;

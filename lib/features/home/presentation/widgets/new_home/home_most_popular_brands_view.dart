@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 import 'home_view_all_widget.dart';
@@ -74,8 +75,6 @@ class _BrandCard extends StatelessWidget {
     required this.height,
   });
 
-  // TODO: temporary placeholder values until brands are fetched from the API.
-  static const String _name = 'كنتاكى';
   static const String _logo =
       'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png';
 
@@ -108,7 +107,7 @@ class _BrandCard extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              _name,
+              context.isRTL? 'كنتاكى' : 'KFC',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
