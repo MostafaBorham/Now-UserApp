@@ -349,6 +349,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get courier =>
       const SvgGenImage('assets/media/images/svg/courier.svg');
 
+  /// File path: assets/media/images/svg/current-location-icon.svg
+  SvgGenImage get currentLocationIcon =>
+      const SvgGenImage('assets/media/images/svg/current-location-icon.svg');
+
   /// File path: assets/media/images/svg/date.svg
   SvgGenImage get date => const SvgGenImage('assets/media/images/svg/date.svg');
 
@@ -375,6 +379,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/discount.svg
   SvgGenImage get discount =>
       const SvgGenImage('assets/media/images/svg/discount.svg');
+
+  /// File path: assets/media/images/svg/edit-icon.svg
+  SvgGenImage get editIcon =>
+      const SvgGenImage('assets/media/images/svg/edit-icon.svg');
 
   /// File path: assets/media/images/svg/edit.svg
   SvgGenImage get edit => const SvgGenImage('assets/media/images/svg/edit.svg');
@@ -751,6 +759,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get whiteWaveBackground =>
       const SvgGenImage('assets/media/images/svg/white-wave-background.svg');
 
+  /// File path: assets/media/images/svg/work-address-icon.svg
+  SvgGenImage get workAddressIcon =>
+      const SvgGenImage('assets/media/images/svg/work-address-icon.svg');
+
   /// File path: assets/media/images/svg/work_selected.svg
   SvgGenImage get workSelected =>
       const SvgGenImage('assets/media/images/svg/work_selected.svg');
@@ -796,6 +808,7 @@ class $AssetsMediaImagesSvgGen {
     copyCouponCodeIcon,
     copy,
     courier,
+    currentLocationIcon,
     date,
     deleteIcon,
     delivered,
@@ -803,6 +816,7 @@ class $AssetsMediaImagesSvgGen {
     deliveryIcon,
     discountTicketIcon,
     discount,
+    editIcon,
     edit,
     emptyAddToCart,
     emptyCartImg,
@@ -898,6 +912,7 @@ class $AssetsMediaImagesSvgGen {
     wave,
     whiteAppLogo,
     whiteWaveBackground,
+    workAddressIcon,
     workSelected,
     workUnselected,
     zigzagArrowIcon,

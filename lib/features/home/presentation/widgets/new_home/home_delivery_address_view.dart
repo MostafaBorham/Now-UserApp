@@ -8,29 +8,31 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 
-class HomeDeliveryAddressView extends StatelessWidget {
-  const HomeDeliveryAddressView({
-    super.key,
-    this.onClose,
-    this.onCurrentLocation,
-    this.onAddNewAddress,
-    this.onConfirm,
-  });
+class HomeDeliveryAddressView extends StatefulWidget {
+  const HomeDeliveryAddressView({super.key});
 
-  final VoidCallback? onClose;
-  final VoidCallback? onCurrentLocation;
-  final VoidCallback? onAddNewAddress;
-  final VoidCallback? onConfirm;
+  @override
+  State<HomeDeliveryAddressView> createState() =>
+      _HomeDeliveryAddressViewState();
+}
+
+class _HomeDeliveryAddressViewState extends State<HomeDeliveryAddressView> {
+  // Single-selection: the currently active address in the list.
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Container(
-
       decoration: BoxDecoration(
         color: colors.white,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
       ),
       child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -64,8 +66,14 @@ class HomeDeliveryAddressView extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                    onTap: () => context.pop(),
-                    child: Icon(Icons.clear,color: colors.black,applyTextScaling: true,size: 20,))
+                  onTap: () => context.pop(),
+                  child: Icon(
+                    Icons.clear,
+                    color: colors.black,
+                    applyTextScaling: true,
+                    size: 20,
+                  ),
+                ),
               ],
             ),
             ClipRRect(
@@ -76,59 +84,7 @@ class HomeDeliveryAddressView extends StatelessWidget {
                   border: Border.all(color: colors.neutral200),
                   borderRadius: AppBorderRadius.brCircular12,
                 ),
-                child: Stack(
-                  children: [
-                    const Positioned.fill(
-                      child: AppMap(interactive: false),
-                    ),
-                    PositionedDirectional(
-                      bottom: 7,
-                      end: 3,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: onCurrentLocation,
-                        child: Container(
-                          padding: const EdgeInsetsDirectional.only(
-                            start: 8,
-                            end: 10,
-                            top: 8,
-                            bottom: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular30,
-                            boxShadow: [
-                              BoxShadow(
-                                color: colors.black.withValues(alpha: 0.08),
-                                blurRadius: 5,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 4,
-                            children: [
-                              Assets.media.images.svg.locationIcon.svg(
-                                width: 20,
-                                height: 20,
-                                colorFilter: ColorFilter.mode(
-                                  colors.tertiaryContainer,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              Text(
-                                LangKeys.currentLocationKey.tr(),
-                                style: AppTextStyles.style12SemiBold.copyWith(
-                                  color: colors.tertiaryContainer,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: const AppMap(),
               ),
             ),
             Column(
@@ -136,52 +92,72 @@ class HomeDeliveryAddressView extends StatelessWidget {
               spacing: 16,
               children: [
                 _AddressItem(
-                  icon: Assets.media.images.svg.workUnselected,
+                  icon: Assets.media.images.svg.workAddressIcon,
                   title: 'Al-Bahli Street, 2651',
                   subtitle: 'RDDA2651, Zahra Al-Oudah, Riyadh',
-                  highlighted: true,
+                  highlighted: _selectedIndex == 0,
+                  onTap: () => setState(() => _selectedIndex = 0),
+                  onEdit: () => context.pushNamed(
+                    AppRoutes.addressDetailsScreen,
+                    extra: const AddressModel(
+                      street: 'Al-Bahli Street, 2651',
+                      area: 'RDDA2651, Zahra Al-Oudah, Riyadh',
+                    ),
+                  ),
                 ),
                 _AddressItem(
                   icon: Assets.media.images.svg.homeUnselected,
                   title: 'Home',
                   subtitle: '7185 Wadi Al-Sharaf, Al-Qadisiyah',
-                  highlighted: false,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onAddNewAddress,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 26,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: AppBorderRadius.brCircular8,
-                      border: Border.all(color: colors.neutral200),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 10,
-                      children: [
-                        Assets.media.images.svg.addCircle.svg(
-                          width: 24,
-                          height: 24,
-                        ),
-                        Text(
-                          LangKeys.addNewAddress.tr(),
-                          style: AppTextStyles.style16Medium.copyWith(
-                            color: colors.primary500Main,
-                          ),
-                        ),
-                      ],
+                  highlighted: _selectedIndex == 1,
+                  onTap: () => setState(() => _selectedIndex = 1),
+                  onEdit: () => context.pushNamed(
+                    AppRoutes.addressDetailsScreen,
+                    extra: const AddressModel(
+                      street: 'Home',
+                      area: '7185 Wadi Al-Sharaf, Al-Qadisiyah',
                     ),
                   ),
                 ),
               ],
             ),
+            GestureDetector(
+              onTap: () =>
+                  context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 26,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: AppBorderRadius.brCircular8,
+                  border: Border.all(color: colors.neutral200),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 10,
+                  children: [
+                    Assets.media.images.svg.addCircle.svg(
+                      width: 24,
+                      height: 24,
+                      colorFilter: ColorFilter.mode(
+                        colors.primary500Main,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    Text(
+                      LangKeys.addNewAddress.tr(),
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: colors.primary500Main,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             PrimaryAppButton(
               title: LangKeys.confirmAddressKey.tr(),
-              onTap: onConfirm,
+              onTap: () => context.pop(),
             ),
           ],
         ),
@@ -196,70 +172,85 @@ class _AddressItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.highlighted,
+    required this.onTap,
+    required this.onEdit,
   });
 
   final SvgGenImage icon;
   final String title;
   final String subtitle;
   final bool highlighted;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Container(
-      height: 72,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: highlighted ? colors.scrim : colors.primaryFixed,
-        borderRadius: AppBorderRadius.brCircular12,
-        border: highlighted
-            ? Border.all(color: colors.surfaceContainerHigh)
-            : null,
-      ),
-      child: Row(
-        spacing: 12,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: highlighted
-                  ? colors.surfaceContainerHigh
-                  : colors.onPrimaryContainer,
-            ),
-            child: icon.svg(
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                colors.neutral1200,
-                BlendMode.srcIn,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        height: 72,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: highlighted ? colors.scrim : colors.primaryFixed,
+          borderRadius: AppBorderRadius.brCircular12,
+          border: highlighted
+              ? Border.all(color: colors.surfaceContainerHigh)
+              : null,
+        ),
+        child: Row(
+          spacing: 12,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: highlighted
+                    ? colors.surfaceContainerHigh
+                    : colors.onPrimaryContainer,
+              ),
+              child: icon.svg(
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  colors.neutral1200,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.neutral1200,
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    style: AppTextStyles.style16SemiBold.copyWith(
+                      color: colors.neutral1200,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  style: AppTextStyles.style14Regular.copyWith(
-                    color: colors.neutral500,
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.neutral500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Assets.media.images.svg.edit.svg(width: 20, height: 20),
-        ],
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onEdit,
+              child: Assets.media.images.svg.editIcon.svg(
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
