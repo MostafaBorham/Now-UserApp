@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// A single address entry from `GET /api/v1/addresses`.
 class AddressModel extends Equatable {
@@ -74,6 +76,27 @@ class AddressModel extends Equatable {
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
       deletedAt: json['deleted_at']?.toString(),
+    );
+  }
+
+  /// Builds a display/draft address from a reverse-geocoded [placemark] at
+  /// [location]. Composes the area from the placemark's locality parts and
+  /// carries the picked coordinates; the backend still owns `full_address`, so
+  /// it is left unset here.
+  factory AddressModel.fromPlacemark(Placemark placemark, LatLng location) {
+    final String area = <String?>[
+      placemark.subLocality,
+      placemark.locality,
+      placemark.administrativeArea,
+    ].whereType<String>().where((String e) => e.isNotEmpty).join(' - ');
+
+    return AddressModel(
+      country: placemark.country,
+      city: placemark.locality,
+      area: area.isEmpty ? placemark.name : area,
+      street: placemark.street,
+      latitude: location.latitude.toString(),
+      longitude: location.longitude.toString(),
     );
   }
 

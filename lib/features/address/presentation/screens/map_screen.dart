@@ -82,20 +82,7 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
       return;
     }
 
-    final String area = [
-      placemark.subLocality,
-      placemark.locality,
-      placemark.administrativeArea,
-    ].whereType<String>().where((e) => e.isNotEmpty).join(' - ');
-
-    final AddressModel address = AddressModel(
-      country: placemark.country,
-      city: placemark.locality,
-      area: area.isEmpty ? placemark.name : area,
-      street: placemark.street,
-      latitude: location.latitude.toString(),
-      longitude: location.longitude.toString(),
-    );
+    final AddressModel address = AddressModel.fromPlacemark(placemark, location);
 
     // Push (not replace) so this map stays underneath: the "Change" action on
     // the details screen pops back to it instead of building a fresh map. On a

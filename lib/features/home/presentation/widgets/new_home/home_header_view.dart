@@ -1,23 +1,95 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_search_field.dart';
 
-class HomeHeaderView extends StatelessWidget {
+class HomeHeaderView extends ConsumerStatefulWidget {
   const HomeHeaderView({super.key});
+
+  @override
+  ConsumerState<HomeHeaderView> createState() => _HomeHeaderViewState();
+}
+
+class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
+  // The delivery address shown in the header. Seeded once from the first saved
+  // address (see [_seedFromProvider]); afterwards it only ever changes when the
+  // delivery-address sheet returns a pick — later provider refreshes leave it
+  // untouched.
+  String? _displayedAddress;
+  bool _seeded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Seed from an already-loaded provider; the not-yet-loaded case is caught by
+    // the ref.listen in build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _seedFromProvider(ref.read(getMyAddressesProvider));
+    });
+  }
+
+  /// Fills the header once, the first time addresses are available: the first
+  /// address's name, or the localized "no address" text when the list is empty.
+  void _seedFromProvider(AsyncValue<PaginationModel<AddressModel>> state) {
+    if (_seeded || !state.hasValue || !mounted) return;
+    _seeded = true;
+    final List<AddressModel> addresses = state.valueOrNull?.data ?? const [];
+    setState(() {
+      _displayedAddress = addresses.isEmpty
+          ? LangKeys.noAddressKey.tr()
+          : _addressName(addresses.first);
+    });
+  }
+
+  /// Opens the delivery-address sheet and, when it returns a picked address,
+  /// updates the header to that address's name.
+  Future<void> _openDeliveryAddressSheet() async {
+    final AddressModel? picked = await showModalBottomSheet<AddressModel>(
+      context: context,
+      isDismissible: false,
+      builder: (_) => const HomeDeliveryAddressView(),
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _displayedAddress = _addressName(picked));
+  }
+
+  /// The display line for an address: its full address, then the localized
+  /// label, then a line composed from the location parts — the last covers a
+  /// map-picked address, which has neither a backend `full_address` nor a label.
+  String _addressName(AddressModel address) {
+    final String full = address.fullAddress ?? '';
+    if (full.isNotEmpty) return full;
+
+    final String label = context.getLocalizedApiText(address.label);
+    if (label.isNotEmpty) return label;
+
+    return <String?>[address.street, address.area, address.city]
+        .whereType<String>()
+        .where((String e) => e.isNotEmpty)
+        .join('، ');
+  }
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    // Seed as soon as the addresses arrive, without resetting on later changes.
+    ref.listen<AsyncValue<PaginationModel<AddressModel>>>(
+      getMyAddressesProvider,
+      (_, AsyncValue<PaginationModel<AddressModel>> next) =>
+          _seedFromProvider(next),
+    );
     return LayoutBuilder(
       builder: (context, con) {
         return Stack(
@@ -66,17 +138,21 @@ class HomeHeaderView extends StatelessWidget {
                                       children: [
                                         Assets.media.images.svg.homeLocationIcon
                                             .svg(width: con.maxWidth * 0.05),
-                                        Text(
-                                          '7468 العليا، الرياض',
-                                          textDirection: TextDirection.ltr,
-                                          style: TextStyle(
-                                            color: colors.black,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: con.maxWidth * 0.03,
+                                        Expanded(
+                                          child: Text(
+                                            _displayedAddress ?? '',
+                                            textDirection: TextDirection.ltr,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: colors.black,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: con.maxWidth * 0.03,
+                                            ),
                                           ),
                                         ),
                                         InkWell(
-                                          onTap: () => showModalBottomSheet(context: context, builder: (context) => HomeDeliveryAddressView(),isDismissible: false,),
+                                          onTap: _openDeliveryAddressSheet,
                                           child: RotatedBox(
                                             quarterTurns: 1,
                                             child: Assets

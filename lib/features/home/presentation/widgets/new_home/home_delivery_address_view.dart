@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
@@ -17,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
@@ -39,10 +41,13 @@ class _HomeDeliveryAddressViewState
   int? _selectedAddressId;
 
   // Set once the user picks a point on the map directly. While true the list has
-  // no highlighted item and the map shows [_mapPickedLocation] instead of a saved
-  // address's location.
+  // no highlighted item and the selection is [_mapPickedAddress] — an address
+  // reverse-geocoded from the picked point — instead of a saved address.
   bool _pickedOnMap = false;
-  LatLng? _mapPickedLocation;
+  AddressModel? _mapPickedAddress;
+
+  // True while a hand-picked point is being reverse-geocoded into an address.
+  bool _resolvingPick = false;
 
   @override
   void initState() {
@@ -103,11 +108,29 @@ class _HomeDeliveryAddressViewState
     });
   }
 
-  void _onMapLocationChanged(LatLng location) {
+  // A hand-picked point carries only coordinates, so resolve its textual address
+  // first (reverse geocoding), store the built address as the current selection,
+  // then let the map settle on it. The marker itself already moved to the tapped
+  // point inside [AppMap]; only the name resolves in the background here.
+  Future<void> _onMapLocationChanged(LatLng location) async {
+    setState(() => _resolvingPick = true);
+
+    final Placemark? placemark = await LocationManager.getAddressFromLocation(
+      location,
+    );
+
+    if (!mounted) return;
+
+    if (placemark == null) {
+      setState(() => _resolvingPick = false);
+      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
+      return;
+    }
+
     setState(() {
-      // A hand-picked point on the map no longer matches any saved address.
+      _resolvingPick = false;
       _pickedOnMap = true;
-      _mapPickedLocation = location;
+      _mapPickedAddress = AddressModel.fromPlacemark(placemark, location);
       _selectedAddressId = null;
     });
   }
@@ -126,7 +149,9 @@ class _HomeDeliveryAddressViewState
     final List<AddressModel> addresses =
         addressesState.valueOrNull?.data ?? const <AddressModel>[];
     AddressModel? selectedAddress;
-    if (!_pickedOnMap) {
+    if (_pickedOnMap) {
+      selectedAddress = _mapPickedAddress;
+    } else {
       for (final AddressModel address in addresses) {
         if (address.id == _selectedAddressId) {
           selectedAddress = address;
@@ -136,11 +161,12 @@ class _HomeDeliveryAddressViewState
       selectedAddress ??= addresses.isEmpty ? null : addresses.first;
     }
 
-    // The location driving the map marker/camera and the confirm button: the
-    // hand-picked point, otherwise the selected address's coordinates.
-    final LatLng? selectedLocation = _pickedOnMap
-        ? _mapPickedLocation
-        : (selectedAddress == null ? null : _locationOf(selectedAddress));
+    // The location driving the map marker/camera and the confirm button — the
+    // selected address's coordinates (a saved address or the reverse-geocoded
+    // map pick).
+    final LatLng? selectedLocation = selectedAddress == null
+        ? null
+        : _locationOf(selectedAddress);
 
     // Hold the map on its loading placeholder until the first selection is
     // known, so [AppMap] is built with the address location from the start and
@@ -210,9 +236,26 @@ class _HomeDeliveryAddressViewState
                 ),
                 child: showMapPlaceholder
                     ? const Center(child: CircularProgressIndicator())
-                    : AppMap(
-                        currentLocation: selectedLocation,
-                        onLocationChanged: _onMapLocationChanged,
+                    : Stack(
+                        children: [
+                          Positioned.fill(
+                            child: AppMap(
+                              currentLocation: selectedLocation,
+                              onLocationChanged: _onMapLocationChanged,
+                            ),
+                          ),
+                          // Dim the map with a spinner while a hand-picked point
+                          // is being reverse-geocoded into an address.
+                          if (_resolvingPick)
+                            Positioned.fill(
+                              child: ColoredBox(
+                                color: colors.black.withValues(alpha: 0.15),
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
               ),
             ),
@@ -258,13 +301,16 @@ class _HomeDeliveryAddressViewState
                 ),
               ),
             ),
-            selectedLocation == null
+            (selectedLocation == null || _resolvingPick)
                 ? PrimaryAppDisabledButton(
                     title: LangKeys.confirmAddressKey.tr(),
                   )
                 : PrimaryAppButton(
                     title: LangKeys.confirmAddressKey.tr(),
-                    onTap: () => context.pop(),
+                    // Close the sheet and hand the picked address back to the
+                    // header. A hand-picked map point has no saved address, so
+                    // nothing is returned in that case.
+                    onTap: () => context.pop(selectedAddress),
                   ),
           ],
         ),
