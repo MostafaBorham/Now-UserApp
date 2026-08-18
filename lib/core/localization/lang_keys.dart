@@ -310,6 +310,8 @@ abstract class LangKeys {
   static const String addNotesHintKey = 'addNotesHint';
   static const String applyKey = 'apply';
   static const String confirmOrderKey = 'confirmOrder';
+  static const String confirmAddressKey = 'confirmAddress';
+  static const String currentLocationKey = 'currentLocation';
   static const String deliveryAddressKey = 'deliveryAddress';
   static const String editKey = 'edit';
   static const String noAddressKey = 'noAddress';

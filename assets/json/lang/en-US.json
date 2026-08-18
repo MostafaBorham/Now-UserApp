@@ -278,6 +278,8 @@
   "addNotesHint": "Add notes.....",
   "apply": "Apply",
   "confirmOrder": "Confirm Order",
+  "confirmAddress": "Confirm Address",
+  "currentLocation": "Current Location",
   "deliveryAddress": "Delivery Address",
   "edit": "Edit",
   "noAddress": "No Address",

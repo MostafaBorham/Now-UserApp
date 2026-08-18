@@ -279,6 +279,8 @@
   "addNotesHint": "أضف ملاحظات.....",
   "apply": "تطبيق",
   "confirmOrder": "تأكيد الطلب",
+  "confirmAddress": "تأكيد العنوان",
+  "currentLocation": "الموقع الحالي",
   "deliveryAddress": "عنوان التسليم",
   "edit": "تعديل",
   "noAddress": "لا يوجد عنوان",

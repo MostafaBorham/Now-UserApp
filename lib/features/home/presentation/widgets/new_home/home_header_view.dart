@@ -4,10 +4,12 @@ import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_search_field.dart';
 
 class HomeHeaderView extends StatelessWidget {
@@ -73,14 +75,17 @@ class HomeHeaderView extends StatelessWidget {
                                             fontSize: con.maxWidth * 0.03,
                                           ),
                                         ),
-                                        RotatedBox(
-                                          quarterTurns: 1,
-                                          child: Assets
-                                              .media
-                                              .images
-                                              .svg
-                                              .arrowBrokenIcon
-                                              .svg(width: con.maxWidth * 0.04),
+                                        InkWell(
+                                          onTap: () => showModalBottomSheet(context: context, builder: (context) => HomeDeliveryAddressView(),isDismissible: false,),
+                                          child: RotatedBox(
+                                            quarterTurns: 1,
+                                            child: Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .arrowBrokenIcon
+                                                .svg(width: con.maxWidth * 0.04),
+                                          ),
                                         ),
                                       ],
                                     ),
