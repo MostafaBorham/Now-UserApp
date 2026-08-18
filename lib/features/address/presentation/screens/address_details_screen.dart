@@ -60,6 +60,11 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     <String>[LangKeys.floor, LangKeys.apartment],
   ];
 
+  /// Shown before the phone input and prepended to whatever is typed. Saudi
+  /// mobile numbers are the only ones this form collects, so the head of every
+  /// number is fixed and the field holds just the 8 digits that follow it.
+  static const String _phonePrefix = '05';
+
   int _selectedLabelIndex = 0;
 
   /// Drives the Save button between its disabled and active states. Only the
@@ -73,8 +78,14 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     // Prefill from the existing address when editing. The floor field maps to
     // building_number and the building field maps to floor — the same swap the
     // save payload applies, mirrored here so a round-trip stays consistent.
+    // The phone field holds only the digits after [_phonePrefix], so a stored
+    // number is reduced to that tail — whichever format it was saved in. One
+    // that isn't a Saudi mobile leaves the field empty rather than prefilling a
+    // value the form would reject, which used to freeze the Save button.
     _phoneController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.phone : null,
+      text: widget.isEditScreen
+          ? AppValidator.saudiLocalPhoneTail(widget.address.phone)
+          : null,
     );
     _floorNumberController = TextEditingController(
       text: widget.isEditScreen ? widget.address.buildingNumber : null,
@@ -113,10 +124,19 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   /// The Save button's condition: both required fields filled, and the phone
   /// either left empty or well-formed.
   bool _isRequiredFieldsFilled() {
-    final String phone = _phoneController.text.trim();
-    return (phone.isEmpty || AppValidator.isValidSaudiPhone(phone)) &&
+    return (_phoneController.text.isEmpty || _composedPhone() != null) &&
         _floorNumberController.text.trim().isNotEmpty &&
         _buildingNameController.text.trim().isNotEmpty;
+  }
+
+  /// The full number to submit, or null when the field is empty or holds
+  /// something that can't be a Saudi mobile. The Save button and the payload
+  /// both go through this, so what is validated is always what is sent.
+  String? _composedPhone() {
+    final String? tail = AppValidator.saudiLocalPhoneTail(
+      _phoneController.text,
+    );
+    return tail == null ? null : '$_phonePrefix$tail';
   }
 
   void _onRequiredFieldChanged() {
@@ -142,8 +162,11 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     //
     // The floor field maps to building_number and the building field maps to
     // floor by product intent — keep that swap here at the boundary.
+    // A null phone (field left empty) falls back to the stored one, which keeps
+    // an edit from sending a blank the backend rejects — `addresses.phone` is
+    // NOT NULL, so a phone can never be cleared from here.
     final AddressModel address = widget.address.copyWith(
-      phone: _phoneController.text.trim(),
+      phone: _composedPhone(),
       buildingNumber: _floorNumberController.text.trim(),
       apartment: _apartmentController.text.trim(),
       floor: _buildingNameController.text.trim(),
@@ -255,11 +278,15 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
               ),
               AddressField(
                 hintText: LangKeys.phoneNumberOptional.tr(),
+                prefixText: _phonePrefix,
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
-                  LengthLimitingTextInputFormatter(14),
+                  FilteringTextInputFormatter.digitsOnly,
+                  // Room for a number pasted or typed in full (12 digits for
+                  // `+966…`); it is reduced to the 8-digit tail on save rather
+                  // than being truncated to something valid but wrong.
+                  LengthLimitingTextInputFormatter(12),
                 ],
               ),
               !_isFormValid && !isSaving
@@ -268,7 +295,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   ? GestureDetector(
                       onTap: () => ErrorSnackBar.show(
                         context,
-                        LangKeys.completeAddressInfo,
+                        // Say which field is wrong: a half-typed phone blocks
+                        // Save too, and "complete the address info" points at
+                        // the wrong part of the form.
+                        _phoneController.text.isNotEmpty &&
+                                _composedPhone() == null
+                            ? LangKeys.enterValidMobileNumber
+                            : LangKeys.completeAddressInfo,
                       ),
                       child: PrimaryAppDisabledButton(
                         title: LangKeys.saveAddress.tr(),

@@ -14,6 +14,7 @@ class AddressField extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.inputFormatters,
+    this.prefixText,
   });
 
   final String hintText;
@@ -21,31 +22,60 @@ class AddressField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
 
+  /// A fixed, uneditable head of the value (the phone field's `05`), shown
+  /// before the input. The controller holds only what follows it, so callers
+  /// compose the full value themselves.
+  ///
+  /// This is a leading [Text] rather than `InputDecoration.prefixText` because
+  /// Flutter fades affixes out while the field is empty and unfocused — exactly
+  /// when the prefix needs to be visible.
+  final String? prefixText;
+
   @override
   Widget build(BuildContext context) {
+    final TextStyle valueStyle = AppTextStyles.style14Regular.copyWith(
+      color: context.colors.tertiaryContainer,
+    );
+
+    final Widget input = TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      style: valueStyle,
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none,
+        hintText: hintText,
+        hintStyle: AppTextStyles.style14Regular.copyWith(
+          color: context.colors.neutral500,
+        ),
+      ),
+    );
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: context.colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        inputFormatters: inputFormatters,
-        style: AppTextStyles.style14Regular.copyWith(
-          color: context.colors.tertiaryContainer,
-        ),
-        decoration: InputDecoration(
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
-          hintText: hintText,
-          hintStyle: AppTextStyles.style14Regular.copyWith(
-            color: context.colors.neutral500,
-          ),
-        ),
-      ),
+      child: prefixText == null
+          ? input
+          : Directionality(
+              // A phone number reads left-to-right in both locales, the way the
+              // app pins prices (see new_price_widget.dart) — otherwise Arabic
+              // puts the prefix on the wrong side of the digits.
+              textDirection: TextDirection.ltr,
+              child: Row(
+                children: [
+                  // Part of the value, so it takes the input colour rather than
+                  // the hint's.
+                  Text(prefixText!, style: valueStyle),
+                  const SizedBox(width: 4),
+                  Expanded(child: input),
+                ],
+              ),
+            ),
     );
   }
 }
