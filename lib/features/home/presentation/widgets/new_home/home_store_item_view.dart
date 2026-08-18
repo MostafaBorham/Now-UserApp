@@ -30,8 +30,9 @@ class HomeStoreItemView extends StatelessWidget {
             borderRadius: AppBorderRadius.brCircular16,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 10,
+                color: colors.black.withValues(alpha: 0.25),
+                offset: Offset(0, 0),
+                blurRadius: 2,
                 spreadRadius: 0,
               ),
             ],

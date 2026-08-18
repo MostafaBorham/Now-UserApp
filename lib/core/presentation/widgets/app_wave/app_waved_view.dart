@@ -39,7 +39,7 @@ class AppWavedView extends StatelessWidget {
     final Size screenSize = MediaQuery.sizeOf(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(top: 0),
+      padding: EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.topCenter,
@@ -59,7 +59,7 @@ class AppWavedView extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: Align(

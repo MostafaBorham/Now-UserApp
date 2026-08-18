@@ -4,7 +4,6 @@ import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/data/repo/base_repo.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -17,7 +16,7 @@ import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_m
 /// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
 /// error message (a [LangKeys] key or a raw server message — callers apply
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
-class FavouritesRepo with BaseRepo {
+class FavouritesRepo {
   final FavouritesApiService _favouritesApiService = FavouritesApiService();
 
   /// Cancels every in-flight request of this repo. The actual cancellation
@@ -33,7 +32,7 @@ class FavouritesRepo with BaseRepo {
     List<int>? categoryIds,
     String? sort,
   }) {
-    return guard(
+    return _guard(
       () => _favouritesApiService.getFavourites(
         type: 'product',
         page: page,
@@ -53,7 +52,7 @@ class FavouritesRepo with BaseRepo {
     List<int>? categoryIds,
     String? sort,
   }) {
-    return guard(
+    return _guard(
       () => _favouritesApiService.getFavourites(
         type: 'vendor',
         page: page,
@@ -69,7 +68,7 @@ class FavouritesRepo with BaseRepo {
   Future<Either<Failure, List<FavouriteCategoryModel>>> getFavouriteCategories({
     required String type,
   }) {
-    return guard(
+    return _guard(
       () => _favouritesApiService.getFavouriteCategories(type: type),
       (data) => (data['categories'] as List<dynamic>? ?? <dynamic>[])
           .whereType<Map<String, dynamic>>()
@@ -98,6 +97,36 @@ class FavouritesRepo with BaseRepo {
         .toList();
 
     return PaginationModel<T>.fromJson(pagination, items);
+  }
+
+  /// Shared request envelope: connection check, non-200 handling, and
+  /// Dio/exception mapping, so each method only describes its own [parse].
+  Future<Either<Failure, T>> _guard<T>(
+    Future<Response> Function() request,
+    T Function(Map<String, dynamic> data) parse,
+  ) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await request();
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return Right(parse(body['data'] as Map<String, dynamic>));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+    }
   }
 
   Future<Either<Failure, FavouriteModel>> addProductToFavourites({
