@@ -53,21 +53,17 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
     });
   }
 
-  /// Opens the delivery-address sheet and, when it returns a picked address,
-  /// updates the header to that address's name.
   Future<void> _openDeliveryAddressSheet() async {
     final AddressModel? picked = await showModalBottomSheet<AddressModel>(
       context: context,
       isDismissible: false,
+      isScrollControlled: true,
       builder: (_) => const HomeDeliveryAddressView(),
     );
     if (picked == null || !mounted) return;
     setState(() => _displayedAddress = _addressName(picked));
   }
 
-  /// The display line for an address: its full address, then the localized
-  /// label, then a line composed from the location parts — the last covers a
-  /// map-picked address, which has neither a backend `full_address` nor a label.
   String _addressName(AddressModel address) {
     final String full = address.fullAddress ?? '';
     if (full.isNotEmpty) return full;

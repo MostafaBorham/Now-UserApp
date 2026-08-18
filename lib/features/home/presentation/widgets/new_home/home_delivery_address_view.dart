@@ -182,137 +182,149 @@ class _HomeDeliveryAddressViewState
           topRight: Radius.circular(20),
         ),
       ),
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(
-          20,
-          20,
-          20,
-          20 + MediaQuery.viewPaddingOf(context).bottom,
+      // The sheet grows with its content up to 85% of the screen; past that the
+      // address list scrolls internally while everything else stays pinned.
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.85,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 20,
-          children: [
-            Center(
-              child: Container(
-                width: 42,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colors.neutral300,
-                  borderRadius: AppBorderRadius.brCircular30,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            20 + MediaQuery.viewPaddingOf(context).bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 20,
+            children: [
+              Center(
+                child: Container(
+                  width: 42,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colors.neutral300,
+                    borderRadius: AppBorderRadius.brCircular30,
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LangKeys.deliveryAddressKey.tr(),
-                  style: AppTextStyles.style20SemiBold.copyWith(
-                    color: colors.tertiaryContainer,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    LangKeys.deliveryAddressKey.tr(),
+                    style: AppTextStyles.style20SemiBold.copyWith(
+                      color: colors.tertiaryContainer,
+                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () => context.pop(),
-                  child: Icon(
-                    Icons.clear,
-                    color: colors.black,
-                    applyTextScaling: true,
-                    size: 20,
+                  InkWell(
+                    onTap: () => context.pop(),
+                    child: Icon(
+                      Icons.clear,
+                      color: colors.black,
+                      applyTextScaling: true,
+                      size: 20,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            ClipRRect(
-              borderRadius: AppBorderRadius.brCircular12,
-              child: Container(
-                height: 160,
-                decoration: BoxDecoration(
-                  border: Border.all(color: colors.neutral200),
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: showMapPlaceholder
-                    ? const Center(child: CircularProgressIndicator())
-                    : Stack(
-                        children: [
-                          Positioned.fill(
-                            child: AppMap(
-                              currentLocation: selectedLocation,
-                              onLocationChanged: _onMapLocationChanged,
-                            ),
-                          ),
-                          // Dim the map with a spinner while a hand-picked point
-                          // is being reverse-geocoded into an address.
-                          if (_resolvingPick)
+                ],
+              ),
+              ClipRRect(
+                borderRadius: AppBorderRadius.brCircular12,
+                child: Container(
+                  height: 160,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: colors.neutral200),
+                    borderRadius: AppBorderRadius.brCircular12,
+                  ),
+                  child: showMapPlaceholder
+                      ? const Center(child: CircularProgressIndicator())
+                      : Stack(
+                          children: [
                             Positioned.fill(
-                              child: ColoredBox(
-                                color: colors.black.withValues(alpha: 0.15),
-                                child: const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
+                              child: AppMap(
+                                currentLocation: selectedLocation,
+                                onLocationChanged: _onMapLocationChanged,
                               ),
                             ),
-                        ],
-                      ),
-              ),
-            ),
-            _AddressList(
-              state: addressesState,
-              loadMoreState: _viewModel.loadMoreState,
-              selectedAddressId: selectedAddress?.id,
-              onSelect: _onAddressSelected,
-            ),
-            GestureDetector(
-              onTap: () => context.pushNamed(
-                AppRoutes.addNewAddressFromMapScreen,
-                extra: selectedLocation,
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 26,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: AppBorderRadius.brCircular8,
-                  border: Border.all(color: colors.neutral200),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 10,
-                  children: [
-                    Assets.media.images.svg.addCircle.svg(
-                      width: 24,
-                      height: 24,
-                      colorFilter: ColorFilter.mode(
-                        colors.primary500Main,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    Text(
-                      LangKeys.addNewAddress.tr(),
-                      style: AppTextStyles.style16Medium.copyWith(
-                        color: colors.primary500Main,
-                      ),
-                    ),
-                  ],
+                            // Dim the map with a spinner while a hand-picked point
+                            // is being reverse-geocoded into an address.
+                            if (_resolvingPick)
+                              Positioned.fill(
+                                child: ColoredBox(
+                                  color: colors.black.withValues(alpha: 0.15),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                 ),
               ),
-            ),
-            (selectedLocation == null || _resolvingPick)
-                ? PrimaryAppDisabledButton(
-                    title: LangKeys.confirmAddressKey.tr(),
-                  )
-                : PrimaryAppButton(
-                    title: LangKeys.confirmAddressKey.tr(),
-                    // Close the sheet and hand the picked address back to the
-                    // header. A hand-picked map point has no saved address, so
-                    // nothing is returned in that case.
-                    onTap: () => context.pop(selectedAddress),
+              // The only scrollable region: the address list. It takes just the
+              // space it needs, and scrolls internally once it hits the sheet cap.
+              Flexible(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: _AddressList(
+                    state: addressesState,
+                    loadMoreState: _viewModel.loadMoreState,
+                    selectedAddressId: selectedAddress?.id,
+                    onSelect: _onAddressSelected,
                   ),
-          ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.pushNamed(
+                  AppRoutes.addNewAddressFromMapScreen,
+                  extra: selectedLocation,
+                ),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 26,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: AppBorderRadius.brCircular8,
+                    border: Border.all(color: colors.neutral200),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 10,
+                    children: [
+                      Assets.media.images.svg.addCircle.svg(
+                        width: 24,
+                        height: 24,
+                        colorFilter: ColorFilter.mode(
+                          colors.primary500Main,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      Text(
+                        LangKeys.addNewAddress.tr(),
+                        style: AppTextStyles.style16Medium.copyWith(
+                          color: colors.primary500Main,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              (selectedLocation == null || _resolvingPick)
+                  ? PrimaryAppDisabledButton(
+                      title: LangKeys.confirmAddressKey.tr(),
+                    )
+                  : PrimaryAppButton(
+                      title: LangKeys.confirmAddressKey.tr(),
+                      // Close the sheet and hand the picked address back to the
+                      // header. A hand-picked map point has no saved address, so
+                      // nothing is returned in that case.
+                      onTap: () => context.pop(selectedAddress),
+                    ),
+            ],
+          ),
         ),
       ),
     );
