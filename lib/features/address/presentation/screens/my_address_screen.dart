@@ -123,10 +123,13 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
   }
 
   void _onSelect(AddressModel address) {
-    if (address.isDefault ?? false) return;
+    // An address with no id cannot be addressed on the server — nothing to do
+    // but ignore the tap, rather than send a request that can only fail.
+    final int? addressId = address.id;
+    if (addressId == null || (address.isDefault ?? false)) return;
     ref
         .read(defaultAddressProvider.notifier)
-        .setDefaultAddress(addressId: address.id ?? -1);
+        .setDefaultAddress(addressId: addressId);
   }
 
   static Widget _separator(BuildContext context, int index) =>

@@ -52,6 +52,15 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
     );
   }
 
+  /// Adopts [address] when it *is* the loaded default, so an edit to it shows
+  /// up wherever the default is read — the checkout delivery card — instead of
+  /// staying stale until the next login. The mirror of the list patching
+  /// [setDefaultAddress] does, for the other direction of the same data.
+  void syncEditedAddress({required AddressModel address}) {
+    if (address.id == null || address.id != state.valueOrNull?.id) return;
+    state = AsyncValue<AddressModel?>.data(address);
+  }
+
   Future<void> setDefaultAddress({required int addressId}) async {
     state = const AsyncValue<AddressModel?>.loading();
 

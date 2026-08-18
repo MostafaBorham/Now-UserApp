@@ -364,8 +364,14 @@ abstract class AppRouter {
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            AddressSearchScreen(currentLocation: state.extra as LatLng?),
+        builder: (context, state) {
+          final extra =
+              state.extra as ({LatLng? bias, bool isChangingAddress})?;
+          return AddressSearchScreen(
+            currentLocation: extra?.bias,
+            isChangingAddress: extra?.isChangingAddress ?? false,
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,

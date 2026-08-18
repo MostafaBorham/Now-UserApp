@@ -62,6 +62,11 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
   Future<void> _onSearchTapped() async {
     final LatLng? picked = await context.pushNamed<LatLng>(
       AppRoutes.addressSearchScreen,
+      // The live pin, so Places ranks addresses near what the map is showing.
+      extra: (
+        bias: _selectedLocation,
+        isChangingAddress: widget.address != null,
+      ),
     );
 
     if (!mounted || picked == null) return;

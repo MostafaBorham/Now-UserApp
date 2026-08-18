@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
 /// Single task: update an existing address for the current user.
@@ -47,6 +48,9 @@ class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
         _ref
             .read(getMyAddressesProvider.notifier)
             .updateAddress(address: updated);
+        _ref
+            .read(defaultAddressProvider.notifier)
+            .syncEditedAddress(address: updated);
         return AsyncValue.data(updated);
       },
     );

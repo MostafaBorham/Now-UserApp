@@ -98,24 +98,29 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
         (Map<String, String> label) => label['en'] == storedLabel,
       );
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
-
-      // An existing address was already validated when it was saved, so the
-      // Save button starts enabled. Live validation still runs the moment any
-      // required field changes (see [_onRequiredFieldChanged]).
-      _isFormValid = true;
     }
+
+    // Run the same check the listeners run, over whatever the prefill put in
+    // the fields: an existing address usually enables Save straight away, but
+    // one stored without a floor or building must not submit those blanks.
+    _isFormValid = _isRequiredFieldsFilled();
 
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
     _buildingNameController.addListener(_onRequiredFieldChanged);
   }
 
-  void _onRequiredFieldChanged() {
+  /// The Save button's condition: both required fields filled, and the phone
+  /// either left empty or well-formed.
+  bool _isRequiredFieldsFilled() {
     final String phone = _phoneController.text.trim();
-    final bool isValid =
-        (phone.isEmpty || AppValidator.isValidSaudiPhone(phone)) &&
+    return (phone.isEmpty || AppValidator.isValidSaudiPhone(phone)) &&
         _floorNumberController.text.trim().isNotEmpty &&
         _buildingNameController.text.trim().isNotEmpty;
+  }
+
+  void _onRequiredFieldChanged() {
+    final bool isValid = _isRequiredFieldsFilled();
     if (isValid != _isFormValid) {
       setState(() => _isFormValid = isValid);
     }
