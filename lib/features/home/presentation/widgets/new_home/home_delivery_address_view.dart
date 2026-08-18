@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 
 class HomeDeliveryAddressView extends StatelessWidget {
   const HomeDeliveryAddressView({
@@ -77,16 +78,8 @@ class HomeDeliveryAddressView extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    Positioned.fill(
-                      child: Assets.media.images.png.map.image(
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Center(
-                      child: Assets.media.images.svg.mapMarkerIcon.svg(
-                        width: 20,
-                        height: 20,
-                      ),
+                    const Positioned.fill(
+                      child: AppMap(interactive: false),
                     ),
                     PositionedDirectional(
                       bottom: 7,

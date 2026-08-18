@@ -59,7 +59,6 @@ class HomeAllStoresSectionView extends StatelessWidget {
               SizedBox(
                 height: tabBarHeight,
                 child: CustomButtonTabBar(
-                  filterWidget: AppFilterIcon(),
                   tabs: [
                     LangKeys.allKey.tr(),
                     LangKeys.clothesKey.tr(),
