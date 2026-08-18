@@ -1,11 +1,7 @@
-import 'dart:ui' as ui;
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -13,18 +9,10 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/utils/di/map_resources.dart';
+import 'package:nowdelivery_user_app/core/utils/di/service_locator.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 
-// Shared Google Map view used across the app (address map screen, home
-// delivery address sheet, …). Resolves the device location when no
-// [currentLocation] is given, draws the styled map with a single pin, and
-// reports moves back through [onLocationChanged].
-//
-// The map is fully interactive in every host (it uses an eager gesture
-// recognizer so panning works even inside a scrolling sheet), carries its own
-// "current location" button that recenters the camera on the device, and sizes
-// its pin to the area it is drawn in — larger on a full screen, smaller in a
-// compact preview.
 class AppMap extends StatefulWidget {
   const AppMap({super.key, this.currentLocation, this.onLocationChanged});
 
@@ -42,40 +30,38 @@ class _AppMapState extends State<AppMap> {
   // marker scales with the area the map is drawn in.
   static const double _markerSizeFactor = 0.2;
 
+  // Immutable map resources, resolved from the service locator and preloaded
+  // during bootstrap — never re-read or re-parsed per screen.
+  final MapResources _mapResources = getIt<MapResources>();
+
   GoogleMapController? _mapController;
-  String? _mapStyle;
   BitmapDescriptor? _markerIcon;
   bool _loadingMarker = false;
-  LatLng? _target;
-  bool _mapReady = false;
+  // The selected point drives only the marker, so it lives in a notifier: a
+  // tap, a recenter, or an external pin move rebuilds just the map layer via
+  // its [ValueListenableBuilder], never the surrounding button or the
+  // one-time asset-loading scaffolding.
+  final ValueNotifier<LatLng?> _target = ValueNotifier<LatLng?>(null);
+  // Flipped by the real [GoogleMap.onMapCreated] callback — the map surface is
+  // built and ready — instead of a fixed delay. Until then a spinner overlays
+  // the (already-building) map.
+  bool _mapCreated = false;
   bool _locationResolved = false;
 
   @override
   void initState() {
     super.initState();
-    _target = widget.currentLocation;
-    _loadMapStyle();
-    // The map is only built once the camera target is final, so it never
-    // loads on one location and then jumps to another.
-    if (_target != null) {
+    _target.value = widget.currentLocation;
+    if (_target.value != null) {
       _locationResolved = true;
     } else {
       _resolveDeviceLocation();
     }
-    // Defer building the GoogleMap platform view until after the push
-    // transition finishes, so navigation feels instant and the heavy native
-    // view creation happens while the placeholder is on screen.
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future<void>.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
-      setState(() {
-        _mapReady = true;
-      });
-    });
   }
 
   @override
   void dispose() {
+    _target.dispose();
     _mapController?.dispose();
     super.dispose();
   }
@@ -112,8 +98,10 @@ class _AppMapState extends State<AppMap> {
 
     if (!mounted) return;
 
+    _target.value = resolved;
+    // Only the gate flips here; the target itself is a notifier, so this
+    // rebuild is the one that first reveals the map, not a per-move churn.
     setState(() {
-      _target = resolved;
       _locationResolved = true;
     });
 
@@ -124,7 +112,7 @@ class _AppMapState extends State<AppMap> {
 
   void _animateToTarget() {
     final controller = _mapController;
-    final target = _target;
+    final target = _target.value;
     if (controller == null || target == null) return;
     controller.animateCamera(CameraUpdate.newLatLngZoom(target, _targetZoom));
   }
@@ -136,9 +124,7 @@ class _AppMapState extends State<AppMap> {
     final device = await _fetchDeviceLocation();
     if (!mounted || device == null) return;
 
-    setState(() {
-      _target = device;
-    });
+    _target.value = device;
     widget.onLocationChanged?.call(device);
     _animateToTarget();
   }
@@ -152,36 +138,30 @@ class _AppMapState extends State<AppMap> {
     final LatLng? incoming = widget.currentLocation;
     if (incoming == null ||
         incoming == oldWidget.currentLocation ||
-        incoming == _target) {
+        incoming == _target.value) {
       return;
     }
 
-    setState(() {
-      _target = incoming;
-    });
+    _target.value = incoming;
     _animateToTarget();
   }
 
-  // Load the styling JSON from application assets
-  Future<void> _loadMapStyle() async {
-    final style = await rootBundle.loadString(Assets.json.map);
-    if (!mounted) return;
-    setState(() {
-      _mapStyle = style;
-    });
-  }
-
-  // Rasterize the pin once we know how wide the map is drawn.
+  // Rasterize the pin once we know how wide the map is drawn. The parsed SVG is
+  // shared through the injected [MapResources]; only the size-specific bitmap is
+  // produced here, and it too is cached per size for later opens.
   void _ensureMarkerLoaded(double width) {
     if (_markerIcon != null || _loadingMarker || width <= 0) return;
     _loadingMarker = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadMarkerIcon(width));
+    final double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _loadMarkerIcon(width, devicePixelRatio),
+    );
   }
 
-  Future<void> _loadMarkerIcon(double width) async {
-    final icon = await _bitmapDescriptorFromSvg(
-      Assets.media.images.svg.mapMarkerIcon.path,
+  Future<void> _loadMarkerIcon(double width, double devicePixelRatio) async {
+    final icon = await _mapResources.markerIcon(
       width: width,
+      devicePixelRatio: devicePixelRatio,
     );
     if (!mounted) return;
     setState(() {
@@ -189,93 +169,93 @@ class _AppMapState extends State<AppMap> {
     });
   }
 
-  Future<BitmapDescriptor> _bitmapDescriptorFromSvg(
-    String assetName, {
-    required double width,
-  }) async {
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final pictureInfo = await vg.loadPicture(SvgAssetLoader(assetName), null);
-    final logicalSize = pictureInfo.size;
-
-    final targetWidth = width * devicePixelRatio;
-    final scale = targetWidth / logicalSize.width;
-    final targetHeight = logicalSize.height * scale;
-
-    final recorder = ui.PictureRecorder();
-    Canvas(recorder)
-      ..scale(scale)
-      ..drawPicture(pictureInfo.picture);
-    final scaledPicture = recorder.endRecording();
-
-    final image = await scaledPicture.toImage(
-      targetWidth.round(),
-      targetHeight.round(),
-    );
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-
-    pictureInfo.picture.dispose();
-    scaledPicture.dispose();
-    image.dispose();
-
-    return BitmapDescriptor.bytes(
-      bytes!.buffer.asUint8List(),
-      width: width,
-      height: targetHeight / devicePixelRatio,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Size the pin to the drawn area: full-screen maps get a larger marker,
-        // compact previews a smaller one.
         _ensureMarkerLoaded(
           constraints.biggest.shortestSide * _markerSizeFactor,
         );
 
-        // Wait for both the deferred platform-view build and the resolved
-        // location, so the first frame of the map is already on the right spot.
-        if (!_mapReady || !_locationResolved) {
+        // Only the location gates the bare spinner: without a resolved target
+        // there is no [initialCameraPosition] to build the map with. Once it is
+        // known the map is built immediately, and the "map creating" spinner is
+        // an overlay driven by [onMapCreated] — no fixed delay.
+        if (!_locationResolved) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final LatLng markerPosition = _target ?? _fallbackTarget;
+        // Snapshot the camera's starting point once. [initialCameraPosition] is
+        // only honored on first build, so later target changes are driven
+        // imperatively through [_animateToTarget], not by rebuilding with a new
+        // value here.
+        final LatLng initialTarget = _target.value ?? _fallbackTarget;
+        final CameraPosition initialCameraPosition = CameraPosition(
+          target: initialTarget,
+          zoom: _target.value != null ? _targetZoom : 10,
+        );
+
         return Stack(
           children: [
+            // Isolate the map's repaints from the surrounding sheet/scroll view.
             Positioned.fill(
-              child: GoogleMap(
-                style: _mapStyle,
-                zoomControlsEnabled: false,
-                // Win drag gestures eagerly so the map pans even when it lives
-                // inside a scrolling parent (e.g. the home address sheet).
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<OneSequenceGestureRecognizer>(
-                    EagerGestureRecognizer.new,
-                  ),
-                },
-                initialCameraPosition: CameraPosition(
-                  target: _target ?? _fallbackTarget,
-                  zoom: _target != null ? _targetZoom : 10,
+              child: RepaintBoundary(
+                // Only the marker depends on the moving target, so only this
+                // builder reruns on a tap/recenter — the current-location
+                // button and the rest of the tree stay put.
+                child: ValueListenableBuilder<LatLng?>(
+                  valueListenable: _target,
+                  builder: (context, target, _) {
+                    return GoogleMap(
+                      style: _mapResources.mapStyle,
+                      zoomControlsEnabled: false,
+                      // Win drag gestures eagerly so the map pans even when it
+                      // lives inside a scrolling parent (e.g. the home address
+                      // sheet).
+                      gestureRecognizers:
+                          <Factory<OneSequenceGestureRecognizer>>{
+                            Factory<OneSequenceGestureRecognizer>(
+                              EagerGestureRecognizer.new,
+                            ),
+                          },
+                      initialCameraPosition: initialCameraPosition,
+                      markers: {
+                        if (_markerIcon != null)
+                          Marker(
+                            markerId: const MarkerId('selected-location'),
+                            position: target ?? _fallbackTarget,
+                            icon: _markerIcon!,
+                          ),
+                      },
+                      onMapCreated: (GoogleMapController controller) {
+                        // No camera move here: [initialCameraPosition] is
+                        // already the final target, since the map is not built
+                        // before the location is resolved.
+                        _mapController = controller;
+                        // The real "map is ready" signal — reveal it now,
+                        // dropping the overlay spinner.
+                        if (!_mapCreated) {
+                          setState(() {
+                            _mapCreated = true;
+                          });
+                        }
+                      },
+                      onTap: _onMapTapped,
+                    );
+                  },
                 ),
-                markers: {
-                  if (_markerIcon != null)
-                    Marker(
-                      markerId: const MarkerId('selected-location'),
-                      position: markerPosition,
-                      icon: _markerIcon!,
-                    ),
-                },
-                onMapCreated: (GoogleMapController controller) {
-                  // No camera move here: [initialCameraPosition] is already the
-                  // final target, since the map is not built before the
-                  // location is resolved.
-                  _mapController = controller;
-                },
-                onTap: _onMapTapped,
               ),
             ),
+            // Covers the map while the platform view is being created; removed
+            // the instant [onMapCreated] fires, so there is no arbitrary wait.
+            if (!_mapCreated)
+              Positioned.fill(
+                child: ColoredBox(
+                  color: colors.white,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+              ),
             PositionedDirectional(
               bottom: 12,
               end: 12,
@@ -328,9 +308,7 @@ class _AppMapState extends State<AppMap> {
   }
 
   void _onMapTapped(LatLng position) {
-    setState(() {
-      _target = position;
-    });
+    _target.value = position;
     widget.onLocationChanged?.call(position);
     _animateToTarget();
   }

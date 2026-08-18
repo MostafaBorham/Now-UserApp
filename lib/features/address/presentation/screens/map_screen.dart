@@ -37,9 +37,6 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     _selectedLocation = widget.currentLocation;
   }
 
-  // Opens the address search and waits for the address the user picks there.
-  // The search pops its result back instead of pushing a second map, so the
-  // pin simply moves on the map already on screen.
   Future<void> _onSearchTapped() async {
     final LatLng? picked = await context.pushNamed<LatLng>(
       AppRoutes.addressSearchScreen,
@@ -52,10 +49,6 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     });
   }
 
-  // Reverse-geocode the picked point before navigating. Builds an
-  // [AddressModel] from the resolved placemark and the picked [LatLng], then
-  // continues to the details screen. Only proceeds when a placemark is
-  // resolved; otherwise surfaces an error and stays on the map.
   Future<void> _onEnterAddressTapped() async {
     final LatLng? location = _selectedLocation;
     if (location == null) {
@@ -121,8 +114,6 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
         children: [
           Expanded(
             child: AppMap(
-              // The selected point, not the constructor argument, so a location
-              // picked in the search screen moves the pin.
               currentLocation: _selectedLocation,
               onLocationChanged: (LatLng location) {
                 setState(() {
@@ -147,4 +138,3 @@ class _AddNewAddressFromMapState extends State<AddNewAddressFromMap> {
     );
   }
 }
-
