@@ -333,5 +333,6 @@
   "sampleBrandDescription": "Rich 70% cocoa dark chocolate. For lovers of deep and authentic flavor.",
   "thousandSuffix": "K",
   "searchForAddress": "Search for an area or street",
-  "noAddressResults": "No matching addresses"
+  "noAddressResults": "No matching addresses",
+  "codeCopied": "Code {code} copied"
 }

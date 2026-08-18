@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/copy_to_clipboard.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -66,7 +66,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
       // The design has no code chip, so the whole ticket copies the code.
       onTap: coupon.code == null
           ? null
-          : () => Clipboard.setData(ClipboardData(text: coupon.code!)),
+          : () => CopyToClipboard.copy(context, coupon.code!),
       child: Container(
         width: _ticketWidth,
         height: _ticketHeight,

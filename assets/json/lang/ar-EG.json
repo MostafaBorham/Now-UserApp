@@ -333,5 +333,6 @@
   "sampleBrandDescription": "شوكولاتة داكنة غنية بنسبة 70% كاكاو. لعشاق النكهة العميقة والأصيلة.",
   "thousandSuffix": "ألف",
   "searchForAddress": "ابحث عن منطقة أو شارع",
-  "noAddressResults": "لا توجد عناوين مطابقة"
+  "noAddressResults": "لا توجد عناوين مطابقة",
+  "codeCopied": "تم نسخ الكود {code}"
 }

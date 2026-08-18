@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/copy_to_clipboard.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
@@ -79,19 +79,6 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
     }
   }
 
-  void _copyCode(String code) {
-    Clipboard.setData(ClipboardData(text: code));
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text('Code $code copied'),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     final AsyncValue<PaginationModel<CouponModel>> couponsState = ref.watch(
@@ -145,7 +132,8 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
                                 return DiscountCard(
                                   coupon: coupon,
                                   dark: index.isOdd,
-                                  onCopy: () => _copyCode(coupon.code ?? ''),
+                                  onCopy: () =>
+                                      CopyToClipboard.copy(context, coupon.code ?? ''),
                                 );
                               },
                             );

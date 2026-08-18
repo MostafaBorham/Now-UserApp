@@ -378,4 +378,7 @@ abstract class LangKeys {
   // Address search
   static const String searchForAddressKey = 'searchForAddress';
   static const String noAddressResultsKey = 'noAddressResults';
+
+  // Clipboard
+  static const String codeCopiedKey = 'codeCopied';
 }
