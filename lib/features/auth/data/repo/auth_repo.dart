@@ -14,7 +14,6 @@ class AuthRepo {
   final AuthApiService _authApiService = AuthApiService();
   final TokenCacheService _tokenCache = TokenCacheService();
 
-
   void cancelRequests() => _authApiService.cancelRequests();
 
   Future<Either<Failure, String>> requestOtp({required String phone}) async {
@@ -101,13 +100,6 @@ class AuthRepo {
     }
   }
 
-  /// Logs the current user out.
-  ///
-  /// Authentication is applied automatically by `AuthTokenInterceptor` (the
-  /// logged-in user's `Bearer` token from the cached session). Only when the
-  /// server reports `success: true` is the cached session cleared, so the app
-  /// falls back to a logged-out state. `Right(unit)` means the user is fully
-  /// logged out; anything else is a `Left` carrying the error message.
   Future<Either<Failure, Unit>> logout() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -116,12 +108,17 @@ class AuthRepo {
     try {
       final Response response = await _authApiService.logout();
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      final int statusCode = response.statusCode ?? 0;
 
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      if (statusCode != 200 && statusCode != 204) {
+        final String? statusMessage = response.statusMessage?.trim();
+        return Left(
+          Failure(
+            statusMessage != null && statusMessage.isNotEmpty
+                ? statusMessage
+                : ApiErrorHandler.extractErrorMessage(null),
+          ),
+        );
       }
 
       await _tokenCache.clearUserTokens();
