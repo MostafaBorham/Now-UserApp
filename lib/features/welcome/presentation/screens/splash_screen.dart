@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
 import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm.dart';
 
@@ -20,6 +23,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _logoController;
   ProviderSubscription<AsyncValue<AppInfoModel>>? _appInfoSub;
+  ProviderSubscription<AsyncValue<PaginationModel<CategoryModel>>>?
+      _appCategoriesSub;
 
   @override
   void initState() {
@@ -40,6 +45,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           _appInfoSub?.close();
           _appInfoSub = null;
           ref.invalidate(getAppInfoProvider);
+        }
+      },
+    );
+
+    // Same warm-up for the (kept-alive) app-categories provider: preload the
+    // first page here so the home carousel and categories screen reuse it. On
+    // failure, drop the subscription and invalidate the errored instance so it
+    // is recreated (and refetched) the next time a screen opens it.
+    _appCategoriesSub = ref.listenManual(
+      getAppCategoriesProvider,
+      (
+        AsyncValue<PaginationModel<CategoryModel>>? previous,
+        AsyncValue<PaginationModel<CategoryModel>> next,
+      ) {
+        if (next is AsyncError) {
+          _appCategoriesSub?.close();
+          _appCategoriesSub = null;
+          ref.invalidate(getAppCategoriesProvider);
         }
       },
     );
@@ -114,6 +137,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void dispose() {
     _appInfoSub?.close();
+    _appCategoriesSub?.close();
     _logoController.removeStatusListener(_logoAnimationListener);
     _logoController.dispose();
     super.dispose();

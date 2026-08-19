@@ -18,9 +18,14 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categ
 /// Only describes *what* the grid shows — the paging behaviour (next page on
 /// scroll, pull-to-refresh, loading, empty and error states) lives in
 /// [PaginatedView] and [GetAppCategoriesViewModel].
-class CategoriesScreen extends ConsumerWidget {
+class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
 
+  @override
+  ConsumerState<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   static const SliverGridDelegateWithFixedCrossAxisCount _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -30,7 +35,20 @@ class CategoriesScreen extends ConsumerWidget {
       );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    // The categories are preloaded on splash and reused here. Fetch only if
+    // that never happened or failed (no value yet) — already-loaded data is
+    // kept as-is (no refetch) — so opening this while errored flips it to
+    // loading and the shimmer grid shows first.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || ref.read(getAppCategoriesProvider).hasValue) return;
+      ref.read(getAppCategoriesProvider.notifier).loadFirstPage();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final GetAppCategoriesViewModel categoriesViewModel = ref.read(
       getAppCategoriesProvider.notifier,
     );

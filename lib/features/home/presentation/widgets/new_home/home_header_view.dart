@@ -2,12 +2,14 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
@@ -71,10 +73,11 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
     final String label = context.getLocalizedApiText(address.label);
     if (label.isNotEmpty) return label;
 
-    return <String?>[address.street, address.area, address.city]
-        .whereType<String>()
-        .where((String e) => e.isNotEmpty)
-        .join('، ');
+    return <String?>[
+      address.street,
+      address.area,
+      address.city,
+    ].whereType<String>().where((String e) => e.isNotEmpty).join('، ');
   }
 
   @override
@@ -156,7 +159,9 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                                 .images
                                                 .svg
                                                 .arrowBrokenIcon
-                                                .svg(width: con.maxWidth * 0.04),
+                                                .svg(
+                                                  width: con.maxWidth * 0.04,
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -182,14 +187,34 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                     Expanded(flex: 4, child: HomeAppCategoriesView()),
                     Expanded(
                       flex: 1,
-                      child: RepaintBoundary(
-                        child: AnimatedSvgPicture.asset(
-                          context.isRTL? Assets.media.images.svg.viewAllArabic.path : Assets.media.images.svg.englishAnimatedSeeAll.path,
-                          fit: BoxFit.contain,
-                          playbackRate: 1,
-                          autoPlay: true,
-                          placeholderBuilder: (BuildContext context) =>
-                              SizedBox.shrink(),
+                      // Opaque so the whole cell is tappable. IgnorePointer is
+                      // essential: an animated AnimatedSvgPicture wraps itself
+                      // in its own Listener/GestureDetector (for SMIL/link
+                      // events) that would otherwise win the gesture arena and
+                      // swallow the tap. The SVG here is decorative, so we hide
+                      // it from hit-testing and let this detector handle taps.
+                      child: GestureDetector(
+                        onTap: () =>
+                            context.pushNamed(AppRoutes.categoriesScreen),
+                        behavior: HitTestBehavior.opaque,
+                        child: IgnorePointer(
+                          child: RepaintBoundary(
+                            child: AnimatedSvgPicture.asset(
+                              context.isRTL
+                                  ? Assets.media.images.svg.viewAllArabic.path
+                                  : Assets
+                                        .media
+                                        .images
+                                        .svg
+                                        .englishAnimatedSeeAll
+                                        .path,
+                              fit: BoxFit.contain,
+                              playbackRate: 1,
+                              autoPlay: true,
+                              placeholderBuilder: (BuildContext context) =>
+                                  SizedBox.shrink(),
+                            ),
+                          ),
                         ),
                       ),
                     ),
