@@ -99,21 +99,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
           () => _quantity = widget.product?.quantity ?? widget.initialQuantity,
         );
 
-        final AppColorScheme colors = context.colors;
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                error.toString().tr(),
-                style: AppTextStyles.style16SemiBold.copyWith(
-                  color: colors.white,
-                ),
-              ),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: colors.onError,
-            ),
-          );
+        ErrorSnackBar.show(context, error.toString());
       },
     );
   }

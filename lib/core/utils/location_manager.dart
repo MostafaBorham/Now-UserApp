@@ -9,10 +9,10 @@ abstract class LocationManager {
         location.latitude,
         location.longitude,
       );
-      print('#address : ${addresses.firstOrNull}');
-      return addresses.isNotEmpty ? addresses.first : null;
-    } catch (e) {
-      print('error in address : $e');
+      return addresses.firstOrNull;
+    } catch (_) {
+      // No placemark for this point (no coverage, no connectivity, plugin
+      // error). Callers turn a null into a user-facing failure.
       return null;
     }
   }

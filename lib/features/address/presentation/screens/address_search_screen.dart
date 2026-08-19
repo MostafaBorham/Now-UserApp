@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/place_suggestion_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/places_shimmer_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/place_autocomplete_vm.dart';
@@ -29,11 +30,19 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/recent_address_s
 /// way to Google Places suggestions, and picking a suggestion pops back to the
 /// map with its coordinates.
 class AddressSearchScreen extends ConsumerStatefulWidget {
-  const AddressSearchScreen({super.key, this.currentLocation});
+  const AddressSearchScreen({
+    super.key,
+    this.currentLocation,
+    this.isChangingAddress = false,
+  });
 
   /// Where the map was looking when the search was opened. Sent to Places as a
   /// location bias so nearby addresses rank first; null when unknown.
   final LatLng? currentLocation;
+
+  /// Whether the map underneath is changing an existing address rather than
+  /// adding one — this screen carries its title so the two read as one flow.
+  final bool isChangingAddress;
 
   @override
   ConsumerState<AddressSearchScreen> createState() =>
@@ -116,7 +125,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
     final List<String> recentSearches =
         ref.watch(recentAddressSearchProvider).valueOrNull ?? const <String>[];
-    final RecentAddressSearchViewModel recentVm = ref.read(
+    final RecentKeywordsViewModel recentVm = ref.read(
       recentAddressSearchProvider.notifier,
     );
 
@@ -129,7 +138,9 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
       body: BlockingLoadingOverlay(
         isLoading: _isResolving,
         child: AppWavedView(
-          appBarTitle: LangKeys.addNewAddress.tr(),
+          appBarTitle: widget.isChangingAddress
+              ? LangKeys.changeAddress.tr()
+              : LangKeys.addNewAddress.tr(),
           canPop: context.canPop(),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

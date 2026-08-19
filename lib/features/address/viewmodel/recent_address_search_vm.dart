@@ -1,68 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/address/data/repo/address_search_repo.dart';
+import 'package:nowdelivery_user_app/core/data/repo/recent_keywords_repo.dart';
+import 'package:nowdelivery_user_app/core/database/hive_boxes.dart';
+import 'package:nowdelivery_user_app/core/database/hive_keys.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 
-/// Manages the recent keywords of the address search screen.
+/// The recent keywords of the address search screen.
 ///
-/// The address twin of `recentSearchProvider`: same shape and the same four
-/// operations, backed by its own Hive box. Exposes the list as
-/// `AsyncValue<List<String>>` and loads it as soon as the provider is first
-/// watched, so the screen only needs to
-/// `ref.watch(recentAddressSearchProvider)` and render the [AsyncValue].
+/// The address twin of `recentSearchProvider` — same behaviour, its own Hive
+/// box, so an area the user searched for never surfaces as a product keyword.
+/// Loads as soon as the provider is first watched.
+///
+/// The cap is deliberately lower than the product search's: the address recents
+/// are laid out under the search field with no scroll view of their own, so a
+/// long list would squeeze the results area.
 final recentAddressSearchProvider =
     StateNotifierProvider.autoDispose<
-      RecentAddressSearchViewModel,
+      RecentKeywordsViewModel,
       AsyncValue<List<String>>
     >(
-      (Ref ref) =>
-          RecentAddressSearchViewModel(const AsyncValue.loading())
-            ..getRecentSearches(),
+      (Ref ref) => RecentKeywordsViewModel(
+        RecentKeywordsRepo(
+          boxName: HiveBoxes.recentAddressSearches,
+          key: HiveKeys.recentAddressSearchKeywords,
+          maxKeywords: 5,
+        ),
+      )..getRecentSearches(),
     );
-
-class RecentAddressSearchViewModel
-    extends StateNotifier<AsyncValue<List<String>>> {
-  RecentAddressSearchViewModel(super.initialState);
-
-  final AddressSearchRepo _repo = AddressSearchRepo();
-
-  /// Loads the stored recent keywords. Synchronous read (Hive), so no
-  /// `mounted` guard is needed.
-  void getRecentSearches() {
-    state = const AsyncValue.loading();
-    state = _repo.getRecentSearches().fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> addSearchKey(String keyword) async {
-    final result = await _repo.addSearchKey(keyword);
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> removeSearchKey(String keyword) async {
-    final result = await _repo.removeSearchKey(keyword);
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-
-  Future<void> clearAll() async {
-    final result = await _repo.clearAll();
-    if (!mounted) return;
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<String> keywords) => AsyncValue.data(keywords),
-    );
-  }
-}

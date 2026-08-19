@@ -61,8 +61,9 @@ class PlacesRepo {
       return Right(suggestions);
     } on DioException catch (exception) {
       return Left(Failure(_extractPlacesError(_responseBody(exception))));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      // Never surface a raw exception string: it ends up in a snackbar.
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
@@ -102,8 +103,9 @@ class PlacesRepo {
       return Right(LatLng(latitude, longitude));
     } on DioException catch (exception) {
       return Left(Failure(_extractPlacesError(_responseBody(exception))));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      // Never surface a raw exception string: it ends up in a snackbar.
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 

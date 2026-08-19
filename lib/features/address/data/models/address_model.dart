@@ -49,6 +49,18 @@ class AddressModel extends Equatable {
     this.deletedAt,
   });
 
+  /// The `label` values the backend accepts, in the order the details screen's
+  /// segmented selector shows them (home / work / other).
+  ///
+  /// Each entry mirrors the API translation shape (`{'en': ..., 'ar': ...}`) so
+  /// the label round-trips as a localized value rather than a bare identifier.
+  /// Editing the copy here changes stored data, not just what is displayed.
+  static const List<Map<String, String>> labelOptions = <Map<String, String>>[
+    <String, String>{'en': 'Home', 'ar': 'المنزل'},
+    <String, String>{'en': 'Work', 'ar': 'العمل'},
+    <String, String>{'en': 'Other', 'ar': 'أخرى'},
+  ];
+
   factory AddressModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
       return const AddressModel();
@@ -144,11 +156,16 @@ class AddressModel extends Equatable {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'label': label,
+  /// The request body for creating and updating an address — the same shape
+  /// for both.
+  ///
+  /// Only client-owned fields are sent: `id`, `user_id`, `full_address` and the
+  /// timestamps are assigned by the server. `label` goes out as its English
+  /// value (the backend owns the translation), and the coordinates as numbers
+  /// rather than the strings the read model keeps them in.
+  Map<String, dynamic> toRequestJson() {
+    return <String, dynamic>{
+      'label': label?['en'],
       'phone': phone,
       'country': country,
       'city': city,
@@ -157,14 +174,10 @@ class AddressModel extends Equatable {
       'building_number': buildingNumber,
       'floor': floor,
       'apartment': apartment,
-      'latitude': latitude,
-      'longitude': longitude,
+      'latitude': double.tryParse(latitude ?? ''),
+      'longitude': double.tryParse(longitude ?? ''),
       'notes': notes,
-      'is_default': isDefault,
-      'full_address': fullAddress,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'deleted_at': deletedAt,
+      'is_default': isDefault ?? false,
     };
   }
 

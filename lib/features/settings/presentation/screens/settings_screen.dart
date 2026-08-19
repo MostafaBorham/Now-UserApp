@@ -1,22 +1,22 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
-import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
 import '../widgets/language_bottom_sheet.dart';
 import '../widgets/logout_button.dart';
-import '../widgets/profile_header.dart';
 import '../widgets/profile_info.dart';
 import '../widgets/settings_section.dart';
 import '../widgets/settings_tile.dart';
@@ -26,8 +26,6 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppColorScheme colors = context.colors;
-
     ref.listen<AsyncValue<dynamic>>(logoutProvider, (
       AsyncValue<dynamic>? previous,
       AsyncValue<dynamic> next,
@@ -39,27 +37,8 @@ class SettingsScreen extends ConsumerWidget {
             context.goNamed(AppRoutes.onBoardingScreen);
           }
         },
-        error: (Object error, StackTrace stackTrace) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  error.toString().tr(),
-                  style: AppTextStyles.style16SemiBold.copyWith(
-                    color: colors.white,
-                  ),
-                ),
-                behavior: SnackBarBehavior.floating,
-                elevation: 4,
-                padding: const EdgeInsets.all(16),
-                backgroundColor: colors.onError,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-            );
-        },
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
       );
     });
 
@@ -67,6 +46,10 @@ class SettingsScreen extends ConsumerWidget {
     final bool isUser =
         ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
         SessionType.user;
+    // Fetched once and shared with the Personal Information screen; only for
+    // logged-in users (guests have no /user/profile).
+    final profileData =
+        isUser ? ref.watch(getProfileProvider).valueOrNull : null;
 
     return Scaffold(
       backgroundColor: context.colors.white,
@@ -75,7 +58,14 @@ class SettingsScreen extends ConsumerWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const ProfileInfo(),
+              // Logged-in users see their real name + avatar; guests keep the
+              // default label and never hit /user/profile.
+              isUser
+                  ? ProfileInfo(
+                      name: profileData?.profile.fullName ?? '',
+                      avatarUrl: profileData?.avatarUrl,
+                    )
+                  : const ProfileInfo(),
               const SizedBox(height: 32),
               SettingsSection(
                 title: LangKeys.general.tr(),

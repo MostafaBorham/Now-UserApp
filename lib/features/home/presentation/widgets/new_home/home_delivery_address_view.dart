@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
@@ -19,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
@@ -54,21 +54,19 @@ class _HomeDeliveryAddressViewState
     super.initState();
     _scrollController.addListener(_onScroll);
     _viewModel = ref.read(getMyAddressesProvider.notifier);
-    _viewModel.loadMoreState.addListener(_onLoadMoreStateChanged);
     // Fetch the saved addresses the first time the sheet opens, or retry if a
     // previous open failed (an errored provider has no value); an already-loaded
     // list is reused as-is. Retrying here means an error state becomes loading
     // again, so the list falls back to its shimmer instead of an error view.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getMyAddressesProvider).hasValue) {
-        _viewModel.getMyAddresses();
+        _viewModel.loadFirstPage();
       }
     });
   }
 
   @override
   void dispose() {
-    _viewModel.loadMoreState.removeListener(_onLoadMoreStateChanged);
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
@@ -79,16 +77,7 @@ class _HomeDeliveryAddressViewState
     // Pull the next page only once the very end of the sheet is reached, so the
     // load-more shimmer appears exactly when the list tail is fully visible.
     if (_scrollController.position.extentAfter <= 0) {
-      _viewModel.loadMore();
-    }
-  }
-
-  /// Surfaces a load-more failure as a snackbar, so a paging error never
-  /// replaces the already-visible list.
-  void _onLoadMoreStateChanged() {
-    final AsyncValue<bool> loadMoreState = _viewModel.loadMoreState.value;
-    if (loadMoreState.hasError && mounted) {
-      ErrorSnackBar.show(context, loadMoreState.error.toString());
+      _viewModel.loadNextPage();
     }
   }
 
@@ -140,6 +129,22 @@ class _HomeDeliveryAddressViewState
     final AppColorScheme colors = context.colors;
     final AsyncValue<PaginationModel<AddressModel>> addressesState = ref.watch(
       getMyAddressesProvider,
+    );
+
+    // Surface a load-more failure as a snackbar, so a paging error never
+    // replaces the already-visible list.
+    ref.listen<AsyncValue<PaginationModel<AddressModel>>>(
+      getMyAddressesProvider,
+      (
+        AsyncValue<PaginationModel<AddressModel>>? previous,
+        AsyncValue<PaginationModel<AddressModel>> next,
+      ) {
+        final String? nextPageError =
+            PaginationStatus<AddressModel>.from(next).nextPageError;
+        if (nextPageError != null) {
+          ErrorSnackBar.show(context, nextPageError);
+        }
+      },
     );
 
     // Resolve the current selection. Unless the user picked a point on the map,
@@ -270,17 +275,14 @@ class _HomeDeliveryAddressViewState
                   controller: _scrollController,
                   child: _AddressList(
                     state: addressesState,
-                    loadMoreState: _viewModel.loadMoreState,
                     selectedAddressId: selectedAddress?.id,
                     onSelect: _onAddressSelected,
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: () => context.pushNamed(
-                  AppRoutes.addNewAddressFromMapScreen,
-                  extra: selectedLocation,
-                ),
+                onTap: () =>
+                    context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 26,
@@ -340,52 +342,42 @@ class _HomeDeliveryAddressViewState
 class _AddressList extends StatelessWidget {
   const _AddressList({
     required this.state,
-    required this.loadMoreState,
     required this.selectedAddressId,
     required this.onSelect,
   });
 
   final AsyncValue<PaginationModel<AddressModel>> state;
-  final ValueListenable<AsyncValue<bool>> loadMoreState;
   final int? selectedAddressId;
   final ValueChanged<AddressModel> onSelect;
 
   @override
   Widget build(BuildContext context) {
-    return state.when(
-      loading: () => const _AddressShimmerList(),
-      error: (Object error, StackTrace stackTrace) =>
-          const _AddressShimmerList(),
-      data: (PaginationModel<AddressModel> page) {
-        final List<AddressModel> addresses = page.data;
-        return ValueListenableBuilder<AsyncValue<bool>>(
-          valueListenable: loadMoreState,
-          builder:
-              (BuildContext context, AsyncValue<bool> loadMore, Widget? child) {
-                final int loadingItemsCount = loadMore.isLoading ? 2 : 0;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: 16,
-                  children: <Widget>[
-                    for (final AddressModel address in addresses)
-                      _AddressItem(
-                        icon: _iconForLabel(address.label),
-                        title: context.getLocalizedApiText(address.label),
-                        subtitle: address.fullAddress ?? '',
-                        highlighted: address.id == selectedAddressId,
-                        onTap: () => onSelect(address),
-                        onEdit: () => context.pushNamed(
-                          AppRoutes.addressDetailsScreen,
-                          extra: address,
-                        ),
-                      ),
-                    for (int i = 0; i < loadingItemsCount; i++)
-                      const _AddressItemShimmer(),
-                  ],
-                );
-              },
-        );
-      },
+    final PaginationStatus<AddressModel> status =
+        PaginationStatus<AddressModel>.from(state);
+
+    // Nothing on screen yet: a first page in flight or a failed first page both
+    // fall back to the shimmer, so an error never shows a bare empty sheet.
+    if (!status.hasLoadedPage) return const _AddressShimmerList();
+
+    final int loadingItemsCount = status.isNextPageLoading ? 2 : 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 16,
+      children: <Widget>[
+        for (final AddressModel address in status.items)
+          _AddressItem(
+            icon: _iconForLabel(address.label),
+            title: context.getLocalizedApiText(address.label),
+            subtitle: address.fullAddress ?? '',
+            highlighted: address.id == selectedAddressId,
+            onTap: () => onSelect(address),
+            onEdit: () => context.pushNamed(
+              AppRoutes.addressDetailsScreen,
+              extra: address,
+            ),
+          ),
+        for (int i = 0; i < loadingItemsCount; i++) const _AddressItemShimmer(),
+      ],
     );
   }
 }

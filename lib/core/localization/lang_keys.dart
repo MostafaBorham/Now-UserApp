@@ -79,19 +79,26 @@ abstract class LangKeys {
   static const String homeAddressSelector = 'homeAddressSelector';
   static const String workAddressSelector = 'workAddressSelector';
   static const String otherAddressSelector = 'otherAddressSelector';
+  // First two address fields are re-labelled when the "work" label is selected.
   static const String floor = 'floor';
+  static const String floorWork = 'floorWork';
+  static const String floorNumberOptional = 'floorNumberOptional';
   static const String building = 'building';
   static const String apartment = 'apartment';
   static const String phoneNumber = 'phoneNumber';
+  static const String phoneNumberOptional = 'phoneNumberOptional';
   static const String instructions = 'instructions';
   static const String inKey = 'in';
   static const String saveAddress = 'saveAddress';
   static const String completeAddressInfo = 'completeAddressInfo';
+  static const String enterValidMobileNumber = 'enterValidMobileNumber';
   static const String editAddress = 'editAddress';
   static const String addressDetails = 'addressDetails';
   static const String addNewAddress = 'addNewAddress';
+  static const String changeAddress = 'changeAddress';
   static const String enterAddressKey = 'enterAddress';
   static const String defaultAddress = 'defaultAddress';
+  static const String noSavedAddresses = 'noSavedAddresses';
 
   // Bottom navigation
   static const String homeKey = 'home';

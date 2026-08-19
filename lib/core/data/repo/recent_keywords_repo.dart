@@ -1,28 +1,34 @@
 import 'package:dartz/dartz.dart';
+import 'package:nowdelivery_user_app/core/data/datasources/local/database/recent_keywords_database_service.dart';
 import 'package:nowdelivery_user_app/core/database/database_exceptions.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/address/data/datasources/local/database/address_search_database_service.dart';
 
-/// Recent-keyword operations of the address search (local, Hive-backed).
+/// Recent-keyword operations for a search, local and Hive-backed.
 ///
-/// Mirrors `SearchRepo` — the database service only reads/writes raw values,
-/// this repo owns error handling and the recents rules. Every method returns
-/// the up-to-date `List<String>` (most-recent first) on `Right`, so callers can
-/// render the result without a second read. No connectivity check: recents are
-/// local-only.
+/// The database service only reads/writes raw values; this repo owns the
+/// recents rules (dedup / trim / filter) and the error handling. `Left` carries
+/// a user-facing message (a [DatabaseException] message key or a raw string —
+/// callers apply `.tr()`, which leaves non-key strings untouched). Every method
+/// returns the up-to-date `List<String>` (most-recent first) on `Right`, so
+/// callers can render the result without a second read. No connectivity check:
+/// recents are local-only.
 ///
-/// Unlike product recents there is no `filterRecentSearch` here: as soon as the
-/// address search field holds text the recents give way to the Places results,
-/// so there is nothing to filter.
-class AddressSearchRepo {
-  final AddressSearchDatabaseService _databaseService =
-      AddressSearchDatabaseService();
+/// One instance per search — the box, the key and how many entries are kept are
+/// the only things that vary between them.
+class RecentKeywordsRepo {
+  RecentKeywordsRepo({
+    required String boxName,
+    required String key,
+    required this.maxKeywords,
+  }) : _databaseService = RecentKeywordsDatabaseService(
+         boxName: boxName,
+         key: key,
+       );
 
-  /// The newest [_maxKeywords] entries are kept; older ones are dropped.
-  /// Deliberately lower than the product search's 10 — the address recents are
-  /// laid out under the search field with no scroll view of their own, so a
-  /// long list would squeeze the results area.
-  static const int _maxKeywords = 5;
+  final RecentKeywordsDatabaseService _databaseService;
+
+  /// The newest [maxKeywords] entries are kept; older ones are dropped.
+  final int maxKeywords;
 
   /// Casts the raw stored value into a `List<String>` (most-recent first),
   /// returning an empty list when nothing is stored yet.
@@ -42,8 +48,28 @@ class AddressSearchRepo {
     }
   }
 
+  /// Filters the stored keywords by [searchKey] (case-insensitive substring
+  /// match), most-recent first. A blank [searchKey] returns the full list.
+  Either<Failure, List<String>> filterRecentSearch(String searchKey) {
+    try {
+      final String query = searchKey.trim().toLowerCase();
+      final List<String> keywords = _readKeywords();
+      if (query.isEmpty) return Right<Failure, List<String>>(keywords);
+
+      return Right<Failure, List<String>>(
+        keywords
+            .where((String k) => k.toLowerCase().contains(query))
+            .toList(),
+      );
+    } catch (_) {
+      return Left<Failure, List<String>>(
+        const Failure(DatabaseException.readRecentSearchesFailedMessage),
+      );
+    }
+  }
+
   /// Prepends [keyword] to the recent list — de-duplicated (an existing entry
-  /// moves to the front) and trimmed to the newest [_maxKeywords].
+  /// moves to the front) and trimmed to the newest [maxKeywords].
   Future<Either<Failure, List<String>>> addSearchKey(String keyword) async {
     try {
       final String term = keyword.trim();
@@ -52,7 +78,7 @@ class AddressSearchRepo {
       final List<String> updated = <String>[
         term,
         ..._readKeywords().where((String k) => k != term),
-      ].take(_maxKeywords).toList();
+      ].take(maxKeywords).toList();
 
       await _databaseService.saveRecentSearches(updated);
       return Right<Failure, List<String>>(updated);

@@ -46,23 +46,30 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
 class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   late final TextEditingController _phoneController;
   late final TextEditingController _floorNumberController;
-  late final TextEditingController _buildingNameController;
   late final TextEditingController _apartmentController;
+  late final TextEditingController _buildingNameController;
   late final TextEditingController _instructionsController;
 
-  // Localized label translation maps sent to the backend, aligned with the
-  // segmented selector order (home / work / other). Each map mirrors the API
-  // translation shape (`{'en': ..., 'ar': ...}`) so the label round-trips as a
-  // localized value rather than a bare identifier.
-  static const List<Map<String, String>> _labels = <Map<String, String>>[
-    <String, String>{'en': 'Home', 'ar': 'المنزل'},
-    <String, String>{'en': 'Work', 'ar': 'العمل'},
-    <String, String>{'en': 'Other', 'ar': 'أخرى'},
+  /// Placeholders for the first two fields, per selected label. A work address
+  /// asks for a company name and a floor number where home and "other" ask for
+  /// a floor/villa and an apartment — the values they collect stay the same,
+  /// only the wording changes. Home and "other" read identically.
+  static const List<List<String>> _fieldHints = <List<String>>[
+    <String>[LangKeys.floor, LangKeys.apartment],
+    <String>[LangKeys.floorWork, LangKeys.floorNumberOptional],
+    <String>[LangKeys.floor, LangKeys.apartment],
   ];
+
+  /// Shown before the phone input and prepended to whatever is typed. Saudi
+  /// mobile numbers are the only ones this form collects, so the head of every
+  /// number is fixed and the field holds just the 8 digits that follow it.
+  static const String _phonePrefix = '05';
+
   int _selectedLabelIndex = 0;
 
   /// Drives the Save button between its disabled and active states. Only the
-  /// required fields (phone / floor / building) feed it.
+  /// required fields (floor / building) feed it; the phone is optional but
+  /// must still be well-formed once something is typed into it.
   bool _isFormValid = false;
 
   @override
@@ -71,17 +78,23 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     // Prefill from the existing address when editing. The floor field maps to
     // building_number and the building field maps to floor — the same swap the
     // save payload applies, mirrored here so a round-trip stays consistent.
+    // The phone field holds only the digits after [_phonePrefix], so a stored
+    // number is reduced to that tail — whichever format it was saved in. One
+    // that isn't a Saudi mobile leaves the field empty rather than prefilling a
+    // value the form would reject, which used to freeze the Save button.
     _phoneController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.phone : null,
+      text: widget.isEditScreen
+          ? AppValidator.saudiLocalPhoneTail(widget.address.phone)
+          : null,
     );
     _floorNumberController = TextEditingController(
       text: widget.isEditScreen ? widget.address.buildingNumber : null,
     );
-    _buildingNameController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.floor : null,
-    );
     _apartmentController = TextEditingController(
       text: widget.isEditScreen ? widget.address.apartment : null,
+    );
+    _buildingNameController = TextEditingController(
+      text: widget.isEditScreen ? widget.address.floor : null,
     );
     _instructionsController = TextEditingController(
       text: widget.isEditScreen ? widget.address.notes : null,
@@ -92,27 +105,42 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       // our segment maps; fall back to the first segment (home) when the stored
       // label is missing or unrecognized.
       final String? storedLabel = widget.address.label?['en']?.toString();
-      final int labelIndex = _labels.indexWhere(
+      final int labelIndex = AddressModel.labelOptions.indexWhere(
         (Map<String, String> label) => label['en'] == storedLabel,
       );
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
-
-      // An existing address was already validated when it was saved, so the
-      // Save button starts enabled. Live validation still runs the moment any
-      // required field changes (see [_onRequiredFieldChanged]).
-      _isFormValid = true;
     }
+
+    // Run the same check the listeners run, over whatever the prefill put in
+    // the fields: an existing address usually enables Save straight away, but
+    // one stored without a floor or building must not submit those blanks.
+    _isFormValid = _isRequiredFieldsFilled();
 
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
     _buildingNameController.addListener(_onRequiredFieldChanged);
   }
 
-  void _onRequiredFieldChanged() {
-    final bool isValid =
-        AppValidator.isValidSaudiPhone(_phoneController.text.trim()) &&
+  /// The Save button's condition: both required fields filled, and the phone
+  /// either left empty or well-formed.
+  bool _isRequiredFieldsFilled() {
+    return (_phoneController.text.isEmpty || _composedPhone() != null) &&
         _floorNumberController.text.trim().isNotEmpty &&
         _buildingNameController.text.trim().isNotEmpty;
+  }
+
+  /// The full number to submit, or null when the field is empty or holds
+  /// something that can't be a Saudi mobile. The Save button and the payload
+  /// both go through this, so what is validated is always what is sent.
+  String? _composedPhone() {
+    final String? tail = AppValidator.saudiLocalPhoneTail(
+      _phoneController.text,
+    );
+    return tail == null ? null : '$_phonePrefix$tail';
+  }
+
+  void _onRequiredFieldChanged() {
+    final bool isValid = _isRequiredFieldsFilled();
     if (isValid != _isFormValid) {
       setState(() => _isFormValid = isValid);
     }
@@ -122,8 +150,8 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   void dispose() {
     _phoneController.dispose();
     _floorNumberController.dispose();
-    _buildingNameController.dispose();
     _apartmentController.dispose();
+    _buildingNameController.dispose();
     _instructionsController.dispose();
     super.dispose();
   }
@@ -134,13 +162,16 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     //
     // The floor field maps to building_number and the building field maps to
     // floor by product intent — keep that swap here at the boundary.
+    // A null phone (field left empty) falls back to the stored one, which keeps
+    // an edit from sending a blank the backend rejects — `addresses.phone` is
+    // NOT NULL, so a phone can never be cleared from here.
     final AddressModel address = widget.address.copyWith(
-      phone: _phoneController.text.trim(),
+      phone: _composedPhone(),
       buildingNumber: _floorNumberController.text.trim(),
-      floor: _buildingNameController.text.trim(),
       apartment: _apartmentController.text.trim(),
+      floor: _buildingNameController.text.trim(),
       notes: _instructionsController.text.trim(),
-      label: _labels[_selectedLabelIndex],
+      label: AddressModel.labelOptions[_selectedLabelIndex],
     );
 
     if (widget.isEditScreen) {
@@ -156,6 +187,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final String? area = widget.address.area;
+    final List<String> hints = _fieldHints[_selectedLabelIndex];
 
     // Both viewmodels expose the same AsyncValue<AddressModel?> shape, so the
     // screen watches/listens through one handle and only the submit call in
@@ -191,7 +223,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
             : LangKeys.addressDetails.tr(),
         body: SingleChildScrollView(
           child: Column(
-            spacing: 10,
+            spacing: 16,
             children: [
               AreaSelector(
                 value: (area == null || area.isEmpty)
@@ -205,6 +237,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   } else {
                     context.pushReplacementNamed(
                       AppRoutes.addNewAddressFromMapScreen,
+                      extra: widget.address,
                     );
                   }
                 },
@@ -213,7 +246,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 items: [
                   LangKeys.homeAddressSelector.tr(),
                   LangKeys.workAddressSelector.tr(),
-                  LangKeys.otherKey.tr(),
+                  LangKeys.otherAddressSelector.tr(),
                 ],
                 itemIcons: [
                   Assets.media.images.svg.homeSelected.svg(),
@@ -221,54 +254,64 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   Assets.media.images.svg.otherSelected.svg(),
                 ],
                 selectedColor: colors.primary500Main,
+                // 4px track padding around a 44px pill, per the design.
+                height: 52,
                 initialIndex: _selectedLabelIndex,
-                onChanged: (int index) => _selectedLabelIndex = index,
+                onChanged: (int index) =>
+                    setState(() => _selectedLabelIndex = index),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 16,
-                children: [
-                  AddressField(
-                    hintText: LangKeys.phoneNumber.tr(),
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[\d+\s-]')),
-                      LengthLimitingTextInputFormatter(14),
-                    ],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.floor.tr(),
-                    controller: _floorNumberController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.building.tr(),
-                    controller: _buildingNameController,
-                  ),
-                  AddressField(
-                    hintText: LangKeys.apartment.tr(),
-                    controller: _apartmentController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                  AddressField(
-                    hintText: LangKeys.instructions.tr(),
-                    controller: _instructionsController,
-                  ),
+              AddressField(
+                hintText: hints[0].tr(),
+                controller: _floorNumberController,
+              ),
+              AddressField(
+                hintText: hints[1].tr(),
+                controller: _apartmentController,
+              ),
+              AddressField(
+                hintText: LangKeys.building.tr(),
+                controller: _buildingNameController,
+              ),
+              AddressField(
+                hintText: LangKeys.instructions.tr(),
+                controller: _instructionsController,
+              ),
+              AddressField(
+                hintText: LangKeys.phoneNumberOptional.tr(),
+                prefixText: _phonePrefix,
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  // Room for a number pasted or typed in full (12 digits for
+                  // `+966…`); it is reduced to the 8-digit tail on save rather
+                  // than being truncated to something valid but wrong.
+                  LengthLimitingTextInputFormatter(12),
                 ],
               ),
-              AspectRatio(
-                aspectRatio: 7,
-                child: !_isFormValid && !isSaving
-                    ? PrimaryAppDisabledButton(title: LangKeys.saveAddress.tr())
-                    : PrimaryAppButton(
-                        title: LangKeys.saveAddress.tr(),
-                        isLoading: isSaving,
-                        onTap: _saveAddress,
+              !_isFormValid && !isSaving
+                  // Tappable while disabled, so the button can say why instead
+                  // of just refusing to react.
+                  ? GestureDetector(
+                      onTap: () => ErrorSnackBar.show(
+                        context,
+                        // Say which field is wrong: a half-typed phone blocks
+                        // Save too, and "complete the address info" points at
+                        // the wrong part of the form.
+                        _phoneController.text.isNotEmpty &&
+                                _composedPhone() == null
+                            ? LangKeys.enterValidMobileNumber
+                            : LangKeys.completeAddressInfo,
                       ),
-              ),
+                      child: PrimaryAppDisabledButton(
+                        title: LangKeys.saveAddress.tr(),
+                      ),
+                    )
+                  : PrimaryAppButton(
+                      title: LangKeys.saveAddress.tr(),
+                      isLoading: isSaving,
+                      onTap: _saveAddress,
+                    ),
             ],
           ),
         ),

@@ -17,7 +17,6 @@ import 'package:nowdelivery_user_app/features/categories/presentation/screens/ca
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-import 'package:nowdelivery_user_app/features/guest_verification/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
@@ -26,10 +25,11 @@ import 'package:nowdelivery_user_app/features/notifications/presentation/screens
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
+import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/edit_information_screen.dart';
+import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
-import 'package:nowdelivery_user_app/features/settings/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
@@ -324,14 +324,17 @@ abstract class AppRouter {
           // Opened either from the address list (extra is the AddressModel —
           // editing an existing address) or from the map (extra is a record
           // carrying the fromMap flag, so the "Change" action can pop back to
-          // the map still in the stack — creating a new address).
+          // the map still in the stack). Coming from the map covers both
+          // creating a new address and relocating an existing one, which is
+          // what isEdit distinguishes.
           final Object? extra = state.extra;
-          if (extra is ({AddressModel address, bool fromMap})) {
+          if (extra is ({AddressModel address, bool fromMap, bool isEdit})) {
             return _blockSystemBack(
               context,
               AddressDetailsScreen(
                 address: extra.address,
                 cameFromMap: extra.fromMap,
+                isEditScreen: extra.isEdit,
               ),
             );
           }
@@ -349,10 +352,11 @@ abstract class AppRouter {
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) {
-          final currentLocation = state.extra as LatLng?;
+          // Non-null only when changing an existing address's location.
+          final address = state.extra as AddressModel?;
           return _blockSystemBack(
             context,
-            AddNewAddressFromMap(currentLocation: currentLocation),
+            AddNewAddressFromMap(address: address),
           );
         },
       ),
@@ -360,8 +364,14 @@ abstract class AppRouter {
         name: AppRoutes.addressSearchScreen,
         path: '/${AppRoutes.addressSearchScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            AddressSearchScreen(currentLocation: state.extra as LatLng?),
+        builder: (context, state) {
+          final extra =
+              state.extra as ({LatLng? bias, bool isChangingAddress})?;
+          return AddressSearchScreen(
+            currentLocation: extra?.bias,
+            isChangingAddress: extra?.isChangingAddress ?? false,
+          );
+        },
       ),
       GoRoute(
         name: AppRoutes.discountCodeScreen,
