@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
 
 import '../widgets/phone_verification/phone_number_field.dart';
@@ -80,9 +81,14 @@ class _PhoneVerificationScreenState
                       buttonPadding: 16,
                       isLoading: isRequestOtpLoading,
                       onTap: () {
+                        final String? phone =
+                            AppValidator.saudiPhoneToInternational(
+                          _phoneController.text,
+                        );
+                        if (phone == null) return;
                         ref
                             .read(requestOtpProvider.notifier)
-                            .requestOtp(_phoneController.text.trim());
+                            .requestOtp(phone);
                       },
                     ),
             ],

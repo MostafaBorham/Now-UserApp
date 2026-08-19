@@ -30,4 +30,22 @@ class AppValidator {
     final String digits = (raw ?? '').replaceAll(RegExp(r'\D'), '');
     return _saudiLocalPhoneRegExp.firstMatch(digits)?.group(1);
   }
+
+  /// The `+9665XXXXXXXX` international form the login flow keys users on, built
+  /// from a number in any local shape the field or platform produces
+  /// (`(05) 1234 5678`, `0501234567`, `+966501234567`). Null when [raw] does
+  /// not hold a complete Saudi mobile number.
+  static String? saudiPhoneToInternational(String? raw) {
+    final String? tail = saudiLocalPhoneTail(raw);
+    return tail == null ? null : '+9665$tail';
+  }
+
+  /// The number as shown to the user (e.g. on the OTP screen): the country
+  /// code and the local `05` head in front of the 8 significant digits
+  /// (`+9660512345678`). Returns [raw] unchanged when it is not a Saudi
+  /// mobile, so callers can show whatever they were handed.
+  static String saudiPhoneDisplay(String? raw) {
+    final String? tail = saudiLocalPhoneTail(raw);
+    return tail == null ? (raw ?? '') : '+96605$tail';
+  }
 }

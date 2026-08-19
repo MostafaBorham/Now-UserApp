@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/verify_otp_vm.dart';
@@ -101,7 +102,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                     children: [
                       TextSpan(text: '${LangKeys.otpSentToKey.tr()} '),
                       TextSpan(
-                        text: '${widget.phoneNumber}.',
+                        text:
+                            '${AppValidator.saudiPhoneDisplay(widget.phoneNumber)}.',
                         style: AppTextStyles.style16SemiBold.copyWith(
                           color: context.colors.primary500Main,
                         ),
