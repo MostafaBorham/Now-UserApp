@@ -30,7 +30,10 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_size_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/success_add_to_cart_view.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
+
+final _isBuyNowProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class ProductDetailsScreen extends ConsumerWidget {
   const ProductDetailsScreen({super.key, required this.productSlug});
@@ -61,9 +64,10 @@ class ProductDetailsScreen extends ConsumerWidget {
                   onRetry: () => _fetchProductDetails(ref),
                 ),
             data: (product) {
-              final isAddingToCart = ref
-                  .watch(updateCartProductProvider(product.id ?? -1))
-                  .isLoading;
+              final cartState = ref.watch(updateCartProductProvider(product.id ?? -1));
+              final isBuyNow = ref.watch(_isBuyNowProvider);
+              final isAddingToCart = cartState.isLoading && !isBuyNow;
+              final isBuyNowLoading = cartState.isLoading && isBuyNow;
               ref.listen(updateCartProductProvider(product.id ?? -1), (
                 previous,
                 next,
@@ -71,6 +75,13 @@ class ProductDetailsScreen extends ConsumerWidget {
                 next.whenOrNull(
                   data: (cart) {
                     if (cart == null) return;
+                    final wasBuyNow = ref.read(_isBuyNowProvider);
+                    ref.read(_isBuyNowProvider.notifier).state = false;
+                    if (wasBuyNow) {
+                      ref.read(mainTabIndexProvider.notifier).state = 2;
+                      context.goNamed(AppRoutes.mainScreen);
+                      return;
+                    }
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -90,8 +101,6 @@ class ProductDetailsScreen extends ConsumerWidget {
                           context.pushNamed(AppRoutes.cartScreen);
                         },
                         onContinueShopping: () {
-                          // Close the sheet, then pop the product details
-                          // screen to return to the page that opened it.
                           Navigator.of(sheetContext).pop();
                           if (context.canPop()) context.pop();
                         },
@@ -99,6 +108,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                     );
                   },
                   error: (error, _) {
+                    ref.read(_isBuyNowProvider.notifier).state = false;
                     ErrorSnackBar.show(context, error.toString());
                   },
                 );
@@ -236,8 +246,24 @@ class ProductDetailsScreen extends ConsumerWidget {
                               ),
                               Expanded(
                                 child: UnPrimaryButton(
+                                  isLoading: isBuyNowLoading,
                                   title: LangKeys.buyNowKey.tr(),
                                   buttonPadding: 10,
+                                  onTap: () {
+                                    final productQuantity = ref.read(
+                                      productQuantityProvider,
+                                    );
+                                    if (product.id != null) {
+                                      ref.read(_isBuyNowProvider.notifier).state = true;
+                                      ref
+                                          .read(
+                                            updateCartProductProvider(
+                                              product.id!,
+                                            ).notifier,
+                                          )
+                                          .addToCart(productQuantity);
+                                    }
+                                  },
                                 ),
                               ),
                             ],

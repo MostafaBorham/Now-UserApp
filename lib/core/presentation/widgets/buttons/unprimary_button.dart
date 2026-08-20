@@ -8,6 +8,7 @@ class UnPrimaryButton extends StatelessWidget {
     required this.title,
     this.onTap,
     this.buttonPadding = 12, this.borderColor, this.titleColor,
+    this.isLoading = false,
   });
 
   final String title;
@@ -15,12 +16,13 @@ class UnPrimaryButton extends StatelessWidget {
   final double? buttonPadding;
   final Color? borderColor;
   final Color? titleColor;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
@@ -29,14 +31,24 @@ class UnPrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: borderColor?? colors.neutral400.withValues(alpha: 0.5), width: 1),
         ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(color: titleColor?? colors.black),
-          ),
-        ),
+        child: isLoading
+            ? SizedBox(
+                height: 20,
+                child: FittedBox(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: titleColor ?? colors.black,
+                  ),
+                ),
+              )
+            : FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.style14Medium.copyWith(color: titleColor?? colors.black),
+                ),
+              ),
       ),
     );
   }

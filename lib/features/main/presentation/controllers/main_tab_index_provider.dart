@@ -5,4 +5,4 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Kept outside the widget's state so callers elsewhere (e.g. the empty cart's
 /// "Browse products" button) can jump to a specific tab without threading a
 /// controller through the widget tree.
-final StateProvider<int> mainTabIndexProvider = StateProvider<int>((ref) => 0);
+final AutoDisposeStateProvider<int> mainTabIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
