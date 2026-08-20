@@ -168,6 +168,7 @@
   "nameHint": "Name ...",
   "newArrival": "New Arrival",
   "noAddress": "No Address",
+  "noAddressSelected": "No address selected",
   "noAddressResults": "No matching addresses",
   "noFaqsYet": "No FAQs Available Yet",
   "noInternetConnection": "Unable to reach the servers. Please check your internet connection and try again.",

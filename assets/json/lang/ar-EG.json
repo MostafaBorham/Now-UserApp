@@ -168,6 +168,7 @@
   "nameHint": "الاسم ...",
   "newArrival": "وصل جديد",
   "noAddress": "لا يوجد عنوان",
+  "noAddressSelected": "لم يتم اختيار عنوان",
   "noAddressResults": "لا توجد عناوين مطابقة",
   "noFaqsYet": "لا توجد أسئلة شائعة حاليًا",
   "noInternetConnection": "تعذّر الوصول إلى الخوادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.",

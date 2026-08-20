@@ -17,10 +17,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 
 class HomeDeliveryAddressView extends ConsumerStatefulWidget {
   const HomeDeliveryAddressView({super.key});
@@ -54,12 +57,16 @@ class _HomeDeliveryAddressViewState
     super.initState();
     _scrollController.addListener(_onScroll);
     _viewModel = ref.read(getMyAddressesProvider.notifier);
-    // Fetch the saved addresses the first time the sheet opens, or retry if a
+    // Guests have no saved-addresses list (their addresses provider is never
+    // filled — see AuthSessionViewModel), so the fetch is only kicked off for a
+    // logged-in user. Fetches the first time the sheet opens, or retries if a
     // previous open failed (an errored provider has no value); an already-loaded
     // list is reused as-is. Retrying here means an error state becomes loading
     // again, so the list falls back to its shimmer instead of an error view.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.read(getMyAddressesProvider).hasValue) {
+      final bool isUser =
+          ref.read(authSessionProvider).sessionType == SessionType.user;
+      if (isUser && !ref.read(getMyAddressesProvider).hasValue) {
         _viewModel.loadFirstPage();
       }
     });
@@ -127,6 +134,13 @@ class _HomeDeliveryAddressViewState
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    // A guest never has a saved-addresses list: the provider stays perpetually
+    // loading (nothing fills it), so its list and the map's provider-gated
+    // placeholder are both suppressed for guests, and the add-address button
+    // bounces them to phone verification instead.
+    final bool isUser =
+        ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
+        SessionType.user;
     final AsyncValue<PaginationModel<AddressModel>> addressesState = ref.watch(
       getMyAddressesProvider,
     );
@@ -175,9 +189,11 @@ class _HomeDeliveryAddressViewState
 
     // Hold the map on its loading placeholder until the first selection is
     // known, so [AppMap] is built with the address location from the start and
-    // never resolves (and jumps to) the device location first.
+    // never resolves (and jumps to) the device location first. Only a user
+    // waits on the addresses provider; a guest has none, so the map builds
+    // straight away and resolves the device location itself.
     final bool showMapPlaceholder =
-        selectedLocation == null && !addressesState.hasValue;
+        isUser && selectedLocation == null && !addressesState.hasValue;
 
     return Container(
       decoration: BoxDecoration(
@@ -269,20 +285,28 @@ class _HomeDeliveryAddressViewState
                 ),
               ),
               // The only scrollable region: the address list. It takes just the
-              // space it needs, and scrolls internally once it hits the sheet cap.
-              Flexible(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: _AddressList(
-                    state: addressesState,
-                    selectedAddressId: selectedAddress?.id,
-                    onSelect: _onAddressSelected,
+              // space it needs, and scrolls internally once it hits the sheet
+              // cap. Shown only for a logged-in user — a guest has no saved
+              // addresses, so its slot is simply left out.
+              if (isUser)
+                Flexible(
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: _AddressList(
+                      state: addressesState,
+                      selectedAddressId: selectedAddress?.id,
+                      onSelect: _onAddressSelected,
+                    ),
                   ),
                 ),
-              ),
               GestureDetector(
-                onTap: () =>
-                    context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
+                // A guest can't own addresses, so adding one first requires an
+                // account: bounce to phone verification. A user goes straight to
+                // the add-address flow.
+                onTap: () {
+                  if (redirectGuestToLogin(context)) return;
+                  context.pushNamed(AppRoutes.addNewAddressFromMapScreen);
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 26,

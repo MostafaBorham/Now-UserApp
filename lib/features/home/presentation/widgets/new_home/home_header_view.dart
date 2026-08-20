@@ -25,34 +25,27 @@ class HomeHeaderView extends ConsumerStatefulWidget {
 }
 
 class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
-  // The delivery address shown in the header. Seeded once from the first saved
-  // address (see [_seedFromProvider]); afterwards it only ever changes when the
-  // delivery-address sheet returns a pick — later provider refreshes leave it
-  // untouched.
   String? _displayedAddress;
   bool _seeded = false;
 
   @override
   void initState() {
     super.initState();
-    // Seed from an already-loaded provider; the not-yet-loaded case is caught by
-    // the ref.listen in build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _seedFromProvider(ref.read(getMyAddressesProvider));
     });
   }
 
   /// Fills the header once, the first time addresses are available: the first
-  /// address's name, or the localized "no address" text when the list is empty.
+  /// saved address's name. When the list is empty [_displayedAddress] is left
+  /// null, so the header shows the red "no address selected" placeholder — the
+  /// same state a guest (whose addresses never load) always sees.
   void _seedFromProvider(AsyncValue<PaginationModel<AddressModel>> state) {
     if (_seeded || !state.hasValue || !mounted) return;
     _seeded = true;
     final List<AddressModel> addresses = state.valueOrNull?.data ?? const [];
-    setState(() {
-      _displayedAddress = addresses.isEmpty
-          ? LangKeys.noAddressKey.tr()
-          : _addressName(addresses.first);
-    });
+    if (addresses.isEmpty) return;
+    setState(() => _displayedAddress = _addressName(addresses.first));
   }
 
   Future<void> _openDeliveryAddressSheet() async {
@@ -83,6 +76,8 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final bool hasAddress =
+        _displayedAddress != null && _displayedAddress!.isNotEmpty;
     // Seed as soon as the addresses arrive, without resetting on later changes.
     ref.listen<AsyncValue<PaginationModel<AddressModel>>>(
       getMyAddressesProvider,
@@ -137,14 +132,19 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                       children: [
                                         Assets.media.images.svg.homeLocationIcon
                                             .svg(width: con.maxWidth * 0.05),
-                                        Expanded(
+                                        Flexible(
                                           child: Text(
-                                            _displayedAddress ?? '',
+                                            hasAddress
+                                                ? _displayedAddress!
+                                                : LangKeys.noAddressSelectedKey
+                                                      .tr(),
                                             textDirection: TextDirection.ltr,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              color: colors.black,
+                                              color: hasAddress
+                                                  ? colors.black
+                                                  : colors.error,
                                               fontWeight: FontWeight.w400,
                                               fontSize: con.maxWidth * 0.03,
                                             ),
@@ -187,12 +187,6 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                     Expanded(flex: 4, child: HomeAppCategoriesView()),
                     Expanded(
                       flex: 1,
-                      // Opaque so the whole cell is tappable. IgnorePointer is
-                      // essential: an animated AnimatedSvgPicture wraps itself
-                      // in its own Listener/GestureDetector (for SMIL/link
-                      // events) that would otherwise win the gesture arena and
-                      // swallow the tap. The SVG here is decorative, so we hide
-                      // it from hit-testing and let this detector handle taps.
                       child: GestureDetector(
                         onTap: () =>
                             context.pushNamed(AppRoutes.categoriesScreen),
