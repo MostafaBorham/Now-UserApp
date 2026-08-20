@@ -17,11 +17,28 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categ
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_store_item_view.dart';
 
-class HomeAllStoresSectionView extends ConsumerWidget {
+class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   const HomeAllStoresSectionView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeAllStoresSectionView> createState() =>
+      _HomeAllStoresSectionViewState();
+}
+
+class _HomeAllStoresSectionViewState
+    extends ConsumerState<HomeAllStoresSectionView> {
+  // Which tab is currently visible. The tab area is sized to fit only this
+  // tab's content, so error/empty tabs stay compact while list tabs get the
+  // full height they need.
+  int _selectedIndex = 0;
+
+  // Natural height of the currently shown error/empty widget, measured offstage
+  // (see [_MeasureSize]). Kept per tab so switching tabs doesn't flash a stale
+  // height. Null until the first measure completes.
+  final Map<int, double> _compactHeights = <int, double>{};
+
+  @override
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
     final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
@@ -45,22 +62,33 @@ class HomeAllStoresSectionView extends ConsumerWidget {
       ),
     ];
 
+    // Tabs can shrink (e.g. categories reloading); keep the selection valid.
+    final int selectedIndex = _selectedIndex.clamp(0, tabs.length - 1);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // CustomButtonTabBar's TabBarView needs a bounded height, so we give
-          // the whole tab area exactly enough room to lay out every store card
-          // at full height. The outer page scroll then reveals all of them
-          // instead of the inner list scrolling on its own.
-          final double listWidth =
-              constraints.maxWidth - HomeStoresListView.horizontalInset;
-          final double listHeight =
-              HomeStoresListView.itemCount *
-                  HomeStoresListView.itemHeight(listWidth) +
-              (HomeStoresListView.itemCount - 1) * HomeStoresListView.separator;
+          final double fullListHeight = HomeStoresListView.listHeight(
+            HomeStoresListView.itemCount,
+            constraints.maxWidth,
+          );
+
+          // Resolve how much room the currently visible tab actually needs.
+          // For list/loading tabs it's the full list height; for error/empty
+          // tabs it's the widget's own measured height, so the tab area (and
+          // therefore the page scroll) never reserves the tall list height for
+          // a short error state.
+          final _TabContent content = _resolveSelectedContent(
+            selectedIndex: selectedIndex,
+            categories: categories,
+            outerWidth: constraints.maxWidth,
+            fullListHeight: fullListHeight,
+          );
+
           final double tabBarHeight =
-              HomeStoresListView.tabRowHeight + 16 + listHeight;
+              HomeStoresListView.tabRowHeight + 16 + content.height;
+
           return Column(
             spacing: 16,
             children: [
@@ -98,15 +126,110 @@ class HomeAllStoresSectionView extends ConsumerWidget {
                 child: CustomButtonTabBar(
                   tabs: tabs,
                   views: views,
+                  onTap: (int index) {
+                    if (index != _selectedIndex) {
+                      setState(() => _selectedIndex = index);
+                    }
+                  },
                   unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
                 ),
               ),
+              // Offstage measurer for the compact (error/empty) states: renders
+              // the same widget with an unbounded height to read its natural
+              // size, then feeds it back so the tab area can shrink to fit.
+              if (content.measure != null)
+                Offstage(
+                  child: SizedBox(
+                    width: constraints.maxWidth - HomeStoresListView.horizontalInset,
+                    child: _MeasureSize(
+                      onChange: (Size size) {
+                        if (!mounted) return;
+                        final double measured = size.height;
+                        if (_compactHeights[selectedIndex] != measured) {
+                          setState(
+                            () => _compactHeights[selectedIndex] = measured,
+                          );
+                        }
+                      },
+                      child: content.measure!,
+                    ),
+                  ),
+                ),
             ],
           );
         },
       ),
     );
   }
+
+  /// Resolves the content height for the currently selected tab, plus the widget
+  /// that must be measured offstage when the tab is in a compact (error/empty)
+  /// state. List/loading tabs need no measuring — their height is computed.
+  _TabContent _resolveSelectedContent({
+    required int selectedIndex,
+    required List<CategoryModel> categories,
+    required double outerWidth,
+    required double fullListHeight,
+  }) {
+    // "All" tab: always the full demo list.
+    if (selectedIndex == 0) {
+      return _TabContent(height: fullListHeight);
+    }
+
+    final int categoryIndex = selectedIndex - 1;
+    if (categoryIndex >= categories.length) {
+      return _TabContent(height: fullListHeight);
+    }
+
+    final CategoryModel category = categories[categoryIndex];
+    final CategoryStoresArgs args = (
+      categorySlug: category.slug ?? '',
+      categoryId: null,
+    );
+    final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
+      getCategoryStoresProvider(args),
+    );
+
+    return state.when(
+      // Shimmer shows the full list of placeholders.
+      loading: () => _TabContent(height: fullListHeight),
+      error: (Object error, _) {
+        final Widget widget = ServerConnectionErrorWidget(
+          message: error is String ? error : null,
+          onRetry: () => ref
+              .read(getCategoryStoresProvider(args).notifier)
+              .loadFirstPage(),
+        );
+        return _TabContent(
+          // Fall back to the full height until measured, so the first frame
+          // never clips the error widget (incl. its retry button).
+          height: _compactHeights[selectedIndex] ?? fullListHeight,
+          measure: widget,
+        );
+      },
+      data: (PaginationModel<StoreModel> page) {
+        final int count = page.data.take(HomeStoresListView.itemCount).length;
+        if (count == 0) {
+          return _TabContent(
+            height: _compactHeights[selectedIndex] ?? fullListHeight,
+            measure: const NoItemsWidget(),
+          );
+        }
+        return _TabContent(
+          height: HomeStoresListView.listHeight(count, outerWidth),
+        );
+      },
+    );
+  }
+}
+
+/// The resolved height for the selected tab and, for compact states, the widget
+/// whose natural height must be measured offstage.
+class _TabContent {
+  const _TabContent({required this.height, this.measure});
+
+  final double height;
+  final Widget? measure;
 }
 
 class HomeStoresListView extends ConsumerWidget {
@@ -126,6 +249,15 @@ class HomeStoresListView extends ConsumerWidget {
   // The store card cover scales with width (w * 0.32) while its text block is a
   // roughly constant ~110px, so this tracks the card's natural height closely.
   static double itemHeight(double width) => width * 0.32 + 110;
+
+  /// Total height of a list of [count] cards laid out at full height inside an
+  /// area of [outerWidth]. Single source of truth for the list's own height and
+  /// for the section that reserves room for it.
+  static double listHeight(int count, double outerWidth) {
+    if (count <= 0) return 0;
+    final double width = outerWidth - horizontalInset;
+    return count * itemHeight(width) + (count - 1) * separator;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -195,5 +327,33 @@ class _StoresList extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// Reports the laid-out size of [child] via [onChange] after each frame. Used to
+/// read the natural height of the error/empty widgets when they are rendered in
+/// an unbounded (offstage) box, so the tab area can shrink to fit them.
+class _MeasureSize extends StatefulWidget {
+  const _MeasureSize({required this.onChange, required this.child});
+
+  final ValueChanged<Size> onChange;
+  final Widget child;
+
+  @override
+  State<_MeasureSize> createState() => _MeasureSizeState();
+}
+
+class _MeasureSizeState extends State<_MeasureSize> {
+  final GlobalKey _key = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final BuildContext? ctx = _key.currentContext;
+      if (ctx == null) return;
+      final RenderBox box = ctx.findRenderObject() as RenderBox;
+      if (box.hasSize) widget.onChange(box.size);
+    });
+    return SizedBox(key: _key, child: widget.child);
   }
 }
