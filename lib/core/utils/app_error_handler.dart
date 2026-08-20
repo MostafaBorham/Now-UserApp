@@ -5,29 +5,17 @@ import 'package:flutter/widgets.dart';
 
 /// Single, app-wide entry point for uncaught errors.
 ///
-/// Wiring this up in `main()` means every exception — whether it comes from
-/// the Flutter framework (build/layout/paint), an unhandled `Future`, or any
-/// synchronous/asynchronous code running inside the app zone — is logged to
-/// the terminal in one consistent place, together with its stack trace.
-///
-/// Usage (in `main.dart`):
-/// ```dart
-/// AppErrorHandler.runGuarded(() {
-///   // ... bootstrap ...
-///   runApp(const MyApp());
-/// });
-/// ```
+/// Logs every exception to the terminal in a compact format: one line for the
+/// error, plus only the stack frames that originate from the app's own code.
+/// Repeated identical errors are throttled so the console stays readable when
+/// connectivity drops and dozens of image/API requests fail at once.
 abstract final class AppErrorHandler {
-  /// Runs [body] inside a guarded zone and installs the global error hooks so
-  /// that any exception raised anywhere in the app is printed to the terminal.
   static void runGuarded(void Function() body) {
     runZonedGuarded(
       () {
         WidgetsFlutterBinding.ensureInitialized();
 
-        // Framework errors (build/layout/paint, gesture callbacks, etc.).
         FlutterError.onError = (FlutterErrorDetails details) {
-          FlutterError.presentError(details);
           _log(
             details.exception,
             details.stack,
@@ -35,23 +23,46 @@ abstract final class AppErrorHandler {
           );
         };
 
-        // Errors that escape to the platform (async gaps, engine callbacks).
-        PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+        PlatformDispatcher.instance.onError =
+            (Object error, StackTrace stack) {
           _log(error, stack, context: 'PlatformDispatcher');
           return true;
         };
 
         body();
       },
-      // Anything not caught by the two hooks above (e.g. errors thrown from
-      // un-awaited futures or timers spawned inside the zone).
       (Object error, StackTrace stack) => _log(error, stack, context: 'Zone'),
     );
   }
 
+  static final Map<String, DateTime> _recentErrors = {};
+  static const Duration _throttleWindow = Duration(seconds: 30);
+
   static void _log(Object error, StackTrace? stack, {String? context}) {
+    final String key = '$context:$error';
+
+    final now = DateTime.now();
+    final lastSeen = _recentErrors[key];
+    if (lastSeen != null && now.difference(lastSeen) < _throttleWindow) return;
+    _recentErrors[key] = now;
+
+    if (_recentErrors.length > 50) {
+      final cutoff = now.subtract(const Duration(minutes: 1));
+      _recentErrors.removeWhere((_, time) => time.isBefore(cutoff));
+    }
+
     final String where = context == null ? '' : ' [$context]';
-    debugPrint('⛔️ Uncaught exception$where: $error');
-    debugPrintStack(stackTrace: stack ?? StackTrace.current);
+    final String appFrame = _firstAppFrame(stack);
+    debugPrint('⛔️$where $error${appFrame.isNotEmpty ? '\n   at $appFrame' : ''}');
+  }
+
+  static String _firstAppFrame(StackTrace? stack) {
+    if (stack == null) return '';
+    for (final line in stack.toString().split('\n')) {
+      if (line.contains('package:nowdelivery_user_app/')) {
+        return line.trim().replaceFirst(RegExp(r'^#\d+\s*'), '');
+      }
+    }
+    return '';
   }
 }

@@ -14,7 +14,7 @@ class DiscountCardShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppShimmer(
       child: AspectRatio(
-        aspectRatio: 2.5,
+        aspectRatio: 2.2,
         child: ClipPath(
           clipper: TicketClipper(textDirection: Directionality.of(context)),
           child: Container(

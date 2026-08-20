@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -27,11 +28,13 @@ class GlassProductItemView extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Center(
-                  child: Image.network(
-                    'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png',
+                  child: CachedNetworkImage(
+                    imageUrl: 'https://www.image2url.com/r2/default/images/1786611818996-ce0a2e08-e938-4dc2-8a43-f6337ba02bf9.png',
                     width: con.maxWidth * 0.6,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.high,
+                    errorWidget: (context, url, error) => SizedBox.shrink(),
+                    placeholder: (context, url) => SizedBox.shrink(),
                   ),
                 ),
               ),

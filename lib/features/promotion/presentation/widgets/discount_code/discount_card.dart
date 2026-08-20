@@ -21,27 +21,6 @@ class DiscountCard extends StatelessWidget {
   final bool dark;
   final VoidCallback? onCopy;
 
-  /*  static String _formatAmount(double? value) {
-    if (value == null) return '';
-    return value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toString();
-  }
-
-  static String _formatValidity(String? startsAt, String? expiresAt) {
-    final String start = _dateOnly(startsAt);
-    final String end = _dateOnly(expiresAt);
-    if (start.isEmpty && end.isEmpty) return '';
-    return LangKeys.discountValidity.tr(
-      namedArgs: {'start': start, 'end': end},
-    );
-  }
-
-  static String _dateOnly(String? isoDate) {
-    if (isoDate == null || isoDate.isEmpty) return '';
-    final int tIndex = isoDate.indexOf('T');
-    return tIndex == -1 ? isoDate : isoDate.substring(0, tIndex);
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -80,123 +59,125 @@ class DiscountCard extends StatelessWidget {
         ? context.colors.white
         : context.colors.tertiaryContainer;
 
-    return PhysicalShape(
-      clipper: TicketClipper(textDirection: Directionality.of(context)),
-      clipBehavior: Clip.antiAlias,
-      color: bodyGradient.colors.first,
-      elevation: 1.5,
-      shadowColor: const Color(0x14000000),
-      child: DecoratedBox(
-        decoration: BoxDecoration(gradient: bodyGradient),
-        child: AspectRatio(
-          aspectRatio: 16 / 6,
-          child: Row(
-            children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Container(
-                    height: constraints.maxHeight,
-                    color: valuePanel,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text: '${formatDouble(coupon.discountValue)}',
-                              style: TextStyle(
-                                fontSize: 40,
-                                height: 1,
-                                fontWeight: FontWeight.w800,
-                                color: percentColor,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: '%',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: percentColor,
-                                  ),
+    return LayoutBuilder(
+      builder: (context,constraints) {
+        return PhysicalShape(
+          clipper: TicketClipper(textDirection: Directionality.of(context)),
+          clipBehavior: Clip.antiAlias,
+          color: bodyGradient.colors.first,
+          elevation: 1.5,
+          shadowColor: const Color(0x14000000),
+          child: DecoratedBox(
+            decoration: BoxDecoration(gradient: bodyGradient),
+            child: AspectRatio(
+              aspectRatio: 2.2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: double.infinity,
+                      color: valuePanel,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: '${formatDouble(coupon.discountValue)}',
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  height: 1,
+                                  fontWeight: FontWeight.w800,
+                                  color: percentColor,
                                 ),
-                              ],
+                                children: [
+                                  TextSpan(
+                                    text: '%',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: percentColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
+                            const SizedBox(height: 6),
+                            Text(
+                              scope,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: scopeColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 5,
+                        children: [
                           Text(
-                            scope,
+                            LangKeys.discountTitle.tr(),
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: constraints.maxWidth*0.05,
                               fontWeight: FontWeight.w500,
-                              color: scopeColor,
+                              color: context.colors.primaryContainer,
                             ),
                           ),
+                          Text(
+                            '${LangKeys.fromKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.startsAt)} ${LangKeys.toKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.expiresAt)}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: constraints.maxWidth*0.035,
+                              color: context.colors.neutral500,
+                            ),
+                          ),
+                          Text(
+                            '${LangKeys.discountMinPurchase.tr()} ${formatDouble(coupon.minOrderValue)}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: constraints.maxWidth*0.035,
+                              color: context.colors.neutral500,
+                            ),
+                          ),
+                          _CodeChip(code: code, onCopy: onCopy),
                         ],
                       ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 14, start: 4),
+                    child: Center(
+                      child: Assets.media.images.svg.logoVertical.svg(height: 90),
+                    ),
                   ),
-                  child: Column(
-                    spacing: 6,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        LangKeys.discountTitle.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.primaryContainer,
-                        ),
-                      ),
-                      Text(
-                        '${LangKeys.fromKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.startsAt)} ${LangKeys.toKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: coupon.expiresAt)}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 10,
-                          color: context.colors.neutral500,
-                        ),
-                      ),
-                      Text(
-                        '${LangKeys.discountMinPurchase.tr()} ${formatDouble(coupon.minOrderValue)}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: context.colors.neutral500,
-                        ),
-                      ),
-                      2.hSpace,
-                      _CodeChip(code: code, onCopy: onCopy),
-                    ],
-                  ),
-                ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 14, start: 4),
-                child: Center(
-                  child: Assets.media.images.svg.logoVertical.svg(height: 90),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
@@ -211,27 +192,39 @@ class _CodeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onCopy,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: context.colors.primary100,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Assets.media.images.svg.copy.svg(width: 16, height: 16),
-            const SizedBox(width: 8),
-            Text(
-              code,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: context.colors.primaryContainer,
+      child: LayoutBuilder(
+        builder: (context,con) {
+          return Container(
+            width: con.maxWidth*0.6,
+            height: con.maxWidth*0.2,
+            decoration: BoxDecoration(
+              color: context.colors.primary100,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 3,
+                children: [
+                  Assets.media.images.svg.copy.svg(width: con.maxWidth*0.1, height: con.maxWidth*0.1),
+                  SizedBox(
+                    width: con.maxWidth*0.37,
+                    child: Text(
+                      code,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: con.maxWidth*0.08,
+                        fontWeight: FontWeight.w400,
+                        color: context.colors.primaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }
