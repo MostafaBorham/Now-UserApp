@@ -54,7 +54,7 @@ class _CategoriesStoreTabViewState
             views: StoresSortType.values.map((sortType) {
               return CategoryStoresView(sortType: sortType);
             }).toList(),
-            selectedTabColor: colors.neutral1200,
+            // selectedTabColor: colors.neutral1200,
             unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
         ),

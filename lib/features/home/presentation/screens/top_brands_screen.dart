@@ -38,7 +38,7 @@ class TopBrandsScreen extends StatelessWidget {
                   TopBrandsView(),
                   TopBrandsView(),
                 ],
-                selectedTabColor: colors.secondary600.withValues(alpha: 0.8),
+                // selectedTabColor: colors.secondary600.withValues(alpha: 0.8),
                 unSelectedTabColor: colors.neutral400.withValues(
                   alpha: 0.2,
                 ),

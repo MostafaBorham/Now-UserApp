@@ -157,8 +157,7 @@ class StoreDetailsScreen extends ConsumerWidget {
                                                     ),
                                               )
                                               .toList(),
-                                          selectedTabColor:
-                                              colors.tertiaryContainer,
+                                          // selectedTabColor: colors.tertiaryContainer,
                                           unSelectedTabColor: colors.neutral400
                                               .withValues(alpha: 0.2),
                                           selectedLabelColor: colors.white,

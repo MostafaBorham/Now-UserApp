@@ -10,18 +10,16 @@ class CustomButtonTabBar extends StatefulWidget {
     super.key,
     required this.tabs,
     required this.views,
-    required this.selectedTabColor,
+    this.selectedTabColor,
     required this.unSelectedTabColor,
     this.filterWidget,
     this.selectedLabelColor,
     this.unSelectedLabelColor,
     this.onTap,
   });
-
   final List<String> tabs;
   final List<Widget> views;
-
-  final Color selectedTabColor;
+  final Color? selectedTabColor;
   final ValueChanged<int>? onTap;
   final Color? selectedLabelColor;
   final Color? unSelectedLabelColor;
@@ -94,7 +92,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                           decoration: BoxDecoration(
                             borderRadius: AppBorderRadius.brCircular20,
                             color: isSelected
-                                ? widget.selectedTabColor
+                                ? widget.selectedTabColor?? colors.primary500Main
                                 : widget.unSelectedTabColor,
                           ),
                           child: Text(

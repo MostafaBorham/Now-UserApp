@@ -34,7 +34,7 @@ class AllStoresScreen extends StatelessWidget {
                   StoresListView(),
                   StoresListView(),
                 ],
-                selectedTabColor: colors.neutral1200,
+                // selectedTabColor: colors.neutral1200,
                 unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
               ),
             ),
