@@ -27,31 +27,23 @@ class CategoryStoresView extends ConsumerStatefulWidget {
 }
 
 class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
-  late final GetCategoryStoresViewModel _storesViewModel;
-
-  @override
-  void initState() {
-    super.initState();
-    _storesViewModel = ref.read(getCategoryStoresProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchStores());
-  }
-
-  /// Loads the first page of the opened category. Also the pull-to-refresh and
-  /// first-page retry action, so all three ask for the same query.
-  Future<void> _fetchStores() {
-    // TODO: forward widget.sortType to the API once the stores sort param is wired.
-    return _storesViewModel.getCategoryStores(
-      categorySlug: ref.read(categoryProvider).slug ?? '',
-      categoryId: null,
-    );
-  }
+  // The opened category's query, resolved once. The provider starts fetching it
+  // as soon as it is first watched below.
+  // TODO: forward widget.sortType to the API once the stores sort param is wired.
+  late final CategoryStoresArgs _args = (
+    categorySlug: ref.read(categoryProvider).slug ?? '',
+    categoryId: null,
+  );
 
   @override
   Widget build(BuildContext context) {
+    final GetCategoryStoresViewModel storesViewModel = ref.read(
+      getCategoryStoresProvider(_args).notifier,
+    );
     return PaginatedView<StoreModel>(
-      provider: getCategoryStoresProvider,
-      onRefresh: _fetchStores,
-      onLoadNextPage: _storesViewModel.loadNextPage,
+      provider: getCategoryStoresProvider(_args),
+      onRefresh: storesViewModel.loadFirstPage,
+      onLoadNextPage: storesViewModel.loadNextPage,
       layout: PaginatedListLayout(
         padding: EdgeInsets.zero,
         separatorBuilder: (BuildContext context, int index) => 20.hSpace,

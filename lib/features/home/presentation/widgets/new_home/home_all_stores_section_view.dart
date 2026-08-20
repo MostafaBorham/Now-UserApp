@@ -4,26 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_store_item_view.dart';
 
-/// The home "all stores" section: a category-filtered tab bar over the store
-/// cards, plus a "see all" shortcut into [AllStoresScreen].
-///
-/// The tabs are sourced from the shared [getAppCategoriesProvider] (preloaded on
-/// splash and also driven by the home categories carousel) and depend on its
-/// state:
-/// * **loading** (no data yet) → a shimmer placeholder row, no **All** tab;
-/// * **error** (no data) → the **All** tab only;
-/// * **data** → the pinned **All** tab followed by one tab per app category,
-///   each bound to a [CategoryModel] and labelled with its localized name.
 class HomeAllStoresSectionView extends ConsumerWidget {
   const HomeAllStoresSectionView({super.key});
 
@@ -31,17 +24,24 @@ class HomeAllStoresSectionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
 
-    final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref.watch(
-      getAppCategoriesProvider,
-    );
-    final PaginationModel<CategoryModel>? categoriesPage =
-        categoriesState.valueOrNull;
-    final bool showTabsShimmer =
-        categoriesPage == null && categoriesState.isLoading;
+    final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
+        .watch(getAppCategoriesProvider);
+    final List<CategoryModel> categories =
+        categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
+
     final List<String> tabs = <String>[
       LangKeys.allKey.tr(),
-      ...(categoriesPage?.data ?? const <CategoryModel>[]).map(
+      ...categories.map(
         (CategoryModel category) => context.getLocalizedApiText(category.name),
+      ),
+    ];
+
+    // The "All" tab (no category) shows demo placeholder cards; every other tab
+    // is bound to its own CategoryModel and fetches that category's stores.
+    final List<Widget> views = <Widget>[
+      const HomeStoresListView(),
+      ...categories.map(
+        (CategoryModel category) => HomeStoresListView(category: category),
       ),
     ];
 
@@ -49,6 +49,10 @@ class HomeAllStoresSectionView extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
+          // CustomButtonTabBar's TabBarView needs a bounded height, so we give
+          // the whole tab area exactly enough room to lay out every store card
+          // at full height. The outer page scroll then reveals all of them
+          // instead of the inner list scrolling on its own.
           final double listWidth =
               constraints.maxWidth - HomeStoresListView.horizontalInset;
           final double listHeight =
@@ -91,51 +95,11 @@ class HomeAllStoresSectionView extends ConsumerWidget {
               ),
               SizedBox(
                 height: tabBarHeight,
-                child: showTabsShimmer
-                    ? Column(
-                        spacing: 16,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: HomeStoresListView.tabRowHeight,
-                            child: AppShimmer(
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                itemCount:
-                                    HomeStoresListView.shimmerTabWidths.length,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(width: 8),
-                                itemBuilder: (context, index) => Center(
-                                  child: Container(
-                                    width:
-                                        HomeStoresListView.shimmerTabWidths[index],
-                                    height: 36,
-                                    decoration: BoxDecoration(
-                                      color: colors.neutral500,
-                                      borderRadius: AppBorderRadius.brCircular20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const HomeStoresListView(),
-                        ],
-                      )
-                    : CustomButtonTabBar(
-                        key: ValueKey<int>(tabs.length),
-                        tabs: tabs,
-                        views: List<Widget>.generate(
-                          tabs.length,
-                          (_) => const HomeStoresListView(),
-                        ),
-                        // selectedTabColor: colors.primary500Main,
-                        unSelectedTabColor: colors.neutral500.withValues(
-                          alpha: 0.2,
-                        ),
-                      ),
+                child: CustomButtonTabBar(
+                  tabs: tabs,
+                  views: views,
+                  unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
+                ),
               ),
             ],
           );
@@ -145,8 +109,10 @@ class HomeAllStoresSectionView extends ConsumerWidget {
   }
 }
 
-class HomeStoresListView extends StatelessWidget {
-  const HomeStoresListView({super.key});
+class HomeStoresListView extends ConsumerWidget {
+  const HomeStoresListView({super.key, this.category});
+
+  final CategoryModel? category;
 
   static const int itemCount = 7;
   static const double separator = 15;
@@ -157,29 +123,75 @@ class HomeStoresListView extends StatelessWidget {
   // tab-area height never clips the list.
   static const double tabRowHeight = 60;
 
-  // Placeholder pill widths for the loading tab row — varied so the shimmer
-  // reads as a row of differently-sized tabs rather than identical blocks.
-  static const List<double> shimmerTabWidths = [64, 92, 78, 96];
-
   // The store card cover scales with width (w * 0.32) while its text block is a
   // roughly constant ~110px, so this tracks the card's natural height closely.
   static double itemHeight(double width) => width * 0.32 + 110;
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final CategoryModel? category = this.category;
+    // "All" tab: no data source wired yet — demo placeholder cards.
+    if (category == null) {
+      return _StoresList(
+        itemCount: itemCount,
+        itemBuilder: (context, index) => const HomeStoreItemView(),
+      );
+    }
+
+    final CategoryStoresArgs args = (
+      categorySlug: category.slug ?? '',
+      categoryId: null,
+    );
+    final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
+      getCategoryStoresProvider(args),
+    );
+
+    return state.when(
+      loading: () => _StoresList(
+        itemCount: itemCount,
+        itemBuilder: (context, index) => AppShimmer(child: HomeStoreItemView()),
+      ),
+      error: (Object error, _) => ServerConnectionErrorWidget(
+        message: error is String ? error : null,
+        onRetry: () =>
+            ref.read(getCategoryStoresProvider(args).notifier).loadFirstPage(),
+      ),
+      data: (PaginationModel<StoreModel> page) {
+        final List<StoreModel> stores = page.data.take(itemCount).toList();
+        if (stores.isEmpty) return const NoItemsWidget();
+        return _StoresList(
+          itemCount: stores.length,
+          itemBuilder: (context, index) =>
+              HomeStoreItemView(store: stores[index]),
+        );
+      },
+    );
+  }
+}
+
+class _StoresList extends StatelessWidget {
+  const _StoresList({required this.itemCount, required this.itemBuilder});
+
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double height = itemHeight(constraints.maxWidth);
+        final double height = HomeStoresListView.itemHeight(
+          constraints.maxWidth,
+        );
         return ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           addRepaintBoundaries: true,
           padding: EdgeInsets.zero,
-          itemBuilder: (context, index) =>
-              SizedBox(height: height, child: const HomeStoreItemView()),
-          separatorBuilder: (context, index) =>
-              const SizedBox(height: separator),
           itemCount: itemCount,
+          itemBuilder: (context, index) =>
+              SizedBox(height: height, child: itemBuilder(context, index)),
+          separatorBuilder: (context, index) =>
+              const SizedBox(height: HomeStoresListView.separator),
         );
       },
     );

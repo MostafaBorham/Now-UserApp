@@ -31,22 +31,48 @@ class CustomButtonTabBar extends StatefulWidget {
 }
 
 class _CustomButtonTabBarState extends State<CustomButtonTabBar>
-    with SingleTickerProviderStateMixin {
-  late final TabController _controller;
+    with TickerProviderStateMixin {
+  late TabController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = _createController(0);
+  }
 
-    _controller = TabController(length: widget.tabs.length, vsync: this);
+  TabController _createController(int initialIndex) {
+    final int length = widget.tabs.length;
+    final TabController controller = TabController(
+      length: length,
+      vsync: this,
+      initialIndex: length == 0 ? 0 : initialIndex.clamp(0, length - 1),
+    );
+    controller.addListener(_onTabChanged);
+    return controller;
+  }
 
-    _controller.addListener(() {
-      setState(() {});
-    });
+  void _onTabChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomButtonTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The tab count can grow/shrink over the widget's life (e.g. tabs arriving
+    // from a provider). Rebuild the controller to the new length in place —
+    // keeping the selected tab where possible — so callers never need a
+    // ValueKey to force a fresh controller.
+    if (oldWidget.tabs.length != widget.tabs.length) {
+      final int previousIndex = _controller.index;
+      _controller.removeListener(_onTabChanged);
+      _controller.dispose();
+      _controller = _createController(previousIndex);
+    }
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onTabChanged);
     _controller.dispose();
     super.dispose();
   }
@@ -81,7 +107,6 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     labelPadding: EdgeInsets.symmetric(horizontal: 6),
                     tabs: List.generate(widget.tabs.length, (index) {
                       final isSelected = _controller.index == index;
-
                       return Tab(
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
@@ -120,9 +145,11 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                 controller: _controller,
                 children: widget.views
                     .map(
-                      (view) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: view,
+                      (view) => _KeepAliveView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: view,
+                        ),
                       ),
                     )
                     .toList(),
@@ -132,5 +159,29 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
         );
       },
     );
+  }
+}
+
+/// Keeps a tab's view alive once it has been built, so every [CustomButtonTabBar]
+/// loads each view only the first time it is opened and then holds its state in
+/// memory — no `ValueKey` needed at the call site.
+class _KeepAliveView extends StatefulWidget {
+  const _KeepAliveView({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_KeepAliveView> createState() => _KeepAliveViewState();
+}
+
+class _KeepAliveViewState extends State<_KeepAliveView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }

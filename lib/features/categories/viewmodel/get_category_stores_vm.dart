@@ -6,43 +6,41 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_mo
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/repo/categories_repo.dart';
 
-/// Single task: page through the stores of a category for the category
-/// details screen.
+/// The query one [GetCategoryStoresViewModel] pages through: a category's
+/// [categorySlug], optionally narrowed to the sub-category [categoryId]. Used as
+/// the [getCategoryStoresProvider] family key, so each distinct query keeps its
+/// own independent pagination state (e.g. every store tab on the home screen).
+typedef CategoryStoresArgs = ({String categorySlug, int? categoryId});
+
+/// Single task: page through the stores of a category.
 ///
-/// The screen starts the first fetch with [getCategoryStores] — it is the only
-/// call that needs the query parameters — then `loadNextPage()` and
-/// `loadFirstPage()` (refresh / retry) replay them from [PaginatedViewModel].
-final getCategoryStoresProvider =
-    StateNotifierProvider.autoDispose<GetCategoryStoresViewModel,
-        AsyncValue<PaginationModel<StoreModel>>>(
-  (Ref ref) => GetCategoryStoresViewModel(),
+/// A `family` keyed by [CategoryStoresArgs]: each query gets its own view model
+/// and state, so several tabs paging different categories at once never share
+/// (or clobber) each other's stores. The first page starts as soon as an arg is
+/// first watched; `loadNextPage()` and `loadFirstPage()` (refresh / retry) then
+/// replay the same query from [PaginatedViewModel].
+final getCategoryStoresProvider = StateNotifierProvider.autoDispose.family<
+    GetCategoryStoresViewModel,
+    AsyncValue<PaginationModel<StoreModel>>,
+    CategoryStoresArgs>(
+  (Ref ref, CategoryStoresArgs args) =>
+      GetCategoryStoresViewModel(args: args)..loadFirstPage(),
 );
 
 class GetCategoryStoresViewModel extends PaginatedViewModel<StoreModel> {
+  GetCategoryStoresViewModel({required this.args});
+
   final CategoriesRepo _repo = CategoriesRepo();
 
   /// The query the loaded pages belong to, kept so that loading another page,
   /// refreshing or retrying asks for the same stores.
-  String _categorySlug = '';
-  int? _categoryId;
-
-  /// Loads the first page of [categorySlug], optionally narrowed to the
-  /// sub-category [categoryId]. Call again with different arguments to switch
-  /// the query — the pages already loaded are dropped.
-  Future<void> getCategoryStores({
-    required String categorySlug,
-    required int? categoryId,
-  }) {
-    _categorySlug = categorySlug;
-    _categoryId = categoryId;
-    return loadFirstPage();
-  }
+  final CategoryStoresArgs args;
 
   @override
   Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) {
     return _repo.getCategoryStores(
-      categorySlug: _categorySlug,
-      categoryId: _categoryId,
+      categorySlug: args.categorySlug,
+      categoryId: args.categoryId,
       page: page,
     );
   }

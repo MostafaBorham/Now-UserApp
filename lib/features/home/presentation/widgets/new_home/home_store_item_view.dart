@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -13,11 +16,41 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
 class HomeStoreItemView extends StatelessWidget {
-  const HomeStoreItemView({super.key});
+  const HomeStoreItemView({super.key, this.store});
+
+  /// The store to render. When null the card falls back to demo content so the
+  /// design still reads while a tab (e.g. "All") has no data source wired.
+  final StoreModel? store;
+
+  // Demo fallbacks used only when [store] is null.
+  static const String _demoCoverUrl =
+      'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1';
+  static const String _demoLogoUrl =
+      'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png';
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+
+    final bool hasStore = store != null;
+    final String coverUrl = hasStore ? (store!.coverUrl ?? '') : _demoCoverUrl;
+    final String logoUrl = hasStore ? (store!.logoUrl ?? '') : _demoLogoUrl;
+    final String storeName = hasStore
+        ? context.getLocalizedApiText(store!.name)
+        : 'شركة دار الاميرات';
+    final String storeDescription = hasStore
+        ? context.getLocalizedApiText(store!.description)
+        : 'شركة دار الأميرات هي واحدة من أشهر وأبرز الوجهات في المملكة العربية السعودية المتخصصة في عالم التجميل';
+    final String rating = hasStore ? '${formatDouble(store!.rating)}' : '4.5';
+    final String ratingCount = hasStore ? '${store!.ratingCount ?? 0}' : '4';
+    final String deliveryTime = hasStore
+        ? (store!.deliveryTime ?? '0 ${LangKeys.minutesKey.tr()}')
+        : '40-50 ${LangKeys.minutesKey.tr()}';
+    final String distance = hasStore
+        ? '${formatDouble(store!.distance)} ${LangKeys.kmKey.tr()}'
+        : '40 - 50 ${LangKeys.kmKey.tr()}';
+    final String deliveryFee = hasStore ? '${formatDouble(store!.deliveryFee)}' : '10';
+
     return LayoutBuilder(
       builder: (context, con) {
         final double w = con.maxWidth;
@@ -47,8 +80,7 @@ class HomeStoreItemView extends StatelessWidget {
                   children: [
                     Positioned.fill(
                       child: AppCachedNetworkImage(
-                        imageUrl:
-                            'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1',
+                        imageUrl: coverUrl,
                         width: double.infinity,
                         height: double.infinity,
                       ),
@@ -81,7 +113,8 @@ class HomeStoreItemView extends StatelessWidget {
                       child: CircularAppFavouriteIcon(
                         size: w * 0.05,
                         favouriteType: FavouriteType.store,
-                        isFavourite: false,
+                        itemId: store?.id,
+                        isFavourite: store?.isFavorite ?? false,
                         onFavouriteChanged: (currentFavourite) {},
                       ),
                     ),
@@ -91,14 +124,13 @@ class HomeStoreItemView extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: colors.neutral300),
+                          border: Border.all(color: colors.neutral200.withValues(alpha: 0.5)),
                         ),
                         child: CircularBrandLogo(
                           radius: logoRadius,
                           elevation: 0,
                           backgroundColor: colors.white,
-                          logoUrl:
-                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                          logoUrl: logoUrl,
                         ),
                       ),
                     ),
@@ -123,7 +155,7 @@ class HomeStoreItemView extends StatelessWidget {
                         children: [
                           Flexible(
                             child: AutoSizeText(
-                              'شركة دار الاميرات',
+                              storeName,
                               maxLines: 1,
                               textAlign: TextAlign.start,
                               style: AppTextStyles.style18Bold.copyWith(
@@ -133,8 +165,8 @@ class HomeStoreItemView extends StatelessWidget {
                           ),
                           AppRateWidget(
                             starColor: colors.amber500,
-                            rateRatio: '4.5',
-                            rateCount: '4',
+                            rateRatio: rating,
+                            rateCount: ratingCount,
                             rateColor: colors.neutral500,
                             size: w * 0.045,
                           ),
@@ -142,7 +174,8 @@ class HomeStoreItemView extends StatelessWidget {
                       ),
                     ),
                     AutoSizeText(
-                      'شركة دار الأميرات هي واحدة من أشهر وأبرز الوجهات في المملكة العربية السعودية المتخصصة في عالم التجميل',
+                      textDirection: TextDirection.ltr,
+                      storeDescription,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.end,
@@ -151,9 +184,9 @@ class HomeStoreItemView extends StatelessWidget {
                       ),
                     ),
                     StoreInfoRow(
-                      deliveryTime: '40-50 ${LangKeys.minutesKey.tr()}',
-                      distance: '40 - 50 ${LangKeys.kmKey.tr()}',
-                      deliveryFee: '10',
+                      deliveryTime: deliveryTime,
+                      distance: distance,
+                      deliveryFee: deliveryFee,
                       infoIconSize: w * 0.045,
                       infoFontSize: w * 0.04,
                     ),
