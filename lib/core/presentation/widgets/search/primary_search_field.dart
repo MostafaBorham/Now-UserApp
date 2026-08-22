@@ -73,58 +73,62 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     Widget child = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _isEditable ? null : widget.onTap,
-      child: Container(
-        padding: const EdgeInsetsDirectional.only(
-          start: 16,
-          end: 8,
-          top: 12,
-          bottom: 12,
-        ),
-        decoration: BoxDecoration(
-          color: colors.white,
-          borderRadius: AppBorderRadius.brCircular8,
-          border: Border.all(color: colors.primary500Main),
-        ),
-        child: Row(
-          spacing: 8,
-          children: <Widget>[
-            Expanded(
-              child: _isEditable
-                  ? TextField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      onChanged: _onChanged,
-                      textInputAction: TextInputAction.search,
-                      style: AppTextStyles.style16Regular.copyWith(
-                        color: colors.black,
-                      ),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.zero,
-                        hintText: suggestions.first.tr(),
-                        hintStyle: hintStyle,
-                      ),
-                    )
-                  : _AnimatedSearchHint(
-                      suggestions: suggestions,
-                      style: hintStyle,
-                    ),
+      child: LayoutBuilder(
+        builder: (context,con) {
+          return Container(
+            padding: EdgeInsetsDirectional.only(
+              start: 16,
+              end: 8,
+              top: con.maxWidth*0.02,
+              bottom: con.maxWidth*0.02,
             ),
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: colors.primary500Main,
-                borderRadius: AppBorderRadius.brCircular16,
-              ),
-              child: Assets.media.images.svg.searchNormalIcon.svg(
-                width: 16,
-                height: 16,
-                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
-              ),
+            decoration: BoxDecoration(
+              color: colors.white,
+              borderRadius: AppBorderRadius.brCircular8,
+              border: Border.all(color: colors.primary500Main),
             ),
-          ],
-        ),
+            child: Row(
+              spacing: 8,
+              children: <Widget>[
+                Expanded(
+                  child: _isEditable
+                      ? TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          onChanged: _onChanged,
+                          textInputAction: TextInputAction.search,
+                          style: AppTextStyles.style16Regular.copyWith(
+                            color: colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            hintText: suggestions.first.tr(),
+                            hintStyle: hintStyle,
+                          ),
+                        )
+                      : _AnimatedSearchHint(
+                          suggestions: suggestions,
+                          style: hintStyle,
+                        ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: colors.primary500Main,
+                    borderRadius: AppBorderRadius.brCircular16,
+                  ),
+                  child: Assets.media.images.svg.searchNormalIcon.svg(
+                    width: 16,
+                    height: 16,
+                    colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
       ),
     );
 

@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -18,7 +19,11 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 
 class HomeHeaderView extends ConsumerStatefulWidget {
-  const HomeHeaderView({super.key});
+  const HomeHeaderView({super.key, this.searchFieldKey});
+
+  /// Anchor placed on the in-header search field so the parent screen can
+  /// measure when it reaches the top and swap in the pinned search bar.
+  final Key? searchFieldKey;
 
   @override
   ConsumerState<HomeHeaderView> createState() => _HomeHeaderViewState();
@@ -104,7 +109,9 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                   spacing: 10,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(
+                        top: 8
+                      ),
                       child: Column(
                         spacing: 12,
                         children: [
@@ -177,7 +184,9 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                             ],
                           ),
                           PrimarySearchField(
-                            onTap: () => context.pushNamed(AppRoutes.searchScreen),
+                            key: widget.searchFieldKey,
+                            onTap: () =>
+                                context.pushNamed(AppRoutes.searchScreen),
                           ),
                         ],
                       ),
