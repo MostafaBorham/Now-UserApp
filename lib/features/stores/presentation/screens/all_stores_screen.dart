@@ -23,6 +23,8 @@ class AllStoresScreen extends ConsumerStatefulWidget {
 }
 
 class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
+  int selectedTabIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -74,12 +76,16 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                     context: context,
                     isScrollControlled: true,
                     builder: (context) => StoresFilterView(
-                      onApply: (type, rating) {
-                        print('apply = $type$rating');
+                      onApply: (type, rating, categoryIndex) {
+                        if (categoryIndex != null) {
+                          setState(() => selectedTabIndex = categoryIndex);
+                        }
                       },
                     ),
                   ),
                 ),
+                selectedIndex: selectedTabIndex,
+                onTap: (index) => setState(() => selectedTabIndex = index),
                 tabs: tabs,
                 views: [
                   StoresListView(),

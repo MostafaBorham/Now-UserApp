@@ -17,11 +17,16 @@ class CustomButtonTabBar extends StatefulWidget {
     this.selectedLabelColor,
     this.unSelectedLabelColor,
     this.onTap,
+    this.selectedIndex,
   });
   final List<String?> tabs;
   final List<Widget> views;
   final Color? selectedTabColor;
   final ValueChanged<int>? onTap;
+
+  /// Externally-driven selected tab. When the parent changes this value the bar
+  /// animates to it; pair it with [onTap] so taps keep the parent in sync.
+  final int? selectedIndex;
   final Color? selectedLabelColor;
   final Color? unSelectedLabelColor;
   final Color unSelectedTabColor;
@@ -40,7 +45,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   @override
   void initState() {
     super.initState();
-    _controller = _createController(0);
+    _controller = _createController(widget.selectedIndex ?? 0);
   }
 
   TabController _createController(int initialIndex) {
@@ -67,6 +72,15 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
       _controller.removeListener(_onTabChanged);
       _controller.dispose();
       _controller = _createController(previousIndex);
+    }
+
+    final int? target = widget.selectedIndex;
+    if (target != null &&
+        target != oldWidget.selectedIndex &&
+        target >= 0 &&
+        target < _controller.length &&
+        target != _controller.index) {
+      _controller.animateTo(target);
     }
   }
 

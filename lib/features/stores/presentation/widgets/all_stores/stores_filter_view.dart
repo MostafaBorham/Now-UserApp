@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_bottom_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_categories_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_ratings_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_types_view.dart';
 
 class StoresFilterView extends StatefulWidget {
   const StoresFilterView({super.key, this.onApply});
 
+  /// [categoryIndex] is the selected chip index over the `[All, ...categories]`
+  /// list (0 = All), matching the tab order in [AllStoresScreen].
   final void Function(
     StoresSortType? type,
     String? rating,
+    int? categoryIndex,
   )?
   onApply;
 
   @override
-  State<StoresFilterView> createState() =>
-      _StoresFilterViewState();
+  State<StoresFilterView> createState() => _StoresFilterViewState();
 }
 
 class _StoresFilterViewState extends State<StoresFilterView> {
   StoresSortType? selectedType;
   String? selectedRating;
+
+  /// Defaults to 0 (the "All" chip that [AppSelector] pre-selects) so apply always
+  /// reports the highlighted category — even when the user leaves it on All.
+  int selectedCategoryIndex = 0;
   int filtersKey = 0;
 
   void resetFilters() {
     setState(() {
       selectedType = null;
       selectedRating = null;
+      selectedCategoryIndex = 0;
       filtersKey++;
     });
   }
@@ -38,42 +43,18 @@ class _StoresFilterViewState extends State<StoresFilterView> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return FilterBottomSheet(
-      onApply: () => widget.onApply?.call(selectedType, selectedRating),
+      onApply: () => widget.onApply?.call(
+        selectedType,
+        selectedRating,
+        selectedCategoryIndex,
+      ),
       // onReset: resetFilters,
       filters: [
         FilterCategoriesView(
           key: ValueKey('categories_$filtersKey'),
           selectedLabelColor: colors.white,
           selectedColor: colors.primary500Main,
-          categories: [
-            CategoryModel(
-              name: {
-                'en' : 'All',
-                'ar' : 'الكل'
-              }
-            ),
-            CategoryModel(
-              id: 0,
-                name: {
-                  'en' : 'Clothes',
-                  'ar' : 'الملابس'
-                }
-            ),
-            CategoryModel(
-                id: 1,
-                name: {
-                  'en' : 'Shoes',
-                  'ar' : 'الأحذية'
-                }
-            ),
-            CategoryModel(
-                id: 2,
-                name: {
-                  'en' : 'Electronics',
-                  'ar' : 'الالكترونيات'
-                }
-            ),
-          ],
+          onChanged: (index) => selectedCategoryIndex = index,
         ),
         FilterRatingsView(
           key: ValueKey('ratings_$filtersKey'),
