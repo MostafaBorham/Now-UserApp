@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 class CustomButtonTabBar extends StatefulWidget {
   const CustomButtonTabBar({
@@ -17,7 +18,7 @@ class CustomButtonTabBar extends StatefulWidget {
     this.unSelectedLabelColor,
     this.onTap,
   });
-  final List<String> tabs;
+  final List<String?> tabs;
   final List<Widget> views;
   final Color? selectedTabColor;
   final ValueChanged<int>? onTap;
@@ -34,6 +35,8 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
     with TickerProviderStateMixin {
   late TabController _controller;
 
+  int get _realTabCount => widget.tabs.where((t) => t != null).length;
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +44,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   }
 
   TabController _createController(int initialIndex) {
-    final int length = widget.tabs.length;
+    final int length = _realTabCount;
     final TabController controller = TabController(
       length: length,
       vsync: this,
@@ -58,11 +61,8 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   @override
   void didUpdateWidget(covariant CustomButtonTabBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // The tab count can grow/shrink over the widget's life (e.g. tabs arriving
-    // from a provider). Rebuild the controller to the new length in place —
-    // keeping the selected tab where possible — so callers never need a
-    // ValueKey to force a fresh controller.
-    if (oldWidget.tabs.length != widget.tabs.length) {
+    final int oldRealCount = oldWidget.tabs.where((t) => t != null).length;
+    if (oldRealCount != _realTabCount) {
       final int previousIndex = _controller.index;
       _controller.removeListener(_onTabChanged);
       _controller.dispose();
@@ -82,6 +82,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
       builder: (context, con) {
+        final double fontSize = con.maxWidth * 0.04;
         return Column(
           spacing: 16,
           children: [
@@ -91,50 +92,69 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
               spacing: 5,
               children: [
                 Flexible(
-                  child: TabBar(
-                    controller: _controller,
-                    onTap: widget.onTap,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    padding: EdgeInsets.zero,
-                    indicator: const BoxDecoration(),
-                    dividerHeight: 0,
-                    splashFactory: NoSplash.splashFactory,
-                    dividerColor: Colors.transparent,
-                    overlayColor: WidgetStateProperty.resolveWith(
-                      (states) => Colors.transparent,
-                    ),
-                    labelPadding: EdgeInsets.symmetric(horizontal: 6),
-                    tabs: List.generate(widget.tabs.length, (index) {
-                      final isSelected = _controller.index == index;
-                      return Tab(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: AppBorderRadius.brCircular20,
-                            color: isSelected
-                                ? widget.selectedTabColor?? colors.primary500Main
-                                : widget.unSelectedTabColor,
-                          ),
-                          child: Text(
-                            widget.tabs[index],
-                            maxLines: 1,
-                            style: AppTextStyles.style16Medium.copyWith(
-                              fontSize: con.maxWidth * 0.04,
-                              color: isSelected
-                                  ? widget.selectedLabelColor ??
-                                        colors.white
-                                  : widget.unSelectedLabelColor ??
-                                        colors.black,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(widget.tabs.length, (index) {
+                        final String? label = widget.tabs[index];
+                        if (label == null) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            child: AppShimmer(
+                              child: Container(
+                                width: 70,
+                                height: fontSize + 16,
+                                decoration: BoxDecoration(
+                                  borderRadius: AppBorderRadius.brCircular20,
+                                  color: widget.unSelectedTabColor,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        final int realIndex = widget.tabs
+                            .take(index + 1)
+                            .where((t) => t != null)
+                            .length - 1;
+                        final bool isSelected =
+                            _controller.index == realIndex;
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: GestureDetector(
+                            onTap: () {
+                              _controller.animateTo(realIndex);
+                              widget.onTap?.call(realIndex);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: AppBorderRadius.brCircular20,
+                                color: isSelected
+                                    ? widget.selectedTabColor ??
+                                          colors.primary500Main
+                                    : widget.unSelectedTabColor,
+                              ),
+                              child: Text(
+                                label,
+                                maxLines: 1,
+                                style: AppTextStyles.style16Medium.copyWith(
+                                  fontSize: fontSize,
+                                  color: isSelected
+                                      ? widget.selectedLabelColor ??
+                                            colors.white
+                                      : widget.unSelectedLabelColor ??
+                                            colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
                   ),
                 ),
                 widget.filterWidget ?? 0.wSpace,

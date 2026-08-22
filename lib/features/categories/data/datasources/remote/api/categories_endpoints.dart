@@ -16,7 +16,7 @@ abstract class CategoriesEndpoints {
 
   static Map<String, dynamic> appCategoriesQuery(int page) => {
     'max_depth': 1,
-    'per_page': _perPage,
+    'per_page': 100,
     'page': page,
   };
 
