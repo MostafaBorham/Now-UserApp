@@ -40,8 +40,8 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final AsyncValue<PaginationModel<CategoryModel>> categoriesState =
-        ref.watch(getAppCategoriesProvider);
+    final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
+        .watch(getAppCategoriesProvider);
 
     final bool isLoading =
         categoriesState.isLoading && !categoriesState.hasValue;
@@ -52,9 +52,7 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
       tabs.addAll(List.filled(4, null));
     } else {
       categoriesState.whenData((page) {
-        tabs.addAll(
-          page.data.map((c) => context.getLocalizedApiText(c.name)),
-        );
+        tabs.addAll(page.data.map((c) => context.getLocalizedApiText(c.name)));
       });
     }
 
@@ -90,10 +88,7 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                 views: [
                   StoresListView(),
                   if (!isLoading)
-                    ...List.generate(
-                      tabs.length - 1,
-                      (_) => StoresListView(),
-                    ),
+                    ...List.generate(tabs.length - 1, (_) => StoresListView()),
                 ],
                 unSelectedTabColor: colors.neutral500.withValues(alpha: 0.1),
               ),
