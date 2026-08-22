@@ -16,18 +16,15 @@ class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({
     super.key,
     required this.filters,
-    required this.onApply,
-    required this.onReset,
+    this.onApply,
+    this.onReset,
   });
 
-  /// The filter controls shown between the header and the action buttons.
   final List<Widget> filters;
 
-  /// Invoked when Apply is tapped, before the sheet pops itself.
-  final VoidCallback onApply;
+  final VoidCallback? onApply;
 
-  /// Invoked when Reset is tapped.
-  final VoidCallback onReset;
+  final VoidCallback? onReset;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +49,23 @@ class FilterBottomSheet extends StatelessWidget {
             Row(
               spacing: 16,
               children: [
-                Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.applyFiltersKey.tr(),
-                    onTap: () {
-                      onApply();
-                      context.pop();
-                    },
+                if (onApply != null)
+                  Expanded(
+                    child: PrimaryAppButton(
+                      title: LangKeys.applyFiltersKey.tr(),
+                      onTap: () {
+                        onApply?.call();
+                        context.pop();
+                      },
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: UnPrimaryAppButton(
-                    title: LangKeys.resetFilterKey.tr(),
-                    onTap: onReset,
+                if (onReset != null)
+                  Expanded(
+                    child: UnPrimaryAppButton(
+                      title: LangKeys.resetFilterKey.tr(),
+                      onTap: onReset,
+                    ),
                   ),
-                ),
               ],
             ),
           ],

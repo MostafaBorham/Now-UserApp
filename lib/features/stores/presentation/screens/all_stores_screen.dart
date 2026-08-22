@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
 
 class AllStoresScreen extends StatelessWidget {
@@ -20,10 +22,22 @@ class AllStoresScreen extends StatelessWidget {
         body: Column(
           spacing: 16,
           children: [
-            AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
+            PrimarySearchField(suggestions: [
+              LangKeys.searchForAStoreKey.tr()
+            ],),
             Expanded(
               child: CustomButtonTabBar(
-                filterWidget: AppFilterIcon(),
+                filterWidget: AppFilterIcon(
+                  onTap: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) => StoresFilterView(
+                      onApply: (type, rating) {
+                        print('apply = $type$rating');
+                      },
+                    ),
+                  ),
+                ),
                 tabs: [
                   LangKeys.allKey.tr(),
                   ...['Devices', 'Shoes', 'Cloths'],
@@ -34,13 +48,12 @@ class AllStoresScreen extends StatelessWidget {
                   StoresListView(),
                   StoresListView(),
                 ],
-                // selectedTabColor: colors.neutral1200,
-                unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
+                unSelectedTabColor: colors.neutral500.withValues(alpha: 0.1),
               ),
             ),
           ],
         ),
-        appBarTitle: 'All Stores',
+        appBarTitle: LangKeys.allStoresKey.tr(),
         canPop: context.canPop(),
       ),
     );

@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_b
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_store_item_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   const HomeAllStoresSectionView({super.key});
@@ -266,7 +266,7 @@ class HomeStoresListView extends ConsumerWidget {
     if (category == null) {
       return _StoresList(
         itemCount: itemCount,
-        itemBuilder: (context, index) => const HomeStoreItemView(),
+        itemBuilder: (context, index) => const StoreCardView(),
       );
     }
 
@@ -281,7 +281,7 @@ class HomeStoresListView extends ConsumerWidget {
     return state.when(
       loading: () => _StoresList(
         itemCount: itemCount,
-        itemBuilder: (context, index) => AppShimmer(child: HomeStoreItemView()),
+        itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
       ),
       error: (Object error, _) => ServerConnectionErrorWidget(
         message: error is String ? error : null,
@@ -294,7 +294,7 @@ class HomeStoresListView extends ConsumerWidget {
         return _StoresList(
           itemCount: stores.length,
           itemBuilder: (context, index) =>
-              HomeStoreItemView(store: stores[index]),
+              StoreCardView(store: stores[index]),
         );
       },
     );

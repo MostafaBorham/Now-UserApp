@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_search_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 
 class HomeHeaderView extends ConsumerStatefulWidget {
   const HomeHeaderView({super.key});
@@ -176,7 +176,7 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                   ),
                             ],
                           ),
-                          HomeSearchField(),
+                          PrimarySearchField(),
                         ],
                       ),
                     ),

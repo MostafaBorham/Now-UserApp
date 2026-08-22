@@ -15,14 +15,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
-class HomeStoreItemView extends StatelessWidget {
-  const HomeStoreItemView({super.key, this.store});
+class StoreCardView extends StatelessWidget {
+  const StoreCardView({super.key, this.store});
 
-  /// The store to render. When null the card falls back to demo content so the
-  /// design still reads while a tab (e.g. "All") has no data source wired.
   final StoreModel? store;
 
-  // Demo fallbacks used only when [store] is null.
   static const String _demoCoverUrl =
       'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1';
   static const String _demoLogoUrl =
@@ -73,8 +70,7 @@ class HomeStoreItemView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: coverHeight,
+              Expanded(
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [

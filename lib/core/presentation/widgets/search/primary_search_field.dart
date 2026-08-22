@@ -12,12 +12,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-/// Lightweight home search bar. The static shell (border, chip, icon) is a
-/// [StatelessWidget] that builds once; only the small cycling hint animates,
-/// isolated in [_AnimatedSearchHint] so nothing else on the home page rebuilds
-/// or repaints.
-class HomeSearchField extends StatelessWidget {
-  const HomeSearchField({
+class PrimarySearchField extends StatelessWidget {
+  const PrimarySearchField({
     super.key,
     this.onTap,
     this.suggestions,

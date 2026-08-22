@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_rat
 class FilterRatingsView extends StatelessWidget {
   const FilterRatingsView({super.key, this.onChanged});
 
-  static const List<String> ratings = ['4.0+', '4.5+', '5'];
+  static const List<String> ratings = ['4.0', '4.5', '5'];
 
   final ValueChanged<String>? onChanged;
 
@@ -27,6 +27,7 @@ class FilterRatingsView extends StatelessWidget {
         ),
         AppRateSelector(
           ratings: ratings,
+          initialIndex: 0,
           onChanged: (index) => onChanged?.call(ratings[index]),
           labelColor: colors.black,
           starColor: colors.surface,
