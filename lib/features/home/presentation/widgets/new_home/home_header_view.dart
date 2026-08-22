@@ -176,7 +176,9 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                   ),
                             ],
                           ),
-                          PrimarySearchField(),
+                          PrimarySearchField(
+                            onTap: () => context.pushNamed(AppRoutes.searchScreen),
+                          ),
                         ],
                       ),
                     ),

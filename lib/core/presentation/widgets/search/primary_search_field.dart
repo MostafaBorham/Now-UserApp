@@ -2,25 +2,27 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-class PrimarySearchField extends StatelessWidget {
+class PrimarySearchField extends StatefulWidget {
   const PrimarySearchField({
     super.key,
     this.onTap,
+    this.onSearch,
     this.suggestions,
   });
 
-  /// Fired when the bar is tapped. Defaults to opening the search screen.
+  /// Fired when the bar is tapped. When non-null the field is read-only and
+  /// acts as a tap target (e.g. to navigate to a search screen). When null the
+  /// field becomes editable and shows the keyboard on tap.
   final VoidCallback? onTap;
+
+  /// Debounced search callback — fires 1 second after the user stops typing.
+  final ValueChanged<String>? onSearch;
 
   /// Localization keys cycled through as the animated placeholder. Defaults to
   /// the app's generic search phrases.
@@ -34,11 +36,43 @@ class PrimarySearchField extends StatelessWidget {
   ];
 
   @override
+  State<PrimarySearchField> createState() => _PrimarySearchFieldState();
+}
+
+class _PrimarySearchFieldState extends State<PrimarySearchField> {
+  late final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  Timer? _debounce;
+
+  bool get _isEditable => widget.onTap == null;
+
+  void _onChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(seconds: 1), () {
+      widget.onSearch?.call(value);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return GestureDetector(
+    final List<String> suggestions =
+        widget.suggestions ?? PrimarySearchField._defaultSuggestions;
+    final TextStyle hintStyle = AppTextStyles.style16Regular.copyWith(
+      color: colors.onPrimaryFixed,
+    );
+
+    Widget child = GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap ?? () => context.pushNamed(AppRoutes.searchScreen),
+      onTap: _isEditable ? null : widget.onTap,
       child: Container(
         padding: const EdgeInsetsDirectional.only(
           start: 16,
@@ -55,12 +89,27 @@ class PrimarySearchField extends StatelessWidget {
           spacing: 8,
           children: <Widget>[
             Expanded(
-              child: _AnimatedSearchHint(
-                suggestions: suggestions ?? _defaultSuggestions,
-                style: AppTextStyles.style16Regular.copyWith(
-                  color: colors.onPrimaryFixed,
-                ),
-              ),
+              child: _isEditable
+                  ? TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      onChanged: _onChanged,
+                      textInputAction: TextInputAction.search,
+                      style: AppTextStyles.style16Regular.copyWith(
+                        color: colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        hintText: suggestions.first.tr(),
+                        hintStyle: hintStyle,
+                      ),
+                    )
+                  : _AnimatedSearchHint(
+                      suggestions: suggestions,
+                      style: hintStyle,
+                    ),
             ),
             Container(
               padding: const EdgeInsets.all(6),
@@ -78,6 +127,15 @@ class PrimarySearchField extends StatelessWidget {
         ),
       ),
     );
+
+    if (_isEditable) {
+      child = TapRegion(
+        onTapOutside: (_) => _focusNode.unfocus(),
+        child: child,
+      );
+    }
+
+    return child;
   }
 }
 
