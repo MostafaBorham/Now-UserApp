@@ -30,12 +30,14 @@ class CategoriesApiService {
     required String categorySlug,
     required int? categoryId,
     required int page,
+    String? search,
   }) {
     return _dio.get(
       CategoriesEndpoints.categoryStores(categorySlug),
       queryParameters: CategoriesEndpoints.categoryStoresQuery(
         page: page,
         categoryId: categoryId,
+        search: search,
       ),
       cancelToken: _canceller.token,
     );

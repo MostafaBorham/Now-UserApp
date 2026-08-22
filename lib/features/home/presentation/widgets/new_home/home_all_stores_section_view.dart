@@ -185,6 +185,7 @@ class _HomeAllStoresSectionViewState
     final CategoryStoresArgs args = (
       categorySlug: category.slug ?? '',
       categoryId: null,
+      searchKey: null,
     );
     final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
       getCategoryStoresProvider(args),
@@ -273,6 +274,7 @@ class HomeStoresListView extends ConsumerWidget {
     final CategoryStoresArgs args = (
       categorySlug: category.slug ?? '',
       categoryId: null,
+      searchKey: null,
     );
     final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
       getCategoryStoresProvider(args),

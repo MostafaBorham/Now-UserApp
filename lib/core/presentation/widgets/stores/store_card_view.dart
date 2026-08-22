@@ -144,13 +144,14 @@ class StoreCardView extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsetsDirectional.only(
-                        start: logoRadius * 2 + 12,
+                        start: logoRadius * 2.2,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 8,
                         children: [
                           Flexible(
-                            child: AutoSizeText(
+                            child: Text(
                               storeName,
                               maxLines: 1,
                               textAlign: TextAlign.start,
@@ -169,12 +170,12 @@ class StoreCardView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    AutoSizeText(
+                    Text(
                       textDirection: TextDirection.ltr,
                       storeDescription,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
+                      textAlign: TextAlign.start,
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),

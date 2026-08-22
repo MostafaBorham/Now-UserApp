@@ -18,11 +18,17 @@ class CustomButtonTabBar extends StatefulWidget {
     this.unSelectedLabelColor,
     this.onTap,
     this.selectedIndex,
+    this.isSaveState = true,
   });
   final List<String?> tabs;
   final List<Widget> views;
   final Color? selectedTabColor;
   final ValueChanged<int>? onTap;
+
+  /// Whether each tab's view keeps its state when it is not the visible tab.
+  /// When `true` (default) a view is built once and kept alive; when `false` a
+  /// view is rebuilt every time its tab becomes visible again.
+  final bool isSaveState;
 
   /// Externally-driven selected tab. When the parent changes this value the bar
   /// animates to it; pair it with [onTap] so taps keep the parent in sync.
@@ -180,6 +186,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                 children: widget.views
                     .map(
                       (view) => _KeepAliveView(
+                        keepAlive: widget.isSaveState,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: view,
@@ -200,9 +207,10 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
 /// loads each view only the first time it is opened and then holds its state in
 /// memory — no `ValueKey` needed at the call site.
 class _KeepAliveView extends StatefulWidget {
-  const _KeepAliveView({required this.child});
+  const _KeepAliveView({required this.child, this.keepAlive = true});
 
   final Widget child;
+  final bool keepAlive;
 
   @override
   State<_KeepAliveView> createState() => _KeepAliveViewState();
@@ -211,7 +219,13 @@ class _KeepAliveView extends StatefulWidget {
 class _KeepAliveViewState extends State<_KeepAliveView>
     with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => widget.keepAlive;
+
+  @override
+  void didUpdateWidget(covariant _KeepAliveView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.keepAlive != widget.keepAlive) updateKeepAlive();
+  }
 
   @override
   Widget build(BuildContext context) {

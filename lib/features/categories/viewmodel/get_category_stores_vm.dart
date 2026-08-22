@@ -7,10 +7,15 @@ import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/repo/categories_repo.dart';
 
 /// The query one [GetCategoryStoresViewModel] pages through: a category's
-/// [categorySlug], optionally narrowed to the sub-category [categoryId]. Used as
-/// the [getCategoryStoresProvider] family key, so each distinct query keeps its
-/// own independent pagination state (e.g. every store tab on the home screen).
-typedef CategoryStoresArgs = ({String categorySlug, int? categoryId});
+/// [categorySlug], optionally narrowed to the sub-category [categoryId] and to a
+/// [searchKey] text filter. Used as the [getCategoryStoresProvider] family key,
+/// so each distinct query keeps its own independent pagination state (e.g. every
+/// store tab on the home screen, or the same tab with vs. without a search term).
+typedef CategoryStoresArgs = ({
+  String categorySlug,
+  int? categoryId,
+  String? searchKey,
+});
 
 /// Single task: page through the stores of a category.
 ///
@@ -41,6 +46,7 @@ class GetCategoryStoresViewModel extends PaginatedViewModel<StoreModel> {
     return _repo.getCategoryStores(
       categorySlug: args.categorySlug,
       categoryId: args.categoryId,
+      search: args.searchKey,
       page: page,
     );
   }

@@ -33,6 +33,7 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   late final CategoryStoresArgs _args = (
     categorySlug: ref.read(categoryProvider).slug ?? '',
     categoryId: null,
+    searchKey: null,
   );
 
   @override

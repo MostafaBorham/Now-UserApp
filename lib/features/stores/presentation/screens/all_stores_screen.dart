@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filte
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
 
@@ -37,23 +38,32 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
     });
   }
 
+  /// The [CategoryModel] behind a tab index over `[All, ...categories]`
+  /// (index 0 = All = null).
+  CategoryModel? _categoryAt(int index, List<CategoryModel> categories) =>
+      index > 0 && index - 1 < categories.length ? categories[index - 1] : null;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
         .watch(getAppCategoriesProvider);
 
+    // Keep the screen's search/filter state alive for as long as the screen is
+    // on-screen (it auto-disposes when we leave).
+    ref.watch(storesSearchFilterProvider);
+
     final bool isLoading =
         categoriesState.isLoading && !categoriesState.hasValue;
 
-    final List<String?> tabs = [LangKeys.allKey.tr()];
+    final List<CategoryModel> categories =
+        categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
 
+    final List<String?> tabs = [LangKeys.allKey.tr()];
     if (isLoading) {
       tabs.addAll(List.filled(4, null));
     } else {
-      categoriesState.whenData((page) {
-        tabs.addAll(page.data.map((c) => context.getLocalizedApiText(c.name)));
-      });
+      tabs.addAll(categories.map((c) => context.getLocalizedApiText(c.name)));
     }
 
     return Scaffold(
@@ -63,32 +73,48 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
           children: [
             PrimarySearchField(
               suggestions: [LangKeys.searchForAStoreKey.tr()],
-              onSearch: (query) {
-                // TODO: filter stores by query
-              },
+              // (3) Search field used → update the provider's search text.
+              onSearch: (query) =>
+                  ref.read(storesSearchFilterProvider.notifier).setSearch(query),
             ),
             Expanded(
               child: CustomButtonTabBar(
+                isSaveState: false,
                 filterWidget: AppFilterIcon(
                   onTap: () => showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     builder: (context) => StoresFilterView(
+                      // (2) Returned from the filter → update category + rating,
+                      // and move the tab bar to the picked category.
                       onApply: (type, rating, categoryIndex) {
-                        if (categoryIndex != null) {
-                          setState(() => selectedTabIndex = categoryIndex);
-                        }
+                        final int index = categoryIndex ?? 0;
+                        ref
+                            .read(storesSearchFilterProvider.notifier)
+                            .applyFilter(
+                              category: _categoryAt(index, categories),
+                              rating: rating ?? '',
+                            );
+                        setState(() => selectedTabIndex = index);
                       },
                     ),
                   ),
                 ),
                 selectedIndex: selectedTabIndex,
-                onTap: (index) => setState(() => selectedTabIndex = index),
+                // (1) Category tab changed → update the provider's category.
+                onTap: (index) {
+                  ref
+                      .read(storesSearchFilterProvider.notifier)
+                      .setCategory(_categoryAt(index, categories));
+                  setState(() => selectedTabIndex = index);
+                },
                 tabs: tabs,
                 views: [
-                  StoresListView(),
+                  const StoresListView(),
                   if (!isLoading)
-                    ...List.generate(tabs.length - 1, (_) => StoresListView()),
+                    ...categories.map(
+                      (category) => StoresListView(category: category),
+                    ),
                 ],
                 unSelectedTabColor: colors.neutral500.withValues(alpha: 0.1),
               ),

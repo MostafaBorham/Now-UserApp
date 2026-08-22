@@ -36,12 +36,14 @@ class CategoriesRepo {
     required String categorySlug,
     required int? categoryId,
     required int page,
+    String? search,
   }) {
     return _guard(
       () => _categoriesApiService.getCategoryStores(
         categorySlug: categorySlug,
         categoryId: categoryId,
         page: page,
+        search: search,
       ),
       (data) => _paginated(data, 'items', StoreModel.fromJson),
     );

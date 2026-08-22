@@ -23,10 +23,12 @@ abstract class CategoriesEndpoints {
   static Map<String, dynamic> categoryStoresQuery({
     required int page,
     int? categoryId,
+    String? search,
   }) => {
     'per_page': _perPage,
     'page': page,
     'category_id': categoryId,
+    if (search != null && search.isNotEmpty) 'search': search,
   };
 
   static Map<String, dynamic> categoryProductsQuery(int page) => {
