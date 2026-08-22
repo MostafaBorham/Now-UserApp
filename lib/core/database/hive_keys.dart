@@ -28,4 +28,11 @@ abstract class HiveKeys {
   /// JSON string so it round-trips through `AppInfoModel.fromJson` with proper
   /// `String`-keyed maps.
   static const String appInfoPayload = 'app_info_payload';
+
+  /// Key inside [HiveBoxes.appCategories] holding the JSON-encoded `String`
+  /// payload of the first categories page — the raw server `data` object
+  /// (`{'meta': {...}, 'categories': [...]}`). Stored as a JSON string so it
+  /// round-trips back through the same parsing the server response uses, with
+  /// proper `String`-keyed maps.
+  static const String appCategoriesPayload = 'app_categories_payload';
 }

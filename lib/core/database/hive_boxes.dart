@@ -20,4 +20,10 @@ abstract class HiveBoxes {
   /// privacy / FAQ screens can render from local storage when the server is
   /// unreachable.
   static const String appInfo = 'app_info_box';
+
+  /// Box storing the cached first page of the app categories list (from
+  /// `GET /api/v1/categories`), so the home carousel and categories screen can
+  /// render from local storage when the server is unreachable. It is refreshed
+  /// from the server on every successful first-page fetch.
+  static const String appCategories = 'app_categories_box';
 }
