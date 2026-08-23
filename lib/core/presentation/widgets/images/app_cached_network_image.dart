@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -71,9 +73,52 @@ class AppCachedNetworkImage extends StatelessWidget {
   /// images (e.g. the private-disk profile avatar, which requires the bearer).
   final Map<String, String>? httpHeaders;
 
+  /// URLs that already failed to load once this session. cached_network_image
+  /// does not cache failures, so it re-hits the network on every rebuild — which
+  /// during fast scrolling flashes the shimmer placeholder back over the error
+  /// image before failing again. Remembering the failed URL lets us render the
+  /// error image straight away, with no retry and no shimmer flash.
+  static final Set<String> _failedUrls = <String>{};
+
+  /// Guards the one-time subscription that clears [_failedUrls] on reconnect,
+  /// so a URL that failed only because the device was offline is retried once
+  /// connectivity is back instead of staying broken for the whole session.
+  static bool _watchingConnection = false;
+
+  static void _clearFailedUrlsOnReconnect() {
+    if (_watchingConnection) return;
+    _watchingConnection = true;
+    ConnectionChecker.connectionStream().listen((status) {
+      if (status == InternetConnectionStatus.connected) _failedUrls.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+
+    _clearFailedUrlsOnReconnect();
+
+    final Widget errorPlaceholder = Container(
+      width: width ?? double.infinity,
+      alignment: Alignment.center,
+      clipBehavior: Clip.antiAlias,
+      height: height ?? double.infinity,
+      decoration: BoxDecoration(
+        color: colors.onPrimaryContainer,
+      ),
+      child: Assets.media.images.png.noImageAvail.image(
+        fit: BoxFit.contain,
+        height: double.infinity,
+        width: double.infinity,
+      ),
+    );
+
+    // Skip CachedNetworkImage entirely for empty or known-bad URLs: no request
+    // is made, so no placeholder/shimmer can flash on rebuild.
+    if (imageUrl.isEmpty || _failedUrls.contains(imageUrl)) {
+      return errorPlaceholder;
+    }
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
@@ -106,20 +151,10 @@ class AppCachedNetworkImage extends StatelessWidget {
             );
         }
       },
-      errorWidget: (_, _, _) => Container(
-        width: width ?? double.infinity,
-        alignment: Alignment.center,
-        clipBehavior: Clip.antiAlias,
-        height: height ?? double.infinity,
-        decoration: BoxDecoration(
-          color: colors.onPrimaryContainer,
-        ),
-        child: Assets.media.images.png.noImageAvail.image(
-          fit: BoxFit.contain,
-          height: double.infinity,
-          width: double.infinity,
-        ),
-      ),
+      errorWidget: (_, url, _) {
+        _failedUrls.add(url);
+        return errorPlaceholder;
+      },
     );
   }
 }
