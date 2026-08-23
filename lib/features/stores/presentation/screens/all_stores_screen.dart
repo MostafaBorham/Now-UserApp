@@ -24,8 +24,6 @@ class AllStoresScreen extends ConsumerStatefulWidget {
 }
 
 class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
-  int selectedTabIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -53,18 +51,18 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
     // on-screen (it auto-disposes when we leave).
     ref.watch(storesSearchFilterProvider);
 
-    final bool isLoading =
-        categoriesState.isLoading && !categoriesState.hasValue;
-
     final List<CategoryModel> categories =
         categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
 
-    final List<String?> tabs = [LangKeys.allKey.tr()];
-    if (isLoading) {
-      tabs.addAll(List.filled(4, null));
-    } else {
-      tabs.addAll(categories.map((c) => context.getLocalizedApiText(c.name)));
-    }
+    // Tabs and views are always the same length: index 0 = "All", then one
+    // entry per loaded category. While categories are still loading, only the
+    // "All" tab exists. The tab count grows once they arrive, so the tab bar is
+    // keyed by that count to rebuild its internally-owned TabController to the
+    // matching length (it fixes the length at first build).
+    final List<String> tabs = [
+      LangKeys.allKey.tr(),
+      ...categories.map((c) => context.getLocalizedApiText(c.name)),
+    ];
 
     return Scaffold(
       body: AppWavedView(
@@ -79,6 +77,9 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
             ),
             Expanded(
               child: CustomButtonTabBar(
+                // Rebuild (and re-size the TabController) when the tab count
+                // changes — e.g. once categories finish loading.
+                key: ValueKey<int>(tabs.length),
                 filterWidget: AppFilterIcon(
                   onTap: () => showModalBottomSheet(
                     context: context,
@@ -94,7 +95,6 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                               category: _categoryAt(index, categories),
                               rating: rating ?? '',
                             );
-                        setState(() => selectedTabIndex = index);
                       },
                     ),
                   ),
@@ -103,15 +103,13 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                   ref
                       .read(storesSearchFilterProvider.notifier)
                       .setCategory(_categoryAt(index, categories));
-                  setState(() => selectedTabIndex = index);
                 },
                 tabs: tabs,
                 views: [
                   const StoresListView(),
-                  if (!isLoading)
-                    ...categories.map(
-                      (category) => StoresListView(category: category),
-                    ),
+                  ...categories.map(
+                    (category) => StoresListView(category: category),
+                  ),
                 ],
                 unSelectedTabColor: colors.neutral500.withValues(alpha: 0.1),
               ),
