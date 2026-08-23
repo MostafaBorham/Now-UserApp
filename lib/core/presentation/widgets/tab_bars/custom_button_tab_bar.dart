@@ -16,10 +16,15 @@ class CustomButtonTabBar extends StatefulWidget {
     this.selectedLabelColor,
     this.unSelectedLabelColor,
     this.onTap,
+    this.selectedIndex,
   });
 
   final List<String> tabs;
   final List<Widget> views;
+
+  /// Externally-driven selected tab. When it changes, the tab bar moves to it
+  /// (e.g. the filter sheet picks a category → jump to that category tab).
+  final int? selectedIndex;
 
   final Color? selectedTabColor;
   final ValueChanged<int>? onTap;
@@ -45,6 +50,21 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
     _controller.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomButtonTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Sync the visible tab with an externally-picked index (e.g. the category
+    // chosen in the filter sheet), staying within the current tab range.
+    final int? target = widget.selectedIndex;
+    if (target != null &&
+        target != _controller.index &&
+        target >= 0 &&
+        target < _controller.length) {
+      _controller.animateTo(target);
+    }
   }
 
   @override

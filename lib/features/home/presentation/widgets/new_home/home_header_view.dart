@@ -21,8 +21,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_se
 class HomeHeaderView extends ConsumerStatefulWidget {
   const HomeHeaderView({super.key, this.searchFieldKey});
 
-  /// Anchor placed on the in-header search field so the parent screen can
-  /// measure when it reaches the top and swap in the pinned search bar.
   final Key? searchFieldKey;
 
   @override
@@ -109,9 +107,9 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                   spacing: 10,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(
-                        top: 8
-                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                      ).copyWith(top: 8),
                       child: Column(
                         spacing: 12,
                         children: [

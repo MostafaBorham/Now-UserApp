@@ -24,8 +24,7 @@ class HomePinnedSearchBar extends StatelessWidget {
     final double t = progress.clamp(0.0, 1.0);
     return Stack(
       children: <Widget>[
-        // Primary curtain: fills the whole bar, revealed top-down so it appears
-        // to drop in behind the field. The field stays put on top of it.
+
         Positioned.fill(
           child: ClipRect(
             child: Align(

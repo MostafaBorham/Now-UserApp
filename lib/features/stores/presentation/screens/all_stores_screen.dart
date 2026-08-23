@@ -49,10 +49,17 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
 
     // Keep the screen's search/filter state alive for as long as the screen is
     // on-screen (it auto-disposes when we leave).
-    ref.watch(storesSearchFilterProvider);
+    final StoresSearchFilter filter = ref.watch(storesSearchFilterProvider);
 
     final List<CategoryModel> categories =
         categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
+
+    // The tab index behind the currently selected category (0 = "All"), so the
+    // tab bar follows a category picked in the filter sheet. `-1` (not found)
+    // falls back to "All".
+    final int selectedIndex = filter.category == null
+        ? 0
+        : categories.indexOf(filter.category!) + 1;
 
     // Tabs and views are always the same length: index 0 = "All", then one
     // entry per loaded category. While categories are still loading, only the
@@ -80,6 +87,8 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                 // Rebuild (and re-size the TabController) when the tab count
                 // changes — e.g. once categories finish loading.
                 key: ValueKey<int>(tabs.length),
+                // Follow the category picked in the filter sheet.
+                selectedIndex: selectedIndex,
                 filterWidget: AppFilterIcon(
                   onTap: () => showModalBottomSheet(
                     context: context,
