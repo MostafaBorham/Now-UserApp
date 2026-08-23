@@ -120,6 +120,9 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
             Expanded(
               child: TabBarView(
                 controller: _controller,
+                // Switching views is tap-only: block finger swipe/drag between
+                // tabs so horizontal drags never slide the pages.
+                physics: const NeverScrollableScrollPhysics(),
                 children: widget.views
                     .map(
                       (view) => Padding(

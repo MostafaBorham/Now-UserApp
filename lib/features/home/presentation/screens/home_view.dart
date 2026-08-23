@@ -77,9 +77,16 @@ class _HomeViewState extends State<HomeView>
         : _scrollController.offset >= threshold;
     if (shouldPin != _pinned.value) {
       _pinned.value = shouldPin;
-      // Pin: the field stops at the top, then the curtain drops behind it.
-      // Un-pin: the curtain retracts before the field rejoins the flow.
-      shouldPin ? _dropController.forward() : _dropController.reverse();
+      // Pin: the field stops at the top, then the curtain drops in behind it.
+      // Un-pin: snap the pinned bar away at once so the in-flow header field
+      // takes over seamlessly. Animating the retract instead leaves the pinned
+      // field on screen for the whole reverse while the header field has already
+      // rejoined the flow — the user momentarily sees two search fields.
+      if (shouldPin) {
+        _dropController.forward();
+      } else {
+        _dropController.value = 0;
+      }
     }
   }
 
@@ -178,11 +185,9 @@ class _HomeViewState extends State<HomeView>
           child: AnimatedBuilder(
             animation: Listenable.merge(<Listenable>[_pinned, _dropController]),
             builder: (context, _) {
-              // Stay mounted while the curtain retracts, so un-pinning animates.
               if (!_pinned.value && _dropController.value == 0) {
                 return const SizedBox.shrink();
               }
-              // Publish the bar's height once so the tab bar can pin below it.
               if (_searchBarHeight.value == 0) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   final RenderObject? box = _pinnedBarKey.currentContext

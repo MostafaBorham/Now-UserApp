@@ -131,8 +131,6 @@ class _HomeAllStoresSectionViewState
               ),
             ],
           ),
-          // The list is offset below the pills and painted first, so the pills
-          // (last child) stay on top of it once they pin and it scrolls under.
           Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
@@ -172,7 +170,6 @@ class HomeStoresListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel? category = this.category;
-    // "All" tab: no data source wired yet — demo placeholder cards.
     if (category == null) {
       return _StoresList(
         itemCount: itemCount,
@@ -204,8 +201,7 @@ class HomeStoresListView extends ConsumerWidget {
         if (stores.isEmpty) return const NoItemsWidget();
         return _StoresList(
           itemCount: stores.length,
-          itemBuilder: (context, index) =>
-              StoreCardView(store: stores[index]),
+          itemBuilder: (context, index) => StoreCardView(store: stores[index]),
         );
       },
     );
@@ -229,7 +225,7 @@ class _StoresList extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           addRepaintBoundaries: true,
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(bottom: 5),
           itemCount: itemCount,
           itemBuilder: (context, index) =>
               SizedBox(height: height, child: itemBuilder(context, index)),
