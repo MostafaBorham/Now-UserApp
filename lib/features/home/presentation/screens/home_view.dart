@@ -24,10 +24,29 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _searchFieldKey = GlobalKey();
   final ValueNotifier<bool> _pinned = ValueNotifier<bool>(false);
+
+  /// The rendered height of the pinned search bar, published so the All Stores
+  /// tab bar can pin directly beneath it. Measured once, the first time the bar
+  /// is shown (its height is constant afterwards).
+  final GlobalKey _pinnedBarKey = GlobalKey();
+  final ValueNotifier<double> _searchBarHeight = ValueNotifier<double>(0);
+
+  /// Drives the primary curtain that drops in behind the pinned search field.
+  /// Forwards when the field pins, reverses when it un-pins.
+  late final AnimationController _dropController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+  );
+  late final Animation<double> _drop = CurvedAnimation(
+    parent: _dropController,
+    curve: Curves.easeOut,
+    reverseCurve: Curves.easeIn,
+  );
 
   /// Scroll offset at which the header search field's top reaches just below
   /// the status bar. Resolved lazily from the field's render box, then cached.
@@ -43,7 +62,9 @@ class _HomeViewState extends State<HomeView> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _dropController.dispose();
     _pinned.dispose();
+    _searchBarHeight.dispose();
     super.dispose();
   }
 
@@ -54,7 +75,12 @@ class _HomeViewState extends State<HomeView> {
     final bool shouldPin = _pinned.value
         ? _scrollController.offset >= threshold - 8
         : _scrollController.offset >= threshold;
-    if (shouldPin != _pinned.value) _pinned.value = shouldPin;
+    if (shouldPin != _pinned.value) {
+      _pinned.value = shouldPin;
+      // Pin: the field stops at the top, then the curtain drops behind it.
+      // Un-pin: the curtain retracts before the field rejoins the flow.
+      shouldPin ? _dropController.forward() : _dropController.reverse();
+    }
   }
 
   double? _resolveThreshold() {
@@ -141,7 +167,7 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
               AspectRatio(aspectRatio: 3.5, child: HomeBannerView()),
-              HomeAllStoresSectionView(),
+              HomeAllStoresSectionView(pinTop: _searchBarHeight),
             ],
           ),
         ),
@@ -149,13 +175,29 @@ class _HomeViewState extends State<HomeView> {
           top: 0,
           left: 0,
           right: 0,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _pinned,
-            builder: (context, pinned, _) => pinned
-                ? HomePinnedSearchBar(
-                    onTap: () => context.pushNamed(AppRoutes.searchScreen),
-                  )
-                : const SizedBox.shrink(),
+          child: AnimatedBuilder(
+            animation: Listenable.merge(<Listenable>[_pinned, _dropController]),
+            builder: (context, _) {
+              // Stay mounted while the curtain retracts, so un-pinning animates.
+              if (!_pinned.value && _dropController.value == 0) {
+                return const SizedBox.shrink();
+              }
+              // Publish the bar's height once so the tab bar can pin below it.
+              if (_searchBarHeight.value == 0) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final RenderObject? box = _pinnedBarKey.currentContext
+                      ?.findRenderObject();
+                  if (box is RenderBox && box.hasSize) {
+                    _searchBarHeight.value = box.size.height;
+                  }
+                });
+              }
+              return HomePinnedSearchBar(
+                key: _pinnedBarKey,
+                progress: _drop.value,
+                onTap: () => context.pushNamed(AppRoutes.searchScreen),
+              );
+            },
           ),
         ),
       ],
