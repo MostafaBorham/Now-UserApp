@@ -79,7 +79,6 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
             ),
             Expanded(
               child: CustomButtonTabBar(
-                isSaveState: false,
                 filterWidget: AppFilterIcon(
                   onTap: () => showModalBottomSheet(
                     context: context,
@@ -100,8 +99,6 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                     ),
                   ),
                 ),
-                selectedIndex: selectedTabIndex,
-                // (1) Category tab changed → update the provider's category.
                 onTap: (index) {
                   ref
                       .read(storesSearchFilterProvider.notifier)
