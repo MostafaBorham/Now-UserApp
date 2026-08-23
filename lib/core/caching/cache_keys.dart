@@ -17,4 +17,9 @@ abstract class CacheKeys {
   /// token by OTP verification and by the refresh endpoint itself.
   static const String refreshToken = 'refresh_token';
 
+  /// The device's current location, reverse-geocoded into an address and stored
+  /// as JSON. Written by the splash once a location is obtained and read as the
+  /// default delivery address in the home header. This value must never be
+  /// null before the app is entered (see `CurrentLocationViewModel`).
+  static const String currentLocation = 'current_location';
 }

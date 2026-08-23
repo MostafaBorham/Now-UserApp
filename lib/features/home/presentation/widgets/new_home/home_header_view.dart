@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
@@ -29,26 +27,22 @@ class HomeHeaderView extends ConsumerStatefulWidget {
 
 class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
   String? _displayedAddress;
-  bool _seeded = false;
 
   @override
   void initState() {
     super.initState();
+    // The default delivery address is the device's current location, cached by
+    // the splash before the app is ever entered (guaranteed non-null there) —
+    // not the first saved address. Seeded in a post-frame callback so the
+    // localized name resolution has a context. The user can still override it by
+    // picking another address from the sheet (see [_openDeliveryAddressSheet]).
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _seedFromProvider(ref.read(getMyAddressesProvider));
+      if (!mounted) return;
+      final AddressModel? current =
+          CurrentLocationCacheService().getCurrentLocation();
+      if (current == null) return;
+      setState(() => _displayedAddress = _addressName(current));
     });
-  }
-
-  /// Fills the header once, the first time addresses are available: the first
-  /// saved address's name. When the list is empty [_displayedAddress] is left
-  /// null, so the header shows the red "no address selected" placeholder — the
-  /// same state a guest (whose addresses never load) always sees.
-  void _seedFromProvider(AsyncValue<PaginationModel<AddressModel>> state) {
-    if (_seeded || !state.hasValue || !mounted) return;
-    _seeded = true;
-    final List<AddressModel> addresses = state.valueOrNull?.data ?? const [];
-    if (addresses.isEmpty) return;
-    setState(() => _displayedAddress = _addressName(addresses.first));
   }
 
   Future<void> _openDeliveryAddressSheet() async {
@@ -81,12 +75,6 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
     final AppColorScheme colors = context.colors;
     final bool hasAddress =
         _displayedAddress != null && _displayedAddress!.isNotEmpty;
-    // Seed as soon as the addresses arrive, without resetting on later changes.
-    ref.listen<AsyncValue<PaginationModel<AddressModel>>>(
-      getMyAddressesProvider,
-      (_, AsyncValue<PaginationModel<AddressModel>> next) =>
-          _seedFromProvider(next),
-    );
     return LayoutBuilder(
       builder: (context, con) {
         return Stack(

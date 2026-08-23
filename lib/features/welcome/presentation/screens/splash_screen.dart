@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,7 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/current_location_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
@@ -25,6 +26,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   ProviderSubscription<AsyncValue<AppInfoModel>>? _appInfoSub;
   ProviderSubscription<AsyncValue<PaginationModel<CategoryModel>>>?
       _appCategoriesSub;
+
+  // Flipped once the logo animation ends; from then on the loader is shown
+  // continuously — whatever happens in the background — until the splash leaves.
+  bool _animationDone = false;
+
+  // Latches once we navigate away, so a second listener firing (both the
+  // session and the location gates settle independently) can never push twice.
+  bool _navigated = false;
+
+  // Latches once we decide to close the app on a refused location, so the exit
+  // is requested only once.
+  bool _closing = false;
 
   @override
   void initState() {
@@ -72,24 +85,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Leave for onboarding the moment the orchestrator reports its
-    // dependencies are ready (immediately for a guest, once every request has
-    // settled for a logged-in user).
-    ref.listen(authSessionProvider.select((s) => s.dependenciesStatus), (
-      AppDependenciesStatus? previous,
-      AppDependenciesStatus next,
-    ) {
-      if (next == AppDependenciesStatus.ready) {
-        context.goNamed(AppRoutes.onBoardingScreen);
-      }
-    });
-
-    // The loader is bound straight to the orchestrator's state: it shows only
-    // while the logged-in user's dependencies are being fetched — no local flag.
-    final bool isLoadingDependencies = ref.watch(
-      authSessionProvider.select(
-        (s) => s.dependenciesStatus == AppDependenciesStatus.loading,
-      ),
+    // Two independent gates must both settle before the splash may leave: the
+    // session orchestrator's dependencies, and the guaranteed current location.
+    ref.listen(
+      authSessionProvider.select((s) => s.dependenciesStatus),
+      (AppDependenciesStatus? previous, AppDependenciesStatus next) =>
+          _maybeLeaveSplash(),
+    );
+    ref.listen(
+      currentLocationProvider,
+      (CurrentLocationStatus? previous, CurrentLocationStatus next) {
+        // A refused location means there is nothing to enter the app with:
+        // close it. Otherwise, re-check whether both gates are ready.
+        if (next == CurrentLocationStatus.declined) {
+          _closeApp();
+        } else {
+          _maybeLeaveSplash();
+        }
+      },
     );
 
     return Scaffold(
@@ -117,7 +130,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 },
               ),
             ),
-            if (isLoadingDependencies)
+            // Once the logo settles, the loader spins continuously until the
+            // splash leaves — regardless of any background work (data, location,
+            // permissions).
+            if (_animationDone)
               Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.sizeOf(context).width * 0.6,
@@ -145,15 +161,37 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   void _logoAnimationListener(AnimationStatus status) {
     if (status == AnimationStatus.completed && mounted) {
+      setState(() => _animationDone = true);
       _warmUp();
     }
   }
 
-  Future<void> _warmUp() async {
-    await LocationManager.requestPermissions();
-
-    if (!mounted) return;
-
+  void _warmUp() {
+    // Both bootstraps run in parallel; the splash leaves only once both settle
+    // (see [_maybeLeaveSplash]). Location resolution requests its own service
+    // prompt and permission as part of fetching the current fix.
+    ref.read(currentLocationProvider.notifier).resolve();
     ref.read(authSessionProvider.notifier).resolveSession();
+  }
+
+  void _maybeLeaveSplash() {
+    if (_navigated || _closing || !mounted) return;
+
+    final bool dependenciesReady =
+        ref.read(authSessionProvider).dependenciesStatus ==
+            AppDependenciesStatus.ready;
+    final bool locationReady =
+        ref.read(currentLocationProvider) == CurrentLocationStatus.ready;
+
+    if (dependenciesReady && locationReady) {
+      _navigated = true;
+      context.goNamed(AppRoutes.onBoardingScreen);
+    }
+  }
+
+  void _closeApp() {
+    if (_closing) return;
+    _closing = true;
+    SystemNavigator.pop();
   }
 }

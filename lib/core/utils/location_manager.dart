@@ -1,6 +1,7 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
 
 abstract class LocationManager {
   static Future<Placemark?> getAddressFromLocation(LatLng location) async {
@@ -26,5 +27,48 @@ abstract class LocationManager {
 
     return permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse;
+  }
+
+  /// Whether the device's location service (GPS) is currently switched on.
+  static Future<bool> isLocationServiceEnabled() =>
+      Geolocator.isLocationServiceEnabled();
+
+  /// Prompts the user to switch the location service on **in place**, via the
+  /// native system prompt (the Google Play Services sheet on Android) — no trip
+  /// to the settings app. Returns `true` when the service ends up enabled, and
+  /// `false` when the user dismisses or refuses it.
+  ///
+  /// This is the one thing geolocator cannot do, so it delegates to the
+  /// `location` package; everything else stays on geolocator.
+  static Future<bool> requestService() async {
+    try {
+      return await loc.Location().requestService();
+    } catch (_) {
+      // Platform without an in-place prompt (e.g. iOS) or a plugin error: fall
+      // back to reporting the current service state.
+      return isLocationServiceEnabled();
+    }
+  }
+
+  /// Best-effort device coordinates: a fresh fix first, falling back to the last
+  /// known position. Returns `null` when permission is denied, the service is
+  /// off, or no position can be resolved at all.
+  static Future<LatLng?> getCurrentLatLng() async {
+    final bool granted = await requestPermissions();
+    if (!granted) return null;
+
+    try {
+      final Position current = await Geolocator.getCurrentPosition();
+      return LatLng(current.latitude, current.longitude);
+    } catch (_) {
+      // Service off, timeout, etc. — fall back to the last known fix.
+    }
+
+    try {
+      final Position? last = await Geolocator.getLastKnownPosition();
+      if (last != null) return LatLng(last.latitude, last.longitude);
+    } catch (_) {}
+
+    return null;
   }
 }

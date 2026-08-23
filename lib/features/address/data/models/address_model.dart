@@ -112,6 +112,34 @@ class AddressModel extends Equatable {
     );
   }
 
+  /// Full serialization mirroring [fromJson]'s server keys, so an address can be
+  /// round-tripped through local cache without losing a field. Unlike
+  /// [toRequestJson] (which sends only client-owned fields to the API) this
+  /// keeps `id`, `full_address`, the timestamps and the raw `label` map intact.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'user_id': userId,
+      'label': label,
+      'phone': phone,
+      'country': country,
+      'city': city,
+      'area': area,
+      'street': street,
+      'building_number': buildingNumber,
+      'floor': floor,
+      'apartment': apartment,
+      'latitude': latitude,
+      'longitude': longitude,
+      'notes': notes,
+      'is_default': isDefault,
+      'full_address': fullAddress,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'deleted_at': deletedAt,
+    };
+  }
+
   AddressModel copyWith({
     int? id,
     int? userId,

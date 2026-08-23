@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -66,35 +65,8 @@ class _AppMapState extends State<AppMap> {
     super.dispose();
   }
 
-  // Best-effort device position: current fix first, last known as fallback.
-  Future<LatLng?> _fetchDeviceLocation() async {
-    LatLng? resolved;
-
-    final granted = await LocationManager.requestPermissions();
-
-    if (mounted && granted) {
-      try {
-        final current = await Geolocator.getCurrentPosition();
-        resolved = LatLng(current.latitude, current.longitude);
-      } catch (_) {
-        // Service off, timeout, etc. — try last known below.
-      }
-    }
-
-    if (mounted && resolved == null) {
-      try {
-        final last = await Geolocator.getLastKnownPosition();
-        if (last != null) {
-          resolved = LatLng(last.latitude, last.longitude);
-        }
-      } catch (_) {}
-    }
-
-    return resolved;
-  }
-
   Future<void> _resolveDeviceLocation() async {
-    final resolved = await _fetchDeviceLocation();
+    final resolved = await LocationManager.getCurrentLatLng();
 
     if (!mounted) return;
 
@@ -121,7 +93,7 @@ class _AppMapState extends State<AppMap> {
   // camera to it — the camera can be panned without touching [_target], so we
   // never short-circuit on a stale comparison.
   Future<void> _onCurrentLocationTapped() async {
-    final device = await _fetchDeviceLocation();
+    final device = await LocationManager.getCurrentLatLng();
     if (!mounted || device == null) return;
 
     _target.value = device;
