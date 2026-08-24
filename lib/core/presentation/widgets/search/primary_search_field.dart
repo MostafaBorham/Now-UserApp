@@ -13,7 +13,7 @@ class PrimarySearchField extends StatefulWidget {
     super.key,
     this.onTap,
     this.onSearch,
-    this.suggestions,
+    this.isAnimated = true,
   });
 
   /// Fired when the bar is tapped. When non-null the field is read-only and
@@ -24,12 +24,14 @@ class PrimarySearchField extends StatefulWidget {
   /// Debounced search callback — fires 1 second after the user stops typing.
   final ValueChanged<String>? onSearch;
 
-  /// Localization keys cycled through as the animated placeholder. Defaults to
-  /// the app's generic search phrases.
-  final List<String>? suggestions;
+  /// When `true` (default) the read-only hint cycles through [_hints] with a
+  /// rising animation. When `false` no animation is created at all — the hint
+  /// is a plain static line showing only the first hint.
+  final bool isAnimated;
 
-  static const List<String> _defaultSuggestions = <String>[
-    LangKeys.searchNowKey,
+  /// Localization keys used as the placeholder hints.
+  static const List<String> _hints = <String>[
+    LangKeys.searchHintKey,
     LangKeys.searchForAProductKey,
     LangKeys.searchForAStoreKey,
     LangKeys.searchForBrandKey,
@@ -64,8 +66,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final List<String> suggestions =
-        widget.suggestions ?? PrimarySearchField._defaultSuggestions;
+    const List<String> hints = PrimarySearchField._hints;
     final TextStyle hintStyle = AppTextStyles.style16Regular.copyWith(
       color: colors.onPrimaryFixed,
     );
@@ -104,12 +105,19 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                             isDense: true,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
-                            hintText: suggestions.first.tr(),
+                            hintText: hints.first.tr(),
                             hintStyle: hintStyle,
                           ),
                         )
-                      : _AnimatedSearchHint(
-                          suggestions: suggestions,
+                      : widget.isAnimated
+                      ? _AnimatedSearchHint(
+                          hints: hints,
+                          style: hintStyle,
+                        )
+                      : Text(
+                          hints.first.tr(),
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
                           style: hintStyle,
                         ),
                 ),
@@ -153,11 +161,11 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
 /// thing sits behind a [RepaintBoundary] so it never repaints the page.
 class _AnimatedSearchHint extends StatefulWidget {
   const _AnimatedSearchHint({
-    required this.suggestions,
+    required this.hints,
     required this.style,
   });
 
-  final List<String> suggestions;
+  final List<String> hints;
   final TextStyle style;
 
   @override
@@ -180,9 +188,9 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
   Timer? _timer;
   int _current = 0;
 
-  bool get _cycles => widget.suggestions.length > 1;
+  bool get _cycles => widget.hints.length > 1;
 
-  int get _next => (_current + 1) % widget.suggestions.length;
+  int get _next => (_current + 1) % widget.hints.length;
 
   @override
   void initState() {
@@ -241,7 +249,7 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
 
   Widget _line(int index) {
     return Text(
-      widget.suggestions[index].tr(),
+      widget.hints[index].tr(),
       maxLines: 1,
       textAlign: TextAlign.start,
       style: widget.style,

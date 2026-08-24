@@ -6,7 +6,7 @@ abstract class LangKeys {
   static const String orKey = 'or';
   static const String onBoardingTitleKey = 'onBoardingTitle';
   static const String onBoardingSubTitleKey = 'onBoardingSubTitle';
-  static const String searchNowKey = 'searchNow';
+  static const String searchHintKey = 'searchHint';
   static const String categoriesKey = 'categories';
   static const String discountUpToKey = 'discountUpTo';
   static const String discountCouponKey = 'discountCoupon';

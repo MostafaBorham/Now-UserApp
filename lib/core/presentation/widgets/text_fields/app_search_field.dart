@@ -161,7 +161,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                                   isDense: true,
                                   hintText:
                                       widget.hintText ??
-                                      LangKeys.searchNowKey.tr(),
+                                      LangKeys.searchHintKey.tr(),
                                   hintStyle: AppTextStyles.style16Regular
                                       .copyWith(
                                         color: colors.onPrimaryFixed,

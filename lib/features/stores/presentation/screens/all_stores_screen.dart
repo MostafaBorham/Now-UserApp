@@ -77,8 +77,7 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
           spacing: 16,
           children: [
             PrimarySearchField(
-              suggestions: [LangKeys.searchForAStoreKey.tr()],
-              // (3) Search field used → update the provider's search text.
+              isAnimated: false,
               onSearch: (query) =>
                   ref.read(storesSearchFilterProvider.notifier).setSearch(query),
             ),

@@ -22,7 +22,7 @@ class TopBrandsScreen extends StatelessWidget {
           spacing: 11,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PrimarySearchField(),
+            PrimarySearchField(isAnimated: false,),
             6.hSpace,
             Text(
               context.tr(LangKeys.categoriesKey),
