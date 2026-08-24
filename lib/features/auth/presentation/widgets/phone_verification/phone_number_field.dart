@@ -93,9 +93,14 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                 TextFormField(
                   controller: widget.controller,
                   keyboardType: TextInputType.phone,
-                  // The number reads left-to-right in both locales so the
-                  // "(05)" head stays on the correct side of the digits.
+                  // The number always reads left-to-right so the "(05)" head
+                  // stays on the correct side of the digits, but the field
+                  // aligns to the locale's start edge: left in English, right
+                  // in Arabic.
                   textDirection: TextDirection.ltr,
+                  textAlign: Directionality.of(context) == TextDirection.rtl
+                      ? TextAlign.right
+                      : TextAlign.left,
                   inputFormatters: const [_SaudiPhonePrefixFormatter()],
                   style: AppTextStyles.style16Medium.copyWith(
                     color: context.colors.tertiaryContainer,
@@ -105,6 +110,10 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                     counterText: "",
                     isCollapsed: true,
                     hintText: widget.hint ?? '(05) 555-0108',
+                    // Keep the hint reading left-to-right so the "(05)" head
+                    // stays on the left in Arabic too — matching the order of
+                    // the digits the user will actually type.
+                    hintTextDirection: TextDirection.ltr,
                     hintStyle: AppTextStyles.style16Medium.copyWith(
                       color: context.colors.neutral500,
                     ),
