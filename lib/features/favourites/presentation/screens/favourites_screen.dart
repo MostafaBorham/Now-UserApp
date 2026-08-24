@@ -11,9 +11,8 @@ class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    print('==favourites==');
     final ColorScheme colors = Theme.of(context).colorScheme;
-    // Scaffold supplies the Material ancestor the card InkWells need — the same
-    // wrapper CategoryDetailsScreen uses around AppWavedView.
     return Scaffold(
       body: AppWavedView(
         body: AppTabBar(

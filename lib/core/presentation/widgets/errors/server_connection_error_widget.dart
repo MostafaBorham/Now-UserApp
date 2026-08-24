@@ -26,41 +26,52 @@ class ServerConnectionErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    // The whole column is laid out at its natural design size, then scaled down
+    // as one unit to fit the space this widget is given (a tab view is far
+    // shorter than a full screen). Everything — icon, texts, button — shrinks by
+    // the same factor, so the proportions between them never change.
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          Assets.media.images.svg.serverFailIcon.svg(width: 300),
-          AutoSizeText(
-            LangKeys.serverConnectionFailedKey.tr(),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            style: AppTextStyles.style24Bold.copyWith(
-              color: colors.black,
-            ),
-          ),
-          AutoSizeText(
-            (message == null || message!.isEmpty)
-                ? LangKeys.unableToReachServersKey.tr()
-                : message!.tr(),
-            textAlign: TextAlign.center,
-            maxLines: 4,
-            style: AppTextStyles.style18Medium.copyWith(
-              color: colors.neutral500,
-            ),
-          ),
-          if (onRetry != null) ...[
-            15.hSpace,
-            PrimaryAppPrefixIconButton(
-              title: LangKeys.retryKey.tr(),
-              onTap: onRetry,
-              prefixIcon: Assets.media.images.svg.retryIcon.svg(
-                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(
+          width: 340,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 10,
+            children: [
+              Assets.media.images.svg.serverFailIcon.svg(width: 300),
+              AutoSizeText(
+                LangKeys.serverConnectionFailedKey.tr(),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: AppTextStyles.style24Bold.copyWith(
+                  color: colors.black,
+                ),
               ),
-            ),
-          ],
-        ],
+              AutoSizeText(
+                (message == null || message!.isEmpty)
+                    ? LangKeys.unableToReachServersKey.tr()
+                    : message!.tr(),
+                textAlign: TextAlign.center,
+                maxLines: 4,
+                style: AppTextStyles.style18Medium.copyWith(
+                  color: colors.neutral500,
+                ),
+              ),
+              if (onRetry != null) ...[
+                15.hSpace,
+                PrimaryAppPrefixIconButton(
+                  title: LangKeys.retryKey.tr(),
+                  onTap: onRetry,
+                  prefixIcon: Assets.media.images.svg.retryIcon.svg(
+                    colorFilter:
+                        ColorFilter.mode(colors.white, BlendMode.srcIn),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
