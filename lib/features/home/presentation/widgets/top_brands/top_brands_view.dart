@@ -14,9 +14,9 @@ class TopBrandsView extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 20,
-        childAspectRatio: 0.8
+        childAspectRatio: 167 / 164
       ),
-      itemCount: 6,
+      itemCount: 8,
       itemBuilder: (BuildContext context, int index) => InkWell(
           onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
           child: TopBrandsItem()),

@@ -18,33 +18,7 @@ class TopBrandsScreen extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return Scaffold(
       body: AppWavedView(
-        body: Column(
-          spacing: 11,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PrimarySearchField(isAnimated: false,),
-            6.hSpace,
-            Text(
-              context.tr(LangKeys.categoriesKey),
-              style: AppTextStyles.style14SemiBold.copyWith(
-                color: colors.black,
-              ),
-            ),
-            Expanded(
-              child: CustomButtonTabBar(
-                tabs: [LangKeys.allKey.tr(), 'Devices', 'sddssdsd', 'aaaaaaa'],
-                views: [
-                  TopBrandsView(),
-                  TopBrandsView(),
-                  TopBrandsView(),
-                  TopBrandsView(),
-                ],
-                unSelectedTabColor: colors.neutral200.withValues(alpha: 0.5),
-
-              ),
-            ),
-          ],
-        ),
+        body: TopBrandsView(),
         appBarTitle: context.tr(LangKeys.topBrandsKey),
       ),
     );
