@@ -33,7 +33,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: false,
-      body: mainPages.elementAt(currentPageIndex),
+      body: IndexedStack(
+        index: currentPageIndex,
+        children: mainPages,
+      ),
       bottomNavigationBar: SafeArea(
         child: AppBottomNavBar(
           currentIndex: currentPageIndex,

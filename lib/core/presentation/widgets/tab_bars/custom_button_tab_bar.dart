@@ -22,8 +22,6 @@ class CustomButtonTabBar extends StatefulWidget {
   final List<String> tabs;
   final List<Widget> views;
 
-  /// Externally-driven selected tab. When it changes, the tab bar moves to it
-  /// (e.g. the filter sheet picks a category → jump to that category tab).
   final int? selectedIndex;
 
   final Color? selectedTabColor;
@@ -56,8 +54,6 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   void didUpdateWidget(covariant CustomButtonTabBar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Sync the visible tab with an externally-picked index (e.g. the category
-    // chosen in the filter sheet), staying within the current tab range.
     final int? target = widget.selectedIndex;
     if (target != null &&
         target != _controller.index &&
@@ -98,7 +94,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     splashFactory: NoSplash.splashFactory,
                     dividerColor: Colors.transparent,
                     overlayColor: WidgetStateProperty.resolveWith(
-                          (states) => Colors.transparent,
+                      (states) => Colors.transparent,
                     ),
                     labelPadding: EdgeInsets.symmetric(horizontal: 6),
                     tabs: List.generate(widget.tabs.length, (index) {
@@ -114,7 +110,8 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                           decoration: BoxDecoration(
                             borderRadius: AppBorderRadius.brCircular20,
                             color: isSelected
-                                ? widget.selectedTabColor??colors.primary500Main
+                                ? widget.selectedTabColor ??
+                                      colors.primary500Main
                                 : widget.unSelectedTabColor,
                           ),
                           child: Text(
@@ -122,11 +119,10 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                             maxLines: 1,
                             style: AppTextStyles.style16Medium.copyWith(
                               fontSize: con.maxWidth * 0.04,
+                              fontWeight: isSelected? FontWeight.bold : FontWeight.w500,
                               color: isSelected
-                                  ? widget.selectedLabelColor ??
-                                  colors.white
-                                  : widget.unSelectedLabelColor ??
-                                  colors.black,
+                                  ? widget.selectedLabelColor ?? colors.white
+                                  : widget.unSelectedLabelColor ?? colors.black,
                             ),
                           ),
                         ),
@@ -146,10 +142,10 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                 children: widget.views
                     .map(
                       (view) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: view,
-                  ),
-                )
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: view,
+                      ),
+                    )
                     .toList(),
               ),
             ),
