@@ -33,9 +33,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: false,
-      body: IndexedStack(
-        index: currentPageIndex,
-        children: mainPages,
+      body: Stack(
+        children: [
+          // Home دايمًا في الشجرة (مخفية لما مش مختارة) عشان حالتها تتحفظ.
+          Offstage(
+            offstage: currentPageIndex != 0,
+            child: TickerMode(
+              enabled: currentPageIndex == 0,
+              child: mainPages[0],
+            ),
+          ),
+          // باقي الصفحات: تتبني من جديد كل دخول، وتتشال أول ما تسيبها.
+          if (currentPageIndex != 0) mainPages[currentPageIndex],
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: AppBottomNavBar(
