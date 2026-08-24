@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 import 'home_view_all_widget.dart';
 
@@ -39,7 +41,7 @@ class HomeMostPopularBrandsView extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  HomeViewAllWidget(size: con.maxWidth * 0.035,startBackgroundColor: colors.amber500.withValues(alpha: 0.4),),
+                  HomeViewAllWidget(size: con.maxWidth * 0.035,startBackgroundColor: colors.amber500.withValues(alpha: 0.4),onTap: () => context.pushNamed(AppRoutes.topBrandsScreen),),
                 ],
               ),
               SizedBox(

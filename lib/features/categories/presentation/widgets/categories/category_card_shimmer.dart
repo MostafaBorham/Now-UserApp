@@ -10,9 +10,11 @@ class CategoryCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    // Only the image slot shimmers; the label area stays empty so the
+    // skeleton reads as a bare card image while categories load.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 8,
+      spacing: 6,
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
@@ -20,18 +22,12 @@ class CategoryCardShimmer extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: colors.white,
-              borderRadius: AppBorderRadius.brCircular12,
+              borderRadius: AppBorderRadius.brCircular10,
             ),
           ),
         ),
-        Container(
-          width: 80,
-          height: 14,
-          decoration: BoxDecoration(
-            color: colors.white,
-            borderRadius: AppBorderRadius.brCircular4,
-          ),
-        ),
+        // Reserves the real card's two-line label slot (kept blank).
+        const SizedBox(height: 36),
       ],
     );
   }

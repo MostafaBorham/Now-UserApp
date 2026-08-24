@@ -28,14 +28,14 @@ class CategoryCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 8,
+        spacing: 6,
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                borderRadius: AppBorderRadius.brCircular12,
+                borderRadius: AppBorderRadius.brCircular10,
               ),
               child: Stack(
                 alignment: Alignment.topCenter,
@@ -45,6 +45,22 @@ class CategoryCard extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
+                  ),
+                  // White glow: the image fades to white at its bottom edge so
+                  // the card blends into the surface below it, matching the
+                  // design (and the home category item's glow). Transparent at
+                  // the top so the product stays fully visible.
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: const [0.6, 1],
+                          colors: [colors.white.withValues(alpha: 0), colors.white],
+                        ),
+                      ),
+                    ),
                   ),
                   // ponytail: placeholder discount badge. CategoryModel has no
                   // discount field yet, so `hasOffer` is never set true and the
@@ -69,13 +85,19 @@ class CategoryCard extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            context.getLocalizedApiText(category.name),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.style14Medium.copyWith(
-              color: colors.neutral1200,
+          // Fixed two-line slot so a wrapping label never shrinks the image;
+          // shorter labels just leave the second line empty, keeping every
+          // card's image the same height across the grid.
+          SizedBox(
+            height: 36,
+            child: Text(
+              context.getLocalizedApiText(category.name),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.style14SemiBold.copyWith(
+                color: colors.neutral1200,
+              ),
             ),
           ),
         ],

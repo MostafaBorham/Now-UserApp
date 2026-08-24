@@ -28,10 +28,10 @@ class CategoriesScreen extends ConsumerStatefulWidget {
 class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   static const SliverGridDelegateWithFixedCrossAxisCount _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+        crossAxisCount: 3,
         crossAxisSpacing: 16,
-        mainAxisSpacing: 20,
-        mainAxisExtent: 220,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 190,
       );
 
   @override
@@ -63,7 +63,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             onRefresh: categoriesViewModel.loadFirstPage,
             onLoadNextPage: categoriesViewModel.loadNextPage,
             layout: const PaginatedGridLayout(gridDelegate: _gridDelegate),
-            firstPagePlaceholdersCount: 8,
+            firstPagePlaceholdersCount: 9,
             // Fills the grid while the first page loads and trails it while the
             // next one does, so the skeleton always matches the real cards.
             placeholderBuilder: (BuildContext context) =>
