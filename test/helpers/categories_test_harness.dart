@@ -219,8 +219,11 @@ Override overrideAppCategories(
 Override overrideCategoryProducts(
   AsyncValue<PaginationModel<ProductModel>> state,
 ) =>
+    // getCategoryProductsProvider is a family: override every instance (whatever
+    // its CategoryProductsArgs) with a fake seeded to [state].
     getCategoryProductsProvider.overrideWith(
-      (Ref ref) => _FakeCategoryProductsVM(state),
+      (Ref ref, CategoryProductsArgs args) =>
+          _FakeCategoryProductsVM(state, args),
     );
 
 Override overrideCategoryStores(
@@ -246,7 +249,10 @@ class _FakeAppCategoriesVM extends GetAppCategoriesViewModel {
 }
 
 class _FakeCategoryProductsVM extends GetCategoryProductsViewModel {
-  _FakeCategoryProductsVM(AsyncValue<PaginationModel<ProductModel>> initial) {
+  _FakeCategoryProductsVM(
+    AsyncValue<PaginationModel<ProductModel>> initial,
+    CategoryProductsArgs args,
+  ) : super(args: args) {
     state = initial;
   }
 
