@@ -372,6 +372,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get deliveryIcon =>
       const SvgGenImage('assets/media/images/svg/delivery_icon.svg');
 
+  /// File path: assets/media/images/svg/discount-badge.svg
+  SvgGenImage get discountBadge =>
+      const SvgGenImage('assets/media/images/svg/discount-badge.svg');
+
   /// File path: assets/media/images/svg/discount-ticket-icon.svg
   SvgGenImage get discountTicketIcon =>
       const SvgGenImage('assets/media/images/svg/discount-ticket-icon.svg');
@@ -814,6 +818,7 @@ class $AssetsMediaImagesSvgGen {
     delivered,
     deliveryManMotocycle,
     deliveryIcon,
+    discountBadge,
     discountTicketIcon,
     discount,
     editIcon,

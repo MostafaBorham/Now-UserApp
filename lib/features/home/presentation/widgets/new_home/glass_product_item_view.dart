@@ -1,6 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -45,38 +49,8 @@ class GlassProductItemView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ReverseWidget(
-                              applyReverse: !context.isRTL,
-                              child: Assets.media.images.svg.discountTicketIcon
-                                  .svg(width: con.maxWidth * 0.2),
-                            ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.only(top: 5.0,start: 3),
-                              child: Transform.rotate(
-                                angle: context.isRTL? -1.1 : 1.1,
-                                child: SizedBox(
-                                  width: con.maxWidth*0.1,
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      '50%',
-                                      style: TextStyle(
-                                        color: colors.white,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: con.maxWidth * 0.08,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                         CircularAppFavouriteIcon(size: con.maxWidth * 0.1,),
                       ],
                     ),
@@ -165,6 +139,44 @@ class GlassProductItemView extends StatelessWidget {
                 bottom: 8,
                 end: 8,
                 child: AnimatedCartButton(),
+              ),
+              // Diagonal discount badge wrapping the top-start corner, with
+              // the discount text laid along the band. The SVG is mirrored in
+              // LTR so the band always sits on the start corner; the text
+              // rotates to match the band direction on each side.
+              PositionedDirectional(
+                top: 0,
+                start: 0,
+                child: SizedBox.square(
+                  dimension: con.maxWidth * 0.6,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: ReverseWidget(
+                          applyReverse: !context.isRTL,
+                          child: Assets.media.images.svg.discountBadge
+                              .svg(fit: BoxFit.contain),
+                        ),
+                      ),
+                      PositionedDirectional(
+                        top: con.maxWidth*0.09,
+                        start: con.maxWidth*0.01,
+                        child: Transform.rotate(
+                          angle: context.isRTL ? math.pi / 4 : -math.pi / 4,
+                          child: Text(
+                            '50% ${LangKeys.discountKey.tr()}',
+                            style: TextStyle(
+                              color: colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: con.maxWidth * 0.06,
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
