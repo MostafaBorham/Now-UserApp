@@ -11,7 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/support/circular_
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-class AppWavedView extends StatelessWidget {
+class AppWavedView extends StatefulWidget {
   const AppWavedView({
     super.key,
     required this.body,
@@ -23,6 +23,7 @@ class AppWavedView extends StatelessWidget {
     this.canPop,
     this.bodyPadding,
     this.onCartTap,
+    this.scrollController,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -33,10 +34,60 @@ class AppWavedView extends StatelessWidget {
   final bool? canPop;
   final Widget body;
   final EdgeInsets? bodyPadding;
+
+  /// When provided, the body's top spacing is dropped (the caller supplies it
+  /// inside its own scroll view instead) and the wave clip flattens into a
+  /// straight edge while the list is scrolled away from the top, restoring the
+  /// wave once it settles back at offset 0.
+  final ScrollController? scrollController;
+
+  @override
+  State<AppWavedView> createState() => _AppWavedViewState();
+}
+
+class _AppWavedViewState extends State<AppWavedView> {
+  bool _isFlattened = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController?.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController?.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final ScrollController? controller = widget.scrollController;
+    if (controller == null || !controller.hasClients) return;
+    final bool flattened = controller.offset > 0;
+    if (flattened != _isFlattened) {
+      setState(() => _isFlattened = flattened);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Size screenSize = MediaQuery.sizeOf(context);
+    final EdgeInsets bodyPadding =
+        widget.bodyPadding ??
+        const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 57,
+        ).copyWith(bottom: 20);
+    // With a scroll controller wired in, the caller owns the top spacing inside
+    // its scroll view so it scrolls up with the content when the wave flattens.
+    final EdgeInsets effectiveBodyPadding = widget.scrollController != null
+        ? bodyPadding.copyWith(top: 0)
+        : bodyPadding;
+    // While scrolled off the top the wave flattens: a null clipper makes
+    // [ClipPath] fall back to the plain rectangular bounds (straight edge).
+    final TopWaveClipper? waveClipper =
+        _isFlattened ? null : const TopWaveClipper();
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 5),
@@ -64,7 +115,7 @@ class AppWavedView extends StatelessWidget {
                   Expanded(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: canPop ?? context.canPop()
+                      child: widget.canPop ?? context.canPop()
                           ? InkWell(
                               onTap: () => context.pop(),
                               child: ReverseWidget(
@@ -89,7 +140,7 @@ class AppWavedView extends StatelessWidget {
                     flex: 2,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: loadAppBarTitle
+                      child: widget.loadAppBarTitle
                           ? AppShimmer(
                               child: Container(
                                 width: 120,
@@ -101,7 +152,7 @@ class AppWavedView extends StatelessWidget {
                               ),
                             )
                           : Text(
-                              appBarTitle,
+                              widget.appBarTitle,
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -116,28 +167,28 @@ class AppWavedView extends StatelessWidget {
                       alignment: AlignmentDirectional.centerEnd,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: hasCartIcon || hasSupportIcon
+                        child: widget.hasCartIcon || widget.hasSupportIcon
                             ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 8,
                                 children: [
-                                  if (hasSupportIcon)
+                                  if (widget.hasSupportIcon)
                                     CircularSupportIcon(
                                       size: screenSize.width * 0.05,
                                       onTap:
-                                          onSupportTap ??
+                                          widget.onSupportTap ??
                                           () {
                                             context.pushNamed(
                                               AppRoutes.supportScreen,
                                             );
                                           },
                                     ),
-                                  if (hasCartIcon)
+                                  if (widget.hasCartIcon)
                                     ReverseWidget(
                                       child: CircularCartButton(
                                         size: screenSize.width * 0.05,
                                         onTap:
-                                            onCartTap ??
+                                            widget.onCartTap ??
                                             () {
                                               context.pushNamed(
                                                 AppRoutes.cartScreen,
@@ -156,19 +207,14 @@ class AppWavedView extends StatelessWidget {
             ),
             Expanded(
               child: ClipPath(
-                clipper: TopWaveClipper(),
+                clipper: waveClipper,
                 child: Container(
                   color: colors.neutral500.withValues(alpha: 0.05),
-                  padding: EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.only(top: 5),
                   child: ClipPath(
-                    clipper: TopWaveClipper(),
+                    clipper: waveClipper,
                     child: Container(
-                      padding:
-                          bodyPadding ??
-                          EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 57,
-                          ).copyWith(bottom: 20),
+                      padding: effectiveBodyPadding,
                       decoration: BoxDecoration(
                         color: colors.white,
                         boxShadow: [
@@ -180,7 +226,7 @@ class AppWavedView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: body,
+                      child: widget.body,
                     ),
                   ),
                 ),

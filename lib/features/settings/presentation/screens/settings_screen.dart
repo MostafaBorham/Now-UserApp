@@ -21,11 +21,24 @@ import '../widgets/profile_info.dart';
 import '../widgets/settings_section.dart';
 import '../widgets/settings_tile.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.listen<AsyncValue<dynamic>>(logoutProvider, (
       AsyncValue<dynamic>? previous,
       AsyncValue<dynamic> next,
@@ -55,9 +68,14 @@ class SettingsScreen extends ConsumerWidget {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.profileKey.tr(),
+        scrollController: _scrollController,
         body: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
+              // Top spacing lives inside the scroll view so it scrolls up with
+              // the content when the wave flattens on scroll.
+              const SizedBox(height: 57),
               // Logged-in users see their real name + avatar; guests keep the
               // default label and never hit /user/profile.
               isUser
