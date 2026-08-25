@@ -154,6 +154,20 @@ class StoreDetailsScreen extends ConsumerWidget {
                                                     StoreDetailsProductsView(
                                                       products: products,
                                                       sortType: sortType,
+                                                      onProductFavouriteChanged:
+                                                          (
+                                                            int? productId,
+                                                            bool isFavourite,
+                                                          ) => ref
+                                                              .read(
+                                                                getStoreDetailsProvider(
+                                                                  storeId,
+                                                                ).notifier,
+                                                              )
+                                                              .updateProductFavourite(
+                                                                productId,
+                                                                isFavourite,
+                                                              ),
                                                     ),
                                               )
                                               .toList(),

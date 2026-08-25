@@ -201,7 +201,12 @@ class HomeStoresListView extends ConsumerWidget {
         if (stores.isEmpty) return const NoItemsWidget();
         return _StoresList(
           itemCount: stores.length,
-          itemBuilder: (context, index) => StoreCardView(store: stores[index]),
+          itemBuilder: (context, index) => StoreCardView(
+            store: stores[index],
+            onFavouriteChanged: (bool isFavourite) => ref
+                .read(getCategoryStoresProvider(args).notifier)
+                .updateStoreFavourite(stores[index].id, isFavourite),
+          ),
         );
       },
     );

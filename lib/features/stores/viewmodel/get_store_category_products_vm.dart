@@ -40,6 +40,19 @@ class GetStoreCategoryProductsViewModel
     return loadFirstPage();
   }
 
+  /// Flips [ProductModel.isFavorite] on the single loaded product with
+  /// [productId] in place, leaving the rest of the grid (and its scroll
+  /// position) untouched. Called when a product card's favourite icon reports a
+  /// settled change, so a card scrolled off and back keeps the new status
+  /// instead of reverting to the server-loaded one.
+  void updateProductFavourite(int? productId, bool isFavourite) {
+    if (productId == null) return;
+    updateItemsWhere(
+      (ProductModel product) => product.id == productId,
+      (ProductModel product) => product.copyWith(isFavorite: isFavourite),
+    );
+  }
+
   @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) {
     return _repo.getStoreCategoryProducts(

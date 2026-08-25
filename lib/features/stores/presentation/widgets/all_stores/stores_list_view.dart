@@ -81,7 +81,11 @@ class StoresListView extends ConsumerWidget {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-          child: StoreCardView(store: store),
+          child: StoreCardView(
+            store: store,
+            onFavouriteChanged: (bool isFavourite) =>
+                viewModel.updateStoreFavourite(store.id, isFavourite),
+          ),
         ),
       ),
     );

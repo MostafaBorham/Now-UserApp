@@ -9,10 +9,17 @@ class StoreDetailsProductsView extends StatelessWidget {
     super.key,
     required this.products,
     required this.sortType,
+    this.onProductFavouriteChanged,
   });
 
   final List<ProductModel> products;
   final StoresSortType sortType;
+
+  /// Called with a product's id and its new favourite status after a settled
+  /// toggle on that product's card, so the store-details provider can persist
+  /// the change onto the store's product list.
+  final void Function(int? productId, bool isFavourite)?
+      onProductFavouriteChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,11 @@ class StoreDetailsProductsView extends StatelessWidget {
           childAspectRatio: 170 / 280
       ),
       itemCount: products.length,
-      itemBuilder: (BuildContext context, int index) =>
-          ProductItemCard1(product: products[index]),
+      itemBuilder: (BuildContext context, int index) => ProductItemCard1(
+        product: products[index],
+        onFavouriteChanged: (bool isFavourite) =>
+            onProductFavouriteChanged?.call(products[index].id, isFavourite),
+      ),
     );
   }
 }

@@ -99,6 +99,31 @@ abstract class PaginatedViewModel<T>
     );
   }
 
+  /// Replaces every already-loaded item matching [test] with the result of
+  /// [update], in place and without refetching — for reflecting a change made
+  /// on a card back onto the list (e.g. a favourite toggle flipping
+  /// `isFavorite` on the single item behind the tapped heart). Every other
+  /// item keeps its identity, so a per-item `select` rebuilds only the changed
+  /// cell. A no-op before the first page loads or when nothing matches.
+  void updateItemsWhere(bool Function(T item) test, T Function(T item) update) {
+    final PaginationModel<T>? current = state.valueOrNull;
+    if (current == null) return;
+
+    bool changed = false;
+    final List<T> updated = <T>[];
+    for (final T item in current.data) {
+      if (test(item)) {
+        updated.add(update(item));
+        changed = true;
+      } else {
+        updated.add(item);
+      }
+    }
+    if (!changed) return;
+
+    state = AsyncValue<PaginationModel<T>>.data(current.copyWithData(updated));
+  }
+
   /// Drops the already-loaded items matching [test] from the current page in
   /// place, without refetching — for when an item leaves the list as a side
   /// effect of something on the screen (e.g. unfavouriting on the favourites

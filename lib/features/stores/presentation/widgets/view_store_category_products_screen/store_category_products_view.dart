@@ -68,7 +68,14 @@ class _StoreCategoryProductsViewState
       placeholderBuilder: (BuildContext context) =>
           AppShimmer(child: ProductItemCard2(onTap: () {})),
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
-          ProductItemCard2(productModel: product),
+          ProductItemCard2(
+            productModel: product,
+            onFavouriteChanged: (bool isFavourite) =>
+                _productsViewModel.updateProductFavourite(
+                  product.id,
+                  isFavourite,
+                ),
+          ),
     );
   }
 }

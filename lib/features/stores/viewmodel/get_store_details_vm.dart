@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/data/repo/stores_repo.dart';
 
@@ -38,5 +39,25 @@ class GetStoreDetailsViewModel
           AsyncValue.error(failure.message, StackTrace.current),
       (StoreModel store) => AsyncValue.data(store),
     );
+  }
+
+  /// Flips [ProductModel.isFavorite] on the single product with [productId]
+  /// inside the loaded store's [StoreModel.products] in place, so a favourite
+  /// toggle on a store-details product card sticks without refetching the
+  /// store. Called when the card's favourite icon reports a settled change. A
+  /// no-op before the store loads or when the product is not in the list.
+  void updateProductFavourite(int? productId, bool isFavourite) {
+    final StoreModel? store = state.valueOrNull;
+    final List<ProductModel>? products = store?.products;
+    if (store == null || products == null || productId == null) return;
+
+    final List<ProductModel> updated = <ProductModel>[
+      for (final ProductModel product in products)
+        product.id == productId
+            ? product.copyWith(isFavorite: isFavourite)
+            : product,
+    ];
+
+    state = AsyncValue<StoreModel>.data(store.copyWith(products: updated));
   }
 }

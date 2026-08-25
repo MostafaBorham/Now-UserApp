@@ -20,9 +20,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class ProductItemCard1 extends StatefulWidget {
-  const ProductItemCard1({super.key, this.product});
+  const ProductItemCard1({super.key, this.product, this.onFavouriteChanged});
 
   final ProductModel? product;
+
+  /// Forwarded to the heart button — fired with the new status after a
+  /// successful favourite toggle, so the list this card belongs to can persist
+  /// the change onto its product model (e.g. via `updateProductFavourite`).
+  final ValueChanged<bool>? onFavouriteChanged;
 
   @override
   State<ProductItemCard1> createState() => _ProductItemCard1State();
@@ -128,7 +133,8 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       itemId: widget.product?.id,
                                       isFavourite:
                                           widget.product?.isFavorite ?? false,
-                                      onFavouriteChanged: (currentFavourite) {},
+                                      onFavouriteChanged:
+                                          widget.onFavouriteChanged,
                                     ),
                                   ),
                                 ],

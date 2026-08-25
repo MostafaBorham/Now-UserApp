@@ -16,9 +16,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
 class StoreCardView extends StatelessWidget {
-  const StoreCardView({super.key, this.store});
+  const StoreCardView({super.key, this.store, this.onFavouriteChanged});
 
   final StoreModel? store;
+
+  final ValueChanged<bool>? onFavouriteChanged;
 
   static const String _demoCoverUrl =
       'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1';
@@ -118,7 +120,7 @@ class StoreCardView extends StatelessWidget {
                             favouriteType: FavouriteType.store,
                             itemId: store?.id,
                             isFavourite: store?.isFavorite ?? false,
-                            onFavouriteChanged: (currentFavourite) {},
+                            onFavouriteChanged: onFavouriteChanged,
                           ),
                         ),
                       ],

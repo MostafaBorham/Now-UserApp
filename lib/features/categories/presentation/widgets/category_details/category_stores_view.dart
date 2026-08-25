@@ -175,7 +175,12 @@ class _CategoryStoreItem extends ConsumerWidget {
 
     return AspectRatio(
       aspectRatio: 1.75,
-      child: StoreCardView(store: store),
+      child: StoreCardView(
+        store: store,
+        onFavouriteChanged: (bool isFavourite) => ref
+            .read(getCategoryStoresProvider(args).notifier)
+            .updateStoreFavourite(store.id, isFavourite),
+      ),
     );
   }
 }
