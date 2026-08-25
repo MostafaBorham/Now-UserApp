@@ -32,8 +32,6 @@ class _CategoriesProductTabViewState
       children: [
         PrimarySearchField(
           isAnimated: false,
-          // Debounced (1s) inside the field; forwards the term to the products
-          // query, which re-fetches from page 1 for the new search.
           onSearch: (String query) =>
               ref.read(categoryProductsSearchProvider.notifier).state = query,
         ),
