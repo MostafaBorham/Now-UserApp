@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -8,7 +7,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 
@@ -78,14 +76,10 @@ class StoresListView extends ConsumerWidget {
       ),
       itemBuilder: (context, store, index) => AspectRatio(
         aspectRatio: 1.5,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-          child: StoreCardView(
-            store: store,
-            onFavouriteChanged: (bool isFavourite) =>
-                viewModel.updateStoreFavourite(store.id, isFavourite),
-          ),
+        child: StoreCardView(
+          store: store,
+          onFavouriteChanged: (bool isFavourite) =>
+              viewModel.updateStoreFavourite(store.id, isFavourite),
         ),
       ),
     );

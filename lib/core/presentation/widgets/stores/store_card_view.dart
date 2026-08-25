@@ -1,8 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -16,11 +17,20 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
 class StoreCardView extends StatelessWidget {
-  const StoreCardView({super.key, this.store, this.onFavouriteChanged});
+  const StoreCardView({
+    super.key,
+    this.store,
+    this.onFavouriteChanged,
+    this.onTap,
+  });
 
   final StoreModel? store;
 
   final ValueChanged<bool>? onFavouriteChanged;
+
+  /// Tap handler for the whole card. Defaults to opening the store details
+  /// screen for [store] (passing its id), matching [StoreItem].
+  final VoidCallback? onTap;
 
   static const String _demoCoverUrl =
       'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1';
@@ -52,11 +62,17 @@ class StoreCardView extends StatelessWidget {
         ? '${formatDouble(store!.deliveryFee)}'
         : '10';
 
-    return LayoutBuilder(
+    return InkWell(
+      onTap:
+          onTap ??
+          () => context.pushNamed(
+            AppRoutes.storeDetailsScreen,
+            extra: store?.id,
+          ),
+      child: LayoutBuilder(
       builder: (context, con) {
         final double w = con.maxWidth;
         final double logoRadius = w * 0.09;
-        final double coverHeight = w * 0.32;
         return Container(
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
@@ -218,6 +234,7 @@ class StoreCardView extends StatelessWidget {
           ),
         );
       },
+      ),
     );
   }
 }

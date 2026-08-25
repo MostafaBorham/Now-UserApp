@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
@@ -14,7 +16,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 class ProductItem3View extends StatelessWidget {
-  const ProductItem3View({super.key, this.product, this.onFavouriteChanged});
+  const ProductItem3View({
+    super.key,
+    this.product,
+    this.onFavouriteChanged,
+    this.onTap,
+  });
 
   /// The product to render. `null` while used as a shimmer placeholder, where
   /// the layout is drawn but the values are irrelevant.
@@ -24,13 +31,24 @@ class ProductItem3View extends StatelessWidget {
   /// the owner of the list can persist the change onto its product model.
   final ValueChanged<bool>? onFavouriteChanged;
 
+  /// Tap handler for the whole card. Defaults to opening the product details
+  /// screen for [product] (passing its slug), matching the other product cards.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final ProductModel? product = this.product;
     // A running deal drives the discount badge and the struck-through old price.
     final bool hasDeal = product?.activeDeal != null;
-    return AspectRatio(
+    return InkWell(
+      onTap:
+          onTap ??
+          () => context.pushNamed(
+            AppRoutes.productDetailsScreen,
+            extra: product?.slug,
+          ),
+      child: AspectRatio(
       aspectRatio: 0.65,
       child: LayoutBuilder(
         builder: (context,con) {
@@ -219,6 +237,7 @@ class ProductItem3View extends StatelessWidget {
             ),
           );
         }
+      ),
       ),
     );
   }
