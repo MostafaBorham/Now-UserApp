@@ -23,7 +23,7 @@ void main() {
     test('app categories query carries max_depth, per_page and the page arg', () {
       expect(CategoriesEndpoints.appCategoriesQuery(3), {
         'max_depth': 1,
-        'per_page': 15,
+        'per_page': 100,
         'page': 3,
       });
     });
@@ -45,11 +45,12 @@ void main() {
     });
 
     test('products query pins the price ascending sort', () {
-      expect(CategoriesEndpoints.categoryProductsQuery(5), {
+      expect(CategoriesEndpoints.categoryProductsQuery(page: 5), {
         'per_page': 15,
         'page': 5,
         'sort': 'price',
         'direction': 'asc',
+        'category_id': null,
       });
     });
 
@@ -57,7 +58,7 @@ void main() {
       // Guards the old bug: paging state is no longer shared/static, so two
       // different page requests do not clobber each other.
       final storesPage2 = CategoriesEndpoints.categoryStoresQuery(page: 2);
-      final productsPage9 = CategoriesEndpoints.categoryProductsQuery(9);
+      final productsPage9 = CategoriesEndpoints.categoryProductsQuery(page: 9);
       expect(storesPage2['page'], 2);
       expect(productsPage9['page'], 9);
     });

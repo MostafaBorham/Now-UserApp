@@ -69,7 +69,9 @@ class ProductItem3View extends StatelessWidget {
                                 favouriteType: FavouriteType.product,
                                 itemId: product?.id,
                                 isFavourite: product?.isFavorite ?? false,
-                                onFavouriteChanged: (currentFavourite) {},
+                                onFavouriteChanged: (currentFavourite) {
+                                  print('#fav=$currentFavourite');
+                                },
                               ),
                             ],
                           ),
