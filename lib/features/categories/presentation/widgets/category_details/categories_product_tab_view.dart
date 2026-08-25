@@ -30,11 +30,12 @@ class _CategoriesProductTabViewState
       spacing: 16,
       children: [
         PrimarySearchField(),
-        Text(
+        /*Text(
           LangKeys.categoriesKey.tr(),
           style: AppTextStyles.style16SemiBold.copyWith(color: colors.black),
-        ),
-        Expanded(
+        ),*/
+        Expanded(child: CategoryProductsView(sortType: StoresSortType.all))
+/*        Expanded(
           child: CustomButtonTabBar(
             filterWidget: AppFilterIcon(
               onTap: () => showModalBottomSheet(
@@ -57,7 +58,7 @@ class _CategoriesProductTabViewState
             }).toList(),
             unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
-        ),
+        ),*/
       ],
     );
   }

@@ -147,15 +147,26 @@ class ProductItem3View extends StatelessWidget {
                                 size: con.maxWidth*0.13,
                               ),
                         Expanded(
-                          child: Text(
-                            'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: con.maxWidth*0.1,
-                              fontWeight: FontWeight.w600,
-                              color: colors.black,
-                            ),
+                          child: LayoutBuilder(
+                            builder: (context, textCon) {
+                              final double fontSize = con.maxWidth * 0.1;
+                              const double lineHeight = 1.2;
+                              final int fitLines = (textCon.maxHeight /
+                                      (fontSize * lineHeight))
+                                  .floor()
+                                  .clamp(1, 2);
+                              return Text(
+                                'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
+                                maxLines: fitLines,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                  height: lineHeight,
+                                  fontWeight: FontWeight.w600,
+                                  color: colors.black,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
