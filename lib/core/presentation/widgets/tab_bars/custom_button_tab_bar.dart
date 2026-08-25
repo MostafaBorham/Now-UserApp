@@ -96,13 +96,16 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                     overlayColor: WidgetStateProperty.resolveWith(
                       (states) => Colors.transparent,
                     ),
-                    labelPadding: EdgeInsets.symmetric(horizontal: 6),
+                    labelPadding: EdgeInsets.zero,
                     tabs: List.generate(widget.tabs.length, (index) {
                       final isSelected = _controller.index == index;
 
                       return Tab(
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
+                          margin: EdgeInsetsDirectional.only(
+                            start: index == 0 ? 0 : 12,
+                          ),
                           padding: EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 8,
@@ -119,7 +122,9 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                             maxLines: 1,
                             style: AppTextStyles.style16Medium.copyWith(
                               fontSize: con.maxWidth * 0.04,
-                              fontWeight: isSelected? FontWeight.bold : FontWeight.w500,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
                               color: isSelected
                                   ? widget.selectedLabelColor ?? colors.white
                                   : widget.unSelectedLabelColor ?? colors.black,
@@ -136,15 +141,11 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
             Expanded(
               child: TabBarView(
                 controller: _controller,
-                // Switching views is tap-only: block finger swipe/drag between
-                // tabs so horizontal drags never slide the pages.
+                viewportFraction: 1,
                 physics: const NeverScrollableScrollPhysics(),
                 children: widget.views
                     .map(
-                      (view) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: view,
-                      ),
+                      (view) => view,
                     )
                     .toList(),
               ),

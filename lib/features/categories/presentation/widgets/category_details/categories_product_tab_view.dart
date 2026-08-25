@@ -32,9 +32,7 @@ class _CategoriesProductTabViewState
         PrimarySearchField(),
         Text(
           LangKeys.categoriesKey.tr(),
-          style: AppTextStyles.style16SemiBold.copyWith(
-            color: colors.black,
-          ),
+          style: AppTextStyles.style16SemiBold.copyWith(color: colors.black),
         ),
         Expanded(
           child: CustomButtonTabBar(
@@ -57,7 +55,6 @@ class _CategoriesProductTabViewState
             views: StoresSortType.values.map((sortType) {
               return CategoryProductsView(sortType: sortType);
             }).toList(),
-            // selectedTabColor: colors.neutral1200,
             unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
         ),

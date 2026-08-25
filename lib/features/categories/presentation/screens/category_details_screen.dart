@@ -23,6 +23,7 @@ class CategoryDetailsScreen extends StatelessWidget {
       overrides: [categoryProvider.overrideWithValue(category)],
       child: Scaffold(
         body: AppWavedView(
+          bodyPadding: EdgeInsets.symmetric(horizontal: 12,vertical: 40).copyWith(bottom: 0),
           body: AppTabBar(
             tabs: [LangKeys.productsKey.tr(), LangKeys.storesKey.tr()],
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],

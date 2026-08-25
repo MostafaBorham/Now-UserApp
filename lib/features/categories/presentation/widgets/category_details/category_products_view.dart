@@ -9,11 +9,6 @@ import 'package:nowdelivery_user_app/features/categories/presentation/providers/
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
-/// The products of the opened category as an infinite-scrolling grid.
-///
-/// Only describes *what* the grid shows — the paging behaviour (next page on
-/// scroll, pull-to-refresh, loading, empty and error states) lives in
-/// [PaginatedView] and [GetCategoryProductsViewModel].
 class CategoryProductsView extends ConsumerStatefulWidget {
   const CategoryProductsView({
     super.key,
@@ -35,8 +30,6 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
         childAspectRatio: 0.75,
       );
 
-  // The opened category's query, resolved once. The provider starts fetching it
-  // as soon as it is first watched below.
   // TODO: forward widget.sortType to the API once the products sort param is wired.
   late final CategoryProductsArgs _args = (
     categorySlug: ref.read(categoryProvider).slug ?? '',
@@ -57,8 +50,6 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
         gridDelegate: _gridDelegate,
         padding: EdgeInsets.all(4),
       ),
-      // Fills the grid while the first page loads and trails it while the next
-      // one does, so the skeleton always matches the real cards.
       placeholderBuilder: (BuildContext context) =>
           AppShimmer(child: ProductItem3View()),
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
