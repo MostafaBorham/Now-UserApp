@@ -93,8 +93,6 @@ class StoreCardView extends StatelessWidget {
                           child: Container(
                             width: stackHeight*0.6,
                             height: stackHeight*0.3,
-                            padding: const EdgeInsets.all(5
-                            ),
                             decoration: BoxDecoration(
                               color: colors.errorContainer,
                               borderRadius: BorderRadiusDirectional.only(
@@ -123,24 +121,6 @@ class StoreCardView extends StatelessWidget {
                             onFavouriteChanged: (currentFavourite) {},
                           ),
                         ),
-                        PositionedDirectional(
-                          start: 16,
-                          bottom: -stackHeight*0.3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: colors.neutral200.withValues(alpha: 0.5),
-                              ),
-                            ),
-                            child: CircularBrandLogo(
-                              radius: stackHeight*0.3,
-                              elevation: 0,
-                              backgroundColor: colors.white,
-                              logoUrl: logoUrl,
-                            ),
-                          ),
-                        ),
                       ],
                     );
                   }
@@ -155,36 +135,65 @@ class StoreCardView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 6,
                   children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: logoRadius * 2.2,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        spacing: 8,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              storeName,
-                              maxLines: 1,
-                              textAlign: TextAlign.start,
-                              style: AppTextStyles.style18Bold.copyWith(
-                                color: colors.black,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      spacing: 8,
+                      children: [
+                        // Logo reserves only its lower half in the row and
+                        // overflows upward to overlap the cover, so the name
+                        // is laid out beside it automatically (no manual padding).
+                        SizedBox(
+                          width: logoRadius * 2,
+                          height: logoRadius,
+                          child: OverflowBox(
+                            maxHeight: logoRadius * 2,
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colors.neutral200.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                ),
+                              ),
+                              child: CircularBrandLogo(
+                                radius: logoRadius,
+                                elevation: 0,
+                                backgroundColor: colors.white,
+                                logoUrl: logoUrl,
                               ),
                             ),
                           ),
-                          AppRateWidget(
-                            starColor: colors.amber500,
-                            rateRatio: rating,
-                            rateCount: ratingCount,
-                            rateColor: colors.neutral500,
-                            size: w * 0.045,
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            spacing: 8,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  storeName,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.start,
+                                  style: AppTextStyles.style18Bold.copyWith(
+                                    color: colors.black,
+                                  ),
+                                ),
+                              ),
+                              AppRateWidget(
+                                starColor: colors.amber500,
+                                rateRatio: rating,
+                                rateCount: ratingCount,
+                                rateColor: colors.neutral500,
+                                size: w * 0.045,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Text(
-                      textDirection: TextDirection.ltr,
                       storeDescription,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
