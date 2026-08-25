@@ -117,6 +117,27 @@ class GetCategoryProductsViewModel
     );
   }
 
+  /// Flips [ProductModel.isFavorite] on the single loaded product with [productId]
+  /// in place, leaving the rest of the list (and its scroll position) untouched.
+  /// Called when the favourite icon on a card reports a settled change, so a
+  /// card scrolled off and back keeps the new status instead of reverting to the
+  /// server-loaded one.
+  void updateProductFavourite(int? productId, bool isFavourite) {
+    final PaginationModel<ProductModel>? currentPage = state.valueOrNull;
+    if (currentPage == null || productId == null) return;
+
+    final List<ProductModel> updated = <ProductModel>[
+      for (final ProductModel product in currentPage.data)
+        product.id == productId
+            ? product.copyWith(isFavorite: isFavourite)
+            : product,
+    ];
+
+    state = AsyncValue<PaginationModel<ProductModel>>.data(
+      currentPage.copyWithData(updated),
+    );
+  }
+
   Future<Either<Failure, PaginationModel<ProductModel>>> _fetchPage(int page) {
     return _repo.getCategoryProducts(
       categorySlug: args.categorySlug,

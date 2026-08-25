@@ -133,7 +133,15 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
                                     child: ProductItem3View(),
                                   );
                                 }
-                                return ProductItem3View(product: items[index]);
+                                final ProductModel product = items[index];
+                                return ProductItem3View(
+                                  product: product,
+                                  onFavouriteChanged: (bool isFavourite) =>
+                                      viewModel.updateProductFavourite(
+                                        product.id,
+                                        isFavourite,
+                                      ),
+                                );
                               },
                             );
                           },

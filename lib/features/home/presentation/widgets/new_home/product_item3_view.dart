@@ -16,11 +16,15 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_wid
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 class ProductItem3View extends StatelessWidget {
-  const ProductItem3View({super.key, this.product});
+  const ProductItem3View({super.key, this.product, this.onFavouriteChanged});
 
   /// The product to render. `null` while used as a shimmer placeholder, where
   /// the layout is drawn but the values are irrelevant.
   final ProductModel? product;
+
+  /// Called with the new favourite status whenever it settles for this card, so
+  /// the owner of the list can persist the change onto its product model.
+  final ValueChanged<bool>? onFavouriteChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +73,7 @@ class ProductItem3View extends StatelessWidget {
                                 favouriteType: FavouriteType.product,
                                 itemId: product?.id,
                                 isFavourite: product?.isFavorite ?? false,
-                                onFavouriteChanged: (currentFavourite) {
-                                  print('#fav=$currentFavourite');
-                                },
+                                onFavouriteChanged: onFavouriteChanged,
                               ),
                             ],
                           ),
