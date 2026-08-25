@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
@@ -111,13 +112,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                   ),
                 ),
               if (maxQuantity < 1)
-                Text(
-                  LangKeys.outOfStockKey.tr(),
-                  style: AppTextStyles.style16Bold.copyWith(
-                    color: colors.onError,
-                    fontSize: 15,
-                  ),
-                )
+                const OutOfStockLabel(fontSize: 15)
               else
               Container(
                 padding: const EdgeInsets.all(4),

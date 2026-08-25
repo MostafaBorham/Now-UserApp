@@ -86,70 +86,103 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
         ..loadMoreState.addListener(_onLoadMoreStateChanged);
     }
 
-    final AsyncValue<PaginationModel<ProductModel>> productsState = ref.watch(
-      getCategoryProductsProvider(args),
+    // Watch only the coarse view shape — loading / error / item count — not the
+    // products themselves. A favourite toggle changes an item in place without
+    // touching any of these, so this widget (and with it the whole grid) does
+    // not rebuild; only the one item watching that product does (see
+    // [_CategoryProductGridItem]).
+    final ({bool isLoading, String? error, int length}) view = ref.watch(
+      getCategoryProductsProvider(args).select(
+        (AsyncValue<PaginationModel<ProductModel>> state) => (
+          isLoading: state.isLoading,
+          error: state.hasError ? state.error.toString() : null,
+          length: state.valueOrNull?.data.length ?? 0,
+        ),
+      ),
     );
 
     return LayoutBuilder(
-      builder: (context,con) {
-        return productsState.when(
-          loading: () => const CategoryProductsViewShimmer(),
-          error: (Object error, StackTrace stackTrace) =>
-              ServerConnectionErrorWidget(
-                message: error.toString(),
-                onRetry: viewModel.getProducts,
-              ),
-          data: (PaginationModel<ProductModel> products) {
-            final List<ProductModel> items = products.data;
+      builder: (context, con) {
+        if (view.isLoading) return const CategoryProductsViewShimmer();
+        if (view.error != null) {
+          return ServerConnectionErrorWidget(
+            message: view.error!,
+            onRetry: viewModel.getProducts,
+          );
+        }
 
-            return AppRefreshIndicator(
-              onRefresh: viewModel.getProducts,
-              child: items.isEmpty
-                  ? const NoItemsWidget(isScrollable: true)
-                  : ValueListenableBuilder<AsyncValue<bool>>(
-                      valueListenable: viewModel.loadMoreState,
-                      builder:
-                          (
-                            BuildContext context,
-                            AsyncValue<bool> value,
-                            Widget? child,
-                          ) {
-                            final int loadingItemsCount = value.isLoading ? 2 : 0;
-                            return GridView.builder(
-                              controller: _scrollController,
-                              addRepaintBoundaries: true,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              padding: EdgeInsets.all(2),
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: con.maxWidth*0.03,
-                                mainAxisSpacing: con.maxWidth*0.03,
-                                childAspectRatio: 0.7,
-                              ),
-                              itemCount: items.length + loadingItemsCount,
-                              itemBuilder: (BuildContext context, int index) {
-                                if (index >= items.length) {
-                                  return const AppShimmer(
-                                    child: ProductItem3View(),
-                                  );
-                                }
-                                final ProductModel product = items[index];
-                                return ProductItem3View(
-                                  product: product,
-                                  onFavouriteChanged: (bool isFavourite) =>
-                                      viewModel.updateProductFavourite(
-                                        product.id,
-                                        isFavourite,
-                                      ),
-                                );
-                              },
+        return AppRefreshIndicator(
+          onRefresh: viewModel.getProducts,
+          child: view.length == 0
+              ? const NoItemsWidget(isScrollable: true)
+              : ValueListenableBuilder<AsyncValue<bool>>(
+                  valueListenable: viewModel.loadMoreState,
+                  builder:
+                      (
+                        BuildContext context,
+                        AsyncValue<bool> value,
+                        Widget? child,
+                      ) {
+                        final int loadingItemsCount = value.isLoading ? 2 : 0;
+                        return GridView.builder(
+                          controller: _scrollController,
+                          addRepaintBoundaries: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.all(2),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: con.maxWidth*0.03,
+                            mainAxisSpacing: con.maxWidth*0.03,
+                            childAspectRatio: 0.7,
+                          ),
+                          itemCount: view.length + loadingItemsCount,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index >= view.length) {
+                              return const AppShimmer(
+                                child: ProductItem3View(),
+                              );
+                            }
+                            return _CategoryProductGridItem(
+                              args: args,
+                              index: index,
                             );
                           },
-                    ),
-            );
-          },
+                        );
+                      },
+                ),
         );
-      }
+      },
+    );
+  }
+}
+
+/// A single product cell that watches **only its own product** in the paginated
+/// state. Because [GetCategoryProductsViewModel.updateProductFavourite] rewrites
+/// just the toggled product (every other item keeps its identity), `select`'s
+/// `==` check lets exactly this cell rebuild when its favourite flips — the rest
+/// of the grid is untouched.
+class _CategoryProductGridItem extends ConsumerWidget {
+  const _CategoryProductGridItem({required this.args, required this.index});
+
+  final CategoryProductsArgs args;
+  final int index;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ProductModel? product = ref.watch(
+      getCategoryProductsProvider(args).select(
+        (AsyncValue<PaginationModel<ProductModel>> state) =>
+            state.valueOrNull?.data.elementAtOrNull(index),
+      ),
+    );
+
+    if (product == null) return const SizedBox.shrink();
+
+    return ProductItem3View(
+      product: product,
+      onFavouriteChanged: (bool isFavourite) => ref
+          .read(getCategoryProductsProvider(args).notifier)
+          .updateProductFavourite(product.id, isFavourite),
     );
   }
 }

@@ -2,13 +2,12 @@
 // decoupling means relocating the cart viewmodel too — do that when cart is
 // refactored, not before.
 import 'dart:async';
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
@@ -217,14 +216,10 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
                                   maxWidth: con.maxWidth * 0.7,
                                 ),
                                 child: (widget.productModel?.stock ?? 1) < 1
-                                    ? Align(
-                                  alignment: AlignmentDirectional.centerEnd,
-                                      child: Text(
-                                          LangKeys.outOfStockKey.tr(),
-                                          style: AppTextStyles.style12Medium
-                                              .copyWith(color: colors.onError),
-                                        ),
-                                    )
+                                    ? const Align(
+                                        alignment: AlignmentDirectional.centerEnd,
+                                        child: OutOfStockLabel(),
+                                      )
                                     : AnimatedCartButton(
                                         productId:
                                             widget.productModel?.productId ??

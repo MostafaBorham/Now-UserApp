@@ -1,11 +1,10 @@
 // ponytail: lives in core but still imports features/cart for the cart button;
 // decoupling means relocating the cart viewmodel too — do that when cart is
 // refactored, not before.
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -210,14 +209,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 fit: BoxFit.scaleDown,
                                 alignment: AlignmentDirectional.centerEnd,
                                 child: (widget.product?.stock ?? 1) < 1
-                                    ? SizedBox(
-                                  width: con.maxWidth*0.25,
-                                      child: Text(
-                                          LangKeys.outOfStockKey.tr(),
-                                          style: AppTextStyles.style12Medium
-                                              .copyWith(color: colors.onError),
-                                        ),
-                                    )
+                                    ? const OutOfStockLabel()
                                     : AnimatedCartButton(
                                         productId: widget.product?.id,
                                         productQuantity:

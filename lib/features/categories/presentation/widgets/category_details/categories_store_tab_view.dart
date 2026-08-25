@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filter_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
@@ -28,14 +29,16 @@ class _CategoriesStoreTabViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
-        Text(
+        // AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
+        PrimarySearchField(isAnimated: false, onSearch: (String query) {}),
+        Expanded(child: CategoryStoresView(sortType: StoresSortType.all)),
+        /*        Text(
           LangKeys.filtersKey.tr(),
           style: AppTextStyles.style16SemiBold.copyWith(
             color: colors.black,
           ),
-        ),
-        Expanded(
+        ),*/
+        /*        Expanded(
           child: CustomButtonTabBar(
             filterWidget: AppFilterIcon(
               onTap: () => showModalBottomSheet(
@@ -57,7 +60,7 @@ class _CategoriesStoreTabViewState
             // selectedTabColor: colors.neutral1200,
             unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
           ),
-        ),
+        ),*/
       ],
     );
   }

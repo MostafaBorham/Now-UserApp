@@ -1,13 +1,11 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
@@ -87,23 +85,7 @@ class ProductItem3View extends StatelessWidget {
                         // only flip open and collapse again (matches the product
                         // cards). Absent stock (`null`) is treated as available.
                         child: (product?.stock ?? 1) < 1
-                            ? Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: colors.white,
-                                  borderRadius: AppBorderRadius.brCircular8,
-                                ),
-                                child: Text(
-                                  LangKeys.outOfStockKey.tr(),
-                                  style: AppTextStyles.style12Medium.copyWith(
-                                    color: colors.onError,
-                                    fontSize: con.maxWidth * 0.06,
-                                  ),
-                                ),
-                              )
+                            ? OutOfStockLabel(fontSize: con.maxWidth * 0.06)
                             : AnimatedCartButton(
                                 productId: product?.productId ?? product?.id,
                                 productQuantity: product?.cartQuantity ?? 0,
