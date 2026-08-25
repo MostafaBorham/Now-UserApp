@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_se
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_stores_search_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view.dart';
 
@@ -30,7 +31,11 @@ class _CategoriesStoreTabViewState
       spacing: 16,
       children: [
         // AppSearchField(hintText: LangKeys.searchForAStoreKey.tr()),
-        PrimarySearchField(isAnimated: false, onSearch: (String query) {}),
+        PrimarySearchField(
+          isAnimated: false,
+          onSearch: (String query) =>
+              ref.read(categoryStoresSearchProvider.notifier).state = query,
+        ),
         Expanded(child: CategoryStoresView(sortType: StoresSortType.all)),
         /*        Text(
           LangKeys.filtersKey.tr(),

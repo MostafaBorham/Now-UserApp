@@ -46,7 +46,9 @@ class StoreCardView extends StatelessWidget {
     final String distance = hasStore
         ? '${formatDouble(store!.distance)} ${LangKeys.kmKey.tr()}'
         : '40 - 50 ${LangKeys.kmKey.tr()}';
-    final String deliveryFee = hasStore ? '${formatDouble(store!.deliveryFee)}' : '10';
+    final String deliveryFee = hasStore
+        ? '${formatDouble(store!.deliveryFee)}'
+        : '10';
 
     return LayoutBuilder(
       builder: (context, con) {
@@ -69,68 +71,79 @@ class StoreCardView extends StatelessWidget {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned.fill(
-                      child: AppCachedNetworkImage(
-                        imageUrl: coverUrl,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
-                    PositionedDirectional(
-                      start: 0,
-                      top: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colors.errorContainer,
-                          borderRadius: const BorderRadiusDirectional.only(
-                            bottomEnd: Radius.circular(16),
+                child: LayoutBuilder(
+                  builder: (context,storeBackgroundCon) {
+                    final stackHeight =storeBackgroundCon.maxHeight;
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned.fill(
+                          child: AppCachedNetworkImage(
+                            imageUrl: coverUrl,
+                            width: double.infinity,
+                            height: double.infinity,
                           ),
                         ),
-                        child: Text(
-                          '25%',
-                          style: AppTextStyles.style14Bold.copyWith(
-                            color: colors.white,
+                        PositionedDirectional(
+                          start: 0,
+                          top: 0,
+                          child: Container(
+                            width: stackHeight*0.6,
+                            height: stackHeight*0.3,
+                            padding: const EdgeInsets.all(5
+                            ),
+                            decoration: BoxDecoration(
+                              color: colors.errorContainer,
+                              borderRadius: BorderRadiusDirectional.only(
+                                bottomEnd: Radius.circular(16),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '25%',
+                                style: AppTextStyles.style14Bold.copyWith(
+                                  color: colors.white,
+                                  fontSize: stackHeight*0.15
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    PositionedDirectional(
-                      end: 8,
-                      top: 8,
-                      child: CircularAppFavouriteIcon(
-                        size: w * 0.05,
-                        favouriteType: FavouriteType.store,
-                        itemId: store?.id,
-                        isFavourite: store?.isFavorite ?? false,
-                        onFavouriteChanged: (currentFavourite) {},
-                      ),
-                    ),
-                    PositionedDirectional(
-                      start: 16,
-                      bottom: -logoRadius,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: colors.neutral200.withValues(alpha: 0.5)),
+                        PositionedDirectional(
+                          end: 8,
+                          top: 8,
+                          child: CircularAppFavouriteIcon(
+                            size: w * 0.05,
+                            favouriteType: FavouriteType.store,
+                            itemId: store?.id,
+                            isFavourite: store?.isFavorite ?? false,
+                            onFavouriteChanged: (currentFavourite) {},
+                          ),
                         ),
-                        child: CircularBrandLogo(
-                          radius: logoRadius,
-                          elevation: 0,
-                          backgroundColor: colors.white,
-                          logoUrl: logoUrl,
+                        PositionedDirectional(
+                          start: 16,
+                          bottom: -stackHeight*0.3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: colors.neutral200.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: CircularBrandLogo(
+                              radius: stackHeight*0.3,
+                              elevation: 0,
+                              backgroundColor: colors.white,
+                              logoUrl: logoUrl,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  }
                 ),
               ),
               Padding(
@@ -139,7 +152,7 @@ class StoreCardView extends StatelessWidget {
                 ).copyWith(top: 8, bottom: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 6,
                   children: [
                     Padding(

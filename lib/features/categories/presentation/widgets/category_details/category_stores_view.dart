@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_stores_search_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 
@@ -35,14 +36,10 @@ class CategoryStoresView extends ConsumerStatefulWidget {
 class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   final ScrollController _scrollController = ScrollController();
 
-  // The opened category's query, resolved once. The provider starts fetching it
-  // as soon as it is first watched below.
+  /// The query currently on screen. Recomputed in [build] from the debounced
+  /// search term, so [_onScroll] always pages the family member being shown.
   // TODO: forward widget.sortType to the API once the stores sort param is wired.
-  late final CategoryStoresArgs _args = (
-    categorySlug: ref.read(categoryProvider).slug ?? '',
-    categoryId: null,
-    searchKey: null,
-  );
+  late CategoryStoresArgs _args;
 
   @override
   void initState() {
@@ -71,6 +68,15 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
 
   @override
   Widget build(BuildContext context) {
+    // React to the debounced search term: each distinct query is its own family
+    // member with independent pagination state.
+    final String search = ref.watch(categoryStoresSearchProvider);
+    _args = (
+      categorySlug: ref.read(categoryProvider).slug ?? '',
+      categoryId: null,
+      searchKey: search.isEmpty ? null : search,
+    );
+
     final GetCategoryStoresViewModel viewModel =
         ref.read(getCategoryStoresProvider(_args).notifier);
 
@@ -135,7 +141,7 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
               itemBuilder: (BuildContext context, int index) {
                 if (index >= view.length) {
                   return const AspectRatio(
-                    aspectRatio: 2,
+                    aspectRatio: 1.75,
                     child: AppShimmer(child: StoreCardView()),
                   );
                 }
@@ -168,7 +174,7 @@ class _CategoryStoreItem extends ConsumerWidget {
     if (store == null) return const SizedBox.shrink();
 
     return AspectRatio(
-      aspectRatio: 2,
+      aspectRatio: 1.75,
       child: StoreCardView(store: store),
     );
   }
