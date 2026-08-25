@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filte
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_search_field.dart';
+import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_products_search_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_filter_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view.dart';
 
@@ -29,7 +30,13 @@ class _CategoriesProductTabViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        PrimarySearchField(),
+        PrimarySearchField(
+          isAnimated: false,
+          // Debounced (1s) inside the field; forwards the term to the products
+          // query, which re-fetches from page 1 for the new search.
+          onSearch: (String query) =>
+              ref.read(categoryProductsSearchProvider.notifier).state = query,
+        ),
         /*Text(
           LangKeys.categoriesKey.tr(),
           style: AppTextStyles.style16SemiBold.copyWith(color: colors.black),

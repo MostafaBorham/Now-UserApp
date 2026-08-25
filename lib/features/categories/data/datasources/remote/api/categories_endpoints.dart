@@ -31,10 +31,16 @@ abstract class CategoriesEndpoints {
     if (search != null && search.isNotEmpty) 'search': search,
   };
 
-  static Map<String, dynamic> categoryProductsQuery(int page) => {
+  static Map<String, dynamic> categoryProductsQuery({
+    required int page,
+    int? categoryId,
+    String? search,
+  }) => {
     'per_page': _perPage,
     'page': page,
     'sort': 'price',
     'direction': 'asc',
+    'category_id': categoryId,
+    if (search != null && search.isNotEmpty) 'search': search,
   };
 }

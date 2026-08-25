@@ -1,21 +1,33 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 class ProductItem3View extends StatelessWidget {
-  const ProductItem3View({super.key});
+  const ProductItem3View({super.key, this.product});
+
+  /// The product to render. `null` while used as a shimmer placeholder, where
+  /// the layout is drawn but the values are irrelevant.
+  final ProductModel? product;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final ProductModel? product = this.product;
+    // A running deal drives the discount badge and the struck-through old price.
+    final bool hasDeal = product?.activeDeal != null;
     return AspectRatio(
       aspectRatio: 0.65,
       child: LayoutBuilder(
@@ -34,12 +46,11 @@ class ProductItem3View extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      CachedNetworkImage(
+                      AppCachedNetworkImage(
                         width: double.infinity,
                         height: double.infinity,
-                        imageUrl:
-                            'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1',
-                        fit: BoxFit.fill,
+                        imageUrl: product?.images?.firstOrNull ?? '',
+                        fit: BoxFit.cover,
                       ),
                       Align(
                         alignment: AlignmentDirectional.topCenter,
@@ -50,12 +61,14 @@ class ProductItem3View extends StatelessWidget {
                             children: [
                               CircularBrandLogo(
                                 radius: con.maxWidth*0.1,
-                                logoUrl:
-                                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                                logoUrl: product?.vendor?.logoUrl ?? '',
+                                backgroundColor: colors.white,
                               ),
                               CircularAppFavouriteIcon(
                                 size: con.maxWidth*0.08,
-                                isFavourite: false,
+                                favouriteType: FavouriteType.product,
+                                itemId: product?.id,
+                                isFavourite: product?.isFavorite ?? false,
                                 onFavouriteChanged: (currentFavourite) {},
                               ),
                             ],
@@ -65,8 +78,33 @@ class ProductItem3View extends StatelessWidget {
                       PositionedDirectional(
                         end: 5,
                         bottom: 5,
-                        child: AnimatedCartButton(
-                        ),
+                        // With no stock left there is nothing to add, so show an
+                        // "out of stock" chip instead of a cart button that would
+                        // only flip open and collapse again (matches the product
+                        // cards). Absent stock (`null`) is treated as available.
+                        child: (product?.stock ?? 1) < 1
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colors.white,
+                                  borderRadius: AppBorderRadius.brCircular8,
+                                ),
+                                child: Text(
+                                  LangKeys.outOfStockKey.tr(),
+                                  style: AppTextStyles.style12Medium.copyWith(
+                                    color: colors.onError,
+                                    fontSize: con.maxWidth * 0.06,
+                                  ),
+                                ),
+                              )
+                            : AnimatedCartButton(
+                                productId: product?.productId ?? product?.id,
+                                productQuantity: product?.cartQuantity ?? 0,
+                                stock: product?.stock,
+                              ),
                       ),
                     ],
                   ),
@@ -87,7 +125,7 @@ class ProductItem3View extends StatelessWidget {
                               rateColor: colors.black,
                               size: con.maxWidth*0.1,
                             ),
-                            true
+                            hasDeal
                                 ? Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 5,
@@ -101,7 +139,7 @@ class ProductItem3View extends StatelessWidget {
                                       textDirection: TextDirection.ltr,
                                       spacing: 3,
                                       children: [
-                                        Text('10%',style: TextStyle(
+                                        Text('${product?.activeDeal?.discountValue?.toStringAsFixed(0) ?? 0}%',style: TextStyle(
                                             color: colors.white,
                                             fontSize: con.maxWidth*0.07,
                                             fontWeight: FontWeight.w700
@@ -116,36 +154,54 @@ class ProductItem3View extends StatelessWidget {
                                 : SizedBox.shrink(),
                           ],
                         ),
-                        true
-                            ? Row(
-                                spacing: 4,
-                                children: [
-                                  NewPriceWidget(
-                                    color: colors.primary700,
-                                    price: '10.00',
-                                    size: con.maxWidth*0.12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  Text(
-                                    '15.00',
-                                    style: TextStyle(
-                                      color: colors.neutral500,
-                                      fontSize: con.maxWidth*0.09,
-                                      fontWeight: FontWeight.w700,
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationThickness: 1,
-                                      decorationColor: colors.neutral500.withValues(
-                                        alpha: 0.6,
+                        // Prices never push past 75% of the card: a very large
+                        // number is scaled down by the FittedBox to fit that slot
+                        // instead of overflowing the card width.
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: con.maxWidth * 0.75,
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: AlignmentDirectional.centerStart,
+                            child: product?.dealDiscountAmount != null &&
+                                    product!.dealDiscountAmount! > 0
+                                ? Row(
+                                    // Sizes to its content — required under the
+                                    // FittedBox's unbounded width.
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 4,
+                                    children: [
+                                      NewPriceWidget(
+                                        color: colors.primary700,
+                                        price: product.dealDiscountAmount
+                                                ?.toStringAsFixed(2) ??
+                                            '0.00',
+                                        size: con.maxWidth*0.12,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ),
+                                      Text(
+                                        product.price?.toStringAsFixed(2) ?? '0.00',
+                                        style: TextStyle(
+                                          color: colors.neutral500,
+                                          fontSize: con.maxWidth*0.09,
+                                          fontWeight: FontWeight.w700,
+                                          decoration: TextDecoration.lineThrough,
+                                          decorationThickness: 1,
+                                          decorationColor: colors.neutral500.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : NewPriceWidget(
+                                    color: colors.black,
+                                    price: product?.price?.toStringAsFixed(2) ?? '0.00',
+                                    size: con.maxWidth*0.13,
                                   ),
-                                ],
-                              )
-                            : NewPriceWidget(
-                                color: colors.black,
-                                price: '10.00',
-                                size: con.maxWidth*0.13,
-                              ),
+                          ),
+                        ),
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, textCon) {
@@ -156,7 +212,7 @@ class ProductItem3View extends StatelessWidget {
                                   .floor()
                                   .clamp(1, 2);
                               return Text(
-                                'غسالة بحوضين مع خاصية التجفيف بالهواءومسحوق أبيض',
+                                context.getLocalizedApiText(product?.name),
                                 maxLines: fitLines,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

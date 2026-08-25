@@ -122,6 +122,7 @@ class GetCategoryProductsViewModel
       categorySlug: args.categorySlug,
       categoryId: args.categoryId,
       page: page,
+      search: args.searchKey,
     );
   }
 
