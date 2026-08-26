@@ -39,22 +39,31 @@ class CategoriesRepo {
   /// refreshes the cache so the local copy tracks the server. When the server
   /// is unreachable the first page is served from the cache instead; later
   /// pages have no cached copy and simply surface the server failure.
+  ///
+  /// [search] narrows the list to matching categories. The cache mirrors only
+  /// the full (unsearched) list, so a searched fetch neither writes to nor reads
+  /// from it — a search failure just surfaces the server error.
   Future<Either<Failure, PaginationModel<CategoryModel>>> getAppCategories({
     required int page,
+    String? search,
   }) async {
+    final bool isSearching = search != null && search.isNotEmpty;
+
     // Fetch the raw server `data` object so it can be both cached verbatim and
     // parsed — the cache round-trips through the same parsing the server uses.
     final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
-      () => _categoriesApiService.getAppCategories(page: page),
+      () => _categoriesApiService.getAppCategories(page: page, search: search),
       (Map<String, dynamic> data) => data,
     );
 
     return serverResult.fold(
-      // Server failed → fall back to the cached first page.
-      (Failure serverFailure) => _readCategoriesFromCache(page, serverFailure),
-      // Server succeeded → refresh the cache (first page only), then return.
+      // Server failed → fall back to the cached first page (full list only).
+      (Failure serverFailure) => isSearching
+          ? Left<Failure, PaginationModel<CategoryModel>>(serverFailure)
+          : _readCategoriesFromCache(page, serverFailure),
+      // Server succeeded → refresh the cache (full list, first page only).
       (Map<String, dynamic> data) async {
-        if (page == PaginatedViewModel.firstPageNumber) {
+        if (!isSearching && page == PaginatedViewModel.firstPageNumber) {
           await _cacheAppCategories(data);
         }
         return Right<Failure, PaginationModel<CategoryModel>>(

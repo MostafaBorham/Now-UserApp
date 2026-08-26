@@ -296,6 +296,7 @@ abstract class LangKeys {
   static const String clearKey = 'clear';
   static const String bestCategoriesKey = 'bestCategories';
   static const String seeAllKey = 'seeAll';
+  static const String seeAllCategoriesKey = 'seeAllCategories';
   static const String seeMoreKey = 'seeMore';
   static const String mostRequestedKey = 'mostRequested';
   static const String upToKey = 'upTo';

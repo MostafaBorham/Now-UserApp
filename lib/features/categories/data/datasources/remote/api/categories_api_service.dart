@@ -18,10 +18,13 @@ class CategoriesApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getAppCategories({required int page}) {
+  Future<Response> getAppCategories({required int page, String? search}) {
     return _dio.get(
       CategoriesEndpoints.getAppCategories,
-      queryParameters: CategoriesEndpoints.appCategoriesQuery(page),
+      queryParameters: CategoriesEndpoints.appCategoriesQuery(
+        page,
+        search: search,
+      ),
       cancelToken: _canceller.token,
     );
   }

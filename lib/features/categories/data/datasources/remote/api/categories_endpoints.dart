@@ -14,10 +14,11 @@ abstract class CategoriesEndpoints {
   static String categoryProducts(String categorySlug) =>
       '/api/v1/categories/$categorySlug/products';
 
-  static Map<String, dynamic> appCategoriesQuery(int page) => {
+  static Map<String, dynamic> appCategoriesQuery(int page, {String? search}) => {
     'max_depth': 1,
     'per_page': 100,
     'page': page,
+    if (search != null && search.isNotEmpty) 'search': search,
   };
 
   static Map<String, dynamic> categoryStoresQuery({
