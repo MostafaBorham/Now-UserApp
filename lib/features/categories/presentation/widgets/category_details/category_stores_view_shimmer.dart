@@ -17,7 +17,7 @@ class CategoryStoresViewShimmer extends StatelessWidget {
       itemCount: 4,
       separatorBuilder: (BuildContext context, int index) => 20.hSpace,
       itemBuilder: (BuildContext context, int index) => const AspectRatio(
-        aspectRatio: 2,
+        aspectRatio: 1.75,
         child: AppShimmer(child: StoreCardView()),
       ),
     );

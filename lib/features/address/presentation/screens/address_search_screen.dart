@@ -22,13 +22,6 @@ import 'package:nowdelivery_user_app/features/address/presentation/widgets/place
 import 'package:nowdelivery_user_app/features/address/viewmodel/place_autocomplete_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/recent_address_search_vm.dart';
 
-/// Lets the user find an address by name instead of dragging the map pin.
-///
-/// The search field behaves exactly like the one on `SearchScreen` — recents
-/// live inside [AppSearchField], picking one fills the field and dismisses
-/// them — with one addition: the moment the field holds text the recents give
-/// way to Google Places suggestions, and picking a suggestion pops back to the
-/// map with its coordinates.
 class AddressSearchScreen extends ConsumerStatefulWidget {
   const AddressSearchScreen({
     super.key,
@@ -36,12 +29,9 @@ class AddressSearchScreen extends ConsumerStatefulWidget {
     this.isChangingAddress = false,
   });
 
-  /// Where the map was looking when the search was opened. Sent to Places as a
-  /// location bias so nearby addresses rank first; null when unknown.
   final LatLng? currentLocation;
 
-  /// Whether the map underneath is changing an existing address rather than
-  /// adding one — this screen carries its title so the two read as one flow.
+
   final bool isChangingAddress;
 
   @override
@@ -54,9 +44,6 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
 
   String _query = '';
 
-  /// Set while the coordinates of a picked suggestion are being fetched. Drives
-  /// a [BlockingLoadingOverlay] that both signals the wait and swallows taps, so
-  /// a second tap cannot start a parallel navigation.
   bool _isResolving = false;
 
   bool get _hasQuery => _query.trim().isNotEmpty;

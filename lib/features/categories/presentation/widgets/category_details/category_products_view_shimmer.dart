@@ -10,18 +10,22 @@ class CategoryProductsViewShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(4),
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 20,
-        childAspectRatio: 0.75,
-      ),
-      itemCount: 6,
-      itemBuilder: (BuildContext context, int index) =>
-          const AppShimmer(child: ProductItem3View()),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints con) {
+        return GridView.builder(
+          padding: const EdgeInsets.all(2),
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: con.maxWidth * 0.03,
+            mainAxisSpacing: con.maxWidth * 0.03,
+            childAspectRatio: 0.7,
+          ),
+          itemCount: 6,
+          itemBuilder: (BuildContext context, int index) =>
+              const AppShimmer(child: ProductItem3View()),
+        );
+      },
     );
   }
 }
