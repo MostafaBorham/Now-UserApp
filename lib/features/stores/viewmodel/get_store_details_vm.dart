@@ -41,11 +41,6 @@ class GetStoreDetailsViewModel
     );
   }
 
-  /// Flips [ProductModel.isFavorite] on the single product with [productId]
-  /// inside the loaded store's [StoreModel.products] in place, so a favourite
-  /// toggle on a store-details product card sticks without refetching the
-  /// store. Called when the card's favourite icon reports a settled change. A
-  /// no-op before the store loads or when the product is not in the list.
   void updateProductFavourite(int? productId, bool isFavourite) {
     final StoreModel? store = state.valueOrNull;
     final List<ProductModel>? products = store?.products;

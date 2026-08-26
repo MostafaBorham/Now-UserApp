@@ -33,7 +33,6 @@ class HomeAllStoresSectionView extends ConsumerStatefulWidget {
 
 class _HomeAllStoresSectionViewState
     extends ConsumerState<HomeAllStoresSectionView> {
-  // Which tab is selected; drives the store list rendered below the pills.
   int _selectedIndex = 0;
 
   // Height reserved for the pills row. The store list is offset below it and
@@ -43,7 +42,6 @@ class _HomeAllStoresSectionViewState
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-
     final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
         .watch(getAppCategoriesProvider);
     final List<CategoryModel> categories =
@@ -56,8 +54,6 @@ class _HomeAllStoresSectionViewState
       ),
     ];
 
-    // The "All" tab (no category) shows demo placeholder cards; every other tab
-    // is bound to its own CategoryModel and fetches that category's stores.
     final List<Widget> views = <Widget>[
       const HomeStoresListView(),
       ...categories.map(
@@ -65,21 +61,29 @@ class _HomeAllStoresSectionViewState
       ),
     ];
 
-    // Tabs can shrink (e.g. categories reloading); keep the selection valid.
     final int selectedIndex = _selectedIndex.clamp(0, tabs.length - 1);
 
-    // Only the pills: the TabBarView is emptied so the store list can live
-    // outside the tab bar and scroll freely while the pills stay pinned.
-    // Selection is driven by [onTap] into the sibling list below.
     Widget pills = SizedBox(
       height: _pillsBarHeight,
       child: CustomButtonTabBar(
         tabs: tabs,
         views: List<Widget>.filled(tabs.length, const SizedBox.shrink()),
         onTap: (int index) {
-          if (index != _selectedIndex) {
-            setState(() => _selectedIndex = index);
+          if (index == _selectedIndex) return;
+          // Drop the tab's previously loaded stores so opening it always
+          // refetches from the server instead of showing a cached list.
+          final CategoryModel? category =
+              index == 0 ? null : categories[index - 1];
+          if (category != null) {
+            ref.invalidate(
+              getCategoryStoresProvider((
+                categorySlug: category.slug ?? '',
+                categoryId: null,
+                searchKey: null,
+              )),
+            );
           }
+          setState(() => _selectedIndex = index);
         },
         unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
       ),

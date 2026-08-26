@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filte
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
@@ -108,9 +109,22 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                   ),
                 ),
                 onTap: (index) {
+                  final CategoryModel? category =
+                      _categoryAt(index, categories);
+                  // Drop the tab's previously loaded stores so opening it
+                  // always refetches instead of showing a cached list.
+                  if (category != null) {
+                    ref.invalidate(
+                      getCategoryStoresProvider((
+                        categorySlug: category.slug ?? '',
+                        categoryId: null,
+                        searchKey: filter.search.isEmpty ? null : filter.search,
+                      )),
+                    );
+                  }
                   ref
                       .read(storesSearchFilterProvider.notifier)
-                      .setCategory(_categoryAt(index, categories));
+                      .setCategory(category);
                 },
                 tabs: tabs,
                 views: [

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -23,9 +25,38 @@ class ProductItem3View extends StatelessWidget {
     this.onTap,
   });
 
-  /// The product to render. `null` while used as a shimmer placeholder, where
-  /// the layout is drawn but the values are irrelevant.
+  /// The product to render. When `null` (e.g. the home view has no data wired
+  /// up yet, or a card is built without a model) the card falls back to
+  /// [_placeholderProduct] so it still looks populated instead of showing empty
+  /// texts and blank slots.
   final ProductModel? product;
+
+  /// Dummy stand-in used whenever no [product] is passed, so the card renders
+  /// with plausible-looking data. Temporary until the home view is integrated
+  /// with the backend.
+  static const ProductModel _placeholderProduct = ProductModel(
+    id: 0,
+    productId: 0,
+    name: <String, dynamic>{
+      'en': 'Fresh Orange Juice 1L',
+      'ar': 'عصير برتقال طازج ١ لتر',
+    },
+    // Old price ([price]) shown struck-through next to the new discounted price
+    // ([dealDiscountAmount]); [activeDeal] drives the red discount badge.
+    price: 99.99,
+    dealDiscountAmount: 74.99,
+    activeDeal: ActiveDealModel(discountValue: 25),
+    // Temporary internet images for the product photo and the brand logo.
+    images: <String>[
+      'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600',
+    ],
+    vendor: StoreModel(
+      logoUrl:
+          'https://images.unsplash.com/photo-1613145997970-db84a7975fbb?w=200',
+    ),
+    stock: 10,
+    isFavorite: false,
+  );
 
   /// Called with the new favourite status whenever it settles for this card, so
   /// the owner of the list can persist the change onto its product model.
@@ -38,15 +69,15 @@ class ProductItem3View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final ProductModel? product = this.product;
+    final ProductModel product = this.product ?? _placeholderProduct;
     // A running deal drives the discount badge and the struck-through old price.
-    final bool hasDeal = product?.activeDeal != null;
+    final bool hasDeal = product.activeDeal != null;
     return InkWell(
       onTap:
           onTap ??
           () => context.pushNamed(
             AppRoutes.productDetailsScreen,
-            extra: product?.slug,
+            extra: product.slug,
           ),
       child: AspectRatio(
       aspectRatio: 0.65,
@@ -69,7 +100,7 @@ class ProductItem3View extends StatelessWidget {
                       AppCachedNetworkImage(
                         width: double.infinity,
                         height: double.infinity,
-                        imageUrl: product?.images?.firstOrNull ?? '',
+                        imageUrl: product.images?.firstOrNull ?? '',
                         fit: BoxFit.cover,
                       ),
                       Align(
@@ -81,14 +112,14 @@ class ProductItem3View extends StatelessWidget {
                             children: [
                               CircularBrandLogo(
                                 radius: con.maxWidth*0.1,
-                                logoUrl: product?.vendor?.logoUrl ?? '',
+                                logoUrl: product.vendor?.logoUrl ?? '',
                                 backgroundColor: colors.white,
                               ),
                               CircularAppFavouriteIcon(
                                 size: con.maxWidth*0.08,
                                 favouriteType: FavouriteType.product,
-                                itemId: product?.id,
-                                isFavourite: product?.isFavorite ?? false,
+                                itemId: product.id,
+                                isFavourite: product.isFavorite ?? false,
                                 onFavouriteChanged: onFavouriteChanged,
                               ),
                             ],
@@ -102,12 +133,12 @@ class ProductItem3View extends StatelessWidget {
                         // "out of stock" chip instead of a cart button that would
                         // only flip open and collapse again (matches the product
                         // cards). Absent stock (`null`) is treated as available.
-                        child: (product?.stock ?? 1) < 1
+                        child: (product.stock ?? 1) < 1
                             ? OutOfStockLabel(fontSize: con.maxWidth * 0.06)
                             : AnimatedCartButton(
-                                productId: product?.productId ?? product?.id,
-                                productQuantity: product?.cartQuantity ?? 0,
-                                stock: product?.stock,
+                                productId: product.productId ?? product.id,
+                                productQuantity: product.cartQuantity ?? 0,
+                                stock: product.stock,
                               ),
                       ),
                     ],
@@ -143,7 +174,7 @@ class ProductItem3View extends StatelessWidget {
                                       textDirection: TextDirection.ltr,
                                       spacing: 3,
                                       children: [
-                                        Text('${product?.activeDeal?.discountValue?.toStringAsFixed(0) ?? 0}%',style: TextStyle(
+                                        Text('${product.activeDeal?.discountValue?.toStringAsFixed(0) ?? 0}%',style: TextStyle(
                                             color: colors.white,
                                             fontSize: con.maxWidth*0.07,
                                             fontWeight: FontWeight.w700
@@ -168,8 +199,8 @@ class ProductItem3View extends StatelessWidget {
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             alignment: AlignmentDirectional.centerStart,
-                            child: product?.dealDiscountAmount != null &&
-                                    product!.dealDiscountAmount! > 0
+                            child: product.dealDiscountAmount != null &&
+                                    product.dealDiscountAmount! > 0
                                 ? Row(
                                     // Sizes to its content — required under the
                                     // FittedBox's unbounded width.
@@ -201,7 +232,7 @@ class ProductItem3View extends StatelessWidget {
                                   )
                                 : NewPriceWidget(
                                     color: colors.black,
-                                    price: product?.price?.toStringAsFixed(2) ?? '0.00',
+                                    price: product.price?.toStringAsFixed(2) ?? '0.00',
                                     size: con.maxWidth*0.13,
                                   ),
                           ),
@@ -216,7 +247,7 @@ class ProductItem3View extends StatelessWidget {
                                   .floor()
                                   .clamp(1, 2);
                               return Text(
-                                context.getLocalizedApiText(product?.name),
+                                context.getLocalizedApiText(product.name),
                                 maxLines: fitLines,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
