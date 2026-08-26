@@ -25,18 +25,35 @@ import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupons_list.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_details_vm.dart';
 
-class StoreDetailsScreen extends ConsumerWidget {
+class StoreDetailsScreen extends ConsumerStatefulWidget {
   const StoreDetailsScreen({super.key, required this.storeId});
   final int storeId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StoreDetailsScreen> createState() => _StoreDetailsScreenState();
+}
+
+class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
+  // Wired to both the NestedScrollView (outer position) and AppWavedView so the
+  // top wave flattens into a straight edge while scrolled and restores at the
+  // top — same behavior as the settings screen.
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final AsyncValue<StoreModel> storeDetailsState = ref.watch(
-      getStoreDetailsProvider(storeId),
+      getStoreDetailsProvider(widget.storeId),
     );
     return Scaffold(
       body: AppWavedView(
+        scrollController: _scrollController,
         body: storeDetailsState.when(
           loading: () => const StoreDetailsShimmer(),
           error: (Object error, StackTrace stackTrace) => Padding(
@@ -44,7 +61,7 @@ class StoreDetailsScreen extends ConsumerWidget {
             child: ServerConnectionErrorWidget(
               message: error.toString(),
               onRetry: () => ref
-                  .read(getStoreDetailsProvider(storeId).notifier)
+                  .read(getStoreDetailsProvider(widget.storeId).notifier)
                   .getStoreDetails(),
             ),
           ),
@@ -54,35 +71,26 @@ class StoreDetailsScreen extends ConsumerWidget {
               top: false,
               child: ProviderScope(
                 overrides: [storeProvider.overrideWithValue(store)],
-                child: Column(
-                  spacing: 16,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 390 / 240,
-                      child: AppRefreshIndicator(
-                        onRefresh: () => ref
-                            .read(getStoreDetailsProvider(storeId).notifier)
-                            .getStoreDetails(),
-                        child: LayoutBuilder(
-                          builder:
-                              (
-                                BuildContext context,
-                                BoxConstraints constraints,
-                              ) => SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                child: SizedBox(
-                                  height: constraints.maxHeight,
-                                  child: StoreDetailsInfoHeader(),
-                                ),
-                              ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: NestedScrollView(
-                        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                          SliverToBoxAdapter(
-                            child: Container(
+                child: AppRefreshIndicator(
+                  onRefresh: () => ref
+                      .read(getStoreDetailsProvider(widget.storeId).notifier)
+                      .getStoreDetails(),
+                  child: NestedScrollView(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    // Header + banners scroll away with the content; only the
+                    // CustomButtonTabBar (the NestedScrollView body) stays
+                    // pinned to the top while the product grid scrolls.
+                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 390 / 240,
+                              child: StoreDetailsInfoHeader(),
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
                               color: colors.white,
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               width: double.infinity,
@@ -115,71 +123,71 @@ class StoreDetailsScreen extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                        body: Container(
-                          color: colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: LayoutBuilder(
-                            builder: (BuildContext context, BoxConstraints constraints) {
-                              const double minTabBarHeight = 70;
-                              return ClipRect(
-                                child: OverflowBox(
-                                  alignment: AlignmentDirectional.topStart,
-                                  minHeight: 0,
-                                  maxHeight: double.infinity,
-                                  child: SizedBox(
-                                    height:
-                                        constraints.maxHeight < minTabBarHeight
-                                        ? minTabBarHeight
-                                        : constraints.maxHeight,
-                                    width: constraints.maxWidth,
-                                    child: CustomButtonTabBar(
-                                      tabs: StoresSortType.values
-                                          .map(
-                                            (StoresSortType sortType) =>
-                                                sortType.label.tr(),
-                                          )
-                                          .toList(),
-                                      views: StoresSortType.values
-                                          .map(
-                                            (
-                                              StoresSortType sortType,
-                                            ) => StoreDetailsProductsView(
-                                              products: products,
-                                              sortType: sortType,
-                                              onProductFavouriteChanged:
-                                                  (
-                                                    int? productId,
-                                                    bool isFavourite,
-                                                  ) => ref
-                                                      .read(
-                                                        getStoreDetailsProvider(
-                                                          storeId,
-                                                        ).notifier,
-                                                      )
-                                                      .updateProductFavourite(
-                                                        productId,
-                                                        isFavourite,
-                                                      ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      // selectedTabColor: colors.tertiaryContainer,
-                                      unSelectedTabColor: colors.neutral400
-                                          .withValues(alpha: 0.2),
-                                      selectedLabelColor: colors.white,
-                                      unSelectedLabelColor: colors.black,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          ],
                         ),
                       ),
+                    ],
+                    body: Container(
+                      color: colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          const double minTabBarHeight = 70;
+                          return ClipRect(
+                            child: OverflowBox(
+                              alignment: AlignmentDirectional.topStart,
+                              minHeight: 0,
+                              maxHeight: double.infinity,
+                              child: SizedBox(
+                                height:
+                                    constraints.maxHeight < minTabBarHeight
+                                    ? minTabBarHeight
+                                    : constraints.maxHeight,
+                                width: constraints.maxWidth,
+                                child: CustomButtonTabBar(
+                                  tabs: StoresSortType.values
+                                      .map(
+                                        (StoresSortType sortType) =>
+                                            sortType.label.tr(),
+                                      )
+                                      .toList(),
+                                  views: StoresSortType.values
+                                      .map(
+                                        (
+                                          StoresSortType sortType,
+                                        ) => StoreDetailsProductsView(
+                                          products: products,
+                                          sortType: sortType,
+                                          onProductFavouriteChanged:
+                                              (
+                                                int? productId,
+                                                bool isFavourite,
+                                              ) => ref
+                                                  .read(
+                                                    getStoreDetailsProvider(
+                                                      widget.storeId,
+                                                    ).notifier,
+                                                  )
+                                                  .updateProductFavourite(
+                                                    productId,
+                                                    isFavourite,
+                                                  ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  // selectedTabColor: colors.tertiaryContainer,
+                                  unSelectedTabColor: colors.neutral400
+                                      .withValues(alpha: 0.2),
+                                  selectedLabelColor: colors.white,
+                                  unSelectedLabelColor: colors.black,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ),
             );

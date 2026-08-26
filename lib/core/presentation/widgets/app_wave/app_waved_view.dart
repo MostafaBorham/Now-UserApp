@@ -86,8 +86,9 @@ class _AppWavedViewState extends State<AppWavedView> {
         : bodyPadding;
     // While scrolled off the top the wave flattens: a null clipper makes
     // [ClipPath] fall back to the plain rectangular bounds (straight edge).
-    final TopWaveClipper? waveClipper =
-        _isFlattened ? null : const TopWaveClipper();
+    final TopWaveClipper? waveClipper = _isFlattened
+        ? null
+        : const TopWaveClipper();
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 5),
@@ -110,98 +111,83 @@ class _AppWavedViewState extends State<AppWavedView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: widget.canPop ?? context.canPop()
-                          ? InkWell(
-                              onTap: () => context.pop(),
-                              child: ReverseWidget(
-                                applyReverse: context.isRTL,
-                                child: CircleAvatar(
-                                  backgroundColor: colors.white,
-                                  radius: screenSize.width * 0.05,
-                                  child: Center(
-                                    child: Assets.media.images.svg.appBackArrow
-                                        .svg(
-                                          fit: BoxFit.contain,
-                                          width: screenSize.width * 0.05,
-                                        ),
-                                  ),
+                  widget.canPop ?? context.canPop()
+                      ? InkWell(
+                          onTap: () => context.pop(),
+                          child: ReverseWidget(
+                            applyReverse: context.isRTL,
+                            child: CircleAvatar(
+                              backgroundColor: colors.white,
+                              radius: screenSize.width * 0.05,
+                              child: Center(
+                                child: Assets.media.images.svg.appBackArrow.svg(
+                                  fit: BoxFit.contain,
+                                  width: screenSize.width * 0.05,
                                 ),
                               ),
-                            )
-                          : const SizedBox(),
-                    ),
-                  ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                   Expanded(
-                    flex: 2,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: widget.loadAppBarTitle
-                          ? AppShimmer(
-                              child: Container(
-                                width: 120,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
+                          ? Center(
+                              child: AppShimmer(
+                                child: Container(
+                                  width: 120,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             )
                           : Text(
                               widget.appBarTitle,
                               textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              overflow: TextOverflow.visible,
                               style: AppTextStyles.style24SemiBold.copyWith(
                                 color: colors.black,
+                                fontSize: screenSize.width*0.05,
                               ),
                             ),
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: widget.hasCartIcon || widget.hasSupportIcon
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 8,
-                                children: [
-                                  if (widget.hasSupportIcon)
-                                    CircularSupportIcon(
-                                      size: screenSize.width * 0.05,
-                                      onTap:
-                                          widget.onSupportTap ??
-                                          () {
-                                            context.pushNamed(
-                                              AppRoutes.supportScreen,
-                                            );
-                                          },
-                                    ),
-                                  if (widget.hasCartIcon)
-                                    ReverseWidget(
-                                      child: CircularCartButton(
-                                        size: screenSize.width * 0.05,
-                                        onTap:
-                                            widget.onCartTap ??
-                                            () {
-                                              context.pushNamed(
-                                                AppRoutes.cartScreen,
-                                              );
-                                            },
-                                      ),
-                                    ),
-                                ],
-                              )
-                            : const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
+                  widget.hasCartIcon || widget.hasSupportIcon
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            if (widget.hasSupportIcon)
+                              CircularSupportIcon(
+                                size: screenSize.width * 0.05,
+                                onTap:
+                                    widget.onSupportTap ??
+                                    () {
+                                      context.pushNamed(
+                                        AppRoutes.supportScreen,
+                                      );
+                                    },
+                              ),
+                            if (widget.hasCartIcon)
+                              ReverseWidget(
+                                child: CircularCartButton(
+                                  size: screenSize.width * 0.05,
+                                  onTap:
+                                      widget.onCartTap ??
+                                      () {
+                                        context.pushNamed(AppRoutes.cartScreen);
+                                      },
+                                ),
+                              ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
