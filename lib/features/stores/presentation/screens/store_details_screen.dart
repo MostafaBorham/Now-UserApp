@@ -58,8 +58,6 @@ class StoreDetailsScreen extends ConsumerWidget {
                   spacing: 16,
                   children: [
                     AspectRatio(
-                      // Design: 240 tall on a 390 wide frame (cover + logo
-                      // overhang + description + delivery row).
                       aspectRatio: 390 / 240,
                       child: AppRefreshIndicator(
                         onRefresh: () => ref
@@ -123,64 +121,60 @@ class StoreDetailsScreen extends ConsumerWidget {
                           color: colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: LayoutBuilder(
-                            builder:
-                                (
-                                  BuildContext context,
-                                  BoxConstraints constraints,
-                                ) {
-                                  const double minTabBarHeight = 70;
-                                  return ClipRect(
-                                    child: OverflowBox(
-                                      alignment: AlignmentDirectional.topStart,
-                                      minHeight: 0,
-                                      maxHeight: double.infinity,
-                                      child: SizedBox(
-                                        height:
-                                            constraints.maxHeight <
-                                                minTabBarHeight
-                                            ? minTabBarHeight
-                                            : constraints.maxHeight,
-                                        width: constraints.maxWidth,
-                                        child: CustomButtonTabBar(
-                                          tabs: StoresSortType.values
-                                              .map(
-                                                (StoresSortType sortType) =>
-                                                    sortType.label.tr(),
-                                              )
-                                              .toList(),
-                                          views: StoresSortType.values
-                                              .map(
-                                                (StoresSortType sortType) =>
-                                                    StoreDetailsProductsView(
-                                                      products: products,
-                                                      sortType: sortType,
-                                                      onProductFavouriteChanged:
-                                                          (
-                                                            int? productId,
-                                                            bool isFavourite,
-                                                          ) => ref
-                                                              .read(
-                                                                getStoreDetailsProvider(
-                                                                  storeId,
-                                                                ).notifier,
-                                                              )
-                                                              .updateProductFavourite(
-                                                                productId,
-                                                                isFavourite,
-                                                              ),
-                                                    ),
-                                              )
-                                              .toList(),
-                                          // selectedTabColor: colors.tertiaryContainer,
-                                          unSelectedTabColor: colors.neutral400
-                                              .withValues(alpha: 0.2),
-                                          selectedLabelColor: colors.white,
-                                          unSelectedLabelColor: colors.black,
-                                        ),
-                                      ),
+                            builder: (BuildContext context, BoxConstraints constraints) {
+                              const double minTabBarHeight = 70;
+                              return ClipRect(
+                                child: OverflowBox(
+                                  alignment: AlignmentDirectional.topStart,
+                                  minHeight: 0,
+                                  maxHeight: double.infinity,
+                                  child: SizedBox(
+                                    height:
+                                        constraints.maxHeight < minTabBarHeight
+                                        ? minTabBarHeight
+                                        : constraints.maxHeight,
+                                    width: constraints.maxWidth,
+                                    child: CustomButtonTabBar(
+                                      tabs: StoresSortType.values
+                                          .map(
+                                            (StoresSortType sortType) =>
+                                                sortType.label.tr(),
+                                          )
+                                          .toList(),
+                                      views: StoresSortType.values
+                                          .map(
+                                            (
+                                              StoresSortType sortType,
+                                            ) => StoreDetailsProductsView(
+                                              products: products,
+                                              sortType: sortType,
+                                              onProductFavouriteChanged:
+                                                  (
+                                                    int? productId,
+                                                    bool isFavourite,
+                                                  ) => ref
+                                                      .read(
+                                                        getStoreDetailsProvider(
+                                                          storeId,
+                                                        ).notifier,
+                                                      )
+                                                      .updateProductFavourite(
+                                                        productId,
+                                                        isFavourite,
+                                                      ),
+                                            ),
+                                          )
+                                          .toList(),
+                                      // selectedTabColor: colors.tertiaryContainer,
+                                      unSelectedTabColor: colors.neutral400
+                                          .withValues(alpha: 0.2),
+                                      selectedLabelColor: colors.white,
+                                      unSelectedLabelColor: colors.black,
                                     ),
-                                  );
-                                },
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
