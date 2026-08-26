@@ -51,6 +51,7 @@
   "chooseColor": "Choose Color",
   "choosePaymentMethod": "Choose Payment Method",
   "clear": "Clear",
+  "noResultFound": "No Result Found",
   "clearRecentSearchesFailed": "Failed to clear recent searches, please try again.",
   "clearUserSessionFailed": "Failed to log out, please try again.",
   "clothes": "Clothes",

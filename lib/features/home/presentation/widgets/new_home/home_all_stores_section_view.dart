@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -202,7 +202,7 @@ class HomeStoresListView extends ConsumerWidget {
       ),
       data: (PaginationModel<StoreModel> page) {
         final List<StoreModel> stores = page.data.take(itemCount).toList();
-        if (stores.isEmpty) return const NoItemsWidget();
+        if (stores.isEmpty) return const NoResultsWidget();
         return _StoresList(
           itemCount: stores.length,
           itemBuilder: (context, index) => StoreCardView(

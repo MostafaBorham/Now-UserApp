@@ -5,12 +5,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class NoItemsWidget extends StatelessWidget {
-  const NoItemsWidget({super.key, this.isScrollable = false, this.emptyMessage});
-
-  /// When `true` the empty state is wrapped in an always-scrollable viewport
-  /// that fills the available height, so a wrapping [RefreshIndicator] (or any
-  /// pull gesture) still works even though there is no list to scroll.
+class NoResultsWidget extends StatelessWidget {
+  const NoResultsWidget({super.key, this.isScrollable = false, this.emptyMessage});
   final bool? isScrollable;
   final String? emptyMessage;
 
@@ -18,19 +14,15 @@ class NoItemsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Widget content = Center(
-      // FittedBox lets the empty state shrink instead of overflowing when it
-      // gets less height than its content (e.g. while a NestedScrollView body
-      // is still being revealed by scrolling).
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Column(
-          spacing: 20,
+          spacing: 5,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Assets.media.images.svg.noItemsIcon.svg(fit: BoxFit.contain,width: MediaQuery.sizeOf(context).width*0.5),
-            Text(emptyMessage?? LangKeys.noItemsYetKey.tr(),style: AppTextStyles.style24SemiBold.copyWith(
-              color: colors.black,
-              fontSize: MediaQuery.sizeOf(context).width*0.04
+            Assets.media.images.svg.noSearchResultIcon.svg(),
+            Text(emptyMessage?? LangKeys.noResultFoundKey.tr(),style: AppTextStyles.style24SemiBold.copyWith(
+                color: colors.black
             ),)
           ],
         ),
@@ -39,9 +31,6 @@ class NoItemsWidget extends StatelessWidget {
 
     if (!isScrollable!) return content;
 
-    // Stretch a scrollable to the full viewport height so the centered content
-    // stays centered while still giving the pull-to-refresh gesture something
-    // to grab onto.
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(

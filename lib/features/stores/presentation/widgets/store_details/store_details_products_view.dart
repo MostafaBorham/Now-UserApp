@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 
@@ -24,7 +24,7 @@ class StoreDetailsProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (products.isEmpty) {
-      return const NoItemsWidget();
+      return const NoResultsWidget();
     }
     return GridView.builder(
       padding: EdgeInsets.symmetric(vertical: 5),

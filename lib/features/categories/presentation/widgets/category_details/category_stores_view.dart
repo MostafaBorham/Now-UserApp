@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
@@ -130,7 +130,7 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
     return AppRefreshIndicator(
       onRefresh: viewModel.loadFirstPage,
       child: view.length == 0
-          ? const NoItemsWidget(isScrollable: true)
+          ? const NoResultsWidget(isScrollable: true)
           : ListView.separated(
               controller: _scrollController,
               addRepaintBoundaries: true,

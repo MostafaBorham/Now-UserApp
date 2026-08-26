@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
@@ -61,7 +61,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
             return AppRefreshIndicator(
               onRefresh: _loadAppInfo,
               child: faqs.isEmpty
-                  ? NoItemsWidget(
+                  ? NoResultsWidget(
                       isScrollable: true,
                       emptyMessage: LangKeys.noFaqsYetKey.tr(),
                     )

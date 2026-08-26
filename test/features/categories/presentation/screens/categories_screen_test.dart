@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
@@ -62,7 +62,7 @@ void main() {
       ],
     );
 
-    expect(find.byType(NoItemsWidget), findsOneWidget);
+    expect(find.byType(NoResultsWidget), findsOneWidget);
     expect(find.byType(CategoryCard), findsNothing);
   });
 

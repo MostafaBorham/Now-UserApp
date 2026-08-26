@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagination_scroll_listener.dart';
@@ -92,7 +92,7 @@ class PaginatedView<T> extends ConsumerWidget {
   /// loads. Zero leaves the list unchanged while it loads.
   final int nextPagePlaceholdersCount;
 
-  /// Replaces the default [NoItemsWidget] shown when the first page comes back
+  /// Replaces the default [NoResultsWidget] shown when the first page comes back
   /// with no items.
   final WidgetBuilder? emptyBuilder;
 
@@ -161,7 +161,7 @@ class PaginatedView<T> extends ConsumerWidget {
       onRefresh: onRefresh,
       child: status.isEmpty
           ? (emptyBuilder?.call(context) ??
-              const NoItemsWidget(isScrollable: true))
+              const NoResultsWidget(isScrollable: true))
           : PaginationScrollListener(
               canLoadNextPage: status.canRequestNextPage,
               threshold: nextPageThreshold,

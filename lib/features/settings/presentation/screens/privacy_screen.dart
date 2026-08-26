@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/privacy_model.dart';
@@ -69,7 +69,7 @@ class PrivacyPolicyScreen extends ConsumerWidget {
                       '${DateFormat.yMMMMd(context.locale.toString()).format(updatedAt)}';
 
             return isEmpty
-                ? NoItemsWidget(
+                ? NoResultsWidget(
                     isScrollable: true,
                     emptyMessage: LangKeys.noItemsYetKey.tr(),
                   )

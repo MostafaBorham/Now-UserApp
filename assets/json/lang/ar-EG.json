@@ -51,6 +51,7 @@
   "chooseColor": "اختر اللون",
   "choosePaymentMethod": "اختر طريقة الدفع",
   "clear": "مسح",
+  "noResultFound": "لم يتم العثور على نتائج",
   "clearRecentSearchesFailed": "فشل مسح عمليات البحث الأخيرة، يرجى المحاولة مرة أخرى.",
   "clearUserSessionFailed": "فشل تسجيل الخروج، يرجى المحاولة مرة أخرى.",
   "clothes": "ملابس",

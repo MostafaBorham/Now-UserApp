@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_products_search_provider.dart';
@@ -114,7 +114,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
         return AppRefreshIndicator(
           onRefresh: viewModel.getProducts,
           child: view.length == 0
-              ? const NoItemsWidget(isScrollable: true)
+              ? const NoResultsWidget(isScrollable: true)
               : ValueListenableBuilder<AsyncValue<bool>>(
                   valueListenable: viewModel.loadMoreState,
                   builder:

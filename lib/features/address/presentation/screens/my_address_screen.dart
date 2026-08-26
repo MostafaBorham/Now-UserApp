@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -82,7 +82,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                   ),
                   placeholderBuilder: (_) => const AddressCardShimmer(),
                   nextPagePlaceholdersCount: 3,
-                  emptyBuilder: (_) => NoItemsWidget(
+                  emptyBuilder: (_) => NoResultsWidget(
                     isScrollable: true,
                     emptyMessage: LangKeys.noSavedAddresses.tr(),
                   ),

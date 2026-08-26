@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_items_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
@@ -100,7 +100,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
           return AppRefreshIndicator(
             onRefresh: viewModel.getOrders,
             child: items.isEmpty
-                ? const NoItemsWidget(isScrollable: true)
+                ? const NoResultsWidget(isScrollable: true)
                 : ValueListenableBuilder<AsyncValue<bool>>(
                     valueListenable: viewModel.loadMoreState,
                     builder:

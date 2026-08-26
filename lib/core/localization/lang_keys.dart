@@ -311,6 +311,7 @@ abstract class LangKeys {
   static const String priceKey = 'price';
   static const String maximumLimitKey = 'maximumLimit';
   static const String minimumLimitKey = 'minimumLimit';
+  static const String noResultFoundKey = 'noResultFound';
 
   // Checkout
   static const String addNotesHintKey = 'addNotesHint';
