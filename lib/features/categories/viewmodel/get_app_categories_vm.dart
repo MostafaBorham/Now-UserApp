@@ -17,38 +17,22 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// [PaginatedViewModel]. A consumer opened while this shared state has no value
 /// (never loaded, or errored) calls `loadFirstPage()` from its `initState` so
 /// it flips to loading and shows its shimmer first; a loaded list is kept.
+///
+/// This is the unfiltered, app-wide list. The search screen narrows its own
+/// copy through `searchCategoriesProvider` (search feature), which seeds itself
+/// from here — this provider is never filtered by a search term.
 final getAppCategoriesProvider =
     StateNotifierProvider<GetAppCategoriesViewModel,
         AsyncValue<PaginationModel<CategoryModel>>>(
   (Ref ref) => GetAppCategoriesViewModel()..loadFirstPage(),
 );
 
-/// The app categories narrowed by a search term, one paginated instance per
-/// term (like `getCategoryStoresProvider`).
-///
-/// Kept separate from the shared, kept-alive [getAppCategoriesProvider] on
-/// purpose: this one `autoDispose`s so a searched term's pages don't linger,
-/// and searching never mutates the full list the splash preloads and the home
-/// carousel reuses. Feed it the debounced term — every distinct term is a new
-/// family member with its own pagination state — and it fetches on first watch.
-final searchAppCategoriesProvider =
-    StateNotifierProvider.autoDispose.family<GetAppCategoriesViewModel,
-        AsyncValue<PaginationModel<CategoryModel>>, String>(
-  (Ref ref, String search) =>
-      GetAppCategoriesViewModel(searchKey: search)..loadFirstPage(),
-);
-
 class GetAppCategoriesViewModel extends PaginatedViewModel<CategoryModel> {
-  GetAppCategoriesViewModel({this.searchKey});
-
-  /// The term to narrow the list by; `null`/empty means the full list.
-  final String? searchKey;
-
   final CategoriesRepo _repo = CategoriesRepo();
 
   @override
   Future<Either<Failure, PaginationModel<CategoryModel>>> fetchPage(int page) {
-    return _repo.getAppCategories(page: page, search: searchKey);
+    return _repo.getAppCategories(page: page);
   }
 
   @override
