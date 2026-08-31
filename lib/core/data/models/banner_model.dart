@@ -14,8 +14,8 @@ class BannerModel extends Equatable {
   final String? defaultUrl;
   final int? index;
   final bool? isFeatured;
-  final int? productId;
-  final int? mainCategoryId;
+  final String? productSlug;
+  final String? categorySlug;
 
   /// Locale-agnostic fallback image (`image.download_url`).
   final String? image;
@@ -36,8 +36,8 @@ class BannerModel extends Equatable {
     this.defaultUrl,
     this.index,
     this.isFeatured,
-    this.productId,
-    this.mainCategoryId,
+    this.productSlug,
+    this.categorySlug,
     this.image,
     this.imageAr,
     this.imageEn,
@@ -60,8 +60,8 @@ class BannerModel extends Equatable {
       defaultUrl: json['default_url']?.toString(),
       index: (json['index'] as num?)?.toInt(),
       isFeatured: json['is_featured'] as bool?,
-      productId: (json['product_id'] as num?)?.toInt(),
-      mainCategoryId: (json['main_category_id'] as num?)?.toInt(),
+      productSlug: json['product_slug']?.toString(),
+      categorySlug: json['category_slug']?.toString(),
       image: json.downloadUrl('image'),
       imageAr: json.downloadUrl('image_ar'),
       imageEn: json.downloadUrl('image_en'),
@@ -81,8 +81,8 @@ class BannerModel extends Equatable {
       'default_url': defaultUrl,
       'index': index,
       'is_featured': isFeatured,
-      'product_id': productId,
-      'main_category_id': mainCategoryId,
+      'product_slug': productSlug,
+      'category_slug': categorySlug,
       'image': image == null ? null : {'download_url': image},
       'image_ar': imageAr == null ? null : {'download_url': imageAr},
       'image_en': imageEn == null ? null : {'download_url': imageEn},
@@ -101,8 +101,8 @@ class BannerModel extends Equatable {
     String? defaultUrl,
     int? index,
     bool? isFeatured,
-    int? productId,
-    int? mainCategoryId,
+    String? productSlug,
+    String? categorySlug,
     String? image,
     String? imageAr,
     String? imageEn,
@@ -119,8 +119,8 @@ class BannerModel extends Equatable {
       defaultUrl: defaultUrl ?? this.defaultUrl,
       index: index ?? this.index,
       isFeatured: isFeatured ?? this.isFeatured,
-      productId: productId ?? this.productId,
-      mainCategoryId: mainCategoryId ?? this.mainCategoryId,
+      productSlug: productSlug ?? this.productSlug,
+      categorySlug: categorySlug ?? this.categorySlug,
       image: image ?? this.image,
       imageAr: imageAr ?? this.imageAr,
       imageEn: imageEn ?? this.imageEn,
@@ -140,8 +140,8 @@ class BannerModel extends Equatable {
     defaultUrl,
     index,
     isFeatured,
-    productId,
-    mainCategoryId,
+    productSlug,
+    categorySlug,
     image,
     imageAr,
     imageEn,

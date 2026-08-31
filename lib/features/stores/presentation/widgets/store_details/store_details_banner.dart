@@ -19,10 +19,10 @@ class StoreDetailsBanner extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         if(banner.linkType == 'product'){
-          context.pushNamed(AppRoutes.productDetailsScreen,extra: banner.productId.toString());
+          context.pushNamed(AppRoutes.productDetailsScreen,extra: banner.productSlug);
         }
         else if (banner.linkType == 'category'){
-          context.pushNamed(AppRoutes.categoryDetailsScreen,extra: CategoryModel(id: banner.mainCategoryId));
+          context.pushNamed(AppRoutes.categoryDetailsScreen,extra: CategoryModel(slug: banner.categorySlug));
         }
       },
       child: Container(

@@ -107,8 +107,12 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                     itemAspectRatio: 3,
                                   ),
                                   UniqueStoreProductsSlider(),
-                                  StoreDiscountCouponsList(),
-                                  StoreCategoryCirclesList(),
+                                  Align(
+                                      alignment: AlignmentDirectional.centerStart,
+                                      child: StoreDiscountCouponsList()),
+                                  Align(
+                                      alignment: AlignmentDirectional.centerStart,
+                                      child: StoreCategoryCirclesList()),
                                 ],
                               ),
                             ),
