@@ -115,138 +115,163 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Brands slider: big brand name + image slider
-                AppShimmer(
-                  child: Column(
-                    spacing: 8,
-                    children: [
-                      LayoutBuilder(
-                        builder: (context, con) => Container(
-                          width: double.infinity,
-                          height: con.maxWidth * 0.18,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
+                // Brands slider block: wordmark, image, the brand info card and
+                // the dots indicator — the same order the real slide stacks them.
+                // Only the image is inset for the arrow gutters; the wordmark and
+                // card span the full width, like the real layout.
+                Column(
+                  spacing: 20,
+                  children: [
+                    AppShimmer(
+                      child: LayoutBuilder(
+                        builder: (context, con) => Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Container(
+                            width: con.maxWidth * 0.45,
+                            height: con.maxWidth * 0.14,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                       ),
-                      AspectRatio(
-                        aspectRatio: 1.3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Brand info card: real card shape with skeleton lines inside
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(23),
-                    decoration: BoxDecoration(
-                      color: colors.white,
-                      borderRadius: BorderRadius.circular(26),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors.black.withValues(alpha: 0.08),
-                          blurRadius: 30,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
                     ),
-                    child: AppShimmer(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 8,
-                        children: [
-                          Container(
-                            width: 90,
-                            height: 12,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 44),
+                      child: AppShimmer(
+                        child: AspectRatio(
+                          aspectRatio: 1.3,
+                          child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
                               color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          Container(
-                            width: 150,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.black,
-                            ),
+                        ),
+                      ),
+                    ),
+                    // Brand info card: real card shape with skeleton lines inside
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(23),
+                      decoration: BoxDecoration(
+                        color: colors.white,
+                        borderRadius: BorderRadius.circular(26),
+                        boxShadow: [
+                          BoxShadow(
+                            color: colors.black.withValues(alpha: 0.08),
+                            blurRadius: 30,
+                            offset: const Offset(0, 4),
                           ),
-                          Container(
-                            width: double.infinity,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.black,
-                            ),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.black,
-                            ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: Container(
-                              width: 140,
-                              height: 14,
+                        ],
+                      ),
+                      child: AppShimmer(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 8,
+                          children: [
+                            Container(
+                              width: 90,
+                              height: 12,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.black,
                               ),
                             ),
-                          ),
-                          const Divider(height: 20),
-                          Row(
-                            spacing: 20,
-                            children: [
-                              Column(
-                                spacing: 6,
-                                children: [
-                                  Container(
-                                    width: 70,
-                                    height: 14,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
+                            Container(
+                              width: 150,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.black,
                               ),
-                              Expanded(
-                                child: Container(
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.black,
-                                  ),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.black,
+                              ),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.black,
+                              ),
+                            ),
+                            Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Container(
+                                width: 140,
+                                height: 14,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const Divider(height: 20),
+                            Row(
+                              spacing: 20,
+                              children: [
+                                Column(
+                                  spacing: 6,
+                                  children: [
+                                    Container(
+                                      width: 70,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 60,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                    AppShimmer(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: List.generate(
+                          4,
+                          (index) => Container(
+                            width: index == 0 ? 20 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 // Discount coupons horizontal list
                 AppShimmer(

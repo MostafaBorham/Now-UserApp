@@ -20,6 +20,10 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.white,
         borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: colors.white.withValues(alpha: 0.9),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: colors.black.withValues(alpha: 0.08),
@@ -29,70 +33,69 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              Text(
-                LangKeys.sampleBrandCategoryKey.tr(),
-                style: AppTextStyles.style12Regular.copyWith(
-                  color: colors.neutral500,
-                ),
-              ),
-              Text(
-                LangKeys.sampleBrandNameKey.tr(),
-                style: AppTextStyles.style20Bold.copyWith(
-                  color: colors.neutral1200,
-                ),
-              ),
-              Text(
-                LangKeys.sampleBrandDescriptionKey.tr(),
-                maxLines: 5,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.neutral500,
-                  fontSize: 13,
-                  height: 1.7,
-                ),
-              ),
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 6,
-                  children: [
-                    Text(
-                      '4.8 (2.5${LangKeys.thousandSuffixKey.tr()})',
-                      style: AppTextStyles.style12Regular.copyWith(
-                        color: colors.neutral500,
-                      ),
-                    ),
-                    Row(
-                      spacing: 2,
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                        5,
-                        (index) => Assets.media.images.svg.starIcon.svg(
-                          colorFilter: ColorFilter.mode(
-                            colors.amber500,
-                            BlendMode.srcIn,
-                          ),
-                          width: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Text(
+            LangKeys.sampleBrandCategoryKey.tr(),
+            style: AppTextStyles.style12Regular.copyWith(
+              color: colors.neutral400,
+            ),
           ),
-          Divider(color: colors.neutral200, height: 20),
+          Text(
+            LangKeys.sampleBrandNameKey.tr(),
+            style: AppTextStyles.style20Bold.copyWith(
+              fontSize: 19,
+              height: 1.25,
+              color: colors.neutral1200,
+            ),
+          ),
+          Text(
+            LangKeys.sampleBrandDescriptionKey.tr(),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.style14Regular.copyWith(
+              color: colors.neutral500,
+              fontSize: 13,
+              height: 1.7,
+            ),
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 6,
+              children: [
+                Text(
+                  '4.8 (2.5${LangKeys.thousandSuffixKey.tr()})',
+                  style: AppTextStyles.style12Regular.copyWith(
+                    color: colors.neutral400,
+                  ),
+                ),
+                Row(
+                  spacing: 2,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    5,
+                    (index) => Assets.media.images.svg.starIcon.svg(
+                      colorFilter: ColorFilter.mode(
+                        colors.amber500,
+                        BlendMode.srcIn,
+                      ),
+                      width: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(color: colors.neutral200, height: 24),
           Row(
-            spacing: 24,
+            spacing: 16,
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 spacing: 4,
                 children: [
                   Row(
@@ -102,40 +105,52 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                     children: [
                       OldPriceWidget(
                         color: colors.neutral400,
-                        price: '13',
+                        price: '20',
                         size: 14,
                       ),
                       Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
-                          color: colors.errorContainer.withValues(alpha: 0.8),
-                          borderRadius: BorderRadiusGeometry.circular(16),
+                          color: colors.errorContainer,
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
                           '-27%',
                           textDirection: TextDirection.ltr,
                           style: AppTextStyles.style12SemiBold.copyWith(
+                            fontSize: 11,
                             color: colors.white,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  NewPriceWidget(color: colors.black, price: '10', size: 28),
+                  NewPriceWidget(
+                    color: colors.neutral1200,
+                    price: '10',
+                    size: 28,
+                  ),
                 ],
               ),
               Expanded(
                 child: Material(
                   elevation: 10,
                   color: Colors.transparent,
-                  shadowColor: colors.secondaryFixedDim.withValues(alpha: 0.3),
+                  shadowColor: colors.secondaryFixedDim.withValues(alpha: 0.33),
+                  borderRadius: BorderRadius.circular(14),
                   child: PrimaryAppPrefixIconButton(
                     title: LangKeys.addToCartKey.tr(),
                     buttonColor: colors.secondaryFixedDim,
                     prefixIcon: ReverseWidget(
                       child: Assets.media.images.svg.shoppingCartIcon.svg(
                         width: 20,
-                        colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn)
+                        colorFilter: ColorFilter.mode(
+                          colors.white,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     buttonRadius: 14,

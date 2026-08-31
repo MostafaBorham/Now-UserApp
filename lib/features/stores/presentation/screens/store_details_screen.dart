@@ -7,7 +7,6 @@ import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
@@ -17,7 +16,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_b
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_banner.dart';
-import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_brand_info_card.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_brands_slider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_info_header.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_products_view.dart';
@@ -109,12 +107,6 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                     itemAspectRatio: 3,
                                   ),
                                   StoreDetailsBrandsSlider(),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                    ),
-                                    child: StoreDetailsBrandInfoCard(),
-                                  ),
                                   StoreDiscountCouponsList(),
                                   StoreCategoryCirclesList(),
                                 ],
