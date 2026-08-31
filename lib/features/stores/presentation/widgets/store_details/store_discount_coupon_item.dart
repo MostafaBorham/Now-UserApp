@@ -17,6 +17,12 @@ const double _headHeight = 60;
 const double _notchSize = 32;
 const double _notchFromBottom = 46;
 
+// Horizontal body padding, and how far the notches punch past it into the body.
+// The validity text sits level with the notches, so it must clear this overlap
+// to avoid being covered — it wraps (up to 2 lines) instead.
+const double _bodyHPadding = 8;
+const double _notchOverlap = _notchSize / 2 - _bodyHPadding;
+
 // Body fills read off the design; the theme carries no equivalent tokens.
 const List<Color> _creamBody = [Color(0xffFEFAEA), Color(0xffFEF4D0)];
 const List<Color> _greenBody = [Color(0xffF4FAF3), Color(0xffE8F5E7)];
@@ -115,7 +121,7 @@ class StoreDiscountCouponItem extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
+                      horizontal: _bodyHPadding,
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
@@ -138,12 +144,21 @@ class StoreDiscountCouponItem extends StatelessWidget {
                           ),
                         ),
                         if (validityText.isNotEmpty)
-                          Text(
-                            validityText,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.style10Medium.copyWith(
-                              color: colors.neutral500,
+                          Padding(
+                            // Keep the text clear of the side notches so a long
+                            // validity string wraps to a second line instead of
+                            // being covered by the half-discs.
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: _notchOverlap,
+                            ),
+                            child: Text(
+                              validityText,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.style10Medium.copyWith(
+                                color: colors.neutral500,
+                              ),
                             ),
                           ),
                         Assets.media.images.svg.appLogo.svg(width: 64),
