@@ -1,6 +1,7 @@
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/offer_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class StoreModel {
@@ -26,6 +27,7 @@ class StoreModel {
   final List<CategoryModel>? categories;
   final List<CouponModel>? coupons;
   final List<ProductModel>? products;
+  final List<OfferModel>? offers;
   final List<BannerModel>? banners;
   final bool? isFavorite;
 
@@ -46,6 +48,7 @@ class StoreModel {
     this.categories,
     this.coupons,
     this.products,
+    this.offers,
     this.banners,
     this.isFavorite,
   });
@@ -78,6 +81,9 @@ class StoreModel {
       products: (json['products'] as List?)
           ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      offers: (json['offers'] as List?)
+          ?.map((e) => OfferModel.fromJson(e as Map<String, dynamic>?))
+          .toList(),
       banners: (json['banners'] as List?)
           ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
@@ -103,6 +109,7 @@ class StoreModel {
       'categories': categories?.map((e) => e.toJson()).toList(),
       'coupons': coupons?.map((e) => e.toJson()).toList(),
       'products': products?.map((e) => e.toJson()).toList(),
+      'offers': offers?.map((e) => e.toJson()).toList(),
       'banners': banners?.map((e) => e.toJson()).toList(),
       'is_favorite': isFavorite,
     };
@@ -125,6 +132,7 @@ class StoreModel {
     List<CategoryModel>? categories,
     List<CouponModel>? coupons,
     List<ProductModel>? products,
+    List<OfferModel>? offers,
     List<BannerModel>? banners,
     bool? isFavorite,
   }) {
@@ -145,6 +153,7 @@ class StoreModel {
       categories: categories ?? this.categories,
       coupons: coupons ?? this.coupons,
       products: products ?? this.products,
+      offers: offers ?? this.offers,
       banners: banners ?? this.banners,
       isFavorite: isFavorite ?? this.isFavorite,
     );

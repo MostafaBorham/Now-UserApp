@@ -106,7 +106,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                               ),
                                         )
                                         .toList(),
-                                    itemAspectRatio: 3.4,
+                                    itemAspectRatio: 3,
                                   ),
                                   StoreDetailsBrandsSlider(),
                                   Padding(

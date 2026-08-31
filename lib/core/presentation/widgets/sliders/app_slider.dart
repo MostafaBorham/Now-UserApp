@@ -16,6 +16,7 @@ class AppSlider extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+    final bool isSingleItem = sliderItems.length == 1;
     return sliderItems.isEmpty? const SizedBox.shrink() : Column(
       spacing: 20,
       children: [
@@ -30,24 +31,28 @@ class AppSlider extends ConsumerWidget {
           options: CarouselOptions(
             // height: 150,
             enlargeCenterPage: false,
-            autoPlay: true,
+            autoPlay: !isSingleItem,
+            scrollPhysics: isSingleItem ? const NeverScrollableScrollPhysics() : null,
             aspectRatio: itemAspectRatio!,
-            viewportFraction: 0.9,
-            onPageChanged: (index, _) {
-              ref.read(_homeController.sliderIndexProvider.notifier).state = index;
-            },
+            viewportFraction: isSingleItem ? 1 : 0.9,
+            onPageChanged: isSingleItem
+                ? null
+                : (index, _) {
+                    ref.read(_homeController.sliderIndexProvider.notifier).state = index;
+                  },
           ),
         ),
-        AnimatedSmoothIndicator(
-          activeIndex: ref.watch(_homeController.sliderIndexProvider),
-          count: sliderItems.length,
-          effect: WormEffect(
-            dotHeight: 10,
-            dotWidth: 10,
-            activeDotColor: activeDotColor?? colors.primary500Main,
-            dotColor: dotColor?? colors.onTertiary,
+        if (!isSingleItem)
+          AnimatedSmoothIndicator(
+            activeIndex: ref.watch(_homeController.sliderIndexProvider),
+            count: sliderItems.length,
+            effect: WormEffect(
+              dotHeight: 10,
+              dotWidth: 10,
+              activeDotColor: activeDotColor?? colors.primary500Main,
+              dotColor: dotColor?? colors.onTertiary,
+            ),
           ),
-        )
       ],
     );
   }

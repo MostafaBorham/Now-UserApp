@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 class StoreDetailsBanner extends StatelessWidget {
   const StoreDetailsBanner({
@@ -12,14 +15,25 @@ class StoreDetailsBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadiusGeometry.circular(16),
-      ),
-      child: AppCachedNetworkImage(
-        imageUrl: banner.image ?? '',
-        width: double.infinity,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        if(banner.linkType == 'product'){
+          context.pushNamed(AppRoutes.productDetailsScreen,extra: banner.productId.toString());
+        }
+        else if (banner.linkType == 'category'){
+          context.pushNamed(AppRoutes.categoryDetailsScreen,extra: CategoryModel(id: banner.mainCategoryId));
+        }
+      },
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusGeometry.circular(16),
+        ),
+        child: AppCachedNetworkImage(
+          imageUrl: banner.image ?? '',
+          width: double.infinity,
+        ),
       ),
     );
   }
