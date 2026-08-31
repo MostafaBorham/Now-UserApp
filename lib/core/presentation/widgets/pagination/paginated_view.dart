@@ -130,6 +130,7 @@ class PaginatedView<T> extends ConsumerWidget {
       return ServerConnectionErrorWidget(
         message: firstPageError,
         onRetry: onRefresh,
+        isScrollable: true,
       );
     }
     if (!status.hasLoadedPage) {

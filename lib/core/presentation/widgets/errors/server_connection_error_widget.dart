@@ -13,6 +13,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
     super.key,
     this.message,
     this.onRetry,
+    this.isScrollable = false,
   });
 
   /// Optional error details shown under the title. Falls back to the generic
@@ -23,6 +24,13 @@ class ServerConnectionErrorWidget extends StatelessWidget {
   /// this is null.
   final VoidCallback? onRetry;
 
+  /// When true, lays the widget out at a fixed natural size, centred inside a
+  /// scroll view that fills at least the available height. Use inside a
+  /// scrollable whose viewport changes (e.g. a `NestedScrollView` body / tab
+  /// view) so the widget stays a constant size instead of scaling up and down
+  /// with the scroll — mirrors [NoResultsWidget.isScrollable].
+  final bool isScrollable;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -30,7 +38,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
     // as one unit to fit the space this widget is given (a tab view is far
     // shorter than a full screen). Everything — icon, texts, button — shrinks by
     // the same factor, so the proportions between them never change.
-    return Center(
+    final Widget content = Center(
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: SizedBox(
@@ -73,6 +81,23 @@ class ServerConnectionErrorWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+
+    if (!isScrollable) return content;
+
+    // Unbounded height in the scroll view lets the FittedBox settle at its
+    // natural size (nothing to scale down against), so the widget no longer
+    // grows and shrinks as the surrounding viewport changes while scrolling.
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: content,
+          ),
+        );
+      },
     );
   }
 }

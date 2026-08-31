@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
@@ -14,17 +15,11 @@ import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_categor
 ///
 /// Only describes *what* the grid shows — the paging behaviour (next page on
 /// scroll, pull-to-refresh, loading, empty and error states) lives in
-/// [PaginatedView] and [GetStoreCategoryProductsViewModel].
-class StoreCategoryProductsView extends ConsumerStatefulWidget {
+/// [PaginatedView] and [GetStoreCategoryProductsViewModel]. The first page loads
+/// automatically the first time this category's provider is watched.
+class StoreCategoryProductsView extends ConsumerWidget {
   const StoreCategoryProductsView({super.key});
 
-  @override
-  ConsumerState<StoreCategoryProductsView> createState() =>
-      _StoreCategoryProductsViewState();
-}
-
-class _StoreCategoryProductsViewState
-    extends ConsumerState<StoreCategoryProductsView> {
   static const SliverGridDelegate _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -33,32 +28,23 @@ class _StoreCategoryProductsViewState
         childAspectRatio: 0.75,
       );
 
-  late final GetStoreCategoryProductsViewModel _productsViewModel;
-
   @override
-  void initState() {
-    super.initState();
-    _productsViewModel = ref.read(getStoreCategoryProductsProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchProducts());
-  }
-
-  /// Loads the first page of the opened store category. Also the pull-to-refresh
-  /// and first-page retry action, so all three ask for the same query.
-  Future<void> _fetchProducts() {
+  Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel category = ref.read(storeCategoryProvider);
     final int storeId = ref.read(storeIdProvider);
-    return _productsViewModel.getStoreCategoryProducts(
+    final StoreCategoryProductsArgs args = (
       storeId: storeId,
       categoryId: category.id,
+      filter: ProductFilters.all,
     );
-  }
+    final GetStoreCategoryProductsViewModel viewModel = ref.read(
+      getStoreCategoryProductsProvider(args).notifier,
+    );
 
-  @override
-  Widget build(BuildContext context) {
     return PaginatedView<ProductModel>(
-      provider: getStoreCategoryProductsProvider,
-      onRefresh: _fetchProducts,
-      onLoadNextPage: _productsViewModel.loadNextPage,
+      provider: getStoreCategoryProductsProvider(args),
+      onRefresh: viewModel.loadFirstPage,
+      onLoadNextPage: viewModel.loadNextPage,
       layout: const PaginatedGridLayout(
         gridDelegate: _gridDelegate,
         padding: EdgeInsets.all(4),
@@ -71,10 +57,7 @@ class _StoreCategoryProductsViewState
           ProductItemCard2(
             productModel: product,
             onFavouriteChanged: (bool isFavourite) =>
-                _productsViewModel.updateProductFavourite(
-                  product.id,
-                  isFavourite,
-                ),
+                viewModel.updateProductFavourite(product.id, isFavourite),
           ),
     );
   }

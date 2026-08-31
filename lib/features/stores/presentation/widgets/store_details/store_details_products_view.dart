@@ -1,50 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
 
-class StoreDetailsProductsView extends StatelessWidget {
+/// One store details filter tab: the store's products for [filter] as an
+/// infinite-scrolling grid.
+///
+/// Each filter is its own [getStoreCategoryProductsProvider] family member, so
+/// switching tabs shows that filter's own products and pages them independently.
+/// The paging behaviour (next page on scroll, pull-to-refresh, loading, empty
+/// and error states) lives in [PaginatedView] and
+/// [GetStoreCategoryProductsViewModel]; the first page loads automatically the
+/// first time this filter's provider is watched.
+class StoreDetailsProductsView extends ConsumerWidget {
   const StoreDetailsProductsView({
     super.key,
-    required this.products,
-    required this.sortType,
-    this.onProductFavouriteChanged,
+    required this.storeId,
+    required this.filter,
   });
 
-  final List<ProductModel> products;
-  final StoresSortType sortType;
+  final int storeId;
+  final ProductFilters filter;
 
-  /// Called with a product's id and its new favourite status after a settled
-  /// toggle on that product's card, so the store-details provider can persist
-  /// the change onto the store's product list.
-  final void Function(int? productId, bool isFavourite)?
-      onProductFavouriteChanged;
+  static const SliverGridDelegate _gridDelegate =
+      SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 18,
+        mainAxisSpacing: 16,
+        // Design card: 170 x 280.
+        childAspectRatio: 170 / 280,
+      );
 
   @override
-  Widget build(BuildContext context) {
-    if (products.isEmpty) {
-      // Fill the tab view and centre the empty state. Sizing it to exactly the
-      // viewport (minHeight == maxHeight in the isScrollable path) means the
-      // content itself never scrolls, while still giving the NestedScrollView the
-      // scrollable it needs to collapse the header and pin the tab bar to the top.
-      return const NoResultsWidget(isScrollable: true);
-    }
-    return GridView.builder(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 18,
-          mainAxisSpacing: 16,
-          // Design card: 170 x 280.
-          childAspectRatio: 170 / 280
+  Widget build(BuildContext context, WidgetRef ref) {
+    final StoreCategoryProductsArgs args = (
+      storeId: storeId,
+      categoryId: null,
+      filter: filter,
+    );
+    final GetStoreCategoryProductsViewModel viewModel = ref.read(
+      getStoreCategoryProductsProvider(args).notifier,
+    );
+
+    return PaginatedView<ProductModel>(
+      provider: getStoreCategoryProductsProvider(args),
+      onRefresh: viewModel.loadFirstPage,
+      onLoadNextPage: viewModel.loadNextPage,
+      layout: const PaginatedGridLayout(
+        gridDelegate: _gridDelegate,
+        padding: EdgeInsets.symmetric(vertical: 5),
       ),
-      itemCount: products.length,
-      itemBuilder: (BuildContext context, int index) => ProductItemCard1(
-        product: products[index],
-        onFavouriteChanged: (bool isFavourite) =>
-            onProductFavouriteChanged?.call(products[index].id, isFavourite),
-      ),
+      // Fills the grid while the first page loads and trails it while the next
+      // one does, so the skeleton always matches the real cards.
+      placeholderBuilder: (BuildContext context) =>
+          const AppShimmer(child: ProductItemCard1()),
+      itemBuilder: (BuildContext context, ProductModel product, int index) =>
+          ProductItemCard1(
+            product: product,
+            onFavouriteChanged: (bool isFavourite) =>
+                viewModel.updateProductFavourite(product.id, isFavourite),
+          ),
     );
   }
 }

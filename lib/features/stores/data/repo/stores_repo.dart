@@ -62,6 +62,7 @@ class StoresRepo {
   getStoreCategoryProducts({
     required int storeId,
     required int? categoryId,
+    required String filter,
     required int page,
   }) async {
     if (!await ConnectionChecker.isConnected) {
@@ -73,6 +74,7 @@ class StoresRepo {
           .getStoreCategoryProducts(
             storeId: storeId,
             categoryId: categoryId,
+            filter: filter,
             page: page,
           );
 

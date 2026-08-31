@@ -2,9 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
+import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -64,7 +63,6 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             ),
           ),
           data: (StoreModel store) {
-            final List<ProductModel> products = store.products ?? const [];
             return SafeArea(
               top: false,
               child: ProviderScope(
@@ -139,34 +137,19 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                         : constraints.maxHeight,
                                     width: constraints.maxWidth,
                                     child: CustomButtonTabBar(
-                                      tabs: StoresSortType.values
+                                      tabs: ProductFilters.values
                                           .map(
-                                            (StoresSortType sortType) =>
-                                                sortType.label.tr(),
+                                            (ProductFilters filter) =>
+                                                filter.label,
                                           )
                                           .toList(),
-                                      views: StoresSortType.values
+                                      views: ProductFilters.values
                                           .map(
-                                            (
-                                              StoresSortType sortType,
-                                            ) => StoreDetailsProductsView(
-                                              products: products,
-                                              sortType: sortType,
-                                              onProductFavouriteChanged:
-                                                  (
-                                                    int? productId,
-                                                    bool isFavourite,
-                                                  ) => ref
-                                                      .read(
-                                                        getStoreDetailsProvider(
-                                                          widget.storeId,
-                                                        ).notifier,
-                                                      )
-                                                      .updateProductFavourite(
-                                                        productId,
-                                                        isFavourite,
-                                                      ),
-                                            ),
+                                            (ProductFilters filter) =>
+                                                StoreDetailsProductsView(
+                                                  storeId: widget.storeId,
+                                                  filter: filter,
+                                                ),
                                           )
                                           .toList(),
                                       // selectedTabColor: colors.tertiaryContainer,

@@ -10,12 +10,13 @@ abstract class StoresEndpoints {
 
   static int? storeCategoryId;
   static String? productsSearch;
+  static String? productsFilter;
   static int productsPerPage = 15;
   static int productsPage = 1;
 
   /// Query parameters for getStoreCategoryProducts
   static Map<String, dynamic> get getStoreCategoryProductsQuery => {
-    'category_ids[]': storeCategoryId,
+    'filter': productsFilter,
     'per_page': productsPerPage,
     'page': productsPage,
   };
