@@ -16,7 +16,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_b
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_banner.dart';
-import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_brands_slider.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/unique_store_products_slider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_info_header.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_products_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_shimmer.dart';
@@ -106,7 +106,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                         .toList(),
                                     itemAspectRatio: 3,
                                   ),
-                                  StoreDetailsBrandsSlider(),
+                                  UniqueStoreProductsSlider(),
                                   StoreDiscountCouponsList(),
                                   StoreCategoryCirclesList(),
                                 ],

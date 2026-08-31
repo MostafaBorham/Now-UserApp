@@ -4,20 +4,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_arrow_slider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_brand_info_card.dart';
 
-class StoreDetailsBrandsSlider extends StatelessWidget {
-  const StoreDetailsBrandsSlider({super.key});
+class UniqueStoreProductsSlider extends StatelessWidget {
+  const UniqueStoreProductsSlider({super.key});
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return AppArrowSlider(
-      // Each page stacks as one column that swipes together: wordmark, then the
-      // image, then the full-width details card — the card spans the page width
-      // so it matches the design and never overflows inside the arrow gutters.
       aboveImage: ShaderMask(
-        // The wordmark is painted with the design's diagonal white-to-brand
-        // gradient, so it fades in from the left. Left-to-right in both locales —
-        // the word itself is always latin.
         blendMode: BlendMode.srcIn,
         shaderCallback: (Rect bounds) => LinearGradient(
           begin: Alignment.topLeft,
@@ -29,7 +23,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
           ],
         ).createShader(bounds),
         child: Align(
-          alignment: AlignmentDirectional.centerStart,
+          alignment: AlignmentDirectional.center,
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -37,8 +31,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 72,
-                letterSpacing: -4,
-                height: 1,
+                height: 0,
                 color: colors.secondaryFixedDim,
               ),
             ),
@@ -46,6 +39,7 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
         ),
       ),
       sliderItem: Container(
+        width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadiusGeometry.circular(20),
@@ -57,17 +51,18 @@ class StoreDetailsBrandsSlider extends StatelessWidget {
             ),
           ],
         ),
-        child: AppCachedNetworkImage(
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
-          imageUrl:
-              'https://www.elsupplier.com/_next/image?url=https://portal.elsupplier.com/backend/public/storage/products/dark-chocolate-bar-732x549-thumbnail604108001.jpg&w=640&q=50',
+        child: AspectRatio(
+          aspectRatio: 1.3,
+          child: AppCachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl:
+                'https://www.elsupplier.com/_next/image?url=https://portal.elsupplier.com/backend/public/storage/products/dark-chocolate-bar-732x549-thumbnail604108001.jpg&w=640&q=50',
+          ),
         ),
       ),
       belowImage: const StoreDetailsBrandInfoCard(),
       sliderSpace: 8,
-      itemHeight: 620,
+      itemHeight: 600,
       activeDotColor: colors.secondaryFixedDim,
       dotColor: colors.neutral200,
     );
