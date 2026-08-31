@@ -24,7 +24,11 @@ class StoreDetailsProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (products.isEmpty) {
-      return const NoResultsWidget();
+      // Fill the tab view and centre the empty state. Sizing it to exactly the
+      // viewport (minHeight == maxHeight in the isScrollable path) means the
+      // content itself never scrolls, while still giving the NestedScrollView the
+      // scrollable it needs to collapse the header and pin the tab bar to the top.
+      return const NoResultsWidget(isScrollable: true);
     }
     return GridView.builder(
       padding: EdgeInsets.symmetric(vertical: 5),
