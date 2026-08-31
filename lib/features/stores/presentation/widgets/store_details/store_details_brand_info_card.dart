@@ -135,6 +135,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                     prefixIcon: ReverseWidget(
                       child: Assets.media.images.svg.shoppingCartIcon.svg(
                         width: 20,
+                        colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn)
                       ),
                     ),
                     buttonRadius: 14,

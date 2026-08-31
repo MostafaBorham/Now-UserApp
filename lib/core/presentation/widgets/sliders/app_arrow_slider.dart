@@ -46,29 +46,40 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
             // shadow still bleeds out under them.
             Padding(
               padding: const EdgeInsetsDirectional.symmetric(horizontal: 44),
-              child: CarouselSlider.builder(
-                carouselController: _controller,
-                itemCount: widget.itemCount,
-                itemBuilder: (_, index, _) {
-                  return Padding(
-                    padding: EdgeInsetsDirectional.symmetric(
-                      horizontal: widget.sliderSpace,
-                    ),
-                    child: widget.sliderItem,
-                  );
-                },
-                options: CarouselOptions(
-                  enlargeCenterPage: false,
-                  viewportFraction: 1,
-                  clipBehavior: Clip.none,
-                  autoPlay: false,
-                  aspectRatio: widget.itemAspectRatio,
-                  // Only the arrow buttons drive the slider; manual
-                  // swipe/drag scrolling is disabled.
-                  scrollPhysics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (index, _) {
-                    setState(() => _currentIndex = index);
+              // The carousel's underlying PageView flips its animation axis with
+              // the ambient direction, so a slide ends up moving opposite to the
+              // arrow that drove it. Feeding it the *inverse* direction makes the
+              // slide travel toward the tapped arrow's side in both locales. The
+              // dots below stay ambient, so the active dot starts on the reading
+              // side (right in ar, left in en) and tracks the slide.
+              child: Directionality(
+                textDirection: Directionality.of(context) == TextDirection.rtl
+                    ? TextDirection.ltr
+                    : TextDirection.rtl,
+                child: CarouselSlider.builder(
+                  carouselController: _controller,
+                  itemCount: widget.itemCount,
+                  itemBuilder: (_, index, _) {
+                    return Padding(
+                      padding: EdgeInsetsDirectional.symmetric(
+                        horizontal: widget.sliderSpace,
+                      ),
+                      child: widget.sliderItem,
+                    );
                   },
+                  options: CarouselOptions(
+                    enlargeCenterPage: false,
+                    viewportFraction: 1,
+                    clipBehavior: Clip.none,
+                    autoPlay: false,
+                    aspectRatio: widget.itemAspectRatio,
+                    // Only the arrow buttons drive the slider; manual
+                    // swipe/drag scrolling is disabled.
+                    scrollPhysics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (index, _) {
+                      setState(() => _currentIndex = index);
+                    },
+                  ),
                 ),
               ),
             ),
