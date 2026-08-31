@@ -27,12 +27,17 @@ const double _notchOverlap = _notchSize / 2 - _bodyHPadding;
 const List<Color> _creamBody = [Color(0xffFEFAEA), Color(0xffFEF4D0)];
 const List<Color> _greenBody = [Color(0xffF4FAF3), Color(0xffE8F5E7)];
 
+// The design marks the selected ticket by fading the whole thing (opacity 15%).
+const double _selectedOpacity = 0.15;
+
 class StoreDiscountCouponItem extends StatelessWidget {
   const StoreDiscountCouponItem({
     super.key,
     required this.coupon,
     required this.storeName,
     this.darkHead = false,
+    this.isSelected = false,
+    this.onTap,
   });
 
   final CouponModel coupon;
@@ -40,6 +45,12 @@ class StoreDiscountCouponItem extends StatelessWidget {
 
   /// The design alternates a dark-green and a yellow head down the list.
   final bool darkHead;
+
+  /// When selected the ticket keeps its shape but fades to a light opacity.
+  final bool isSelected;
+
+  /// Tap handler. When null the whole ticket copies the coupon code instead.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -69,118 +80,125 @@ class StoreDiscountCouponItem extends StatelessWidget {
     final String discountValue = '${coupon.discountValue?.toInt() ?? 0}';
 
     return InkWell(
-      // The design has no code chip, so the whole ticket copies the code.
-      onTap: coupon.code == null
-          ? null
-          : () => CopyToClipboard.copy(context, coupon.code!),
-      child: Container(
-        width: _ticketWidth,
-        height: _ticketHeight,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(borderRadius: AppBorderRadius.brCircular16),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  height: _headHeight,
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  color: headColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 2,
-                    children: [
-                      coupon.isPercentage ?? true
-                          ? Text(
-                              '$discountValue%',
-                              textDirection: TextDirection.ltr,
-                              style: AppTextStyles.style20SemiBold.copyWith(
-                                color: discountColor,
-                                height: 1,
-                              ),
-                            )
-                          : NewPriceWidget(
-                              color: discountColor,
-                              price: discountValue,
-                              size: 20,
-                            ),
-                      Text(
-                        '${LangKeys.inStoreKey.tr()} $storeName',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.style12SemiBold.copyWith(
-                          color: storeNameColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
+      // The design has no code chip, so the whole ticket copies the code
+      // unless a tap handler (e.g. selection) is supplied by the parent.
+      onTap:
+          onTap ??
+          (coupon.code == null
+              ? null
+              : () => CopyToClipboard.copy(context, coupon.code!)),
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 150),
+        opacity: isSelected ? _selectedOpacity : 1,
+        child: Container(
+          width: _ticketWidth,
+          height: _ticketHeight,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(borderRadius: AppBorderRadius.brCircular16),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: _headHeight,
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: _bodyHPadding,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: darkHead ? _creamBody : _greenBody,
-                      ),
-                    ),
+                    alignment: Alignment.center,
+                    color: headColor,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 4,
+                      spacing: 2,
                       children: [
+                        coupon.isPercentage ?? true
+                            ? Text(
+                                '$discountValue%',
+                                textDirection: TextDirection.ltr,
+                                style: AppTextStyles.style20SemiBold.copyWith(
+                                  color: discountColor,
+                                  height: 1,
+                                ),
+                              )
+                            : NewPriceWidget(
+                                color: discountColor,
+                                price: discountValue,
+                                size: 20,
+                              ),
                         Text(
-                          coupon.name ?? LangKeys.discountCouponKey.tr(),
+                          '${LangKeys.inStoreKey.tr()} $storeName',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.style16Medium.copyWith(
-                            color: colors.primaryContainer,
+                          style: AppTextStyles.style12SemiBold.copyWith(
+                            color: storeNameColor,
                           ),
                         ),
-                        if (validityText.isNotEmpty)
-                          Padding(
-                            // Keep the text clear of the side notches so a long
-                            // validity string wraps to a second line instead of
-                            // being covered by the half-discs.
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: _notchOverlap,
-                            ),
-                            child: Text(
-                              validityText,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.style10Medium.copyWith(
-                                color: colors.neutral500,
-                              ),
-                            ),
-                          ),
-                        Assets.media.images.svg.appLogo.svg(width: 64),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-            // Half-discs painted in the page colour: the ticket clips away the
-            // outer half, leaving a notch punched into each side edge.
-            Positioned(
-              left: -_notchSize / 2,
-              top: _notchTop,
-              child: _notch(context),
-            ),
-            Positioned(
-              right: -_notchSize / 2,
-              top: _notchTop,
-              child: _notch(context),
-            ),
-          ],
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: _bodyHPadding,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: darkHead ? _creamBody : _greenBody,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 4,
+                        children: [
+                          Text(
+                            coupon.name ?? LangKeys.discountCouponKey.tr(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.style16Medium.copyWith(
+                              color: colors.primaryContainer,
+                            ),
+                          ),
+                          if (validityText.isNotEmpty)
+                            Padding(
+                              // Keep the text clear of the side notches so a long
+                              // validity string wraps to a second line instead of
+                              // being covered by the half-discs.
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: _notchOverlap,
+                              ),
+                              child: Text(
+                                validityText,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.style10Medium.copyWith(
+                                  color: colors.neutral500,
+                                ),
+                              ),
+                            ),
+                          Assets.media.images.svg.appLogo.svg(width: 64),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Half-discs painted in the page colour: the ticket clips away the
+              // outer half, leaving a notch punched into each side edge.
+              Positioned(
+                left: -_notchSize / 2,
+                top: _notchTop,
+                child: _notch(context),
+              ),
+              Positioned(
+                right: -_notchSize / 2,
+                top: _notchTop,
+                child: _notch(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -6,11 +6,30 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupon_item.dart';
 
-class StoreDiscountCouponsList extends ConsumerWidget {
-  const StoreDiscountCouponsList({super.key});
+class StoreDiscountCouponsList extends ConsumerStatefulWidget {
+  const StoreDiscountCouponsList({super.key, this.onCouponSelected});
+
+  /// Called with the selected coupon, or null when the selection is cleared.
+  final ValueChanged<CouponModel?>? onCouponSelected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StoreDiscountCouponsList> createState() =>
+      _StoreDiscountCouponsListState();
+}
+
+class _StoreDiscountCouponsListState
+    extends ConsumerState<StoreDiscountCouponsList> {
+  int? _selectedIndex;
+
+  void _select(int index, CouponModel coupon) {
+    // Radio behaviour: tapping the selected ticket again clears the selection.
+    final bool isDeselecting = _selectedIndex == index;
+    setState(() => _selectedIndex = isDeselecting ? null : index);
+    widget.onCouponSelected?.call(isDeselecting ? null : coupon);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final StoreModel store = ref.watch(storeProvider);
     final List<CouponModel> coupons = store.coupons ?? const [];
 
@@ -27,6 +46,8 @@ class StoreDiscountCouponsList extends ConsumerWidget {
           coupon: coupons[index],
           storeName: context.getLocalizedApiText(store.name),
           darkHead: index.isOdd,
+          isSelected: _selectedIndex == index,
+          onTap: () => _select(index, coupons[index]),
         ),
       ),
     );
