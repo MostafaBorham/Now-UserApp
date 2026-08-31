@@ -1,24 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/offer_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_arrow_slider.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_brand_info_card.dart';
 
-class UniqueStoreProductsSlider extends StatelessWidget {
+class UniqueStoreProductsSlider extends ConsumerWidget {
   const UniqueStoreProductsSlider({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+    // The first offer's products drive the slider; anything past that offer is
+    // ignored. Nothing to show when the store has no offers or an empty first
+    // offer, so the slider collapses out of the column.
+    final List<OfferModel>? offers = ref.watch(storeProvider).offers;
+    final List<ProductModel> products =
+        (offers != null && offers.isNotEmpty ? offers.first.products : null) ??
+        const [];
+    if (products.isEmpty) return const SizedBox.shrink();
+
     return AppArrowSlider(
-      aboveImage: ShaderMask(
+      itemCount: products.length,
+      aboveImageBuilder: (BuildContext context, int index) => ShaderMask(
         blendMode: BlendMode.srcIn,
         shaderCallback: (Rect bounds) => LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: const [0.08, 0.63],
+          stops: const [0.0, 0.9],
           colors: [
-            colors.white.withValues(alpha: 0.8),
+            colors.secondaryFixedDim.withValues(alpha: 0.2),
             colors.secondaryFixedDim,
           ],
         ).createShader(bounds),
@@ -27,10 +42,10 @@ class UniqueStoreProductsSlider extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              'GALAXY',
+              context.getLocalizedApiText(products[index].name).toUpperCase(),
               style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 72,
+                fontWeight: FontWeight.w500,
+                fontSize: 65,
                 height: 0,
                 color: colors.secondaryFixedDim,
               ),
@@ -38,7 +53,7 @@ class UniqueStoreProductsSlider extends StatelessWidget {
           ),
         ),
       ),
-      sliderItem: Container(
+      sliderItemBuilder: (BuildContext context, int index) => Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -55,13 +70,15 @@ class UniqueStoreProductsSlider extends StatelessWidget {
           aspectRatio: 1.3,
           child: AppCachedNetworkImage(
             fit: BoxFit.cover,
-            imageUrl:
-                'https://www.elsupplier.com/_next/image?url=https://portal.elsupplier.com/backend/public/storage/products/dark-chocolate-bar-732x549-thumbnail604108001.jpg&w=640&q=50',
+            imageUrl: (products[index].images?.isNotEmpty ?? false)
+                ? products[index].images!.first
+                : '',
           ),
         ),
       ),
-      belowImage: const StoreDetailsBrandInfoCard(),
-      sliderSpace: 8,
+      belowImageBuilder: (BuildContext context, int index) =>
+          StoreDetailsBrandInfoCard(product: products[index]),
+      sliderSpace: 0,
       itemHeight: 600,
       activeDotColor: colors.secondaryFixedDim,
       dotColor: colors.neutral200,

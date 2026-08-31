@@ -7,26 +7,26 @@ class AppArrowSlider extends StatefulWidget {
     super.key,
     this.activeDotColor,
     this.dotColor,
-    required this.sliderItem,
-    this.aboveImage,
-    this.belowImage,
+    required this.itemCount,
+    required this.sliderItemBuilder,
+    this.aboveImageBuilder,
+    this.belowImageBuilder,
     this.sliderSpace = 8,
     this.itemHeight = 620,
-    this.itemCount = 4,
   });
 
   final Color? activeDotColor;
   final Color? dotColor;
 
   // The image at the heart of each page — the arrows are centered on this and
-  // this alone.
-  final Widget sliderItem;
+  // this alone. Built per page so each slide can show its own product image.
+  final IndexedWidgetBuilder sliderItemBuilder;
 
   // Extra content stacked inside every page, above and below the image, so the
   // whole column (e.g. wordmark → image → details card) swipes as one unit. They
   // span the full page width; only the image is inset for the arrow gutters.
-  final Widget? aboveImage;
-  final Widget? belowImage;
+  final IndexedWidgetBuilder? aboveImageBuilder;
+  final IndexedWidgetBuilder? belowImageBuilder;
 
   final double sliderSpace;
 
@@ -46,14 +46,8 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    // The carousel's underlying PageView flips its animation axis with the
-    // ambient direction, so a slide ends up moving opposite to the arrow that
-    // drove it. Feeding it the *inverse* direction makes the slide travel toward
-    // the tapped arrow's side in both locales; the page content restores the
-    // ambient direction so the wordmark/card still lay out correctly.
     final TextDirection ambient = Directionality.of(context);
     return Column(
-      spacing: 20,
       children: [
         Directionality(
           textDirection: ambient == TextDirection.rtl
@@ -62,34 +56,34 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
           child: CarouselSlider.builder(
             carouselController: _controller,
             itemCount: widget.itemCount,
-            itemBuilder: (_, index, _) => Directionality(
+            itemBuilder: (BuildContext itemContext, index, _) => Directionality(
               textDirection: ambient,
               child: Padding(
                 padding: EdgeInsetsDirectional.symmetric(
                   horizontal: widget.sliderSpace,
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 20,
                   children: [
-                    if (widget.aboveImage != null) ...[
-                      widget.aboveImage!,
-                      const SizedBox(height: 12),
-                    ],
-                    // Nothing clips, so the image's soft drop-shadow is free to
-                    // spread outward beneath the arrow buttons.
-                    Expanded(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: AlignmentDirectional.center,
-                        children: [
-                          // Inset so the image sits between the arrows while its
-                          // shadow still bleeds out under them.
-                          Padding(
-                            padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 44,
-                            ),
-                            child: widget.sliderItem,
+                    if (widget.aboveImageBuilder != null) widget.aboveImageBuilder!(itemContext, index),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        // Inset so the image sits between the arrows while its
+                        // shadow still bleeds out under them.
+                        Padding(
+                          padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 44,
                           ),
+                          child: widget.sliderItemBuilder(itemContext, index),
+                        ),
+                        // A lone product has nowhere to page to, so the arrows
+                        // are dropped entirely — only the single image (and its
+                        // solitary dot below) remain.
+                        if (widget.itemCount > 1) ...[
                           PositionedDirectional(
                             start: 0,
                             child: _SliderArrowButton(
@@ -105,12 +99,9 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                             ),
                           ),
                         ],
-                      ),
+                      ],
                     ),
-                    if (widget.belowImage != null) ...[
-                      const SizedBox(height: 16),
-                      widget.belowImage!,
-                    ],
+                    if (widget.belowImageBuilder != null) widget.belowImageBuilder!(itemContext, index),
                   ],
                 ),
               ),
@@ -130,12 +121,14 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
             ),
           ),
         ),
-        DotsIndicator(
-          currentIndex: _currentIndex,
-          itemCount: widget.itemCount,
-          activeColor: widget.activeDotColor ?? colors.primary500Main,
-          inactiveColor: widget.dotColor ?? colors.onTertiary,
-        ),
+        // A single product needs no pager, so the dots are hidden too.
+        if (widget.itemCount > 1)
+          DotsIndicator(
+            currentIndex: _currentIndex,
+            itemCount: widget.itemCount,
+            activeColor: widget.activeDotColor ?? colors.primary500Main,
+            inactiveColor: widget.dotColor ?? colors.onTertiary,
+          ),
       ],
     );
   }

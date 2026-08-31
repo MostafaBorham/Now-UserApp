@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -10,11 +12,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class StoreDetailsBrandInfoCard extends StatelessWidget {
-  const StoreDetailsBrandInfoCard({super.key});
+  const StoreDetailsBrandInfoCard({super.key, required this.product});
+
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final double discountValue = product.activeDeal?.discountValue ?? 0;
     return Container(
       padding: const EdgeInsets.all(23),
       decoration: BoxDecoration(
@@ -37,13 +42,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
         spacing: 8,
         children: [
           Text(
-            LangKeys.sampleBrandCategoryKey.tr(),
-            style: AppTextStyles.style12Regular.copyWith(
-              color: colors.neutral400,
-            ),
-          ),
-          Text(
-            LangKeys.sampleBrandNameKey.tr(),
+            context.getLocalizedApiText(product.name),
             style: AppTextStyles.style20Bold.copyWith(
               fontSize: 19,
               height: 1.25,
@@ -51,7 +50,7 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
             ),
           ),
           Text(
-            LangKeys.sampleBrandDescriptionKey.tr(),
+            context.getLocalizedApiText(product.description),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.style14Regular.copyWith(
@@ -105,32 +104,33 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                     children: [
                       OldPriceWidget(
                         color: colors.neutral400,
-                        price: '20',
+                        price: product.comparePrice?.toStringAsFixed(0) ?? '0',
                         size: 14,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colors.errorContainer,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          '-27%',
-                          textDirection: TextDirection.ltr,
-                          style: AppTextStyles.style12SemiBold.copyWith(
-                            fontSize: 11,
-                            color: colors.white,
+                      if (discountValue > 0)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.errorContainer,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            '-${discountValue.toStringAsFixed(0)}%',
+                            textDirection: TextDirection.ltr,
+                            style: AppTextStyles.style12SemiBold.copyWith(
+                              fontSize: 11,
+                              color: colors.white,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   NewPriceWidget(
                     color: colors.neutral1200,
-                    price: '10',
+                    price: product.price?.toStringAsFixed(0) ?? '0',
                     size: 28,
                   ),
                 ],
