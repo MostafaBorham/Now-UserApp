@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -156,7 +157,8 @@ class ProductItem3View extends StatelessWidget {
                           children: [
                             AppRateWidget(
                               starColor: colors.amber500,
-                              rateRatio: '4.5',
+                              rateRatio:
+                                  '${formatDouble(product.rating?.average)}',
                               rateColor: colors.black,
                               size: con.maxWidth*0.1,
                             ),

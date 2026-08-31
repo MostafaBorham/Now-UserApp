@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 
 class ProductItemCard1 extends StatefulWidget {
   const ProductItemCard1({super.key, this.product, this.onFavouriteChanged});
@@ -84,7 +85,8 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                                 AppRateWidget(
                                   starColor: colors.amber500,
-                                  rateRatio: '4.2',
+                                  rateRatio:
+                                      '${formatDouble(widget.product?.rating?.average)}',
                                   rateColor: colors.neutral500,
                                   size: con.maxWidth * 0.08,
                                 ),

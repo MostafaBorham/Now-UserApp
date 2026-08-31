@@ -1,25 +1,45 @@
 import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/success_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rating_stars.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
-class StoreDetailsBrandInfoCard extends StatelessWidget {
+class StoreDetailsBrandInfoCard extends ConsumerWidget {
   const StoreDetailsBrandInfoCard({super.key, required this.product});
 
   final ProductModel product;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final double discountValue = product.activeDeal?.discountValue ?? 0;
+    final int productId = product.id ?? -1;
+    final cartState = ref.watch(updateCartProductProvider(productId));
+    final bool isAddingToCart = cartState.isLoading;
+
+    ref.listen(updateCartProductProvider(productId), (previous, next) {
+      next.whenOrNull(
+        data: (cart) {
+          if (cart == null) return;
+          SuccessSnackBar.show(context, LangKeys.productAddedToCartKey.tr());
+        },
+        error: (error, _) {
+          ErrorSnackBar.show(context, error.toString());
+        },
+      );
+    });
     return Container(
       padding: const EdgeInsets.all(23),
       decoration: BoxDecoration(
@@ -66,25 +86,12 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
               spacing: 6,
               children: [
                 Text(
-                  '4.8 (2.5${LangKeys.thousandSuffixKey.tr()})',
+                  '${product.rating?.average??0} (${product.rating?.total??0})',
                   style: AppTextStyles.style12Regular.copyWith(
                     color: colors.neutral400,
                   ),
                 ),
-                Row(
-                  spacing: 2,
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(
-                    5,
-                    (index) => Assets.media.images.svg.starIcon.svg(
-                      colorFilter: ColorFilter.mode(
-                        colors.amber500,
-                        BlendMode.srcIn,
-                      ),
-                      width: 12,
-                    ),
-                  ),
-                ),
+                AppRatingStars(average: product.rating?.average, size: 12),
               ],
             ),
           ),
@@ -142,6 +149,13 @@ class StoreDetailsBrandInfoCard extends StatelessWidget {
                   shadowColor: colors.secondaryFixedDim.withValues(alpha: 0.33),
                   borderRadius: BorderRadius.circular(14),
                   child: PrimaryAppPrefixIconButton(
+                    isLoading: isAddingToCart,
+                    onTap: () {
+                      if (product.id == null) return;
+                      ref
+                          .read(updateCartProductProvider(productId).notifier)
+                          .addToCart(1);
+                    },
                     title: LangKeys.addToCartKey.tr(),
                     buttonColor: colors.secondaryFixedDim,
                     prefixIcon: ReverseWidget(

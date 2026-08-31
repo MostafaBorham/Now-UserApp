@@ -220,9 +220,10 @@ class _StoreItemState extends State<StoreItem> {
                                 ),
                                 child: AppRateWidget(
                                   starColor: colors.surface,
-                                  rateRatio: '${widget.storeModel?.rating}',
+                                  rateRatio:
+                                      '${widget.storeModel?.rating ?? 0}',
                                   rateCount:
-                                      '${widget.storeModel?.ratingCount}',
+                                      '${widget.storeModel?.ratingCount ?? 0}',
                                   rateColor: colors.black.withValues(
                                     alpha: 0.7,
                                   ),

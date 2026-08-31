@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -25,8 +26,6 @@ class ProductMainInfoCard extends ConsumerWidget {
         'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
     this.oldPrice = '10',
     this.newPrice = '10',
-    this.rate = '4.5',
-    this.rateCount = '12',
     this.description =
         'Almarai Milk 2 Liters: Fresh, high-quality milk with a creamy taste '
         'and smooth texture. Provides essential nutrients like calcium and '
@@ -40,8 +39,6 @@ class ProductMainInfoCard extends ConsumerWidget {
   final String storeLogoUrl;
   final String oldPrice;
   final String newPrice;
-  final String rate;
-  final String rateCount;
   final String description;
   final bool isTrusted;
   final String? trustedBadgeLabel;
@@ -252,8 +249,8 @@ class ProductMainInfoCard extends ConsumerWidget {
                         child: AppRateWidget(
                           starColor: colors.surface,
                           rateColor: colors.tertiaryContainer,
-                          rateRatio: rate,
-                          rateCount: rateCount,
+                          rateRatio: '${formatDouble(product.rating?.average)}',
+                          rateCount: '${product.rating?.total ?? 0}',
                           size: 15,
                         ),
                       ),

@@ -2,6 +2,7 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/rating_model.dart';
 
 class ProductModel {
   final int? id;
@@ -37,6 +38,7 @@ class ProductModel {
   final int? cartQuantity;
   final bool? isFavorite;
   final CategoryModel? subCategory;
+  final RatingModel? rating;
 
   const ProductModel({
     this.id,
@@ -72,6 +74,7 @@ class ProductModel {
     this.cartQuantity,
     this.isFavorite,
     this.subCategory,
+    this.rating,
   });
 
   /// Returns a copy with the given fields replaced. Used for in-place list
@@ -109,6 +112,7 @@ class ProductModel {
     int? cartQuantity,
     bool? isFavorite,
     CategoryModel? subCategory,
+    RatingModel? rating,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -142,6 +146,7 @@ class ProductModel {
       cartQuantity: cartQuantity ?? this.cartQuantity,
       isFavorite: isFavorite ?? this.isFavorite,
       subCategory: subCategory ?? this.subCategory,
+      rating: rating ?? this.rating,
     );
   }
 
@@ -187,6 +192,7 @@ class ProductModel {
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
       isFavorite: json['is_favorite'] as bool?,
       subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
+      rating: RatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
     );
   }
 
@@ -243,6 +249,7 @@ class ProductModel {
       'cart_quantity': cartQuantity,
       'is_favorite': isFavorite,
       'sub_category': subCategory?.toJson(),
+      'rating': rating?.toJson(),
     };
   }
 }
