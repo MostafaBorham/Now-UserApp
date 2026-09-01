@@ -68,9 +68,13 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
               child: ProviderScope(
                 overrides: [storeProvider.overrideWithValue(store)],
                 child: AppRefreshIndicator(
+                  // Background reload so the pull keeps the store (and the
+                  // spinner) on screen instead of flashing the whole page back
+                  // to the shimmer, which would tear down this indicator and the
+                  // NestedScrollView mid-gesture.
                   onRefresh: () => ref
                       .read(getStoreDetailsProvider(widget.storeId).notifier)
-                      .getStoreDetails(),
+                      .refresh(),
                   child: NestedScrollView(
                     controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),

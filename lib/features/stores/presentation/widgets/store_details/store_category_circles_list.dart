@@ -47,7 +47,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(999),
                     onTap: () => context.pushNamed(
                       AppRoutes.viewStoreCategoryProductsScreen,
-                      extra: (storeId: store.id ?? 0, category: category),
+                      extra: category,
                     ),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

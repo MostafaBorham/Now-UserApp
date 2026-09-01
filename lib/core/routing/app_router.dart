@@ -178,11 +178,10 @@ abstract class AppRouter {
         name: AppRoutes.viewStoreCategoryProductsScreen,
         path: '/${AppRoutes.viewStoreCategoryProductsScreen}',
         builder: (context, state) {
-          final args = state.extra as ({int storeId, CategoryModel category})?;
+          final category = state.extra as CategoryModel?;
 
           return ViewStoreCategoryProductsScreen(
-            storeId: args?.storeId ?? 0,
-            category: args?.category ?? const CategoryModel(),
+            category: category ?? const CategoryModel(),
           );
         },
       ),

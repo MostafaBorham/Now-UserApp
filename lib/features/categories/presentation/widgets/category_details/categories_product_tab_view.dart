@@ -25,7 +25,6 @@ class _CategoriesProductTabViewState
     extends ConsumerState<CategoriesProductTabView> {
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -35,35 +34,7 @@ class _CategoriesProductTabViewState
           onSearch: (String query) =>
               ref.read(categoryProductsSearchProvider.notifier).state = query,
         ),
-        /*Text(
-          LangKeys.categoriesKey.tr(),
-          style: AppTextStyles.style16SemiBold.copyWith(color: colors.black),
-        ),*/
         Expanded(child: CategoryProductsView(sortType: StoresSortType.all))
-/*        Expanded(
-          child: CustomButtonTabBar(
-            filterWidget: AppFilterIcon(
-              onTap: () => showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) => CategoryProductsFilterView(
-                  onApply: (separateOption, maxPrice, minPrice, rating) {
-                    print(
-                      'apply = ${separateOption?.label}$maxPrice$minPrice$rating',
-                    );
-                  },
-                ),
-              ),
-            ),
-            tabs: StoresSortType.values
-                .map((sortType) => sortType.label.tr())
-                .toList(),
-            views: StoresSortType.values.map((sortType) {
-              return CategoryProductsView(sortType: sortType);
-            }).toList(),
-            unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
-          ),
-        ),*/
       ],
     );
   }

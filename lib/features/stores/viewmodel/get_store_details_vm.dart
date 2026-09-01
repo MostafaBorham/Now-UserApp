@@ -41,6 +41,24 @@ class GetStoreDetailsViewModel
     );
   }
 
+  /// Reloads the store in the background for pull-to-refresh.
+  ///
+  /// Unlike [getStoreDetails] it does *not* flip the state to loading, so the
+  /// store currently on screen (and the refresh indicator running over it) stays
+  /// put while the request is in flight — the header, banners and categories
+  /// just update in place when it returns. A failed refresh keeps the existing
+  /// store rather than replacing the whole screen with an error.
+  Future<void> refresh() async {
+    final result = await _repo.getStoreDetails(storeId: storeId);
+
+    if (!mounted) return;
+
+    result.fold(
+      (Failure _) {},
+      (StoreModel store) => state = AsyncValue<StoreModel>.data(store),
+    );
+  }
+
   void updateProductFavourite(int? productId, bool isFavourite) {
     final StoreModel? store = state.valueOrNull;
     final List<ProductModel>? products = store?.products;

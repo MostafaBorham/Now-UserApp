@@ -13,7 +13,6 @@ class StoreDetailsShimmer extends StatelessWidget {
       child: Column(
         spacing: 16,
         children: [
-          // Store info header: cover image + overlapping logo + description + info row
           AspectRatio(
             aspectRatio: 390 / 240,
             child: LayoutBuilder(
@@ -120,6 +119,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                 // Only the image is inset for the arrow gutters; the wordmark and
                 // card span the full width, like the real layout.
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 20,
                   children: [
                     AppShimmer(
@@ -151,7 +151,6 @@ class StoreDetailsShimmer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Brand info card: real card shape with skeleton lines inside
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(23),

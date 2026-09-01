@@ -24,7 +24,6 @@ class CategoryProductsView extends ConsumerStatefulWidget {
 }
 
 class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
-
   final ScrollController _scrollController = ScrollController();
 
   /// The view model for the query currently on screen. Re-bound in [build]
@@ -78,19 +77,15 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
 
     // Re-bind to the current query's view model and move the load-more error
     // listener onto it whenever the query (and so the instance) changes.
-    final GetCategoryProductsViewModel viewModel =
-        ref.read(getCategoryProductsProvider(args).notifier);
+    final GetCategoryProductsViewModel viewModel = ref.read(
+      getCategoryProductsProvider(args).notifier,
+    );
     if (!identical(viewModel, _viewModel)) {
       _viewModel?.loadMoreState.removeListener(_onLoadMoreStateChanged);
       _viewModel = viewModel
         ..loadMoreState.addListener(_onLoadMoreStateChanged);
     }
 
-    // Watch only the coarse view shape — loading / error / item count — not the
-    // products themselves. A favourite toggle changes an item in place without
-    // touching any of these, so this widget (and with it the whole grid) does
-    // not rebuild; only the one item watching that product does (see
-    // [_CategoryProductGridItem]).
     final ({bool isLoading, String? error, int length}) view = ref.watch(
       getCategoryProductsProvider(args).select(
         (AsyncValue<PaginationModel<ProductModel>> state) => (
@@ -129,12 +124,13 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
                           addRepaintBoundaries: true,
                           physics: const AlwaysScrollableScrollPhysics(),
                           padding: EdgeInsets.all(2),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: con.maxWidth*0.03,
-                            mainAxisSpacing: con.maxWidth*0.03,
-                            childAspectRatio: 0.7,
-                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: con.maxWidth * 0.03,
+                                mainAxisSpacing: con.maxWidth * 0.03,
+                                childAspectRatio: 0.7,
+                              ),
                           itemCount: view.length + loadingItemsCount,
                           itemBuilder: (BuildContext context, int index) {
                             if (index >= view.length) {
@@ -156,11 +152,6 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   }
 }
 
-/// A single product cell that watches **only its own product** in the paginated
-/// state. Because [GetCategoryProductsViewModel.updateProductFavourite] rewrites
-/// just the toggled product (every other item keeps its identity), `select`'s
-/// `==` check lets exactly this cell rebuild when its favourite flips — the rest
-/// of the grid is untouched.
 class _CategoryProductGridItem extends ConsumerWidget {
   const _CategoryProductGridItem({required this.args, required this.index});
 
