@@ -391,5 +391,6 @@
   "searchForAddress": "ابحث عن منطقة أو شارع",
   "noAddressResults": "لا توجد عناوين مطابقة",
   "codeCopied": "تم نسخ الكود {code}",
-  "you": "التى"
+  "you": "التى",
+  "storeCategories": "أقسام المتجر"
 }

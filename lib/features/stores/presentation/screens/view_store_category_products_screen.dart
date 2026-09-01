@@ -34,9 +34,6 @@ class ViewStoreCategoryProductsScreen extends StatelessWidget {
             spacing: 16,
             children: [
               AppSearchField(hintText: LangKeys.searchForAProductKey.tr()),
-              // Text(LangKeys.filtersKey.tr(),style: AppTextStyles.style14SemiBold.copyWith(
-              //     color: colors.onSecondary
-              // ),),
               Expanded(child: StoreCategoryProductsView()),
             ],
           ),

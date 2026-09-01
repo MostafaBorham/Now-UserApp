@@ -1,12 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 
@@ -21,74 +22,53 @@ class StoreCategoryCirclesList extends ConsumerWidget {
 
     if (categories.isEmpty) return const SizedBox.shrink();
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.zero,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
-        children: List.generate(
-          categories.length,
-          (int index) {
-            final CategoryModel category = categories[index];
-            return InkWell(
-              onTap: () => context.pushNamed(
-                AppRoutes.viewStoreCategoryProductsScreen,
-                extra: (storeId: store.id ?? 0, category: category),
-              ),
-              child: SizedBox(
-                width: 80,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 6,
-                  children: [
-                    // Circular version of the categories-page CategoryCard: the
-                    // image fills the circle (cover) and fades to white at the
-                    // bottom edge so it blends into the surface below.
-                    ClipOval(
-                      child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            AppCachedNetworkImage(
-                              imageUrl: category.image ?? '',
-                              fit: BoxFit.cover,
-                            ),
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: const [0.6, 1],
-                                  colors: [
-                                    colors.white.withValues(alpha: 0),
-                                    colors.white,
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          Text(
+            LangKeys.storeCategoriesKey.tr(),
+            style: AppTextStyles.style16Bold.copyWith(color: colors.tertiaryContainer),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.zero,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 12,
+              children: List.generate(
+                categories.length,
+                (int index) {
+                  final CategoryModel category = categories[index];
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(999),
+                    onTap: () => context.pushNamed(
+                      AppRoutes.viewStoreCategoryProductsScreen,
+                      extra: (storeId: store.id ?? 0, category: category),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: colors.onPrimaryContainer,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: colors.neutral200),
+                      ),
+                      child: Text(
+                        context.getLocalizedApiText(category.name),
+                        style: AppTextStyles.style14Bold.copyWith(
+                          color: colors.tertiaryContainer,
                         ),
                       ),
                     ),
-                    Text(
-                      context.getLocalizedApiText(category.name),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.style14SemiBold.copyWith(
-                        color: colors.neutral1200,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

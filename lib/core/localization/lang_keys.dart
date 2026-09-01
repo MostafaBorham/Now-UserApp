@@ -391,4 +391,7 @@ abstract class LangKeys {
 
   // Clipboard
   static const String codeCopiedKey = 'codeCopied';
+
+  // Store details
+  static const String storeCategoriesKey = 'storeCategories';
 }

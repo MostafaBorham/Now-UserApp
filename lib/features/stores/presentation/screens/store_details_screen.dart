@@ -91,7 +91,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               width: double.infinity,
                               child: Column(
-                                spacing: 15,
+                                spacing: 5,
                                 children: [
                                   AppSlider(
                                     sliderItems: (store.banners ?? const [])
