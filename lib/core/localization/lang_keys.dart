@@ -394,4 +394,11 @@ abstract class LangKeys {
 
   // Store details
   static const String storeCategoriesKey = 'storeCategories';
+
+  // Welcome voucher (empty cart, first order). Fragments so the code and the
+  // "discount" word can be styled individually.
+  static const String welcomeVoucherPrefixKey = 'welcomeVoucherPrefix';
+  static const String welcomeVoucherMiddleKey = 'welcomeVoucherMiddle';
+  static const String welcomeVoucherDiscountKey = 'welcomeVoucherDiscount';
+  static const String welcomeVoucherSuffixKey = 'welcomeVoucherSuffix';
 }

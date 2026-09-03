@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 
@@ -94,6 +95,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         data: (_) {
           final CheckoutModel? checkout =
               ref.read(checkoutProvider).valueOrNull;
+          // Refresh the orders list so its `total` reflects the just-placed
+          // order — this is what makes the first-order welcome voucher stop
+          // showing on the (now empty) cart.
+          ref.read(getMyOrdersProvider.notifier).getOrders();
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
             extra: checkout?.orderGroup.orders ?? const <OrderModel>[],

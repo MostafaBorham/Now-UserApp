@@ -392,5 +392,9 @@
   "noAddressResults": "لا توجد عناوين مطابقة",
   "codeCopied": "تم نسخ الكود {code}",
   "you": "التى",
-  "storeCategories": "أقسام المتجر"
+  "storeCategories": "أقسام المتجر",
+  "welcomeVoucherPrefix": "استخدم كود ",
+  "welcomeVoucherMiddle": " واحصل على ",
+  "welcomeVoucherDiscount": "خصم",
+  "welcomeVoucherSuffix": " لأول طلب"
 }

@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/welcome_voucher_banner.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 
 class CartEmptyView extends ConsumerWidget {
@@ -30,6 +31,7 @@ class CartEmptyView extends ConsumerWidget {
                 AspectRatio(
                     aspectRatio: 2,
                     child: Assets.media.images.svg.emptyCartImg.svg()),
+                const WelcomeVoucherBanner(),
                 Text(
                   LangKeys.cartEmptyTitleKey.tr(),
                   textAlign: TextAlign.center,

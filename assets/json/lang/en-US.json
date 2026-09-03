@@ -393,5 +393,9 @@
   "noAddressResults": "No matching addresses",
   "codeCopied": "Code {code} copied",
   "you": "you",
-  "storeCategories": "Store Categories"
+  "storeCategories": "Store Categories",
+  "welcomeVoucherPrefix": "Use code ",
+  "welcomeVoucherMiddle": " and get ",
+  "welcomeVoucherDiscount": "a discount",
+  "welcomeVoucherSuffix": " on your first order"
 }

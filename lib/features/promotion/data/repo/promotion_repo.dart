@@ -57,4 +57,44 @@ class PromotionRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  /// Fetches a single coupon by its [code] from `GET /api/v1/coupons/{code}`.
+  ///
+  /// The endpoint is public (no auth) and returns `{ data: { coupon: {…} } }`.
+  /// A missing/inactive/non-public code answers 404, which surfaces here as a
+  /// [Left] — callers (the welcome-voucher banner) treat any [Left] as "don't
+  /// show".
+  Future<Either<Failure, CouponModel>> getCoupon(String code) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _promotionApiService.getCoupon(code);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data =
+          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+      final Map<String, dynamic>? couponJson =
+          data['coupon'] as Map<String, dynamic>?;
+
+      if (couponJson == null) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return Right(CouponModel.fromJson(couponJson));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }

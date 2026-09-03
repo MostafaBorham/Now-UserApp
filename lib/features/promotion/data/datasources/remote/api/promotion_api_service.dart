@@ -26,4 +26,11 @@ class PromotionApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> getCoupon(String code) {
+    return _dio.get(
+      PromotionEndpoints.couponByCode(code),
+      cancelToken: _canceller.token,
+    );
+  }
 }
