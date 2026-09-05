@@ -114,7 +114,7 @@ class OrderListItem extends ConsumerWidget {
                         Expanded(
                           child: AutoSizeText(
                             textDirection: TextDirection.ltr,
-                            '#${orderModel.orderNumber ?? ''}',
+                            orderModel.orderNumber ?? '',
                             style: AppTextStyles.style18SemiBold.copyWith(
                               color: colors.black,
                             ),

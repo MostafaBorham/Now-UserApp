@@ -67,7 +67,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     .getOrderDetails,
               ),
           data: (OrderModel order) {
-            final String orderNumber = '#${order.orderNumber ?? ''}';
+            final String orderNumber = '${order.orderNumber ?? ''}';
             final String localizedStatus = context.getLocalizedApiText(
               order.orderStatus,
             );
@@ -92,76 +92,75 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 children: [
                   IntrinsicHeight(
                     child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 8,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          gradient: screenGradient,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Assets.media.images.svg.orderIcon.svg(
-                            width: 24,
-                            height: 24,
-                            colorFilter: ColorFilter.mode(
-                              colors.tertiaryContainer,
-                              BlendMode.srcIn,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 8,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            gradient: screenGradient,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Assets.media.images.svg.orderIcon.svg(
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                colors.tertiaryContainer,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          spacing: 5,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              LangKeys.orderNumberKey.tr(),
-                              style: AppTextStyles.style12Medium.copyWith(
-                                color: colors.neutral500,
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                LangKeys.orderNumberKey.tr(),
+                                style: AppTextStyles.style12Medium.copyWith(
+                                  color: colors.neutral500,
+                                ),
                               ),
-                            ),
-                            Text(
-                              orderNumber,
-                              textDirection: TextDirection.ltr,
-                              overflow: TextOverflow.visible,
-                              style: AppTextStyles.style18SemiBold.copyWith(
-                                color: colors.black,
+                              Text(
+                                orderNumber,
+                                overflow: TextOverflow.visible,
+                                style: AppTextStyles.style18SemiBold.copyWith(
+                                  color: colors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusPalette.background,
-                              borderRadius: AppBorderRadius.brCircular20,
-                            ),
-                            child: Text(
-                              statusText,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.visible,
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: statusPalette.foreground,
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusPalette.background,
+                                borderRadius: AppBorderRadius.brCircular20,
+                              ),
+                              child: Text(
+                                statusText,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.visible,
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: statusPalette.foreground,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
                     ),
                   ),
                   Container(
@@ -203,7 +202,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     child: Text(
                                       orderNumber,
                                       textAlign: TextAlign.end,
-                                      textDirection: TextDirection.ltr,
+
                                       overflow: TextOverflow.visible,
                                       style: AppTextStyles.style14Medium
                                           .copyWith(color: colors.black),
@@ -453,7 +452,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ),
                               Row(
                                 children: [
-                                  SizedBox(width: 22,),
+                                  SizedBox(width: 22),
                                   Container(
                                     width: 2,
                                     height: 15,
