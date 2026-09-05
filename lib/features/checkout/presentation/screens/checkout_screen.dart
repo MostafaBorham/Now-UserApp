@@ -139,8 +139,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   const CheckoutPaymentSection(),
-                  AspectRatio(
-                    aspectRatio: 2,
+                  SizedBox(
+                    height: 158,
                     child: ListView.separated(
                       padding: EdgeInsets.zero,
                       clipBehavior: Clip.antiAlias,

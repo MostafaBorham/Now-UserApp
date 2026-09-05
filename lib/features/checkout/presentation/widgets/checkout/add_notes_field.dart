@@ -17,19 +17,17 @@ class AddNotesField extends StatelessWidget {
       onChanged: onChanged,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
       minLines: 3,
-      style: AppTextStyles.style16Medium.copyWith(
-          color: colors.black
-      ),
+      style: AppTextStyles.style14Regular.copyWith(color: colors.black),
       maxLines: 8,
       decoration: InputDecoration(
         hintText: LangKeys.addNotesHintKey.tr(),
-        hintStyle: AppTextStyles.style16Medium.copyWith(
-            color: colors.neutral500.withValues(alpha: 0.7)
+        hintStyle: AppTextStyles.style14Regular.copyWith(
+          color: colors.neutral500,
         ),
         filled: true,
-        fillColor: colors.neutral500.withValues(alpha: 0.2),
+        fillColor: colors.onPrimaryContainer,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
       ),

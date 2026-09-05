@@ -28,7 +28,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.neutral500.withValues(alpha: 0.2),
+        color: colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
