@@ -218,6 +218,7 @@ abstract class LangKeys {
   // Order tracking (Order Confirmed / Track Order / Payment Failed)
   static const String orderConfirmedTitleKey = 'orderConfirmedTitle';
   static const String orderConfirmedSubtitleKey = 'orderConfirmedSubtitle';
+  static const String returnToHomePageKey = 'returnToHomePage';
   static const String receiverKey = 'receiver';
   static const String addressKey = 'address';
   static const String contactKey = 'contact';

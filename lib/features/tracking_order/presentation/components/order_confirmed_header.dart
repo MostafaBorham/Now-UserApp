@@ -17,27 +17,28 @@ class OrderConfirmedHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        16.hSpace,
-        Row(
-          mainAxisAlignment: .center,
-          children: [
-            // CircleBackButton(),
-            Assets.media.images.svg.orderDone.svg(),
-          ],
-        ),
-        16.hSpace,
+        // `order_done.svg` draws the 96px circle inside a 156px canvas, so it
+        // carries its own ~30px halo/shadow margin — that stands in for the
+        // design's 24px of padding above and below the check circle.
+        Assets.media.images.svg.orderDone.svg(),
         Text(
           LangKeys.orderConfirmedTitleKey.tr(),
           textAlign: TextAlign.center,
           maxLines: 2,
-          style: AppTextStyles.style18Bold.copyWith(color: colors.black),
+          style: AppTextStyles.style16Bold.copyWith(color: colors.neutral1200),
         ),
         8.hSpace,
-        Text(
-          LangKeys.orderConfirmedSubtitleKey.tr(),
-          textAlign: TextAlign.center,
-          maxLines: 3,
-          style: AppTextStyles.style14Regular.copyWith(color: colors.neutral500),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 280),
+          child: Text(
+            LangKeys.orderConfirmedSubtitleKey.tr(),
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            style: AppTextStyles.style12Regular.copyWith(
+              color: colors.outline,
+              height: 22.75 / 12,
+            ),
+          ),
         ),
       ],
     );

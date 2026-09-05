@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_c
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
@@ -241,7 +242,9 @@ abstract class AppRouter {
         name: AppRoutes.orderConfirmedScreen,
         path: '/${AppRoutes.orderConfirmedScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const OrderConfirmedScreen(),
+        builder: (context, state) => OrderConfirmedScreen(
+          orders: state.extra as List<OrderModel>? ?? const <OrderModel>[],
+        ),
       ),
       GoRoute(
         name: AppRoutes.trackOrderScreen,

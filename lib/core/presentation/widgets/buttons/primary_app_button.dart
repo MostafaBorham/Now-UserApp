@@ -10,11 +10,15 @@ class PrimaryAppButton extends StatelessWidget {
     this.onTap,
     this.buttonPadding = 12,
     this.isLoading = false,
+    this.titleStyle,
   });
 
   final String title;
   final GestureTapCallback? onTap;
   final double? buttonPadding;
+
+  /// Overrides the default 18/SemiBold label style.
+  final TextStyle? titleStyle;
 
   /// Replaces the title with a circular indicator and disables taps.
   final bool isLoading;
@@ -48,7 +52,7 @@ class PrimaryAppButton extends StatelessWidget {
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.style18SemiBold.copyWith(
+                  style: (titleStyle ?? AppTextStyles.style18SemiBold).copyWith(
                     color: colors.white,
                   ),
                 ),
