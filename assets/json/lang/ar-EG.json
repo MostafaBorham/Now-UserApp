@@ -338,6 +338,8 @@
   "confirmAddress": "تأكيد العنوان",
   "currentLocation": "الموقع الحالي",
   "deliveryAddress": "عنوان التسليم",
+  "deliveryInstructions": "إرشادات التوصيل",
+  "addInstructionsHint": "أضف إرشادات...",
   "edit": "تعديل",
   "noAddress": "لا يوجد عنوان",
   "pleaseSelectAddress": "من فضلك اختر عنوان التسليم أولاً",

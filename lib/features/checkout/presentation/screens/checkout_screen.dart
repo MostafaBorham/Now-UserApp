@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_instructions_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
@@ -132,6 +133,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   DeliveryAddressCard(
                     onAddressIdChanged: (int? id) => _addressId = id,
                   ),
+                  const DeliveryInstructionsCard(),
                   TipYourDriverView(
                     initialTip: 2,
                     onTipChanged: (double tip) => _driverTip = tip,

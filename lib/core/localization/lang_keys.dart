@@ -322,6 +322,8 @@ abstract class LangKeys {
   static const String confirmAddressKey = 'confirmAddress';
   static const String currentLocationKey = 'currentLocation';
   static const String deliveryAddressKey = 'deliveryAddress';
+  static const String deliveryInstructionsKey = 'deliveryInstructions';
+  static const String addInstructionsHintKey = 'addInstructionsHint';
   static const String editKey = 'edit';
   static const String noAddressKey = 'noAddress';
   static const String noAddressSelectedKey = 'noAddressSelected';

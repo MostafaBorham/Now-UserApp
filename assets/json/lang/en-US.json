@@ -338,6 +338,8 @@
   "confirmAddress": "Confirm Address",
   "currentLocation": "Current Location",
   "deliveryAddress": "Delivery Address",
+  "deliveryInstructions": "Delivery Instructions",
+  "addInstructionsHint": "Add instructions...",
   "edit": "Edit",
   "noAddress": "No Address",
   "pleaseSelectAddress": "Please select a delivery address first",
