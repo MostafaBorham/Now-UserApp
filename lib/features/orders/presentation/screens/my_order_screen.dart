@@ -126,10 +126,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                                   child: OrderListItemShimmer(),
                                 );
                               }
-                              return AspectRatio(
-                                aspectRatio: 2,
-                                child: OrderListItem(orderModel: items[index]),
-                              );
+                              return OrderListItem(orderModel: items[index]);
                             },
                           );
                         },

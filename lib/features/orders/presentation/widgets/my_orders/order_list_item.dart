@@ -157,11 +157,11 @@ class OrderListItem extends ConsumerWidget {
               ),
             ],
           ),
-          Row(
-            children: [
-              Expanded(
-                child: AspectRatio(
-                  aspectRatio: 4.3,
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
                   child: PrimaryAppButton(
                     title: LangKeys.viewDetailsKey.tr(),
                     buttonPadding: 8,
@@ -170,11 +170,8 @@ class OrderListItem extends ConsumerWidget {
                     },
                   ),
                 ),
-              ),
-              12.wSpace,
-              Expanded(
-                child: AspectRatio(
-                  aspectRatio: 4.3,
+                12.wSpace,
+                Expanded(
                   child: UnPrimaryButton(
                     title: LangKeys.trackOrderKey.tr(),
                     buttonPadding: 8,
@@ -183,8 +180,8 @@ class OrderListItem extends ConsumerWidget {
                     },
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
