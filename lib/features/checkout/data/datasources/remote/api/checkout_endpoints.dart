@@ -30,7 +30,7 @@ abstract class CheckoutEndpoints {
   /// address, tip, notes, payment method and coupons in one request.
   /// [orderGroupUuid] identifies the draft to confirm.
   static String confirmOrder(String orderGroupUuid) =>
-      '/api/v1/checkout/draft/$orderGroupUuid';
+      '/api/v1/checkout/cart/$orderGroupUuid';
 
   /// Builds the confirm-order request body. Only [addressId] and
   /// [paymentMethod] are always sent; the optional fields are omitted when not
