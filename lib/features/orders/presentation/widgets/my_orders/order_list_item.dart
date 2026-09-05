@@ -40,7 +40,7 @@ class OrderListItem extends ConsumerWidget {
         ? rawDate.split('T').first
         : rawDate;
 
-    final String statusText = context.getLocalizedApiText(orderModel.status);
+    final String statusText = context.getLocalizedApiText(orderModel.orderStatus);
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -129,24 +129,27 @@ class OrderListItem extends ConsumerWidget {
                         ),
 
                         8.wSpace,
-                        Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.onSecondaryFixed.withValues(
-                              alpha: 0.4,
+                        Flexible(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
                             ),
-                            borderRadius: AppBorderRadius.brCircular20,
-                          ),
-                          child: AutoSizeText(
-                            statusText.isEmpty
-                                ? LangKeys.pendingKey.tr()
-                                : statusText,
-                            style: AppTextStyles.style14Regular.copyWith(
-                              color: colors.onErrorContainer,
+                            decoration: BoxDecoration(
+                              color: colors.onSecondaryFixed.withValues(
+                                alpha: 0.4,
+                              ),
+                              borderRadius: AppBorderRadius.brCircular20,
+                            ),
+                            child: AutoSizeText(
+                              statusText.isEmpty
+                                  ? LangKeys.pendingKey.tr()
+                                  : statusText,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.style14Regular.copyWith(
+                                color: colors.onErrorContainer,
+                              ),
                             ),
                           ),
                         ),

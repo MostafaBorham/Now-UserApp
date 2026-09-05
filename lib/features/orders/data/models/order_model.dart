@@ -30,11 +30,20 @@ class OrderModel {
   /// carries (`id`, `name`, `phone`) — not the authenticated-user model.
   final OrderUserModel user;
 
-  /// The order status. The API may send it either as a plain string or as a
-  /// translation map (`{'ar': ..., 'en': ...}`); a plain string is normalized
-  /// to a map with both languages set to it, so the presentation layer always
-  /// reads it through [BuildContext.getLocalizedApiText].
-  final Map<String, dynamic>? status;
+  /// The raw machine status key (`pending`, `delivered`, …) used for logic.
+  /// For the human-readable label use [orderStatus] instead.
+  final String? status;
+
+  /// The localized order status, read from `order_status`. The API sends it as
+  /// a translation map (`{'ar': ..., 'en': ...}`); when only the machine
+  /// [status] string is present (e.g. the checkout draft payload) it is
+  /// normalized into a map with both languages set to it, so the presentation
+  /// layer always reads it through [BuildContext.getLocalizedApiText].
+  final Map<String, dynamic>? orderStatus;
+
+  /// Whether this order currently exposes live driver tracking (`is_tracking`).
+  final bool isTracking;
+
   final String? paymentStatus;
   final double subtotal;
   final double tax;
@@ -44,16 +53,23 @@ class OrderModel {
   final double total;
   final String? paymentMethod;
   final String? deliveryAddress;
+
+  /// The delivery region split into `city` / `area`, from the `region` object.
+  final OrderRegionModel region;
+
   final String? cancelReason;
   final String? notes;
 
   /// Lifecycle timestamps, kept as the raw ISO-8601 strings the API sends;
   /// parse/format them at the presentation layer.
   final String? estimatedDeliveryTime;
+  final String? deliveredTime;
   final String? respondByAt;
   final String? acceptedAt;
   final String? preparedAt;
+  final String? pickupArrivedAt;
   final String? pickedUpAt;
+  final String? deliveryArrivedAt;
   final String? cancelledAt;
   final String? createdAt;
   final String? updatedAt;
@@ -76,6 +92,8 @@ class OrderModel {
     this.vendor = const StoreModel(),
     this.user = const OrderUserModel(),
     this.status,
+    this.orderStatus,
+    this.isTracking = false,
     this.paymentStatus,
     this.subtotal = 0,
     this.tax = 0,
@@ -85,13 +103,17 @@ class OrderModel {
     this.total = 0,
     this.paymentMethod,
     this.deliveryAddress,
+    this.region = const OrderRegionModel(),
     this.cancelReason,
     this.notes,
     this.estimatedDeliveryTime,
+    this.deliveredTime,
     this.respondByAt,
     this.acceptedAt,
     this.preparedAt,
+    this.pickupArrivedAt,
     this.pickedUpAt,
+    this.deliveryArrivedAt,
     this.deliveredAt,
     this.cancelledAt,
     this.createdAt,
@@ -120,9 +142,13 @@ class OrderModel {
         'logo_url': vendor?['logo_url'],
       }),
       user: OrderUserModel.fromJson(json['user'] as Map<String, dynamic>?),
-      status: (json['status'] is String)
+      status: json['status']?.toString(),
+      orderStatus: (json['order_status'] is Map)
+          ? json['order_status'] as Map<String, dynamic>
+          : (json['status'] is String)
           ? {'ar': json['status'] as String, 'en': json['status'] as String}
-          : json['status'],
+          : null,
+      isTracking: json['is_tracking'] as bool? ?? false,
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:
@@ -145,13 +171,17 @@ class OrderModel {
           0.0,
       paymentMethod: json['payment_method']?.toString(),
       deliveryAddress: json['delivery_address']?.toString(),
+      region: OrderRegionModel.fromJson(json['region'] as Map<String, dynamic>?),
       cancelReason: json['cancel_reason']?.toString(),
       notes: json['notes']?.toString(),
       estimatedDeliveryTime: json['estimated_delivery_time']?.toString(),
+      deliveredTime: json['delivered_time']?.toString(),
       respondByAt: json['respond_by_at']?.toString(),
       acceptedAt: json['accepted_at']?.toString(),
       preparedAt: json['prepared_at']?.toString(),
+      pickupArrivedAt: json['pickup_arrived_at']?.toString(),
       pickedUpAt: json['picked_up_at']?.toString(),
+      deliveryArrivedAt: json['delivery_arrived_at']?.toString(),
       deliveredAt: (json['delivered_at'] is String)
           ? {
               'ar': json['delivered_at'] as String,
@@ -165,8 +195,19 @@ class OrderModel {
           (json['items'] as List?)?.map((e) {
             final Map<String, dynamic> item =
                 (e as Map<String, dynamic>?) ?? <String, dynamic>{};
-            // Remap the order-item keys onto the product schema so
-            // ProductModel.fromJson can consume them directly.
+            final Map<String, dynamic>? product =
+                item['product'] as Map<String, dynamic>?;
+            // Prefer the nested `product` object (localized name, images,
+            // rating, deal) when present, overlaying the ordered [quantity]
+            // from the line item. Fall back to remapping the flat order-item
+            // keys onto the product schema for payloads (e.g. the checkout
+            // draft) that don't nest a full product.
+            if (product != null) {
+              return ProductModel.fromJson(<String, dynamic>{
+                ...product,
+                'quantity': item['quantity'],
+              });
+            }
             return ProductModel.fromJson(<String, dynamic>{
               ...item,
               'product_id': item['product_id'],
@@ -176,6 +217,26 @@ class OrderModel {
             });
           }).toList() ??
           const <ProductModel>[],
+    );
+  }
+}
+
+/// The delivery region carried on an order payload (`region` object), split
+/// into its `city` and `area` parts.
+class OrderRegionModel {
+  final String? city;
+  final String? area;
+
+  const OrderRegionModel({this.city, this.area});
+
+  factory OrderRegionModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return const OrderRegionModel();
+    }
+
+    return OrderRegionModel(
+      city: json['city']?.toString(),
+      area: json['area']?.toString(),
     );
   }
 }
