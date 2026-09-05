@@ -332,6 +332,8 @@ abstract class LangKeys {
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
   static const String addWalletKey = 'addWallet';
+  static const String balanceKey = 'balance';
+  static const String walletShortfallHintKey = 'walletShortfallHint';
   static const String tipYourDriverKey = 'tipYourDriver';
   static const String sampleStoreNameKey = 'sampleStoreName';
   static const String sampleValidityKey = 'sampleValidity';

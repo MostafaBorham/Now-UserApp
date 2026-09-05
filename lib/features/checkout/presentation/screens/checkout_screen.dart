@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/applied_disco
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
@@ -20,6 +21,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/purchase_vouchers_strip.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_option.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
@@ -67,7 +69,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     }
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
-    final String? paymentMethod = checkout.orderGroup.paymentMethod;
+    // The wallet wins while its checkbox is ticked (the default); untick it and
+    // the draft's own method pays. ponytail: there is no split-payment field on
+    // the confirm request yet, so the shortfall the note promises is settled
+    // server-side — the app only says which method leads.
+    final String? paymentMethod = ref.read(walletPaymentProvider)
+        ? 'wallet'
+        : checkout.orderGroup.paymentMethod;
     final List<AppliedDiscountModel> coupons = ref.read(appliedDiscountsProvider);
     final String? notes = _notes.trim().isEmpty ? null : _notes.trim();
 
@@ -191,6 +199,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   const CheckoutPaymentSection(),
+                  const WalletPaymentOption(),
                   const PurchaseVouchersStrip(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),
                   const InvoiceSummarySection(),

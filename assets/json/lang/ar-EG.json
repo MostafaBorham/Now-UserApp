@@ -400,5 +400,7 @@
   "welcomeVoucherPrefix": "استخدم كود ",
   "welcomeVoucherMiddle": " واحصل على ",
   "welcomeVoucherDiscount": "خصم",
-  "welcomeVoucherSuffix": " لأول طلب"
+  "welcomeVoucherSuffix": " لأول طلب",
+  "balance": "الرصيد: ",
+  "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ"
 }
