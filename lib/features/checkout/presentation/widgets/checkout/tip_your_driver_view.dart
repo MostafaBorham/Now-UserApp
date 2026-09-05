@@ -2,10 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/counters/full_width_counter_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 
 class TipYourDriverView extends StatefulWidget {
   const TipYourDriverView({super.key, this.initialTip, this.onTipChanged});
@@ -29,9 +27,9 @@ class TipYourDriverView extends StatefulWidget {
 class _TipYourDriverViewState extends State<TipYourDriverView> {
   /// The amount the counter starts at when "Other" is selected without an
   /// initial value being carried in.
-  static const int _otherTipInitialValue = 13;
+  static const int _otherTipInitialValue = 15;
 
-  static const List<String> _presetTips = <String>['2', '5', '8', '10', '12'];
+  static const List<String> _presetTips = <String>['2', '5', '7', '10'];
 
   late final List<String> _tips = <String>[
     ..._presetTips,
@@ -81,14 +79,29 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
     });
   }
 
+  void _onTipSelected(int index) {
+    final bool isOtherSelected = index == _tips.length - 1;
+
+    setState(() {
+      _selectedIndex = index;
+      showTipOtherCounterView = isOtherSelected;
+    });
+
+    widget.onTipChanged?.call(
+      isOtherSelected
+          ? _otherCounterInitial.toDouble()
+          : double.tryParse(_tips[index]) ?? 0,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colors.neutral500.withValues(alpha: 0.2),
+        color: colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -101,29 +114,27 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
               color: colors.tertiaryContainer,
             ),
           ),
-          5.hSpace,
-          AppSelector(
-            items: _tips,
-            initialIndex: _selectedIndex,
-            onChanged: (int index) {
-              final bool isOtherSelected = index == _tips.length - 1;
-
-              setState(() {
-                _selectedIndex = index;
-                showTipOtherCounterView = isOtherSelected;
-              });
-
-              widget.onTipChanged?.call(
-                isOtherSelected
-                    ? _otherCounterInitial.toDouble()
-                    : double.tryParse(_tips[index]) ?? 0,
-              );
-            },
-            labelColor: colors.neutral500,
-            selectedColor: colors.tertiaryContainer,
-            radius: 999,
-            borderColor: Colors.transparent,
-            unselectedColor: Colors.transparent,
+          // A plain Row, not [AppSelector]: the design fixes the four presets to
+          // an equal width and lets "Other" flex into whatever is left, which a
+          // scrollable equal-treatment list can't express.
+          Row(
+            spacing: 8,
+            children: <Widget>[
+              for (int index = 0; index < _presetTips.length; index++)
+                _TipPill(
+                  label: _presetTips[index],
+                  isSelected: index == _selectedIndex,
+                  onTap: () => _onTipSelected(index),
+                ),
+              Expanded(
+                child: _TipPill(
+                  label: _tips.last,
+                  isSelected: _selectedIndex == _tips.length - 1,
+                  isWide: true,
+                  onTap: () => _onTipSelected(_tips.length - 1),
+                ),
+              ),
+            ],
           ),
           if (showTipOtherCounterView)
             FullWidthCounterView(
@@ -132,6 +143,50 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
                   widget.onTipChanged?.call(value.toDouble()),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// One tip amount. Presets size their label to a fixed width so all four pills
+/// come out equal regardless of digit count; [isWide] is the "Other" pill, which
+/// the parent wraps in an [Expanded] to eat the rest of the row.
+class _TipPill extends StatelessWidget {
+  const _TipPill({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    this.isWide = false,
+  });
+
+  final String label;
+  final bool isSelected;
+  final bool isWide;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: isWide ? 16 : 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? colors.tertiaryContainer : colors.primaryFixed,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: SizedBox(
+          width: isWide ? null : 20,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.style14Regular.copyWith(
+              color: isSelected ? colors.white : colors.neutral500,
+            ),
+          ),
+        ),
       ),
     );
   }

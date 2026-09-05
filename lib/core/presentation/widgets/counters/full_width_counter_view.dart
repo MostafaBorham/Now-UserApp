@@ -2,6 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
+/// A round − / + step button: a 16px glyph on a neutral chip.
+class _StepButton extends StatelessWidget {
+  const _StepButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: colors.onPrimaryContainer,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, size: 16, color: colors.tertiaryContainer),
+      ),
+    );
+  }
+}
 
 class FullWidthCounterView extends StatefulWidget {
   const FullWidthCounterView({
@@ -29,27 +53,21 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: colors.neutral500.withValues(alpha: 0.3)),
+        border: Border.all(color: colors.neutral200),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          InkWell(
+          _StepButton(
+            icon: Icons.remove,
             onTap: () {
-              if(currentValue>0) currentValue--;
+              if (currentValue <= 0) return;
+              setState(() => currentValue--);
               widget.onValueChanged?.call(currentValue);
-              setState(() {
-
-              });
             },
-            child: Icon(
-              size: 20,
-              Icons.remove,
-              color: colors.neutral500.withValues(alpha: 0.7),
-            ),
           ),
           Text(
             '$currentValue',
@@ -57,19 +75,12 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
               color: colors.tertiaryContainer,
             ),
           ),
-          InkWell(
+          _StepButton(
+            icon: Icons.add,
             onTap: () {
-               currentValue++;
+              setState(() => currentValue++);
               widget.onValueChanged?.call(currentValue);
-              setState(() {
-
-              });
             },
-            child: Icon(
-              size: 20,
-              Icons.add,
-              color: colors.black.withValues(alpha: 0.6),
-            ),
           ),
         ],
       ),
