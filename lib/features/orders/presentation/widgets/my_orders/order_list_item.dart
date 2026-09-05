@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 
 /// One placed order in the my-orders list, rendered from [orderModel].
 class OrderListItem extends ConsumerWidget {
@@ -43,45 +44,27 @@ class OrderListItem extends ConsumerWidget {
 
     final OrderStatus status = OrderStatus.fromKey(orderModel.status);
 
-    // Description text + badge colors per status. Branching over the sealed
-    // OrderStatus keeps this exhaustive and type-safe; colors still come from
-    // the theme (context.colors) and the embedded dates from this context.
-    final (String statusDescription, Color statusBackground, Color statusColor) =
-        switch (status) {
-          AcceptedStatus() => (
-            LangKeys.preparingYourOrderKey.tr(),
-            colors.sky500.withValues(alpha: 0.15),
-            colors.sky500,
-          ),
-          OnTheWayStatus() => (
-            LangKeys.orderOnTheWayKey.tr(),
-            colors.tertiaryFixed,
-            colors.orange500,
-          ),
-          DeliveredStatus() => (
-            '${LangKeys.deliveredOnKey.tr()} $deliveredDate',
-            colors.primary100,
-            colors.primary500Main,
-          ),
-          CancelledStatus() => (
-            '',
-            colors.onError.withValues(alpha: 0.15),
-            colors.onError,
-          ),
-          RefundedStatus() => (
-            '${LangKeys.refundedOnKey.tr()} $createdDate',
-            colors.orange100,
-            colors.deepOrange400,
-          ),
-          PendingStatus() ||
-          PreparingStatus() ||
-          ReadyStatus() ||
-          UnknownStatus() => (
-            LangKeys.awaitingOrderConfirmationKey.tr(),
-            colors.tertiaryFixed,
-            colors.onErrorContainer,
-          ),
-        };
+    // Status-dependent description text. Branching over the sealed OrderStatus
+    // keeps this exhaustive and type-safe; the embedded dates come from this
+    // context. The chip colors come from the shared [OrderStatusPalette] so the
+    // status→color mapping stays defined in one place (see the details header).
+    final String statusDescription = switch (status) {
+      AcceptedStatus() => LangKeys.preparingYourOrderKey.tr(),
+      OnTheWayStatus() => LangKeys.orderOnTheWayKey.tr(),
+      DeliveredStatus() => '${LangKeys.deliveredOnKey.tr()} $deliveredDate',
+      CancelledStatus() => '',
+      RefundedStatus() => '${LangKeys.refundedOnKey.tr()} $createdDate',
+      PendingStatus() ||
+      PreparingStatus() ||
+      ReadyStatus() ||
+      UnknownStatus() => LangKeys.awaitingOrderConfirmationKey.tr(),
+    };
+
+    final ({Color background, Color foreground}) statusPalette = status.palette(
+      colors,
+    );
+    final Color statusBackground = statusPalette.background;
+    final Color statusColor = statusPalette.foreground;
 
     // Tracking is only meaningful while the order is still in flight; the
     // sealed OrderStatus decides that (in-flight states are trackable).
@@ -214,7 +197,10 @@ class OrderListItem extends ConsumerWidget {
                     title: LangKeys.viewDetailsKey.tr(),
                     buttonPadding: 8,
                     onTap: () {
-                      context.pushNamed(AppRoutes.orderDetailsScreen);
+                      context.pushNamed(
+                        AppRoutes.orderDetailsScreen,
+                        extra: orderModel.uuid,
+                      );
                     },
                   ),
                 ),

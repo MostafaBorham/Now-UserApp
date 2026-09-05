@@ -55,4 +55,41 @@ class OrdersRepo {
     } catch (exception) {
       return Left(Failure(exception.toString()));
     }
-  }}
+  }
+
+  Future<Either<Failure, OrderModel>> getOrderDetails({
+    required String orderUuid,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _ordersApiService.getOrderDetails(
+        orderUuid: orderUuid,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data =
+          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+
+      final Map<String, dynamic>? order =
+          data['order'] as Map<String, dynamic>?;
+
+      return Right(OrderModel.fromJson(order));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+}

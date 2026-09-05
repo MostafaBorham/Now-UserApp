@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/enums/order_status.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -14,9 +16,23 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_invoice_row.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
+/// Full details of a single placed order, fetched by the [orderUuid] handed in
+/// by the screen that opened this one (the my-orders list item). The uuid keys
+/// the [getOrderDetailsProvider] family, so the request starts on first watch
+/// and this screen just renders its [AsyncValue] — a shimmer while loading, an
+/// error state with retry, and the wired layout on success.
 class OrderDetailsScreen extends ConsumerStatefulWidget {
-  const OrderDetailsScreen({super.key});
+  const OrderDetailsScreen({super.key, required this.orderUuid});
+
+  final String orderUuid;
 
   @override
   ConsumerState<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
@@ -29,728 +45,224 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final LinearGradient screenGradient = LinearGradient(
       begin: AlignmentDirectional.centerStart,
       end: AlignmentDirectional.centerEnd,
-      colors: [
-        colors.secondary100,
-        colors.primary100.withValues(alpha: 0.3),
-      ],
+      colors: [colors.secondary100, colors.primary100.withValues(alpha: 0.3)],
     );
+
+    final AsyncValue<OrderModel> orderState = ref.watch(
+      getOrderDetailsProvider(widget.orderUuid),
+    );
+
     return Scaffold(
       body: AppWavedView(
-        body: SingleChildScrollView(
-          child: Column(
-            spacing: 15,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                spacing: 8,
+        appBarTitle: LangKeys.orderDetailsKey.tr(),
+        canPop: true,
+        hasSupportIcon: true,
+        body: orderState.when(
+          loading: () => const OrderDetailsShimmer(),
+          error: (Object error, StackTrace stackTrace) =>
+              ServerConnectionErrorWidget(
+                message: error.toString(),
+                onRetry: ref
+                    .read(getOrderDetailsProvider(widget.orderUuid).notifier)
+                    .getOrderDetails,
+              ),
+          data: (OrderModel order) {
+            final String orderNumber = '#${order.orderNumber ?? ''}';
+            final String localizedStatus = context.getLocalizedApiText(
+              order.orderStatus,
+            );
+            // Same status chip as the my-orders list item: colors from the
+            // shared palette and an empty label falls back to "pending".
+            final OrderStatus status = OrderStatus.fromKey(order.status);
+            final ({Color background, Color foreground}) statusPalette = status
+                .palette(colors);
+            final String statusText = localizedStatus.isEmpty
+                ? LangKeys.pendingKey.tr()
+                : localizedStatus;
+            final String orderDate = context.getLocalizedApiDate(
+              apiDateTimeStamp: order.createdAt,
+            );
+            // Show the payment method exactly as the model returns it (`cod`,
+            // ...) — no relabeling.
+            final String paymentMethodLabel = order.paymentMethod ?? '';
+
+            return SingleChildScrollView(
+              child: Column(
+                spacing: 15,
                 children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Assets.media.images.svg.orderIcon.svg(
-                        width: 24,
-                        height: 24,
-                        colorFilter: ColorFilter.mode(
-                          colors.tertiaryContainer,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      spacing: 5,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangKeys.orderNumberKey.tr(),
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: colors.neutral500,
-                          ),
-                        ),
-                        Text(
-                          'Order #458741',
-                          style: AppTextStyles.style18SemiBold.copyWith(
-                            color: colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: colors.primary500Main.withValues(alpha: 0.1),
-                      borderRadius: AppBorderRadius.brCircular20,
-                    ),
-                    child: Text(
-                      LangKeys.deliveredKey.tr(),
-                      style: AppTextStyles.style12Medium.copyWith(
-                        color: colors.primary500Main,
-                      ),
-                    ),
-                  ),
-                  /*Column(
-                    spacing: 10,
+                  IntrinsicHeight(
+                    child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 8,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: colors.onPrimary,
-                            builder: (context) => OrderRateView(),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.primary500Main,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Row(
-                            spacing: 5,
-                            children: [
-                              Assets.media.images.svg.starOutlineIcon.svg(
-                                width: 12,
-                                colorFilter: ColorFilter.mode(
-                                  colors.onPrimary,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              Text(
-                                'Rate',
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.onPrimary,
-                                ),
-                              ),
-                            ],
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          gradient: screenGradient,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Assets.media.images.svg.orderIcon.svg(
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              colors.tertiaryContainer,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 5,
+
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          spacing: 5,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              LangKeys.orderNumberKey.tr(),
+                              style: AppTextStyles.style12Medium.copyWith(
+                                color: colors.neutral500,
+                              ),
+                            ),
+                            Text(
+                              orderNumber,
+                              textDirection: TextDirection.ltr,
+                              overflow: TextOverflow.visible,
+                              style: AppTextStyles.style18SemiBold.copyWith(
+                                color: colors.black,
+                              ),
+                            ),
+                          ],
                         ),
-                        decoration: BoxDecoration(
-                          color: colors.primary500Main.withValues(alpha: 0.1),
-                          borderRadius: AppBorderRadius.brCircular20,
-                        ),
-                        child: Text(
-                          'Delivered',
-                          style: AppTextStyles.style12Medium.copyWith(
-                            color: colors.primary500Main,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusPalette.background,
+                              borderRadius: AppBorderRadius.brCircular20,
+                            ),
+                            child: Text(
+                              statusText,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.visible,
+                              style: AppTextStyles.style14Regular.copyWith(
+                                color: statusPalette.foreground,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ],
-                  ),*/
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  /*    color: colors.secondary600.withValues(
-                                alpha: 0.1,
-                              ),*/
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LangKeys.generalInformationKey.tr(),
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.black,
-                      ),
                     ),
-                    12.hSpace,
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        borderRadius: AppBorderRadius.brCircular8,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: screenGradient,
+                      borderRadius: AppBorderRadius.brCircular12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LangKeys.generalInformationKey.tr(),
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: colors.black,
+                          ),
+                        ),
+                        12.hSpace,
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.white,
+                            borderRadius: AppBorderRadius.brCircular8,
+                          ),
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.orderNumberKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.neutral500,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                '#6734856854',
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          16.hSpace,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.orderDateKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.neutral500,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                '12 March 2026',
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          16.hSpace,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.paymentMethodKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.neutral500,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                LangKeys.cashOnDeliveryKey.tr(),
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.primary500Main,
-                                ),
-                              ),
-                            ],
-                          ),
-                          16.hSpace,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.productKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.neutral500,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                '1',
-                                style: AppTextStyles.style14Medium.copyWith(
-                                  color: colors.primary500Main,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  /*    color: colors.secondary600.withValues(
-                                alpha: 0.1,
-                              ),*/
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LangKeys.itemInformationKey.tr(),
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                    12.hSpace,
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        borderRadius: AppBorderRadius.brCircular8,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 10,
-                        children: [
-                          ClipRRect(
-                            borderRadius: AppBorderRadius.brCircular12,
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg',
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AutoSizeText(
-                                  'Orange',
-                                  style: AppTextStyles.style16Medium.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                                Row(
-                                  spacing: 5,
-                                  children: [
-                                    Assets.media.images.svg.realSaudiCurrency
-                                        .svg(
-                                          width: 12,
-                                          height: 12,
-                                          fit: BoxFit.contain,
-                                          colorFilter: ColorFilter.mode(
-                                            colors.black,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                    AutoSizeText(
-                                      '20.00',
-                                      style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 40,
-                            child: AutoSizeText(
-                              'x3',
-                              style: AppTextStyles.style16Medium.copyWith(
-                                color: colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  /*    color: colors.secondary600.withValues(
-                                alpha: 0.1,
-                              ),*/
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LangKeys.deliveryDetailsKey.tr(),
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                    12.hSpace,
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        borderRadius: AppBorderRadius.brCircular8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: colors.primary500Main,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Assets.media.images.svg.marketIcon.svg(
-                                    width: 20,
-                                    height: 20,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              12.wSpace,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      LangKeys.fromKey.tr(),
-                                      style: AppTextStyles.style12Medium
-                                          .copyWith(color: colors.black),
-                                    ),
-                                    2.hSpace,
-                                    Text(
-                                      'Panda Store',
-                                      style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.neutral500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: 2,
-                            height: 15,
-                            color: colors.neutral500,
-                            margin: EdgeInsetsDirectional.symmetric(
-                              horizontal: 25,
-                              vertical: 5,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: colors.onSecondaryFixedVariant,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Assets.media.images.svg.locationIcon
-                                      .svg(
-                                        width: 20,
-                                        height: 20,
-                                        colorFilter: ColorFilter.mode(
-                                          colors.black,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                ),
-                              ),
-                              12.wSpace,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      LangKeys.toKey.tr(),
-                                      style: AppTextStyles.style12Medium
-                                          .copyWith(color: colors.black),
-                                    ),
-                                    2.hSpace,
-                                    Text(
-                                      '7468 Al Olaya, Riyadh',
-                                      style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.neutral500),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              PrimaryButton(
-                title: LangKeys.submitAComplaintKey.tr(),
-                onTap: () => context.pushNamed(AppRoutes.fileComplaintScreen),
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  /*    color: colors.secondary600.withValues(
-                                alpha: 0.1,
-                              ),*/
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LangKeys.paymentMethodKey.tr(),
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                    12.hSpace,
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        borderRadius: AppBorderRadius.brCircular8,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 10,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://cdn-icons-png.flaticon.com/512/5968/5968601.png',
-                              width: 44,
-                              height: 44,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AutoSizeText(
-                                  'Apple Pay',
-                                  style: AppTextStyles.style16Medium.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                                Row(
-                                  spacing: 5,
-                                  children: [
-                                    Assets.media.images.svg.realSaudiCurrency
-                                        .svg(
-                                          width: 12,
-                                          height: 12,
-                                          fit: BoxFit.contain,
-                                          colorFilter: ColorFilter.mode(
-                                            colors.neutral500,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                    AutoSizeText(
-                                      '20.00',
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      LangKeys.orderNumberKey.tr(),
                                       style: AppTextStyles.style14Regular
                                           .copyWith(color: colors.neutral500),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  /*    color: colors.secondary600.withValues(
-                                alpha: 0.1,
-                              ),*/
-                  gradient: screenGradient,
-                  borderRadius: AppBorderRadius.brCircular12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 12,
-                  children: [
-                    Text(
-                      LangKeys.invoiceSummaryKey.tr(),
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        borderRadius: AppBorderRadius.brCircular8,
-                      ),
-                      child: Column(
-                        spacing: 10,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.subtotalKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.black,
                                   ),
-                                ),
-                              ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15,
-                                    height: 15,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.black,
-                                      BlendMode.srcIn,
+                                  Flexible(
+                                    child: Text(
+                                      orderNumber,
+                                      textAlign: TextAlign.end,
+                                      textDirection: TextDirection.ltr,
+                                      overflow: TextOverflow.visible,
+                                      style: AppTextStyles.style14Medium
+                                          .copyWith(color: colors.black),
                                     ),
                                   ),
-                                  AutoSizeText(
-                                    '10',
-                                    style: AppTextStyles.style14Bold.copyWith(
+                                ],
+                              ),
+                              16.hSpace,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      LangKeys.orderDateKey.tr(),
+                                      style: AppTextStyles.style14Regular
+                                          .copyWith(color: colors.neutral500),
+                                    ),
+                                  ),
+                                  Text(
+                                    orderDate,
+                                    style: AppTextStyles.style14Medium.copyWith(
                                       color: colors.black,
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.vatFivePercentKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                              ),
+                              16.hSpace,
                               Row(
-                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15,
-                                    height: 15,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.black,
-                                      BlendMode.srcIn,
+                                  Expanded(
+                                    child: Text(
+                                      LangKeys.paymentMethodKey.tr(),
+                                      style: AppTextStyles.style14Regular
+                                          .copyWith(color: colors.neutral500),
                                     ),
                                   ),
-                                  AutoSizeText(
-                                    '10',
-                                    style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.black,
+                                  Text(
+                                    paymentMethodLabel,
+                                    style: AppTextStyles.style14Medium.copyWith(
+                                      color: colors.primary500Main,
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.deliveryFeesKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                              ),
+                              16.hSpace,
                               Row(
-                                spacing: 5,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15,
-                                    height: 15,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.black,
-                                      BlendMode.srcIn,
+                                  Expanded(
+                                    child: Text(
+                                      LangKeys.productKey.tr(),
+                                      style: AppTextStyles.style14Regular
+                                          .copyWith(color: colors.neutral500),
                                     ),
                                   ),
-                                  AutoSizeText(
-                                    '10',
-                                    style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.discountLabelKey.tr(),
-                                  style: AppTextStyles.style14Regular.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15,
-                                    height: 15,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.onError,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  AutoSizeText(
-                                    '10',
-                                    style: AppTextStyles.style14Bold.copyWith(
-                                      color: colors.onError,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Divider(color: colors.neutral400, thickness: 0.5),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  LangKeys.totalKey.tr(),
-                                  style: AppTextStyles.style14SemiBold.copyWith(
-                                    color: colors.black,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 15,
-                                    height: 15,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.primary500Main,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  AutoSizeText(
-                                    '10',
-                                    style: AppTextStyles.style14Bold.copyWith(
+                                  Text(
+                                    '${order.items.length}',
+                                    style: AppTextStyles.style14Medium.copyWith(
                                       color: colors.primary500Main,
                                     ),
                                   ),
@@ -758,19 +270,425 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    PrimaryAppButton(title: LangKeys.printInvoiceKey.tr()),
-                  ],
-                ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: screenGradient,
+                      borderRadius: AppBorderRadius.brCircular12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LangKeys.itemInformationKey.tr(),
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: colors.black,
+                          ),
+                        ),
+                        12.hSpace,
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.white,
+                            borderRadius: AppBorderRadius.brCircular8,
+                          ),
+                          child: Column(
+                            spacing: 16,
+                            children: [
+                              for (final ProductModel item in order.items)
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 10,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius:
+                                          AppBorderRadius.brCircular12,
+                                      child: AppCachedNetworkImage(
+                                        imageUrl:
+                                            item.images?.firstOrNull ?? '',
+                                        width: 70,
+                                        height: 70,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          AutoSizeText(
+                                            context.getLocalizedApiText(
+                                              item.name,
+                                            ),
+                                            style: AppTextStyles.style16Medium
+                                                .copyWith(color: colors.black),
+                                          ),
+                                          Row(
+                                            spacing: 5,
+                                            children: [
+                                              Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .realSaudiCurrency
+                                                  .svg(
+                                                    width: 12,
+                                                    height: 12,
+                                                    fit: BoxFit.contain,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          colors.black,
+                                                          BlendMode.srcIn,
+                                                        ),
+                                                  ),
+                                              AutoSizeText(
+                                                (item.price ?? 0)
+                                                    .toStringAsFixed(2),
+                                                style: AppTextStyles
+                                                    .style14Regular
+                                                    .copyWith(
+                                                      color: colors.black,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 40,
+                                      child: AutoSizeText(
+                                        'x${item.quantity ?? 0}',
+                                        style: AppTextStyles.style16Medium
+                                            .copyWith(color: colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: screenGradient,
+                      borderRadius: AppBorderRadius.brCircular12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LangKeys.deliveryDetailsKey.tr(),
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: colors.black,
+                          ),
+                        ),
+                        12.hSpace,
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.white,
+                            borderRadius: AppBorderRadius.brCircular8,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: colors.primary500Main,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Assets.media.images.svg.marketIcon
+                                          .svg(
+                                            width: 20,
+                                            height: 20,
+                                            colorFilter: ColorFilter.mode(
+                                              colors.white,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                    ),
+                                  ),
+                                  12.wSpace,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          LangKeys.fromKey.tr(),
+                                          style: AppTextStyles.style12Medium
+                                              .copyWith(color: colors.black),
+                                        ),
+                                        2.hSpace,
+                                        Text(
+                                          context.getLocalizedApiText(
+                                            order.vendor.name,
+                                          ),
+                                          style: AppTextStyles.style14Medium
+                                              .copyWith(
+                                                color: colors.neutral500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 22,),
+                                  Container(
+                                    width: 2,
+                                    height: 15,
+                                    color: colors.neutral500,
+                                    margin: EdgeInsetsDirectional.symmetric(
+                                      vertical: 5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: colors.onSecondaryFixedVariant,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Assets
+                                          .media
+                                          .images
+                                          .svg
+                                          .locationIcon
+                                          .svg(
+                                            width: 20,
+                                            height: 20,
+                                            colorFilter: ColorFilter.mode(
+                                              colors.black,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                    ),
+                                  ),
+                                  12.wSpace,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          LangKeys.toKey.tr(),
+                                          style: AppTextStyles.style12Medium
+                                              .copyWith(color: colors.black),
+                                        ),
+                                        2.hSpace,
+                                        // Detail page: show the full delivery
+                                        // address — no line clamp / ellipsis.
+                                        // The app text styles bake in ellipsis,
+                                        // so overflow is forced visible to wrap.
+                                        Text(
+                                          order.deliveryAddress ?? '',
+                                          overflow: TextOverflow.visible,
+                                          style: AppTextStyles.style14Medium
+                                              .copyWith(
+                                                color: colors.neutral500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PrimaryButton(
+                    title: LangKeys.submitAComplaintKey.tr(),
+                    onTap: () =>
+                        context.pushNamed(AppRoutes.fileComplaintScreen),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: screenGradient,
+                      borderRadius: AppBorderRadius.brCircular12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LangKeys.paymentMethodKey.tr(),
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: colors.black,
+                          ),
+                        ),
+                        12.hSpace,
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.white,
+                            borderRadius: AppBorderRadius.brCircular8,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: 10,
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: colors.primary500Main.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Assets.media.images.svg.wallet.svg(
+                                    width: 22,
+                                    height: 22,
+                                    colorFilter: ColorFilter.mode(
+                                      colors.primary500Main,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AutoSizeText(
+                                      paymentMethodLabel,
+                                      style: AppTextStyles.style16Medium
+                                          .copyWith(color: colors.black),
+                                    ),
+                                    Row(
+                                      spacing: 5,
+                                      children: [
+                                        Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .realSaudiCurrency
+                                            .svg(
+                                              width: 12,
+                                              height: 12,
+                                              fit: BoxFit.contain,
+                                              colorFilter: ColorFilter.mode(
+                                                colors.neutral500,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                        AutoSizeText(
+                                          order.total.toStringAsFixed(2),
+                                          style: AppTextStyles.style14Regular
+                                              .copyWith(
+                                                color: colors.neutral500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: screenGradient,
+                      borderRadius: AppBorderRadius.brCircular12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 12,
+                      children: [
+                        Text(
+                          LangKeys.invoiceSummaryKey.tr(),
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: colors.black,
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.white,
+                            borderRadius: AppBorderRadius.brCircular8,
+                          ),
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              OrderInvoiceRow(
+                                label: LangKeys.subtotalKey.tr(),
+                                value: order.subtotal,
+                                valueColor: colors.black,
+                              ),
+                              OrderInvoiceRow(
+                                label: LangKeys.vatFivePercentKey.tr(),
+                                value: order.tax,
+                                valueColor: colors.black,
+                              ),
+                              OrderInvoiceRow(
+                                label: LangKeys.deliveryFeesKey.tr(),
+                                value: order.deliveryFee,
+                                valueColor: colors.black,
+                              ),
+                              // Only surfaced when there is an actual discount.
+                              if (order.discount != 0)
+                                OrderInvoiceRow(
+                                  label: LangKeys.discountLabelKey.tr(),
+                                  value: order.discount,
+                                  valueColor: colors.onError,
+                                ),
+                              Divider(color: colors.neutral400, thickness: 0.5),
+                              OrderInvoiceRow(
+                                label: LangKeys.totalKey.tr(),
+                                value: order.total,
+                                valueColor: colors.primary500Main,
+                                isTotal: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                        PrimaryAppButton(title: LangKeys.printInvoiceKey.tr()),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
-        appBarTitle: LangKeys.orderDetailsKey.tr(),
-        canPop: true,
-        hasSupportIcon: true,
       ),
     );
   }

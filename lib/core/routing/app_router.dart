@@ -109,7 +109,8 @@ abstract class AppRouter {
         name: AppRoutes.orderDetailsScreen,
         path: '/${AppRoutes.orderDetailsScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const OrderDetailsScreen(),
+        builder: (context, state) =>
+            OrderDetailsScreen(orderUuid: state.extra as String),
       ),
       GoRoute(
         name: AppRoutes.categoriesScreen,

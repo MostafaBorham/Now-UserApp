@@ -2,6 +2,10 @@
 abstract class OrdersEndpoints {
   static const String getMyOrders = '/api/v1/my/orders';
 
+  /// Single order details: `/api/v1/my/orders/{order_uuid}`.
+  static String getOrderDetails(String orderUuid) =>
+      '$getMyOrders/$orderUuid';
+
   static int perPage = 15;
   static int page = 1;
 

@@ -26,4 +26,11 @@ class OrdersApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> getOrderDetails({required String orderUuid}) {
+    return _dio.get(
+      OrdersEndpoints.getOrderDetails(orderUuid),
+      cancelToken: _canceller.token,
+    );
+  }
 }
