@@ -119,6 +119,7 @@ class CheckoutRepo {
 
   Future<Either<Failure, void>> confirmOrder({
     required String orderGroupUuid,
+    required String idempotencyKey,
     int? addressId,
     String? paymentMethod,
     double? driverTip,
@@ -132,6 +133,7 @@ class CheckoutRepo {
     try {
       final Response response = await _checkoutApiService.confirmOrder(
         orderGroupUuid: orderGroupUuid,
+        idempotencyKey: idempotencyKey,
         addressId: addressId,
         paymentMethod: paymentMethod,
         driverTip: driverTip,

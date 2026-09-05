@@ -60,13 +60,14 @@ class CheckoutApiService {
   /// `AuthTokenInterceptor` from the cached session.
   Future<Response> confirmOrder({
     required String orderGroupUuid,
+    required String idempotencyKey,
     int? addressId,
     String? paymentMethod,
     double? driverTip,
     String? notes,
     Map<int, String>? coupons,
   }) {
-    return _dio.patch(
+    return _dio.post(
       CheckoutEndpoints.confirmOrder(orderGroupUuid),
       data: CheckoutEndpoints.confirmOrderBody(
         addressId: addressId,
@@ -75,6 +76,13 @@ class CheckoutApiService {
         notes: notes,
         coupons: coupons,
       ),
+      // Placing is the one non-idempotent step: the server dedupes retries by
+      // this per-request key (same key + same body → replays the placed order),
+      // so it must be reused across retries of the same submit and rotated when
+      // the order changes. See the checkout screen for that lifecycle.
+      options: Options(headers: <String, dynamic>{
+        'Idempotency-Key': idempotencyKey,
+      }),
       cancelToken: _canceller.token,
     );
   }

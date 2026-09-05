@@ -39,6 +39,7 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<void>> {
   /// can surface it — e.g. in a snackbar.
   Future<String?> confirmOrder({
     required String orderGroupUuid,
+    required String idempotencyKey,
     int? addressId,
     String? paymentMethod,
     double? driverTip,
@@ -49,6 +50,7 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<void>> {
 
     final result = await _repo.confirmOrder(
       orderGroupUuid: orderGroupUuid,
+      idempotencyKey: idempotencyKey,
       addressId: addressId,
       paymentMethod: paymentMethod,
       driverTip: driverTip,
