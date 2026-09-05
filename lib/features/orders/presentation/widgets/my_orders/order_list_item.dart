@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
@@ -40,44 +41,51 @@ class OrderListItem extends ConsumerWidget {
       apiDateTimeStamp: orderModel.createdAt,
     );
 
+    final OrderStatus status = OrderStatus.fromKey(orderModel.status);
+
+    // Description text + badge colors per status. Branching over the sealed
+    // OrderStatus keeps this exhaustive and type-safe; colors still come from
+    // the theme (context.colors) and the embedded dates from this context.
     final (String statusDescription, Color statusBackground, Color statusColor) =
-        switch (orderModel.status) {
-          'pending' => (
-            LangKeys.awaitingOrderConfirmationKey.tr(),
-            colors.tertiaryFixed,
-            colors.onErrorContainer,
-          ),
-          'accepted' => (
+        switch (status) {
+          AcceptedStatus() => (
             LangKeys.preparingYourOrderKey.tr(),
             colors.sky500.withValues(alpha: 0.15),
             colors.sky500,
           ),
-          'on_the_way' => (
+          OnTheWayStatus() => (
             LangKeys.orderOnTheWayKey.tr(),
             colors.tertiaryFixed,
             colors.orange500,
           ),
-          'delivered' => (
+          DeliveredStatus() => (
             '${LangKeys.deliveredOnKey.tr()} $deliveredDate',
             colors.primary100,
             colors.primary500Main,
           ),
-          'cancelled' => (
+          CancelledStatus() => (
             '',
             colors.onError.withValues(alpha: 0.15),
             colors.onError,
           ),
-          'refunded' => (
+          RefundedStatus() => (
             '${LangKeys.refundedOnKey.tr()} $createdDate',
             colors.orange100,
             colors.deepOrange400,
           ),
-          _ => (
+          PendingStatus() ||
+          PreparingStatus() ||
+          ReadyStatus() ||
+          UnknownStatus() => (
             LangKeys.awaitingOrderConfirmationKey.tr(),
             colors.tertiaryFixed,
             colors.onErrorContainer,
           ),
         };
+
+    // Tracking is only meaningful while the order is still in flight; the
+    // sealed OrderStatus decides that (in-flight states are trackable).
+    final bool showTrackButton = status.isTrackable;
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -210,16 +218,18 @@ class OrderListItem extends ConsumerWidget {
                     },
                   ),
                 ),
-                12.wSpace,
-                Expanded(
-                  child: UnPrimaryButton(
-                    title: LangKeys.trackOrderKey.tr(),
-                    buttonPadding: 8,
-                    onTap: () {
-                      context.pushNamed(AppRoutes.trackOrderScreen);
-                    },
+                if (showTrackButton) ...[
+                  12.wSpace,
+                  Expanded(
+                    child: UnPrimaryButton(
+                      title: LangKeys.trackOrderKey.tr(),
+                      buttonPadding: 8,
+                      onTap: () {
+                        context.pushNamed(AppRoutes.trackOrderScreen);
+                      },
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
