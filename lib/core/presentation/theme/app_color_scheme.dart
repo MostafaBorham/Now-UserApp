@@ -52,6 +52,16 @@ class AppColorScheme {
   Color get outline => _scheme.outline;
   Color get outlineVariant => _scheme.outlineVariant;
   Color get scrim => _scheme.scrim;
+
+  // Order-status palette. These Figma hexes have no matching Material
+  // ColorScheme slot — every slot already carries a placeholder color, and the
+  // only free ones (surfaceTint/shadow) feed M3 elevation overlays — so they
+  // are defined here as constants while still being reached through
+  // [BuildContext.colors] like every other color.
+  Color get sky500 => const Color(0xff0EA5E9);
+  Color get orange500 => const Color(0xffF59E0B);
+  Color get orange100 => const Color(0xffFFEDD4);
+  Color get deepOrange400 => const Color(0xffFF7043);
 }
 
 extension BuildContextColors on BuildContext {

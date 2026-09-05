@@ -8,7 +8,6 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -27,20 +26,58 @@ class OrderListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
 
-    // deliveredAt may be a localized text map; createdAt is a raw ISO-8601
-    // string. Show the delivered value when present, otherwise fall back to the
-    // created date, taking the date part of whichever is furthest along.
-    final String deliveredText = context.getLocalizedApiText(
-      orderModel.deliveredAt,
+    final String statusText = context.getLocalizedApiText(
+      orderModel.orderStatus,
     );
-    final String rawDate = deliveredText.isNotEmpty
-        ? deliveredText
-        : (orderModel.createdAt ?? '');
-    final String orderDate = rawDate.contains('T')
-        ? rawDate.split('T').first
-        : rawDate;
 
-    final String statusText = context.getLocalizedApiText(orderModel.orderStatus);
+    // Dates the status descriptions embed: delivered shows when the order
+    // arrived (`delivered_at`, a localized map), refunded shows when it was
+    // placed (`created_at`). formatLocalizedDate parses the raw ISO-8601 value.
+    final String deliveredDate = context.getLocalizedApiDate(
+      apiDateTimeStamp: context.getLocalizedApiText(orderModel.deliveredAt),
+    );
+    final String createdDate = context.getLocalizedApiDate(
+      apiDateTimeStamp: orderModel.createdAt,
+    );
+
+    final (String statusDescription, Color statusBackground, Color statusColor) =
+        switch (orderModel.status) {
+          'pending' => (
+            LangKeys.awaitingOrderConfirmationKey.tr(),
+            colors.tertiaryFixed,
+            colors.onErrorContainer,
+          ),
+          'accepted' => (
+            LangKeys.preparingYourOrderKey.tr(),
+            colors.sky500.withValues(alpha: 0.15),
+            colors.sky500,
+          ),
+          'on_the_way' => (
+            LangKeys.orderOnTheWayKey.tr(),
+            colors.tertiaryFixed,
+            colors.orange500,
+          ),
+          'delivered' => (
+            '${LangKeys.deliveredOnKey.tr()} $deliveredDate',
+            colors.primary100,
+            colors.primary500Main,
+          ),
+          'cancelled' => (
+            '',
+            colors.onError.withValues(alpha: 0.15),
+            colors.onError,
+          ),
+          'refunded' => (
+            '${LangKeys.refundedOnKey.tr()} $createdDate',
+            colors.orange100,
+            colors.deepOrange400,
+          ),
+          _ => (
+            LangKeys.awaitingOrderConfirmationKey.tr(),
+            colors.tertiaryFixed,
+            colors.onErrorContainer,
+          ),
+        };
 
     return Container(
       padding: EdgeInsets.all(12),
@@ -99,13 +136,15 @@ class OrderListItem extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    4.hSpace,
-                    AutoSizeText(
-                      '${LangKeys.deliveredOnKey.tr()} ${context.getLocalizedApiDate(apiDateTimeStamp: orderDate)}',
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.neutral500,
+                    if (statusDescription.isNotEmpty) ...[
+                      4.hSpace,
+                      AutoSizeText(
+                        statusDescription,
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.neutral500,
+                        ),
                       ),
-                    ),
+                    ],
                     10.hSpace,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -136,9 +175,7 @@ class OrderListItem extends ConsumerWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: colors.onSecondaryFixed.withValues(
-                                alpha: 0.4,
-                              ),
+                              color: statusBackground,
                               borderRadius: AppBorderRadius.brCircular20,
                             ),
                             child: AutoSizeText(
@@ -148,7 +185,7 @@ class OrderListItem extends ConsumerWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.onErrorContainer,
+                                color: statusColor,
                               ),
                             ),
                           ),

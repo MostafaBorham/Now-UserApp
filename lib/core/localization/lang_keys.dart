@@ -232,6 +232,13 @@ abstract class LangKeys {
   static const String orderConfirmedBeingPreparedKey =
       'orderConfirmedBeingPrepared';
   static const String onTheWayToYouKey = 'onTheWayToYou';
+
+  // Order-status descriptions shown under the order number in the my-orders list
+  static const String awaitingOrderConfirmationKey =
+      'awaitingOrderConfirmation';
+  static const String preparingYourOrderKey = 'preparingYourOrder';
+  static const String orderOnTheWayKey = 'orderOnTheWay';
+  static const String refundedOnKey = 'refundedOnKey';
   static const String cancelOrderKey = 'cancelOrder';
   static const String paymentNotCompletedKey = 'paymentNotCompleted';
   static const String paymentFailedSubtitleKey = 'paymentFailedSubtitle';
