@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
@@ -160,6 +161,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           // order — this is what makes the first-order welcome voucher stop
           // showing on the (now empty) cart.
           ref.read(getMyOrdersProvider.notifier).getOrders();
+          // What was just placed no longer belongs to the cart, so drop it:
+          // the whole cart for an all-stores checkout, that one store for a
+          // single-store one.
+          final GetCartViewModel cartNotifier = ref.read(
+            getCartProvider.notifier,
+          );
+          if (widget.storeId == null) {
+            cartNotifier.clearVendors();
+          } else {
+            cartNotifier.removeVendor(widget.storeId!);
+          }
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
             extra: checkout?.orderGroup.orders ?? const <OrderModel>[],

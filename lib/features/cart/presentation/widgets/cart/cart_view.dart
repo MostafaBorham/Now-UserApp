@@ -54,13 +54,12 @@ class _CartViewState extends ConsumerState<CartView> {
     });
   }
 
-  /// Drafts an order group and, only if the server accepted it, drops what was
-  /// checked out from the cart and opens the checkout screen.
+  /// Drafts an order group and, only if the server accepted it, opens the
+  /// checkout screen.
   ///
-  /// [vendorId] `null` checks out every store (bottom button) and empties the
-  /// cart; a concrete id checks out that single store (its own pill) and
-  /// removes just that store. On failure the cart is left untouched and the
-  /// reason is shown in a snackbar.
+  /// [vendorId] `null` checks out every store (bottom button); a concrete id
+  /// checks out that single store (its own pill). On failure the reason is
+  /// shown in a snackbar.
   Future<void> _checkout({int? vendorId}) async {
     final String? error = await ref
         .read(checkoutProvider.notifier)
@@ -73,13 +72,8 @@ class _CartViewState extends ConsumerState<CartView> {
       return;
     }
 
-    // final GetCartViewModel cartNotifier = ref.read(getCartProvider.notifier);
-
-    // if (vendorId == null) {
-    //   cartNotifier.clearVendors();
-    // } else {
-    //   cartNotifier.removeVendor(vendorId);
-    // }
+    // The cart is left alone here: drafting isn't placing. It's emptied on the
+    // checkout screen, once the order is actually confirmed.
 
     // The id is forwarded so the checkout screen can re-fire the very same
     // request if the user retries after a later failure.
