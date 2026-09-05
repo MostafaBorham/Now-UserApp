@@ -3,14 +3,13 @@ abstract class CheckoutEndpoints {
   /// Prepares a draft order group. The same endpoint backs both flows:
   /// - a `null` `vendor_id` drafts every store in the cart,
   /// - a concrete `vendor_id` drafts only that single store.
-  static const String checkout = '/api/v1/checkout/draft';
+  static const String checkout = '/api/v1/checkout/cart/preview';
 
   /// Builds the draft request body. [vendorId] is `null` for the all-stores
   /// flow and a store id for the single-store flow; either way the key is sent
   /// so the server can distinguish the two cases explicitly.
-  static Map<String, dynamic> checkoutBody({int? vendorId}) => <String, dynamic>{
-        'vendor_id': vendorId,
-      };
+  static Map<String, dynamic> checkoutBody({int? vendorId}) =>
+      <String, dynamic>{'vendor_id': vendorId};
 
   /// Applies coupon codes to an existing draft order group and returns the same
   /// shape as [checkout]. [orderGroupUuid] identifies the draft to update.
@@ -22,13 +21,12 @@ abstract class CheckoutEndpoints {
   /// vendor ids are serialized as their string form.
   static Map<String, dynamic> draftCouponsBody({
     required Map<int, String> coupons,
-  }) =>
-      <String, dynamic>{
-        'coupons': coupons.map(
-          (int vendorId, String couponCode) =>
-              MapEntry<String, String>('$vendorId', couponCode),
-        ),
-      };
+  }) => <String, dynamic>{
+    'coupons': coupons.map(
+      (int vendorId, String couponCode) =>
+          MapEntry<String, String>('$vendorId', couponCode),
+    ),
+  };
 
   /// Confirms a draft order group — the final checkout step, sending the
   /// address, tip, notes, payment method and coupons in one request.
@@ -48,16 +46,15 @@ abstract class CheckoutEndpoints {
     double? driverTip,
     String? notes,
     Map<int, String>? coupons,
-  }) =>
-      <String, dynamic>{
-        'address_id': addressId,
-        'driver_tip': ?driverTip,
-        'notes': ?notes,
-        'payment_method' : paymentMethod??'wallet',
-        if (coupons != null && coupons.isNotEmpty)
-          'coupons': coupons.map(
-            (int vendorId, String couponCode) =>
-                MapEntry<String, String>('$vendorId', couponCode),
-          ),
-      };
+  }) => <String, dynamic>{
+    'address_id': addressId,
+    'driver_tip': ?driverTip,
+    'notes': ?notes,
+    'payment_method': paymentMethod ?? 'wallet',
+    if (coupons != null && coupons.isNotEmpty)
+      'coupons': coupons.map(
+        (int vendorId, String couponCode) =>
+            MapEntry<String, String>('$vendorId', couponCode),
+      ),
+  };
 }

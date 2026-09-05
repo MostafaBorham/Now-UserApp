@@ -1,11 +1,15 @@
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
-/// Parsed representation of a checkout draft (`/api/v1/checkout/draft`).
+/// Parsed representation of a checkout preview (`/api/v1/checkout/cart/preview`).
 ///
-/// Shared by both flows — all-stores and single-store — since the endpoint
-/// returns the same shape for each. [fromJson] receives the response `data`
-/// object and reads the nested `order_group` internally, mirroring the cart
-/// model convention.
+/// The endpoint is a stateless pricing preview: the response `data` carries a
+/// `checkout` object with `vendor_groups` (one store each, with its products
+/// and per-store summary) plus a group-level `summary`. There is no persisted
+/// draft and no `order_group`/`uuid`.
+///
+/// [fromJson] receives the response `data` object and adapts that
+/// `vendor_groups` shape onto [OrderGroupModel]/[OrderModel] — the shape the
+/// checkout UI already renders — so each vendor group becomes one "order".
 class CheckoutModel {
   final OrderGroupModel orderGroup;
 
@@ -16,11 +20,74 @@ class CheckoutModel {
       return const CheckoutModel();
     }
 
+    // Older builds nested the payload under `order_group`; the live backend
+    // nests it under `checkout`. Fall back to `json` itself so a future
+    // un-nested response still parses.
+    final Map<String, dynamic> checkout =
+        (json['checkout'] as Map<String, dynamic>?) ??
+        (json['order_group'] as Map<String, dynamic>?) ??
+        json;
+
+    final List<dynamic> vendorGroups =
+        (checkout['vendor_groups'] as List?) ??
+        (checkout['orders'] as List?) ??
+        const <dynamic>[];
+    final Map<String, dynamic> summary =
+        (checkout['summary'] as Map<String, dynamic>?) ?? const {};
+    final Map<String, dynamic>? address =
+        checkout['address'] as Map<String, dynamic>?;
+
     return CheckoutModel(
-      orderGroup: OrderGroupModel.fromJson(
-        json['order_group'] as Map<String, dynamic>?,
-      ),
+      orderGroup: OrderGroupModel.fromJson(<String, dynamic>{
+        'currency': checkout['currency'],
+        'subtotal': summary['subtotal'],
+        'tax': summary['tax'],
+        'delivery_fee': summary['delivery_fee'],
+        'discount': summary['discount'],
+        'driver_tip': summary['driver_tip'],
+        'total': summary['total'],
+        'address_id': address?['id'],
+        'delivery_address': address?['full_address'],
+        'coupons': checkout['coupons'],
+        'orders': vendorGroups.map(_vendorGroupToOrderJson).toList(),
+      }),
     );
+  }
+
+  /// Reshapes one preview `vendor_group` into the JSON [OrderModel.fromJson]
+  /// expects, so a single store's card renders from its products and summary.
+  static Map<String, dynamic> _vendorGroupToOrderJson(dynamic group) {
+    final Map<String, dynamic> g =
+        (group as Map<String, dynamic>?) ?? const {};
+    final Map<String, dynamic> vendor =
+        (g['vendor'] as Map<String, dynamic>?) ?? const {};
+    final Map<String, dynamic> summary =
+        (g['summary'] as Map<String, dynamic>?) ?? const {};
+
+    return <String, dynamic>{
+      'vendor': vendor,
+      'vendor_id': vendor['id'],
+      'branch_id': g['branch_id'],
+      'subtotal': summary['subtotal'],
+      'tax': summary['tax'],
+      'delivery_fee': summary['delivery_fee'],
+      'discount': summary['discount'],
+      'total': summary['total'],
+      'items': ((g['products'] as List?) ?? const <dynamic>[]).map((dynamic p) {
+        final Map<String, dynamic> item =
+            (p as Map<String, dynamic>?) ?? const {};
+        // OrderModel.fromJson remaps product_*/unit_price onto the product
+        // schema, so hand it those keys from the preview's item shape.
+        return <String, dynamic>{
+          'product_id': item['product_id'],
+          'product_name': item['name'],
+          'product_sku': item['sku'],
+          'unit_price': item['unit_price'],
+          'quantity': item['quantity'],
+          'image_url': item['image_url'],
+        };
+      }).toList(),
+    };
   }
 }
 
