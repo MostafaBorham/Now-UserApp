@@ -6,9 +6,9 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -18,7 +18,6 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/car
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 /// The cart screen's body.
 ///
@@ -74,13 +73,13 @@ class _CartViewState extends ConsumerState<CartView> {
       return;
     }
 
-    final GetCartViewModel cartNotifier = ref.read(getCartProvider.notifier);
+    // final GetCartViewModel cartNotifier = ref.read(getCartProvider.notifier);
 
-    if (vendorId == null) {
-      cartNotifier.clearVendors();
-    } else {
-      cartNotifier.removeVendor(vendorId);
-    }
+    // if (vendorId == null) {
+    //   cartNotifier.clearVendors();
+    // } else {
+    //   cartNotifier.removeVendor(vendorId);
+    // }
 
     // The id is forwarded so the checkout screen can re-fire the very same
     // request if the user retries after a later failure.
