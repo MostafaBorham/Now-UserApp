@@ -7,17 +7,17 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_coupons_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_instructions_card.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/purchase_vouchers_strip.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
@@ -63,7 +63,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
     final String? paymentMethod = checkout.orderGroup.paymentMethod;
-    final List<AppliedCouponModel> coupons = ref.read(appliedCouponsProvider);
+    final List<AppliedDiscountModel> coupons = ref.read(appliedDiscountsProvider);
 
     ref
         .read(confirmOrderProvider.notifier)
@@ -139,18 +139,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   const CheckoutPaymentSection(),
-                  SizedBox(
-                    height: 158,
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      clipBehavior: Clip.antiAlias,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) =>
-                          DiscountCodeItem(isDimmed: index == 0),
-                      separatorBuilder: (context, index) => 16.wSpace,
-                      itemCount: 4,
-                    ),
-                  ),
+                  const PurchaseVouchersStrip(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),
                   const InvoiceSummarySection(),
 

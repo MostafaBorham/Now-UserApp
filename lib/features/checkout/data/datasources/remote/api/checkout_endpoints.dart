@@ -11,27 +11,24 @@ abstract class CheckoutEndpoints {
   static Map<String, dynamic> checkoutBody({int? vendorId}) =>
       <String, dynamic>{'vendor_id': vendorId};
 
-  /// Applies coupon codes to an existing draft order group and returns the same
-  /// shape as [checkout]. [orderGroupUuid] identifies the draft to update.
-  static String draftCoupons(String orderGroupUuid) =>
-      '/api/v1/checkout/draft/$orderGroupUuid';
+  /// Stateless per-vendor coupon calculator. The server reads the user's own
+  /// selected cart rows for the vendor, so the body carries only the vendor and
+  /// the code — no cart/draft reference.
+  static const String couponsApply = '/api/v1/coupons/apply';
 
-  /// Builds the coupons request body. [coupons] maps a vendor id to the coupon
-  /// code applied for that vendor; JSON object keys must be strings, so the
-  /// vendor ids are serialized as their string form.
-  static Map<String, dynamic> draftCouponsBody({
-    required Map<int, String> coupons,
-  }) => <String, dynamic>{
-    'coupons': coupons.map(
-      (int vendorId, String couponCode) =>
-          MapEntry<String, String>('$vendorId', couponCode),
-    ),
-  };
+  /// Stateless per-vendor purchase-voucher calculator. Same body shape as
+  /// [couponsApply]; the voucher is identified by its code, not an id.
+  static const String purchaseVouchersApply = '/api/v1/purchase-vouchers/apply';
+
+  /// Shared body for [couponsApply] / [purchaseVouchersApply].
+  static Map<String, dynamic> discountApplyBody({
+    required int vendorId,
+    required String code,
+  }) => <String, dynamic>{'vendor_id': vendorId, 'code': code};
 
   /// Confirms a draft order group — the final checkout step, sending the
   /// address, tip, notes, payment method and coupons in one request.
-  /// Shares the draft resource path with [draftCoupons]; [orderGroupUuid]
-  /// identifies the draft to confirm.
+  /// [orderGroupUuid] identifies the draft to confirm.
   static String confirmOrder(String orderGroupUuid) =>
       '/api/v1/checkout/draft/$orderGroupUuid';
 

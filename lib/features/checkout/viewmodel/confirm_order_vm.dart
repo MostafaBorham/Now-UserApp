@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.dart';
 
 /// Single task: confirm a draft order group — the final checkout step.
@@ -43,7 +43,7 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<void>> {
     String? paymentMethod,
     double? driverTip,
     String? notes,
-    List<AppliedCouponModel> coupons = const <AppliedCouponModel>[],
+    List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
   }) async {
     state = const AsyncValue<void>.loading();
 
@@ -53,9 +53,11 @@ class ConfirmOrderViewModel extends StateNotifier<AsyncValue<void>> {
       paymentMethod: paymentMethod,
       driverTip: driverTip,
       notes: notes,
+      // Only coupons are sent to the backend at placement — vouchers are not
+      // persisted there, so a voucher slot must not be posted as a coupon.
       coupons: <int, String>{
-        for (final AppliedCouponModel coupon in coupons)
-          coupon.vendorId: coupon.code,
+        for (final AppliedDiscountModel discount in coupons)
+          if (!discount.isVoucher) discount.vendorId: discount.code,
       },
     );
 

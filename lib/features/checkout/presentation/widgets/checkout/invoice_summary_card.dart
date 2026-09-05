@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 
 class InvoiceSummaryCard extends ConsumerWidget {
@@ -24,6 +26,19 @@ class InvoiceSummaryCard extends ConsumerWidget {
           ),
         ) ??
         const OrderGroupModel();
+
+    // Coupon/voucher apply is a stateless per-vendor calculator that returns
+    // only the discount, so the applied discounts are summed here and reflected
+    // locally: added to the discount line and subtracted from the total.
+    final double appliedDiscount = ref
+        .watch(appliedDiscountsProvider)
+        .fold<double>(
+          0,
+          (double sum, AppliedDiscountModel d) => sum + d.discount,
+        );
+    final double discount = orderGroup.discount + appliedDiscount;
+    final double total = orderGroup.total - appliedDiscount;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -95,23 +110,24 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              if(orderGroup.discount>0)Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      LangKeys.discountLabelKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.black,
+              if (discount > 0)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.discountLabelKey.tr(),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  NewPriceWidget(
-                    color: colors.errorContainer,
-                    price: '${orderGroup.discount}',
-                    size: 13,
-                  ),
-                ],
-              ),
+                    NewPriceWidget(
+                      color: colors.errorContainer,
+                      price: '$discount',
+                      size: 13,
+                    ),
+                  ],
+                ),
             ],
           ),
           Divider(
@@ -131,7 +147,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
               ),
               NewPriceWidget(
                 color: colors.primary500Main,
-                price: '${orderGroup.total}',
+                price: '$total',
                 size: 13,
               ),
             ],
