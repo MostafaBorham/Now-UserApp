@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
@@ -329,34 +330,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                             style: AppTextStyles.style16Medium
                                                 .copyWith(color: colors.black),
                                           ),
-                                          Row(
-                                            spacing: 5,
-                                            children: [
-                                              Assets
-                                                  .media
-                                                  .images
-                                                  .svg
-                                                  .realSaudiCurrency
-                                                  .svg(
-                                                    width: 12,
-                                                    height: 12,
-                                                    fit: BoxFit.contain,
-                                                    colorFilter:
-                                                        ColorFilter.mode(
-                                                          colors.black,
-                                                          BlendMode.srcIn,
-                                                        ),
-                                                  ),
-                                              AutoSizeText(
-                                                (item.price ?? 0)
-                                                    .toStringAsFixed(2),
-                                                style: AppTextStyles
-                                                    .style14Regular
-                                                    .copyWith(
-                                                      color: colors.black,
-                                                    ),
-                                              ),
-                                            ],
+                                          NewPriceWidget(
+                                            color: colors.black,
+                                            size: 14,
+                                            fontWeight: FontWeight.w400,
+                                            price: (item.price ?? 0)
+                                                .toStringAsFixed(2),
                                           ),
                                         ],
                                       ),
@@ -586,31 +565,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                       style: AppTextStyles.style16Medium
                                           .copyWith(color: colors.black),
                                     ),
-                                    Row(
-                                      spacing: 5,
-                                      children: [
-                                        Assets
-                                            .media
-                                            .images
-                                            .svg
-                                            .realSaudiCurrency
-                                            .svg(
-                                              width: 12,
-                                              height: 12,
-                                              fit: BoxFit.contain,
-                                              colorFilter: ColorFilter.mode(
-                                                colors.neutral500,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                        AutoSizeText(
-                                          order.total.toStringAsFixed(2),
-                                          style: AppTextStyles.style14Regular
-                                              .copyWith(
-                                                color: colors.neutral500,
-                                              ),
-                                        ),
-                                      ],
+                                    NewPriceWidget(
+                                      color: colors.neutral500,
+                                      size: 14,
+                                      fontWeight: FontWeight.w400,
+                                      price: order.total.toStringAsFixed(2),
                                     ),
                                   ],
                                 ),

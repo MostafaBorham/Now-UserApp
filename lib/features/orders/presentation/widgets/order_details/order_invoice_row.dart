@@ -1,8 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 /// One label ↔ money row of the order invoice summary: a left-aligned [label]
 /// and a right-aligned currency icon + [value]. Every row shares this geometry
@@ -39,20 +38,11 @@ class OrderInvoiceRow extends StatelessWidget {
                     .copyWith(color: colors.black),
           ),
         ),
-        Row(
-          spacing: 5,
-          children: [
-            Assets.media.images.svg.realSaudiCurrency.svg(
-              width: 15,
-              height: 15,
-              fit: BoxFit.contain,
-              colorFilter: ColorFilter.mode(valueColor, BlendMode.srcIn),
-            ),
-            AutoSizeText(
-              value.toStringAsFixed(2),
-              style: AppTextStyles.style14Bold.copyWith(color: valueColor),
-            ),
-          ],
+        NewPriceWidget(
+          color: valueColor,
+          size: 15,
+          fontWeight: FontWeight.w700,
+          price: value.toStringAsFixed(2),
         ),
       ],
     );
