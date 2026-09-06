@@ -1,26 +1,26 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 
 import 'cancel_sheet_scaffold.dart';
 
+/// The [MainScreen] bottom-nav index of the My Orders tab (Home, Favourites,
+/// Cart, **My Orders**, Settings).
+const int _myOrdersTabIndex = 3;
+
 /// Success bottom sheet shown after an order is canceled: confirms the refund
 /// and offers to keep shopping or review orders.
-class OrderCanceledBottomSheet extends StatelessWidget {
-  const OrderCanceledBottomSheet({
-    super.key,
-    required this.onContinueShopping,
-    required this.onViewOrders,
-  });
-
-  final VoidCallback onContinueShopping;
-  final VoidCallback onViewOrders;
+class OrderCanceledBottomSheet extends ConsumerWidget {
+  const OrderCanceledBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
     return showModalBottomSheet<void>(
@@ -30,16 +30,22 @@ class OrderCanceledBottomSheet extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => OrderCanceledBottomSheet(
-        onContinueShopping: () => context.pop(),
-        onViewOrders: () => context.pop(),
-      ),
+      builder: (_) => const OrderCanceledBottomSheet(),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+    // Just dismisses the sheet, returning to the (now cancelled) order.
+    void onContinueShopping() => context.pop();
+    // Resets the whole navigation stack to the Main screen and selects the My
+    // Orders tab, so nothing from the cancel flow is left behind.
+    void onViewOrders() {
+      ref.read(mainTabIndexProvider.notifier).state = _myOrdersTabIndex;
+      context.goNamed(AppRoutes.mainScreen);
+    }
+
     return CancelSheetScaffold(
       children: [
         const SizedBox(height: 8),
