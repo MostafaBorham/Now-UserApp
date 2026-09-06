@@ -17,9 +17,18 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 
 class HomeHeaderView extends ConsumerStatefulWidget {
-  const HomeHeaderView({super.key, this.searchFieldKey});
+  const HomeHeaderView({
+    super.key,
+    this.searchFieldKey,
+    this.showCategories = true,
+  });
 
   final Key? searchFieldKey;
+
+  /// Whether the categories carousel (and its "see all") render. The header
+  /// chrome — greeting, address, search, logo, motorcycle — is always shown; a
+  /// missing `categories` section only hides the carousel, not the header.
+  final bool showCategories;
 
   @override
   ConsumerState<HomeHeaderView> createState() => _HomeHeaderViewState();
@@ -181,34 +190,38 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                       flex: 2,
                       child: AnimatedDeliveryManMotorcycleView(),
                     ),
-                    Expanded(flex: 4, child: HomeAppCategoriesView()),
-                    Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () =>
-                            context.pushNamed(AppRoutes.categoriesScreen),
-                        behavior: HitTestBehavior.opaque,
-                        child: IgnorePointer(
-                          child: RepaintBoundary(
-                            child: AnimatedSvgPicture.asset(
-                              context.isRTL
-                                  ? Assets.media.images.svg.viewAllArabic.path
-                                  : Assets
-                                        .media
-                                        .images
-                                        .svg
-                                        .englishAnimatedSeeAll
-                                        .path,
-                              fit: BoxFit.contain,
-                              playbackRate: 1,
-                              autoPlay: true,
-                              placeholderBuilder: (BuildContext context) =>
-                                  SizedBox.shrink(),
+                    // The categories carousel + its "see all" are driven by the
+                    // `categories` home section; hidden when it is absent.
+                    if (widget.showCategories) ...<Widget>[
+                      Expanded(flex: 4, child: HomeAppCategoriesView()),
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () =>
+                              context.pushNamed(AppRoutes.categoriesScreen),
+                          behavior: HitTestBehavior.opaque,
+                          child: IgnorePointer(
+                            child: RepaintBoundary(
+                              child: AnimatedSvgPicture.asset(
+                                context.isRTL
+                                    ? Assets.media.images.svg.viewAllArabic.path
+                                    : Assets
+                                          .media
+                                          .images
+                                          .svg
+                                          .englishAnimatedSeeAll
+                                          .path,
+                                fit: BoxFit.contain,
+                                playbackRate: 1,
+                                autoPlay: true,
+                                placeholderBuilder: (BuildContext context) =>
+                                    SizedBox.shrink(),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

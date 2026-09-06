@@ -2,19 +2,33 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 
+/// The `featured_offers` section: an auto-scrolling carousel of admin-curated
+/// offers. Each card shows the offer image and, on tap, navigates by its `kind`
+/// (see [_onOfferTap]).
 class HomeOffersSectionView extends StatelessWidget {
-  const HomeOffersSectionView({super.key});
+  const HomeOffersSectionView({super.key, this.title, required this.offers});
+
+  /// Section title, already localized by the feed; falls back to a generic
+  /// "Special offers" label when the admin left it empty.
+  final String? title;
+  final List<HomeOfferModel> offers;
 
   @override
   Widget build(BuildContext context) {
+    if (offers.isEmpty) return const SizedBox.shrink();
+
     final AppColorScheme colors = context.colors;
+    final String heading =
+        (title != null && title!.isNotEmpty) ? title! : LangKeys.specialOffersKey.tr();
+
     return LayoutBuilder(
       builder: (context, con) {
         return SizedBox(
@@ -29,33 +43,26 @@ class HomeOffersSectionView extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 32,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        Text(
-                          LangKeys.specialOffersKey.tr(),
-                          style: TextStyle(
-                            fontSize: con.maxWidth * 0.05,
-                            color: colors.black,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(
-                          height: con.maxWidth * 0.4,
-                          child: const _AutoScrollOffersList(itemCount: 10),
-                        ),
-                      ],
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 12,
+                  children: [
+                    Text(
+                      heading,
+                      style: TextStyle(
+                        fontSize: con.maxWidth * 0.05,
+                        color: colors.black,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  const _AnimatedOffersBanner(),
-                ],
+                    SizedBox(
+                      height: con.maxWidth * 0.4,
+                      child: _AutoScrollOffersList(offers: offers),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -65,11 +72,31 @@ class HomeOffersSectionView extends StatelessWidget {
   }
 }
 
+/// Routes an offer tap by its `kind`. `store` opens store details by id;
+/// `product` opens product details by slug. Any other kind — or a missing
+/// target — is inert.
+void _onOfferTap(BuildContext context, HomeOfferModel offer) {
+  switch (offer.kind) {
+    case 'store':
+      if (offer.storeId != null) {
+        context.pushNamed(AppRoutes.storeDetailsScreen, extra: offer.storeId);
+      }
+      break;
+    case 'product':
+      // ponytail: inert until the backend emits a product slug in link (the
+      // stored target is a product id today, and product details is slug-only).
+      final String? slug = offer.productSlug;
+      if (slug != null && slug.isNotEmpty) {
+        context.pushNamed(AppRoutes.productDetailsScreen, extra: slug);
+      }
+      break;
+  }
+}
 
 class _AutoScrollOffersList extends StatefulWidget {
-  const _AutoScrollOffersList({required this.itemCount});
+  const _AutoScrollOffersList({required this.offers});
 
-  final int itemCount;
+  final List<HomeOfferModel> offers;
 
   @override
   State<_AutoScrollOffersList> createState() => _AutoScrollOffersListState();
@@ -126,112 +153,29 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
       controller: _controller,
       padding: const EdgeInsetsDirectional.only(end: 10),
       scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) => RepaintBoundary(
-        child: AspectRatio(
-          aspectRatio: 0.7,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: const AppCachedNetworkImage(
-              imageUrl:
-                  'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg',
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
+      itemBuilder: (context, index) {
+        final HomeOfferModel offer = widget.offers[index];
+        return RepaintBoundary(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _onOfferTap(context, offer),
+            child: AspectRatio(
+              aspectRatio: _aspectRatio,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: AppCachedNetworkImage(
+                  imageUrl: offer.imageUrl ?? '',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      separatorBuilder: (context, index) => 12.wSpace,
-      itemCount: widget.itemCount,
-    );
-  }
-}
-
-/// Isolated so its loop never rebuilds the surrounding section.
-///
-/// Timeline (repeats forever): starts off-screen at the page's start (leading)
-/// edge; [_initialDelay] after load it slides in, stays for [_visibleDwell],
-/// then vanishes instantly (snaps off-side, no animation); after [_hiddenDwell]
-/// it slides in again.
-///
-/// The [AnimationController] runs only during the ~600 ms slide itself and sits
-/// idle through both dwells — a plain [Timer] wakes it — so it stays cheap. The
-/// motion is a [SlideTransition] (a `Transform`, no `saveLayer`), wrapped in a
-/// [RepaintBoundary] to keep its repaints local.
-class _AnimatedOffersBanner extends StatefulWidget {
-  const _AnimatedOffersBanner();
-
-  @override
-  State<_AnimatedOffersBanner> createState() => _AnimatedOffersBannerState();
-}
-
-class _AnimatedOffersBannerState extends State<_AnimatedOffersBanner>
-    with SingleTickerProviderStateMixin {
-  static const Duration _slide = Duration(milliseconds: 600);
-  static const Duration _initialDelay = Duration(seconds: 2);
-  static const Duration _visibleDwell = Duration(seconds: 6);
-  static const Duration _hiddenDwell = Duration(seconds: 2);
-
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: _slide,
-  );
-  late Animation<Offset> _offset;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addStatusListener(_onStatus);
-    // Stays hidden off-side; slides in for the first time after the delay.
-    _timer = Timer(_initialDelay, () {
-      if (mounted) _controller.forward();
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Enter from the page's start (leading) side, direction-aware (RTL/LTR).
-    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-    _offset = Tween<Offset>(
-      begin: Offset(isRtl ? 1.15 : -1.15, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-  }
-
-  void _onStatus(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      // Fully visible -> hold, then vanish instantly (snap off-side, no anim).
-      _timer = Timer(_visibleDwell, () {
-        if (mounted) _controller.reset();
-      });
-    } else if (status == AnimationStatus.dismissed) {
-      // Fully hidden -> wait, then slide in again. Loops forever.
-      _timer = Timer(_hiddenDwell, () {
-        if (mounted) _controller.forward();
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
-    return RepaintBoundary(
-      child: SlideTransition(
-        position: _offset,
-        child: AspectRatio(
-          aspectRatio: 3,
-          child: HomeBannerView(),
-        ),
-      ),
+        );
+      },
+      separatorBuilder: (context, index) => const SizedBox(width: 12),
+      itemCount: widget.offers.length,
     );
   }
 }
