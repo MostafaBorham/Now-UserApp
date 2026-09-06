@@ -21,6 +21,50 @@ class StoresRepo {
   /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _storesApiService.cancelRequests();
 
+  /// The "Best brands" featured stores, one page at a time (the home carousel
+  /// takes the first few; the top-brands screen pages through the rest).
+  Future<Either<Failure, PaginationModel<StoreModel>>> getFeaturedStores({
+    required int page,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _storesApiService.getFeaturedStores(
+        page: page,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+      final Map<String, dynamic> paginationData =
+          data['pagination'] as Map<String, dynamic>;
+      final List<dynamic> rawItems =
+          data['items'] as List<dynamic>? ?? <dynamic>[];
+
+      final List<StoreModel> stores = rawItems
+          .map((dynamic e) => StoreModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      return Right(
+        PaginationModel<StoreModel>.fromJson(paginationData, stores),
+      );
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
   Future<Either<Failure, StoreModel>> getStoreDetails({
     required int storeId,
   }) async {

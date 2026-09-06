@@ -1,19 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_borders.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class TopBrandsItem extends StatelessWidget {
-  const TopBrandsItem({super.key});
+  const TopBrandsItem({super.key, this.store});
+
+  /// Null in the loading (shimmer) state — the item then paints neutral
+  /// placeholder blocks for AppShimmer to run over.
+  final StoreModel? store;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final StoreModel? store = this.store;
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -32,14 +35,7 @@ class TopBrandsItem extends StatelessWidget {
             child: Center(
               child: AspectRatio(
                 aspectRatio: 2.5,
-                child: CachedNetworkImage(
-                  imageUrl: 'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                  fit: BoxFit.contain,
-                  placeholder: (context, url) =>
-                  const SizedBox.shrink(),
-                  errorWidget: (context, url, error) =>
-                  const SizedBox.shrink(),
-                ),
+                child: _logo(colors, store),
               ),
             ),
           ),
@@ -54,18 +50,26 @@ class TopBrandsItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Text(
-                    'Panda',
-                    textAlign: TextAlign.start,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: colors.black,
-                      fontSize: 15,
-                      height: 1.3,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: store == null
+                      ? Container(
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: colors.neutral500,
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        )
+                      : Text(
+                          context.getLocalizedApiText(store.name),
+                          textAlign: TextAlign.start,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: colors.black,
+                            fontSize: 15,
+                            height: 1.3,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
                 Icon(context.isRTL? Icons.chevron_right : Icons.chevron_left, size: 16, color: colors.neutral500),
               ],
@@ -73,6 +77,26 @@ class TopBrandsItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _logo(AppColorScheme colors, StoreModel? store) {
+    if (store == null) {
+      return Container(
+        margin: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: colors.neutral500,
+          borderRadius: BorderRadius.circular(8),
+        ),
+      );
+    }
+    final String? url = store.logoUrl;
+    if (url == null) return const SizedBox.shrink();
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: BoxFit.contain,
+      placeholder: (context, url) => const SizedBox.shrink(),
+      errorWidget: (context, url, error) => const SizedBox.shrink(),
     );
   }
 }

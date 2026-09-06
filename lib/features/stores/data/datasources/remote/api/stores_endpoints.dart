@@ -3,6 +3,7 @@ abstract class StoresEndpoints {
   static String get getStoreDetails =>
       '$getStores/$storeId';
   static const String getStores = '/api/v1/stores';
+  static const String getFeaturedStores = '$getStores/featured';
   static int? storeId;
 
   static String get getStoreCategoryProducts =>

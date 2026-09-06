@@ -18,6 +18,14 @@ class StoresApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
+  Future<Response> getFeaturedStores({required int page}) {
+    return _dio.get(
+      StoresEndpoints.getFeaturedStores,
+      queryParameters: <String, dynamic>{'page': page},
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> getStoreDetails({required int storeId}) {
     StoresEndpoints.storeId = storeId;
     return _dio.get(
