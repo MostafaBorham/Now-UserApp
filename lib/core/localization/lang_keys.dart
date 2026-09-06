@@ -218,6 +218,7 @@ abstract class LangKeys {
   // Order tracking (Order Confirmed / Track Order / Payment Failed)
   static const String orderConfirmedTitleKey = 'orderConfirmedTitle';
   static const String orderConfirmedSubtitleKey = 'orderConfirmedSubtitle';
+  static const String returnToHomePageKey = 'returnToHomePage';
   static const String receiverKey = 'receiver';
   static const String addressKey = 'address';
   static const String contactKey = 'contact';
@@ -325,6 +326,8 @@ abstract class LangKeys {
   // Checkout
   static const String addNotesHintKey = 'addNotesHint';
   static const String applyKey = 'apply';
+  static const String appliedKey = 'applied';
+  static const String voucherApplyFailedKey = 'voucherApplyFailed';
   static const String confirmOrderKey = 'confirmOrder';
   static const String confirmAddressKey = 'confirmAddress';
   static const String currentLocationKey = 'currentLocation';
@@ -337,6 +340,8 @@ abstract class LangKeys {
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
   static const String addWalletKey = 'addWallet';
+  static const String balanceKey = 'balance';
+  static const String walletShortfallHintKey = 'walletShortfallHint';
   static const String tipYourDriverKey = 'tipYourDriver';
   static const String sampleStoreNameKey = 'sampleStoreName';
   static const String sampleValidityKey = 'sampleValidity';

@@ -24,6 +24,8 @@
   "appUnderMaintenanceSubtitle": "We’re working to improve your experience. We’ll be back soon. Thank you for your patience.",
   "applePay": "Apple Pay",
   "apply": "Apply",
+  "applied": "Applied",
+  "voucherApplyFailed": "This voucher can't be applied",
   "applyFilters": "Apply Filters",
   "areYouSureCancel": "Are you sure you want to cancel?",
   "area": "Area",
@@ -252,6 +254,7 @@
   "resend": "Resend",
   "resetFilter": "Reset Filter",
   "retry": "Retry",
+  "returnToHomePage": "Return to Home Page",
   "rewardPoints": "Reward Points",
   "sampleBrandCategory": "Dark Chocolate",
   "sampleBrandDescription": "Rich 70% cocoa dark chocolate. For lovers of deep and authentic flavor.",
@@ -403,5 +406,7 @@
   "welcomeVoucherPrefix": "Use code ",
   "welcomeVoucherMiddle": " and get ",
   "welcomeVoucherDiscount": "a discount",
-  "welcomeVoucherSuffix": " on your first order"
+  "welcomeVoucherSuffix": " on your first order",
+  "balance": "Balance: ",
+  "walletShortfallHint": "Choose a backup payment method to deduct the remaining amount if the wallet balance is insufficient"
 }
