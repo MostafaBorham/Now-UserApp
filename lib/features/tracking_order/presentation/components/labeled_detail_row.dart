@@ -40,11 +40,13 @@ class LabeledDetailRow extends StatelessWidget {
                   alignment: AlignmentDirectional.centerEnd,
                   child: trailing,
                 )
+              // Detail page: the value is shown in full — wrap, never clamp /
+              // ellipsize. The app text styles bake in ellipsis, so overflow is
+              // forced visible to let long values (address, phone, …) wrap.
               : Text(
                   value!,
                   textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
                   style: AppTextStyles.style14Medium.copyWith(
                     color: valueColor ?? colors.black,
                   ),

@@ -67,7 +67,7 @@ class OrderTimelineStep extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: Text(
                   title,
-                  maxLines: 2,
+                  overflow: TextOverflow.visible,
                   style: AppTextStyles.style14Medium.copyWith(
                     color: status == OrderStepStatus.pending
                         ? colors.neutral500

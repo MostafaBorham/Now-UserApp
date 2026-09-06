@@ -211,7 +211,10 @@ class OrderListItem extends ConsumerWidget {
                       title: LangKeys.trackOrderKey.tr(),
                       buttonPadding: 8,
                       onTap: () {
-                        context.pushNamed(AppRoutes.trackOrderScreen);
+                        context.pushNamed(
+                          AppRoutes.trackOrderScreen,
+                          extra: orderModel.uuid,
+                        );
                       },
                     ),
                   ),

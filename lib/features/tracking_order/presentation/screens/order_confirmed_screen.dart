@@ -21,7 +21,6 @@ class OrderConfirmedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void goToTracking() => context.pushNamed(AppRoutes.trackOrderScreen);
     final AppColorScheme colors = context.colors;
     return Scaffold(
       body: SingleChildScrollView(
@@ -48,7 +47,10 @@ class OrderConfirmedScreen extends StatelessWidget {
                     imageUrl:
                         order.vendor.logoUrl ??
                         ConfirmedOrderCard.fallbackImageUrl,
-                    onTrack: goToTracking,
+                    onTrack: () => context.pushNamed(
+                      AppRoutes.trackOrderScreen,
+                      extra: order.uuid,
+                    ),
                   ),
                   16.hSpace,
                 ],

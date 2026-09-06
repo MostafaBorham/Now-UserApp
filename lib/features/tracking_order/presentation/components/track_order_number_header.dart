@@ -39,6 +39,7 @@ class TrackOrderNumberHeader extends StatelessWidget {
               4.hSpace,
               Text(
                 orderNumber,
+                overflow: TextOverflow.visible,
                 style: AppTextStyles.style18SemiBold.copyWith(
                   color: colors.black,
                 ),
@@ -55,6 +56,7 @@ class TrackOrderNumberHeader extends StatelessWidget {
           ),
           child: Text(
             status ?? LangKeys.pendingKey.tr(),
+            overflow: TextOverflow.visible,
             style: AppTextStyles.style12Medium.copyWith(
               color: colors.onErrorContainer,
             ),

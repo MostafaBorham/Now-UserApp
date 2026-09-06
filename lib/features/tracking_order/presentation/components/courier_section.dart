@@ -54,6 +54,7 @@ class CourierSection extends StatelessWidget {
                 2.hSpace,
                 Text(
                   courierName,
+                  overflow: TextOverflow.visible,
                   style: AppTextStyles.style14Regular.copyWith(
                     color: colors.neutral500,
                   ),
