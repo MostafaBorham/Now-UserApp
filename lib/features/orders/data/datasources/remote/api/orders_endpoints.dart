@@ -6,6 +6,10 @@ abstract class OrdersEndpoints {
   static String getOrderDetails(String orderUuid) =>
       '$getMyOrders/$orderUuid';
 
+  /// Cancel an order: `/api/v1/my/orders/{order_uuid}/cancel` (PUT).
+  static String cancelOrder(String orderUuid) =>
+      '$getMyOrders/$orderUuid/cancel';
+
   static int perPage = 15;
   static int page = 1;
 

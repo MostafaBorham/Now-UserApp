@@ -90,8 +90,7 @@ class TrackOrderScreen extends ConsumerWidget {
                       courierName: store,
                       logoUrl: order.vendor.logoUrl ?? '',
                     ),
-                  // Live tracking timeline is only shown while the order is in
-                  // flight; terminal / unknown states have nothing to track.
+
                   if (orderStatus.isTrackable)
                     OrderTimelineSection(
                       status: orderStatus,
@@ -99,8 +98,6 @@ class TrackOrderScreen extends ConsumerWidget {
                         apiDateTimeStamp: order.estimatedDeliveryTime,
                       ),
                     ),
-                  // Cancelling is only possible while the order is still in
-                  // flight (pending → on_the_way).
                   if (orderStatus.isTrackable) ...[
                     4.hSpace,
                     PrimaryButton(
@@ -108,7 +105,13 @@ class TrackOrderScreen extends ConsumerWidget {
                       buttonColor: colors.errorContainer,
                       titleColor: colors.white,
                       buttonPadding: 16,
-                      onTap: () => CancelOrderBottomSheet.show(context),
+                      onTap: () => CancelOrderBottomSheet.show(
+                        context,
+                        orderUuid: orderUuid,
+                        orderNumber: order.orderNumber ?? '',
+                        itemsCount: order.items.length,
+                        amount: order.total.toStringAsFixed(2),
+                      ),
                     ),
                     8.hSpace,
                   ],
