@@ -25,12 +25,15 @@ class OrderTimelineSection extends StatelessWidget {
   final OrderStatus status;
   final String estimatedTime;
 
-  /// The milestone the order has currently reached (0 = accepted … 3 =
-  /// delivered). `ready` collapses into the preparing milestone; terminal /
-  /// unknown states park at the first milestone (they aren't tracked here).
+  /// The milestone the order is currently working toward — the step that shows
+  /// the active (green-circle) marker; every step before it is already done
+  /// (checkmark). Once acceptance is granted the order is treated as being
+  /// prepared, so `accepted` shares the preparing milestone with `preparing` /
+  /// `ready`; terminal / unknown states park at the first milestone (they
+  /// aren't tracked here).
   int get _reachedMilestone => switch (status) {
-    PendingStatus() || AcceptedStatus() => 0,
-    PreparingStatus() || ReadyStatus() => 1,
+    PendingStatus() => 0,
+    AcceptedStatus() || PreparingStatus() || ReadyStatus() => 1,
     OnTheWayStatus() => 2,
     DeliveredStatus() => 3,
     _ => 0,
@@ -92,6 +95,8 @@ class OrderTimelineSection extends StatelessWidget {
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 8,
           children: [
             Text(
               LangKeys.trackOrderKey.tr(),
@@ -99,29 +104,25 @@ class OrderTimelineSection extends StatelessWidget {
                 color: colors.black,
               ),
             ),
-            const Spacer(),
-            8.wSpace,
-            Flexible(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${LangKeys.estimatedDeliveryTimeKey.tr()}  ',
-                      style: AppTextStyles.style10Regular.copyWith(
-                        color: colors.neutral500,
-                      ),
-                    ),
-                    TextSpan(
-                      text: estimatedTime,
-                      style: AppTextStyles.style10SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                  ],
+            Wrap(
+              alignment: WrapAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              runSpacing: 2,
+              children: [
+                Text(
+                  LangKeys.estimatedDeliveryTimeKey.tr(),
+                  style: AppTextStyles.style10Regular.copyWith(
+                    color: colors.neutral1200,
+                  ),
                 ),
-                overflow: TextOverflow.visible,
-                textAlign: TextAlign.end,
-              ),
+                Text(
+                  estimatedTime,
+                  style: AppTextStyles.style10SemiBold.copyWith(
+                    color: colors.black,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

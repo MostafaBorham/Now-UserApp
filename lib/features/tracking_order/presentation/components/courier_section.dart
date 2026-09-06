@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -14,11 +15,13 @@ class CourierSection extends StatelessWidget {
   const CourierSection({
     super.key,
     this.courierName = 'Panda Store',
+    this.logoUrl = '',
     this.onChat,
     this.onCall,
   });
 
   final String courierName;
+  final String logoUrl;
   final VoidCallback? onChat;
   final VoidCallback? onCall;
 
@@ -33,11 +36,33 @@ class CourierSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: AppBorderRadius.brCircular12,
-            child: Assets.media.images.svg.courier.svg(
+          Container(
+            width: 48,
+            height: 48,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: CachedNetworkImage(
+              imageUrl: logoUrl,
+              fit: BoxFit.cover,
               width: 48,
               height: 48,
+              placeholder: (context, url) => Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: colors.primary500Main,
+                    strokeWidth: 2,
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) =>
+                  Assets.media.images.png.noImageAvail.image(
+                    fit: BoxFit.cover,
+                  ),
             ),
           ),
           12.wSpace,
@@ -67,20 +92,14 @@ class CourierSection extends StatelessWidget {
             spacing: 10,
             children: [
               InkWell(
-                onTap: onChat,
-                customBorder: const CircleBorder(),
-                child: Assets.media.images.svg.chat.svg(
-                  width: 40,
-                  height: 40,
-                ),
-              ),
-              InkWell(
                 onTap: onCall,
                 customBorder: const CircleBorder(),
-                child: Assets.media.images.svg.call.svg(
-                  width: 40,
-                  height: 40,
-                ),
+                child: Assets.media.images.svg.call.svg(width: 40, height: 40),
+              ),
+              InkWell(
+                onTap: onChat,
+                customBorder: const CircleBorder(),
+                child: Assets.media.images.svg.chat.svg(width: 40, height: 40),
               ),
             ],
           ),

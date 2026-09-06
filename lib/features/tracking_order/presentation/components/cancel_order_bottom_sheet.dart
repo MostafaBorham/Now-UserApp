@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 import 'cancel_sheet_scaffold.dart';
 import 'order_canceled_bottom_sheet.dart';
@@ -144,16 +145,11 @@ class _OrderSummaryCard extends StatelessWidget {
                       style: AppTextStyles.style14Regular.copyWith(color: muted),
                     ),
                     const SizedBox(width: 10),
-                    Assets.media.images.svg.realSaudiCurrency.svg(
-                      width: 13,
-                      height: 13,
-                      fit: BoxFit.contain,
-                      colorFilter: const ColorFilter.mode(muted, BlendMode.srcIn),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      amount,
-                      style: AppTextStyles.style14Regular.copyWith(color: muted),
+                    NewPriceWidget(
+                      color: muted,
+                      size: 14,
+                      fontWeight: FontWeight.w400,
+                      price: amount,
                     ),
                   ],
                 ),

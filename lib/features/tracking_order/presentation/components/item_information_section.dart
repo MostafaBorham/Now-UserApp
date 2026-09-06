@@ -42,31 +42,37 @@ class ItemInformationSection extends StatelessWidget {
                 ),
                 12.wSpace,
                 Expanded(
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.getLocalizedApiText(item.name),
+                              overflow: TextOverflow.visible,
+                              style: AppTextStyles.style16Medium.copyWith(
+                                color: colors.black,
+                              ),
+                            ),
+                            6.hSpace,
+                            NewPriceWidget(
+                              color: colors.black,
+                              size: 14,
+                              fontWeight: FontWeight.w400,
+                              price: (item.price ?? 0).toStringAsFixed(2),
+                            ),
+                          ],
+                        ),
+                      ),
                       Text(
-                        context.getLocalizedApiText(item.name),
-                        overflow: TextOverflow.visible,
+                        'x${item.quantity ?? 0}',
                         style: AppTextStyles.style16Medium.copyWith(
                           color: colors.black,
                         ),
-                      ),
-                      6.hSpace,
-                      NewPriceWidget(
-                        color: colors.black,
-                        size: 14,
-                        fontWeight: FontWeight.w400,
-                        price: (item.price ?? 0).toStringAsFixed(2),
-                      ),
+                      )
                     ],
-                  ),
-                ),
-                12.wSpace,
-                Text(
-                  'x${item.quantity ?? 0}',
-                  style: AppTextStyles.style16Medium.copyWith(
-                    color: colors.black,
                   ),
                 ),
               ],

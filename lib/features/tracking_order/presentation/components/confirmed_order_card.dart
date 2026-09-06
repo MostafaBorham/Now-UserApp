@@ -3,11 +3,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 /// Order summary card shown on the Order Confirmed screen: a thumbnail, the
@@ -74,26 +74,11 @@ class ConfirmedOrderCard extends StatelessWidget {
                           ),
                         ),
                         8.wSpace,
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Assets.media.images.svg.realSaudiCurrency.svg(
-                              width: 12,
-                              height: 12,
-                              fit: BoxFit.contain,
-                              colorFilter: ColorFilter.mode(
-                                colors.primary500Main,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            5.wSpace,
-                            Text(
-                              price,
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.primary500Main,
-                              ),
-                            ),
-                          ],
+                        NewPriceWidget(
+                          color: colors.primary500Main,
+                          size: 14,
+                          fontWeight: FontWeight.w400,
+                          price: price,
                         ),
                       ],
                     ),
