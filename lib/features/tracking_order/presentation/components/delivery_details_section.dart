@@ -2,9 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 import 'labeled_detail_row.dart';
 import 'tracking_section_card.dart';
@@ -53,26 +51,11 @@ class DeliveryDetailsSection extends StatelessWidget {
           ),
           LabeledDetailRow(
             label: LangKeys.payKey.tr(),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Assets.media.images.svg.realSaudiCurrency.svg(
-                  width: 14,
-                  height: 14,
-                  fit: BoxFit.contain,
-                  colorFilter: ColorFilter.mode(
-                    colors.black,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                5.wSpace,
-                Text(
-                  amount,
-                  style: AppTextStyles.style14SemiBold.copyWith(
-                    color: colors.black,
-                  ),
-                ),
-              ],
+            trailing: NewPriceWidget(
+              color: colors.black,
+              size: 14,
+              fontWeight: FontWeight.w600,
+              price: amount,
             ),
           ),
         ],

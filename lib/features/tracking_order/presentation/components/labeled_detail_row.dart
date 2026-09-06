@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -27,30 +28,38 @@ class LabeledDetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Row(
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.style14Regular.copyWith(color: colors.neutral500),
-        ),
-        12.wSpace,
-        Expanded(
-          child: trailing != null
-              ? Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: trailing,
-                )
-              : Text(
-                  value!,
-                  textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.style14Medium.copyWith(
-                    color: valueColor ?? colors.black,
-                  ),
-                ),
-        ),
-      ],
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.topStart,
+            child: Text(
+              label,
+              style: AppTextStyles.style14Regular.copyWith(
+                color: colors.neutral500,
+              ),
+            ),
+          ),
+          12.wSpace,
+          Expanded(
+            child: Align(
+              alignment: AlignmentDirectional.bottomEnd,
+              child: trailing != null
+                  ? trailing!
+                  : Text(
+                      textDirection: TextDirection.ltr,
+                      value!,
+                      textAlign: context.isRTL ? TextAlign.start : TextAlign.end,
+                      overflow: TextOverflow.visible,
+                      style: AppTextStyles.style14Medium.copyWith(
+                        color: valueColor ?? colors.black,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

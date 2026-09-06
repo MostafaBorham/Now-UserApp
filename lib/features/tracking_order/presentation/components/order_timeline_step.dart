@@ -57,7 +57,19 @@ class OrderTimelineStep extends StatelessWidget {
           12.wSpace,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
-            child: icon,
+            // The illustration only takes on its colour once the order reaches
+            // this step; steps still ahead are shown greyed out.
+            child: status == OrderStepStatus.pending
+                ? ColorFiltered(
+                    colorFilter: const ColorFilter.matrix(<double>[
+                      0.2126, 0.7152, 0.0722, 0, 0, //
+                      0.2126, 0.7152, 0.0722, 0, 0, //
+                      0.2126, 0.7152, 0.0722, 0, 0, //
+                      0, 0, 0, 1, 0, //
+                    ]),
+                    child: icon,
+                  )
+                : icon,
           ),
           12.wSpace,
           Expanded(
@@ -67,7 +79,7 @@ class OrderTimelineStep extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: Text(
                   title,
-                  maxLines: 2,
+                  overflow: TextOverflow.visible,
                   style: AppTextStyles.style14Medium.copyWith(
                     color: status == OrderStepStatus.pending
                         ? colors.neutral500

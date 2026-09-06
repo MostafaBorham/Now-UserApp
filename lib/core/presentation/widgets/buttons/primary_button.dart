@@ -9,6 +9,7 @@ class PrimaryButton extends StatelessWidget {
     required this.title,
     this.onTap,
     this.buttonPadding = 12, this.titleColor, this.buttonColor,
+    this.isLoading = false,
   });
 
   final String title;
@@ -17,11 +18,15 @@ class PrimaryButton extends StatelessWidget {
   final Color? titleColor;
   final Color? buttonColor;
 
+  /// Replaces the title with a circular indicator and disables taps.
+  final bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color foreground = titleColor ?? colors.white;
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
@@ -30,14 +35,25 @@ class PrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.style14Medium.copyWith(color: titleColor??colors.white),
-          ),
-        ),
+        child: isLoading
+            ? Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: foreground,
+                  ),
+                ),
+              )
+            : FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.style14Medium.copyWith(color: foreground),
+                ),
+              ),
       ),
     );
   }

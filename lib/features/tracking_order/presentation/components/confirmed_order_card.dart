@@ -3,11 +3,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 /// Order summary card shown on the Order Confirmed screen: a thumbnail, the
@@ -37,29 +37,23 @@ class ConfirmedOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colors.primaryFixed,
-        borderRadius: AppBorderRadius.brCircular12,
-      ),
       child: Column(
         spacing: 12,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // The SizedBox is load-bearing: AppCachedNetworkImage's shimmer
-              // placeholder falls back to `double.infinity` without an outer
-              // bound, which a Row cannot lay out.
               SizedBox(
-                width: 86,
-                height: 86,
+                width: 72,
+                height: 72,
                 child: ClipRRect(
-                  borderRadius: AppBorderRadius.brCircular8,
+                  borderRadius: AppBorderRadius.brCircular12,
                   child: AppCachedNetworkImage(
                     imageUrl: imageUrl,
-                    width: 86,
-                    height: 86,
+                    width: 72,
+                    height: 72,
                   ),
                 ),
               ),
@@ -69,58 +63,47 @@ class ConfirmedOrderCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(
                             orderNumber,
-                            style: AppTextStyles.style16Medium.copyWith(
-                              color: colors.tertiaryContainer,
+                            style: AppTextStyles.style18SemiBold.copyWith(
+                              color: colors.black,
                             ),
                           ),
                         ),
                         8.wSpace,
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Assets.media.images.svg.realSaudiCurrency.svg(
-                              width: 8,
-                              height: 9,
-                              fit: BoxFit.contain,
-                              colorFilter: ColorFilter.mode(
-                                colors.primary500Main,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            4.wSpace,
-                            Text(
-                              price,
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: colors.primary500Main,
-                              ),
-                            ),
-                          ],
+                        NewPriceWidget(
+                          color: colors.primary500Main,
+                          size: 14,
+                          fontWeight: FontWeight.w400,
+                          price: price,
                         ),
                       ],
                     ),
-                    2.hSpace,
+                    6.hSpace,
                     Text(
                       '${LangKeys.deliveredOnKey.tr()} $deliveryDate',
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),
                     ),
-                    8.hSpace,
+                    10.hSpace,
                     Row(
                       spacing: 8,
+
                       children: [
                         _Chip(
                           label: '$itemsCount ${LangKeys.itemsKey.tr()}',
-                          background: colors.onPrimaryContainer,
-                          textColor: colors.tertiaryContainer,
+                          background: colors.neutral500.withValues(alpha: 0.1),
+                          textColor: colors.black,
                         ),
                         _Chip(
                           label: LangKeys.pendingKey.tr(),
-                          background: colors.tertiaryFixed,
+                          background: colors.onSecondaryFixed.withValues(
+                            alpha: 0.4,
+                          ),
                           textColor: colors.onErrorContainer,
                         ),
                       ],
@@ -130,13 +113,7 @@ class ConfirmedOrderCard extends StatelessWidget {
               ),
             ],
           ),
-          PrimaryAppButton(
-            title: LangKeys.trackOrderKey.tr(),
-            onTap: onTrack,
-            titleStyle: AppTextStyles.style14Medium,
-            // The design's CTA is a 36px-tall bar, not the default 48px one.
-            buttonPadding: 8,
-          ),
+          PrimaryAppButton(title: LangKeys.trackOrderKey.tr(), onTap: onTrack),
         ],
       ),
     );
@@ -158,7 +135,7 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: background,
         borderRadius: AppBorderRadius.brCircular20,

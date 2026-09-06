@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -11,14 +12,42 @@ import 'order_timeline_step.dart';
 /// "Track Order" progress section: the estimated-time header followed by the
 /// four-step delivery timeline. The step illustrations already encode their
 /// active/inactive state, so this widget only drives the rail markers & the
-/// connector colours from each step's [OrderStepStatus].
+/// connector colours from each step's [OrderStepStatus], derived here from the
+/// order's live [status].
 class OrderTimelineSection extends StatelessWidget {
   const OrderTimelineSection({
     super.key,
-    this.estimatedTime = '1 Hour - 40 Minutes',
+    this.status = const PendingStatus(),
+    this.estimatedTime = '',
   });
 
+  /// The order's current lifecycle state, mapped onto the four milestones.
+  final OrderStatus status;
   final String estimatedTime;
+
+  /// The milestone the order is currently working toward — the step that shows
+  /// the active (green-circle) marker; every step before it is already done
+  /// (checkmark). Once acceptance is granted the order is treated as being
+  /// prepared, so `accepted` shares the preparing milestone with `preparing` /
+  /// `ready`; terminal / unknown states park at the first milestone (they
+  /// aren't tracked here).
+  int get _reachedMilestone => switch (status) {
+    PendingStatus() => 0,
+    AcceptedStatus() || PreparingStatus() || ReadyStatus() => 1,
+    OnTheWayStatus() => 2,
+    DeliveredStatus() => 3,
+    _ => 0,
+  };
+
+  OrderStepStatus _stepStatus(int index) {
+    if (index < _reachedMilestone) return OrderStepStatus.done;
+    if (index > _reachedMilestone) return OrderStepStatus.pending;
+    // The reached milestone is the active one, unless the order is delivered:
+    // its final step is complete, not in-progress.
+    return status is DeliveredStatus
+        ? OrderStepStatus.done
+        : OrderStepStatus.current;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +57,7 @@ class OrderTimelineSection extends StatelessWidget {
 
     final List<_TimelineStepData> steps = [
       _TimelineStepData(
-        status: OrderStepStatus.done,
+        status: _stepStatus(0),
         icon: Assets.media.images.svg.orderAccepted.svg(
           width: 34,
           height: 34,
@@ -36,7 +65,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.orderAcceptedKey.tr(),
       ),
       _TimelineStepData(
-        status: OrderStepStatus.current,
+        status: _stepStatus(1),
         icon: Assets.media.images.svg.orderConfirmed.svg(
           width: 34,
           height: 34,
@@ -44,7 +73,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.orderConfirmedBeingPreparedKey.tr(),
       ),
       _TimelineStepData(
-        status: OrderStepStatus.pending,
+        status: _stepStatus(2),
         icon: Assets.media.images.svg.onTheWay.svg(
           width: 34,
           height: 34,
@@ -52,7 +81,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.onTheWayToYouKey.tr(),
       ),
       _TimelineStepData(
-        status: OrderStepStatus.pending,
+        status: _stepStatus(3),
         icon: Assets.media.images.svg.delivered.svg(
           width: 34,
           height: 34,
@@ -66,6 +95,8 @@ class OrderTimelineSection extends StatelessWidget {
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 8,
           children: [
             Text(
               LangKeys.trackOrderKey.tr(),
@@ -73,30 +104,25 @@ class OrderTimelineSection extends StatelessWidget {
                 color: colors.black,
               ),
             ),
-            const Spacer(),
-            8.wSpace,
-            Flexible(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${LangKeys.estimatedDeliveryTimeKey.tr()}  ',
-                      style: AppTextStyles.style10Regular.copyWith(
-                        color: colors.neutral500,
-                      ),
-                    ),
-                    TextSpan(
-                      text: estimatedTime,
-                      style: AppTextStyles.style10SemiBold.copyWith(
-                        color: colors.black,
-                      ),
-                    ),
-                  ],
+            Wrap(
+              alignment: WrapAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              runSpacing: 2,
+              children: [
+                Text(
+                  LangKeys.estimatedDeliveryTimeKey.tr(),
+                  style: AppTextStyles.style10Regular.copyWith(
+                    color: colors.neutral1200,
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.end,
-              ),
+                Text(
+                  estimatedTime,
+                  style: AppTextStyles.style10SemiBold.copyWith(
+                    color: colors.black,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

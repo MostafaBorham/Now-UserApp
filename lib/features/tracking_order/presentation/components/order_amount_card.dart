@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 /// Outlined summary card on the Payment Failed screen: the order number and the
 /// amount still due.
@@ -62,21 +62,11 @@ class OrderAmountCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Assets.media.images.svg.realSaudiCurrency.svg(
-                width: 12,
-                height: 12,
-                fit: BoxFit.contain,
-                colorFilter: ColorFilter.mode(
-                  colors.black,
-                  BlendMode.srcIn,
-                ),
-              ),
-              5.wSpace,
-              Text(
-                amount,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.black,
-                ),
+              NewPriceWidget(
+                color: colors.black,
+                size: 14,
+                fontWeight: FontWeight.w400,
+                price: amount,
               ),
             ],
           ),

@@ -9,9 +9,18 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 /// "Cancel Order" title with a close button, and a scrollable body that hosts
 /// the sheet's [children] (so tall content never overflows on short screens).
 class CancelSheetScaffold extends StatelessWidget {
-  const CancelSheetScaffold({super.key, required this.children});
+  const CancelSheetScaffold({
+    super.key,
+    required this.children,
+    this.canClose = true,
+  });
 
   final List<Widget> children;
+
+  /// Whether the top-right close button dismisses the sheet. Set to `false`
+  /// while a blocking action is in flight (e.g. cancelling the order) so the
+  /// sheet can't be dismissed mid-request.
+  final bool canClose;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +56,16 @@ class CancelSheetScaffold extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () => context.pop(),
+                onTap: canClose ? () => context.pop() : null,
                 customBorder: const CircleBorder(),
                 child: Padding(
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     Icons.close,
                     size: 24,
-                    color: context.colors.tertiaryContainer,
+                    color: context.colors.tertiaryContainer.withValues(
+                      alpha: canClose ? 1 : 0.4,
+                    ),
                   ),
                 ),
               ),

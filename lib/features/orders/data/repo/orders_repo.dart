@@ -92,4 +92,37 @@ class OrdersRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  /// Cancels the order identified by [orderUuid]. The response body only carries
+  /// a status message, so a successful call resolves to [unit] and the caller
+  /// refetches the order to pick up its new (cancelled) state.
+  Future<Either<Failure, Unit>> cancelOrder({
+    required String orderUuid,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _ordersApiService.cancelOrder(
+        orderUuid: orderUuid,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(unit);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }

@@ -251,7 +251,8 @@ abstract class AppRouter {
         name: AppRoutes.trackOrderScreen,
         path: '/${AppRoutes.trackOrderScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const TrackOrderScreen(),
+        builder: (context, state) =>
+            TrackOrderScreen(orderUuid: state.extra as String? ?? ''),
       ),
       GoRoute(
         name: AppRoutes.paymentFailedScreen,
