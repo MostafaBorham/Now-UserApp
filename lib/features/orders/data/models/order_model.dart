@@ -1,5 +1,6 @@
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/features/tracking_order/data/models/delivery_man_model.dart';
 
 /// A single store's order, with its own totals and [items]. Used both for the
 /// draft group in checkout and for placed orders in the orders feature.
@@ -29,6 +30,11 @@ class OrderModel {
   /// The customer who placed the order, as the lite slice the order payload
   /// carries (`id`, `name`, `phone`) — not the authenticated-user model.
   final OrderUserModel user;
+
+  /// The courier assigned to this order, from the nested `driver` object.
+  /// Null until a delivery man is assigned (i.e. before the order is out for
+  /// delivery).
+  final DeliveryManModel? driver;
 
   /// The raw machine status key (`pending`, `delivered`, …) used for logic.
   /// For the human-readable label use [orderStatus] instead.
@@ -91,6 +97,7 @@ class OrderModel {
     this.branchId,
     this.vendor = const StoreModel(),
     this.user = const OrderUserModel(),
+    this.driver,
     this.status,
     this.orderStatus,
     this.isTracking = false,
@@ -142,6 +149,9 @@ class OrderModel {
         'logo_url': vendor?['logo_url'],
       }),
       user: OrderUserModel.fromJson(json['user'] as Map<String, dynamic>?),
+      driver: json['driver'] is Map<String, dynamic>
+          ? DeliveryManModel.fromJson(json['driver'] as Map<String, dynamic>)
+          : null,
       status: json['status']?.toString(),
       orderStatus: (json['order_status'] is Map)
           ? json['order_status'] as Map<String, dynamic>
