@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/top_brands/top_brands_item.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 
-class TopBrandsView extends StatelessWidget {
+class TopBrandsView extends ConsumerWidget {
   const TopBrandsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.all(5),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 20,
-        childAspectRatio: 167 / 164
+  Widget build(BuildContext context, WidgetRef ref) {
+    final GetFeaturedStoresViewModel viewModel =
+        ref.read(getFeaturedStoresProvider.notifier);
+
+    return PaginatedView<StoreModel>(
+      provider: getFeaturedStoresProvider,
+      onRefresh: viewModel.loadFirstPage,
+      onLoadNextPage: viewModel.loadNextPage,
+      firstPagePlaceholdersCount: 8,
+      layout: const PaginatedGridLayout(
+        padding: EdgeInsets.all(5),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 20,
+          childAspectRatio: 167 / 164,
+        ),
       ),
-      itemCount: 8,
-      itemBuilder: (BuildContext context, int index) => InkWell(
-          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-          child: TopBrandsItem()),
+      placeholderBuilder: (_) => const AppShimmer(child: TopBrandsItem()),
+      itemBuilder: (context, StoreModel store, index) => InkWell(
+        onTap: store.id == null
+            ? null
+            : () => context.pushNamed(
+                  AppRoutes.storeDetailsScreen,
+                  extra: store.id,
+                ),
+        child: TopBrandsItem(store: store),
+      ),
     );
   }
 }

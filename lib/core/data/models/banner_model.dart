@@ -60,7 +60,12 @@ class BannerModel extends Equatable {
       defaultUrl: json['default_url']?.toString(),
       index: (json['index'] as num?)?.toInt(),
       isFeatured: json['is_featured'] as bool?,
-      productSlug: json['product_slug']?.toString(),
+      // Store banners send a flat `product_slug`; the `/api/v1/banners` endpoint
+      // nests it under `product.slug`. Read either so both sources work.
+      productSlug: json['product_slug']?.toString() ??
+          (json['product'] is Map
+              ? (json['product'] as Map)['slug']?.toString()
+              : null),
       categorySlug: json['category_slug']?.toString(),
       image: json.downloadUrl('image'),
       imageAr: json.downloadUrl('image_ar'),

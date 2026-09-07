@@ -6,12 +6,16 @@ import 'package:nowdelivery_user_app/features/home/presentation/controllers/home
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class AppSlider extends ConsumerWidget {
-  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItems, this.sliderSpace = 8, this.itemAspectRatio =1,});
+  AppSlider({super.key, this.activeDotColor, this.dotColor, required this.sliderItems, this.sliderSpace = 8, this.itemAspectRatio =1, this.showIndicator = true,});
   final Color? activeDotColor;
   final Color? dotColor;
   final List<Widget> sliderItems;
   final double? sliderSpace;
   final double? itemAspectRatio;
+
+  /// Whether to show the page-dots indicator under the carousel (only ever
+  /// shown for multi-item sliders). Off for the home top banner.
+  final bool showIndicator;
   final HomeController _homeController = HomeController();
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -42,7 +46,7 @@ class AppSlider extends ConsumerWidget {
                   },
           ),
         ),
-        if (!isSingleItem)
+        if (!isSingleItem && showIndicator)
           AnimatedSmoothIndicator(
             activeIndex: ref.watch(_homeController.sliderIndexProvider),
             count: sliderItems.length,
