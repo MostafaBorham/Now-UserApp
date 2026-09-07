@@ -40,6 +40,7 @@ class InfoField extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 hasValue ? value! : (hint ?? ''),
+                textDirection: TextDirection.ltr,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,

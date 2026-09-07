@@ -186,6 +186,20 @@ abstract class LangKeys {
   static const String resetFilterKey = 'resetFilter';
   static const String pasteCodeKey = 'pasteCode';
   static const String personalInformationKey = 'personalInformation';
+
+  // Personal information (read-only profile) screen
+  static const String fullNameKey = 'fullName';
+  static const String phoneKey = 'phone';
+  static const String emailKey = 'email';
+  static const String genderKey = 'gender';
+  static const String maleKey = 'male';
+  static const String femaleKey = 'female';
+  static const String dateOfBirthKey = 'dateOfBirth';
+  static const String nationalityKey = 'nationality';
+  static const String enterEmailAddressKey = 'enterEmailAddress';
+  static const String selectDateOfBirthKey = 'selectDateOfBirth';
+  static const String enterNationalityKey = 'enterNationality';
+
   static const String nameKey = 'name';
   static const String firstNameHintKey = 'firstNameHint';
   static const String lastNameHintKey = 'lastNameHint';

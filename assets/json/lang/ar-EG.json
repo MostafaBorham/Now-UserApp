@@ -410,5 +410,16 @@
   "welcomeVoucherDiscount": "خصم",
   "welcomeVoucherSuffix": " لأول طلب",
   "balance": "الرصيد: ",
-  "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ"
+  "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ",
+  "fullName": "الاسم الكامل",
+  "phone": "رقم الهاتف",
+  "email": "البريد الإلكتروني",
+  "gender": "الجنس",
+  "male": "ذكر",
+  "female": "أنثى",
+  "dateOfBirth": "تاريخ الميلاد",
+  "nationality": "الجنسية",
+  "enterEmailAddress": "أدخل البريد الإلكتروني",
+  "selectDateOfBirth": "اختر تاريخ الميلاد",
+  "enterNationality": "أدخل جنسيتك"
 }

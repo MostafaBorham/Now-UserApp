@@ -22,25 +22,44 @@ import '../widgets/profile_avatar.dart';
 /// failure, and the read-only [InfoField]s on success. The avatar is a static
 /// placeholder for now (avatar wiring is deferred). The "Edit" button opens
 /// [EditInformationScreen].
-class PersonalInformationScreen extends ConsumerWidget {
+class PersonalInformationScreen extends ConsumerStatefulWidget {
   const PersonalInformationScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
+}
+
+class _PersonalInformationScreenState
+    extends ConsumerState<PersonalInformationScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(getProfileProvider);
 
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.personalInformationKey.tr(),
+        scrollController: _scrollController,
         body: state.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (Object error, _) => ServerConnectionErrorWidget(
             message: error.toString(),
             onRetry: () => ref.read(getProfileProvider.notifier).getProfile(),
           ),
-          data: (data) =>
-              _ProfileBody(profile: data.profile, avatarUrl: data.avatarUrl),
+          data: (data) => _ProfileBody(
+            profile: data.profile,
+            avatarUrl: data.avatarUrl,
+            scrollController: _scrollController,
+          ),
         ),
       ),
     );
@@ -48,15 +67,23 @@ class PersonalInformationScreen extends ConsumerWidget {
 }
 
 class _ProfileBody extends StatelessWidget {
-  const _ProfileBody({required this.profile, this.avatarUrl});
+  const _ProfileBody({
+    required this.profile,
+    this.avatarUrl,
+    this.scrollController,
+  });
 
   final ProfileModel profile;
   final String? avatarUrl;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 32),
+      controller: scrollController,
+      // Owns the top spacing AppWavedView drops when a scroll controller is
+      // wired in, so it scrolls up with the content and flattens the wave.
+      padding: const EdgeInsets.only(top: 57, bottom: 32),
       child: Column(
         children: [
           const SizedBox(height: 24),
@@ -71,27 +98,35 @@ class _ProfileBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InfoField(label: 'Full Name', value: profile.fullName, hint: '—'),
-                  InfoField(label: 'Phone', value: profile.phone, hint: '—'),
                   InfoField(
-                    label: 'Email',
-                    value: profile.email,
-                    hint: 'Enter email address',
-                  ),
-                  InfoField(
-                    label: 'Gender',
-                    value: _titleCase(profile.gender),
+                    label: LangKeys.fullNameKey.tr(),
+                    value: profile.fullName,
                     hint: '—',
                   ),
                   InfoField(
-                    label: 'Date of Birth',
-                    value: profile.birthday,
-                    hint: 'Select date of birth',
+                    label: LangKeys.phoneKey.tr(),
+                    value: profile.phone,
+                    hint: '—',
                   ),
                   InfoField(
-                    label: 'Nationality',
+                    label: LangKeys.emailKey.tr(),
+                    value: profile.email,
+                    hint: LangKeys.enterEmailAddressKey.tr(),
+                  ),
+                  InfoField(
+                    label: LangKeys.genderKey.tr(),
+                    value: _localizedGender(profile.gender),
+                    hint: '—',
+                  ),
+                  InfoField(
+                    label: LangKeys.dateOfBirthKey.tr(),
+                    value: profile.birthday,
+                    hint: LangKeys.selectDateOfBirthKey.tr(),
+                  ),
+                  InfoField(
+                    label: LangKeys.nationalityKey.tr(),
                     value: profile.nationality,
-                    hint: 'Enter your nationality',
+                    hint: LangKeys.enterNationalityKey.tr(),
                     showDivider: false,
                   ),
                 ],
@@ -100,7 +135,7 @@ class _ProfileBody extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           PrimaryButton(
-            label: 'Edit',
+            label: LangKeys.editKey.tr(),
             onPressed: () => context.pushNamed(AppRoutes.editInformationScreen),
           ),
         ],
@@ -108,9 +143,22 @@ class _ProfileBody extends StatelessWidget {
     );
   }
 
-  /// 'male' → 'Male'. Returns null (so the hint shows) when empty.
-  String? _titleCase(String? value) {
-    if (value == null || value.isEmpty) return null;
-    return value[0].toUpperCase() + value.substring(1);
+  /// Maps the raw server gender ('male' | 'female' | 'other') to its localized
+  /// label. Returns null (so the hint shows) when empty, and falls back to the
+  /// raw value for any unexpected server string.
+  String? _localizedGender(String? value) {
+    switch (value?.toLowerCase()) {
+      case 'male':
+        return LangKeys.maleKey.tr();
+      case 'female':
+        return LangKeys.femaleKey.tr();
+      case 'other':
+        return LangKeys.otherKey.tr();
+      case null:
+      case '':
+        return null;
+      default:
+        return value;
+    }
   }
 }

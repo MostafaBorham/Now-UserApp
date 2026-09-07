@@ -411,5 +411,16 @@
   "welcomeVoucherDiscount": "a discount",
   "welcomeVoucherSuffix": " on your first order",
   "balance": "Balance: ",
-  "walletShortfallHint": "Choose a backup payment method to deduct the remaining amount if the wallet balance is insufficient"
+  "walletShortfallHint": "Choose a backup payment method to deduct the remaining amount if the wallet balance is insufficient",
+  "fullName": "Full Name",
+  "phone": "Phone",
+  "email": "Email",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "dateOfBirth": "Date of Birth",
+  "nationality": "Nationality",
+  "enterEmailAddress": "Enter email address",
+  "selectDateOfBirth": "Select date of birth",
+  "enterNationality": "Enter your nationality"
 }
