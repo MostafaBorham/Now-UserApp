@@ -422,5 +422,9 @@
   "nationality": "Nationality",
   "enterEmailAddress": "Enter email address",
   "selectDateOfBirth": "Select date of birth",
-  "enterNationality": "Enter your nationality"
+  "enterNationality": "Enter your nationality",
+  "editInformation": "Edit Information",
+  "save": "Save",
+  "chooseFromGallery": "Choose from gallery",
+  "removePhoto": "Remove photo"
 }

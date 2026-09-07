@@ -47,21 +47,11 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   File? _pickedAvatar; // newly picked file to upload
   bool _removeAvatar = false; // user chose to clear the picture
 
+  // Drives the AppWavedView wave: it flattens while scrolled and springs back
+  // to the curved edge once the list settles at the top.
+  final ScrollController _scrollController = ScrollController();
+
   static const double _fieldGap = 18;
-  static const List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
 
   @override
   void initState() {
@@ -73,7 +63,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     _email = TextEditingController(text: p?.email ?? '');
     _nationality = TextEditingController(text: p?.nationality ?? '');
     _phone = p?.phone;
-    _gender = p?.gender;
+    _gender = _normalizeGender(p?.gender);
     _dob = p?.birthday == null ? null : DateTime.tryParse(p!.birthday!);
     _currentAvatarUrl = data?.avatarUrl;
   }
@@ -83,12 +73,14 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     _fullName.dispose();
     _email.dispose();
     _nationality.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  String? get _dobText => _dob == null
+  /// Localized birthday label (e.g. "September 7, 2026" / Arabic equivalent).
+  String? _dobText(BuildContext context) => _dob == null
       ? null
-      : '${_months[_dob!.month - 1]} ${_dob!.day}, ${_dob!.year}';
+      : DateFormat.yMMMMd(context.locale.languageCode).format(_dob!);
 
   Future<void> _pickDate() async {
     FocusScope.of(context).unfocus();
@@ -98,6 +90,28 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       initialDate: _dob ?? DateTime(now.year - 20, now.month, now.day),
       firstDate: DateTime(1900),
       lastDate: now,
+      builder: (BuildContext pickerContext, Widget? child) {
+        final AppColorScheme colors = pickerContext.colors;
+        final ThemeData base = Theme.of(pickerContext);
+        return Theme(
+          data: base.copyWith(
+            colorScheme: base.colorScheme.copyWith(
+              primary: colors.primary500Main, // selected-day circle + actions
+              onPrimary: colors.white, // text on the selected day
+              surface: colors.white, // calendar background
+              onSurface: colors.black, // day numbers + header text
+            ),
+            dividerColor: colors.primary500Main, // divider under the header
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: colors.white,
+              headerBackgroundColor: colors.white,
+              headerForegroundColor: colors.black,
+              dividerColor: colors.primary500Main,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() => _dob = picked);
@@ -117,13 +131,13 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
+              title: Text(LangKeys.chooseFromGalleryKey.tr()),
               onTap: () => Navigator.pop(sheetContext, _AvatarAction.pick),
             ),
             if (hasAvatar)
               ListTile(
                 leading: const Icon(Icons.delete_outline),
-                title: const Text('Remove photo'),
+                title: Text(LangKeys.removePhotoKey.tr()),
                 onTap: () => Navigator.pop(sheetContext, _AvatarAction.remove),
               ),
           ],
@@ -157,6 +171,33 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   String? _clean(String text) {
     final String trimmed = text.trim();
     return trimmed.isEmpty ? null : trimmed;
+  }
+
+  /// Wraps the phone number in a Unicode LTR isolate (LRI … PDI) so its digits
+  /// and the leading country-code "+" always read left-to-right, while the
+  /// field itself keeps aligning to the start side (hugging the leading icon)
+  /// under both Arabic (RTL) and English (LTR).
+  String? _ltrPhone(String? phone) {
+    if (phone == null || phone.isEmpty) return null;
+    // U+2066 LEFT-TO-RIGHT ISOLATE … U+2069 POP DIRECTIONAL ISOLATE.
+    return '\u{2066}$phone\u{2069}';
+  }
+
+  /// Canonicalizes any incoming gender (English or Arabic, any case) to the
+  /// English value the API expects, so we never send a localized label back
+  /// even when the app is running in Arabic.
+  String? _normalizeGender(String? value) {
+    switch (value?.trim().toLowerCase()) {
+      case 'male':
+      case 'ذكر':
+        return 'male';
+      case 'female':
+      case 'أنثى':
+      case 'انثى':
+        return 'female';
+      default:
+        return null;
+    }
   }
 
   /// DateTime → 'YYYY-MM-DD' for the API.
@@ -201,12 +242,17 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
-        appBarTitle: LangKeys.personalInformationKey.tr(),
+        appBarTitle: LangKeys.editInformationKey.tr(),
+        scrollController: _scrollController,
         body: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 24),
+                controller: _scrollController,
+                // Owns the top spacing AppWavedView drops when a scroll
+                // controller is wired in, so it scrolls up with the content
+                // and flattens the wave.
+                padding: const EdgeInsets.only(top: 57, bottom: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -223,63 +269,85 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    EditField(
-                      label: 'Full Name',
-                      controller: _fullName,
-                      leadingAsset: Assets.media.images.svg.pen.path,
-                      showCounter: true,
-                      maxLength: 40,
-                    ),
-                    const SizedBox(height: _fieldGap),
-                    EditField(
-                      label: 'Phone',
-                      valueText: _phone,
-                      hintText: '—',
-                      readOnly: true,
-                    ),
-                    const SizedBox(height: _fieldGap),
-                    EditField(
-                      label: 'Email',
-                      controller: _email,
-                      hintText: 'Enter email address',
-                      leadingAsset: Assets.media.images.svg.pen.path,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: _fieldGap),
-                    Text(
-                      'Gender',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: context.colors.neutral500,
+                    // Grey (neutral200) card sitting behind the whole form,
+                    // matching the Figma design.
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 20,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    CommonScreenTabs(
-                      height: 49,
-                      tabsName: const ["Male", "Female"],
-                      initialIndex: _gender == 'female' ? 1 : 0,
-                      activeFontColor: Colors.white,
-                      inactiveFontColor: context.colors.tertiaryContainer,
-                      onTaptab: (currentTab) =>
-                          _gender = currentTab == 1 ? 'female' : 'male',
-                      radius: 100,
-                      tapRadius: 100,
-                    ),
-                    const SizedBox(height: _fieldGap),
-                    EditField(
-                      label: 'Date of Birth',
-                      hintText: 'Select Date of Birth',
-                      valueText: _dobText,
-                      trailingAsset: Assets.media.images.svg.date.path,
-                      readOnly: true,
-                      onTap: _pickDate,
-                    ),
-                    const SizedBox(height: _fieldGap),
-                    EditField(
-                      label: 'Nationality',
-                      controller: _nationality,
-                      hintText: 'Enter your nationality',
-                      trailingAsset: Assets.media.images.svg.pen.path,
+                      decoration: BoxDecoration(
+                        color: context.colors.neutral200.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          EditField(
+                            label: LangKeys.fullNameKey.tr(),
+                            controller: _fullName,
+                            leadingAsset: Assets.media.images.svg.pen.path,
+                            showCounter: true,
+                            maxLength: 40,
+                          ),
+                          const SizedBox(height: _fieldGap),
+                          EditField(
+                            label: LangKeys.phoneKey.tr(),
+                            valueText: _ltrPhone(_phone),
+                            hintText: '—',
+                            leadingAsset: Assets.media.images.svg.pen.path,
+                            readOnly: true,
+                          ),
+                          const SizedBox(height: _fieldGap),
+                          EditField(
+                            label: LangKeys.emailKey.tr(),
+                            controller: _email,
+                            hintText: LangKeys.enterEmailAddressKey.tr(),
+                            leadingAsset: Assets.media.images.svg.pen.path,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          const SizedBox(height: _fieldGap),
+                          Text(
+                            LangKeys.genderKey.tr(),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: context.colors.neutral500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          CommonScreenTabs(
+                            height: 49,
+                            tabsName: [
+                              LangKeys.maleKey.tr(),
+                              LangKeys.femaleKey.tr(),
+                            ],
+                            initialIndex: _gender == 'female' ? 1 : 0,
+                            activeFontColor: Colors.white,
+                            inactiveFontColor: context.colors.tertiaryContainer,
+                            onTaptab: (currentTab) =>
+                                _gender = currentTab == 1 ? 'female' : 'male',
+                            radius: 100,
+                            tapRadius: 100,
+                          ),
+                          const SizedBox(height: _fieldGap),
+                          EditField(
+                            label: LangKeys.dateOfBirthKey.tr(),
+                            hintText: LangKeys.selectDateOfBirthKey.tr(),
+                            valueText: _dobText(context),
+                            leadingAsset: Assets.media.images.svg.date.path,
+                            readOnly: true,
+                            onTap: _pickDate,
+                          ),
+                          const SizedBox(height: _fieldGap),
+                          EditField(
+                            label: LangKeys.nationalityKey.tr(),
+                            controller: _nationality,
+                            hintText: LangKeys.enterNationalityKey.tr(),
+                            leadingAsset: Assets.media.images.svg.pen.path,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -310,7 +378,7 @@ class _SaveBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: PrimaryButton(
-          label: 'Save',
+          label: LangKeys.saveKey.tr(),
           isLoading: isLoading,
           onPressed: onSave,
         ),

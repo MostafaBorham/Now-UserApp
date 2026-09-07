@@ -412,14 +412,18 @@
   "balance": "الرصيد: ",
   "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ",
   "fullName": "الاسم الكامل",
-  "phone": "رقم الهاتف",
+  "phone": "الهاتف",
   "email": "البريد الإلكتروني",
-  "gender": "الجنس",
+  "gender": "النوع",
   "male": "ذكر",
   "female": "أنثى",
   "dateOfBirth": "تاريخ الميلاد",
   "nationality": "الجنسية",
-  "enterEmailAddress": "أدخل البريد الإلكتروني",
+  "enterEmailAddress": "أدخل عنوان البريد",
   "selectDateOfBirth": "اختر تاريخ الميلاد",
-  "enterNationality": "أدخل جنسيتك"
+  "enterNationality": "أدخل جنسيتك",
+  "editInformation": "تعديل المعلومات",
+  "save": "حفظ",
+  "chooseFromGallery": "اختر من المعرض",
+  "removePhoto": "إزالة الصورة"
 }

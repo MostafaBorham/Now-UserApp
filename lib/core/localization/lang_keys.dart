@@ -186,6 +186,10 @@ abstract class LangKeys {
   static const String resetFilterKey = 'resetFilter';
   static const String pasteCodeKey = 'pasteCode';
   static const String personalInformationKey = 'personalInformation';
+  static const String editInformationKey = 'editInformation';
+  static const String saveKey = 'save';
+  static const String chooseFromGalleryKey = 'chooseFromGallery';
+  static const String removePhotoKey = 'removePhoto';
 
   // Personal information (read-only profile) screen
   static const String fullNameKey = 'fullName';

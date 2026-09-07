@@ -77,7 +77,7 @@ class EditField extends StatelessWidget {
     if (leadingAsset != null) {
       children.add(
         Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsetsDirectional.only(end: 12),
           child: SvgPicture.asset(leadingAsset!, width: 20, height: 20),
         ),
       );
@@ -134,7 +134,7 @@ class EditField extends StatelessWidget {
     if (trailingAsset != null) {
       children.add(
         Padding(
-          padding: const EdgeInsets.only(left: 12),
+          padding: const EdgeInsetsDirectional.only(start: 12),
           child: SvgPicture.asset(trailingAsset!, width: 20, height: 20),
         ),
       );
@@ -145,7 +145,7 @@ class EditField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: context.colors.onPrimaryContainer,
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Row(children: children),
     );
