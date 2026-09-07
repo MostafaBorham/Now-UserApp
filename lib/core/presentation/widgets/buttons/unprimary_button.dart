@@ -9,6 +9,8 @@ class UnPrimaryButton extends StatelessWidget {
     this.onTap,
     this.buttonPadding = 12, this.borderColor, this.titleColor,
     this.isLoading = false,
+    this.backgroundColor,
+    this.titleStyle,
   });
 
   final String title;
@@ -17,6 +19,10 @@ class UnPrimaryButton extends StatelessWidget {
   final Color? borderColor;
   final Color? titleColor;
   final bool isLoading;
+  final Color? backgroundColor;
+
+  /// Overrides the default 14/Medium label style.
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,7 @@ class UnPrimaryButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-          color: Colors.transparent,
+          color: backgroundColor ?? Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: borderColor?? colors.neutral400.withValues(alpha: 0.5), width: 1),
         ),
@@ -46,7 +52,8 @@ class UnPrimaryButton extends StatelessWidget {
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.style14Medium.copyWith(color: titleColor?? colors.black),
+                  style: (titleStyle ?? AppTextStyles.style14Medium)
+                      .copyWith(color: titleColor ?? colors.black),
                 ),
               ),
       ),

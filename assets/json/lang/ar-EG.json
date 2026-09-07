@@ -24,6 +24,8 @@
   "appUnderMaintenanceSubtitle": "نعمل على تحسين تجربتك. سنعود قريبًا. شكرًا لصبرك.",
   "applePay": "Apple Pay",
   "apply": "تطبيق",
+  "applied": "مُطبَّق",
+  "voucherApplyFailed": "لا يمكن تطبيق هذه القسيمة",
   "applyFilters": "تطبيق الفلاتر",
   "areYouSureCancel": "هل أنت متأكد من رغبتك في الإلغاء؟",
   "area": "المنطقة",
@@ -252,6 +254,7 @@
   "resend": "إعادة الإرسال",
   "resetFilter": "مسح الفلتر",
   "retry": "إعادة المحاولة",
+  "returnToHomePage": "العودة إلى الصفحة الرئيسية",
   "rewardPoints": "نقاط المكافأة",
   "sampleBrandCategory": "شوكولاتة داكنة",
   "sampleBrandDescription": "شوكولاتة داكنة غنية بنسبة 70% كاكاو. لعشاق النكهة العميقة والأصيلة.",
@@ -402,5 +405,7 @@
   "welcomeVoucherPrefix": "استخدم كود ",
   "welcomeVoucherMiddle": " واحصل على ",
   "welcomeVoucherDiscount": "خصم",
-  "welcomeVoucherSuffix": " لأول طلب"
+  "welcomeVoucherSuffix": " لأول طلب",
+  "balance": "الرصيد: ",
+  "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ"
 }

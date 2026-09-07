@@ -7,18 +7,22 @@ import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/applied_coupon_model.dart';
+import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_coupons_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_instructions_card.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/purchase_vouchers_strip.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_option.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
@@ -46,6 +50,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   int? _addressId;
 
+  // Idempotency key for the place request: reused across retries of an
+  // unchanged order, rotated when the order changes or after one is placed.
+  final IdempotencyKey _idempotencyKey = IdempotencyKey();
+
   void _onConfirmOrder() {
     // Read from the async provider rather than [checkoutModelProvider]: the
     // latter only exists inside the scope below, which this `ref` is above.
@@ -62,19 +70,69 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     }
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
-    final String? paymentMethod = checkout.orderGroup.paymentMethod;
-    final List<AppliedCouponModel> coupons = ref.read(appliedCouponsProvider);
+    // The wallet wins while its checkbox is ticked (the default); untick it and
+    // the draft's own method pays. ponytail: there is no split-payment field on
+    // the confirm request yet, so the shortfall the note promises is settled
+    // server-side — the app only says which method leads.
+    final String? paymentMethod = ref.read(walletPaymentProvider)
+        ? 'wallet'
+        : checkout.orderGroup.paymentMethod;
+    final List<AppliedDiscountModel> coupons = ref.read(appliedDiscountsProvider);
+    final String? notes = _notes.trim().isEmpty ? null : _notes.trim();
+
+    final String idempotencyKey = _idempotencyKey.forRequest(
+      _placeFingerprint(
+        addressId: _addressId,
+        driverTip: _driverTip,
+        notes: notes,
+        paymentMethod: paymentMethod,
+        coupons: coupons,
+      ),
+    );
 
     ref
         .read(confirmOrderProvider.notifier)
         .confirmOrder(
           orderGroupUuid: orderGroupUuid ?? '',
+          idempotencyKey: idempotencyKey,
           addressId: _addressId!,
           paymentMethod: paymentMethod,
           driverTip: _driverTip,
-          notes: _notes.trim().isEmpty ? null : _notes.trim(),
+          notes: notes,
           coupons: coupons,
         );
+  }
+
+  /// A fingerprint of exactly the fields the place request carries (and the
+  /// server hashes): address, tip, notes, payment method and the *coupon* codes
+  /// (vouchers aren't sent). Two submits with the same fingerprint are the same
+  /// order and may share an idempotency key.
+  String _placeFingerprint({
+    int? addressId,
+    double? driverTip,
+    String? notes,
+    String? paymentMethod,
+    List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
+  }) {
+    final Map<int, String> couponMap = <int, String>{
+      for (final AppliedDiscountModel d in coupons)
+        if (!d.isVoucher) d.vendorId: d.code,
+    };
+    final String sortedCoupons =
+        (couponMap.entries.toList()
+              ..sort(
+                (MapEntry<int, String> a, MapEntry<int, String> b) =>
+                    a.key.compareTo(b.key),
+              ))
+            .map((MapEntry<int, String> e) => '${e.key}:${e.value}')
+            .join(',');
+    return <String>[
+      '${addressId ?? ''}',
+      '$driverTip',
+      notes ?? '',
+      paymentMethod ?? 'wallet',
+      sortedCoupons,
+    ].join('|');
   }
 
   @override
@@ -94,12 +152,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         // `listen` fires only on transitions, so reaching `data` here means the
         // confirm request just succeeded (never the initial idle state).
         data: (_) {
+          // A confirmed placement: consume the key so any later order is
+          // treated as new rather than replaying this one.
+          _idempotencyKey.markConsumed();
           final CheckoutModel? checkout =
               ref.read(checkoutProvider).valueOrNull;
           // Refresh the orders list so its `total` reflects the just-placed
           // order — this is what makes the first-order welcome voucher stop
           // showing on the (now empty) cart.
           ref.read(getMyOrdersProvider.notifier).getOrders();
+          // What was just placed no longer belongs to the cart, so drop it:
+          // the whole cart for an all-stores checkout, that one store for a
+          // single-store one.
+          final GetCartViewModel cartNotifier = ref.read(
+            getCartProvider.notifier,
+          );
+          if (widget.storeId == null) {
+            cartNotifier.clearVendors();
+          } else {
+            cartNotifier.removeVendor(widget.storeId!);
+          }
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
             extra: checkout?.orderGroup.orders ?? const <OrderModel>[],
@@ -139,18 +211,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   const CheckoutPaymentSection(),
-                  SizedBox(
-                    height: 158,
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      clipBehavior: Clip.antiAlias,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) =>
-                          DiscountCodeItem(isDimmed: index == 0),
-                      separatorBuilder: (context, index) => 16.wSpace,
-                      itemCount: 4,
-                    ),
-                  ),
+                  const WalletPaymentOption(),
+                  const PurchaseVouchersStrip(),
                   AddNotesField(onChanged: (String notes) => _notes = notes),
                   const InvoiceSummarySection(),
 

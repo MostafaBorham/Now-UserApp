@@ -19,6 +19,7 @@ class DiscountCodeItem extends StatelessWidget {
     this.label,
     this.validity,
     this.isDimmed = false,
+    this.isSelected = false,
   });
 
   final String percentage;
@@ -26,6 +27,9 @@ class DiscountCodeItem extends StatelessWidget {
   final String? label;
   final String? validity;
   final bool? isDimmed;
+
+  /// Draws a highlight border when this voucher is the one currently applied.
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +153,20 @@ class DiscountCodeItem extends StatelessWidget {
             ),
             // Torn-ticket notches punched into the left/right edges, centred
             // vertically within the green body (matches the Figma geometry).
+            if (isSelected)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: colors.primary500Main,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -469,6 +469,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get homeUnselected =>
       const SvgGenImage('assets/media/images/svg/home_unselected.svg');
 
+  /// File path: assets/media/images/svg/info-blue.svg
+  SvgGenImage get infoBlue =>
+      const SvgGenImage('assets/media/images/svg/info-blue.svg');
+
   /// File path: assets/media/images/svg/info_red.svg
   SvgGenImage get infoRed =>
       const SvgGenImage('assets/media/images/svg/info_red.svg');
@@ -748,12 +752,20 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/visa.svg
   SvgGenImage get visa => const SvgGenImage('assets/media/images/svg/visa.svg');
 
+  /// File path: assets/media/images/svg/wallet-2.svg
+  SvgGenImage get wallet2 =>
+      const SvgGenImage('assets/media/images/svg/wallet-2.svg');
+
   /// File path: assets/media/images/svg/wallet.svg
   SvgGenImage get wallet =>
       const SvgGenImage('assets/media/images/svg/wallet.svg');
 
   /// File path: assets/media/images/svg/wave.svg
   SvgGenImage get wave => const SvgGenImage('assets/media/images/svg/wave.svg');
+
+  /// File path: assets/media/images/svg/welcome-voucher-tag-icon.svg
+  SvgGenImage get welcomeVoucherTagIcon =>
+      const SvgGenImage('assets/media/images/svg/welcome-voucher-tag-icon.svg');
 
   /// File path: assets/media/images/svg/white-app-logo.svg
   SvgGenImage get whiteAppLogo =>
@@ -842,6 +854,7 @@ class $AssetsMediaImagesSvgGen {
     homeHeaderBackground,
     homeSelected,
     homeUnselected,
+    infoBlue,
     infoRed,
     languageIcon,
     language,
@@ -913,8 +926,10 @@ class $AssetsMediaImagesSvgGen {
     viewAllArabic,
     visaLogo,
     visa,
+    wallet2,
     wallet,
     wave,
+    welcomeVoucherTagIcon,
     whiteAppLogo,
     whiteWaveBackground,
     workAddressIcon,

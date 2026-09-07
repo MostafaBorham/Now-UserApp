@@ -1,6 +1,8 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/vendor_discount_application_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/repo/checkout_repo.dart';
 
 /// Single task: hold the draft order group the checkout screen renders.
@@ -65,32 +67,20 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
     );
   }
 
-  /// Applies coupon [code] for [vendorId] to the draft group identified by
-  /// [orderGroupUuid]. The vendor→code map required by the repo is assembled
-  /// here.
-  ///
-  /// On success the refreshed draft is swapped into [state] and `null` is
-  /// returned. On failure [state] is left untouched (the current draft stays on
-  /// screen) and the rejection reason is returned so the caller can surface it
-  /// — e.g. in a snackbar.
-  Future<String?> applyCoupons({
-    required String orderGroupUuid,
+  /// Applies coupon [code] for [vendorId] via the stateless calculator and
+  /// forwards the result. The draft [state] is intentionally untouched — the
+  /// applied discount is owned by `appliedDiscountsProvider`, and the caller
+  /// inspects [VendorDiscountApplicationModel.applied] to tell an accepted code
+  /// from a rejected one.
+  Future<Either<Failure, VendorDiscountApplicationModel>> applyCoupon({
     required int vendorId,
     required String code,
-  }) async {
-    final result = await _repo.applyCoupons(
-      orderGroupUuid: orderGroupUuid,
-      coupons: <int, String>{vendorId: code},
-    );
+  }) => _repo.applyCoupon(vendorId: vendorId, code: code);
 
-    if (!mounted) return null;
-
-    return result.fold(
-      (Failure failure) => failure.message,
-      (CheckoutModel draft) {
-        state = AsyncValue<CheckoutModel?>.data(draft);
-        return null;
-      },
-    );
-  }
+  /// Applies purchase-voucher [code] for [vendorId]. Same semantics as
+  /// [applyCoupon].
+  Future<Either<Failure, VendorDiscountApplicationModel>> applyPurchaseVoucher({
+    required int vendorId,
+    required String code,
+  }) => _repo.applyPurchaseVoucher(vendorId: vendorId, code: code);
 }

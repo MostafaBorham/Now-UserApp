@@ -1,0 +1,69 @@
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
+import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/purchase_vouchers/data/datasources/remote/api/purchase_voucher_api_service.dart';
+import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
+
+/// Data operations of the purchase-vouchers feature. Every method returns
+/// `Either<Failure, T>`.
+class PurchaseVoucherRepo {
+  final PurchaseVoucherApiService _apiService = PurchaseVoucherApiService();
+
+  void cancelRequests() => _apiService.cancelRequests();
+
+  /// Fetches one page of vouchers. [storeId] returns platform-wide vouchers
+  /// plus that store's vouchers; `null` returns everything.
+  Future<Either<Failure, PaginationModel<PurchaseVoucherModel>>>
+  getPurchaseVouchers({int? storeId, int page = 1}) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _apiService.getPurchaseVouchers(
+        storeId: storeId,
+        page: page,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data =
+          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+
+      final Map<String, dynamic> paginationData =
+          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
+      final List<dynamic> rawVouchers =
+          data['purchase_vouchers'] as List<dynamic>? ?? <dynamic>[];
+
+      final List<PurchaseVoucherModel> vouchers = rawVouchers
+          .map(
+            (dynamic e) =>
+                PurchaseVoucherModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList();
+
+      return Right(
+        PaginationModel<PurchaseVoucherModel>.fromJson(
+          paginationData,
+          vouchers,
+        ),
+      );
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+}
