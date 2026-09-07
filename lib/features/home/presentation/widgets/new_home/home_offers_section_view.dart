@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -29,40 +28,27 @@ class HomeOffersSectionView extends StatelessWidget {
     final String heading =
         (title != null && title!.isNotEmpty) ? title! : LangKeys.specialOffersKey.tr();
 
+    // The decorative starburst background now lives behind the top banner
+    // ([HomeTopBannerSectionView]), not here.
     return LayoutBuilder(
       builder: (context, con) {
-        return SizedBox(
-          width: con.maxWidth,
-          child: Stack(
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(start: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 12,
             children: [
-              Positioned(
-                bottom: 12,
-                height: con.maxWidth * 0.6,
-                width: con.maxWidth,
-                child: Assets.media.images.svg.homeOffersBackground.svg(
-                  fit: BoxFit.fill,
+              Text(
+                heading,
+                style: TextStyle(
+                  fontSize: con.maxWidth * 0.05,
+                  color: colors.black,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 12,
-                  children: [
-                    Text(
-                      heading,
-                      style: TextStyle(
-                        fontSize: con.maxWidth * 0.05,
-                        color: colors.black,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(
-                      height: con.maxWidth * 0.4,
-                      child: _AutoScrollOffersList(offers: offers),
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: con.maxWidth * 0.4,
+                child: _AutoScrollOffersList(offers: offers),
               ),
             ],
           ),

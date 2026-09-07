@@ -21,6 +21,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_pinned_search_bar.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
@@ -83,7 +84,9 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
   void _loadFeed() {
-    ref.read(getHomeSectionsProvider.notifier).getHomeSections(
+    ref
+        .read(getHomeSectionsProvider.notifier)
+        .getHomeSections(
           platform: Platform.isIOS ? 'ios' : 'android',
           lang: context.locale.languageCode,
         );
@@ -137,10 +140,7 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
   /// The first feed section of [type], or null when the feed has none.
-  HomeSectionModel? _findSection(
-    List<HomeSectionModel> sections,
-    String type,
-  ) {
+  HomeSectionModel? _findSection(List<HomeSectionModel> sections, String type) {
     for (final HomeSectionModel section in sections) {
       if (section.type == type) return section;
     }
@@ -163,8 +163,15 @@ class _HomeViewState extends ConsumerState<HomeView>
     final bool showCategories =
         !feed.hasValue ||
         sections.any((HomeSectionModel s) => s.type == 'categories');
-    final HomeSectionModel? offersSection =
-        _findSection(sections, 'featured_offers');
+    final HomeSectionModel? offersSection = _findSection(
+      sections,
+      'featured_offers',
+    );
+    // Gate the top banner on the feed's presence-only `top_banner` section;
+    // false until the feed loads, so nothing flashes before it is known.
+    final bool showTopBanner = sections.any(
+      (HomeSectionModel s) => s.type == 'top_banner',
+    );
 
     return Stack(
       children: <Widget>[
@@ -184,7 +191,9 @@ class _HomeViewState extends ConsumerState<HomeView>
                   title: offersSection.title,
                   offers: offersSection.offers,
                 ),
-
+              // LINKED — top banner carousel, gated by the feed's `top_banner`
+              // section; content from /api/v1/banners?type=header_main_page.
+              if (showTopBanner) const HomeTopBannerSectionView(),
               // ---- NOT LINKED: hardcoded placeholders. Swap each for feed data
               //      as its /home-sections type is finished on the backend. ----
               HomeMostPopularBrandsView(), // NOT LINKED (uses /stores/featured)
