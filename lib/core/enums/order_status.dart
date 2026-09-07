@@ -18,6 +18,12 @@ sealed class OrderStatus {
   /// [UnknownStatus] stay `false`.
   bool get isTrackable => false;
 
+  /// Whether the customer can still cancel the order. Only the pre-preparation
+  /// states ([PendingStatus], [AcceptedStatus]) override this to `true`; once
+  /// the vendor starts preparing ([PreparingStatus] onward) it's too late to
+  /// cancel, so every other state stays `false`.
+  bool get isCancellable => false;
+
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
   /// unrecognized key resolves to [UnknownStatus] carrying the raw value.
   static OrderStatus fromKey(String? key) => switch (key) {
@@ -39,6 +45,9 @@ final class PendingStatus extends OrderStatus {
 
   @override
   bool get isTrackable => true;
+
+  @override
+  bool get isCancellable => true;
 }
 
 /// Confirmed by the vendor.
@@ -47,6 +56,9 @@ final class AcceptedStatus extends OrderStatus {
 
   @override
   bool get isTrackable => true;
+
+  @override
+  bool get isCancellable => true;
 }
 
 /// The vendor is preparing the order.

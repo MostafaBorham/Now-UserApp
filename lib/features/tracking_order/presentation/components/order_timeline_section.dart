@@ -27,15 +27,16 @@ class OrderTimelineSection extends StatelessWidget {
 
   /// The milestone the order is currently working toward — the step that shows
   /// the active (green-circle) marker; every step before it is already done
-  /// (checkmark). Once acceptance is granted the order is treated as being
-  /// prepared, so `accepted` shares the preparing milestone with `preparing` /
-  /// `ready`; terminal / unknown states park at the first milestone (they
-  /// aren't tracked here).
+  /// (checkmark). `accepted` and `preparing` sit on the "confirmed & being
+  /// prepared" milestone, while `ready` advances to "on the way" (the order is
+  /// prepared and waiting for pickup) and `on_the_way` advances to the final
+  /// "delivered" milestone. Terminal / unknown states park at the first
+  /// milestone (they aren't tracked here — the section is hidden for them).
   int get _reachedMilestone => switch (status) {
     PendingStatus() => 0,
-    AcceptedStatus() || PreparingStatus() || ReadyStatus() => 1,
-    OnTheWayStatus() => 2,
-    DeliveredStatus() => 3,
+    AcceptedStatus() || PreparingStatus() => 1,
+    ReadyStatus() => 2,
+    OnTheWayStatus() || DeliveredStatus() => 3,
     _ => 0,
   };
 

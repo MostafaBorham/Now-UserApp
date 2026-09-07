@@ -144,19 +144,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     // confirmation screen, on failure surface the message via the shared
     // error snackbar. Uses `listen` (not `watch`) so this fires only on state
     // transitions, never on unrelated rebuilds.
-    ref.listen<AsyncValue<void>>(confirmOrderProvider, (
-      AsyncValue<void>? previous,
-      AsyncValue<void> next,
+    ref.listen<AsyncValue<List<OrderModel>>>(confirmOrderProvider, (
+      AsyncValue<List<OrderModel>>? previous,
+      AsyncValue<List<OrderModel>> next,
     ) {
       next.whenOrNull(
         // `listen` fires only on transitions, so reaching `data` here means the
         // confirm request just succeeded (never the initial idle state).
-        data: (_) {
+        data: (List<OrderModel> placedOrders) {
           // A confirmed placement: consume the key so any later order is
           // treated as new rather than replaying this one.
           _idempotencyKey.markConsumed();
-          final CheckoutModel? checkout =
-              ref.read(checkoutProvider).valueOrNull;
           // Refresh the orders list so its `total` reflects the just-placed
           // order — this is what makes the first-order welcome voucher stop
           // showing on the (now empty) cart.
@@ -172,9 +170,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           } else {
             cartNotifier.removeVendor(widget.storeId!);
           }
+          // Hand the confirmation screen the orders the server actually
+          // created (with real order numbers), not the preview draft.
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
-            extra: checkout?.orderGroup.orders ?? const <OrderModel>[],
+            extra: placedOrders,
           );
         },
         error: (Object error, StackTrace stackTrace) =>

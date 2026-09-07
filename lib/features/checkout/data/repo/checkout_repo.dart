@@ -8,13 +8,12 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/datasources/remote/api/checkout_api_service.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/vendor_discount_application_model.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
 class CheckoutRepo {
   final CheckoutApiService _checkoutApiService = CheckoutApiService();
 
-
   void cancelRequests() => _checkoutApiService.cancelRequests();
-
 
   Future<Either<Failure, CheckoutModel>> checkout({int? vendorId}) async {
     if (!await ConnectionChecker.isConnected) {
@@ -53,7 +52,6 @@ class CheckoutRepo {
     }
   }
 
-
   /// Applies coupon [code] for [vendorId] via the stateless
   /// `POST /api/v1/coupons/apply` calculator.
   ///
@@ -75,8 +73,10 @@ class CheckoutRepo {
     required int vendorId,
     required String code,
   }) => _applyDiscount(
-    () =>
-        _checkoutApiService.applyPurchaseVoucher(vendorId: vendorId, code: code),
+    () => _checkoutApiService.applyPurchaseVoucher(
+      vendorId: vendorId,
+      code: code,
+    ),
   );
 
   Future<Either<Failure, VendorDiscountApplicationModel>> _applyDiscount(
@@ -116,8 +116,10 @@ class CheckoutRepo {
     }
   }
 
-
-  Future<Either<Failure, void>> confirmOrder({
+  /// Confirms the draft group and returns the orders the server actually
+  /// created (each carrying its real `order_number`, status, etc.) so the
+  /// confirmation screen renders placed orders rather than the preview draft.
+  Future<Either<Failure, List<OrderModel>>> confirmOrder({
     required String orderGroupUuid,
     required String idempotencyKey,
     int? addressId,
@@ -145,11 +147,24 @@ class CheckoutRepo {
 
       final bool success = body['success'] as bool? ?? false;
 
-      if (!success && response.statusCode == 422) {
+      if (!success) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      return const Right(null);
+      // The created orders sit on the confirmed order group. Different builds
+      // nest the group under `order_group`; fall back to `data` itself.
+      final Map<String, dynamic>? data =
+          body['data'] as Map<String, dynamic>?;
+      final Map<String, dynamic> group =
+          (data?['order_group'] as Map<String, dynamic>?) ??
+          data ??
+          const <String, dynamic>{};
+      final List<OrderModel> orders =
+          ((group['orders'] as List?) ?? const <dynamic>[])
+              .map((e) => OrderModel.fromJson(e as Map<String, dynamic>?))
+              .toList();
+
+      return Right(orders);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

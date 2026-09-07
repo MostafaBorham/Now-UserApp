@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
@@ -87,11 +88,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             // ...) — no relabeling.
             final String paymentMethodLabel = order.paymentMethod ?? '';
 
-            return SingleChildScrollView(
-              child: Column(
-                spacing: 15,
-                children: [
-                  IntrinsicHeight(
+            return AppRefreshIndicator(
+              onRefresh: ref
+                  .read(getOrderDetailsProvider(widget.orderUuid).notifier)
+                  .getOrderDetails,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  spacing: 15,
+                  children: [
+                    IntrinsicHeight(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 8,
@@ -642,7 +648,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       ],
                     ),
                   ),
-                ],
+                  ],
+                ),
               ),
             );
           },

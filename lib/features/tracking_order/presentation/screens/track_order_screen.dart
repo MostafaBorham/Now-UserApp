@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -63,11 +64,16 @@ class TrackOrderScreen extends ConsumerWidget {
             );
             final String store = context.getLocalizedApiText(order.vendor.name);
 
-            return SingleChildScrollView(
-              child: Column(
-                spacing: 16,
-                children: [
-                  TrackOrderNumberHeader(
+            return AppRefreshIndicator(
+              onRefresh: ref
+                  .read(getOrderDetailsProvider(orderUuid).notifier)
+                  .getOrderDetails,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    TrackOrderNumberHeader(
                     orderNumber: order.orderNumber ?? '',
                     status: orderStatus,
                     statusLabel: localizedStatus.isEmpty
@@ -100,7 +106,9 @@ class TrackOrderScreen extends ConsumerWidget {
                         apiDateTimeStamp: order.estimatedDeliveryTime,
                       ),
                     ),
-                  if (orderStatus.isTrackable) ...[
+                  // The cancel action is only offered while the order can still
+                  // be cancelled (before the vendor starts preparing it).
+                  if (orderStatus.isCancellable) ...[
                     4.hSpace,
                     PrimaryButton(
                       title: LangKeys.cancelOrderKey.tr(),
@@ -117,7 +125,8 @@ class TrackOrderScreen extends ConsumerWidget {
                     ),
                     8.hSpace,
                   ],
-                ],
+                  ],
+                ),
               ),
             );
           },

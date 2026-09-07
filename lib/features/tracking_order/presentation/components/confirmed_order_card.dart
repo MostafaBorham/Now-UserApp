@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -11,13 +11,16 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 /// Order summary card shown on the Order Confirmed screen: a thumbnail, the
-/// order number & price, delivery date, status chips and a "Track Order" CTA.
+/// order number & price, the awaiting-confirmation line, status chips and a
+/// "Track Order" CTA.
+///
+/// The just-confirmed orders are always pending, so this mirrors the shape of
+/// the my-orders list item ([OrderListItem]) in its pending state.
 class ConfirmedOrderCard extends StatelessWidget {
   const ConfirmedOrderCard({
     super.key,
     this.orderNumber = '#ORD-458921',
     this.price = '20.00',
-    this.deliveryDate = 'March 12, 2026',
     this.itemsCount = 5,
     this.imageUrl = fallbackImageUrl,
     this.onTrack,
@@ -29,7 +32,6 @@ class ConfirmedOrderCard extends StatelessWidget {
 
   final String orderNumber;
   final String price;
-  final String deliveryDate;
   final int itemsCount;
   final String imageUrl;
   final VoidCallback? onTrack;
@@ -37,74 +39,85 @@ class ConfirmedOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.onPrimaryContainer,
+        borderRadius: AppBorderRadius.brCircular16,
+        boxShadow: [
+          BoxShadow(
+            color: colors.neutral500.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
-        spacing: 12,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 10,
         children: [
           Row(
+            spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: 72,
-                height: 72,
-                child: ClipRRect(
-                  borderRadius: AppBorderRadius.brCircular12,
+              ClipRRect(
+                borderRadius: AppBorderRadius.brCircular12,
+                child: SizedBox(
+                  width: 88,
+                  height: 88,
                   child: AppCachedNetworkImage(
                     imageUrl: imageUrl,
-                    width: 72,
-                    height: 72,
+                    width: 88,
+                    height: 88,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              12.wSpace,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 10,
                       children: [
                         Expanded(
-                          child: Text(
+                          child: AutoSizeText(
+                            textDirection: TextDirection.ltr,
                             orderNumber,
                             style: AppTextStyles.style18SemiBold.copyWith(
                               color: colors.black,
                             ),
                           ),
                         ),
-                        8.wSpace,
                         NewPriceWidget(
                           color: colors.primary500Main,
-                          size: 14,
-                          fontWeight: FontWeight.w400,
                           price: price,
+                          size: 14,
                         ),
                       ],
                     ),
-                    6.hSpace,
-                    Text(
-                      '${LangKeys.deliveredOnKey.tr()} $deliveryDate',
+                    4.hSpace,
+                    AutoSizeText(
+                      LangKeys.awaitingOrderConfirmationKey.tr(),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),
                     ),
                     10.hSpace,
                     Row(
-                      spacing: 8,
-
                       children: [
                         _Chip(
                           label: '$itemsCount ${LangKeys.itemsKey.tr()}',
                           background: colors.neutral500.withValues(alpha: 0.1),
                           textColor: colors.black,
                         ),
-                        _Chip(
-                          label: LangKeys.pendingKey.tr(),
-                          background: colors.onSecondaryFixed.withValues(
-                            alpha: 0.4,
+                        8.wSpace,
+                        Flexible(
+                          child: _Chip(
+                            label: LangKeys.pendingKey.tr(),
+                            background: colors.tertiaryFixed,
+                            textColor: colors.onErrorContainer,
                           ),
-                          textColor: colors.onErrorContainer,
                         ),
                       ],
                     ),
@@ -113,7 +126,11 @@ class ConfirmedOrderCard extends StatelessWidget {
               ),
             ],
           ),
-          PrimaryAppButton(title: LangKeys.trackOrderKey.tr(), onTap: onTrack),
+          PrimaryAppButton(
+            title: LangKeys.trackOrderKey.tr(),
+            buttonPadding: 8,
+            onTap: onTrack,
+          ),
         ],
       ),
     );
@@ -134,7 +151,6 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: background,
@@ -142,6 +158,8 @@ class _Chip extends StatelessWidget {
       ),
       child: AutoSizeText(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: AppTextStyles.style14Regular.copyWith(color: textColor),
       ),
     );
