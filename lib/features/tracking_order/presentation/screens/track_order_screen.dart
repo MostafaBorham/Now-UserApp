@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -10,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indic
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/phone_launcher.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
@@ -91,12 +93,14 @@ class TrackOrderScreen extends ConsumerWidget {
                     amount: order.total.toStringAsFixed(2),
                   ),
                   // The courier is only assigned once the order is out for
-                  // delivery.
-                  if (orderStatus is OnTheWayStatus)
+                  // delivery, so the card only shows when the payload actually
+                  // carries a driver.
+                  if (orderStatus is OnTheWayStatus && order.driver != null)
                     CourierSection(
                       courierName: order.driver?.name ?? '',
                       logoUrl: order.driver?.profileImg ?? '',
                       onCall: () => launchPhoneDialer(order.driver?.phone),
+                      onChat: () => context.pushNamed(AppRoutes.supportScreen),
                     ),
 
                   if (orderStatus.isTrackable)

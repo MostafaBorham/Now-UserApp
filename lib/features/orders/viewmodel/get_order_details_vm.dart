@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/repo/orders_repo.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
 /// Single task: fetch one order's full details by its [orderUuid].
 ///
@@ -14,13 +15,16 @@ import 'package:nowdelivery_user_app/features/orders/data/repo/orders_repo.dart'
 final getOrderDetailsProvider = StateNotifierProvider.autoDispose
     .family<GetOrderDetailsViewModel, AsyncValue<OrderModel>, String>(
       (Ref ref, String orderUuid) =>
-          GetOrderDetailsViewModel(orderUuid: orderUuid)..getOrderDetails(),
+          GetOrderDetailsViewModel(ref: ref, orderUuid: orderUuid)
+            ..getOrderDetails(),
     );
 
 class GetOrderDetailsViewModel extends StateNotifier<AsyncValue<OrderModel>> {
-  GetOrderDetailsViewModel({required this.orderUuid})
-    : super(const AsyncValue<OrderModel>.loading());
+  GetOrderDetailsViewModel({required Ref ref, required this.orderUuid})
+    : _ref = ref,
+      super(const AsyncValue<OrderModel>.loading());
 
+  final Ref _ref;
   final OrdersRepo _repo = OrdersRepo();
 
   /// The uuid of the order these details belong to, kept so refresh / retry asks
@@ -45,6 +49,10 @@ class GetOrderDetailsViewModel extends StateNotifier<AsyncValue<OrderModel>> {
       },
       (OrderModel order) {
         state = AsyncValue<OrderModel>.data(order);
+        // Propagate the freshly fetched order into the my-orders list so both
+        // screens show the same state (no-op if the list isn't loaded or the
+        // order isn't in it).
+        _ref.read(getMyOrdersProvider.notifier).updateOrder(order);
       },
     );
   }

@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/orders/data/repo/orders_repo.dart';
-import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
 /// One-shot action: cancel a placed order, keyed by its [orderUuid].
@@ -13,10 +12,12 @@ import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details
 /// `ref.read(cancelOrderProvider(uuid).notifier).cancelOrder()`, watching the
 /// loading slice to drive the button spinner.
 ///
-/// On success the order details (this uuid's family entry) and the my-orders
-/// list are refetched so both reflect the new cancelled state, `state` becomes
-/// `data(null)` and `null` is returned; on failure `state` becomes an error and
-/// the message is also returned so the caller can surface it in a snackbar.
+/// On success the order details (this uuid's family entry) are refetched, and
+/// that fetch propagates the new (cancelled) order into the my-orders list in
+/// place — so both screens reflect the cancelled state without a full list
+/// refetch. `state` becomes `data(null)` and `null` is returned; on failure
+/// `state` becomes an error and the message is also returned so the caller can
+/// surface it in a snackbar.
 final cancelOrderProvider = StateNotifierProvider.autoDispose
     .family<CancelOrderViewModel, AsyncValue<void>, String>(
       (Ref ref, String orderUuid) =>
@@ -56,10 +57,10 @@ class CancelOrderViewModel extends StateNotifier<AsyncValue<void>> {
         return failure.message;
       },
       (_) {
-        // Refresh both views so the cancelled state propagates: the track /
-        // details screen for this uuid, and the my-orders list.
+        // Cancel's response carries no order body, so refetch the details for
+        // this uuid; that fetch, on success, updates the my-orders list entry
+        // in place — keeping the track / details screen and the list consistent.
         _ref.read(getOrderDetailsProvider(orderUuid).notifier).getOrderDetails();
-        _ref.read(getMyOrdersProvider.notifier).getOrders();
         state = const AsyncValue<void>.data(null);
         return null;
       },
