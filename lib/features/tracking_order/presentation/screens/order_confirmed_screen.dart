@@ -23,6 +23,8 @@ class OrderConfirmedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Scaffold(
+      extendBody: false,
+      extendBodyBehindAppBar: false,
       body: SingleChildScrollView(
         child: Container(
           // width: double.maxFinite,
@@ -35,27 +37,29 @@ class OrderConfirmedScreen extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsetsDirectional.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                const OrderConfirmedHeader(),
-                24.hSpace,
-                for (final OrderModel order in orders) ...[
-                  ConfirmedOrderCard(
-                    orderNumber: order.orderNumber ?? '',
-                    price: order.total.toStringAsFixed(2),
-                    itemsCount: order.items.length,
-                    imageUrl:
-                        order.vendor.logoUrl ??
-                        ConfirmedOrderCard.fallbackImageUrl,
-                    onTrack: () => context.pushNamed(
-                      AppRoutes.trackOrderScreen,
-                      extra: order.uuid,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  const OrderConfirmedHeader(),
+                  24.hSpace,
+                  for (final OrderModel order in orders) ...[
+                    ConfirmedOrderCard(
+                      orderNumber: order.orderNumber ?? '',
+                      price: order.total.toStringAsFixed(2),
+                      itemsCount: order.items.length,
+                      imageUrl:
+                          order.vendor.logoUrl ??
+                          ConfirmedOrderCard.fallbackImageUrl,
+                      onTrack: () => context.pushNamed(
+                        AppRoutes.trackOrderScreen,
+                        extra: order.uuid,
+                      ),
                     ),
-                  ),
-                  16.hSpace,
+                    16.hSpace,
+                  ],
+                  8.hSpace,
                 ],
-                8.hSpace,
-              ],
+              ),
             ),
           ),
         ),
