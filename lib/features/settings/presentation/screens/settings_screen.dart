@@ -73,11 +73,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           controller: _scrollController,
           child: Column(
             children: [
-              // Top spacing lives inside the scroll view so it scrolls up with
-              // the content when the wave flattens on scroll.
               const SizedBox(height: 57),
-              // Logged-in users see their real name + avatar; guests keep the
-              // default label and never hit /user/profile.
               isUser
                   ? ProfileInfo(
                       name: profileData?.profile.fullName ?? '',

@@ -10,11 +10,13 @@ import 'settings_tile.dart';
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
     super.key,
-    required this.title,
+    this.title,
     required this.items,
   });
 
-  final String title;
+  /// Optional bold header above the card. Omitted (e.g. the guest view) renders
+  /// the card on its own with no title.
+  final String? title;
   final List<SettingsItem> items;
 
   @override
@@ -22,17 +24,18 @@ class SettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: context.colors.tertiaryContainer,
+        if (title != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 12),
+            child: Text(
+              title!,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: context.colors.tertiaryContainer,
+              ),
             ),
           ),
-        ),
         Material(
           color: context.colors.onTertiaryContainer,
           borderRadius: BorderRadius.circular(16),
