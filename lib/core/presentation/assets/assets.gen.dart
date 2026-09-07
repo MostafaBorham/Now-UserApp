@@ -132,6 +132,11 @@ class $AssetsMediaImagesPngGen {
     'assets/media/images/png/english-offers-cannot-miss-logo.png',
   );
 
+  /// File path: assets/media/images/png/guest-welcome-discount-motorbike.png
+  AssetGenImage get guestWelcomeDiscountMotorbike => const AssetGenImage(
+    'assets/media/images/png/guest-welcome-discount-motorbike.png',
+  );
+
   /// File path: assets/media/images/png/home-never-miss-offers-background.png
   AssetGenImage get homeNeverMissOffersBackground => const AssetGenImage(
     'assets/media/images/png/home-never-miss-offers-background.png',
@@ -202,6 +207,7 @@ class $AssetsMediaImagesPngGen {
     decrementIcon,
     defaultCategoryPng,
     englishOffersCannotMissLogo,
+    guestWelcomeDiscountMotorbike,
     homeNeverMissOffersBackground,
     homeNeverMissOffersLogo,
     increamentIcon,
