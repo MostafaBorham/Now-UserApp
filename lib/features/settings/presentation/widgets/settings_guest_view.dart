@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/formatters/arabic_kashida_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -8,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_welcome_voucher_vm.dart';
 
 import 'language_bottom_sheet.dart';
 import 'settings_section.dart';
@@ -20,12 +22,9 @@ import 'settings_tile.dart';
 /// The rows reuse [SettingsSection] / [SettingsTile] with the exact same
 /// behaviour as the logged-in settings screen — the language row opens the
 /// shared [LanguageBottomSheet], FAQs and privacy push their existing routes.
-/// [onLogin] is left to the caller so the login flow can be wired separately.
-class SettingsGuestView extends StatelessWidget {
-  const SettingsGuestView({super.key, this.onLogin});
-
-  /// Called when the "login / create account" button is tapped.
-  final VoidCallback? onLogin;
+/// The login / create-account button pushes the phone verification screen.
+class SettingsGuestView extends ConsumerWidget {
+  const SettingsGuestView({super.key});
 
   // Art aspect ratio + the motorbike's placement rect inside the 234x254
   // source artwork (the `guest-welcome-discount-img.svg` viewBox).
@@ -33,12 +32,16 @@ class SettingsGuestView extends StatelessWidget {
   static const double _artHeight = 254;
   static const double _bikeTop = 15.7188;
 
-  // The "WELCOME" promo code on the badge — a fixed code, not translated.
-  static const String _promoCode = 'WELCOME';
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+    // The badge promo code comes from the same first-order welcome voucher the
+    // empty cart shows; fall back to the canonical code until it loads.
+    final String? apiCode =
+        ref.watch(welcomeVoucherProvider).valueOrNull?.code;
+    final String promoCode = (apiCode != null && apiCode.isNotEmpty)
+        ? apiCode
+        : welcomeVoucherCode;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -115,7 +118,7 @@ class SettingsGuestView extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      _promoCode,
+                      promoCode,
                       style: AppTextStyles.style12Bold.copyWith(
                         color: colors.black,
                       ),
@@ -137,7 +140,7 @@ class SettingsGuestView extends StatelessWidget {
         PrimaryAppButton(
           title: LangKeys.loginOrRegisterKey.tr(),
           titleStyle: AppTextStyles.style16Bold,
-          onTap: onLogin,
+          onTap: () => context.pushNamed(AppRoutes.phoneVerificationScreen),
         ),
         const SizedBox(height: 20),
         SettingsSection(
