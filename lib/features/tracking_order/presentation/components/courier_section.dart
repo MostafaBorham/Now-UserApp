@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -7,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
 /// Courier card on the Track Order screen: the courier/store badge plus the
 /// chat and call actions (the chat & call SVGs are self-contained coloured
@@ -36,34 +36,10 @@ class CourierSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: CachedNetworkImage(
-              imageUrl: logoUrl,
-              fit: BoxFit.cover,
-              width: 48,
-              height: 48,
-              placeholder: (context, url) => Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    color: colors.primary500Main,
-                    strokeWidth: 2,
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) =>
-                  Assets.media.images.png.noImageAvail.image(
-                    fit: BoxFit.cover,
-                  ),
-            ),
+          CircularBrandLogo(
+            radius: 24,
+            logoUrl: logoUrl,
+            backgroundColor: colors.white,
           ),
           12.wSpace,
           Expanded(

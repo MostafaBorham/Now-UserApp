@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/utils/phone_launcher.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
@@ -87,8 +88,11 @@ class TrackOrderScreen extends ConsumerWidget {
                   // delivery.
                   if (orderStatus is OnTheWayStatus)
                     CourierSection(
-                      courierName: store,
-                      logoUrl: order.vendor.logoUrl ?? '',
+                      courierName: context.getLocalizedApiText(
+                        order.driver?.name,
+                      ),
+                      logoUrl: order.driver?.profileImg ?? '',
+                      onCall: () => launchPhoneDialer(order.driver?.phone),
                     ),
 
                   if (orderStatus.isTrackable)
