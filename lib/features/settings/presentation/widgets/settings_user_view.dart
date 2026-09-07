@@ -95,7 +95,7 @@ class SettingsUserView extends ConsumerWidget {
           items: [
             SettingsItem(
               iconAsset: Assets.media.images.svg.discount.path,
-              label: LangKeys.discount.tr(),
+              label: LangKeys.discountCodes.tr(),
               onTap: () => context.pushNamed(AppRoutes.discountCodeScreen),
             ),
             SettingsItem(

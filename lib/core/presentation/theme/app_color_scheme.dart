@@ -62,6 +62,12 @@ class AppColorScheme {
   Color get orange500 => const Color(0xffF59E0B);
   Color get orange100 => const Color(0xffFFEDD4);
   Color get deepOrange400 => const Color(0xffFF7043);
+
+  // Figma `Colors/Red/400`. Used for destructive actions (e.g. the logout
+  // button). Has no matching Material [ColorScheme] slot — the `error` slot is
+  // already shared by other widgets — so it lives here as a constant like the
+  // order-status palette above, still reached through [BuildContext.colors].
+  Color get red400 => const Color(0xffB91828);
 }
 
 extension BuildContextColors on BuildContext {
