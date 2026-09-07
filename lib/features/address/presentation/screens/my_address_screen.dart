@@ -6,18 +6,20 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/success_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/address_card.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/address_card_shimmer.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/widgets/no_addresses_view.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/delete_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
 /// The user's saved addresses: pick the delivery default, edit one, or add a
@@ -48,15 +50,35 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     final GetMyAddressesViewModel viewModel = ref.read(
       getMyAddressesProvider.notifier,
     );
-    // The overlay means "a set-default tap is in flight" — the provider is not
-    // loaded on watch, so nothing else can put it in the loading state.
+    // The overlay means "an in-place action is in flight" — either setting the
+    // default or deleting. Neither provider loads on watch, so nothing else can
+    // put them in the loading state.
     final bool isSettingDefault = ref.watch(defaultAddressProvider).isLoading;
+    final bool isDeleting = ref.watch(deleteAddressProvider).isLoading;
 
     ref.listen<AsyncValue<AddressModel?>>(defaultAddressProvider, (
       AsyncValue<AddressModel?>? previous,
       AsyncValue<AddressModel?> next,
     ) {
       next.whenOrNull(
+        error: (Object error, StackTrace stackTrace) =>
+            ErrorSnackBar.show(context, error.toString()),
+      );
+    });
+
+    // A delete confirms with a success snackbar and, on failure, an error one —
+    // the address itself is already restored to the list by the view model.
+    // Guarding on "was loading" keeps the initial data state from firing.
+    ref.listen<AsyncValue<void>>(deleteAddressProvider, (
+      AsyncValue<void>? previous,
+      AsyncValue<void> next,
+    ) {
+      if (previous?.isLoading != true) return;
+      next.whenOrNull(
+        data: (_) => SuccessSnackBar.show(
+          context,
+          LangKeys.addressDeletedSuccessfully,
+        ),
         error: (Object error, StackTrace stackTrace) =>
             ErrorSnackBar.show(context, error.toString()),
       );
@@ -72,7 +94,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
             // the add button below stays pinned, off the address scroll.
             Expanded(
               child: BlockingLoadingOverlay(
-                isLoading: isSettingDefault,
+                isLoading: isSettingDefault || isDeleting,
                 child: PaginatedView<AddressModel>(
                   provider: getMyAddressesProvider,
                   onRefresh: viewModel.loadFirstPage,
@@ -82,20 +104,28 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                   ),
                   placeholderBuilder: (_) => const AddressCardShimmer(),
                   nextPagePlaceholdersCount: 3,
-                  emptyBuilder: (_) => NoResultsWidget(
-                    isScrollable: true,
-                    emptyMessage: LangKeys.noSavedAddresses.tr(),
-                  ),
+                  emptyBuilder: (_) => const NoAddressesView(),
                   itemBuilder:
                       (BuildContext context, AddressModel address, int index) =>
-                          AddressCard(
-                            title: context.getLocalizedApiText(address.label),
-                            address: address.fullAddress ?? '',
-                            isDefault: address.isDefault ?? false,
-                            onSelect: () => _onSelect(address),
-                            onEdit: () => context.pushNamed(
-                              AppRoutes.addressDetailsScreen,
-                              extra: address,
+                          Dismissible(
+                            key: ValueKey<int?>(address.id),
+                            direction: DismissDirection.horizontal,
+                            background: const _DeleteSwipeBackground(
+                              alignment: AlignmentDirectional.centerStart,
+                            ),
+                            secondaryBackground: const _DeleteSwipeBackground(
+                              alignment: AlignmentDirectional.centerEnd,
+                            ),
+                            confirmDismiss: (_) => _onDelete(address),
+                            child: AddressCard(
+                              title: context.getLocalizedApiText(address.label),
+                              address: address.fullAddress ?? '',
+                              isDefault: address.isDefault ?? false,
+                              onSelect: () => _onSelect(address),
+                              onEdit: () => context.pushNamed(
+                                AppRoutes.addressDetailsScreen,
+                                extra: address,
+                              ),
                             ),
                           ),
                 ),
@@ -132,6 +162,40 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
         .setDefaultAddress(addressId: addressId);
   }
 
+  /// Swiping a card fires the delete but never dismisses the card itself:
+  /// returning `false` springs it back into place, and the view model removes it
+  /// (by refetching the list) only once the server confirms the delete. So the
+  /// address stays on screen — under the blocking overlay — until success.
+  Future<bool> _onDelete(AddressModel address) async {
+    ref.read(deleteAddressProvider.notifier).deleteAddress(address: address);
+    return false;
+  }
+
   static Widget _separator(BuildContext context, int index) =>
       const SizedBox(height: _cardGap);
+}
+
+/// The red field revealed behind an address card as it is swiped away, showing a
+/// trash icon on the side the swipe uncovers.
+class _DeleteSwipeBackground extends StatelessWidget {
+  const _DeleteSwipeBackground({required this.alignment});
+
+  final AlignmentGeometry alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: alignment,
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      decoration: BoxDecoration(
+        color: context.colors.onError,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Assets.media.images.svg.deleteIcon.svg(
+        width: 26,
+        height: 26,
+        colorFilter: ColorFilter.mode(context.colors.white, BlendMode.srcIn),
+      ),
+    );
+  }
 }

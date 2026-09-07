@@ -182,4 +182,35 @@ class AddressRepo {
       return Left(Failure(exception.toString()));
     }
   }
+
+  /// Deletes the address with [addressId]. On success the response carries no
+  /// data worth keeping (`data: []`), so a plain [Unit] is returned; the caller
+  /// shows its own localized success message.
+  Future<Either<Failure, Unit>> deleteAddress({
+    required int addressId,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response =
+          await _addressApiService.deleteAddress(addressId: addressId);
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(unit);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody =
+          data is Map<String, dynamic> ? data : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
 }

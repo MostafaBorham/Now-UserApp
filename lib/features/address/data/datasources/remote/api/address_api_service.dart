@@ -60,4 +60,11 @@ class AddressApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> deleteAddress({required int addressId}) {
+    return _dio.delete(
+      AddressEndpoints.deleteAddress(addressId),
+      cancelToken: _canceller.token,
+    );
+  }
 }

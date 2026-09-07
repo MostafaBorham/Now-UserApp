@@ -11,6 +11,7 @@
   "productAddedToCart": "Product added to cart successfully",
   "addWallet": "+ Add Wallet",
   "address": "Address",
+  "addressDeletedSuccessfully": "Address deleted successfully",
   "addressDetails": "Address Details",
   "all": "ALL",
   "amountDue": "Amount Due",

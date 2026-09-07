@@ -15,5 +15,11 @@ abstract class AddressEndpoints {
   static String setDefaultAddress(int addressId) =>
       '/api/v1/addresses/$addressId/set-default';
 
-  static String editAddress(int addressId) => '/api/v1/addresses/$addressId';
+  /// The single-address resource, shared by the edit (PUT) and delete (DELETE)
+  /// endpoints — both address the same `/addresses/{id}` path.
+  static String _addressById(int addressId) => '/api/v1/addresses/$addressId';
+
+  static String editAddress(int addressId) => _addressById(addressId);
+
+  static String deleteAddress(int addressId) => _addressById(addressId);
 }

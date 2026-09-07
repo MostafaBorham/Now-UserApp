@@ -40,9 +40,7 @@ class GetMyAddressesViewModel extends PaginatedViewModel<AddressModel> {
   void updateAddress({required AddressModel address}) {
     _replaceItems(
       (List<AddressModel> items) => items
-          .map(
-            (AddressModel item) => item.id == address.id ? address : item,
-          )
+          .map((AddressModel item) => item.id == address.id ? address : item)
           .toList(),
       whenContains: address.id,
     );
