@@ -22,4 +22,9 @@ abstract class CacheKeys {
   /// default delivery address in the home header. This value must never be
   /// null before the app is entered (see `CurrentLocationViewModel`).
   static const String currentLocation = 'current_location';
+
+  /// The first-order welcome voucher code (e.g. `WELCOME10`). Refreshed from the
+  /// server on every splash and read back offline so the empty cart and guest
+  /// settings can still show a promo code. Stored as the raw code string.
+  static const String welcomeVoucherCode = 'welcome_voucher_code';
 }

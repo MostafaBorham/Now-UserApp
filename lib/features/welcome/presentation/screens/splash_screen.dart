@@ -4,12 +4,14 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/current_location_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_welcome_voucher_vm.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
 import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm.dart';
 
@@ -26,6 +28,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   ProviderSubscription<AsyncValue<AppInfoModel>>? _appInfoSub;
   ProviderSubscription<AsyncValue<PaginationModel<CategoryModel>>>?
       _appCategoriesSub;
+  ProviderSubscription<AsyncValue<CouponModel>>? _welcomeVoucherSub;
 
   // Flipped once the logo animation ends; from then on the loader is shown
   // continuously — whatever happens in the background — until the splash leaves.
@@ -76,6 +79,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           _appCategoriesSub?.close();
           _appCategoriesSub = null;
           ref.invalidate(getAppCategoriesProvider);
+        }
+      },
+    );
+
+    // Warm up the (kept-alive) welcome-voucher provider so the empty cart and
+    // guest settings reuse the code instead of refetching. The repo already
+    // falls back to the cached code when the server is unreachable, so this only
+    // reaches an error state when both the server fails and the cache is empty —
+    // in which case drop the subscription and invalidate the errored instance so
+    // it is recreated (and refetched) the next time a screen opens it.
+    _welcomeVoucherSub = ref.listenManual(
+      welcomeVoucherProvider,
+      (AsyncValue<CouponModel>? previous, AsyncValue<CouponModel> next) {
+        if (next is AsyncError) {
+          _welcomeVoucherSub?.close();
+          _welcomeVoucherSub = null;
+          ref.invalidate(welcomeVoucherProvider);
         }
       },
     );
@@ -154,6 +174,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   void dispose() {
     _appInfoSub?.close();
     _appCategoriesSub?.close();
+    _welcomeVoucherSub?.close();
     _logoController.removeStatusListener(_logoAnimationListener);
     _logoController.dispose();
     super.dispose();
