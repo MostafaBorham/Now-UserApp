@@ -6,9 +6,8 @@
 class DeliveryManModel {
   final int? id;
 
-  /// Localized courier name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
-  final Map<String, dynamic>? name;
+  /// Courier name as a plain display string.
+  final String? name;
 
   final String? profileImg;
   final String? phone;
@@ -22,7 +21,7 @@ class DeliveryManModel {
 
     return DeliveryManModel(
       id: (json['id'] as num?)?.toInt(),
-      name: json['name'] as Map<String, dynamic>?,
+      name: json['name']?.toString(),
       profileImg: json['profile_img']?.toString(),
       phone: json['phone']?.toString(),
     );

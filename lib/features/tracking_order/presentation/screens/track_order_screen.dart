@@ -88,9 +88,7 @@ class TrackOrderScreen extends ConsumerWidget {
                   // delivery.
                   if (orderStatus is OnTheWayStatus)
                     CourierSection(
-                      courierName: context.getLocalizedApiText(
-                        order.driver?.name,
-                      ),
+                      courierName: order.driver?.name ?? '',
                       logoUrl: order.driver?.profileImg ?? '',
                       onCall: () => launchPhoneDialer(order.driver?.phone),
                     ),

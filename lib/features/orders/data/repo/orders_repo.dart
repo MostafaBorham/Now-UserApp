@@ -52,7 +52,8 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
+    } catch (exception,stack) {
+      print(stack);
       return Left(Failure(exception.toString()));
     }
   }
