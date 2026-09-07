@@ -44,6 +44,7 @@ class AddressDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
+  final ScrollController _scrollController = ScrollController();
   late final TextEditingController _phoneController;
   late final TextEditingController _floorNumberController;
   late final TextEditingController _apartmentController;
@@ -148,6 +149,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _phoneController.dispose();
     _floorNumberController.dispose();
     _apartmentController.dispose();
@@ -221,7 +223,12 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
         appBarTitle: widget.isEditScreen
             ? LangKeys.editAddress.tr()
             : LangKeys.addressDetails.tr(),
+        scrollController: _scrollController,
         body: SingleChildScrollView(
+          controller: _scrollController,
+          // Owns the top spacing AppWavedView drops when a scroll controller is
+          // wired in, so it scrolls up with the content and flattens the wave.
+          padding: const EdgeInsets.only(top: 57),
           child: Column(
             spacing: 16,
             children: [

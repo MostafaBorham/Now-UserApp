@@ -15,11 +15,25 @@ import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm
 import '../widgets/privacy_section.dart';
 import '../widgets/privacy_section_shimmer.dart';
 
-class PrivacyPolicyScreen extends ConsumerWidget {
+class PrivacyPolicyScreen extends ConsumerStatefulWidget {
   const PrivacyPolicyScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PrivacyPolicyScreen> createState() =>
+      _PrivacyPolicyScreenState();
+}
+
+class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AsyncValue<AppInfoModel> appInfoState = ref.watch(getAppInfoProvider);
 
     Future<void> loadAppInfo() =>
@@ -29,10 +43,15 @@ class PrivacyPolicyScreen extends ConsumerWidget {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.privacy.tr(),
+        scrollController: _scrollController,
         body: appInfoState.when(
           loading: () => const AppShimmer(
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
+              // Matches the loaded content's top spacing so the loading and data
+              // states line up under the wave (AppWavedView drops the body's top
+              // padding once a scroll controller is wired in).
+              padding: EdgeInsets.only(top: 57),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 24,
@@ -74,7 +93,12 @@ class PrivacyPolicyScreen extends ConsumerWidget {
                     emptyMessage: LangKeys.noItemsYetKey.tr(),
                   )
                 : SingleChildScrollView(
+                    controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
+                    // Owns the top spacing AppWavedView drops when a scroll
+                    // controller is wired in, so it scrolls up with the content
+                    // and flattens the wave.
+                    padding: const EdgeInsets.only(top: 57),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 24,

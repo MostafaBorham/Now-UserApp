@@ -32,16 +32,29 @@ import '../components/track_order_number_header.dart';
 /// [getOrderDetailsProvider] family, so the request starts on first watch and
 /// this screen just renders its [AsyncValue] — a shimmer while loading, an
 /// error state with retry, and the wired layout on success.
-class TrackOrderScreen extends ConsumerWidget {
+class TrackOrderScreen extends ConsumerStatefulWidget {
   const TrackOrderScreen({super.key, required this.orderUuid});
 
   final String orderUuid;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TrackOrderScreen> createState() => _TrackOrderScreenState();
+}
+
+class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final AsyncValue<OrderModel> orderState = ref.watch(
-      getOrderDetailsProvider(orderUuid),
+      getOrderDetailsProvider(widget.orderUuid),
     );
 
     return Scaffold(
@@ -49,6 +62,7 @@ class TrackOrderScreen extends ConsumerWidget {
         appBarTitle: LangKeys.trackOrderKey.tr(),
         canPop: true,
         hasSupportIcon: true,
+        scrollController: _scrollController,
         onSupportTap: () {},
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
@@ -56,7 +70,7 @@ class TrackOrderScreen extends ConsumerWidget {
               ServerConnectionErrorWidget(
                 message: error.toString(),
                 onRetry: ref
-                    .read(getOrderDetailsProvider(orderUuid).notifier)
+                    .read(getOrderDetailsProvider(widget.orderUuid).notifier)
                     .getOrderDetails,
               ),
           data: (OrderModel order) {
@@ -68,10 +82,15 @@ class TrackOrderScreen extends ConsumerWidget {
 
             return AppRefreshIndicator(
               onRefresh: ref
-                  .read(getOrderDetailsProvider(orderUuid).notifier)
+                  .read(getOrderDetailsProvider(widget.orderUuid).notifier)
                   .getOrderDetails,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
+                // Owns the top spacing AppWavedView drops when a scroll
+                // controller is wired in, so it scrolls up with the content and
+                // flattens the wave.
+                padding: const EdgeInsets.only(top: 57),
                 child: Column(
                   spacing: 16,
                   children: [
@@ -121,7 +140,7 @@ class TrackOrderScreen extends ConsumerWidget {
                       buttonPadding: 16,
                       onTap: () => CancelOrderBottomSheet.show(
                         context,
-                        orderUuid: orderUuid,
+                        orderUuid: widget.orderUuid,
                         orderNumber: order.orderNumber ?? '',
                         itemsCount: order.items.length,
                         amount: order.total.toStringAsFixed(2),

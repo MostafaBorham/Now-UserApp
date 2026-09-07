@@ -42,6 +42,14 @@ class CartView extends ConsumerStatefulWidget {
 }
 
 class _CartViewState extends ConsumerState<CartView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -97,6 +105,7 @@ class _CartViewState extends ConsumerState<CartView> {
       child: AppWavedView(
         appBarTitle: LangKeys.cartKey.tr(),
         canPop: widget.canPop,
+        scrollController: _scrollController,
         body: cartState.when(
           loading: () => CartShimmerView(),
           error: (Object error, StackTrace stackTrace) =>
@@ -112,7 +121,11 @@ class _CartViewState extends ConsumerState<CartView> {
                     children: [
                       Expanded(
                         child: ListView.separated(
-                          padding: const EdgeInsets.all(3),
+                          controller: _scrollController,
+                          // Owns the top spacing AppWavedView drops when a
+                          // scroll controller is wired in, so it scrolls up with
+                          // the content and flattens the wave.
+                          padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
                           itemBuilder: (context, index) {
                             final CartVendorModel cartVendor =
                                 cart.vendors[index];

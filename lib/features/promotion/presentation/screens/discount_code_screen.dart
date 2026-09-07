@@ -89,6 +89,7 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.discountCodes.tr(),
+        scrollController: _scrollController,
         body: couponsState.when(
           loading: () => const DiscountCouponsShimmerView(),
           error: (Object error, StackTrace stackTrace) =>
@@ -120,6 +121,10 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
                             return ListView.separated(
                               controller: _scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
+                              // Owns the top spacing AppWavedView drops when a
+                              // scroll controller is wired in, so it scrolls up
+                              // with the content and flattens the wave.
+                              padding: const EdgeInsets.only(top: 57),
                               itemCount: coupons.length + loadingItemsCount,
                               separatorBuilder:
                                   (BuildContext context, int index) =>

@@ -47,6 +47,7 @@ class PaginatedView<T> extends ConsumerWidget {
     this.nextPagePlaceholdersCount = 4,
     this.emptyBuilder,
     this.nextPageThreshold = 200,
+    this.scrollController,
   }) : assert(
           placeholderBuilder != null || firstPageLoadingBuilder != null,
           'A first-page loading state is required: give a placeholderBuilder, '
@@ -99,6 +100,12 @@ class PaginatedView<T> extends ConsumerWidget {
   /// How far from the end of the list the next page starts loading.
   final double nextPageThreshold;
 
+  /// Drives the scroll view holding the items. Optional — pass it when the
+  /// screen needs to react to the list's scroll offset (e.g. an [AppWavedView]
+  /// that flattens its wave as the list scrolls away from the top). The empty
+  /// and first-page-error states scroll on their own and ignore it.
+  final ScrollController? scrollController;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Surface a next-page failure as a snackbar the moment state turns to error
@@ -141,6 +148,7 @@ class PaginatedView<T> extends ConsumerWidget {
       }
       // Skeletons in the real layout: same arrangement, same item geometry.
       return CustomScrollView(
+        controller: scrollController,
         slivers: <Widget>[
           layout.buildSliver(
             itemCount: firstPagePlaceholdersCount,
@@ -171,6 +179,7 @@ class PaginatedView<T> extends ConsumerWidget {
               // retry affordance: the snackbar reports it and reaching the end
               // again asks for the same page again.
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: <Widget>[
                   layout.buildSliver(
                     itemCount: status.items.length + trailingPlaceholders,

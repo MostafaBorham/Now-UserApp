@@ -76,6 +76,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
 
     return AppWavedView(
       appBarTitle: LangKeys.myOrdersKey.tr(),
+      scrollController: _scrollController,
       body: ordersState.when(
         loading: () => OrderListViewShimmer(),
         error: (Object error, StackTrace stackTrace) {
@@ -113,7 +114,10 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                           return ListView.separated(
                             controller: _scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(3),
+                            // Owns the top spacing AppWavedView drops when a
+                            // scroll controller is wired in, so it scrolls up
+                            // with the content and flattens the wave.
+                            padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
                             itemCount: items.length + loadingItemsCount,
                             separatorBuilder:
                                 (BuildContext context, int index) =>

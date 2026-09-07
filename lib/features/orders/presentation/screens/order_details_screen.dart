@@ -41,6 +41,14 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -59,6 +67,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
         hasSupportIcon: true,
+        scrollController: _scrollController,
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
           error: (Object error, StackTrace stackTrace) =>
@@ -93,7 +102,12 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   .read(getOrderDetailsProvider(widget.orderUuid).notifier)
                   .getOrderDetails,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
+                // Owns the top spacing AppWavedView drops when a scroll
+                // controller is wired in, so it scrolls up with the content and
+                // flattens the wave.
+                padding: const EdgeInsets.only(top: 57),
                 child: Column(
                   spacing: 15,
                   children: [

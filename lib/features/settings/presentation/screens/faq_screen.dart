@@ -24,7 +24,14 @@ class FaqScreen extends ConsumerStatefulWidget {
 }
 
 class _FaqScreenState extends ConsumerState<FaqScreen> {
+  final ScrollController _scrollController = ScrollController();
   final Set<int> _expanded = {0};
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _toggle(int index) {
     setState(() {
@@ -43,9 +50,14 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.faq.tr(),
+        scrollController: _scrollController,
         body: appInfoState.when(
           loading: () => AppShimmer(
             child: ListView.separated(
+              // Matches the loaded list's top spacing so the loading and data
+              // states line up under the wave (AppWavedView drops the body's
+              // top padding once a scroll controller is wired in).
+              padding: const EdgeInsets.only(top: 57),
               itemCount: 6,
               separatorBuilder: (_, _) => const SizedBox(height: 14),
               itemBuilder: (_, _) => const FaqTileShimmer(),
@@ -66,7 +78,12 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                       emptyMessage: LangKeys.noFaqsYetKey.tr(),
                     )
                   : ListView.separated(
+                      controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
+                      // Owns the top spacing AppWavedView drops when a scroll
+                      // controller is wired in, so it scrolls up with the
+                      // content and flattens the wave.
+                      padding: const EdgeInsets.only(top: 57),
                       itemCount: faqs.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 14),
                       itemBuilder: (context, index) {

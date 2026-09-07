@@ -17,7 +17,10 @@ class DiscountCouponsShimmerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: EdgeInsets.zero,
+      // Matches the loaded list's top spacing so the loading and data states
+      // line up under the AppWavedView wave (which drops the body's top padding
+      // once a scroll controller is wired in).
+      padding: const EdgeInsets.only(top: 57),
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
       separatorBuilder: (_, _) => const SizedBox(height: _cardGap),

@@ -19,7 +19,10 @@ class CartShimmerView extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.all(3),
+              // Matches the loaded list's top spacing so the loading and data
+              // states line up under the wave (AppWavedView drops the body's top
+              // padding once a scroll controller is wired in).
+              padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
               itemBuilder: (context, index) {
                 return Container(
                   width: double.infinity,

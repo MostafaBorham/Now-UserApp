@@ -34,6 +34,14 @@ class MyAddressScreen extends ConsumerStatefulWidget {
 class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
   static const double _cardGap = 16;
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,19 +96,23 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.myAddress.tr(),
+        scrollController: _scrollController,
         body: Column(
           children: <Widget>[
-            // Scrollable region: the address list takes all available height so
-            // the add button below stays pinned, off the address scroll.
             Expanded(
               child: BlockingLoadingOverlay(
                 isLoading: isSettingDefault || isDeleting,
                 child: PaginatedView<AddressModel>(
                   provider: getMyAddressesProvider,
+                  scrollController: _scrollController,
                   onRefresh: viewModel.loadFirstPage,
                   onLoadNextPage: viewModel.loadNextPage,
+                  // The list owns the top spacing AppWavedView drops when a
+                  // scroll controller is wired in, so it scrolls up with the
+                  // cards and flattens the wave.
                   layout: const PaginatedListLayout(
                     separatorBuilder: _separator,
+                    padding: EdgeInsets.only(top: 57),
                   ),
                   placeholderBuilder: (_) => const AddressCardShimmer(),
                   nextPagePlaceholdersCount: 3,
@@ -131,7 +143,6 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                 ),
               ),
             ),
-            // Pinned to the bottom, outside the scrollable region.
             Padding(
               padding: EdgeInsets.only(
                 top: MediaQuery.sizeOf(context).width * 0.05,
