@@ -24,6 +24,7 @@ class HiveManager {
     await Hive.openBox<dynamic>(HiveBoxes.myOrders);
     await Hive.openBox<dynamic>(HiveBoxes.appInfo);
     await Hive.openBox<dynamic>(HiveBoxes.appCategories);
+    await Hive.openBox<dynamic>(HiveBoxes.userProfile);
     _initialized = true;
   }
 

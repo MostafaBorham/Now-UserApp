@@ -3,16 +3,19 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/personal_information_data.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/repo/profile_repo.dart';
 
-/// Single task: fetch the authenticated user's profile for the Personal
-/// Information screen.
+/// Single task: hold the authenticated user's profile, shared across the whole
+/// app (the profile header, the Personal Information screen, ...).
 ///
-/// The fetch fires as soon as the provider is first watched — screens only
-/// `ref.watch(getProfileProvider)` and render the [AsyncValue]. Retry (or
-/// refresh after an edit) with
+/// Deliberately **not** `autoDispose` and it does **not** fetch on creation:
+/// it is the session orchestrator that fires [getProfile] once when a user
+/// session resolves (see `AuthSessionViewModel`) and invalidates it on logout,
+/// exactly like the other user dependencies. Screens only
+/// `ref.watch(getProfileProvider)` and render the [AsyncValue]; retry (e.g. the
+/// Personal Information error state) with
 /// `ref.read(getProfileProvider.notifier).getProfile()`.
-final getProfileProvider = StateNotifierProvider.autoDispose<
-    GetProfileViewModel, AsyncValue<PersonalInformationData>>(
-  (Ref ref) => GetProfileViewModel()..getProfile(),
+final getProfileProvider = StateNotifierProvider<GetProfileViewModel,
+    AsyncValue<PersonalInformationData>>(
+  (Ref ref) => GetProfileViewModel(),
 );
 
 class GetProfileViewModel
@@ -39,5 +42,13 @@ class GetProfileViewModel
           AsyncValue.error(failure.message, StackTrace.current),
       (PersonalInformationData data) => AsyncValue.data(data),
     );
+  }
+
+  /// Replaces the held profile with a freshly-[data] copy (e.g. straight after
+  /// a successful edit), so every listener updates immediately without waiting
+  /// for a refetch. Called by `UpdateProfileViewModel` on save.
+  void setProfileData(PersonalInformationData data) {
+    if (!mounted) return;
+    state = AsyncValue.data(data);
   }
 }

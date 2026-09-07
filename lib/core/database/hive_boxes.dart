@@ -26,4 +26,10 @@ abstract class HiveBoxes {
   /// render from local storage when the server is unreachable. It is refreshed
   /// from the server on every successful first-page fetch.
   static const String appCategories = 'app_categories_box';
+
+  /// Box storing the signed-in user's cached profile payload (from
+  /// `GET /api/v1/user/profile`), so the profile header and personal-information
+  /// screens can render from local storage when the server is unreachable. It is
+  /// refreshed from the server on every successful profile fetch or update.
+  static const String userProfile = 'user_profile_box';
 }

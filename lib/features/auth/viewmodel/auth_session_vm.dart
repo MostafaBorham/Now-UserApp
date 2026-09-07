@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
 
 /// Where the app's session-dependent dependencies stand.
@@ -126,6 +127,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(getMyAddressesProvider.notifier).loadFirstPage(),
       _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       _ref.read(getCouponsProvider.notifier).getCoupons(),
+      _ref.read(getProfileProvider.notifier).getProfile(),
     ]);
 
     if (!mounted) return;
@@ -144,5 +146,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     _ref.invalidate(getMyAddressesProvider);
     _ref.invalidate(defaultAddressProvider);
     _ref.invalidate(getCouponsProvider);
+    _ref.invalidate(getProfileProvider);
   }
 }

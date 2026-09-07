@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/personal_information/data/models/personal_information_data.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/repo/profile_repo.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
@@ -11,8 +12,10 @@ import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get
 ///
 /// The state is the request status (`data(null)` idle, `loading`, `error`) so
 /// the screen can disable the Save button while in flight and surface the error
-/// message. On success it invalidates [getProfileProvider] so the read screen
-/// shows the fresh values when the user pops back.
+/// message. On success it pushes the fresh profile straight into
+/// [getProfileProvider] (via [GetProfileViewModel.setProfileData]) so every
+/// listener — the profile header, the read screen — updates immediately,
+/// without a refetch.
 final updateProfileProvider =
     StateNotifierProvider.autoDispose<UpdateProfileViewModel, AsyncValue<void>>(
   (Ref ref) => UpdateProfileViewModel(ref),
@@ -57,9 +60,9 @@ class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
         state = AsyncValue.error(failure.message, StackTrace.current);
         return false;
       },
-      (_) {
+      (PersonalInformationData data) {
         state = const AsyncValue.data(null);
-        _ref.invalidate(getProfileProvider);
+        _ref.read(getProfileProvider.notifier).setProfileData(data);
         return true;
       },
     );

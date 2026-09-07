@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 /// Circular profile avatar.
 ///
 /// Renders, in priority order: a locally-picked [imageFile] (edit preview), the
-/// remote [imageUrl], or the `person.png` placeholder. The remote avatar lives
+/// remote [imageUrl], or the circular user placeholder. The remote avatar lives
 /// on a private disk, so the request carries the user's bearer token.
 ///
 /// When [showCameraOverlay] is true a translucent strip with a camera icon is
@@ -87,20 +87,17 @@ class ProfileAvatar extends StatelessWidget {
         imageUrl: url,
         width: size,
         height: size,
-        placeholderType: LoadingViewTypes.circular,
+        // Shimmer (not a spinner) while the picture downloads; the app-wide
+        // no-image placeholder shows if the request fails.
+        placeholderType: LoadingViewTypes.shimmer,
         httpHeaders: {'Authorization': 'Bearer $token'},
       );
     }
 
-    return Container(
+    return Assets.media.images.png.userAvatarPlaceholderImg.image(
+      fit: BoxFit.cover,
       width: size,
       height: size,
-      color: context.colors.neutral200,
-      child: Assets.media.images.svg.personPng.image(
-        fit: BoxFit.cover,
-        width: size,
-        height: size,
-      ),
     );
   }
 }

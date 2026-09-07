@@ -183,6 +183,11 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get starsBackground =>
       const AssetGenImage('assets/media/images/png/stars-background.png');
 
+  /// File path: assets/media/images/png/user-avatar-placeholder-img.png
+  AssetGenImage get userAvatarPlaceholderImg => const AssetGenImage(
+    'assets/media/images/png/user-avatar-placeholder-img.png',
+  );
+
   /// File path: assets/media/images/png/wave-clip-background.png
   AssetGenImage get waveClipBackground =>
       const AssetGenImage('assets/media/images/png/wave-clip-background.png');
@@ -219,6 +224,7 @@ class $AssetsMediaImagesPngGen {
     realSaudiCurrency,
     removeIcon,
     starsBackground,
+    userAvatarPlaceholderImg,
     waveClipBackground,
     whiteAppLogoAndroid12,
     whiteAppLogo,
@@ -752,11 +758,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get twoWaveBackground =>
       const SvgGenImage('assets/media/images/svg/two-wave-background.svg');
 
-  /// File path: assets/media/images/svg/user-avatar-placholder-img.svg
-  SvgGenImage get userAvatarPlacholderImg => const SvgGenImage(
-    'assets/media/images/svg/user-avatar-placholder-img.svg',
-  );
-
   /// File path: assets/media/images/svg/view_all_arabic.svg
   SvgGenImage get viewAllArabic =>
       const SvgGenImage('assets/media/images/svg/view_all_arabic.svg');
@@ -940,7 +941,6 @@ class $AssetsMediaImagesSvgGen {
     timeIcon,
     trustIcon,
     twoWaveBackground,
-    userAvatarPlacholderImg,
     viewAllArabic,
     visaLogo,
     visa,

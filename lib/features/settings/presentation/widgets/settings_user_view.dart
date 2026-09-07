@@ -9,11 +9,13 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/data/models/personal_information_data.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
 import 'language_bottom_sheet.dart';
 import 'logout_button.dart';
 import 'profile_info.dart';
+import 'profile_info_shimmer.dart';
 import 'settings_section.dart';
 import 'settings_tile.dart';
 
@@ -45,17 +47,25 @@ class SettingsUserView extends ConsumerWidget {
     });
 
     final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
-    // Fetched once and shared with the Personal Information screen.
-    final profileData = ref.watch(getProfileProvider).valueOrNull;
+    // Fetched once when the session resolves and shared with the Personal
+    // Information screen.
+    final AsyncValue<PersonalInformationData> profile =
+        ref.watch(getProfileProvider);
 
     return Column(
       children: [
         // Top spacing lives inside the scroll view so it scrolls up with the
         // content when the wave flattens on scroll.
         const SizedBox(height: 57),
-        ProfileInfo(
-          name: profileData?.profile.fullName ?? '',
-          avatarUrl: profileData?.avatarUrl,
+        // While loading, show a same-size shimmer avatar + name bar instead of
+        // the default placeholder, then swap in the real picture and name.
+        profile.when(
+          loading: () => const ProfileInfoShimmer(),
+          error: (_, _) => const ProfileInfo(name: ''),
+          data: (PersonalInformationData data) => ProfileInfo(
+            name: data.profile.fullName ?? '',
+            avatarUrl: data.avatarUrl,
+          ),
         ),
         const SizedBox(height: 32),
         SettingsSection(

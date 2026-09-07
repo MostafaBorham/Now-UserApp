@@ -35,4 +35,11 @@ abstract class HiveKeys {
   /// round-trips back through the same parsing the server response uses, with
   /// proper `String`-keyed maps.
   static const String appCategoriesPayload = 'app_categories_payload';
+
+  /// Key inside [HiveBoxes.userProfile] holding the JSON-encoded `String`
+  /// payload of the profile response — the raw server `data` object (the
+  /// `{'user': {...}}` envelope). Stored as a JSON string so it round-trips back
+  /// through the same parsing the server response uses, with proper
+  /// `String`-keyed maps.
+  static const String userProfilePayload = 'user_profile_payload';
 }
