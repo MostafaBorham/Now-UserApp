@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
+import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_card_shell.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_tile.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_tile_shimmer.dart';
 import 'package:nowdelivery_user_app/features/support/viewmodel/get_support_faqs_vm.dart';
@@ -44,8 +45,9 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<List<FaqModel>> faqsState =
-        ref.watch(getSupportFaqsProvider);
+    final AsyncValue<List<FaqModel>> faqsState = ref.watch(
+      getSupportFaqsProvider,
+    );
 
     return Scaffold(
       backgroundColor: context.colors.white,
@@ -92,29 +94,18 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
                         // FaqTile but routes to the support screen instead of
                         // expanding, and carries no chevron.
                         if (index == faqs.length) {
-                          return Material(
-                            color: context.colors.onTertiaryContainer,
-                            borderRadius: BorderRadius.circular(16),
-                            clipBehavior: Clip.antiAlias,
-                            child: InkWell(
-                              onTap: () =>
-                                  context.pushNamed(AppRoutes.supportScreen),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 16,
-                                ),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Text(
-                                    LangKeys.otherKey.tr(),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      height: 1.3,
-                                      fontWeight: FontWeight.w700,
-                                      color: context.colors.tertiaryContainer,
-                                    ),
-                                  ),
+                          return FaqCardShell(
+                            onTap: () =>
+                                context.pushNamed(AppRoutes.supportScreen),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                LangKeys.otherKey.tr(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  height: 1.3,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.colors.tertiaryContainer,
                                 ),
                               ),
                             ),
