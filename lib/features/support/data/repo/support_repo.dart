@@ -7,6 +7,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/support/data/datasources/remote/api/support_api_service.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_request_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_response_model.dart';
+import 'package:nowdelivery_user_app/features/support/data/models/rate_request_model.dart';
+import 'package:nowdelivery_user_app/features/support/data/models/rate_response_model.dart';
 
 /// All data operations of the support feature.
 ///
@@ -30,6 +32,32 @@ class SupportRepo {
       () => _supportApiService.submitComplaint(complaint: complaint),
       (Map<String, dynamic> data) => ComplaintResponseModel.fromJson(
         data['ticket'] as Map<String, dynamic>?,
+      ),
+    );
+  }
+
+  /// Rates a store (vendor) against an order and returns the created rating
+  /// (the response's `data.rating` object).
+  Future<Either<Failure, RateResponseModel>> rateStore({
+    required RateRequestModel rate,
+  }) {
+    return _guard(
+      () => _supportApiService.rateStore(rate: rate),
+      (Map<String, dynamic> data) => RateResponseModel.fromJson(
+        data['rating'] as Map<String, dynamic>?,
+      ),
+    );
+  }
+
+  /// Rates a delivery man against an order and returns the created rating
+  /// (the response's `data.rating` object).
+  Future<Either<Failure, RateResponseModel>> rateDeliveryMan({
+    required RateRequestModel rate,
+  }) {
+    return _guard(
+      () => _supportApiService.rateDeliveryMan(rate: rate),
+      (Map<String, dynamic> data) => RateResponseModel.fromJson(
+        data['rating'] as Map<String, dynamic>?,
       ),
     );
   }

@@ -78,7 +78,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     .getOrderDetails,
               ),
           data: (OrderModel order) {
-            final String orderNumber = '${order.orderNumber ?? ''}';
+            final String orderNumber = order.orderNumber ?? '';
             final String localizedStatus = context.getLocalizedApiText(
               order.orderStatus,
             );
@@ -112,556 +112,576 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   spacing: 15,
                   children: [
                     IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 8,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            gradient: screenGradient,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Assets.media.images.svg.orderIcon.svg(
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(
-                                colors.tertiaryContainer,
-                                BlendMode.srcIn,
-                              ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 8,
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              gradient: screenGradient,
+                              shape: BoxShape.circle,
                             ),
-                          ),
-                        ),
-
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            spacing: 5,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                LangKeys.orderNumberKey.tr(),
-                                style: AppTextStyles.style12Medium.copyWith(
-                                  color: colors.neutral500,
-                                ),
-                              ),
-                              Text(
-                                orderNumber,
-                                overflow: TextOverflow.visible,
-                                style: AppTextStyles.style18SemiBold.copyWith(
-                                  color: colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: statusPalette.background,
-                                borderRadius: AppBorderRadius.brCircular20,
-                              ),
-                              child: Text(
-                                statusText,
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.visible,
-                                style: AppTextStyles.style14Regular.copyWith(
-                                  color: statusPalette.foreground,
+                            child: Center(
+                              child: Assets.media.images.svg.orderIcon.svg(
+                                width: 24,
+                                height: 24,
+                                colorFilter: ColorFilter.mode(
+                                  colors.tertiaryContainer,
+                                  BlendMode.srcIn,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      borderRadius: AppBorderRadius.brCircular12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangKeys.generalInformationKey.tr(),
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.black,
-                          ),
-                        ),
-                        12.hSpace,
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      LangKeys.orderNumberKey.tr(),
-                                      style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.neutral500),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      orderNumber,
-                                      textAlign: TextAlign.end,
 
-                                      overflow: TextOverflow.visible,
-                                      style: AppTextStyles.style14Medium
-                                          .copyWith(color: colors.black),
-                                    ),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  LangKeys.orderNumberKey.tr(),
+                                  style: AppTextStyles.style12Medium.copyWith(
+                                    color: colors.neutral500,
                                   ),
-                                ],
-                              ),
-                              16.hSpace,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      LangKeys.orderDateKey.tr(),
-                                      style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.neutral500),
-                                    ),
+                                ),
+                                Text(
+                                  orderNumber,
+                                  overflow: TextOverflow.visible,
+                                  style: AppTextStyles.style18SemiBold.copyWith(
+                                    color: colors.black,
                                   ),
-                                  Text(
-                                    orderDate,
-                                    style: AppTextStyles.style14Medium.copyWith(
-                                      color: colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              16.hSpace,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      LangKeys.paymentMethodKey.tr(),
-                                      style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.neutral500),
-                                    ),
-                                  ),
-                                  Text(
-                                    paymentMethodLabel,
-                                    style: AppTextStyles.style14Medium.copyWith(
-                                      color: colors.primary500Main,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              16.hSpace,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      LangKeys.productKey.tr(),
-                                      style: AppTextStyles.style14Regular
-                                          .copyWith(color: colors.neutral500),
-                                    ),
-                                  ),
-                                  Text(
-                                    '${order.items.length}',
-                                    style: AppTextStyles.style14Medium.copyWith(
-                                      color: colors.primary500Main,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 1,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: statusPalette.background,
+                                  borderRadius: AppBorderRadius.brCircular20,
+                                ),
+                                child: Text(
+                                  statusText,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.visible,
+                                  style: AppTextStyles.style14Regular.copyWith(
+                                    color: statusPalette.foreground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      borderRadius: AppBorderRadius.brCircular12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangKeys.itemInformationKey.tr(),
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.black,
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: screenGradient,
+                        borderRadius: AppBorderRadius.brCircular12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            LangKeys.generalInformationKey.tr(),
+                            style: AppTextStyles.style16SemiBold.copyWith(
+                              color: colors.black,
+                            ),
                           ),
-                        ),
-                        12.hSpace,
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Column(
-                            spacing: 16,
-                            children: [
-                              for (final ProductModel item in order.items)
+                          12.hSpace,
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colors.white,
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: Column(
+                              children: [
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius:
-                                          AppBorderRadius.brCircular12,
-                                      child: AppCachedNetworkImage(
-                                        imageUrl:
-                                            item.images?.firstOrNull ?? '',
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
                                     Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          AutoSizeText(
-                                            context.getLocalizedApiText(
-                                              item.name,
-                                            ),
-                                            style: AppTextStyles.style16Medium
-                                                .copyWith(color: colors.black),
-                                          ),
-                                          NewPriceWidget(
-                                            color: colors.black,
-                                            size: 14,
-                                            fontWeight: FontWeight.w400,
-                                            price: (item.price ?? 0)
-                                                .toStringAsFixed(2),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        LangKeys.orderNumberKey.tr(),
+                                        style: AppTextStyles.style14Regular
+                                            .copyWith(color: colors.neutral500),
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 40,
-                                      child: AutoSizeText(
-                                        'x${item.quantity ?? 0}',
-                                        style: AppTextStyles.style16Medium
+                                    Flexible(
+                                      child: Text(
+                                        orderNumber,
+                                        textAlign: TextAlign.end,
+
+                                        overflow: TextOverflow.visible,
+                                        style: AppTextStyles.style14Medium
                                             .copyWith(color: colors.black),
                                       ),
                                     ),
                                   ],
                                 ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      borderRadius: AppBorderRadius.brCircular12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangKeys.deliveryDetailsKey.tr(),
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.black,
-                          ),
-                        ),
-                        12.hSpace,
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      color: colors.primary500Main,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Assets.media.images.svg.marketIcon
-                                          .svg(
-                                            width: 20,
-                                            height: 20,
-                                            colorFilter: ColorFilter.mode(
-                                              colors.white,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                    ),
-                                  ),
-                                  12.wSpace,
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          LangKeys.fromKey.tr(),
-                                          style: AppTextStyles.style12Medium
-                                              .copyWith(color: colors.black),
-                                        ),
-                                        2.hSpace,
-                                        Text(
-                                          context.getLocalizedApiText(
-                                            order.vendor.name,
-                                          ),
-                                          style: AppTextStyles.style14Medium
-                                              .copyWith(
-                                                color: colors.neutral500,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(width: 22),
-                                  Container(
-                                    width: 2,
-                                    height: 15,
-                                    color: colors.neutral500,
-                                    margin: EdgeInsetsDirectional.symmetric(
-                                      vertical: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      color: colors.onSecondaryFixedVariant,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Assets
-                                          .media
-                                          .images
-                                          .svg
-                                          .locationIcon
-                                          .svg(
-                                            width: 20,
-                                            height: 20,
-                                            colorFilter: ColorFilter.mode(
-                                              colors.black,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                    ),
-                                  ),
-                                  12.wSpace,
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          LangKeys.toKey.tr(),
-                                          style: AppTextStyles.style12Medium
-                                              .copyWith(color: colors.black),
-                                        ),
-                                        2.hSpace,
-                                        // Detail page: show the full delivery
-                                        // address — no line clamp / ellipsis.
-                                        // The app text styles bake in ellipsis,
-                                        // so overflow is forced visible to wrap.
-                                        Text(
-                                          order.deliveryAddress ?? '',
-                                          overflow: TextOverflow.visible,
-                                          style: AppTextStyles.style14Medium
-                                              .copyWith(
-                                                color: colors.neutral500,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  PrimaryButton(
-                    title: LangKeys.submitAComplaintKey.tr(),
-                    onTap: () =>
-                        context.pushNamed(AppRoutes.fileComplaintScreen),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      borderRadius: AppBorderRadius.brCircular12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangKeys.paymentMethodKey.tr(),
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.black,
-                          ),
-                        ),
-                        12.hSpace,
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 10,
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: colors.primary500Main.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Assets.media.images.svg.wallet.svg(
-                                    width: 22,
-                                    height: 22,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.primary500Main,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
+                                16.hSpace,
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    AutoSizeText(
-                                      paymentMethodLabel,
-                                      style: AppTextStyles.style16Medium
-                                          .copyWith(color: colors.black),
+                                    Expanded(
+                                      child: Text(
+                                        LangKeys.orderDateKey.tr(),
+                                        style: AppTextStyles.style14Regular
+                                            .copyWith(color: colors.neutral500),
+                                      ),
                                     ),
-                                    NewPriceWidget(
-                                      color: colors.neutral500,
-                                      size: 14,
-                                      fontWeight: FontWeight.w400,
-                                      price: order.total.toStringAsFixed(2),
+                                    Text(
+                                      orderDate,
+                                      style: AppTextStyles.style14Medium
+                                          .copyWith(color: colors.black),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: screenGradient,
-                      borderRadius: AppBorderRadius.brCircular12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        Text(
-                          LangKeys.invoiceSummaryKey.tr(),
-                          style: AppTextStyles.style16SemiBold.copyWith(
-                            color: colors.black,
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colors.white,
-                            borderRadius: AppBorderRadius.brCircular8,
-                          ),
-                          child: Column(
-                            spacing: 10,
-                            children: [
-                              OrderInvoiceRow(
-                                label: LangKeys.subtotalKey.tr(),
-                                value: order.subtotal,
-                                valueColor: colors.black,
-                              ),
-                              OrderInvoiceRow(
-                                label: LangKeys.vatFivePercentKey.tr(),
-                                value: order.tax,
-                                valueColor: colors.black,
-                              ),
-                              OrderInvoiceRow(
-                                label: LangKeys.deliveryFeesKey.tr(),
-                                value: order.deliveryFee,
-                                valueColor: colors.black,
-                              ),
-                              // Only surfaced when there is an actual discount.
-                              if (order.discount != 0)
-                                OrderInvoiceRow(
-                                  label: LangKeys.discountLabelKey.tr(),
-                                  value: order.discount,
-                                  valueColor: colors.onError,
+                                16.hSpace,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        LangKeys.paymentMethodKey.tr(),
+                                        style: AppTextStyles.style14Regular
+                                            .copyWith(color: colors.neutral500),
+                                      ),
+                                    ),
+                                    Text(
+                                      paymentMethodLabel,
+                                      style: AppTextStyles.style14Medium
+                                          .copyWith(
+                                            color: colors.primary500Main,
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                              Divider(color: colors.neutral400, thickness: 0.5),
-                              OrderInvoiceRow(
-                                label: LangKeys.totalKey.tr(),
-                                value: order.total,
-                                valueColor: colors.primary500Main,
-                                isTotal: true,
-                              ),
-                            ],
+                                16.hSpace,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        LangKeys.productKey.tr(),
+                                        style: AppTextStyles.style14Regular
+                                            .copyWith(color: colors.neutral500),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${order.items.length}',
+                                      style: AppTextStyles.style14Medium
+                                          .copyWith(
+                                            color: colors.primary500Main,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        PrimaryAppButton(title: LangKeys.printInvoiceKey.tr()),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: screenGradient,
+                        borderRadius: AppBorderRadius.brCircular12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            LangKeys.itemInformationKey.tr(),
+                            style: AppTextStyles.style16SemiBold.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                          12.hSpace,
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colors.white,
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: Column(
+                              spacing: 16,
+                              children: [
+                                for (final ProductModel item in order.items)
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    spacing: 10,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            AppBorderRadius.brCircular12,
+                                        child: AppCachedNetworkImage(
+                                          imageUrl:
+                                              item.images?.firstOrNull ?? '',
+                                          width: 70,
+                                          height: 70,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AutoSizeText(
+                                              context.getLocalizedApiText(
+                                                item.name,
+                                              ),
+                                              style: AppTextStyles.style16Medium
+                                                  .copyWith(
+                                                    color: colors.black,
+                                                  ),
+                                            ),
+                                            NewPriceWidget(
+                                              color: colors.black,
+                                              size: 14,
+                                              fontWeight: FontWeight.w400,
+                                              price: (item.price ?? 0)
+                                                  .toStringAsFixed(2),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 40,
+                                        child: AutoSizeText(
+                                          'x${item.quantity ?? 0}',
+                                          style: AppTextStyles.style16Medium
+                                              .copyWith(color: colors.black),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: screenGradient,
+                        borderRadius: AppBorderRadius.brCircular12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            LangKeys.deliveryDetailsKey.tr(),
+                            style: AppTextStyles.style16SemiBold.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                          12.hSpace,
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colors.white,
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        color: colors.primary500Main,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .marketIcon
+                                            .svg(
+                                              width: 20,
+                                              height: 20,
+                                              colorFilter: ColorFilter.mode(
+                                                colors.white,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                    12.wSpace,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            LangKeys.fromKey.tr(),
+                                            style: AppTextStyles.style12Medium
+                                                .copyWith(color: colors.black),
+                                          ),
+                                          2.hSpace,
+                                          Text(
+                                            context.getLocalizedApiText(
+                                              order.vendor.name,
+                                            ),
+                                            style: AppTextStyles.style14Medium
+                                                .copyWith(
+                                                  color: colors.neutral500,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 22),
+                                    Container(
+                                      width: 2,
+                                      height: 15,
+                                      color: colors.neutral500,
+                                      margin: EdgeInsetsDirectional.symmetric(
+                                        vertical: 5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        color: colors.onSecondaryFixedVariant,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .locationIcon
+                                            .svg(
+                                              width: 20,
+                                              height: 20,
+                                              colorFilter: ColorFilter.mode(
+                                                colors.black,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                    12.wSpace,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            LangKeys.toKey.tr(),
+                                            style: AppTextStyles.style12Medium
+                                                .copyWith(color: colors.black),
+                                          ),
+                                          2.hSpace,
+                                          // Detail page: show the full delivery
+                                          // address — no line clamp / ellipsis.
+                                          // The app text styles bake in ellipsis,
+                                          // so overflow is forced visible to wrap.
+                                          Text(
+                                            order.deliveryAddress ?? '',
+                                            overflow: TextOverflow.visible,
+                                            style: AppTextStyles.style14Medium
+                                                .copyWith(
+                                                  color: colors.neutral500,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: screenGradient,
+                        borderRadius: AppBorderRadius.brCircular12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            LangKeys.paymentMethodKey.tr(),
+                            style: AppTextStyles.style16SemiBold.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                          12.hSpace,
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colors.white,
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              spacing: 10,
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: colors.primary500Main.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Assets.media.images.svg.wallet.svg(
+                                      width: 22,
+                                      height: 22,
+                                      colorFilter: ColorFilter.mode(
+                                        colors.primary500Main,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AutoSizeText(
+                                        paymentMethodLabel,
+                                        style: AppTextStyles.style16Medium
+                                            .copyWith(color: colors.black),
+                                      ),
+                                      NewPriceWidget(
+                                        color: colors.neutral500,
+                                        size: 14,
+                                        fontWeight: FontWeight.w400,
+                                        price: order.total.toStringAsFixed(2),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: screenGradient,
+                        borderRadius: AppBorderRadius.brCircular12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 12,
+                        children: [
+                          Text(
+                            LangKeys.invoiceSummaryKey.tr(),
+                            style: AppTextStyles.style16SemiBold.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colors.white,
+                              borderRadius: AppBorderRadius.brCircular8,
+                            ),
+                            child: Column(
+                              spacing: 10,
+                              children: [
+                                OrderInvoiceRow(
+                                  label: LangKeys.subtotalKey.tr(),
+                                  value: order.subtotal,
+                                  valueColor: colors.black,
+                                ),
+                                OrderInvoiceRow(
+                                  label: LangKeys.vatFivePercentKey.tr(),
+                                  value: order.tax,
+                                  valueColor: colors.black,
+                                ),
+                                OrderInvoiceRow(
+                                  label: LangKeys.deliveryFeesKey.tr(),
+                                  value: order.deliveryFee,
+                                  valueColor: colors.black,
+                                ),
+                                // Only surfaced when there is an actual discount.
+                                if (order.discount != 0)
+                                  OrderInvoiceRow(
+                                    label: LangKeys.discountLabelKey.tr(),
+                                    value: order.discount,
+                                    valueColor: colors.onError,
+                                  ),
+                                Divider(
+                                  color: colors.neutral400,
+                                  thickness: 0.5,
+                                ),
+                                OrderInvoiceRow(
+                                  label: LangKeys.totalKey.tr(),
+                                  value: order.total,
+                                  valueColor: colors.primary500Main,
+                                  isTotal: true,
+                                ),
+                              ],
+                            ),
+                          ),
+                          PrimaryAppButton(
+                            title: LangKeys.printInvoiceKey.tr(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // The complaint flow only applies once the order has been
+                    // delivered — hide the button for every other status.
+                    if (status is DeliveredStatus)
+                      PrimaryButton(
+                        buttonPadding: 16,
+                        title: LangKeys.submitAComplaintKey.tr(),
+                        onTap: () => context.pushNamed(
+                          AppRoutes.fileComplaintScreen,
+                          extra: order,
+                        ),
+                      ),
                   ],
                 ),
               ),

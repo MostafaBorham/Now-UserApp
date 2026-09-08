@@ -143,7 +143,8 @@ abstract class AppRouter {
         name: AppRoutes.fileComplaintScreen,
         path: '/${AppRoutes.fileComplaintScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const FileComplaintScreen(),
+        builder: (context, state) =>
+            FileComplaintScreen(order: state.extra as OrderModel),
       ),
       GoRoute(
         name: AppRoutes.topBrandsScreen,
