@@ -33,7 +33,7 @@ class FileComplaintScreen extends ConsumerStatefulWidget {
 }
 
 class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
-  static const int _initialRating = 4;
+  static const int _initialRating = 1;
 
   final TextEditingController _descriptionController = TextEditingController();
 

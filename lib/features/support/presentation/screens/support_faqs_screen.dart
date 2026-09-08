@@ -25,7 +25,7 @@ class SupportFaqsScreen extends ConsumerStatefulWidget {
 
 class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
   final ScrollController _scrollController = ScrollController();
-  final Set<int> _expanded = {0};
+  final Set<int> _expanded = {};
 
   @override
   void dispose() {
@@ -50,7 +50,7 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
-        appBarTitle: LangKeys.faq.tr(),
+        appBarTitle: LangKeys.supportLabel.tr(),
         scrollController: _scrollController,
         body: faqsState.when(
           loading: () => AppShimmer(
@@ -90,7 +90,7 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
                       itemBuilder: (context, index) {
                         // Trailing "Other" entry: styled like a collapsed
                         // FaqTile but routes to the support screen instead of
-                        // expanding.
+                        // expanding, and carries no chevron.
                         if (index == faqs.length) {
                           return Material(
                             color: context.colors.onTertiaryContainer,
@@ -104,27 +104,17 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
                                   horizontal: 18,
                                   vertical: 16,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        LangKeys.otherKey.tr(),
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          height: 1.3,
-                                          fontWeight: FontWeight.w700,
-                                          color:
-                                              context.colors.tertiaryContainer,
-                                        ),
-                                      ),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    LangKeys.otherKey.tr(),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      height: 1.3,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.colors.tertiaryContainer,
                                     ),
-                                    const SizedBox(width: 12),
-                                    Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 16,
-                                      color: context.colors.neutral500,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

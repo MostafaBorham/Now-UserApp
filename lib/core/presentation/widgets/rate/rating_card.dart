@@ -71,7 +71,14 @@ class _RatingCardState extends State<RatingCard>
     with SingleTickerProviderStateMixin {
   /// Drives the back-and-forth loading fill (0→1 fills from [_from] to [_to],
   /// 1→0 empties back), running only while a request is in flight.
-  late final AnimationController _controller = AnimationController(vsync: this);
+  ///
+  /// Built in [initState] (not as a lazy `late final`) so its ticker is created
+  /// while the widget is mounted. A lazy initializer would run on first *read* —
+  /// which, for a card that's disposed before ever loading, is `dispose()`
+  /// itself — constructing the controller (and its `TickerMode.of(context)`
+  /// lookup) against a deactivated element and throwing "Looking up a
+  /// deactivated widget's ancestor is unsafe".
+  late final AnimationController _controller;
 
   /// The star the user picked and is now awaiting a response for; the loading
   /// fill animates from the committed [RatingCard.rating] up to this value.
@@ -87,6 +94,12 @@ class _RatingCardState extends State<RatingCard>
   int _barGeneration = 0;
 
   Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
 
   @override
   void didUpdateWidget(covariant RatingCard oldWidget) {
