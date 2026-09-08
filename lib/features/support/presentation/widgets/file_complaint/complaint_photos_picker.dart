@@ -81,32 +81,39 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
   Widget build(BuildContext context) {
     final canAddMore = _images.length < _maxImages;
     final AppColorScheme colors = context.colors;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16,
-      children: [
-        Text(LangKeys.complaintPhotosKey.tr(),style: AppTextStyles.style16Medium.copyWith(
-          color: colors.black
-        ),),
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.start,
-          spacing: _spacing,
-          runSpacing: _runSpacing,
-          children: [
-            for (int i = 0; i < _images.length; i++)
-              _PickedImageTile(
-                imageFile: _images[i],
-                onRemove: () => _removeImageAt(i),
-              ),
+    // Small horizontal inset so the tiles' remove badges — which overflow each
+    // tile by 6px via negative positioning — never sit flush against the
+    // screen edge and get clipped (the first tile was losing its badge and a
+    // sliver of its rounded corner).
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Text(LangKeys.complaintPhotosKey.tr(),overflow: TextOverflow.visible,style: AppTextStyles.style16Medium.copyWith(
+            color: colors.black
+          ),),
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.start,
+            spacing: _spacing,
+            runSpacing: _runSpacing,
+            children: [
+              for (int i = 0; i < _images.length; i++)
+                _PickedImageTile(
+                  imageFile: _images[i],
+                  onRemove: () => _removeImageAt(i),
+                ),
 
-            if (canAddMore)
-              _AddImageTile(
-                isLoading: _isPicking,
-                onTap: _pickImage,
-              ),
-          ],
-        ),
-      ],
+              if (canAddMore)
+                _AddImageTile(
+                  isLoading: _isPicking,
+                  onTap: _pickImage,
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -180,21 +187,35 @@ class _PickedImageTile extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: AppBorderRadius.brCircular6,
-            child: Container(
-              width: _size,
-              height: _size,
-              color: Colors.grey,
-              child: Image.file(
-                imageFile,
-                width: _size,
-                height: _size,
-                fit: BoxFit.cover,
-              ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(
+                  imageFile,
+                  width: _size,
+                  height: _size,
+                  fit: BoxFit.cover,
+                ),
+                // White glow: the image fades to white at its bottom edge so
+                // the tile blends into the surface below it, matching the
+                // category card. Transparent at the top so the photo stays
+                // fully visible.
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.6, 1],
+                      colors: [colors.white.withValues(alpha: 0), colors.white],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Positioned(
+          PositionedDirectional(
             top: -6,
-            right: -6,
+            end: -6,
             child: GestureDetector(
               onTap: onRemove,
               child: Container(

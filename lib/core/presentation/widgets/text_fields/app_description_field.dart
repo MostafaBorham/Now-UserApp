@@ -4,12 +4,14 @@ import 'package:nowdelivery_user_app/core/presentation/components/field_input_bo
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class AppDescriptionField extends StatelessWidget {
-  const AppDescriptionField({super.key, required this.hintTxt});
+  const AppDescriptionField({super.key, required this.hintTxt, this.controller});
   final String hintTxt;
+  final TextEditingController? controller;
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return TextFormField(
+      controller: controller,
       maxLines: 4,
       style: AppTextStyles.style14Regular.copyWith(color: colors.black),
       decoration: InputDecoration(
