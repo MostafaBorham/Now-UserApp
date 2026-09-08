@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/features/support/data/models/complaint_requ
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_response_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/rate_request_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/rate_response_model.dart';
+import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 
 /// All data operations of the support feature.
 ///
@@ -33,6 +34,18 @@ class SupportRepo {
       (Map<String, dynamic> data) => ComplaintResponseModel.fromJson(
         data['ticket'] as Map<String, dynamic>?,
       ),
+    );
+  }
+
+  /// Loads the support FAQs — parses only the `data.faqs` list of the
+  /// about-section application information into [FaqModel]s.
+  Future<Either<Failure, List<FaqModel>>> getSupportFaqs() {
+    return _guard(
+      () => _supportApiService.getSupportFaqs(),
+      (Map<String, dynamic> data) =>
+          ((data['faqs'] as List?) ?? const [])
+              .map((e) => FaqModel.fromJson(e as Map<String, dynamic>?))
+              .toList(),
     );
   }
 

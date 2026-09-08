@@ -63,7 +63,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
         canPop: true,
         hasSupportIcon: true,
         scrollController: _scrollController,
-        onSupportTap: () {},
+        onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
           error: (Object error, StackTrace stackTrace) =>

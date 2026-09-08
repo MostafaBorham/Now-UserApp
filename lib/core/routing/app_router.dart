@@ -32,6 +32,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/screens/prod
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
+import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
@@ -341,6 +342,11 @@ abstract class AppRouter {
         name: AppRoutes.faqScreen,
         path: '/${AppRoutes.faqScreen}',
         builder: (context, state) => const FaqScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.supportFaqsScreen,
+        path: '/${AppRoutes.supportFaqsScreen}',
+        builder: (context, state) => const SupportFaqsScreen(),
       ),
       GoRoute(
         name: AppRoutes.privacyPolicyScreen,

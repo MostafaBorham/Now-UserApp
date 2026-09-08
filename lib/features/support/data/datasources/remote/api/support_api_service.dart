@@ -21,6 +21,16 @@ class SupportApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
+  /// Loads the about-section application information (used for its FAQ list)
+  /// for the user scope.
+  Future<Response> getSupportFaqs() {
+    return _dio.get(
+      SupportEndpoints.aboutInformation,
+      queryParameters: SupportEndpoints.aboutInformationQuery(),
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> submitComplaint({required ComplaintRequestModel complaint}) {
     return _dio.post(
       SupportEndpoints.supportTickets,

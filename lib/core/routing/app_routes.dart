@@ -40,6 +40,7 @@ abstract class AppRoutes {
   static const String discountCodeScreen = 'discount-code';
   static const String supportScreen = 'support';
   static const String faqScreen = 'faq';
+  static const String supportFaqsScreen = 'support-faqs';
   static const String privacyPolicyScreen = 'privacy-policy';
   static const String editInformationScreen = 'edit-information';
 }

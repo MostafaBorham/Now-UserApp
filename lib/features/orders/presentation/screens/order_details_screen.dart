@@ -67,6 +67,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
         hasSupportIcon: true,
+        onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
         scrollController: _scrollController,
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
