@@ -57,7 +57,8 @@ class _FaqAnswerChatState extends State<FaqAnswerChat> {
             height: 40,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: context.colors.white,
+              // #F4F4F4 in Figma; reuses the near-identical #F5F5F5 token.
+              color: context.colors.onPrimaryContainer,
               shape: BoxShape.circle,
               boxShadow: const [
                 BoxShadow(

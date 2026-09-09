@@ -9,10 +9,10 @@ class FaqTileShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 56,
+      height: 48,
       decoration: BoxDecoration(
         color: context.colors.onTertiaryContainer,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }

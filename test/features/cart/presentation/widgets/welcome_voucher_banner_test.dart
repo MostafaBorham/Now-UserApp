@@ -46,8 +46,13 @@ void main() {
         ),
       );
 
-  Override voucher(CouponModel? c) =>
-      welcomeVoucherProvider.overrideWith((Ref ref) => c);
+  Override voucher(CouponModel? c) => welcomeVoucherProvider.overrideWith(
+        (Ref ref) => _FakeWelcomeVoucherVM(
+          c == null
+              ? const AsyncValue<CouponModel>.loading()
+              : AsyncValue<CouponModel>.data(c),
+        ),
+      );
 
   testWidgets('guest with a loaded coupon sees the voucher', (
     WidgetTester tester,
@@ -122,4 +127,13 @@ class _FakeMyOrdersVM extends GetMyOrdersViewModel {
 
   @override
   Future<void> getOrders() async {}
+}
+
+class _FakeWelcomeVoucherVM extends GetWelcomeVoucherViewModel {
+  _FakeWelcomeVoucherVM(AsyncValue<CouponModel> initial) {
+    state = initial;
+  }
+
+  @override
+  Future<void> getWelcomeVoucher() async {}
 }

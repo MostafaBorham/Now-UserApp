@@ -350,6 +350,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get clipper =>
       const SvgGenImage('assets/media/images/svg/clipper.svg');
 
+  /// File path: assets/media/images/svg/close-square-icon.svg
+  SvgGenImage get closeSquareIcon =>
+      const SvgGenImage('assets/media/images/svg/close-square-icon.svg');
+
   /// File path: assets/media/images/svg/copy-coupon-code-icon.svg
   SvgGenImage get copyCouponCodeIcon =>
       const SvgGenImage('assets/media/images/svg/copy-coupon-code-icon.svg');
@@ -838,6 +842,7 @@ class $AssetsMediaImagesSvgGen {
     circleAddMoreBrokenIcon,
     clipboard,
     clipper,
+    closeSquareIcon,
     copyCouponCodeIcon,
     copy,
     courier,

@@ -23,7 +23,7 @@ class AppWavedView extends StatefulWidget {
     this.canPop,
     this.bodyPadding,
     this.onCartTap,
-    this.scrollController,
+    this.scrollController, this.leading,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -33,12 +33,8 @@ class AppWavedView extends StatefulWidget {
   final VoidCallback? onCartTap;
   final bool? canPop;
   final Widget body;
+  final Widget? leading;
   final EdgeInsets? bodyPadding;
-
-  /// When provided, the body's top spacing is dropped (the caller supplies it
-  /// inside its own scroll view instead) and the wave clip flattens into a
-  /// straight edge while the list is scrolled away from the top, restoring the
-  /// wave once it settles back at offset 0.
   final ScrollController? scrollController;
 
   @override
@@ -113,24 +109,24 @@ class _AppWavedViewState extends State<AppWavedView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  widget.canPop ?? context.canPop()
+                  widget.leading?? (widget.canPop ?? context.canPop()
                       ? InkWell(
-                          onTap: () => context.pop(),
-                          child: ReverseWidget(
-                            applyReverse: context.isRTL,
-                            child: CircleAvatar(
-                              backgroundColor: colors.white,
-                              radius: screenSize.width * 0.05,
-                              child: Center(
-                                child: Assets.media.images.svg.appBackArrow.svg(
-                                  fit: BoxFit.contain,
-                                  width: screenSize.width * 0.05,
-                                ),
-                              ),
-                            ),
+                    onTap: () => context.pop(),
+                    child: ReverseWidget(
+                      applyReverse: context.isRTL,
+                      child: CircleAvatar(
+                        backgroundColor: colors.white,
+                        radius: screenSize.width * 0.05,
+                        child: Center(
+                          child: Assets.media.images.svg.appBackArrow.svg(
+                            fit: BoxFit.contain,
+                            width: screenSize.width * 0.05,
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ),
+                  )
+                      : const SizedBox.shrink()),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),

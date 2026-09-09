@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import '../../core/presentation/widgets/reverse_widget.dart';
 import '../settings/presentation/widgets/profile_header.dart';
 import 'components/chat_bubble.dart';
 import 'components/message_input_bar.dart';
@@ -85,10 +88,27 @@ class _SupportScreenState extends State<SupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    final Size screenSize = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.support.tr(),
+        leading: context.canPop()
+            ? InkWell(
+          onTap: () => context.pop(),
+          child: CircleAvatar(
+            backgroundColor: colors.white,
+            radius: screenSize.width * 0.05,
+            child: Center(
+              child: Assets.media.images.svg.closeSquareIcon.svg(
+                fit: BoxFit.contain,
+                width: screenSize.width * 0.05,
+              ),
+            ),
+          ),
+        )
+            : const SizedBox.shrink(),
         body: Column(
           children: [
             Expanded(

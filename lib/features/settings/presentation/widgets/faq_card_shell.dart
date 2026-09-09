@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The shared card shell behind every FAQ row: a `neutral200`-tinted fill with a
-/// matching border and soft shadow, rounded corners, and a clipped ink ripple.
-/// Used by both [FaqTile] and the trailing "Other" tile so they stay identical.
+/// The shared card shell behind every FAQ row: a flat `#F5F5F5` fill with a soft
+/// hairline drop shadow, rounded corners, and a clipped ink ripple. Used by both
+/// [FaqTile] and the trailing "Other" tile so they stay identical.
 class FaqCardShell extends StatelessWidget {
   const FaqCardShell({super.key, required this.child, this.onTap});
 
@@ -12,17 +12,15 @@ class FaqCardShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius radius = BorderRadius.circular(16);
+    final BorderRadius radius = BorderRadius.circular(12);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colors.neutral200.withValues(alpha: 0.5),
+        color: context.colors.onPrimaryContainer,
         borderRadius: radius,
-        border: Border.all(color: context.colors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: context.colors.neutral200,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: context.colors.black.withValues(alpha: 0.25),
+            blurRadius: 2,
           ),
         ],
       ),
@@ -32,8 +30,10 @@ class FaqCardShell extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
+          // No ripple/highlight tint on expand/collapse — the card stays flat.
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: child,
           ),
         ),
