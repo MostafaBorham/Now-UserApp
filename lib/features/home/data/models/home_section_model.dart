@@ -1,12 +1,14 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 /// One section of the `/api/v1/home-sections` feed, in display order.
 ///
-/// Only two types are wired today: `featured_offers` carries its tappable
-/// [offers]; `categories` is a presence-only marker (its carousel content still
-/// comes from `getAppCategoriesProvider`, because feed category items lack the
-/// `slug` the category-details screen navigates by). Every other type is kept
-/// as a bare [type] and rendered by nothing yet.
+/// Three types are wired today: `featured_offers` carries its tappable
+/// [offers]; `featured_stores` carries its [stores], each with the handful of
+/// products the section shows; `categories` is a presence-only marker (its
+/// carousel content still comes from `getAppCategoriesProvider`, because feed
+/// category items lack the `slug` the category-details screen navigates by).
+/// Every other type is kept as a bare [type] and rendered by nothing yet.
 class HomeSectionModel extends Equatable {
   final int? id;
   final String type;
@@ -15,11 +17,16 @@ class HomeSectionModel extends Equatable {
   final String? title;
   final List<HomeOfferModel> offers;
 
+  /// Stores of a `featured_stores` section. Each item is a vendor whose
+  /// `products` are the tiles the store's card renders.
+  final List<StoreModel> stores;
+
   const HomeSectionModel({
     this.id,
     required this.type,
     this.title,
     this.offers = const <HomeOfferModel>[],
+    this.stores = const <StoreModel>[],
   });
 
   factory HomeSectionModel.fromJson(Map<String, dynamic> json) {
@@ -37,11 +44,19 @@ class HomeSectionModel extends Equatable {
               .map(HomeOfferModel.fromJson)
               .toList()
           : const <HomeOfferModel>[],
+      // Vendor items use the same keys as every other store payload, so
+      // StoreModel parses them as-is — nested `products` included.
+      stores: type == 'featured_stores'
+          ? rawItems
+              .whereType<Map<String, dynamic>>()
+              .map(StoreModel.fromJson)
+              .toList()
+          : const <StoreModel>[],
     );
   }
 
   @override
-  List<Object?> get props => <Object?>[id, type, title, offers];
+  List<Object?> get props => <Object?>[id, type, title, offers, stores];
 }
 
 /// A single tappable offer inside a `featured_offers` section. [kind] routes the

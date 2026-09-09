@@ -97,8 +97,6 @@ class AppCachedNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    _clearFailedUrlsOnReconnect();
-
     final Widget errorPlaceholder = Container(
       width: width ?? double.infinity,
       alignment: Alignment.center,
@@ -153,6 +151,10 @@ class AppCachedNetworkImage extends StatelessWidget {
       },
       errorWidget: (_, url, _) {
         _failedUrls.add(url);
+        // Installed on the first failure rather than on every build: with
+        // nothing in [_failedUrls] there is nothing for a reconnect to clear,
+        // so an app whose images all load never opens the subscription at all.
+        _clearFailedUrlsOnReconnect();
         return errorPlaceholder;
       },
     );

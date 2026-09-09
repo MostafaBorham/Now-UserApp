@@ -16,20 +16,22 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_with_logo_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_featured_stores_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_pinned_search_bar.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// The Home tab.
 ///
-/// The `/api/v1/home-sections` feed drives only the two sections wired so far —
-/// the `categories` carousel (via [HomeHeaderView.showCategories]) and
-/// `featured_offers` ([HomeOffersSectionView]). **Every other section below is
+/// The `/api/v1/home-sections` feed drives only the sections wired so far —
+/// the `categories` carousel (via [HomeHeaderView.showCategories]),
+/// `featured_offers` ([HomeOffersSectionView]), `top_banner`
+/// ([HomeTopBannerSectionView]) and `featured_stores`
+/// ([HomeFeaturedStoresView]). **Every other section below is
 /// still a hardcoded placeholder** (marked `// NOT LINKED` below), kept on
 /// screen so their backend wiring can be verified and swapped in one by one as
 /// each `/home-sections` type is finished. To wire one: replace its placeholder
@@ -172,6 +174,10 @@ class _HomeViewState extends ConsumerState<HomeView>
     final bool showTopBanner = sections.any(
       (HomeSectionModel s) => s.type == 'top_banner',
     );
+    final HomeSectionModel? featuredStoresSection = _findSection(
+      sections,
+      'featured_stores',
+    );
 
     return Stack(
       children: <Widget>[
@@ -194,10 +200,16 @@ class _HomeViewState extends ConsumerState<HomeView>
               // LINKED — top banner carousel, gated by the feed's `top_banner`
               // section; content from /api/v1/banners?type=header_main_page.
               if (showTopBanner) const HomeTopBannerSectionView(),
-              // ---- NOT LINKED: hardcoded placeholders. Swap each for feed data
-              //      as its /home-sections type is finished on the backend. ----
+              // ---- From here down, everything marked NOT LINKED is still a
+              //      hardcoded placeholder. Swap each for feed data as its
+              //      /home-sections type is finished on the backend. ----
               HomeMostPopularBrandsView(), // NOT LINKED (uses /stores/featured)
-              HomeTopCategoriesView(), // NOT LINKED
+              // LINKED — real featured_stores, sitting under Top Brands. Each
+              // store's products come inline with it, so there is no extra
+              // fetch; hidden entirely when the feed has no such section.
+              if (featuredStoresSection != null &&
+                  featuredStoresSection.stores.isNotEmpty)
+                HomeFeaturedStoresView(stores: featuredStoresSection.stores),
               AspectRatio(
                 aspectRatio: 1.47,
                 child: BestNearbyStoresSection(),

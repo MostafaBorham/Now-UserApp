@@ -16,6 +16,12 @@ class ProductModel {
   final double? price;
   final double? effectivePrice;
   final double? dealDiscountAmount;
+
+  /// Discount off [price] as a percentage (e.g. `32.0`), already resolved by
+  /// the backend for this product. Preferred over `activeDeal.discountValue`
+  /// for a "-N%" badge: a fixed-amount deal's `discountValue` is an amount,
+  /// not a percentage.
+  final double? discountPercentage;
   final double? comparePrice;
   final int? stock;
   final bool? inStock;
@@ -52,6 +58,7 @@ class ProductModel {
     this.price,
     this.effectivePrice,
     this.dealDiscountAmount,
+    this.discountPercentage,
     this.comparePrice,
     this.stock,
     this.inStock,
@@ -92,6 +99,7 @@ class ProductModel {
     double? price,
     double? effectivePrice,
     double? dealDiscountAmount,
+    double? discountPercentage,
     double? comparePrice,
     int? stock,
     bool? inStock,
@@ -126,6 +134,7 @@ class ProductModel {
       price: price ?? this.price,
       effectivePrice: effectivePrice ?? this.effectivePrice,
       dealDiscountAmount: dealDiscountAmount ?? this.dealDiscountAmount,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
       comparePrice: comparePrice ?? this.comparePrice,
       stock: stock ?? this.stock,
       inStock: inStock ?? this.inStock,
@@ -166,6 +175,7 @@ class ProductModel {
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
+      discountPercentage: (json['discount_percentage'] as num?)?.toDouble(),
       comparePrice:
           double.tryParse(json['compare_price']?.toString() ?? '') ?? 0.0,
       stock: (json['stock'] as num?)?.toInt(),
@@ -197,8 +207,10 @@ class ProductModel {
   }
 
   /// Image URLs for the product. Prefers the `images` gallery (sent by the
-  /// product-details endpoint), and falls back to the single `primary_image`
-  /// (all list endpoints send only that) so list cards always have an image.
+  /// product-details endpoint), then the single `primary_image` object (most
+  /// list endpoints send only that), then a bare `image_url` string (the
+  /// `/home-sections` feed's flattened product items) — so list cards always
+  /// have an image whichever shape the endpoint chose.
   static List<String> _imagesFrom(Map<String, dynamic> json) {
     final List<String> gallery = (json['images'] as List<dynamic>?)
             ?.map((e) => e['download_url'])
@@ -210,7 +222,10 @@ class ProductModel {
     final String? primary =
         (json['primary_image'] as Map<String, dynamic>?)?['download_url']
             as String?;
-    return primary == null ? <String>[] : <String>[primary];
+    if (primary != null) return <String>[primary];
+
+    final String? flat = json['image_url']?.toString();
+    return flat == null || flat.isEmpty ? <String>[] : <String>[flat];
   }
 
   Map<String, dynamic> toJson() {
@@ -226,6 +241,7 @@ class ProductModel {
       'price': price,
       'effective_price': effectivePrice,
       'deal_discount_amount': dealDiscountAmount,
+      'discount_percentage': discountPercentage,
       'compare_price': comparePrice,
       'stock': stock,
       'in_stock': inStock,
