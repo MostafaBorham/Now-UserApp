@@ -69,12 +69,11 @@ class FavouriteStoresListView extends ConsumerWidget {
         aspectRatio: 1.75,
         child: StoreCardView(
           store: store,
-          // Unfavouriting from the list removes the card right away instead of
-          // waiting for a refresh.
+          // Unfavouriting reloads this — the currently selected — category tab
+          // from the server, so the list reflects the server's favourites state
+          // rather than only dropping the card locally.
           onFavouriteChanged: (bool isFavourite) {
-            if (!isFavourite && store.id != null) {
-              viewModel.removeItemsWhere((StoreModel s) => s.id == store.id);
-            }
+            if (!isFavourite) viewModel.loadFirstPage();
           },
         ),
       ),
