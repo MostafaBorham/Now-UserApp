@@ -20,10 +20,16 @@ class AppShimmer extends StatelessWidget {
 
     final AppColorScheme colors = context.colors;
 
-    return Shimmer.fromColors(
-      baseColor: colors.neutral500.withValues(alpha: 0.6),
-      highlightColor: colors.neutral500.withValues(alpha: 0.3),
-      child: child,
+    // A shimmer is a purely visual loading placeholder, so it must never react
+    // to taps — otherwise the real [child]'s gestures (e.g. a card's onTap that
+    // navigates) would fire while it is still just a skeleton. [IgnorePointer]
+    // swallows every pointer event for any shimmer built through this widget.
+    return IgnorePointer(
+      child: Shimmer.fromColors(
+        baseColor: colors.neutral500.withValues(alpha: 0.6),
+        highlightColor: colors.neutral500.withValues(alpha: 0.3),
+        child: child,
+      ),
     );
   }
 }
