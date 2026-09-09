@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
@@ -64,10 +65,12 @@ class _MyCardsViewState extends State<MyCardsView> {
                 ),
               ],
               onAmountChanged: (card) {},
+              // TODO: wire to the delete-card VM provider once available.
+              onDeleteCard: (card) {},
             ),
           ),
           5.hSpace,
-          PrimaryAppButton(title: LangKeys.addNewCardKey.tr()),
+          PrimaryAppButton(title: LangKeys.addNewCardKey.tr(),onTap: () => context.pushNamed(AppRoutes.addPaymentCard),),
         ],
       ),
     );

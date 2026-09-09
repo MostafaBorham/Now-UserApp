@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
@@ -36,27 +36,12 @@ class WalletHistoryItem extends StatelessWidget {
                       backgroundColor: colors.white,
                     ),
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Shaworma',
-                            style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.black,
-                              fontSize: con.maxWidth * 0.04,
-                            ),
-                          ),
-                          Text(
-                            '${LangKeys.expiredKey.tr()} 26-04-2026',
-                            style: AppTextStyles.style12Regular.copyWith(
-                              color: colors.onPrimaryFixed.withValues(
-                                alpha: 0.7,
-                              ),
-                              fontSize: con.maxWidth * 0.03,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        'Shaworma',
+                        style: AppTextStyles.style14SemiBold.copyWith(
+                          color: colors.black,
+                          fontSize: con.maxWidth * 0.04,
+                        ),
                       ),
                     ),
                   ],
@@ -85,25 +70,10 @@ class WalletHistoryItem extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Row(
-                  spacing: 5,
-                  children: [
-                    Assets.media.images.svg.realSaudiCurrency.svg(
-                      fit: BoxFit.contain,
-                      width: con.maxWidth * 0.04,
-                      colorFilter: ColorFilter.mode(
-                        colors.error,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    Text(
-                      '-10',
-                      style: AppTextStyles.style16SemiBold.copyWith(
-                        color: colors.error,
-                        fontSize: con.maxWidth * 0.04,
-                      ),
-                    ),
-                  ],
+                child: NewPriceWidget(
+                  color: colors.error,
+                  price: '-10',
+                  size: con.maxWidth * 0.04,
                 ),
               ),
             ],

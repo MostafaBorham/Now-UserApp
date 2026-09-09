@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/lists/delete_swipe_background.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -122,10 +123,10 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                           Dismissible(
                             key: ValueKey<int?>(address.id),
                             direction: DismissDirection.horizontal,
-                            background: const _DeleteSwipeBackground(
+                            background: const DeleteSwipeBackground(
                               alignment: AlignmentDirectional.centerStart,
                             ),
-                            secondaryBackground: const _DeleteSwipeBackground(
+                            secondaryBackground: const DeleteSwipeBackground(
                               alignment: AlignmentDirectional.centerEnd,
                             ),
                             confirmDismiss: (_) => _onDelete(address),
@@ -184,29 +185,4 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
 
   static Widget _separator(BuildContext context, int index) =>
       const SizedBox(height: _cardGap);
-}
-
-/// The red field revealed behind an address card as it is swiped away, showing a
-/// trash icon on the side the swipe uncovers.
-class _DeleteSwipeBackground extends StatelessWidget {
-  const _DeleteSwipeBackground({required this.alignment});
-
-  final AlignmentGeometry alignment;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: alignment,
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      decoration: BoxDecoration(
-        color: context.colors.onError,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Assets.media.images.svg.deleteIcon.svg(
-        width: 26,
-        height: 26,
-        colorFilter: ColorFilter.mode(context.colors.white, BlendMode.srcIn),
-      ),
-    );
-  }
 }

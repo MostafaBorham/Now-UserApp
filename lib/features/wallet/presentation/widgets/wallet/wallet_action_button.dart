@@ -4,10 +4,16 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class WalletActionButton extends StatelessWidget {
-  const WalletActionButton({super.key, required this.actionName, this.onTap});
+  const WalletActionButton({
+    super.key,
+    required this.actionName,
+    this.onTap,
+    this.isSelected = false,
+  });
 
   final String actionName;
   final GestureTapCallback? onTap;
+  final bool isSelected;
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -16,10 +22,12 @@ class WalletActionButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
         decoration: BoxDecoration(
-          color: colors.neutral500.withValues(alpha: 0.1),
+          color: isSelected
+              ? colors.primary500Main
+              : colors.neutral500.withValues(alpha: 0.1),
           borderRadius: AppBorderRadius.brCircular30
         ),
-        child: Center(child: FittedBox(child: Text(actionName,style: AppTextStyles.style14Medium.copyWith(color: colors.black),))),
+        child: Center(child: FittedBox(child: Text(actionName,style: AppTextStyles.style14Medium.copyWith(color: isSelected ? colors.white : colors.black),))),
       ),
     );
   }
