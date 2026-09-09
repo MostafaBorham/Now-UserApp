@@ -11,7 +11,6 @@ class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    print('==favourites==');
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: AppWavedView(

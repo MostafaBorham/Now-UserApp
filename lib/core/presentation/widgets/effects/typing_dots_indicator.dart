@@ -49,6 +49,10 @@ class _TypingDotsIndicatorState extends State<TypingDotsIndicator>
         builder: (context, _) {
           return Row(
             mainAxisSize: MainAxisSize.min,
+            // The dots are symmetric, so pin the row to LTR: otherwise in RTL
+            // the reversed layout drops the physical `right` gaps on the wrong
+            // side and two dots end up touching.
+            textDirection: TextDirection.ltr,
             children: List.generate(widget.count, (index) {
               // Stagger each dot along the cycle so the bounce ripples across.
               final double phase = (_controller.value + index * 0.18) % 1.0;
