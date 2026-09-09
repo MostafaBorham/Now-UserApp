@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
 import '../../../../helpers/favourites_test_harness.dart';
 
@@ -24,9 +25,10 @@ void main() {
             pageOf<StoreModel>(<StoreModel>[sampleStore(en: 'Corner Shop')]),
           ),
         ),
-        overrideFavouriteCategories(
-          const AsyncValue<List<FavouriteCategoryModel>>.data(
-            <FavouriteCategoryModel>[],
+        // The category chip row inside each tab: empty, so only "All" shows.
+        overrideAppCategories(
+          AsyncValue<PaginationModel<CategoryModel>>.data(
+            pageOf<CategoryModel>(const <CategoryModel>[]),
           ),
         ),
       ];
@@ -45,11 +47,11 @@ void main() {
     // absence was the "No Material widget found" crash. If it were missing the
     // build below would have thrown; assert there was no such exception.
     expect(find.byType(Scaffold), findsWidgets);
-    expect(find.byType(ProductItemCard2), findsWidgets);
+    expect(find.byType(ProductItem3View), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('switching to the Stores tab shows store items',
+  testWidgets('switching to the Stores tab shows store cards',
       (WidgetTester tester) async {
     await pumpCategoriesScreen(
       tester,
@@ -61,16 +63,15 @@ void main() {
     await tester.pump(); // start the tab transition
     await tester.pump(const Duration(milliseconds: 500)); // finish it
 
-    // StoreItem's inner Row overflows under the fixed-width test font (fits
-    // with the real font). Drain those, asserting each is genuinely an overflow
-    // so a real exception would still fail — same handling as the categories
-    // screen test.
+    // StoreCardView overflows under the fixed-width test font (fits with the
+    // real font). Drain those, asserting each is genuinely an overflow so a real
+    // exception would still fail — same handling as the categories screen test.
     for (dynamic ex = tester.takeException();
         ex != null;
         ex = tester.takeException()) {
       expect(ex.toString(), contains('overflow'));
     }
 
-    expect(find.byType(StoreItem), findsWidgets);
+    expect(find.byType(StoreCardView), findsWidgets);
   });
 }

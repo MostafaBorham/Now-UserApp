@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/empty_favourites_widget.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_store_tab_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
 import '../../../../helpers/favourites_test_harness.dart';
 
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  // The chip row hits its own provider; keep it empty unless a test overrides.
-  final Override noChips = overrideFavouriteCategories(
-    const AsyncValue<List<FavouriteCategoryModel>>.data(
-      <FavouriteCategoryModel>[],
+  // The category chip row is the app-category list; keep it empty (only the
+  // "All" tab) unless a test overrides it. With no other tab there is no
+  // sibling list view rendering its unselected-tab shimmer, so what the tests
+  // below find belongs to the "All" tab alone.
+  final Override noChips = overrideAppCategories(
+    AsyncValue<PaginationModel<CategoryModel>>.data(
+      pageOf<CategoryModel>(const <CategoryModel>[]),
     ),
   );
 
@@ -39,6 +43,8 @@ void main() {
       );
 
       expect(find.byType(AppShimmer), findsWidgets);
+      // A placeholder card renders ProductItem3View's own dummy product, so the
+      // fixture's name — not the card type — is what marks "loaded".
       expect(find.text('Pizza'), findsNothing);
     });
 
@@ -57,13 +63,11 @@ void main() {
         ],
       );
 
-      // (A loaded card still shows an AppShimmer inside its image placeholder,
-      // so the product name — not shimmer absence — is what marks "loaded".)
-      expect(find.byType(ProductItemCard2), findsWidgets);
+      expect(find.byType(ProductItem3View), findsWidgets);
       expect(find.text('Pizza'), findsOneWidget);
     });
 
-    testWidgets('an empty page shows the no-items widget',
+    testWidgets('an empty page shows the empty-favourites widget',
         (WidgetTester tester) async {
       await pumpCategoriesWidget(
         tester,
@@ -78,8 +82,8 @@ void main() {
         ],
       );
 
-      expect(find.byType(NoResultsWidget), findsOneWidget);
-      expect(find.byType(ProductItemCard2), findsNothing);
+      expect(find.byType(EmptyFavouritesWidget), findsOneWidget);
+      expect(find.byType(ProductItem3View), findsNothing);
     });
 
     testWidgets('a failed first page shows the error widget',
@@ -103,7 +107,7 @@ void main() {
   });
 
   group('FavouriteStoreTabView', () {
-    testWidgets('a loaded page renders store items',
+    testWidgets('a loaded page renders store cards',
         (WidgetTester tester) async {
       await pumpCategoriesWidget(
         tester,
@@ -118,21 +122,23 @@ void main() {
         ],
       );
 
-      // StoreItem overflows under the fixed-width test font; drain those.
+      // StoreCardView overflows under the fixed-width test font; drain those.
       for (dynamic ex = tester.takeException();
           ex != null;
           ex = tester.takeException()) {
         expect(ex.toString(), contains('overflow'));
       }
 
-      expect(find.byType(StoreItem), findsWidgets);
+      expect(find.byType(StoreCardView), findsWidgets);
+      expect(find.text('Corner Shop'), findsWidgets);
     });
   });
 
   group('FavouritesTabView filters', () {
     testWidgets('typing in the search field applies a debounced search filter',
         (WidgetTester tester) async {
-      final List<List<Object?>> calls = <List<Object?>>[];
+      // Every query the visible list view asks for, in order.
+      final List<List<Object?>> queries = <List<Object?>>[];
       await pumpCategoriesWidget(
         tester,
         const FavouriteProductTabView(),
@@ -141,27 +147,32 @@ void main() {
             AsyncValue<PaginationModel<ProductModel>>.data(
               pageOf<ProductModel>(<ProductModel>[sampleProduct()]),
             ),
-            onApplyFilters: (String? s, List<int> c, String? sort) =>
-                calls.add(<Object?>[s, c, sort]),
+            onQuery: (int? categoryId, String? searchKey) =>
+                queries.add(<Object?>[categoryId, searchKey]),
           ),
           noChips,
         ],
       );
 
+      // The unfiltered "All" query the tab opens on.
+      expect(queries, <List<Object?>>[
+        <Object?>[null, null],
+      ]);
+      queries.clear();
+
       await tester.enterText(find.byType(TextField), 'shoes');
       // Nothing before the debounce window elapses.
-      expect(calls, isEmpty);
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(queries, isEmpty);
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(calls, hasLength(1));
-      expect(calls.single[0], 'shoes');
-      expect(calls.single[1], const <int>[]);
-      expect(calls.single[2], 'recent'); // default sort
+      expect(queries, hasLength(1));
+      expect(queries.single, <Object?>[null, 'shoes']);
     });
 
-    testWidgets('selecting a category chip applies its id',
+    testWidgets('selecting a category tab queries its id',
         (WidgetTester tester) async {
-      final List<List<Object?>> calls = <List<Object?>>[];
+      final List<List<Object?>> queries = <List<Object?>>[];
       await pumpCategoriesWidget(
         tester,
         const FavouriteProductTabView(),
@@ -170,27 +181,31 @@ void main() {
             AsyncValue<PaginationModel<ProductModel>>.data(
               pageOf<ProductModel>(<ProductModel>[sampleProduct()]),
             ),
-            onApplyFilters: (String? s, List<int> c, String? sort) =>
-                calls.add(<Object?>[s, c, sort]),
+            onQuery: (int? categoryId, String? searchKey) =>
+                queries.add(<Object?>[categoryId, searchKey]),
           ),
-          overrideFavouriteCategories(
-            AsyncValue<List<FavouriteCategoryModel>>.data(
-              <FavouriteCategoryModel>[
-                sampleFavouriteCategory(id: 7, en: 'Food', count: 3),
-              ],
+          overrideAppCategories(
+            AsyncValue<PaginationModel<CategoryModel>>.data(
+              pageOf<CategoryModel>(<CategoryModel>[
+                sampleCategory(id: 7, en: 'Food'),
+              ]),
             ),
           ),
         ],
       );
 
       expect(find.text('all'), findsOneWidget);
-      expect(find.text('Food (3)'), findsOneWidget);
+      expect(find.text('Food'), findsOneWidget);
+      queries.clear();
 
-      await tester.tap(find.text('Food (3)'));
-      await tester.pump();
+      await tester.tap(find.text('Food'));
+      await tester.pump(); // start the tab transition
+      await tester.pump(const Duration(milliseconds: 500)); // finish it
 
-      expect(calls, hasLength(1));
-      expect(calls.single[1], const <int>[7]);
+      // The Food tab is now the selected one, so it — and only it — queries.
+      expect(queries, <List<Object?>>[
+        <Object?>[7, null],
+      ]);
     });
   });
 }

@@ -4,25 +4,23 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
-import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/get_favourite_products_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/get_favourite_stores_vm.dart';
 
 // Reuse the categories harness for localization, pumping helpers and the
-// shared product/store/page fixtures — the favourites widgets live in the same
-// ambient (EasyLocalization + ProviderScope + themed MaterialApp).
+// shared product/store/page/category fixtures — the favourites widgets live in
+// the same ambient (EasyLocalization + ProviderScope + themed MaterialApp), and
+// their chip row is the app-category list, so `overrideAppCategories` fills it.
 export 'categories_test_harness.dart';
-// So tests referencing the chip model only need to import this harness.
-export 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
 
-/// Records the `(search, categoryIds, sort)` a tab view pushes into its
-/// view-model, so a test can assert what a search / chip / sort produced.
-typedef ApplyFiltersSpy = void Function(
-  String? search,
-  List<int> categoryIds,
-  String? sort,
-);
+/// Records the query one favourites list view asked for — the family key it
+/// watched — so a test can assert what a search or a category tab produced.
+///
+/// Filters are no longer pushed into the view model; the search text and
+/// selected category live in `favouritesFilterProvider` and reach the data
+/// layer purely as the provider family key. So "the filter was applied" is
+/// observed here, as the args a view requested.
+typedef FavouriteQuerySpy = void Function(int? categoryId, String? searchKey);
 
 // ---------------------------------------------------------------------------
 // Provider overrides (faked view-models — no repo, no network)
@@ -30,52 +28,43 @@ typedef ApplyFiltersSpy = void Function(
 
 Override overrideFavouriteProducts(
   AsyncValue<PaginationModel<ProductModel>> state, {
-  ApplyFiltersSpy? onApplyFilters,
+  FavouriteQuerySpy? onQuery,
 }) =>
+    // getFavouriteProductsProvider is a family: override every instance
+    // (whatever its FavouriteProductsArgs) with a fake seeded to [state].
     getFavouriteProductsProvider.overrideWith(
-      (Ref ref) => _FakeFavouriteProductsVM(state, onApplyFilters),
+      (Ref ref, FavouriteProductsArgs args) {
+        onQuery?.call(args.categoryId, args.searchKey);
+        return _FakeFavouriteProductsVM(state, args);
+      },
     );
 
 Override overrideFavouriteStores(
   AsyncValue<PaginationModel<StoreModel>> state, {
-  ApplyFiltersSpy? onApplyFilters,
+  FavouriteQuerySpy? onQuery,
 }) =>
+    // getFavouriteStoresProvider is a family: override every instance (whatever
+    // its FavouriteStoresArgs) with a fake seeded to [state].
     getFavouriteStoresProvider.overrideWith(
-      (Ref ref) => _FakeFavouriteStoresVM(state, onApplyFilters),
-    );
-
-/// Overrides the chip row for every tab (the family is keyed by type).
-Override overrideFavouriteCategories(
-  AsyncValue<List<FavouriteCategoryModel>> state,
-) =>
-    favouriteCategoriesProvider.overrideWith(
-      (Ref ref, String type) => _FakeFavouriteCategoriesVM(type, state),
+      (Ref ref, FavouriteStoresArgs args) {
+        onQuery?.call(args.categoryId, args.searchKey);
+        return _FakeFavouriteStoresVM(state, args);
+      },
     );
 
 class _FakeFavouriteProductsVM extends GetFavouriteProductsViewModel {
   _FakeFavouriteProductsVM(
     AsyncValue<PaginationModel<ProductModel>> initial,
-    this._onApplyFilters,
-  ) {
+    FavouriteProductsArgs args,
+  ) : super(args: args) {
     state = initial;
   }
-
-  final ApplyFiltersSpy? _onApplyFilters;
 
   @override
   Future<void> loadFirstPage() async {}
 
   @override
   Future<void> loadNextPage() async {}
-
-  @override
-  Future<void> applyFilters({
-    String? search,
-    List<int>? categoryIds,
-    String? sort,
-  }) async {
-    _onApplyFilters?.call(search, categoryIds ?? const <int>[], sort);
-  }
 
   @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) =>
@@ -85,12 +74,10 @@ class _FakeFavouriteProductsVM extends GetFavouriteProductsViewModel {
 class _FakeFavouriteStoresVM extends GetFavouriteStoresViewModel {
   _FakeFavouriteStoresVM(
     AsyncValue<PaginationModel<StoreModel>> initial,
-    this._onApplyFilters,
-  ) {
+    FavouriteStoresArgs args,
+  ) : super(args: args) {
     state = initial;
   }
-
-  final ApplyFiltersSpy? _onApplyFilters;
 
   @override
   Future<void> loadFirstPage() async {}
@@ -99,42 +86,6 @@ class _FakeFavouriteStoresVM extends GetFavouriteStoresViewModel {
   Future<void> loadNextPage() async {}
 
   @override
-  Future<void> applyFilters({
-    String? search,
-    List<int>? categoryIds,
-    String? sort,
-  }) async {
-    _onApplyFilters?.call(search, categoryIds ?? const <int>[], sort);
-  }
-
-  @override
   Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) =>
       throw UnimplementedError('fake view-model must not fetch');
 }
-
-class _FakeFavouriteCategoriesVM extends FavouriteCategoriesViewModel {
-  _FakeFavouriteCategoriesVM(
-    super.type,
-    AsyncValue<List<FavouriteCategoryModel>> initial,
-  ) {
-    state = initial;
-  }
-
-  @override
-  Future<void> load() async {}
-}
-
-// ---------------------------------------------------------------------------
-// Fixtures
-// ---------------------------------------------------------------------------
-
-FavouriteCategoryModel sampleFavouriteCategory({
-  int id = 1,
-  String en = 'Food',
-  int count = 3,
-}) =>
-    FavouriteCategoryModel(
-      id: id,
-      name: <String, dynamic>{'en': en, 'ar': en},
-      favoritablesCount: count,
-    );
