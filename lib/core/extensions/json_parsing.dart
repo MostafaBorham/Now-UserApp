@@ -13,7 +13,11 @@ extension JsonParsing on Map<String, dynamic> {
         : value as Map<String, dynamic>?;
   }
 
-  /// The `download_url` inside an `{download_url: ...}` image object at [key].
-  String? downloadUrl(String key) =>
-      (this[key] as Map<String, dynamic>?)?['download_url']?.toString();
+  /// An image URL at [key], sent either as an `{download_url: ...}` object or
+  /// (home-feed banner items) as a bare URL string.
+  String? downloadUrl(String key) {
+    final dynamic value = this[key];
+    if (value is String) return value;
+    return (value as Map<String, dynamic>?)?['download_url']?.toString();
+  }
 }

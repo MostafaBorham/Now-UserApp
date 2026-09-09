@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 
 void main() {
@@ -102,6 +103,189 @@ void main() {
     expect(product.productId, isNull);
     expect(product.productId ?? product.id, 51);
     expect(product.slug, 'sf-tree-medium-roast-ground-coffee');
+  });
+
+  test('nearby_stores parses each vendor with its card details', () {
+    // The enriched vendor payload: same store keys as featured_stores, minus
+    // the inline products (a nearby card shows the store's own details only).
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 25,
+      'type': 'nearby_stores',
+      'title': 'أفضل المتاجر القريبة',
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 3,
+          'type': 'vendor',
+          'name': {'ar': 'متجر النور', 'en': 'Al-Nour Store'},
+          'logo_url': 'http://x/logo.png',
+          'cover_url': 'http://x/cover.png',
+          'rating': 5.0,
+          'rating_count': 2,
+          'delivery_fee': 12.0,
+          'delivery_time': '15-25',
+          'distance': 0.6,
+          'is_favorite': true,
+        },
+      ],
+    });
+
+    expect(section.title, 'أفضل المتاجر القريبة');
+    expect(section.stores.length, 1);
+
+    final store = section.stores.single;
+    expect(store.id, 3);
+    expect(store.name?['en'], 'Al-Nour Store');
+    expect(store.logoUrl, 'http://x/logo.png');
+    expect(store.coverUrl, 'http://x/cover.png');
+    expect(store.rating, 5.0);
+    expect(store.ratingCount, 2);
+    expect(store.deliveryFee, 12.0);
+    expect(store.deliveryTime, '15-25');
+    expect(store.distance, 0.6);
+    // Decides whether the card's favourite heart starts filled.
+    expect(store.isFavorite, isTrue);
+  });
+
+  test('a thin vendor item parses instead of throwing mid-feed', () {
+    // The shape production still sends for nearby_stores: `name` as an
+    // already-localized string and none of the detail fields. Casting that
+    // string straight to a translations map threw, and because it threw while
+    // parsing the feed it blanked the entire home screen — not just this store.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 192,
+      'type': 'nearby_stores',
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 13389,
+          'type': 'vendor',
+          'name': 'opiljnlm',
+          'image_url': null,
+        },
+      ],
+    });
+
+    final store = section.stores.single;
+    expect(store.id, 13389);
+    // Mirrored into both locales, so either language resolves a name.
+    expect(store.name?['en'], 'opiljnlm');
+    expect(store.name?['ar'], 'opiljnlm');
+    // Absent details stay null, so the card leaves those rows out entirely
+    // rather than rendering zeroes.
+    expect(store.rating, isNull);
+    expect(store.deliveryFee, isNull);
+    expect(store.deliveryTime, isNull);
+    expect(store.distance, isNull);
+    expect(store.isFavorite, isNull);
+  });
+
+  test('a description sent as an empty array parses to null', () {
+    // How a store with no description serializes — also previously a throw.
+    final store = StoreModel.fromJson(<String, dynamic>{
+      'id': 1,
+      'name': {'ar': 'بدون', 'en': 'Nameless'},
+      'description': <dynamic>[],
+    });
+
+    expect(store.id, 1);
+    expect(store.description, isNull);
+  });
+
+  test('flash_offers flattens every offer wrapper into one product list', () {
+    // Trimmed from a real /home-sections response: items are `home_page_offer`
+    // wrappers, each holding the products the section renders one card each for.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 49,
+      'type': 'flash_offers',
+      'title': "Don't-Miss Offers",
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 4,
+          'type': 'home_page_offer',
+          'products': <Map<String, dynamic>>[
+            {
+              'id': 52,
+              'name': {'ar': 'منتج', 'en': 'product'},
+              'slug': 'product',
+              'price': 20.0,
+              'effective_price': 13.6,
+              'discount_percentage': 32.0,
+              'compare_price': null,
+              'rating': {'average': 4.5, 'total': 2},
+              'image_url': 'http://x/p52.png',
+              'vendor_logo_url': 'http://x/vendor.png',
+              // Gallery entries are bare URL strings here, not attachment
+              // objects — subscripting one used to throw and blank the feed.
+              'images': <String>['http://x/p52.png'],
+              // British spelling; the app's own key is `is_favorite`.
+              'is_favourite': true,
+            },
+          ],
+        },
+        {
+          'id': 3,
+          'type': 'home_page_offer',
+          'products': <Map<String, dynamic>>[
+            {'id': 38, 'slug': 'modern-backpack', 'price': 59.5},
+          ],
+        },
+      ],
+    });
+
+    expect(section.title, "Don't-Miss Offers");
+    // Both wrappers' products, in feed order.
+    expect(section.products.map((p) => p.id).toList(), <int>[52, 38]);
+    expect(section.offers, isEmpty);
+    expect(section.stores, isEmpty);
+
+    final product = section.products.first;
+    // The price the card shows is the deal-applied one, with the list price
+    // struck through beside it.
+    expect(product.effectivePrice, 13.6);
+    expect(product.price, 20.0);
+    expect(product.discountPercentage, 32.0);
+    expect(product.rating?.average, 4.5);
+    // A string gallery has to land in `images` or the card renders blank.
+    expect(product.images, <String>['http://x/p52.png']);
+    // Decides whether the card's favourite heart starts filled.
+    expect(product.isFavorite, isTrue);
+    // No nested `vendor`, so the flat logo stands in as a logo-only store.
+    expect(product.vendor?.logoUrl, 'http://x/vendor.png');
+    // No `product_id`, so the cart control falls back to `id`.
+    expect(product.productId ?? product.id, 52);
+  });
+
+  test('promo_block_middle parses its banner item', () {
+    // Verbatim from a real /home-sections response: banner items send bare URL
+    // strings (not `{download_url: ...}`) and numeric ids for their link.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 50,
+      'type': 'promo_block_middle',
+      'layout': 'banner',
+      'title': 'Home Page Middle Banner',
+      'items': <Map<String, dynamic>>[
+        {
+          'slot': 'middle',
+          'id': 9,
+          'image_ar': 'http://x/335/download',
+          'image_en': 'http://x/336/download',
+          'link_type': 'product',
+          'product_id': 1,
+          'main_category_id': null,
+          'default_url': null,
+        },
+      ],
+    });
+
+    expect(section.banners.length, 1);
+    final banner = section.banners.first;
+    expect(banner.imageAr, 'http://x/335/download');
+    expect(banner.imageEn, 'http://x/336/download');
+    expect(banner.linkType, 'product');
+    // Numeric `product_id` isn't a slug → the tap stays inert.
+    expect(banner.productSlug, isNull);
+    expect(section.offers, isEmpty);
+    expect(section.stores, isEmpty);
+    expect(section.products, isEmpty);
   });
 
   test('non-offer sections carry no offers and no stores', () {

@@ -192,18 +192,32 @@ class ProductModel {
       /*      category: json['category'] == null
           ? null
           : CategoryModel.fromJson(json['category']),*/
-      vendor: json['vendor'] == null
-          ? null
-          : StoreModel.fromJson(json['vendor']),
+      vendor: _vendorFrom(json),
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
       quantity: (json['quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
-      isFavorite: json['is_favorite'] as bool?,
+      // Both spellings are in use across endpoints — the `/home-sections`
+      // feed's product items send the British `is_favourite`.
+      isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
       subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
       rating: RatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
     );
+  }
+
+  /// The store this product belongs to. Most endpoints nest the whole `vendor`
+  /// object; the `/home-sections` feed sends only `vendor_logo_url`, which is
+  /// all a product card renders — carried through as a logo-only store so the
+  /// card reads it from the same place either way.
+  static StoreModel? _vendorFrom(Map<String, dynamic> json) {
+    final Object? vendor = json['vendor'];
+    if (vendor is Map<String, dynamic>) return StoreModel.fromJson(vendor);
+
+    final String? logoUrl = json['vendor_logo_url']?.toString();
+    return logoUrl == null || logoUrl.isEmpty
+        ? null
+        : StoreModel(logoUrl: logoUrl);
   }
 
   /// Image URLs for the product. Prefers the `images` gallery (sent by the
@@ -212,8 +226,11 @@ class ProductModel {
   /// `/home-sections` feed's flattened product items) — so list cards always
   /// have an image whichever shape the endpoint chose.
   static List<String> _imagesFrom(Map<String, dynamic> json) {
+    // A gallery entry is an attachment object (`download_url`) on most
+    // endpoints, but the feed sends bare URL strings — subscripting one of
+    // those threw and took the whole parse down with it.
     final List<String> gallery = (json['images'] as List<dynamic>?)
-            ?.map((e) => e['download_url'])
+            ?.map((e) => e is Map<String, dynamic> ? e['download_url'] : e)
             .whereType<String>()
             .toList() ??
         <String>[];

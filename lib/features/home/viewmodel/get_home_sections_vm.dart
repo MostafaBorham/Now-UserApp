@@ -26,13 +26,23 @@ class GetHomeSectionsViewModel
     super.dispose();
   }
 
+  /// [lat] / [lng] are the guest's coordinates for the `nearby_stores` section;
+  /// left null for a logged-in user, whose nearby stores the backend resolves
+  /// from their profile address (see [HomeView]).
   Future<void> getHomeSections({
     required String platform,
     required String lang,
+    double? lat,
+    double? lng,
   }) async {
     state = const AsyncValue.loading();
 
-    final result = await _repo.getHomeSections(platform: platform, lang: lang);
+    final result = await _repo.getHomeSections(
+      platform: platform,
+      lang: lang,
+      lat: lat,
+      lng: lng,
+    );
 
     if (!mounted) return;
 

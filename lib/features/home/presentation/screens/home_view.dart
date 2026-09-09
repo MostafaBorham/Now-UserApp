@@ -7,9 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_all_stores_section_view.dart';
@@ -30,8 +34,11 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_v
 /// The `/api/v1/home-sections` feed drives only the sections wired so far —
 /// the `categories` carousel (via [HomeHeaderView.showCategories]),
 /// `featured_offers` ([HomeOffersSectionView]), `top_banner`
-/// ([HomeTopBannerSectionView]) and `featured_stores`
-/// ([HomeFeaturedStoresView]). **Every other section below is
+/// ([HomeTopBannerSectionView]), `featured_stores`
+/// ([HomeFeaturedStoresView]), `nearby_stores`
+/// ([BestNearbyStoresSection]), `flash_offers`
+/// ([HomeNeverMissOffersSection]) and `promo_block_middle`
+/// ([HomeBannerView]). **Every other section below is
 /// still a hardcoded placeholder** (marked `// NOT LINKED` below), kept on
 /// screen so their backend wiring can be verified and swapped in one by one as
 /// each `/home-sections` type is finished. To wire one: replace its placeholder
@@ -86,11 +93,25 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
   void _loadFeed() {
+    // The `nearby_stores` section has to be measured from somewhere. A guest
+    // has no profile address, so their device location — resolved and cached by
+    // the splash, which guarantees it is non-null before the app is entered —
+    // is sent explicitly; without it the backend returns that section empty. A
+    // logged-in user sends nothing: the backend measures from the address saved
+    // on their profile.
+    final bool isGuest =
+        ref.read(authSessionProvider).sessionType == SessionType.guest;
+    final AddressModel? location = isGuest
+        ? CurrentLocationCacheService().getCurrentLocation()
+        : null;
+
     ref
         .read(getHomeSectionsProvider.notifier)
         .getHomeSections(
           platform: Platform.isIOS ? 'ios' : 'android',
           lang: context.locale.languageCode,
+          lat: double.tryParse(location?.latitude ?? ''),
+          lng: double.tryParse(location?.longitude ?? ''),
         );
   }
 
@@ -178,6 +199,18 @@ class _HomeViewState extends ConsumerState<HomeView>
       sections,
       'featured_stores',
     );
+    final HomeSectionModel? nearbyStoresSection = _findSection(
+      sections,
+      'nearby_stores',
+    );
+    final HomeSectionModel? flashOffersSection = _findSection(
+      sections,
+      'flash_offers',
+    );
+    final HomeSectionModel? middlePromoSection = _findSection(
+      sections,
+      'promo_block_middle',
+    );
 
     return Stack(
       children: <Widget>[
@@ -210,19 +243,46 @@ class _HomeViewState extends ConsumerState<HomeView>
               if (featuredStoresSection != null &&
                   featuredStoresSection.stores.isNotEmpty)
                 HomeFeaturedStoresView(stores: featuredStoresSection.stores),
-              AspectRatio(
-                aspectRatio: 1.47,
-                child: BestNearbyStoresSection(),
-              ), // NOT LINKED
-              AspectRatio(
-                aspectRatio: 1,
-                child: HomeNeverMissOffersSection(),
-              ), // NOT LINKED
+              // LINKED — real nearby_stores, sitting under Featured Stores.
+              // Hidden when the feed has no such section, and also when it
+              // comes back empty: for a guest that means no cached device
+              // location was available to measure from, and for a user that
+              // there is nothing close to their profile address.
+              if (nearbyStoresSection != null &&
+                  nearbyStoresSection.stores.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 1.47,
+                  child: BestNearbyStoresSection(
+                    title: nearbyStoresSection.title,
+                    stores: nearbyStoresSection.stores,
+                  ),
+                ),
+              // LINKED — real flash_offers, sitting under Nearby Stores. Its
+              // products come inline with the section (grouped under offer
+              // wrappers, flattened at parse time), so there is no extra fetch;
+              // hidden entirely when the feed has no such section or it comes
+              // back with no products.
+              if (flashOffersSection != null &&
+                  flashOffersSection.products.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: HomeNeverMissOffersSection(
+                    products: flashOffersSection.products,
+                  ),
+                ),
               2.hSpace,
-              AspectRatio(
-                aspectRatio: 3.5,
-                child: HomeBannerView(),
-              ), // NOT LINKED
+              // LINKED — real promo_block_middle, sitting under Don't Miss.
+              // The section is a single banner slot (`slot: "middle"`), so the
+              // first item is the one rendered; hidden when the feed has no
+              // such section or it carries no items.
+              if (middlePromoSection != null &&
+                  middlePromoSection.banners.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 3.5,
+                  child: HomeBannerView(
+                    banner: middlePromoSection.banners.first,
+                  ),
+                ),
               HomeAppCategorySectionView(
                 categoryModel: const CategoryModel(
                   name: {'en': 'Electronics', 'ar': 'الإلكترونيات'},

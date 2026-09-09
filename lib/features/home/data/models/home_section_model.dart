@@ -1,14 +1,18 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 /// One section of the `/api/v1/home-sections` feed, in display order.
 ///
-/// Three types are wired today: `featured_offers` carries its tappable
-/// [offers]; `featured_stores` carries its [stores], each with the handful of
-/// products the section shows; `categories` is a presence-only marker (its
-/// carousel content still comes from `getAppCategoriesProvider`, because feed
-/// category items lack the `slug` the category-details screen navigates by).
-/// Every other type is kept as a bare [type] and rendered by nothing yet.
+/// Six types are wired today: `featured_offers` carries its tappable
+/// [offers]; `featured_stores` and `nearby_stores` both carry their [stores]
+/// (a featured store also brings the handful of products its card shows);
+/// `flash_offers` carries its [products]; `promo_block_middle` carries its
+/// [banners]; `categories` is a presence-only marker (its carousel content
+/// still comes from `getAppCategoriesProvider`, because feed category items
+/// lack the `slug` the category-details screen navigates by). Every other type
+/// is kept as a bare [type] and rendered by nothing yet.
 class HomeSectionModel extends Equatable {
   final int? id;
   final String type;
@@ -17,9 +21,25 @@ class HomeSectionModel extends Equatable {
   final String? title;
   final List<HomeOfferModel> offers;
 
-  /// Stores of a `featured_stores` section. Each item is a vendor whose
-  /// `products` are the tiles the store's card renders.
+  /// Stores of a `featured_stores` or `nearby_stores` section. A featured
+  /// store's `products` are the tiles its card renders; a nearby store has
+  /// none — its card shows the store's own details instead.
   final List<StoreModel> stores;
+
+  /// Products of a `flash_offers` section. The feed groups them under
+  /// `home_page_offer` wrappers, but the section renders one card per product,
+  /// so every wrapper's products are flattened into this single list.
+  final List<ProductModel> products;
+
+  /// Banner items of a `promo_block_middle` section. Their `image_ar` /
+  /// `image_en` arrive as bare URL strings, which [BannerModel] reads as-is.
+  final List<BannerModel> banners;
+
+  /// Section types whose `items` are vendors, parsed into [stores].
+  static const Set<String> _storeTypes = <String>{
+    'featured_stores',
+    'nearby_stores',
+  };
 
   const HomeSectionModel({
     this.id,
@@ -27,6 +47,8 @@ class HomeSectionModel extends Equatable {
     this.title,
     this.offers = const <HomeOfferModel>[],
     this.stores = const <StoreModel>[],
+    this.products = const <ProductModel>[],
+    this.banners = const <BannerModel>[],
   });
 
   factory HomeSectionModel.fromJson(Map<String, dynamic> json) {
@@ -45,18 +67,38 @@ class HomeSectionModel extends Equatable {
               .toList()
           : const <HomeOfferModel>[],
       // Vendor items use the same keys as every other store payload, so
-      // StoreModel parses them as-is — nested `products` included.
-      stores: type == 'featured_stores'
+      // StoreModel parses them as-is — nested `products` included. Sections
+      // still sending the thin vendor item (id/name/image_url only) parse too;
+      // the fields they omit stay null and their card leaves those rows out.
+      stores: _storeTypes.contains(type)
           ? rawItems
               .whereType<Map<String, dynamic>>()
               .map(StoreModel.fromJson)
               .toList()
           : const <StoreModel>[],
+      products: type == 'flash_offers'
+          ? rawItems
+              .whereType<Map<String, dynamic>>()
+              .expand(
+                (Map<String, dynamic> offer) =>
+                    (offer['products'] as List<dynamic>? ?? <dynamic>[])
+                        .whereType<Map<String, dynamic>>(),
+              )
+              .map(ProductModel.fromJson)
+              .toList()
+          : const <ProductModel>[],
+      banners: type == 'promo_block_middle'
+          ? rawItems
+              .whereType<Map<String, dynamic>>()
+              .map(BannerModel.fromJson)
+              .toList()
+          : const <BannerModel>[],
     );
   }
 
   @override
-  List<Object?> get props => <Object?>[id, type, title, offers, stores];
+  List<Object?> get props =>
+      <Object?>[id, type, title, offers, stores, products, banners];
 }
 
 /// A single tappable offer inside a `featured_offers` section. [kind] routes the

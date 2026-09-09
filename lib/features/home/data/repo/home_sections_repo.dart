@@ -17,9 +17,14 @@ class HomeSectionsRepo {
 
   /// The ordered, published home sections. An empty list is valid (the admin
   /// has not published a feed yet).
+  ///
+  /// [lat] / [lng] locate the `nearby_stores` section for a guest; see
+  /// [HomeSectionsApiService.getHomeSections].
   Future<Either<Failure, List<HomeSectionModel>>> getHomeSections({
     required String platform,
     required String lang,
+    double? lat,
+    double? lng,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -29,6 +34,8 @@ class HomeSectionsRepo {
       final Response response = await _apiService.getHomeSections(
         platform: platform,
         lang: lang,
+        lat: lat,
+        lng: lng,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;

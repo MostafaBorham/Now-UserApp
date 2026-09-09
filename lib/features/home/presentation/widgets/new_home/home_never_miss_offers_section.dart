@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/lists/infinite_auto_scroll_list.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 
+/// The `flash_offers` section: an endlessly scrolling strip of the most deeply
+/// discounted products, each card owning its own favourite and cart actions.
+///
+/// The heading is the design's own logo artwork (Arabic / English), not the
+/// feed's `title` — the backend only titles text headings.
 class HomeNeverMissOffersSection extends StatelessWidget {
-  const HomeNeverMissOffersSection({super.key});
+  const HomeNeverMissOffersSection({super.key, required this.products});
+
+  final List<ProductModel> products;
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +78,14 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                       builder: (context, listCon) {
                         final double itemHeight = listCon.maxHeight - 4;
                         return InfiniteAutoScrollList(
-                          itemCount: 10,
+                          itemCount: products.length,
                           itemWidth: itemHeight * 0.55,
                           separatorWidth: 10,
                           padding: const EdgeInsetsDirectional.only(bottom: 4),
                           itemBuilder: (context, index) =>
-                              const HomeNeverMissOffersItem(),
+                              HomeNeverMissOffersItem(
+                                product: products[index],
+                              ),
                         );
                       },
                     ),

@@ -53,6 +53,21 @@ class StoreModel {
     this.isFavorite,
   });
 
+  /// Normalizes an API translation field into a `{'en': ..., 'ar': ...}` map.
+  ///
+  /// The same field is not always sent as a map: a store with no description
+  /// serializes it as an empty JSON array, and the thin vendor items some
+  /// `/home-sections` types still send carry `name` as an already-localized
+  /// plain string. Both used to be cast straight to a map, which threw and —
+  /// since the throw happened while parsing the feed — took down the whole home
+  /// screen, not just the one store. A string is mirrored into both locales;
+  /// anything else becomes null.
+  static Map<String, dynamic>? _translations(Object? raw) {
+    if (raw is Map<String, dynamic>) return raw;
+    if (raw is String) return <String, dynamic>{'en': raw, 'ar': raw};
+    return null;
+  }
+
   factory StoreModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
       return const StoreModel();
@@ -60,8 +75,8 @@ class StoreModel {
 
     return StoreModel(
       id: (json['id'] as num?)?.toInt(),
-      name: json['name'] as Map<String, dynamic>?,
-      description: json['description'] as Map<String, dynamic>?,
+      name: _translations(json['name']),
+      description: _translations(json['description']),
       logoUrl: json['logo_url']?.toString(),
       coverUrl: json['cover_url']?.toString(),
       isOpen: json['is_open'] as bool?,
