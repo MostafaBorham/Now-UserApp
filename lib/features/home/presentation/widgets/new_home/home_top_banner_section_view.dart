@@ -22,8 +22,16 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_
 class HomeTopBannerSectionView extends ConsumerWidget {
   const HomeTopBannerSectionView({super.key});
 
-  /// Aspect ratio of the header banner. Lower = taller/bigger banner.
-  static const double _aspectRatio = 2.7;
+  /// Figma 7137:26468 — the banner is a 355×118 box inset 17.5px from each
+  /// screen edge, 18px corners, drop shadow `0 0 4 rgba(0, 0, 0, 0.25)`.
+  static const double _bannerAspectRatio = 355 / 118;
+  static const double _sideMargin = 17.5;
+  static const double _radius = 18;
+
+  /// Padding [AppSlider] puts around every carousel item (its default). It
+  /// eats into both the side margin and the item's height, so both are backed
+  /// out below to land the banner itself on the design's box.
+  static const double _sliderSpace = 8;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,8 +41,11 @@ class HomeTopBannerSectionView extends ConsumerWidget {
 
     return banners.when(
       loading: () => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: AspectRatio(aspectRatio: _aspectRatio, child: _BannerSkeleton()),
+        padding: EdgeInsets.symmetric(horizontal: _sideMargin),
+        child: AspectRatio(
+          aspectRatio: _bannerAspectRatio,
+          child: _BannerSkeleton(),
+        ),
       ),
       error: (_, _) => const SizedBox.shrink(),
       data: (List<BannerModel> items) {
@@ -44,6 +55,13 @@ class HomeTopBannerSectionView extends ConsumerWidget {
         // the banner is centered on top of it, so it bleeds above and below.
         return LayoutBuilder(
           builder: (context, con) {
+            final double bannerWidth = con.maxWidth - (_sideMargin * 2);
+            final double viewportWidth =
+                con.maxWidth - ((_sideMargin - _sliderSpace) * 2);
+            final double viewportAspectRatio =
+                viewportWidth /
+                (bannerWidth / _bannerAspectRatio + (_sliderSpace * 2));
+
             return Stack(
               alignment: Alignment.center,
               children: [
@@ -55,9 +73,12 @@ class HomeTopBannerSectionView extends ConsumerWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: _sideMargin - _sliderSpace,
+                  ),
                   child: AppSlider(
-                    itemAspectRatio: _aspectRatio,
+                    itemAspectRatio: viewportAspectRatio,
+                    sliderSpace: _sliderSpace,
                     showIndicator: false,
                     sliderItems: items
                         .map(
@@ -89,14 +110,31 @@ class _TopBannerItem extends StatelessWidget {
     final String imageUrl =
         (isAr ? banner.imageAr : banner.imageEn) ?? banner.image ?? '';
 
+    final AppColorScheme colors = context.colors;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => _onTap(context),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            HomeTopBannerSectionView._radius,
+          ),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: colors.black.withValues(alpha: 0.25),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        // Both extents are given so `BoxFit.cover` fills the banner box; with
+        // a null height the image sizes itself from its own aspect ratio and
+        // letterboxes inside it instead.
         child: AppCachedNetworkImage(
           imageUrl: imageUrl,
           width: double.infinity,
+          height: double.infinity,
         ),
       ),
     );
@@ -131,7 +169,9 @@ class _BannerSkeleton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(
+            HomeTopBannerSectionView._radius,
+          ),
         ),
       ),
     );
