@@ -19,12 +19,26 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/sticky_on_scroll.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
+/// The `all_stores` section: a category filter over a list of stores.
+///
+/// The two tab families have different sources. **All** shows [stores] — the
+/// feed's own `all_stores` items, already in hand, so switching back to it
+/// costs no request. **Every category tab** fetches that category's stores from
+/// `getCategoryStoresProvider`, because the feed carries one flat store list
+/// with no category dimension to filter on.
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
-  const HomeAllStoresSectionView({super.key, this.pinTop});
+  const HomeAllStoresSectionView({
+    super.key,
+    this.pinTop,
+    this.stores = const <StoreModel>[],
+  });
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
   final ValueListenable<double>? pinTop;
+
+  /// The feed's `all_stores` items, shown under the "All" tab.
+  final List<StoreModel> stores;
 
   @override
   ConsumerState<HomeAllStoresSectionView> createState() =>
@@ -55,7 +69,7 @@ class _HomeAllStoresSectionViewState
     ];
 
     final List<Widget> views = <Widget>[
-      const HomeStoresListView(),
+      HomeStoresListView(stores: widget.stores),
       ...categories.map(
         (CategoryModel category) => HomeStoresListView(category: category),
       ),
@@ -154,10 +168,17 @@ class _HomeAllStoresSectionViewState
   }
 }
 
+/// One tab's store list: [category]'s stores fetched on demand, or — with no
+/// category, i.e. the "All" tab — the [stores] the feed already sent.
 class HomeStoresListView extends ConsumerWidget {
-  const HomeStoresListView({super.key, this.category});
+  const HomeStoresListView({
+    super.key,
+    this.category,
+    this.stores = const <StoreModel>[],
+  });
 
   final CategoryModel? category;
+  final List<StoreModel> stores;
 
   static const int itemCount = 7;
   static const double separator = 15;
@@ -175,9 +196,13 @@ class HomeStoresListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel? category = this.category;
     if (category == null) {
+      // The "All" tab: the feed's own items, capped to the same handful the
+      // category tabs show. The rest are behind "See All".
+      final List<StoreModel> all = stores.take(itemCount).toList();
+      if (all.isEmpty) return const NoResultsWidget();
       return _StoresList(
-        itemCount: itemCount,
-        itemBuilder: (context, index) => const StoreCardView(),
+        itemCount: all.length,
+        itemBuilder: (context, index) => StoreCardView(store: all[index]),
       );
     }
 

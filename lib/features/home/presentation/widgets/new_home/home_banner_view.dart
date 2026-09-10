@@ -8,9 +8,9 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 /// A single full-width promo banner between two home sections.
 ///
-/// [banner] is a feed banner item (`promo_block_middle`); when it is null the
-/// widget still renders the hardcoded placeholder artwork, which the
-/// not-yet-linked footer slot relies on.
+/// [banner] is a feed banner item (`promo_block_middle` / `promo_block_footer`);
+/// the hardcoded placeholder artwork stands in when it is null, or when the
+/// admin published the slot without an image for the current locale.
 class HomeBannerView extends StatelessWidget {
   const HomeBannerView({super.key, this.banner});
 

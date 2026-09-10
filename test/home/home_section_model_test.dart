@@ -7,7 +7,7 @@ void main() {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 2,
       'type': 'featured_offers',
-      'title': 'Special',
+      'title': {'ar': 'عروض مميزة', 'en': 'Featured Offers'},
       'items': <Map<String, dynamic>>[
         {
           'title': 'A',
@@ -17,21 +17,27 @@ void main() {
         {
           'title': 'B',
           'image_url': 'http://x/b.jpg',
-          // Backend sends a numeric product id today → not navigable by slug.
+          // The shape older responses sent: a numeric product id, which
+          // product details (slug-only) can't open.
           'link': {'kind': 'product', 'store': null, 'product': 42},
         },
         {
           'title': 'C',
           'image_url': null,
-          // Once the backend emits a real slug, product taps work unchanged.
           'link': {'kind': 'product', 'product': 'nice-slug'},
+        },
+        {
+          'title': 'D',
+          'image_url': null,
+          'link': {'kind': 'category', 'category': 'main-electronics'},
         },
       ],
     });
 
     expect(section.type, 'featured_offers');
-    expect(section.title, 'Special');
-    expect(section.offers.length, 3);
+    expect(section.title?['en'], 'Featured Offers');
+    expect(section.title?['ar'], 'عروض مميزة');
+    expect(section.offers.length, 4);
 
     expect(section.offers[0].kind, 'store');
     expect(section.offers[0].storeId, 7);
@@ -41,6 +47,23 @@ void main() {
     expect(section.offers[1].productSlug, isNull); // numeric id → inert
 
     expect(section.offers[2].productSlug, 'nice-slug'); // string slug → usable
+
+    expect(section.offers[3].kind, 'category');
+    expect(section.offers[3].categorySlug, 'main-electronics');
+  });
+
+  test('a section titled in one locale only still resolves', () {
+    // The feed sends `ar` alone on some sections; `getLocalizedApiText` falls
+    // back across locales, so the heading is never blank.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 45,
+      'type': 'top_banner',
+      'title': {'ar': 'بانرات أعلى الصفحة'},
+      'items': <dynamic>[],
+    });
+
+    expect(section.title?['ar'], 'بانرات أعلى الصفحة');
+    expect(section.title?['en'], isNull);
   });
 
   test('featured_stores parses each vendor with its inline products', () {
@@ -50,7 +73,7 @@ void main() {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 26,
       'type': 'featured_stores',
-      'title': 'المتاجر المميزة',
+      'title': {'ar': 'المتاجر المميزة', 'en': 'Featured Stores'},
       'items': <Map<String, dynamic>>[
         {
           'id': 3,
@@ -62,6 +85,10 @@ void main() {
           'delivery_fee': 12.0,
           'delivery_time': '15-25',
           'distance': 2.5,
+          // Tints this store's carousel page.
+          'store_color': '#b3f5b2',
+          // British spelling; the app's own key is `is_favorite`.
+          'is_favourite': true,
           'products': <Map<String, dynamic>>[
             {
               'id': 51,
@@ -87,6 +114,10 @@ void main() {
     expect(store.deliveryFee, 12.0);
     expect(store.deliveryTime, '15-25');
     expect(store.distance, 2.5);
+    // Drives the card's tint; #RRGGBB gains a full-opacity alpha channel.
+    expect(store.storeColor?.toARGB32(), 0xFFB3F5B2);
+    // The British key has to reach `isFavorite` or the heart stays unfilled.
+    expect(store.isFavorite, isTrue);
 
     final product = store.products!.single;
     // A bare name string is mirrored into both locales.
@@ -111,7 +142,7 @@ void main() {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 25,
       'type': 'nearby_stores',
-      'title': 'أفضل المتاجر القريبة',
+      'title': {'ar': 'أفضل المتاجر القريبة', 'en': 'Nearby Stores'},
       'items': <Map<String, dynamic>>[
         {
           'id': 3,
@@ -129,7 +160,7 @@ void main() {
       ],
     });
 
-    expect(section.title, 'أفضل المتاجر القريبة');
+    expect(section.title?['ar'], 'أفضل المتاجر القريبة');
     expect(section.stores.length, 1);
 
     final store = section.stores.single;
@@ -144,6 +175,60 @@ void main() {
     expect(store.distance, 0.6);
     // Decides whether the card's favourite heart starts filled.
     expect(store.isFavorite, isTrue);
+  });
+
+  test('all_stores parses its vendors the same way the other store sections do',
+      () {
+    // Trimmed from a real /home-sections response: the section the home
+    // screen's "All" tab lists, with no inline products.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 54,
+      'type': 'all_stores',
+      'layout': 'stores',
+      'title': {'ar': 'جميع المتاجر'},
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 1,
+          'type': 'vendor',
+          'name': {'ar': 'متجر تجريبي API', 'en': 'API Test Vendor'},
+          'logo_url': 'http://x/316.png',
+          'cover_url': 'http://x/317.png',
+          'rating': 0.0,
+          'rating_count': 0,
+          'delivery_fee': 8.0,
+          'delivery_time': '25-40',
+          'distance': 1.5,
+          'is_favourite': false,
+        },
+        {
+          'id': 54,
+          'type': 'vendor',
+          'name': {'ar': 'متجر دعم التاجر', 'en': 'Vendor Support Demo Store'},
+          // A store with no artwork still has to reach the card.
+          'logo_url': null,
+          'cover_url': null,
+          'rating': 0.0,
+          'rating_count': 0,
+          'delivery_fee': 15.0,
+          'delivery_time': '35-50',
+          'distance': 1.0,
+          'is_favourite': false,
+        },
+      ],
+    });
+
+    expect(section.stores.map((s) => s.id).toList(), <int>[1, 54]);
+    final first = section.stores.first;
+    expect(first.name?['en'], 'API Test Vendor');
+    expect(first.coverUrl, 'http://x/317.png');
+    expect(first.deliveryTime, '25-40');
+    expect(first.distance, 1.5);
+    expect(first.isFavorite, isFalse);
+    expect(section.stores.last.logoUrl, isNull);
+    // A store section carries nothing else.
+    expect(section.products, isEmpty);
+    expect(section.offers, isEmpty);
+    expect(section.banners, isEmpty);
   });
 
   test('a thin vendor item parses instead of throwing mid-feed', () {
@@ -196,7 +281,7 @@ void main() {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 49,
       'type': 'flash_offers',
-      'title': "Don't-Miss Offers",
+      'title': {'ar': 'عروض لا تفوتك', 'en': "Don't-Miss Offers"},
       'items': <Map<String, dynamic>>[
         {
           'id': 4,
@@ -231,7 +316,7 @@ void main() {
       ],
     });
 
-    expect(section.title, "Don't-Miss Offers");
+    expect(section.title?['en'], "Don't-Miss Offers");
     // Both wrappers' products, in feed order.
     expect(section.products.map((p) => p.id).toList(), <int>[52, 38]);
     expect(section.offers, isEmpty);
@@ -261,7 +346,7 @@ void main() {
       'id': 50,
       'type': 'promo_block_middle',
       'layout': 'banner',
-      'title': 'Home Page Middle Banner',
+      'title': {'ar': 'بلوك ترويجي', 'en': 'Home Page Middle Banner'},
       'items': <Map<String, dynamic>>[
         {
           'slot': 'middle',
@@ -286,6 +371,38 @@ void main() {
     expect(section.offers, isEmpty);
     expect(section.stores, isEmpty);
     expect(section.products, isEmpty);
+  });
+
+  test('promo_block_footer parses its banner item the same way', () {
+    // The footer slot is the same item shape as the middle one, so it goes
+    // through the same branch — a section type of its own is all that differs.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 53,
+      'type': 'promo_block_footer',
+      'layout': 'banner',
+      'title': {'ar': 'بلوك ترويجي (أسفل الصفحة)'},
+      'items': <Map<String, dynamic>>[
+        {
+          'slot': 'footer',
+          'id': 2,
+          'image_ar': null,
+          'image_en': null,
+          'link_type': 'category',
+          'product_id': null,
+          'main_category_id': 1,
+          'default_url': null,
+        },
+      ],
+    });
+
+    final banner = section.banners.single;
+    expect(banner.id, 2);
+    expect(banner.linkType, 'category');
+    // Images the admin hasn't uploaded leave the widget on its placeholder.
+    expect(banner.imageAr, isNull);
+    expect(banner.imageEn, isNull);
+    // Numeric `main_category_id` isn't a slug → the tap stays inert.
+    expect(banner.categorySlug, isNull);
   });
 
   test('products_by_category parses its products, category and theming', () {

@@ -37,9 +37,10 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_v
 /// ([HomeTopBannerSectionView]), `featured_stores`
 /// ([HomeFeaturedStoresView]), `nearby_stores`
 /// ([BestNearbyStoresSection]), `flash_offers`
-/// ([HomeNeverMissOffersSection]), `promo_block_middle`
-/// ([HomeBannerView]) and `products_by_category`
-/// ([_ProductsByCategorySection]). **Every other section below is
+/// ([HomeNeverMissOffersSection]), `promo_block_middle` and
+/// `promo_block_footer` ([HomeBannerView]), `products_by_category`
+/// ([_ProductsByCategorySection]) and `all_stores`
+/// ([HomeAllStoresSectionView]). **Every other section below is
 /// still a hardcoded placeholder** (marked `// NOT LINKED` below), kept on
 /// screen so their backend wiring can be verified and swapped in one by one as
 /// each `/home-sections` type is finished. To wire one: replace its placeholder
@@ -212,6 +213,14 @@ class _HomeViewState extends ConsumerState<HomeView>
       sections,
       'promo_block_middle',
     );
+    final HomeSectionModel? footerPromoSection = _findSection(
+      sections,
+      'promo_block_footer',
+    );
+    final HomeSectionModel? allStoresSection = _findSection(
+      sections,
+      'all_stores',
+    );
     // Unlike every other type, the feed carries one products_by_category
     // section per category — all of them are rendered, in feed order.
     final List<HomeSectionModel> categorySections = sections
@@ -296,13 +305,27 @@ class _HomeViewState extends ConsumerState<HomeView>
               for (final HomeSectionModel section in categorySections)
                 if (section.products.isNotEmpty)
                   _ProductsByCategorySection(section: section),
-              AspectRatio(
-                aspectRatio: 3.5,
-                child: HomeBannerView(),
-              ), // NOT LINKED
-              HomeAllStoresSectionView(
-                pinTop: _searchBarHeight,
-              ), // NOT LINKED (uses /categories + /category stores)
+              // LINKED — real promo_block_footer, the same single-slot banner
+              // as the middle block (`slot: "footer"`), sitting under the
+              // category sections; hidden when the feed has no such section or
+              // it carries no items.
+              if (footerPromoSection != null &&
+                  footerPromoSection.banners.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 3.5,
+                  child: HomeBannerView(
+                    banner: footerPromoSection.banners.first,
+                  ),
+                ),
+              // LINKED — real all_stores, the last section on the page. Shown
+              // only when the feed publishes the section; its "All" tab lists
+              // the items sent here, while each category tab still fetches that
+              // category's stores (the feed's list has no category dimension).
+              if (allStoresSection != null)
+                HomeAllStoresSectionView(
+                  pinTop: _searchBarHeight,
+                  stores: allStoresSection.stores,
+                ),
 
               if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
             ],

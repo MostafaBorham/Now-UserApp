@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -20,18 +21,19 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 class BestNearbyStoresSection extends StatelessWidget {
   const BestNearbyStoresSection({super.key, this.title, required this.stores});
 
-  /// Section title as the feed sent it, already resolved to the requested
-  /// `lang` server-side — the backend owns section headings, so whatever it
-  /// returns is displayed as-is. The app's own label stands in only when the
-  /// admin left the title empty, never to override a title that was sent.
-  final String? title;
+  /// Section title as the feed's `{ar, en}` map — the backend owns section
+  /// headings, so whatever it returns for the current locale is displayed
+  /// as-is. The app's own label stands in only when the admin left the title
+  /// empty, never to override a title that was sent.
+  final Map<String, dynamic>? title;
   final List<StoreModel> stores;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final String heading = (title != null && title!.isNotEmpty)
-        ? title!
+    final String localizedTitle = context.getLocalizedApiText(title);
+    final String heading = localizedTitle.isNotEmpty
+        ? localizedTitle
         : LangKeys.bestNearbyStoresKey.tr();
 
     return Padding(

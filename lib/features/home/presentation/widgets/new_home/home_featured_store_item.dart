@@ -42,21 +42,20 @@ class HomeFeaturedStoreItem extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final List<ProductModel> products =
         (store.products ?? const <ProductModel>[]).take(_maxProducts).toList();
+    // The vendor item's own `store_color`; the design's blue stands in for a
+    // store the admin left uncoloured.
+    final Color tint = store.storeColor ?? const Color(0xFF4968B7);
     return Stack(
       children: [
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
-              // ponytail: one hardcoded tint for every store — the feed sends
-              // `primary_color` per *section*, not per store, so it cannot
-              // drive the per-store tints the design shows. Read it here once
-              // the vendor item carries its own colour.
               gradient: RadialGradient(
                 center: AlignmentDirectional.topStart,
                 radius: 0.5,
                 colors: [
-                  const Color(0xFF4968B7).withValues(alpha: 0.6),
-                  const Color(0xFF4963B7).withValues(alpha: 0.2),
+                  tint.withValues(alpha: 0.6),
+                  tint.withValues(alpha: 0.2),
                 ],
               ),
               image: DecorationImage(

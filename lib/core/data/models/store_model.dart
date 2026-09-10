@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/offer_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
 class StoreModel {
   final int? id;
@@ -31,6 +34,12 @@ class StoreModel {
   final List<BannerModel>? banners;
   final bool? isFavorite;
 
+  /// The store's own accent colour (`store_color`), sent by the home feed's
+  /// `featured_stores` vendor items and used to tint that store's card. Null
+  /// when the admin left it unset or sent a malformed hex, so the card falls
+  /// back to its default tint.
+  final Color? storeColor;
+
   const StoreModel({
     this.id,
     this.name,
@@ -51,6 +60,7 @@ class StoreModel {
     this.offers,
     this.banners,
     this.isFavorite,
+    this.storeColor,
   });
 
   /// Normalizes an API translation field into a `{'en': ..., 'ar': ...}` map.
@@ -102,7 +112,11 @@ class StoreModel {
       banners: (json['banners'] as List?)
           ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
-      isFavorite: json['is_favorite'] as bool?,
+      // Both spellings are in use across endpoints — the `/home-sections`
+      // feed's vendor items send the British `is_favourite`, and reading only
+      // the American one left every home store's heart unfilled.
+      isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
+      storeColor: json.colorHex('store_color'),
     );
   }
 
@@ -127,6 +141,8 @@ class StoreModel {
       'offers': offers?.map((e) => e.toJson()).toList(),
       'banners': banners?.map((e) => e.toJson()).toList(),
       'is_favorite': isFavorite,
+      // Round-trips through `colorHex`, which accepts a bare 8-digit hex.
+      'store_color': storeColor?.toARGB32().toRadixString(16),
     };
   }
 
@@ -150,6 +166,7 @@ class StoreModel {
     List<OfferModel>? offers,
     List<BannerModel>? banners,
     bool? isFavorite,
+    Color? storeColor,
   }) {
     return StoreModel(
       id: id ?? this.id,
@@ -171,6 +188,7 @@ class StoreModel {
       offers: offers ?? this.offers,
       banners: banners ?? this.banners,
       isFavorite: isFavorite ?? this.isFavorite,
+      storeColor: storeColor ?? this.storeColor,
     );
   }
 }

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -15,9 +17,9 @@ import 'package:nowdelivery_user_app/features/home/data/models/home_section_mode
 class HomeOffersSectionView extends StatelessWidget {
   const HomeOffersSectionView({super.key, this.title, required this.offers});
 
-  /// Section title, already localized by the feed; falls back to a generic
+  /// Section title as the feed's `{ar, en}` map; falls back to a generic
   /// "Special offers" label when the admin left it empty.
-  final String? title;
+  final Map<String, dynamic>? title;
   final List<HomeOfferModel> offers;
 
   @override
@@ -25,8 +27,10 @@ class HomeOffersSectionView extends StatelessWidget {
     if (offers.isEmpty) return const SizedBox.shrink();
 
     final AppColorScheme colors = context.colors;
-    final String heading =
-        (title != null && title!.isNotEmpty) ? title! : LangKeys.specialOffersKey.tr();
+    final String localizedTitle = context.getLocalizedApiText(title);
+    final String heading = localizedTitle.isNotEmpty
+        ? localizedTitle
+        : LangKeys.specialOffersKey.tr();
 
     // The decorative starburst background now lives behind the top banner
     // ([HomeTopBannerSectionView]), not here.
@@ -59,8 +63,8 @@ class HomeOffersSectionView extends StatelessWidget {
 }
 
 /// Routes an offer tap by its `kind`. `store` opens store details by id;
-/// `product` opens product details by slug. Any other kind — or a missing
-/// target — is inert.
+/// `product` and `category` open their details screen by slug. Any other
+/// kind — or a missing target — is inert.
 void _onOfferTap(BuildContext context, HomeOfferModel offer) {
   switch (offer.kind) {
     case 'store':
@@ -69,11 +73,20 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
       }
       break;
     case 'product':
-      // ponytail: inert until the backend emits a product slug in link (the
-      // stored target is a product id today, and product details is slug-only).
       final String? slug = offer.productSlug;
       if (slug != null && slug.isNotEmpty) {
         context.pushNamed(AppRoutes.productDetailsScreen, extra: slug);
+      }
+      break;
+    case 'category':
+      // The link carries only the slug, which is all category details needs to
+      // load itself (same as a banner's category tap).
+      final String? categorySlug = offer.categorySlug;
+      if (categorySlug != null && categorySlug.isNotEmpty) {
+        context.pushNamed(
+          AppRoutes.categoryDetailsScreen,
+          extra: CategoryModel(slug: categorySlug),
+        );
       }
       break;
   }

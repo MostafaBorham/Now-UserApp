@@ -49,7 +49,7 @@ void main() {
   Future<void> pumpSection(
     WidgetTester tester,
     List<StoreModel> stores, {
-    String? title,
+    Map<String, dynamic>? title,
   }) => pumpCategoriesWidget(
     tester,
     AspectRatio(
@@ -138,16 +138,31 @@ void main() {
   testWidgets('heads the section with the title the feed sent', (
     WidgetTester tester,
   ) async {
-    // The backend owns section headings and resolves them to the requested
-    // `lang`, so a title that was sent is displayed verbatim — the app never
-    // second-guesses it with its own label.
+    // The backend owns section headings — it sends both locales and the app
+    // picks the current one, displaying it verbatim rather than second-guessing
+    // it with its own label. The harness runs in English.
     await pumpSection(
       tester,
       <StoreModel>[nearbyStore()],
-      title: 'Closest to you',
+      title: <String, dynamic>{'en': 'Closest to you', 'ar': 'الأقرب إليك'},
     );
 
     expect(find.text('Closest to you'), findsOneWidget);
+    expect(find.text(LangKeys.bestNearbyStoresKey), findsNothing);
+  });
+
+  testWidgets('uses the other locale when the feed titled only one', (
+    WidgetTester tester,
+  ) async {
+    // Several sections come back with `ar` alone; showing that beats falling
+    // back to the app's own label, which would ignore the admin's heading.
+    await pumpSection(
+      tester,
+      <StoreModel>[nearbyStore()],
+      title: <String, dynamic>{'ar': 'الأقرب إليك'},
+    );
+
+    expect(find.text('الأقرب إليك'), findsOneWidget);
     expect(find.text(LangKeys.bestNearbyStoresKey), findsNothing);
   });
 
@@ -156,7 +171,11 @@ void main() {
   ) async {
     // Only an empty/absent title hands over to the app's own label, which the
     // harness renders as the bare key (it loads no translations).
-    for (final String? empty in <String?>[null, '']) {
+    for (final Map<String, dynamic>? empty in <Map<String, dynamic>?>[
+      null,
+      <String, dynamic>{},
+      <String, dynamic>{'en': '', 'ar': ''},
+    ]) {
       await pumpSection(tester, <StoreModel>[nearbyStore()], title: empty);
       expect(find.text(LangKeys.bestNearbyStoresKey), findsOneWidget);
     }

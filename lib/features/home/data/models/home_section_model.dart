@@ -10,26 +10,30 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 /// One section of the `/api/v1/home-sections` feed, in display order.
 ///
 /// Seven types are wired today: `featured_offers` carries its tappable
-/// [offers]; `featured_stores` and `nearby_stores` both carry their [stores]
-/// (a featured store also brings the handful of products its card shows);
+/// [offers]; `featured_stores`, `nearby_stores` and `all_stores` all carry
+/// their [stores] (a featured store also brings the products its card shows);
 /// `flash_offers` and `products_by_category` carry their [products] (the
 /// latter also brings the [category] it lists plus its own [primaryColor] /
-/// [textColor] / [displayDesign] theming); `promo_block_middle` carries its
-/// [banners]; `categories` is a presence-only marker (its carousel content
-/// still comes from `getAppCategoriesProvider`, because feed category items
-/// lack the `slug` the category-details screen navigates by). Every other type
-/// is kept as a bare [type] and rendered by nothing yet.
+/// [textColor] / [displayDesign] theming); `promo_block_middle` and
+/// `promo_block_footer` carry their [banners]; `categories` is a presence-only
+/// marker (its carousel content still comes from `getAppCategoriesProvider`,
+/// because feed category items lack the `slug` the category-details screen
+/// navigates by). Every other type is kept as a bare [type] and rendered by
+/// nothing yet.
 class HomeSectionModel extends Equatable {
   final int? id;
   final String type;
 
-  /// Already localized to the requested `lang` (the feed resolves it server-side).
-  final String? title;
+  /// Section heading as a `{ar, en}` translation map. The feed used to resolve
+  /// it server-side from the `lang` query param and send a plain string; it now
+  /// sends both locales (sometimes only `ar`) and leaves the choice to the
+  /// client. Resolve it for display with `context.getLocalizedApiText(title)`.
+  final Map<String, dynamic>? title;
   final List<HomeOfferModel> offers;
 
-  /// Stores of a `featured_stores` or `nearby_stores` section. A featured
-  /// store's `products` are the tiles its card renders; a nearby store has
-  /// none — its card shows the store's own details instead.
+  /// Stores of a `featured_stores`, `nearby_stores` or `all_stores` section. A
+  /// featured store's `products` are the tiles its card renders; a nearby or
+  /// all-stores item has none — its card shows the store's own details instead.
   final List<StoreModel> stores;
 
   /// Products of a `flash_offers` section. The feed groups them under
@@ -37,8 +41,9 @@ class HomeSectionModel extends Equatable {
   /// so every wrapper's products are flattened into this single list.
   final List<ProductModel> products;
 
-  /// Banner items of a `promo_block_middle` section. Their `image_ar` /
-  /// `image_en` arrive as bare URL strings, which [BannerModel] reads as-is.
+  /// Banner items of a `promo_block_middle` / `promo_block_footer` section.
+  /// Their `image_ar` / `image_en` arrive as bare URL strings, which
+  /// [BannerModel] reads as-is.
   final List<BannerModel> banners;
 
   /// The category a `products_by_category` section lists, titled by
@@ -70,6 +75,14 @@ class HomeSectionModel extends Equatable {
   static const Set<String> _storeTypes = <String>{
     'featured_stores',
     'nearby_stores',
+    'all_stores',
+  };
+
+  /// Section types whose `items` are banner slots, parsed into [banners]. Both
+  /// send the same item shape, differing only in their `slot`.
+  static const Set<String> _bannerTypes = <String>{
+    'promo_block_middle',
+    'promo_block_footer',
   };
 
   const HomeSectionModel({
@@ -97,7 +110,7 @@ class HomeSectionModel extends Equatable {
     return HomeSectionModel(
       id: (json['id'] as num?)?.toInt(),
       type: type,
-      title: json['title']?.toString(),
+      title: json.localized('title'),
       offers: type == 'featured_offers'
           ? rawItems
               .whereType<Map<String, dynamic>>()
@@ -132,7 +145,7 @@ class HomeSectionModel extends Equatable {
                   .map(ProductModel.fromJson)
                   .toList()
               : const <ProductModel>[],
-      banners: type == 'promo_block_middle'
+      banners: _bannerTypes.contains(type)
           ? rawItems
               .whereType<Map<String, dynamic>>()
               .map(BannerModel.fromJson)
@@ -186,13 +199,14 @@ class HomeSectionModel extends Equatable {
 
 /// A single tappable offer inside a `featured_offers` section. [kind] routes the
 /// tap: `store` → store details by [storeId]; `product` → product details by
-/// [productSlug].
+/// [productSlug]; `category` → category details by [categorySlug].
 class HomeOfferModel extends Equatable {
   final String? title;
   final String? imageUrl;
   final String? kind;
   final int? storeId;
   final String? productSlug;
+  final String? categorySlug;
 
   const HomeOfferModel({
     this.title,
@@ -200,28 +214,32 @@ class HomeOfferModel extends Equatable {
     this.kind,
     this.storeId,
     this.productSlug,
+    this.categorySlug,
   });
 
   factory HomeOfferModel.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic> link =
         json['link'] as Map<String, dynamic>? ?? <String, dynamic>{};
     final dynamic product = link['product'];
+    final dynamic category = link['category'];
 
     return HomeOfferModel(
       title: json['title']?.toString(),
       imageUrl: json['image_url']?.toString(),
       kind: link['kind']?.toString(),
       storeId: (link['store'] as num?)?.toInt(),
-      // The backend currently sends a numeric product *id* here, which product
-      // details (slug-only) can't open — so a numeric value stays null and the
-      // tap is inert. It will emit a real slug in `product_slug` (or a string
-      // `product`); read that and product taps start working with no app change.
+      // `product` / `category` now carry the target's slug, which is what both
+      // details screens navigate by. Older responses put a numeric *id* there;
+      // one of those stays null, leaving the tap inert rather than opening the
+      // wrong screen.
       productSlug: link['product_slug']?.toString() ??
           (product is String ? product : null),
+      categorySlug: link['category_slug']?.toString() ??
+          (category is String ? category : null),
     );
   }
 
   @override
   List<Object?> get props =>
-      <Object?>[title, imageUrl, kind, storeId, productSlug];
+      <Object?>[title, imageUrl, kind, storeId, productSlug, categorySlug];
 }
