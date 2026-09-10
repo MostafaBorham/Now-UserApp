@@ -6,9 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
@@ -37,8 +37,9 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_v
 /// ([HomeTopBannerSectionView]), `featured_stores`
 /// ([HomeFeaturedStoresView]), `nearby_stores`
 /// ([BestNearbyStoresSection]), `flash_offers`
-/// ([HomeNeverMissOffersSection]) and `promo_block_middle`
-/// ([HomeBannerView]). **Every other section below is
+/// ([HomeNeverMissOffersSection]), `promo_block_middle`
+/// ([HomeBannerView]) and `products_by_category`
+/// ([_ProductsByCategorySection]). **Every other section below is
 /// still a hardcoded placeholder** (marked `// NOT LINKED` below), kept on
 /// screen so their backend wiring can be verified and swapped in one by one as
 /// each `/home-sections` type is finished. To wire one: replace its placeholder
@@ -211,6 +212,11 @@ class _HomeViewState extends ConsumerState<HomeView>
       sections,
       'promo_block_middle',
     );
+    // Unlike every other type, the feed carries one products_by_category
+    // section per category — all of them are rendered, in feed order.
+    final List<HomeSectionModel> categorySections = sections
+        .where((HomeSectionModel s) => s.type == 'products_by_category')
+        .toList();
 
     return Stack(
       children: <Widget>[
@@ -283,57 +289,13 @@ class _HomeViewState extends ConsumerState<HomeView>
                     banner: middlePromoSection.banners.first,
                   ),
                 ),
-              HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Electronics', 'ar': 'الإلكترونيات'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              ), // NOT LINKED
-              HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Fashion', 'ar': 'الموضة'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              ), // NOT LINKED
-              AspectRatio(
-                aspectRatio: 1.1,
-                child: HomeAppCategoryWithLogoSectionView(
-                  categoryModel: const CategoryModel(
-                    name: {'en': 'Perfume', 'ar': 'عطور '},
-                  ),
-                  productModels: const [
-                    ProductModel(),
-                    ProductModel(),
-                    ProductModel(),
-                    ProductModel(),
-                    ProductModel(),
-                  ],
-                ),
-              ), // NOT LINKED
-              HomeAppCategorySectionView(
-                categoryModel: const CategoryModel(
-                  name: {'en': 'Vegetables', 'ar': 'الخضروات'},
-                ),
-                productModels: const [
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                  ProductModel(),
-                ],
-              ), // NOT LINKED
+              // LINKED — every real products_by_category section, in feed
+              // order, sitting under the middle promo banner. The feed sends
+              // several of them (one per category), each with its own theming;
+              // one with no products is skipped.
+              for (final HomeSectionModel section in categorySections)
+                if (section.products.isNotEmpty)
+                  _ProductsByCategorySection(section: section),
               AspectRatio(
                 aspectRatio: 3.5,
                 child: HomeBannerView(),
@@ -374,6 +336,42 @@ class _HomeViewState extends ConsumerState<HomeView>
           ),
         ),
       ],
+    );
+  }
+}
+
+/// One `products_by_category` section, in whichever header design the feed
+/// asked for: `color_with_image` puts the section's artwork beside the title,
+/// anything else (`color_only`) is the colour-washed header on its own.
+class _ProductsByCategorySection extends StatelessWidget {
+  const _ProductsByCategorySection({required this.section});
+
+  final HomeSectionModel section;
+
+  @override
+  Widget build(BuildContext context) {
+    final CategoryModel category = section.category ?? const CategoryModel();
+
+    if (section.displayDesign == 'color_with_image') {
+      return AspectRatio(
+        aspectRatio: 1.1,
+        child: HomeAppCategoryWithLogoSectionView(
+          categoryModel: category,
+          productModels: section.products,
+          imageUrl: context.getLocalizedApiText(section.media),
+          primaryColor: section.primaryColor,
+          textColor: section.textColor,
+          showViewAll: section.showViewAll,
+        ),
+      );
+    }
+
+    return HomeAppCategorySectionView(
+      categoryModel: category,
+      productModels: section.products,
+      primaryColor: section.primaryColor,
+      textColor: section.textColor,
+      showViewAll: section.showViewAll,
     );
   }
 }

@@ -288,6 +288,107 @@ void main() {
     expect(section.products, isEmpty);
   });
 
+  test('products_by_category parses its products, category and theming', () {
+    // Trimmed from a real /home-sections response. Items are the products
+    // themselves (no offer wrapper, unlike flash_offers), and the section
+    // carries its own header theming.
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 51,
+      'type': 'products_by_category',
+      // The admin's generic label — the same on every section of this type,
+      // so the heading shown is `category_name` instead.
+      'title': {'ar': 'منتجات حسب الفئة'},
+      'show_view_all': true,
+      'primary_color': '#027e54',
+      'display_design': 'color_with_image',
+      'media': 'http://x/media.png',
+      'media_ar': 'http://x/media_ar.png',
+      'media_en': 'http://x/media_en.png',
+      'category_id': 1,
+      'category_name': {'ar': 'إلكترونيات', 'en': 'Electronics'},
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 54,
+          'type': 'product',
+          'name': {'ar': 'كمبيوتر', 'en': 'Computer'},
+          'slug': 'computer',
+          'price': 20.0,
+          'effective_price': 13.6,
+          'deal_discount_amount': 6.4,
+          'discount_percentage': 32.0,
+          'rating': {'average': 0.0, 'total': 0},
+          'image_url': 'http://x/p54.png',
+          'vendor_logo_url': 'http://x/vendor.png',
+          'is_favourite': false,
+        },
+        {'id': 52, 'slug': 'product', 'price': 20.0},
+      ],
+    });
+
+    expect(section.products.map((p) => p.id).toList(), <int>[54, 52]);
+    expect(section.category?.id, 1);
+    expect(section.category?.name?['en'], 'Electronics');
+    // The heading is the category, never the section's own generic title.
+    expect(section.category?.name?['ar'], 'إلكترونيات');
+    expect(section.showViewAll, isTrue);
+    expect(section.displayDesign, 'color_with_image');
+    // #RRGGBB gains a full-opacity alpha channel.
+    expect(section.primaryColor?.toARGB32(), 0xFF027E54);
+    // Absent from this section → the widget falls back to a theme colour.
+    expect(section.textColor, isNull);
+    expect(section.media?['ar'], 'http://x/media_ar.png');
+    expect(section.media?['en'], 'http://x/media_en.png');
+    // Flat product keys still have to reach the card.
+    expect(section.products.first.images, <String>['http://x/p54.png']);
+    expect(section.products.first.vendor?.logoUrl, 'http://x/vendor.png');
+    // Not a flash_offers wrapper, so nothing else is populated.
+    expect(section.offers, isEmpty);
+    expect(section.stores, isEmpty);
+    expect(section.banners, isEmpty);
+  });
+
+  test('a color_only products_by_category section carries no media', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 52,
+      'type': 'products_by_category',
+      'show_view_all': false,
+      'primary_color': '#8B5CF6',
+      'text_color': '#000000',
+      'display_design': 'color_only',
+      'media': null,
+      'media_ar': null,
+      'media_en': null,
+      'category_id': 4,
+      'category_name': {'ar': 'المنزل والمطبخ', 'en': 'Home & Kitchen'},
+      'items': <Map<String, dynamic>>[
+        {'id': 53, 'slug': 'darius-weeks-edited', 'price': 100.0},
+      ],
+    });
+
+    expect(section.displayDesign, 'color_only');
+    expect(section.primaryColor?.toARGB32(), 0xFF8B5CF6);
+    expect(section.textColor?.toARGB32(), 0xFF000000);
+    // Null media leaves the header title-only instead of a broken image slot.
+    expect(section.media, isNull);
+    expect(section.showViewAll, isFalse);
+    expect(section.products.single.id, 53);
+  });
+
+  test('a malformed primary_color falls back to null, not a crash', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 53,
+      'type': 'products_by_category',
+      'primary_color': 'not-a-color',
+      'text_color': '#fff',
+      'items': <Map<String, dynamic>>[],
+    });
+
+    expect(section.primaryColor, isNull);
+    // Three-digit shorthand isn't a shape the backend sends — rejected rather
+    // than parsed into the wrong colour.
+    expect(section.textColor, isNull);
+  });
+
   test('non-offer sections carry no offers and no stores', () {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 1,

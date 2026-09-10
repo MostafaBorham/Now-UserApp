@@ -9,19 +9,32 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
+/// A `products_by_category` section in its `color_only` design: the category
+/// name over a wave washed in the section's own [primaryColor], and a row of
+/// that category's products.
 class HomeAppCategorySectionView extends StatelessWidget {
   const HomeAppCategorySectionView({
     super.key,
     required this.categoryModel,
     required this.productModels,
+    this.primaryColor,
+    this.textColor,
+    this.showViewAll = true,
   });
 
   final CategoryModel categoryModel;
   final List<ProductModel> productModels;
 
+  /// Section theming from the feed; each falls back to a theme colour when the
+  /// admin left it unset.
+  final Color? primaryColor;
+  final Color? textColor;
+  final bool showViewAll;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color accent = primaryColor ?? colors.onInverseSurface;
     return LayoutBuilder(
       builder: (context, constraints) {
         final double productRowHeight = constraints.maxWidth * 0.78;
@@ -37,8 +50,8 @@ class HomeAppCategorySectionView extends StatelessWidget {
                     end: Alignment.centerLeft,
                     stops: [0, 0.5],
                     colors: [
-                      colors.onInverseSurface.withValues(alpha: 0.2),
-                      colors.onInverseSurface.withValues(alpha: 0.02),
+                      accent.withValues(alpha: 0.2),
+                      accent.withValues(alpha: 0.02),
                     ],
                   ).createShader(bounds),
                   child: Assets.media.images.svg.oneWaveBackground.svg(
@@ -57,23 +70,28 @@ class HomeAppCategorySectionView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        context.getLocalizedApiText(categoryModel.name),
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: colors.black,
+                      Expanded(
+                        child: Text(
+                          context.getLocalizedApiText(categoryModel.name),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: textColor ?? colors.black,
+                          ),
                         ),
                       ),
-                      HomeViewAllWidget(
-                        size: 15,
-                        startBackgroundColor: colors.onInverseSurface.withValues(
-                          alpha: 0.5,
+                      // ponytail: the chip is inert — the feed sends the
+                      // category's id and name but no slug, and category
+                      // details fetches by slug. Wire the tap once the payload
+                      // carries `category_slug`.
+                      if (showViewAll)
+                        HomeViewAllWidget(
+                          size: 15,
+                          startBackgroundColor: accent.withValues(alpha: 0.5),
+                          endBackgroundColor: accent.withValues(alpha: 0.2),
                         ),
-                        endBackgroundColor: colors.onInverseSurface.withValues(
-                          alpha: 0.2,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -85,7 +103,7 @@ class HomeAppCategorySectionView extends StatelessWidget {
                     ),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return ProductItem3View();
+                      return ProductItem3View(product: productModels[index]);
                     },
                     separatorBuilder: (context, index) => 4.wSpace,
                     itemCount: productModels.length,
