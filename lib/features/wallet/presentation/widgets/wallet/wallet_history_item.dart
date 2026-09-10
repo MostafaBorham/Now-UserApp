@@ -1,18 +1,38 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transaction_model.dart';
 
+/// One row of the wallet transaction history. Sizes to its own content so every
+/// field — merchant name, status and amount — is shown in full: the merchant
+/// name wraps onto new lines instead of ellipsising, the amount keeps its
+/// natural width, and only an over-long status chip is scaled down to stay
+/// within its capped width.
 class WalletHistoryItem extends StatelessWidget {
-  const WalletHistoryItem({super.key});
+  const WalletHistoryItem({super.key, required this.transaction});
+
+  final WalletTransactionModel transaction;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final WalletTransactionMerchant? merchant = transaction.merchant;
+    final String logoUrl = merchant?.logoUrl ?? '';
+    final String title = context.getLocalizedApiText(merchant?.name);
+    final String status = transaction.status ?? '';
+    final String price = transaction.amountLabel ?? '';
+    // The transaction date, from `created_at`, shown as `dd-MM-yyyy`
+    // (e.g. 10-04-2026); empty when the server omits or sends an unparseable
+    // timestamp.
+    final DateTime? createdAt = DateTime.tryParse(transaction.createdAt ?? '');
+    final String date =
+        createdAt == null ? '' : DateFormat('dd-MM-yyyy').format(createdAt);
+
     return LayoutBuilder(
       builder: (context, con) {
         return Container(
@@ -23,58 +43,87 @@ class WalletHistoryItem extends StatelessWidget {
           ),
           child: Row(
             spacing: 15,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Merchant logo + name — the name wraps onto new lines and is
+              // never truncated, taking whatever width the status chip and
+              // amount leave behind.
               Expanded(
-                flex: 3,
                 child: Row(
                   spacing: 12,
                   children: [
                     CircularBrandLogo(
                       radius: con.maxWidth * 0.07,
-                      logoUrl:
-                          'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                      logoUrl: logoUrl,
                       backgroundColor: colors.white,
                     ),
                     Expanded(
-                      child: Text(
-                        'Shaworma',
-                        style: AppTextStyles.style14SemiBold.copyWith(
-                          color: colors.black,
-                          fontSize: con.maxWidth * 0.04,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            softWrap: true,
+                            // The shared text style bakes in `overflow:
+                            // ellipsis`; override it so the merchant name wraps
+                            // in full instead of being truncated.
+                            overflow: TextOverflow.visible,
+                            style: AppTextStyles.style14SemiBold.copyWith(
+                              color: colors.black,
+                              fontSize: con.maxWidth * 0.04,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                          // The date sits under the merchant name; hidden when
+                          // the server omits it, and shown in full (no ellipsis)
+                          // just like the merchant name.
+                          if (date.isNotEmpty)
+                            Text(
+                              date,
+                              softWrap: true,
+                              overflow: TextOverflow.visible,
+                              style: AppTextStyles.style12Regular.copyWith(
+                                color: colors.onPrimaryFixed.withValues(
+                                  alpha: 0.7,
+                                ),
+                                fontSize: con.maxWidth * 0.03,
+                                overflow: TextOverflow.visible,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: AspectRatio(
-                  aspectRatio: 3.5,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: colors.errorContainer.withValues(alpha: 0.1),
-                      borderRadius: AppBorderRadius.brCircular30,
-                    ),
-                    child: Center(
-                      child: Text(
-                        LangKeys.refundedKey.tr(),
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.style12Medium.copyWith(
-                          color: colors.errorContainer,
-                        ),
+              // Status chip — hugs its text, but never grows past a capped
+              // width; a longer status is scaled down to fit inside that cap.
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: con.maxWidth * 0.3),
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: colors.errorContainer.withValues(alpha: 0.1),
+                    borderRadius: AppBorderRadius.brCircular30,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      status,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.style12Medium.copyWith(
+                        color: colors.errorContainer,
                       ),
                     ),
                   ),
                 ),
               ),
-              Expanded(
-                child: NewPriceWidget(
-                  color: colors.error,
-                  price: '-10',
-                  size: con.maxWidth * 0.04,
-                ),
+              // Amount — the server-formatted `amount_label`, shown at its
+              // natural width (never scaled).
+              NewPriceWidget(
+                color: colors.error,
+                price: price,
+                size: con.maxWidth * 0.04,
               ),
             ],
           ),

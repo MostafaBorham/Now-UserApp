@@ -1,6 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -8,11 +8,20 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class WalletCardWidget extends StatelessWidget {
-  const WalletCardWidget({super.key});
+  const WalletCardWidget({super.key, this.balance});
+
+  /// The wallet balance to show in the credit pill. The pill renders as normal
+  /// while this is null (loading) — only the balance text stays hidden until the
+  /// value arrives.
+  final double? balance;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final BoxDecoration pillDecoration = BoxDecoration(
+      borderRadius: AppBorderRadius.brCircular30,
+      color: colors.white,
+    );
     return Container(
       padding: EdgeInsets.all(20),
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -24,72 +33,86 @@ class WalletCardWidget extends StatelessWidget {
         ),
         borderRadius: AppBorderRadius.brCircular16,
       ),
-      child: Stack(
-        children: [
-          Assets.media.images.svg.nowWalletCard.svg(
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              colors.primary500Main,
-              BlendMode.srcIn,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: LayoutBuilder(
+        builder: (context, con) {
+          // The balance pill keeps a fixed size in every state: its width is
+          // 25% of the card width, and its height is 40% of that width (set via
+          // AspectRatio → width : height = 1 : 0.4, i.e. aspectRatio 2.5). The
+          // balance text is centered and scaled down to fit when it would
+          // otherwise overflow the fixed box.
+          final double pillWidth = con.maxWidth * 0.25;
+          return Stack(
             children: [
-              AspectRatio(
-                aspectRatio: 11 ,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: AppBorderRadius.brCircular30,
-                        color: colors.white,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 3,
-                        horizontal: 12,
-                      ),
-                      child: AutoSizeText(
-                        '10.00',
-                        style: AppTextStyles.style20SemiBold.copyWith(
-                          color: colors.primary700,
-                        ),
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        LangKeys.nowCreditKey.tr(),
-                        style: AppTextStyles.style14Medium.copyWith(
-                          color: colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
+              Assets.media.images.svg.nowWalletCard.svg(
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  colors.primary500Main,
+                  BlendMode.srcIn,
                 ),
               ),
-              AspectRatio(
-                aspectRatio: 9,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 2.5,
-                      color: colors.onSecondaryFixed,
-                    ),
-                    AspectRatio(
-                      aspectRatio: 15,
-                      child: Assets.media.images.svg.appOrangeLogo.svg(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: pillWidth,
+                        child: AspectRatio(
+                          aspectRatio: 2.5,
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            decoration: pillDecoration,
+                            // The balance is centered and scaled down to fit the
+                            // fixed pill instead of overflowing it. While loading
+                            // the pill renders empty.
+                            child: balance == null
+                                ? null
+                                : FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      '${formatDouble(balance)}',
+                                      style: AppTextStyles.style20SemiBold
+                                          .copyWith(color: colors.primary700),
+                                    ),
+                                  ),
+                          ),
+                        ),
                       ),
+                      FittedBox(
+                        child: Text(
+                          LangKeys.nowCreditKey.tr(),
+                          style: AppTextStyles.style14Medium.copyWith(
+                            color: colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  AspectRatio(
+                    aspectRatio: 9,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 2.5,
+                          color: colors.onSecondaryFixed,
+                        ),
+                        AspectRatio(
+                          aspectRatio: 15,
+                          child: Assets.media.images.svg.appOrangeLogo.svg(),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )
+                  )
+                ],
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
