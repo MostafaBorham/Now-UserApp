@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -10,17 +11,23 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 class MoneyAmountPicker extends StatefulWidget {
   const MoneyAmountPicker({
     super.key,
-    this.maxAmount = 5000,
-    this.options = const ['300', '400', '500', '700'],
+    this.maxAmount,
+    this.options,
     this.onAmountChanged,
     this.onOtherSelected,
   });
 
-  final int maxAmount;
-  final List<String> options;
+  /// Falls back to [_defaultMaxAmount] when the wallet doesn't supply a limit.
+  final double? maxAmount;
+
+  /// The suggested amount chips. When null/empty no chips are shown — only the
+  /// "Other" selector remains, letting the user type a custom amount.
+  final List<String>? options;
 
   final ValueChanged<String?>? onAmountChanged;
   final VoidCallback? onOtherSelected;
+
+  static const double _defaultMaxAmount = 5000;
 
   @override
   State<MoneyAmountPicker> createState() => _MoneyAmountPickerState();
@@ -31,11 +38,26 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
   final TextEditingController amountController = TextEditingController();
   bool isOtherSelected = false;
 
+  /// True when the custom amount is typed above the allowed [_maxAmount].
+  bool exceedsMax = false;
+
+  List<String> get _options => widget.options ?? const <String>[];
+
+  double get _maxAmount =>
+      widget.maxAmount ?? MoneyAmountPicker._defaultMaxAmount;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateSelectedValue(widget.options.last);
+      // With no suggested chips, start on the "Other" selector so the custom
+      // amount field is the immediate (and only) way to enter an amount.
+      if (_options.isEmpty) {
+        setState(() => isOtherSelected = true);
+        widget.onOtherSelected?.call();
+        return;
+      }
+      _updateSelectedValue(_options.first);
     });
   }
 
@@ -45,9 +67,22 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
     super.dispose();
   }
 
+  /// A suggested chip is always within the limit, so any error clears here.
   void _updateSelectedValue(String newValue) {
     selectedValue = newValue;
+    exceedsMax = false;
     widget.onAmountChanged?.call(selectedValue);
+    setState(() {});
+  }
+
+  /// Validates the typed custom amount on every keystroke. When it exceeds
+  /// [_maxAmount] the field goes into an error state and `null` is reported so
+  /// the parent's Continue button stays disabled.
+  void _applyCustomAmount(String value) {
+    final double? parsed = double.tryParse(value);
+    exceedsMax = parsed != null && parsed > _maxAmount;
+    selectedValue = value;
+    widget.onAmountChanged?.call((value.isEmpty || exceedsMax) ? null : value);
     setState(() {});
   }
 
@@ -74,7 +109,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
           runSpacing: 10,
           alignment: WrapAlignment.start,
           children: [
-            ...widget.options.map((item) {
+            ..._options.map((item) {
               final bool isSelected =
                   (!isOtherSelected && selectedValue == item);
 
@@ -108,7 +143,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
             GestureDetector(
               onTap: () {
                 isOtherSelected = true;
-                _updateSelectedValue(amountController.text);
+                _applyCustomAmount(amountController.text);
                 widget.onOtherSelected?.call();
               },
               child: AnimatedContainer(
@@ -156,16 +191,21 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                       decoration: BoxDecoration(
                         color: colors.neutral500.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(28),
-                        border: Border.all(color: colors.primary500Main, width: 1),
+                        border: Border.all(
+                          color: exceedsMax
+                              ? colors.error
+                              : colors.primary500Main,
+                          width: 1,
+                        ),
                       ),
                       child: TextField(
                         controller: amountController,
                         keyboardType: TextInputType.number,
                         style: AppTextStyles.style14Regular.copyWith(
-                          color: colors.black,
+                          color: exceedsMax ? colors.error : colors.black,
                         ),
                         onChanged: (newValue) {
-                          _updateSelectedValue(newValue);
+                          _applyCustomAmount(newValue);
                         },
                         decoration: InputDecoration(
                           hintText: LangKeys.enterAmountKey.tr(),
@@ -189,12 +229,12 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         Text(
                           LangKeys.maximumKey.tr(),
                           style: AppTextStyles.style14Regular.copyWith(
-                            color: colors.neutral500,
+                            color: exceedsMax ? colors.error : colors.neutral500,
                           ),
                         ),
                         NewPriceWidget(
-                          color: colors.black,
-                          price: widget.maxAmount.toString(),
+                          color: exceedsMax ? colors.error : colors.black,
+                          price: formatDouble(_maxAmount).toString(),
                           size: 18,
                         ),
                       ],

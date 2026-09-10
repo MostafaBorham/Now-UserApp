@@ -110,7 +110,9 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       isSelected: _selectedActionIndex == 0,
                       onTap: () => _openActionSheet(
                         index: 0,
-                        sheet: AddBalanceView(),
+                        sheet: AddBalanceView(
+                          walletModel: infoState.valueOrNull,
+                        ),
                         maxHeight: screenHeight * 0.9,
                         backgroundColor: colors.white,
                         isScrollControlled: true,

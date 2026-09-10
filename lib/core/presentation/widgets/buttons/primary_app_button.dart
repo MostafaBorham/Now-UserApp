@@ -10,6 +10,7 @@ class PrimaryAppButton extends StatelessWidget {
     this.onTap,
     this.buttonPadding = 12,
     this.isLoading = false,
+    this.isDisabled = false,
     this.titleStyle,
   });
 
@@ -23,16 +24,22 @@ class PrimaryAppButton extends StatelessWidget {
   /// Replaces the title with a circular indicator and disables taps.
   final bool isLoading;
 
+  /// Greys out the button and disables taps while keeping the same size,
+  /// so callers can toggle enabled/disabled without swapping widgets.
+  final bool isDisabled;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return InkWell(
-      onTap: isLoading ? null : onTap,
+      onTap: (isLoading || isDisabled) ? null : onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
         decoration: BoxDecoration(
-          color: colors.primary500Main,
+          color: isDisabled
+              ? colors.neutral500.withValues(alpha: 0.3)
+              : colors.primary500Main,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
@@ -53,7 +60,7 @@ class PrimaryAppButton extends StatelessWidget {
                   title,
                   textAlign: TextAlign.center,
                   style: (titleStyle ?? AppTextStyles.style18SemiBold).copyWith(
-                    color: colors.white,
+                    color: isDisabled ? colors.neutral500 : colors.white,
                   ),
                 ),
               ),

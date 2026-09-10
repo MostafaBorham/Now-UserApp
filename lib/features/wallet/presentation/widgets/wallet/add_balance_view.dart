@@ -2,17 +2,20 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/money_amount_picker.dart';
 
 class AddBalanceView extends StatefulWidget {
-  const AddBalanceView({super.key});
+  const AddBalanceView({super.key, this.walletModel});
+
+  final WalletModel? walletModel;
 
   @override
   State<AddBalanceView> createState() => _AddBalanceViewState();
@@ -82,7 +85,10 @@ class _AddBalanceViewState extends State<AddBalanceView> {
                   spacing: 15,
                   children: [
                     MoneyAmountPicker(
-                      maxAmount: 5000,
+                      maxAmount: widget.walletModel?.maximum,
+                      options: widget.walletModel?.suggestedAmounts
+                          .map((amount) => formatDouble(amount).toString())
+                          .toList(),
                       onAmountChanged: (amount) {
                         moneyAmount = amount;
                         setState(() {
@@ -97,7 +103,11 @@ class _AddBalanceViewState extends State<AddBalanceView> {
               ),
             ),
             5.hSpace,
-            (moneyAmount!=null && moneyAmount!.isNotEmpty) ? PrimaryAppButton(title: LangKeys.continueKey.tr(),) : PrimaryAppDisabledButton(title: LangKeys.continueKey.tr())
+            PrimaryAppButton(
+              title: LangKeys.continueKey.tr(),
+              isDisabled: moneyAmount == null || moneyAmount!.isEmpty,
+              onTap: () {},
+            ),
           ],
         ),
       ),
