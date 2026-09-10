@@ -47,6 +47,9 @@ class HomeFeaturedStoresView extends ConsumerWidget {
                   .state = index,
         enlargeCenterPage: false,
         autoPlay: !isSingleStore,
+        // Drift right-to-left in Arabic, left-to-right in English — see the
+        // motion rule on `AppSlider`.
+        reverse: true,
         scrollPhysics: isSingleStore
             ? const NeverScrollableScrollPhysics()
             : null,

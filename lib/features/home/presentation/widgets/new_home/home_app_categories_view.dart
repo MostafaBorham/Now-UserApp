@@ -157,6 +157,10 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
           child: PageView.builder(
             controller: _controller,
             physics: const BouncingScrollPhysics(),
+            // Slide right-to-left in Arabic, left-to-right in English — see
+            // the motion rule on `AppSlider`. The strip is an endless modulo
+            // loop, so mirroring the page order costs nothing here.
+            reverse: true,
             itemBuilder: (context, index) {
               final _CarouselItem item = items[index % items.length];
               return _CategoryCarouselItem(

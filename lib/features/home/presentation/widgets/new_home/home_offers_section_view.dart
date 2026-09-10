@@ -152,6 +152,12 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
       controller: _controller,
       padding: const EdgeInsetsDirectional.only(end: 10),
       scrollDirection: Axis.horizontal,
+      // Scroll right-to-left in Arabic, left-to-right in English — see the
+      // motion rule on `AppSlider`. This mirrors the card order (the first
+      // offer sits on the leading edge of the sweep, still the first one
+      // seen), which is what keeps the drift going the same way as the
+      // carousels above it.
+      reverse: true,
       itemBuilder: (context, index) {
         final HomeOfferModel offer = widget.offers[index];
         return RepaintBoundary(

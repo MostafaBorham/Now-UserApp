@@ -1,4 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
+// `easy_localization` re-exports intl's `TextDirection`, which collides with
+// the framework's own (used by `_SlideInOnOpen`).
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -76,16 +78,18 @@ class HomeTopBannerSectionView extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: _sideMargin - _sliderSpace,
                   ),
-                  child: AppSlider(
-                    itemAspectRatio: viewportAspectRatio,
-                    sliderSpace: _sliderSpace,
-                    showIndicator: false,
-                    sliderItems: items
-                        .map(
-                          (BannerModel banner) =>
-                              _TopBannerItem(banner: banner),
-                        )
-                        .toList(),
+                  child: _SlideInOnOpen(
+                    child: AppSlider(
+                      itemAspectRatio: viewportAspectRatio,
+                      sliderSpace: _sliderSpace,
+                      showIndicator: false,
+                      sliderItems: items
+                          .map(
+                            (BannerModel banner) =>
+                                _TopBannerItem(banner: banner),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
               ],
@@ -93,6 +97,52 @@ class HomeTopBannerSectionView extends ConsumerWidget {
           },
         );
       },
+    );
+  }
+}
+
+/// Plays the banner's entrance once, the moment it first appears: it starts
+/// off-screen and slides into place over [_slide] with an ease-out curve.
+///
+/// It enters travelling the same way the carousel later auto-plays, so the
+/// entrance reads as the first page turn rather than a move against it. Per
+/// the motion rule on [AppSlider] that sweep runs right-to-left in Arabic and
+/// left-to-right in English, so the banner starts off the page's *start*
+/// (leading) edge in both — the right in Arabic, the left in English.
+///
+/// This is the original single-banner animation (`_AnimatedOffersBanner`),
+/// minus its forever loop: the carousel auto-plays now, so snapping it back
+/// off-side every few seconds would fight it. [TweenAnimationBuilder] runs a
+/// tween with a non-null `begin` on its first build, so the entrance needs no
+/// controller, timer or `dispose` of its own.
+class _SlideInOnOpen extends StatelessWidget {
+  const _SlideInOnOpen({required this.child});
+
+  static const Duration _slide = Duration(milliseconds: 600);
+
+  /// How far off-side the banner starts, as a fraction of its own width.
+  static const double _offSide = 1.15;
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    // A `Transform`, so no `saveLayer`; the boundary keeps the 600 ms of
+    // repaints off the starburst behind it and the feed around it.
+    return RepaintBoundary(
+      child: TweenAnimationBuilder<Offset>(
+        tween: Tween<Offset>(
+          begin: Offset(isRtl ? _offSide : -_offSide, 0),
+          end: Offset.zero,
+        ),
+        duration: _slide,
+        curve: Curves.easeOut,
+        builder: (BuildContext context, Offset offset, Widget? child) =>
+            FractionalTranslation(translation: offset, child: child),
+        child: child,
+      ),
     );
   }
 }

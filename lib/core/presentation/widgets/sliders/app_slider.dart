@@ -36,6 +36,14 @@ class AppSlider extends ConsumerWidget {
             // height: 150,
             enlargeCenterPage: false,
             autoPlay: !isSingleItem,
+            // App-wide motion rule: anything that moves on its own travels
+            // with the locale's reading sweep — right-to-left in Arabic,
+            // left-to-right in English (the same rule the delivery-man
+            // animation follows via `ReverseWidget`). A `PageView` lays its
+            // pages out in index order, which drifts the opposite way in both
+            // locales, so `reverse` flips it: the next item enters from the
+            // leading edge and the current one leaves by the trailing edge.
+            reverse: true,
             scrollPhysics: isSingleItem ? const NeverScrollableScrollPhysics() : null,
             aspectRatio: itemAspectRatio!,
             viewportFraction: isSingleItem ? 1 : 0.9,
