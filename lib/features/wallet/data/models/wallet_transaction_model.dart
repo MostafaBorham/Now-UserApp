@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/enums/wallet_transaction_status.dart';
 import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
 /// A single wallet transaction — one entry of the `transactions` list from
@@ -11,7 +12,11 @@ class WalletTransactionModel extends Equatable {
   final int? id;
   final String? type;
   final String? source;
-  final String? status;
+
+  /// The transaction status, parsed from the raw `status` value into a
+  /// type-safe [WalletTransactionStatus] (its [WalletTransactionStatus.name]
+  /// keeps that raw value).
+  final WalletTransactionStatus status;
   final String? displayStatus;
   final double? amount;
   final double? signedAmount;
@@ -30,7 +35,7 @@ class WalletTransactionModel extends Equatable {
     this.id,
     this.type,
     this.source,
-    this.status,
+    required this.status,
     this.displayStatus,
     this.amount,
     this.signedAmount,
@@ -56,7 +61,7 @@ class WalletTransactionModel extends Equatable {
       id: (json['id'] as num?)?.toInt(),
       type: json['type']?.toString(),
       source: json['source']?.toString(),
-      status: json['status']?.toString(),
+      status: WalletTransactionStatus.fromStatus(json['status']?.toString()),
       displayStatus: json['display_status']?.toString(),
       amount: (json['amount'] as num?)?.toDouble(),
       signedAmount: (json['signed_amount'] as num?)?.toDouble(),
@@ -82,7 +87,7 @@ class WalletTransactionModel extends Equatable {
       'id': id,
       'type': type,
       'source': source,
-      'status': status,
+      'status': status.name,
       'display_status': displayStatus,
       'amount': amount,
       'signed_amount': signedAmount,

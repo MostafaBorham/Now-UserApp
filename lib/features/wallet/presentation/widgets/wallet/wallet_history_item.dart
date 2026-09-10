@@ -1,5 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/enums/wallet_transaction_status.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -24,14 +24,21 @@ class WalletHistoryItem extends StatelessWidget {
     final WalletTransactionMerchant? merchant = transaction.merchant;
     final String logoUrl = merchant?.logoUrl ?? '';
     final String title = context.getLocalizedApiText(merchant?.name);
-    final String status = transaction.status ?? '';
+    // The status drives the chip's colors and the amount color, mapped through
+    // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
+    final WalletTransactionStatus status = transaction.status;
+    // The human-readable chip label — the server's `display_status`, falling
+    // back to the raw status value the status carries.
+    final String statusLabel = transaction.displayStatus ?? status.name;
     final String price = transaction.amountLabel ?? '';
-    // The transaction date, from `created_at`, shown as `dd-MM-yyyy`
-    // (e.g. 10-04-2026); empty when the server omits or sends an unparseable
-    // timestamp.
-    final DateTime? createdAt = DateTime.tryParse(transaction.createdAt ?? '');
-    final String date =
-        createdAt == null ? '' : DateFormat('dd-MM-yyyy').format(createdAt);
+    // The transaction date, from `created_at`, shown as a localized numeric
+    // `dd-MM-yyyy` (e.g. 10-04-2026, Arabic-Indic digits under ar-EG) via the
+    // shared [context.getLocalizedNumericApiDate]; it returns an empty string
+    // when the server omits or sends an unparseable timestamp, so the
+    // `if (date.isNotEmpty)` below hides the row with no extra guard here.
+    final String date = context.getLocalizedNumericApiDate(
+      apiDateTimeStamp: transaction.createdAt,
+    );
 
     return LayoutBuilder(
       builder: (context, con) {
@@ -103,16 +110,16 @@ class WalletHistoryItem extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: colors.errorContainer.withValues(alpha: 0.1),
+                    color: status.statusColor(colors),
                     borderRadius: AppBorderRadius.brCircular30,
                   ),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      status,
+                      statusLabel,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.style12Medium.copyWith(
-                        color: colors.errorContainer,
+                        color: status.statusTextColor(colors),
                       ),
                     ),
                   ),
@@ -120,10 +127,13 @@ class WalletHistoryItem extends StatelessWidget {
               ),
               // Amount — the server-formatted `amount_label`, shown at its
               // natural width (never scaled).
-              NewPriceWidget(
-                color: colors.error,
-                price: price,
-                size: con.maxWidth * 0.04,
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: NewPriceWidget(
+                  color: status.priceColor(colors),
+                  price: price,
+                  size: con.maxWidth * 0.04,
+                ),
               ),
             ],
           ),
