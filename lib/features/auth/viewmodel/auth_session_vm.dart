@@ -7,6 +7,8 @@ import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
 
 /// Where the app's session-dependent dependencies stand.
 ///
@@ -128,6 +130,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       _ref.read(getCouponsProvider.notifier).getCoupons(),
       _ref.read(getProfileProvider.notifier).getProfile(),
+      _ref.read(getMyCardsProvider.notifier).getMyCards(),
     ]);
 
     if (!mounted) return;
@@ -147,5 +150,9 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     _ref.invalidate(defaultAddressProvider);
     _ref.invalidate(getCouponsProvider);
     _ref.invalidate(getProfileProvider);
+    _ref.invalidate(getMyCardsProvider);
+    // Holds its own state seeded once from the cards list, so it must be dropped
+    // explicitly — otherwise the next user would inherit this user's default.
+    _ref.invalidate(defaultPaymentCardProvider);
   }
 }

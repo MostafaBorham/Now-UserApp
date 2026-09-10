@@ -68,6 +68,13 @@ class AppColorScheme {
   // already shared by other widgets — so it lives here as a constant like the
   // order-status palette above, still reached through [BuildContext.colors].
   Color get red400 => const Color(0xffB91828);
+
+  // Wallet pending-transaction label color. The chip background and amount reuse
+  // the order-status [orange100]/[orange500] above; only this dark brown-orange
+  // has no close existing color, so it's the sole new constant — like the
+  // order-status palette it has no Material [ColorScheme] slot and is reached
+  // through [BuildContext.colors] like every other color.
+  Color get orange900 => const Color(0xff923E0E);
 }
 
 extension BuildContextColors on BuildContext {

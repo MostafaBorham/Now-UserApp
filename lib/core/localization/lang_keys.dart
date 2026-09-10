@@ -150,10 +150,14 @@ abstract class LangKeys {
   static const String addCardKey = 'addCard';
   static const String addNewCardKey = 'addNewCard';
   static const String continueKey = 'continue';
+  static const String topUpKey = 'topUp';
+  static const String selectPaymentMethodFirstKey = 'selectPaymentMethodFirst';
   static const String refundedKey = 'refunded';
   static const String topUpAmountKey = 'topUpAmount';
   static const String enterAmountKey = 'enterAmount';
   static const String maximumKey = 'maximum';
+  static const String noPaymentCardKey = 'noPaymentCard';
+  static const String noCardsYetKey = 'noCardsYet';
   static const String paymentMethodKey = 'paymentMethod';
   static const String electronicPaymentKey = 'electronicPayment';
   static const String rewardPointsKey = 'rewardPoints';

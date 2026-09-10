@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -16,6 +16,7 @@ class AddCardForm extends StatelessWidget {
   final Color? fieldColor;
   @override
   Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -62,7 +63,7 @@ class AddCardForm extends StatelessWidget {
                   hintColor: hintColor,
                   fieldColor: fieldColor,
                   label: 'CVV',
-                  hint: '1**',
+                  hint: '**1',
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -156,7 +157,7 @@ class _CardInputField extends StatelessWidget {
           fontSize: 15,
         ),
         filled: true,
-        fillColor: fieldColor ?? colors.white.withValues(alpha: 0.33),
+        fillColor: fieldColor ?? colors.neutral200.withValues(alpha: 0.5),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 10,

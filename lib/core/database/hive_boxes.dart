@@ -32,4 +32,10 @@ abstract class HiveBoxes {
   /// screens can render from local storage when the server is unreachable. It is
   /// refreshed from the server on every successful profile fetch or update.
   static const String userProfile = 'user_profile_box';
+
+  /// Box storing the signed-in user's cached saved payment cards (from
+  /// `GET /api/v1/payment-methods/cards`), so the my-cards sheet can render from
+  /// local storage when the server is unreachable. It is refreshed from the
+  /// server on every successful cards fetch.
+  static const String myCards = 'my_cards_box';
 }

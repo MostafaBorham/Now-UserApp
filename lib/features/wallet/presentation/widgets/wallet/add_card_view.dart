@@ -21,31 +21,38 @@ class _AddCardViewState extends State<AddCardView> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    // Lift the whole sheet above the keyboard; the sheet grows by the keyboard
+    // height (up to its max), then the middle area scrolls once capped.
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 16 ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            spacing: 10,
-            children: [
-              AutoSizeText(
-                LangKeys.addCardKey.tr(),
-                style: AppTextStyles.style18Medium.copyWith(
-                  color: colors.black,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 10,
+              children: [
+                AutoSizeText(
+                  LangKeys.addCardKey.tr(),
+                  style: AppTextStyles.style18Medium.copyWith(
+                    color: colors.black,
+                  ),
                 ),
-              ),
-              IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
-                context.pop();
-              }, icon: Icon(Icons.clear,size: 20,color: colors.black,))
-            ],
-          ),
-          Expanded(child: AddCardForm()),
-          2.hSpace,
-          PrimaryAppButton(title: LangKeys.addNewCardKey.tr(),)
-        ],
+                IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: () {
+                  context.pop();
+                }, icon: Icon(Icons.clear,size: 20,color: colors.black,))
+              ],
+            ),
+            Flexible(child: AddCardForm()),
+            2.hSpace,
+            PrimaryAppButton(title: LangKeys.addNewCardKey.tr(),)
+          ],
+        ),
       ),
     );
   }
