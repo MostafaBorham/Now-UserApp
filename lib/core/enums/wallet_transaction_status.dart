@@ -34,11 +34,11 @@ sealed class WalletTransactionStatus {
   Color statusColor(AppColorScheme colors) => switch (this) {
     WalletPendingTransactionStatus() => colors.orange100,
     WalletSuccessfulTransactionStatus() => colors.primary500Main.withValues(
-      alpha: 0.2,
+      alpha: 0.1,
     ),
     WalletFailedTransactionStatus() ||
     WalletRefundedTransactionStatus() ||
-    WalletUnknownTransactionStatus() => colors.error.withValues(alpha: 0.2),
+    WalletUnknownTransactionStatus() => colors.errorContainer.withValues(alpha: 0.1),
   };
 
   /// Color of the status label inside the chip.
@@ -47,7 +47,7 @@ sealed class WalletTransactionStatus {
     WalletSuccessfulTransactionStatus() => colors.primary500Main,
     WalletFailedTransactionStatus() ||
     WalletRefundedTransactionStatus() ||
-    WalletUnknownTransactionStatus() => colors.error,
+    WalletUnknownTransactionStatus() => colors.errorContainer,
   };
 
   /// Color of the transaction amount.
@@ -56,7 +56,7 @@ sealed class WalletTransactionStatus {
     WalletSuccessfulTransactionStatus() => colors.primary500Main,
     WalletFailedTransactionStatus() ||
     WalletRefundedTransactionStatus() ||
-    WalletUnknownTransactionStatus() => colors.error,
+    WalletUnknownTransactionStatus() => colors.errorContainer,
   };
 }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
@@ -5,6 +7,7 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/my_cards_database_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/remote/api/wallet_api_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
@@ -18,12 +21,17 @@ import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transact
 /// The connection check and error mapping live in [_guard].
 class WalletRepo {
   final WalletApiService _walletApiService = WalletApiService();
+  final MyCardsDatabaseService _myCardsDatabaseService =
+      MyCardsDatabaseService();
 
   /// The key inside the transactions `data` payload that carries the list.
   static const String _transactionsListKey = 'transactions';
 
   /// The key inside the cards `data` payload that carries the list.
   static const String _cardsListKey = 'cards';
+
+  /// The key inside the set-default `data` payload that carries the card.
+  static const String _defaultCardKey = 'card';
 
   /// Cancels every in-flight request of this repo. The actual cancellation
   /// mechanism (CancelToken) lives entirely inside the data source layer.
@@ -36,18 +44,67 @@ class WalletRepo {
     );
   }
 
-  /// The saved cards, wrapped in a [PaginationModel] for a uniform paged
-  /// contract even though this endpoint returns the full list at once with no
-  /// `meta` — [_paginated] falls back to a single-page envelope in that case.
-  Future<Either<Failure, PaginationModel<CardPaymentModel>>> getMyCards() {
-    return _guard(
+  /// The customer's saved cards, server-first with a local (Hive) fallback.
+  ///
+  /// The whole list comes back in one un-paginated shot, so it is exposed as a
+  /// plain `List` rather than a [PaginationModel]. The server is always tried
+  /// first: a successful fetch refreshes the cache so the local copy tracks the
+  /// server, and when the server is unreachable the last cached copy is served
+  /// instead — the original failure only surfaces when nothing has been cached
+  /// yet (or the cached copy can't be read).
+  Future<Either<Failure, List<CardPaymentModel>>> getMyCards() async {
+    // Fetch the raw server `data` object so it can be both cached verbatim and
+    // parsed — the cache round-trips through the same parsing the server uses.
+    final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.getMyCards(),
-      (data) => _paginated(
-        data,
-        _cardsListKey,
-        CardPaymentModel.fromJson,
-      ),
+      (Map<String, dynamic> data) => data,
     );
+
+    return serverResult.fold(
+      (Failure serverFailure) => _readCardsFromCache(serverFailure),
+      (Map<String, dynamic> data) async {
+        await _cacheMyCards(data);
+        return Right<Failure, List<CardPaymentModel>>(_parseCards(data));
+      },
+    );
+  }
+
+  /// Parses the raw cards `data` object into the card list.
+  List<CardPaymentModel> _parseCards(Map<String, dynamic> data) {
+    final List<dynamic> rawItems =
+        data[_cardsListKey] as List<dynamic>? ?? <dynamic>[];
+    return rawItems
+        .map((dynamic e) => CardPaymentModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Persists the raw cards [data] payload verbatim. Best-effort: a cache write
+  /// failure is a side effect, not part of the result, so it is swallowed.
+  Future<void> _cacheMyCards(Map<String, dynamic> data) async {
+    try {
+      await _myCardsDatabaseService.saveMyCards(jsonEncode(data));
+    } catch (_) {
+      // Intentionally ignored — caching must never break a successful fetch.
+    }
+  }
+
+  /// Falls back to the cached cards, surfacing [serverFailure] only when there
+  /// is nothing cached (or the cached copy can't be read).
+  Future<Either<Failure, List<CardPaymentModel>>> _readCardsFromCache(
+    Failure serverFailure,
+  ) async {
+    try {
+      final String? cached = _myCardsDatabaseService.getMyCards();
+      if (cached == null) {
+        return Left<Failure, List<CardPaymentModel>>(serverFailure);
+      }
+
+      final Map<String, dynamic> data =
+          jsonDecode(cached) as Map<String, dynamic>;
+      return Right<Failure, List<CardPaymentModel>>(_parseCards(data));
+    } catch (_) {
+      return Left<Failure, List<CardPaymentModel>>(serverFailure);
+    }
   }
 
   Future<Either<Failure, PaginationModel<WalletTransactionModel>>>
@@ -85,10 +142,15 @@ class WalletRepo {
     return _action(() => _walletApiService.deletePaymentCard(id));
   }
 
-  /// Marks the saved card [id] as the default. Success-only response (no data
-  /// payload).
-  Future<Either<Failure, void>> setPaymentCardDefault(int id) {
-    return _action(() => _walletApiService.setPaymentCardDefault(id));
+  /// Marks the saved card [id] as the default and returns the server's
+  /// authoritative copy of that card, parsed from the `card` object inside the
+  /// response `data`.
+  Future<Either<Failure, CardPaymentModel>> setPaymentCardDefault(int id) {
+    return _guard(
+      () => _walletApiService.setPaymentCardDefault(id),
+      (Map<String, dynamic> data) =>
+          CardPaymentModel.fromJson(data[_defaultCardKey] as Map<String, dynamic>),
+    );
   }
 
   /// Turns a `{meta, <listKey>: [...]}` payload into a [PaginationModel].

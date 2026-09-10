@@ -13,9 +13,14 @@ class WalletTransactionModel extends Equatable {
   final String? type;
   final String? source;
 
-  /// The transaction status, parsed from the raw `status` value into a
-  /// type-safe [WalletTransactionStatus] (its [WalletTransactionStatus.name]
-  /// keeps that raw value).
+  /// The transaction status, parsed into a type-safe [WalletTransactionStatus]
+  /// (its [WalletTransactionStatus.name] keeps the raw value).
+  ///
+  /// Sourced from the API's `display_status`, not `status`: `status` is only the
+  /// coarse processing state (`pending`/`successful`/`failed`) and never carries
+  /// `refunded` — a refund arrives as `status: successful`, `display_status:
+  /// refunded`. Since the color mapping needs to tell a refund apart from a
+  /// plain success, it is driven by the granular `display_status`.
   final WalletTransactionStatus status;
   final String? displayStatus;
   final double? amount;
@@ -61,7 +66,9 @@ class WalletTransactionModel extends Equatable {
       id: (json['id'] as num?)?.toInt(),
       type: json['type']?.toString(),
       source: json['source']?.toString(),
-      status: WalletTransactionStatus.fromStatus(json['status']?.toString()),
+      status: WalletTransactionStatus.fromStatus(
+        (json['display_status'] ?? json['status'])?.toString(),
+      ),
       displayStatus: json['display_status']?.toString(),
       amount: (json['amount'] as num?)?.toDouble(),
       signedAmount: (json['signed_amount'] as num?)?.toDouble(),

@@ -49,6 +49,34 @@ class CardPaymentModel extends Equatable {
     );
   }
 
+  CardPaymentModel copyWith({
+    int? id,
+    String? type,
+    String? cardholderName,
+    String? brand,
+    String? lastFour,
+    String? maskedNumber,
+    int? expiryMonth,
+    int? expiryYear,
+    String? expiry,
+    bool? isExpired,
+    bool? isDefault,
+  }) {
+    return CardPaymentModel(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      cardholderName: cardholderName ?? this.cardholderName,
+      brand: brand ?? this.brand,
+      lastFour: lastFour ?? this.lastFour,
+      maskedNumber: maskedNumber ?? this.maskedNumber,
+      expiryMonth: expiryMonth ?? this.expiryMonth,
+      expiryYear: expiryYear ?? this.expiryYear,
+      expiry: expiry ?? this.expiry,
+      isExpired: isExpired ?? this.isExpired,
+      isDefault: isDefault ?? this.isDefault,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

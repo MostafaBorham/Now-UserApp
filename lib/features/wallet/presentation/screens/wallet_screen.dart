@@ -135,8 +135,14 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       onTap: () => _openActionSheet(
                         index: 1,
                         sheet: MyCardsView(),
-                        maxHeight: screenHeight * 0.6,
+                        // The sheet sizes to its content and only grows to this
+                        // cap (80% of the screen), past which the cards list
+                        // scrolls inside it — so short lists leave no dead space
+                        // below them. isScrollControlled lets it exceed the
+                        // default half-screen ceiling to reach that cap.
+                        maxHeight: screenHeight * 0.8,
                         backgroundColor: colors.white,
+                        isScrollControlled: true,
                       ),
                     ),
                   ),

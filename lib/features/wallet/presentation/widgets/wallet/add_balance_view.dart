@@ -7,12 +7,14 @@ import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/money_amount_picker.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/top_up_wallet_vm.dart';
@@ -57,10 +59,25 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     final int? amount = _parseAmount(moneyAmount);
     if (amount == null) return;
 
+    // Topping up charges a saved card, so there must be one to charge. Gate the
+    // top-up on the shared cards list: only proceed once it has resolved with a
+    // non-empty list — otherwise there is no payment method, so surface a
+    // message and stop before hitting the top-up flow.
+    final List<CardPaymentModel>? cards =
+        ref.read(getMyCardsProvider).valueOrNull;
+    if (cards == null || cards.isEmpty) {
+      // The snackbar lives on the screen's ScaffoldMessenger, so it survives the
+      // sheet closing.
+      ErrorSnackBar.show(context, LangKeys.selectPaymentMethodFirstKey.tr());
+      context.pop();
+      return;
+    }
+
     // While this awaits, the sheet is watching `topUpWalletProvider` so the
     // button spins and `PopScope` blocks every dismissal path.
-    final String? error =
-        await ref.read(topUpWalletProvider.notifier).topUpWallet(amount: amount);
+    final String? error = await ref
+        .read(topUpWalletProvider.notifier)
+        .topUpWallet(amount: amount);
 
     if (!mounted) return;
 
@@ -113,9 +130,16 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
                       color: colors.black,
                     ),
                   ),
-                  IconButton(padding: EdgeInsetsGeometry.zero,visualDensity: VisualDensity.compact, onPressed: isSubmitting ? null : () {
-                    context.pop();
-                  }, icon: Icon(Icons.clear,size: 20,color: colors.black,))
+                  IconButton(
+                    padding: EdgeInsetsGeometry.zero,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: isSubmitting
+                        ? null
+                        : () {
+                            context.pop();
+                          },
+                    icon: Icon(Icons.clear, size: 20, color: colors.black),
+                  ),
                 ],
               ),
               Flexible(
@@ -132,9 +156,7 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
                             .toList(),
                         onAmountChanged: (amount) {
                           moneyAmount = amount;
-                          setState(() {
-
-                          });
+                          setState(() {});
                           debugPrint('selected amount ==== $amount');
                         },
                         onOtherSelected: _scrollToEnd,
@@ -145,7 +167,7 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
               ),
               5.hSpace,
               PrimaryAppButton(
-                title: LangKeys.continueKey.tr(),
+                title: LangKeys.topUpKey.tr(),
                 isLoading: isSubmitting,
                 isDisabled: moneyAmount == null || moneyAmount!.isEmpty,
                 onTap: _onContinue,

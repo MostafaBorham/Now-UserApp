@@ -1,8 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 
 /// One-shot action: top the wallet up with an amount via a payment method.
 ///
@@ -21,17 +24,15 @@ import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart'
 /// surface it in a snackbar.
 final topUpWalletProvider =
     StateNotifierProvider.autoDispose<TopUpWalletViewModel, AsyncValue<void>>(
-  (Ref ref) => TopUpWalletViewModel(),
+  (Ref ref) => TopUpWalletViewModel(ref),
 );
 
 class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
-  TopUpWalletViewModel() : super(const AsyncValue<void>.data(null));
+  TopUpWalletViewModel(this._ref) : super(const AsyncValue<void>.data(null));
 
+  final Ref _ref;
   final WalletRepo _repo = WalletRepo();
   final IdempotencyKey _idempotencyKey = IdempotencyKey();
-
-  /// Fixed payment method used for every top-up for now.
-  static const int _paymentMethodId = 12;
 
   @override
   void dispose() {
@@ -40,12 +41,26 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<String?> topUpWallet({required int amount}) async {
+    // The payment method is always the customer's current default card. If none
+    // is selected there is nothing to charge, so fail fast with a message before
+    // hitting the repo.
+    final CardPaymentModel? defaultCard =
+        _ref.read(defaultPaymentCardProvider).valueOrNull;
+    final int? paymentMethodId = defaultCard?.id;
+    if (paymentMethodId == null) {
+      state = AsyncValue<void>.error(
+        LangKeys.selectPaymentMethodFirstKey,
+        StackTrace.current,
+      );
+      return LangKeys.selectPaymentMethodFirstKey;
+    }
+
     state = const AsyncValue<void>.loading();
 
     final Either<Failure, void> result = await _repo.topUpWallet(
       amount: amount,
-      paymentMethodId: _paymentMethodId,
-      idempotencyKey: _idempotencyKey.forRequest('$amount|$_paymentMethodId'),
+      paymentMethodId: paymentMethodId,
+      idempotencyKey: _idempotencyKey.forRequest('$amount|$paymentMethodId'),
     );
 
     if (!mounted) return null;

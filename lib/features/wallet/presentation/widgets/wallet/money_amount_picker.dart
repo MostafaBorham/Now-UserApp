@@ -41,6 +41,11 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
   /// True when the custom amount is typed above the allowed [_maxAmount].
   bool exceedsMax = false;
 
+  /// True when the field holds text that isn't a valid top-up amount — a
+  /// decimal point, a comma, a minus sign, or anything below 1 (e.g. `0`). Kept
+  /// separate from [exceedsMax] so the "maximum" hint only reddens on overflow.
+  bool hasInvalidAmount = false;
+
   List<String> get _options => widget.options ?? const <String>[];
 
   double get _maxAmount =>
@@ -67,22 +72,31 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
     super.dispose();
   }
 
-  /// A suggested chip is always within the limit, so any error clears here.
+  /// A suggested chip is always a valid whole amount, so any error clears here.
   void _updateSelectedValue(String newValue) {
     selectedValue = newValue;
     exceedsMax = false;
+    hasInvalidAmount = false;
     widget.onAmountChanged?.call(selectedValue);
     setState(() {});
   }
 
-  /// Validates the typed custom amount on every keystroke. When it exceeds
-  /// [_maxAmount] the field goes into an error state and `null` is reported so
-  /// the parent's Continue button stays disabled.
+  /// Validates the typed custom amount on every keystroke. Only a whole number
+  /// of 1 or more, within [_maxAmount], is valid — a decimal point, a comma, a
+  /// minus sign, or a value below 1 (like `0`) is rejected. `int.tryParse`
+  /// returns `null` for the first three and lets the `>= 1` check catch the
+  /// rest. On any invalid input `null` is reported so the parent's button stays
+  /// disabled.
   void _applyCustomAmount(String value) {
-    final double? parsed = double.tryParse(value);
+    final String trimmed = value.trim();
+    final int? parsed = int.tryParse(trimmed);
+
     exceedsMax = parsed != null && parsed > _maxAmount;
+    final bool isValid = parsed != null && parsed >= 1 && parsed <= _maxAmount;
+    hasInvalidAmount = trimmed.isNotEmpty && !isValid;
+
     selectedValue = value;
-    widget.onAmountChanged?.call((value.isEmpty || exceedsMax) ? null : value);
+    widget.onAmountChanged?.call(isValid ? value : null);
     setState(() {});
   }
 
@@ -192,7 +206,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         color: colors.neutral500.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(
-                          color: exceedsMax
+                          color: (exceedsMax || hasInvalidAmount)
                               ? colors.error
                               : colors.primary500Main,
                           width: 1,
@@ -202,7 +216,9 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         controller: amountController,
                         keyboardType: TextInputType.number,
                         style: AppTextStyles.style14Regular.copyWith(
-                          color: exceedsMax ? colors.error : colors.black,
+                          color: (exceedsMax || hasInvalidAmount)
+                              ? colors.error
+                              : colors.black,
                         ),
                         onChanged: (newValue) {
                           _applyCustomAmount(newValue);

@@ -28,6 +28,7 @@ class WalletApiService {
   Future<Response> getMyCards() {
     return _dio.get(
       WalletEndpoints.getMyCards,
+      queryParameters: WalletEndpoints.myCardsQuery(),
       cancelToken: _canceller.token,
     );
   }

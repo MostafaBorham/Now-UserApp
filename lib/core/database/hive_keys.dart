@@ -42,4 +42,10 @@ abstract class HiveKeys {
   /// through the same parsing the server response uses, with proper
   /// `String`-keyed maps.
   static const String userProfilePayload = 'user_profile_payload';
+
+  /// Key inside [HiveBoxes.myCards] holding the JSON-encoded `String` payload of
+  /// the saved-cards response — the raw server `data` object (`{'cards': [...]}`).
+  /// Stored as a JSON string so it round-trips back through the same parsing the
+  /// server response uses, with proper `String`-keyed maps.
+  static const String myCardsPayload = 'my_cards_payload';
 }
