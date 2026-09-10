@@ -16,32 +16,32 @@ export 'categories_test_harness.dart';
 // So tests referencing the chip model only need to import this harness.
 export 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
 
-/// Records the `(search, categoryIds, sort)` a tab view pushes into its
-/// view-model, so a test can assert what a search / chip / sort produced.
-typedef ApplyFiltersSpy = void Function(
-  String? search,
-  List<int> categoryIds,
-  String? sort,
-);
-
 // ---------------------------------------------------------------------------
 // Provider overrides (faked view-models — no repo, no network)
 // ---------------------------------------------------------------------------
 
+/// Fakes every category-tab query of the favourites Products tab with the same
+/// [state]. The provider is a `family` keyed by [FavouriteProductsArgs] (the
+/// selected category + search key), so the override matches on `(ref, args)`
+/// and hands back the same faked page whatever the current filter — a test
+/// asserts on what the widget renders, not on which page it fetched.
 Override overrideFavouriteProducts(
-  AsyncValue<PaginationModel<ProductModel>> state, {
-  ApplyFiltersSpy? onApplyFilters,
-}) =>
+  AsyncValue<PaginationModel<ProductModel>> state,
+) =>
     getFavouriteProductsProvider.overrideWith(
-      (Ref ref) => _FakeFavouriteProductsVM(state, onApplyFilters),
+      (Ref ref, FavouriteProductsArgs args) =>
+          _FakeFavouriteProductsVM(state, args),
     );
 
+/// Fakes every category-tab query of the favourites Stores tab with the same
+/// [state]. Keyed by [FavouriteStoresArgs] exactly like
+/// [overrideFavouriteProducts].
 Override overrideFavouriteStores(
-  AsyncValue<PaginationModel<StoreModel>> state, {
-  ApplyFiltersSpy? onApplyFilters,
-}) =>
+  AsyncValue<PaginationModel<StoreModel>> state,
+) =>
     getFavouriteStoresProvider.overrideWith(
-      (Ref ref) => _FakeFavouriteStoresVM(state, onApplyFilters),
+      (Ref ref, FavouriteStoresArgs args) =>
+          _FakeFavouriteStoresVM(state, args),
     );
 
 /// Overrides the chip row for every tab (the family is keyed by type).
@@ -55,27 +55,16 @@ Override overrideFavouriteCategories(
 class _FakeFavouriteProductsVM extends GetFavouriteProductsViewModel {
   _FakeFavouriteProductsVM(
     AsyncValue<PaginationModel<ProductModel>> initial,
-    this._onApplyFilters,
-  ) {
+    FavouriteProductsArgs args,
+  ) : super(args: args) {
     state = initial;
   }
-
-  final ApplyFiltersSpy? _onApplyFilters;
 
   @override
   Future<void> loadFirstPage() async {}
 
   @override
   Future<void> loadNextPage() async {}
-
-  @override
-  Future<void> applyFilters({
-    String? search,
-    List<int>? categoryIds,
-    String? sort,
-  }) async {
-    _onApplyFilters?.call(search, categoryIds ?? const <int>[], sort);
-  }
 
   @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) =>
@@ -85,27 +74,16 @@ class _FakeFavouriteProductsVM extends GetFavouriteProductsViewModel {
 class _FakeFavouriteStoresVM extends GetFavouriteStoresViewModel {
   _FakeFavouriteStoresVM(
     AsyncValue<PaginationModel<StoreModel>> initial,
-    this._onApplyFilters,
-  ) {
+    FavouriteStoresArgs args,
+  ) : super(args: args) {
     state = initial;
   }
-
-  final ApplyFiltersSpy? _onApplyFilters;
 
   @override
   Future<void> loadFirstPage() async {}
 
   @override
   Future<void> loadNextPage() async {}
-
-  @override
-  Future<void> applyFilters({
-    String? search,
-    List<int>? categoryIds,
-    String? sort,
-  }) async {
-    _onApplyFilters?.call(search, categoryIds ?? const <int>[], sort);
-  }
 
   @override
   Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) =>

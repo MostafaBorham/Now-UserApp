@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
@@ -8,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_product_tab_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_store_tab_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
@@ -24,6 +26,15 @@ void main() {
     ),
   );
 
+  // The tab bar reads the app categories over the network; stub it to an empty
+  // page (only the "All" tab) so a test never hits the real repo — a test that
+  // needs category tabs overrides it with its own list.
+  final Override noCategoryTabs = overrideAppCategories(
+    AsyncValue<PaginationModel<CategoryModel>>.data(
+      pageOf<CategoryModel>(const <CategoryModel>[]),
+    ),
+  );
+
   group('FavouriteProductTabView states', () {
     testWidgets('first-page loading shows shimmer, no product data',
         (WidgetTester tester) async {
@@ -35,6 +46,7 @@ void main() {
             const AsyncValue<PaginationModel<ProductModel>>.loading(),
           ),
           noChips,
+          noCategoryTabs,
         ],
       );
 
@@ -54,6 +66,7 @@ void main() {
             ),
           ),
           noChips,
+          noCategoryTabs,
         ],
       );
 
@@ -75,6 +88,7 @@ void main() {
             ),
           ),
           noChips,
+          noCategoryTabs,
         ],
       );
 
@@ -95,6 +109,7 @@ void main() {
             ),
           ),
           noChips,
+          noCategoryTabs,
         ],
       );
 
@@ -115,6 +130,7 @@ void main() {
             ),
           ),
           noChips,
+          noCategoryTabs,
         ],
       );
 
@@ -130,9 +146,15 @@ void main() {
   });
 
   group('FavouritesTabView filters', () {
-    testWidgets('typing in the search field applies a debounced search filter',
-        (WidgetTester tester) async {
-      final List<List<Object?>> calls = <List<Object?>>[];
+    // Reads the live product-tab filter (search + selected category) the tab
+    // view drives through favouritesFilterProvider — the single source both the
+    // search field and the category tab bar write into.
+    FavouritesFilter productFilter(WidgetTester tester) => ProviderScope
+        .containerOf(tester.element(find.byType(FavouriteProductTabView)))
+        .read(favouritesFilterProvider('product'));
+
+    testWidgets('typing in the search field sets the search filter '
+        'after the debounce', (WidgetTester tester) async {
       await pumpCategoriesWidget(
         tester,
         const FavouriteProductTabView(),
@@ -141,27 +163,28 @@ void main() {
             AsyncValue<PaginationModel<ProductModel>>.data(
               pageOf<ProductModel>(<ProductModel>[sampleProduct()]),
             ),
-            onApplyFilters: (String? s, List<int> c, String? sort) =>
-                calls.add(<Object?>[s, c, sort]),
+          ),
+          // Only the "All" tab; keeps this test about the search field alone.
+          overrideAppCategories(
+            AsyncValue<PaginationModel<CategoryModel>>.data(
+              pageOf<CategoryModel>(const <CategoryModel>[]),
+            ),
           ),
           noChips,
         ],
       );
 
       await tester.enterText(find.byType(TextField), 'shoes');
-      // Nothing before the debounce window elapses.
-      expect(calls, isEmpty);
-      await tester.pump(const Duration(milliseconds: 400));
+      // The search field debounces for one second — nothing before it elapses.
+      expect(productFilter(tester).search, isEmpty);
 
-      expect(calls, hasLength(1));
-      expect(calls.single[0], 'shoes');
-      expect(calls.single[1], const <int>[]);
-      expect(calls.single[2], 'recent'); // default sort
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(productFilter(tester).search, 'shoes');
     });
 
-    testWidgets('selecting a category chip applies its id',
+    testWidgets('selecting a category tab sets it as the filter category',
         (WidgetTester tester) async {
-      final List<List<Object?>> calls = <List<Object?>>[];
       await pumpCategoriesWidget(
         tester,
         const FavouriteProductTabView(),
@@ -170,27 +193,29 @@ void main() {
             AsyncValue<PaginationModel<ProductModel>>.data(
               pageOf<ProductModel>(<ProductModel>[sampleProduct()]),
             ),
-            onApplyFilters: (String? s, List<int> c, String? sort) =>
-                calls.add(<Object?>[s, c, sort]),
           ),
-          overrideFavouriteCategories(
-            AsyncValue<List<FavouriteCategoryModel>>.data(
-              <FavouriteCategoryModel>[
-                sampleFavouriteCategory(id: 7, en: 'Food', count: 3),
-              ],
+          // The tab bar labels come from the app categories, not the chip row.
+          overrideAppCategories(
+            AsyncValue<PaginationModel<CategoryModel>>.data(
+              pageOf<CategoryModel>(<CategoryModel>[
+                sampleCategory(id: 7, en: 'Food'),
+              ]),
             ),
           ),
+          noChips,
         ],
       );
 
+      // "All" plus the one app-category tab.
       expect(find.text('all'), findsOneWidget);
-      expect(find.text('Food (3)'), findsOneWidget);
+      expect(find.text('Food'), findsOneWidget);
+      // Starts on "All": no category selected.
+      expect(productFilter(tester).category, isNull);
 
-      await tester.tap(find.text('Food (3)'));
+      await tester.tap(find.text('Food'));
       await tester.pump();
 
-      expect(calls, hasLength(1));
-      expect(calls.single[1], const <int>[7]);
+      expect(productFilter(tester).category?.id, 7);
     });
   });
 }
