@@ -283,6 +283,10 @@ class _HomeViewState extends ConsumerState<HomeView>
                   aspectRatio: 1,
                   child: HomeNeverMissOffersSection(
                     products: flashOffersSection.products,
+                    backgroundColor: flashOffersSection.backgroundColor,
+                    viewAllTextColor: flashOffersSection.viewAllTextColor,
+                    viewAllUnderlineColor:
+                        flashOffersSection.viewAllUnderlineColor,
                   ),
                 ),
               2.hSpace,

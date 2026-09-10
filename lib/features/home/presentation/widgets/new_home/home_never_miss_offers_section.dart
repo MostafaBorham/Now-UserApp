@@ -11,15 +11,29 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 /// discounted products, each card owning its own favourite and cart actions.
 ///
 /// The heading is the design's own logo artwork (Arabic / English), not the
-/// feed's `title` — the backend only titles text headings.
+/// feed's `title` — the backend only titles text headings. It does colour the
+/// section though: [backgroundColor] washes the top of the strip and
+/// [viewAllTextColor] / [viewAllUnderlineColor] paint the "See All" chip. Each
+/// falls back to the theme colour the design shipped with.
 class HomeNeverMissOffersSection extends StatelessWidget {
-  const HomeNeverMissOffersSection({super.key, required this.products});
+  const HomeNeverMissOffersSection({
+    super.key,
+    required this.products,
+    this.backgroundColor,
+    this.viewAllTextColor,
+    this.viewAllUnderlineColor,
+  });
 
   final List<ProductModel> products;
+  final Color? backgroundColor;
+  final Color? viewAllTextColor;
+  final Color? viewAllUnderlineColor;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color background = backgroundColor ?? colors.inverseSurface;
+    final Color viewAllUnderline = viewAllUnderlineColor ?? colors.inverseSurface;
     return Stack(
       children: [
         Positioned.fill(
@@ -28,7 +42,7 @@ class HomeNeverMissOffersSection extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [colors.inverseSurface.withValues(alpha: 0.9), colors.white],
+                colors: [background.withValues(alpha: 0.9), colors.white],
                 stops: [0, 0.7],
               ),
             ),
@@ -62,11 +76,11 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                             alignment: AlignmentDirectional.centerEnd,
                             child: HomeViewAllWidget(
                               size: 16,
-                              startBackgroundColor: colors.inverseSurface,
-                              endBackgroundColor: colors.inverseSurface.withValues(
+                              startBackgroundColor: viewAllUnderline,
+                              endBackgroundColor: viewAllUnderline.withValues(
                                 alpha: 0.7,
                               ),
-                              textColor: colors.white,
+                              textColor: viewAllTextColor ?? colors.white,
                             ),
                           ),
                         ),

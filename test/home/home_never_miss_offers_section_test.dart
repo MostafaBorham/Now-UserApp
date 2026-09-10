@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circul
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/products/data/models/rating_model.dart';
 
 import '../helpers/categories_test_harness.dart';
@@ -41,14 +42,41 @@ void main() {
 
   /// The section needs a bounded height (its strip sits in an `Expanded`), the
   /// same way `HomeView` wraps it in an `AspectRatio`.
-  Future<void> pumpSection(WidgetTester tester, List<ProductModel> products) =>
-      pumpCategoriesWidget(
-        tester,
-        AspectRatio(
-          aspectRatio: 1,
-          child: HomeNeverMissOffersSection(products: products),
-        ),
-      );
+  Future<void> pumpSection(
+    WidgetTester tester,
+    List<ProductModel> products, {
+    Color? backgroundColor,
+    Color? viewAllTextColor,
+    Color? viewAllUnderlineColor,
+  }) => pumpCategoriesWidget(
+    tester,
+    AspectRatio(
+      aspectRatio: 1,
+      child: HomeNeverMissOffersSection(
+        products: products,
+        backgroundColor: backgroundColor,
+        viewAllTextColor: viewAllTextColor,
+        viewAllUnderlineColor: viewAllUnderlineColor,
+      ),
+    ),
+  );
+
+  /// The section's background wash — the first gradient in its subtree (the
+  /// backdrop sits above the cards, which carry gradients of their own).
+  LinearGradient backdropGradient(WidgetTester tester) {
+    final Container container = tester.firstWidget<Container>(
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget is Container &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration! as BoxDecoration).gradient is LinearGradient,
+      ),
+    );
+    return (container.decoration! as BoxDecoration).gradient! as LinearGradient;
+  }
+
+  HomeViewAllWidget viewAllChip(WidgetTester tester) =>
+      tester.widget<HomeViewAllWidget>(find.byType(HomeViewAllWidget));
 
   testWidgets('renders the name, deal price and struck list price', (
     WidgetTester tester,
@@ -115,5 +143,40 @@ void main() {
     expect(find.text('First'), findsWidgets);
     expect(find.text('Second'), findsWidgets);
     expect(find.byType(HomeNeverMissOffersItem), findsWidgets);
+  });
+
+  testWidgets('paints the background and See All chip the feed asked for', (
+    WidgetTester tester,
+  ) async {
+    await pumpSection(
+      tester,
+      <ProductModel>[offerProduct()],
+      backgroundColor: const Color(0xFFC800FF),
+      viewAllTextColor: const Color(0xFFFFFFFF),
+      viewAllUnderlineColor: const Color(0xFF475569),
+    );
+
+    // The wash keeps the design's fade to white; only its top colour is the
+    // admin's.
+    expect(
+      backdropGradient(tester).colors.first,
+      const Color(0xFFC800FF).withValues(alpha: 0.9),
+    );
+
+    final HomeViewAllWidget chip = viewAllChip(tester);
+    expect(chip.textColor, const Color(0xFFFFFFFF));
+    expect(chip.startBackgroundColor, const Color(0xFF475569));
+  });
+
+  testWidgets('falls back to the theme colours when the feed sends none', (
+    WidgetTester tester,
+  ) async {
+    // An uncoloured section has to look like the shipped design, not render
+    // a transparent wash or a chip with no label colour.
+    await pumpSection(tester, <ProductModel>[offerProduct()]);
+
+    expect(backdropGradient(tester).colors.first.a, 0.9);
+    expect(viewAllChip(tester).textColor, isNotNull);
+    expect(tester.takeException(), isNull);
   });
 }

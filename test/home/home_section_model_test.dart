@@ -282,6 +282,10 @@ void main() {
       'id': 49,
       'type': 'flash_offers',
       'title': {'ar': 'عروض لا تفوتك', 'en': "Don't-Miss Offers"},
+      // The section's own theming: the background wash and the "See All" chip.
+      'background_color': '#c800ff',
+      'view_all_text_color': '#FFFFFF',
+      'view_all_underline_color': '#475569',
       'items': <Map<String, dynamic>>[
         {
           'id': 4,
@@ -317,6 +321,9 @@ void main() {
     });
 
     expect(section.title?['en'], "Don't-Miss Offers");
+    expect(section.backgroundColor?.toARGB32(), 0xFFC800FF);
+    expect(section.viewAllTextColor?.toARGB32(), 0xFFFFFFFF);
+    expect(section.viewAllUnderlineColor?.toARGB32(), 0xFF475569);
     // Both wrappers' products, in feed order.
     expect(section.products.map((p) => p.id).toList(), <int>[52, 38]);
     expect(section.offers, isEmpty);

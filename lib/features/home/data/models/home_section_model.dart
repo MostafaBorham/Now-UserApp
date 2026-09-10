@@ -13,8 +13,9 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 /// [offers]; `featured_stores`, `nearby_stores` and `all_stores` all carry
 /// their [stores] (a featured store also brings the products its card shows);
 /// `flash_offers` and `products_by_category` carry their [products] (the
-/// latter also brings the [category] it lists plus its own [primaryColor] /
-/// [textColor] / [displayDesign] theming); `promo_block_middle` and
+/// former also brings its [backgroundColor] and "See All" chip colours, the
+/// latter the [category] it lists plus its own [primaryColor] / [textColor] /
+/// [displayDesign] theming); `promo_block_middle` and
 /// `promo_block_footer` carry their [banners]; `categories` is a presence-only
 /// marker (its carousel content still comes from `getAppCategoriesProvider`,
 /// because feed category items lack the `slug` the category-details screen
@@ -59,6 +60,16 @@ class HomeSectionModel extends Equatable {
   /// Colour of a `products_by_category` section's title.
   final Color? textColor;
 
+  /// Background wash of a `flash_offers` section. Null when the admin left it
+  /// unset or sent a malformed hex — the section then falls back to a theme
+  /// colour.
+  final Color? backgroundColor;
+
+  /// Colours of a `flash_offers` section's "See All" chip: its label, and the
+  /// swash drawn under the label. Either falls back to a theme colour.
+  final Color? viewAllTextColor;
+  final Color? viewAllUnderlineColor;
+
   /// Header design of a `products_by_category` section: `color_with_image`
   /// shows [media] beside the title, anything else is colour-only.
   final String? displayDesign;
@@ -96,6 +107,9 @@ class HomeSectionModel extends Equatable {
     this.category,
     this.primaryColor,
     this.textColor,
+    this.backgroundColor,
+    this.viewAllTextColor,
+    this.viewAllUnderlineColor,
     this.displayDesign,
     this.media,
     this.showViewAll = false,
@@ -162,6 +176,9 @@ class HomeSectionModel extends Equatable {
           : null,
       primaryColor: json.colorHex('primary_color'),
       textColor: json.colorHex('text_color'),
+      backgroundColor: json.colorHex('background_color'),
+      viewAllTextColor: json.colorHex('view_all_text_color'),
+      viewAllUnderlineColor: json.colorHex('view_all_underline_color'),
       displayDesign: json['display_design']?.toString(),
       media: _mediaFrom(json),
       showViewAll: json['show_view_all'] == true,
@@ -191,6 +208,9 @@ class HomeSectionModel extends Equatable {
         category,
         primaryColor,
         textColor,
+        backgroundColor,
+        viewAllTextColor,
+        viewAllUnderlineColor,
         displayDesign,
         media,
         showViewAll,
