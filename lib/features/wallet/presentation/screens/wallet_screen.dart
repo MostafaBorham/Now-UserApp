@@ -35,11 +35,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     required double maxHeight,
     required Color backgroundColor,
     bool isScrollControlled = false,
+    bool enableDrag = true,
   }) async {
     setState(() => _selectedActionIndex = index);
     await showModalBottomSheet(
       context: context,
       isScrollControlled: isScrollControlled,
+      enableDrag: enableDrag,
       backgroundColor: backgroundColor,
       builder: (context) => ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
@@ -116,6 +118,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         maxHeight: screenHeight * 0.9,
                         backgroundColor: colors.white,
                         isScrollControlled: true,
+                        // The sheet blocks dismissal while a top-up is in
+                        // flight via PopScope; drag-to-dismiss would bypass it,
+                        // so it's disabled — the X button / barrier remain.
+                        enableDrag: false,
                       ),
                     ),
                   ),

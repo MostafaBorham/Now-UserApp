@@ -30,22 +30,22 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
   final WalletRepo _repo = WalletRepo();
   final IdempotencyKey _idempotencyKey = IdempotencyKey();
 
+  /// Fixed payment method used for every top-up for now.
+  static const int _paymentMethodId = 12;
+
   @override
   void dispose() {
     _repo.cancelRequests();
     super.dispose();
   }
 
-  Future<String?> topUpWallet({
-    required int amount,
-    required int paymentMethodId,
-  }) async {
+  Future<String?> topUpWallet({required int amount}) async {
     state = const AsyncValue<void>.loading();
 
     final Either<Failure, void> result = await _repo.topUpWallet(
       amount: amount,
-      paymentMethodId: paymentMethodId,
-      idempotencyKey: _idempotencyKey.forRequest('$amount|$paymentMethodId'),
+      paymentMethodId: _paymentMethodId,
+      idempotencyKey: _idempotencyKey.forRequest('$amount|$_paymentMethodId'),
     );
 
     if (!mounted) return null;

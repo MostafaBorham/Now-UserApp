@@ -182,6 +182,7 @@
   "noAddressResults": "No matching addresses",
   "noFaqsYet": "No FAQs Available Yet",
   "noInternetConnection": "Unable to reach the servers. Please check your internet connection and try again.",
+  "noPaymentCard": "Please add a payment card first.",
   "noItemsYet": "No Items Yet",
   "noSavedAddresses": "No Addresses Yet",
   "notifications": "Notifications",
