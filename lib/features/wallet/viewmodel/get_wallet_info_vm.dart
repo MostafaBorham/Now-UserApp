@@ -36,6 +36,11 @@ class GetWalletInfoViewModel extends StateNotifier<AsyncValue<WalletModel>> {
     );
   }
 
+  /// Publishes a [wallet] already resolved elsewhere (e.g. the fresh copy a
+  /// top-up returns) so the shared state reflects the new balance without a
+  /// round-trip.
+  void setWallet(WalletModel wallet) => state = AsyncValue.data(wallet);
+
   @override
   void dispose() {
     _repo.cancelRequests();

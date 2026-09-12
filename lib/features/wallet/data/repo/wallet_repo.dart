@@ -167,21 +167,36 @@ class WalletRepo {
     );
   }
 
-  /// Tops the wallet up with [amount] via [paymentMethodId]. The response
-  /// carries only a success flag and message (no data payload), so `Right`
-  /// holds nothing — callers only need success vs. failure. [idempotencyKey]
-  /// lets the server dedupe retries of the same top-up.
-  Future<Either<Failure, void>> topUpWallet({
+  /// Tops the wallet up with [amount] via [paymentMethodId] and returns the
+  /// server's fresh [WalletModel], parsed from the response `data` payload.
+  /// [idempotencyKey] lets the server dedupe retries of the same top-up.
+  ///
+  /// Server-first, cache-second: on success the same raw `data` that the model
+  /// is parsed from also overwrites the wallet-info (Hive) cache, so the local
+  /// copy tracks the new balance without a follow-up [getWalletInfo] round-trip.
+  /// A failure surfaces as-is — a write is never satisfied from stale cache.
+  Future<Either<Failure, WalletModel>> topUpWallet({
     required int amount,
     required int paymentMethodId,
     required String idempotencyKey,
-  }) {
-    return _action(
+  }) async {
+    // Fetch the raw server `data` object so it can be both cached verbatim and
+    // parsed — the cache round-trips through the same parsing the server uses.
+    final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.topUpWallet(
         amount: amount,
         paymentMethodId: paymentMethodId,
         idempotencyKey: idempotencyKey,
       ),
+      (Map<String, dynamic> data) => data,
+    );
+
+    return serverResult.fold(
+      (Failure serverFailure) => Left<Failure, WalletModel>(serverFailure),
+      (Map<String, dynamic> data) async {
+        await _cacheWalletInfo(data);
+        return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+      },
     );
   }
 
