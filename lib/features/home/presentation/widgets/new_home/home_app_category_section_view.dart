@@ -37,7 +37,10 @@ class HomeAppCategorySectionView extends StatelessWidget {
     final Color accent = primaryColor ?? colors.onInverseSurface;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double productRowHeight = constraints.maxWidth * 0.78;
+        // Same rail height as the `color_with_image` design
+        // ([HomeAppCategoryWithLogoSectionView]: 245pt of its 390pt frame), so
+        // a product card is the same size in both category sections.
+        final double productRowHeight = constraints.maxWidth * 245 / 390;
         return Stack(
           children: [
             Positioned.fill(
