@@ -163,6 +163,11 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
         child: ListView.builder(
           controller: _controller,
           scrollDirection: Axis.horizontal,
+          // App-wide motion rule (see `AppSlider`): self-moving content travels
+          // with the locale's reading sweep. Index order drifts the opposite
+          // way in both locales, so `reverse` flips it — items enter from the
+          // leading edge and leave by the trailing one.
+          reverse: true,
           physics: const BouncingScrollPhysics(),
           padding: widget.padding,
           itemExtent: _slotExtent,
