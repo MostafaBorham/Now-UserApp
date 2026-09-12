@@ -23,4 +23,12 @@ class ConnectionChecker {
     /// Take more time
     return _connectionChecker.onStatusChange;
   }
+
+  /// [connectionStream] mapped to a plain `bool` (`true` = connected), so
+  /// callers don't need to import the `internet_connection_checker` package to
+  /// react to connectivity changes. Fires only on change, like the underlying
+  /// stream — seed with [isConnected] for the current state.
+  static Stream<bool> isConnectedStream() => _connectionChecker.onStatusChange
+      .map((InternetConnectionStatus status) =>
+          status == InternetConnectionStatus.connected);
 }

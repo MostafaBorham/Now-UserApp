@@ -13,8 +13,10 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/controllers/connectivity_controller.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_all_stores_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
@@ -27,6 +29,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_pinned_search_bar.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// The Home tab.
@@ -117,6 +120,14 @@ class _HomeViewState extends ConsumerState<HomeView>
         );
   }
 
+  /// Re-fetches everything the home screen shows from the network — the feed and
+  /// the header banners. Used by the offline cue's Retry and automatically when
+  /// connectivity is restored, so cached content is swapped for live data.
+  void _refreshHome() {
+    _loadFeed();
+    ref.read(getHeaderBannersProvider.notifier).getHeaderBanners();
+  }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -182,6 +193,28 @@ class _HomeViewState extends ConsumerState<HomeView>
       orElse: () => const <HomeSectionModel>[],
     );
 
+    // Connectivity cue: the feed's AsyncValue can't tell live from cached (a
+    // cache-fallback also resolves as data), so the "showing saved content"
+    // strip is driven by live connectivity instead. Null (before the seed
+    // resolves) is treated as connected so it never flashes on start.
+    final bool isConnected = ref.watch(isConnectedProvider).valueOrNull ?? true;
+    // Refresh from the network the moment connectivity is restored, so cached
+    // content is swapped for live data without the user tapping Retry.
+    ref.listen<AsyncValue<bool>>(isConnectedProvider, (
+      AsyncValue<bool>? previous,
+      AsyncValue<bool> next,
+    ) {
+      // Only a genuine offline→online flip. Guarding on `== false` (not a null
+      // seed/loading) avoids a redundant refresh on the first resolve at launch,
+      // when the feed is already loading from initState.
+      if (previous?.valueOrNull == false && next.valueOrNull == true) {
+        _refreshHome();
+      }
+    });
+    // Only cue when there is content to show (cached or live); with no cache the
+    // feed errors and the existing _FeedErrorRetry covers it instead.
+    final bool showSavedContentCue = !isConnected && feed.hasValue;
+
     // --- Wired sections (driven by /api/v1/home-sections) ---
     // Keep the carousel visible while loading; hide it only once loaded data
     // has no `categories` section.
@@ -231,6 +264,9 @@ class _HomeViewState extends ConsumerState<HomeView>
       children: <Widget>[
         SingleChildScrollView(
           controller: _scrollController,
+          // Reserve room so the offline cue pinned at the bottom never covers
+          // the last section.
+          padding: EdgeInsets.only(bottom: showSavedContentCue ? 52 : 0),
           child: Column(
             spacing: 24,
             children: <Widget>[
@@ -362,6 +398,17 @@ class _HomeViewState extends ConsumerState<HomeView>
             },
           ),
         ),
+        // Offline cue pinned just above the bottom navigation bar (the home body
+        // ends at the nav's top edge). Shown only when connectivity is down and
+        // cached/loaded content is on screen, so stale prices/stock read as
+        // saved, not live; Retry re-fetches the feed and banners.
+        if (showSavedContentCue)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _OfflineSavedContentCue(onRetry: _refreshHome),
+          ),
       ],
     );
   }
@@ -397,6 +444,52 @@ class _ProductsByCategorySection extends StatelessWidget {
       primaryColor: section.primaryColor,
       textColor: section.textColor,
       showViewAll: section.showViewAll,
+    );
+  }
+}
+
+/// Slim strip pinned just above the bottom navigation bar while the device is
+/// offline and cached (or previously loaded) content is on screen — a reminder
+/// that prices, stock and store availability may be stale, with a Retry that
+/// re-fetches.
+class _OfflineSavedContentCue extends StatelessWidget {
+  const _OfflineSavedContentCue({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHigh,
+        border: Border(top: BorderSide(color: colors.outlineVariant)),
+      ),
+      child: Row(
+        children: <Widget>[
+          Icon(Icons.cloud_off_outlined, size: 18, color: colors.neutral500),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              LangKeys.showingSavedContentKey.tr(),
+              style: TextStyle(fontSize: 13, color: colors.neutral500),
+            ),
+          ),
+          TextButton(
+            onPressed: onRetry,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              LangKeys.retryKey.tr(),
+              style: TextStyle(color: colors.primary500Main),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

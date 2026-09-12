@@ -270,6 +270,7 @@
   "resend": "Resend",
   "resetFilter": "Reset Filter",
   "retry": "Retry",
+  "showingSavedContent": "You're offline — showing saved content.",
   "errorTitle": "Error",
   "successTitle": "Success",
   "returnToHomePage": "Return to Home Page",

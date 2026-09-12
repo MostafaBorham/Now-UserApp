@@ -313,6 +313,7 @@ abstract class LangKeys {
   static const String serverConnectionFailedKey = 'serverConnectionFailed';
   static const String unableToReachServersKey = 'unableToReachServers';
   static const String retryKey = 'retry';
+  static const String showingSavedContentKey = 'showingSavedContent';
   static const String errorTitleKey = 'errorTitle';
   static const String successTitleKey = 'successTitle';
   static const String noInternetConnectionKey = 'noInternetConnection';

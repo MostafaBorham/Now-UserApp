@@ -27,6 +27,9 @@ class HiveManager {
     await Hive.openBox<dynamic>(HiveBoxes.userProfile);
     await Hive.openBox<dynamic>(HiveBoxes.myCards);
     await Hive.openBox<dynamic>(HiveBoxes.walletInfo);
+    await Hive.openBox<dynamic>(HiveBoxes.homeSections);
+    await Hive.openBox<dynamic>(HiveBoxes.headerBanners);
+    await Hive.openBox<dynamic>(HiveBoxes.featuredStores);
     _initialized = true;
   }
 

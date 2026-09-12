@@ -55,4 +55,25 @@ abstract class HiveKeys {
   /// round-trips back through the same parsing the server response uses, with
   /// proper `String`-keyed maps.
   static const String walletInfoPayload = 'wallet_info_payload';
+
+  /// Key inside [HiveBoxes.homeSections] holding the JSON-encoded `String`
+  /// payload of the home feed — the raw server `data` object
+  /// (`{'sections': [...]}`). Stored as a JSON string so it round-trips back
+  /// through the same parsing the server response uses, with proper
+  /// `String`-keyed maps.
+  static const String homeSectionsPayload = 'home_sections_payload';
+
+  /// Key inside [HiveBoxes.headerBanners] holding the JSON-encoded `String`
+  /// payload of the header banners — the raw server `data` object
+  /// (`{'banners': [...]}`). Stored as a JSON string so it round-trips back
+  /// through the same parsing the server response uses, with proper
+  /// `String`-keyed maps.
+  static const String headerBannersPayload = 'header_banners_payload';
+
+  /// Key inside [HiveBoxes.featuredStores] holding the JSON-encoded `String`
+  /// payload of the first featured-stores page — the raw server `data` object
+  /// (`{'pagination': {...}, 'items': [...]}`). Stored as a JSON string so it
+  /// round-trips back through the same parsing the server response uses, with
+  /// proper `String`-keyed maps.
+  static const String featuredStoresPayload = 'featured_stores_payload';
 }

@@ -44,4 +44,22 @@ abstract class HiveBoxes {
   /// balance and top-up limits when the server is unreachable. It is refreshed
   /// from the server on every successful wallet fetch.
   static const String walletInfo = 'wallet_info_box';
+
+  /// Box storing the cached home feed payload (the `sections` list from
+  /// `GET /api/v1/home-sections`), so the home screen can render its last-seen
+  /// content when the server is unreachable. It is refreshed from the server on
+  /// every successful feed fetch.
+  static const String homeSections = 'home_sections_box';
+
+  /// Box storing the cached home header banners payload (the `banners` list from
+  /// `GET /api/v1/banners`), so the home top-banner carousel can render from
+  /// local storage when the server is unreachable. It is refreshed from the
+  /// server on every successful banners fetch.
+  static const String headerBanners = 'header_banners_box';
+
+  /// Box storing the cached first page of the featured stores list (from
+  /// `GET /stores/featured`), so the home "Best brands" carousel can render from
+  /// local storage when the server is unreachable. It is refreshed from the
+  /// server on every successful first-page fetch.
+  static const String featuredStores = 'featured_stores_box';
 }
