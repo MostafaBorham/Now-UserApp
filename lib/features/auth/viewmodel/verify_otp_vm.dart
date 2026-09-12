@@ -46,7 +46,13 @@ class VerifyOtpViewModel extends StateNotifier<AsyncValue<UserModel?>> {
         // the user: it refreshes the session type (so anything watching it sees
         // the new value) and, off the guest→user change, fires every
         // session-dependent request (getMyOrders, …) on our behalf.
-        await _ref.read(authSessionProvider.notifier).resolveSession();
+        //
+        // `awaitDependencies: true`: hold the OTP screen (the button stays in
+        // its loading state) until every dependency has settled, so the user is
+        // never dropped into the app before its data is ready.
+        await _ref
+            .read(authSessionProvider.notifier)
+            .resolveSession(awaitDependencies: true);
 
         if (!mounted) return;
 
