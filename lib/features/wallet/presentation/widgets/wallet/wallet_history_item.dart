@@ -125,8 +125,7 @@ class WalletHistoryItem extends StatelessWidget {
                   ),
                 ),
               ),
-              // Amount — the server-formatted `amount_label`, shown at its
-              // natural width (never scaled).
+
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: NewPriceWidget(
