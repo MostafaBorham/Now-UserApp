@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/features/welcome/viewmodel/guest_token_vm.d
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/or_divider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_gradient_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_gradient_app_button.dart';
@@ -31,7 +31,7 @@ class OnBoardingContentView extends ConsumerWidget {
           }
         },
         error: (Object error, StackTrace stackTrace) =>
-            ErrorSnackBar.show(context, error.toString()),
+            AppToast.showError(context, error.toString()),
       );
     });
     final bool isGuestTokenLoading = ref

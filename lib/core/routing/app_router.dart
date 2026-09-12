@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_route_observer.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
@@ -75,6 +76,7 @@ abstract class AppRouter {
 
   static final GoRouter router = GoRouter(
     initialLocation: '/',
+    observers: <NavigatorObserver>[AppToastRouteObserver()],
     errorBuilder: (context, state) => const SizedBox.shrink(),
     routes: <RouteBase>[
       GoRoute(

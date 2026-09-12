@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
@@ -66,10 +66,10 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     final List<CardPaymentModel>? cards =
         ref.read(getMyCardsProvider).valueOrNull;
     if (cards == null || cards.isEmpty) {
-      // The snackbar lives on the screen's ScaffoldMessenger, so it survives the
-      // sheet closing.
-      ErrorSnackBar.show(context, LangKeys.selectPaymentMethodFirstKey.tr());
-      context.pop();
+      // No saved card to charge: surface the error and keep the sheet open so the
+      // customer can act on it. The toast floats on the root overlay, above the
+      // sheet.
+      AppToast.showError(context, LangKeys.selectPaymentMethodFirstKey.tr());
       return;
     }
 
@@ -82,10 +82,9 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     if (!mounted) return;
 
     if (error != null) {
-      // Surface the error and close the sheet either way (the snackbar lives on
-      // the screen's ScaffoldMessenger, so it survives the sheet closing).
-      ErrorSnackBar.show(context, error);
-      context.pop();
+      // Surface the error and keep the sheet open so the customer can retry; the
+      // toast floats on the root overlay, above the sheet.
+      AppToast.showError(context, error);
       return;
     }
 

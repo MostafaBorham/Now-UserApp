@@ -4,8 +4,10 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
 /// One-shot action: top the wallet up with an amount via a payment method.
 ///
@@ -57,7 +59,7 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
 
     state = const AsyncValue<void>.loading();
 
-    final Either<Failure, void> result = await _repo.topUpWallet(
+    final Either<Failure, WalletModel> result = await _repo.topUpWallet(
       amount: amount,
       paymentMethodId: paymentMethodId,
       idempotencyKey: _idempotencyKey.forRequest('$amount|$paymentMethodId'),
@@ -70,9 +72,11 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
         state = AsyncValue<void>.error(failure.message, StackTrace.current);
         return failure.message;
       },
-      (_) {
+      (WalletModel wallet) {
         // A genuine repeat top-up must not replay this one's result.
         _idempotencyKey.markConsumed();
+        // Publish the server's fresh wallet so the balance updates immediately.
+        _ref.read(getWalletInfoProvider.notifier).setWallet(wallet);
         state = const AsyncValue<void>.data(null);
         return null;
       },

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -89,7 +89,7 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
             PaginationStatus<StoreModel>.from(state).nextPageError,
       ),
       (String? previous, String? next) {
-        if (next != null && mounted) ErrorSnackBar.show(context, next);
+        if (next != null && mounted) AppToast.showError(context, next);
       },
     );
 

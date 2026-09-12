@@ -69,6 +69,14 @@ class AppColorScheme {
   // order-status palette above, still reached through [BuildContext.colors].
   Color get red400 => const Color(0xffB91828);
 
+  // Figma `Colors/Red/300 - Main`. The accent red of the app-wide toast
+  // ([AppToast]) — its side borders and the error icon container. Distinct from
+  // both the Material [error] slot and [red400] (the darker destructive red),
+  // and with no matching Material [ColorScheme] slot, so it lives here as a
+  // constant like the order-status palette, still reached through
+  // [BuildContext.colors] like every other color.
+  Color get red300Main => const Color(0xffE32B3D);
+
   // Wallet pending-transaction label color. The chip background and amount reuse
   // the order-status [orange100]/[orange500] above; only this dark brown-orange
   // has no close existing color, so it's the sole new constant — like the

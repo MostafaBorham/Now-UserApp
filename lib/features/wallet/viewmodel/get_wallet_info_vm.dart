@@ -3,16 +3,18 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart';
 
-/// Single task: fetch the wallet balance, currency and top-up limits.
+/// Single task: hold the wallet balance, currency and top-up limits, shared
+/// across the app.
 ///
-/// `autoDispose`: the wallet screen is the only consumer, so the state is torn
-/// down when it leaves. The fetch fires as soon as the provider is first
-/// read/watched — screens only `ref.watch(getWalletInfoProvider)` and render
-/// the [AsyncValue]. Retry with
+/// Deliberately **not** `autoDispose` and it does **not** fetch on creation: it
+/// is the session orchestrator that fires [getWalletInfo] once when a user
+/// session resolves (see `AuthSessionViewModel`) and invalidates it on logout,
+/// exactly like the other user dependencies. Screens only
+/// `ref.watch(getWalletInfoProvider)` and render the [AsyncValue]; retry with
 /// `ref.read(getWalletInfoProvider.notifier).getWalletInfo()`.
-final getWalletInfoProvider = StateNotifierProvider.autoDispose<
-    GetWalletInfoViewModel, AsyncValue<WalletModel>>(
-  (Ref ref) => GetWalletInfoViewModel()..getWalletInfo(),
+final getWalletInfoProvider = StateNotifierProvider<GetWalletInfoViewModel,
+    AsyncValue<WalletModel>>(
+  (Ref ref) => GetWalletInfoViewModel(),
 );
 
 class GetWalletInfoViewModel extends StateNotifier<AsyncValue<WalletModel>> {
@@ -33,6 +35,11 @@ class GetWalletInfoViewModel extends StateNotifier<AsyncValue<WalletModel>> {
       (WalletModel wallet) => AsyncValue.data(wallet),
     );
   }
+
+  /// Publishes a [wallet] already resolved elsewhere (e.g. the fresh copy a
+  /// top-up returns) so the shared state reflects the new balance without a
+  /// round-trip.
+  void setWallet(WalletModel wallet) => state = AsyncValue.data(wallet);
 
   @override
   void dispose() {

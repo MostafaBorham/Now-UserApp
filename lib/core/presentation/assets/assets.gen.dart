@@ -428,6 +428,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get englishAnimatedSeeAll =>
       const SvgGenImage('assets/media/images/svg/english-animated-see-all.svg');
 
+  /// File path: assets/media/images/svg/error-toast-icon.svg
+  SvgGenImage get errorToastIcon =>
+      const SvgGenImage('assets/media/images/svg/error-toast-icon.svg');
+
   /// File path: assets/media/images/svg/faq.svg
   SvgGenImage get faq => const SvgGenImage('assets/media/images/svg/faq.svg');
 
@@ -742,6 +746,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get stepDone =>
       const SvgGenImage('assets/media/images/svg/step_done.svg');
 
+  /// File path: assets/media/images/svg/success-toast-icon.svg
+  SvgGenImage get successToastIcon =>
+      const SvgGenImage('assets/media/images/svg/success-toast-icon.svg');
+
   /// File path: assets/media/images/svg/support-call-icon.svg
   SvgGenImage get supportCallIcon =>
       const SvgGenImage('assets/media/images/svg/support-call-icon.svg');
@@ -866,6 +874,7 @@ class $AssetsMediaImagesSvgGen {
     emptyFavourite,
     englishAnimatedQuickDelivery,
     englishAnimatedSeeAll,
+    errorToastIcon,
     faq,
     favouriteIcon,
     filledAccountIcon,
@@ -945,6 +954,7 @@ class $AssetsMediaImagesSvgGen {
     starsBackground,
     stc,
     stepDone,
+    successToastIcon,
     supportCallIcon,
     support,
     tickCircle,

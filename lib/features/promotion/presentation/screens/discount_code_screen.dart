@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/copy_to_clipboard.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
@@ -65,7 +65,7 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
   void _onLoadMoreStateChanged() {
     final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
     if (loadMoreState.hasError && mounted) {
-      ErrorSnackBar.show(context, loadMoreState.error.toString());
+      AppToast.showError(context, loadMoreState.error.toString());
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
@@ -228,7 +228,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       context.pop();
     } else {
       final Object? error = ref.read(updateProfileProvider).error;
-      ErrorSnackBar.show(
+      AppToast.showError(
         context,
         error?.toString() ?? LangKeys.serverConnectionFailedKey,
       );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -48,6 +48,7 @@ class PaginatedView<T> extends ConsumerWidget {
     this.emptyBuilder,
     this.nextPageThreshold = 200,
     this.scrollController,
+    this.isFirstPageErrorScrollable = true,
   }) : assert(
           placeholderBuilder != null || firstPageLoadingBuilder != null,
           'A first-page loading state is required: give a placeholderBuilder, '
@@ -106,6 +107,13 @@ class PaginatedView<T> extends ConsumerWidget {
   /// and first-page-error states scroll on their own and ignore it.
   final ScrollController? scrollController;
 
+  /// Whether the first-page-error widget is scrollable. Defaults to true so it
+  /// stays a constant size inside a scrollable viewport that changes (a tab
+  /// view, a `NestedScrollView` body). Set false when the error simply fills a
+  /// fixed slot on the page and should scale to fit it instead of scrolling —
+  /// see [ServerConnectionErrorWidget.isScrollable].
+  final bool isFirstPageErrorScrollable;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Surface a next-page failure as a snackbar the moment state turns to error
@@ -125,7 +133,7 @@ class PaginatedView<T> extends ConsumerWidget {
           PaginationStatus<T>.from(next).nextPageError;
       if (nextPageError == null) return;
 
-      ErrorSnackBar.show(context, nextPageError);
+      AppToast.showError(context, nextPageError);
     });
 
     final PaginationStatus<T> status =
@@ -137,7 +145,7 @@ class PaginatedView<T> extends ConsumerWidget {
       return ServerConnectionErrorWidget(
         message: firstPageError,
         onRetry: onRefresh,
-        isScrollable: true,
+        isScrollable: isFirstPageErrorScrollable,
       );
     }
     if (!status.hasLoadedPage) {

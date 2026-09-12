@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/success_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_request_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_response_model.dart';
@@ -67,7 +66,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     if (!mounted) return;
     final String message = error.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ErrorSnackBar.show(context, message);
+      if (mounted) AppToast.showError(context, message);
     });
   }
 
@@ -78,7 +77,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
   Future<void> _onSubmit() async {
     final String description = _descriptionController.text.trim();
     if (description.isEmpty) {
-      ErrorSnackBar.show(context, LangKeys.complaintDescriptionRequiredKey.tr());
+      AppToast.showError(context, LangKeys.complaintDescriptionRequiredKey.tr());
       return;
     }
 
@@ -130,7 +129,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
         next.whenOrNull(
           data: (ComplaintResponseModel? ticket) {
             if (ticket == null || !mounted) return;
-            SuccessSnackBar.show(
+            AppToast.showSuccess(
               context,
               LangKeys.complaintSubmittedSuccessfullyKey.tr(),
             );

@@ -8,7 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
@@ -101,7 +101,7 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
     setState(() => _isResolving = false);
 
     result.fold(
-      (Failure failure) => ErrorSnackBar.show(context, failure.message),
+      (Failure failure) => AppToast.showError(context, failure.message),
       (LatLng location) => context.pop(location),
     );
   }

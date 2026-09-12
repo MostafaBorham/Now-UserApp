@@ -6,10 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
-import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
-import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transaction_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_balance_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/my_cards_view.dart';
@@ -17,7 +14,6 @@ import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_card_widget.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_transactions_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
-import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
   const WalletScreen({super.key});
@@ -58,34 +54,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     final double screenHeight = MediaQuery.sizeOf(context).height;
     final Size screenSize = MediaQuery.sizeOf(context);
 
+    // The balance card and the three action buttons stay on screen in every
+    // state of the wallet-info fetch; only the balance shown in the card follows
+    // the provider — it arrives once the state turns to data (null until then).
+    // The transaction history below owns its own loading / error / data states
+    // independently, inside WalletTransactionsView.
     final AsyncValue<WalletModel> infoState =
         ref.watch(getWalletInfoProvider);
-    final PaginationStatus<WalletTransactionModel> transactionsStatus =
-        PaginationStatus<WalletTransactionModel>.from(
-      ref.watch(getWalletTransactionsProvider),
-    );
-
-    // Either failed fetch — the balance or the first page of history — takes
-    // over the whole screen with the shared error widget; retry reloads both.
-    final bool infoErrored = infoState.hasError && !infoState.isLoading;
-    final String? errorMessage = infoErrored
-        ? infoState.error.toString()
-        : transactionsStatus.firstPageError;
-    if (errorMessage != null) {
-      return Scaffold(
-        body: AppWavedView(
-          appBarTitle: LangKeys.walletKey.tr(),
-          canPop: context.canPop(),
-          body: ServerConnectionErrorWidget(
-            message: errorMessage,
-            onRetry: () {
-              ref.read(getWalletInfoProvider.notifier).getWalletInfo();
-              ref.read(getWalletTransactionsProvider.notifier).loadFirstPage();
-            },
-          ),
-        ),
-      );
-    }
 
     return Scaffold(
       body: AppWavedView(
@@ -99,6 +74,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
               aspectRatio: 2,
               child: WalletCardWidget(
                 balance: infoState.valueOrNull?.balance,
+                onReload: infoState.hasError && !infoState.isLoading
+                    ? () =>
+                        ref.read(getWalletInfoProvider.notifier).getWalletInfo()
+                    : null,
               ),
             ),
             Row(

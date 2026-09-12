@@ -270,6 +270,8 @@
   "resend": "إعادة الإرسال",
   "resetFilter": "مسح الفلتر",
   "retry": "إعادة المحاولة",
+  "errorTitle": "خطأ",
+  "successTitle": "تم بنجاح",
   "returnToHomePage": "العودة إلى الصفحة الرئيسية",
   "rewardPoints": "نقاط المكافأة",
   "sampleBrandCategory": "شوكولاتة داكنة",

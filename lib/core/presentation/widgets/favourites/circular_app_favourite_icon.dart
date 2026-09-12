@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/product_favourite_vm.dart';
@@ -144,7 +144,7 @@ class _CircularAppFavouriteIconState
         setState(() => _isFavourite = isFavourite);
         widget.onFavouriteChanged?.call(isFavourite);
       },
-      error: (Object error, _) => ErrorSnackBar.show(context, error.toString()),
+      error: (Object error, _) => AppToast.showError(context, error.toString()),
     );
   }
 

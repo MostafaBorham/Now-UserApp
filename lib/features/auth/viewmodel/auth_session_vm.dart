@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
 /// Where the app's session-dependent dependencies stand.
 ///
@@ -82,16 +83,25 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// cache read failure collapses to [SessionType.guest] so callers never see
   /// an error state.
   ///
-  /// Returns as soon as the session type is settled and any load has been
-  /// *kicked off* — it does not wait for the dependencies to finish, so a login
-  /// is never blocked on them. Progress is published through
-  /// [AuthSessionState.dependenciesStatus] for whoever is watching (the splash).
-  Future<void> resolveSession() async {
+  /// By default returns as soon as the session type is settled and any load has
+  /// been *kicked off* — it does not wait for the dependencies to finish, so the
+  /// splash (which watches [AuthSessionState.dependenciesStatus] instead) is
+  /// never blocked on the call itself.
+  ///
+  /// Pass [awaitDependencies] `true` to instead await the whole dependency load
+  /// before returning — the login flow uses this so it does not leave the OTP
+  /// screen until every session-dependent request has settled. For a guest (no
+  /// dependencies) it returns immediately either way.
+  Future<void> resolveSession({bool awaitDependencies = false}) async {
     final result = await _repo.getSessionType();
 
     if (!mounted) return;
 
-    _apply(result.fold((Failure _) => SessionType.guest, (SessionType t) => t));
+    final Future<void> load = _apply(
+      result.fold((Failure _) => SessionType.guest, (SessionType t) => t),
+    );
+
+    if (awaitDependencies) await load;
   }
 
   /// Applies [next] and runs the matching side effect:
@@ -102,7 +112,10 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// * [SessionType.guest] : drop the previous user's data (only if we *were* a
   ///   user) and settle straight to [AppDependenciesStatus.ready] — a guest has
   ///   nothing to wait for.
-  void _apply(SessionType next) {
+  ///
+  /// Returns the load future so [resolveSession] can optionally await it; the
+  /// guest branch has nothing to load and returns an already-completed future.
+  Future<void> _apply(SessionType next) {
     final SessionType previous = state.sessionType;
 
     switch (next) {
@@ -111,7 +124,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
           sessionType: next,
           dependenciesStatus: AppDependenciesStatus.loading,
         );
-        _loadUserDependencies();
+        return _loadUserDependencies();
       case SessionType.guest:
         if (previous == SessionType.user) {
           _disposeUserDependencies();
@@ -120,6 +133,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
           sessionType: next,
           dependenciesStatus: AppDependenciesStatus.ready,
         );
+        return Future<void>.value();
     }
   }
 
@@ -131,6 +145,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(getCouponsProvider.notifier).getCoupons(),
       _ref.read(getProfileProvider.notifier).getProfile(),
       _ref.read(getMyCardsProvider.notifier).getMyCards(),
+      _ref.read(getWalletInfoProvider.notifier).getWalletInfo(),
     ]);
 
     if (!mounted) return;
@@ -151,6 +166,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     _ref.invalidate(getCouponsProvider);
     _ref.invalidate(getProfileProvider);
     _ref.invalidate(getMyCardsProvider);
+    _ref.invalidate(getWalletInfoProvider);
     // Holds its own state seeded once from the cards list, so it must be dropped
     // explicitly — otherwise the next user would inherit this user's default.
     _ref.invalidate(defaultPaymentCardProvider);

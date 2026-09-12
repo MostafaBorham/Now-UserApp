@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/my_cards_database_service.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/wallet_info_database_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/remote/api/wallet_api_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
@@ -23,6 +24,8 @@ class WalletRepo {
   final WalletApiService _walletApiService = WalletApiService();
   final MyCardsDatabaseService _myCardsDatabaseService =
       MyCardsDatabaseService();
+  final WalletInfoDatabaseService _walletInfoDatabaseService =
+      WalletInfoDatabaseService();
 
   /// The key inside the transactions `data` payload that carries the list.
   static const String _transactionsListKey = 'transactions';
@@ -37,11 +40,56 @@ class WalletRepo {
   /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _walletApiService.cancelRequests();
 
-  Future<Either<Failure, WalletModel>> getWalletInfo() {
-    return _guard(
+  /// The customer's wallet, server-first with a local (Hive) fallback.
+  ///
+  /// The server is always tried first: a successful fetch refreshes the cache so
+  /// the local copy tracks the server, and when the server is unreachable the
+  /// last cached copy is served instead — the original failure only surfaces
+  /// when nothing has been cached yet (or the cached copy can't be read).
+  Future<Either<Failure, WalletModel>> getWalletInfo() async {
+    // Fetch the raw server `data` object so it can be both cached verbatim and
+    // parsed — the cache round-trips through the same parsing the server uses.
+    final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.getWalletInfo(),
-      (data) => WalletModel.fromJson(data),
+      (Map<String, dynamic> data) => data,
     );
+
+    return serverResult.fold(
+      (Failure serverFailure) => _readWalletInfoFromCache(serverFailure),
+      (Map<String, dynamic> data) async {
+        await _cacheWalletInfo(data);
+        return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+      },
+    );
+  }
+
+  /// Persists the raw wallet [data] payload verbatim. Best-effort: a cache write
+  /// failure is a side effect, not part of the result, so it is swallowed.
+  Future<void> _cacheWalletInfo(Map<String, dynamic> data) async {
+    try {
+      await _walletInfoDatabaseService.saveWalletInfo(jsonEncode(data));
+    } catch (_) {
+      // Intentionally ignored — caching must never break a successful fetch.
+    }
+  }
+
+  /// Falls back to the cached wallet, surfacing [serverFailure] only when there
+  /// is nothing cached (or the cached copy can't be read).
+  Future<Either<Failure, WalletModel>> _readWalletInfoFromCache(
+    Failure serverFailure,
+  ) async {
+    try {
+      final String? cached = _walletInfoDatabaseService.getWalletInfo();
+      if (cached == null) {
+        return Left<Failure, WalletModel>(serverFailure);
+      }
+
+      final Map<String, dynamic> data =
+          jsonDecode(cached) as Map<String, dynamic>;
+      return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+    } catch (_) {
+      return Left<Failure, WalletModel>(serverFailure);
+    }
   }
 
   /// The customer's saved cards, server-first with a local (Hive) fallback.
@@ -119,21 +167,36 @@ class WalletRepo {
     );
   }
 
-  /// Tops the wallet up with [amount] via [paymentMethodId]. The response
-  /// carries only a success flag and message (no data payload), so `Right`
-  /// holds nothing — callers only need success vs. failure. [idempotencyKey]
-  /// lets the server dedupe retries of the same top-up.
-  Future<Either<Failure, void>> topUpWallet({
+  /// Tops the wallet up with [amount] via [paymentMethodId] and returns the
+  /// server's fresh [WalletModel], parsed from the response `data` payload.
+  /// [idempotencyKey] lets the server dedupe retries of the same top-up.
+  ///
+  /// Server-first, cache-second: on success the same raw `data` that the model
+  /// is parsed from also overwrites the wallet-info (Hive) cache, so the local
+  /// copy tracks the new balance without a follow-up [getWalletInfo] round-trip.
+  /// A failure surfaces as-is — a write is never satisfied from stale cache.
+  Future<Either<Failure, WalletModel>> topUpWallet({
     required int amount,
     required int paymentMethodId,
     required String idempotencyKey,
-  }) {
-    return _action(
+  }) async {
+    // Fetch the raw server `data` object so it can be both cached verbatim and
+    // parsed — the cache round-trips through the same parsing the server uses.
+    final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.topUpWallet(
         amount: amount,
         paymentMethodId: paymentMethodId,
         idempotencyKey: idempotencyKey,
       ),
+      (Map<String, dynamic> data) => data,
+    );
+
+    return serverResult.fold(
+      (Failure serverFailure) => Left<Failure, WalletModel>(serverFailure),
+      (Map<String, dynamic> data) async {
+        await _cacheWalletInfo(data);
+        return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+      },
     );
   }
 

@@ -38,4 +38,10 @@ abstract class HiveBoxes {
   /// local storage when the server is unreachable. It is refreshed from the
   /// server on every successful cards fetch.
   static const String myCards = 'my_cards_box';
+
+  /// Box storing the signed-in user's cached wallet payload (from
+  /// `GET /api/v1/wallet`), so the wallet screen can render the last-known
+  /// balance and top-up limits when the server is unreachable. It is refreshed
+  /// from the server on every successful wallet fetch.
+  static const String walletInfo = 'wallet_info_box';
 }

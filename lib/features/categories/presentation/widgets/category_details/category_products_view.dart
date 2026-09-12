@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -49,7 +49,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   void _onLoadMoreStateChanged() {
     final AsyncValue<bool>? loadMoreState = _viewModel?.loadMoreState.value;
     if (loadMoreState != null && loadMoreState.hasError && mounted) {
-      ErrorSnackBar.show(context, loadMoreState.error.toString());
+      AppToast.showError(context, loadMoreState.error.toString());
     }
   }
 

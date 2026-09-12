@@ -8,12 +8,17 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class WalletCardWidget extends StatelessWidget {
-  const WalletCardWidget({super.key, this.balance});
+  const WalletCardWidget({super.key, this.balance, this.onReload});
 
   /// The wallet balance to show in the credit pill. The pill renders as normal
   /// while this is null (loading) — only the balance text stays hidden until the
   /// value arrives.
   final double? balance;
+
+  /// Called to refetch the wallet info. Supplied only when the fetch has failed:
+  /// the pill then shows a tappable refresh icon in place of the balance. Null
+  /// in every other state (loading / data).
+  final VoidCallback? onReload;
 
   @override
   Widget build(BuildContext context) {
@@ -65,19 +70,37 @@ class WalletCardWidget extends StatelessWidget {
                             alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(horizontal: 12),
                             decoration: pillDecoration,
-                            // The balance is centered and scaled down to fit the
-                            // fixed pill instead of overflowing it. While loading
-                            // the pill renders empty.
-                            child: balance == null
-                                ? null
-                                : FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      '${formatDouble(balance)}',
-                                      style: AppTextStyles.style20SemiBold
-                                          .copyWith(color: colors.primary700),
+                            // On error the pill holds a tappable refresh icon;
+                            // otherwise the balance, centered and scaled down to
+                            // fit instead of overflowing. While loading (no error,
+                            // no value yet) the pill renders empty.
+                            child: onReload != null
+                                ? GestureDetector(
+                                    onTap: onReload,
+                                    behavior: HitTestBehavior.opaque,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Assets.media.images.svg.retryIcon
+                                          .svg(
+                                        colorFilter: ColorFilter.mode(
+                                          colors.red400,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  )
+                                : balance == null
+                                    ? null
+                                    : FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          '${formatDouble(balance)}',
+                                          style: AppTextStyles.style20SemiBold
+                                              .copyWith(
+                                            color: colors.primary700,
+                                          ),
+                                        ),
+                                      ),
                           ),
                         ),
                       ),
