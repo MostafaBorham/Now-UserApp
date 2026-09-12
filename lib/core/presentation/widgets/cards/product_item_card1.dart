@@ -9,7 +9,6 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
@@ -56,13 +55,10 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
               spacing: 5,
               children: [
                 Expanded(
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomEnd,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                        ).copyWith(top: 12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                    ).copyWith(top: 12),
                         child: Stack(
                           children: [
                             Column(
@@ -145,21 +141,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                           ],
                         ),
                       ),
-                      PositionedDirectional(
-                        bottom: 10,
-                        end: 2,
-                        child: CircularBrandLogo(
-                          elevation: 0,
-                          radius: con.maxWidth * 0.1,
-                          backgroundColor: colors.white,
-                          logoUrl:
-                              widget.product?.vendor?.logoUrl ??
-                              'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
                 Padding(
                   padding: const EdgeInsets.all(12.0).copyWith(top: 0),
                   child: Column(
@@ -181,29 +163,28 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                         alignment: AlignmentDirectional.centerStart,
                         children: [
                           SizedBox(
-                            width: con.maxWidth*0.55,
-                            child: FittedBox(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                textDirection: TextDirection.ltr,
-                                spacing: 2,
-                                children: [
-                                    OldPriceWidget(
-                                      color: colors.neutral400,
-                                      price:
-                                          widget.product?.comparePrice
-                                              ?.toStringAsFixed(0) ??
-                                          '10',
-                                      size: con.maxWidth * 0.04,
-                                    ),
-                                  NewPriceWidget(
-                                    color: colors.black,
-                                    price:
-                                        '${widget.product?.price}',
-                                    size: con.maxWidth * 0.08,
-                                  ),
-                                ],
-                              ),
+                            width: con.maxWidth * 0.55,
+                            child: Wrap(
+                              spacing: 2,
+                              runSpacing: 2,
+                              alignment: WrapAlignment.start,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                NewPriceWidget(
+                                  color: colors.black,
+                                  price: '${widget.product?.price}',
+                                  size: con.maxWidth * 0.1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                OldPriceWidget(
+                                  color: colors.neutral400,
+                                  price:
+                                      widget.product?.comparePrice
+                                          ?.toStringAsFixed(0) ??
+                                      '10',
+                                  size: con.maxWidth * 0.07,
+                                ),
+                              ],
                             ),
                           ),
                           Align(

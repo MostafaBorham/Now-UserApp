@@ -125,7 +125,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                     AppShimmer(
                       child: LayoutBuilder(
                         builder: (context, con) => Align(
-                          alignment: AlignmentDirectional.centerStart,
+                          alignment: AlignmentDirectional.center,
                           child: Container(
                             width: con.maxWidth * 0.45,
                             height: con.maxWidth * 0.14,
