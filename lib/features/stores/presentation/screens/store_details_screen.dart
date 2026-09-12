@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
@@ -86,7 +88,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             width: double.infinity,
                             child: Column(
-                              spacing: 5,
+                              spacing: 20,
                               children: [
                                 AppSlider(
                                   sliderItems: (store.banners ?? const [])
@@ -171,7 +173,19 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
         loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
-
+        // Tapping the cart drops every route pushed on top of the main screen
+        // (store details and anything in between) and switches the main screen's
+        // bottom nav to the cart tab (index 2) instead of pushing a new cart
+        // route on top of the store details stack.
+        onCartTap: () {
+          ref.read(mainTabIndexProvider.notifier).state = 2;
+          // Capture the router once: after the first pop this widget's context is
+          // defunct, so drive the loop off the router instance, not context.
+          final GoRouter router = GoRouter.of(context);
+          while (router.canPop()) {
+            router.pop();
+          }
+        },
         bodyPadding: EdgeInsets.zero,
       ),
     );

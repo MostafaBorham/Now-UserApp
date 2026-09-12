@@ -31,10 +31,9 @@ class StoreDetailsProductsView extends ConsumerWidget {
   static const SliverGridDelegate _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 18,
-        mainAxisSpacing: 16,
-        // Design card: 170 x 280.
-        childAspectRatio: 170 / 280,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.6,
       );
 
   @override
