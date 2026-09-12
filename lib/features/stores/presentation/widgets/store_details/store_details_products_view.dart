@@ -13,10 +13,11 @@ import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_categor
 ///
 /// Each filter is its own [getStoreCategoryProductsProvider] family member, so
 /// switching tabs shows that filter's own products and pages them independently.
-/// The paging behaviour (next page on scroll, pull-to-refresh, loading, empty
-/// and error states) lives in [PaginatedView] and
-/// [GetStoreCategoryProductsViewModel]; the first page loads automatically the
-/// first time this filter's provider is watched.
+/// The paging behaviour (next page on scroll, loading, empty and error states)
+/// lives in [PaginatedView] and [GetStoreCategoryProductsViewModel]; the first
+/// page loads automatically the first time this filter's provider is watched.
+/// Pull-to-refresh is disabled here — the store details screen owns the top-of-
+/// page pull that reloads the whole store.
 class StoreDetailsProductsView extends ConsumerWidget {
   const StoreDetailsProductsView({
     super.key,
@@ -51,6 +52,11 @@ class StoreDetailsProductsView extends ConsumerWidget {
       provider: getStoreCategoryProductsProvider(args),
       onRefresh: viewModel.loadFirstPage,
       onLoadNextPage: viewModel.loadNextPage,
+      // The store details screen owns pull-to-refresh: a pull at the top of the
+      // page reloads the store via getStoreDetails. The product grid under the
+      // tabs paginates on scroll but has no refresh of its own, so the two
+      // gestures don't fight inside the NestedScrollView.
+      enablePullToRefresh: false,
       layout: const PaginatedGridLayout(
         gridDelegate: _gridDelegate,
         padding: EdgeInsets.symmetric(vertical: 5),

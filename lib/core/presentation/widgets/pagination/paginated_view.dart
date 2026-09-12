@@ -49,6 +49,7 @@ class PaginatedView<T> extends ConsumerWidget {
     this.nextPageThreshold = 200,
     this.scrollController,
     this.isFirstPageErrorScrollable = true,
+    this.enablePullToRefresh = true,
   }) : assert(
           placeholderBuilder != null || firstPageLoadingBuilder != null,
           'A first-page loading state is required: give a placeholderBuilder, '
@@ -114,6 +115,13 @@ class PaginatedView<T> extends ConsumerWidget {
   /// see [ServerConnectionErrorWidget.isScrollable].
   final bool isFirstPageErrorScrollable;
 
+  /// Whether the loaded list gets its own pull-to-refresh gesture. Defaults to
+  /// true. Set false when the list lives under another scrollable that owns the
+  /// refresh (e.g. a store details header pull that reloads the whole page), so
+  /// the two gestures don't fight. [onRefresh] is still used for the first-page
+  /// error retry regardless.
+  final bool enablePullToRefresh;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Surface a next-page failure as a snackbar the moment state turns to error
@@ -174,36 +182,37 @@ class PaginatedView<T> extends ConsumerWidget {
             ? nextPagePlaceholdersCount
             : 0;
 
-    return AppRefreshIndicator(
-      onRefresh: onRefresh,
-      child: status.isEmpty
-          ? (emptyBuilder?.call(context) ??
-              const NoResultsWidget(isScrollable: true))
-          : PaginationScrollListener(
-              canLoadNextPage: status.canRequestNextPage,
-              threshold: nextPageThreshold,
-              onLoadNextPage: onLoadNextPage,
-              // A failed next page leaves the list untouched — no footer, no
-              // retry affordance: the snackbar reports it and reaching the end
-              // again asks for the same page again.
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: <Widget>[
-                  layout.buildSliver(
-                    itemCount: status.items.length + trailingPlaceholders,
-                    itemBuilder: (BuildContext context, int index) {
-                      // Past the loaded items: one of the next-page skeletons,
-                      // which only exist when there is a builder for them.
-                      if (index >= status.items.length) {
-                        return placeholderBuilder!(context);
-                      }
-                      return itemBuilder(context, status.items[index], index);
-                    },
-                  ),
-                ],
-              ),
+    final Widget content = status.isEmpty
+        ? (emptyBuilder?.call(context) ??
+            const NoResultsWidget(isScrollable: true))
+        : PaginationScrollListener(
+            canLoadNextPage: status.canRequestNextPage,
+            threshold: nextPageThreshold,
+            onLoadNextPage: onLoadNextPage,
+            // A failed next page leaves the list untouched — no footer, no
+            // retry affordance: the snackbar reports it and reaching the end
+            // again asks for the same page again.
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: <Widget>[
+                layout.buildSliver(
+                  itemCount: status.items.length + trailingPlaceholders,
+                  itemBuilder: (BuildContext context, int index) {
+                    // Past the loaded items: one of the next-page skeletons,
+                    // which only exist when there is a builder for them.
+                    if (index >= status.items.length) {
+                      return placeholderBuilder!(context);
+                    }
+                    return itemBuilder(context, status.items[index], index);
+                  },
+                ),
+              ],
             ),
-    );
+          );
+
+    if (!enablePullToRefresh) return content;
+
+    return AppRefreshIndicator(onRefresh: onRefresh, child: content);
   }
 
 }
