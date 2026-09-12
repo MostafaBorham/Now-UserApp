@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
@@ -208,7 +208,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       error: (Object error, StackTrace _) {
         if (!mounted) return;
 
-        ErrorSnackBar.show(context, error.toString());
+        AppToast.showError(context, error.toString());
 
         // A failure leaves the cart untouched, so fall back to the last
         // confirmed quantity. Same rule as a success: with no quantity left to

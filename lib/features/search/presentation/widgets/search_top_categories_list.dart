@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -42,7 +42,7 @@ class SearchTopCategoriesList extends ConsumerWidget {
       if (previous?.isLoading != true) return;
       final String? error = PaginationStatus<CategoryModel>.from(next)
           .nextPageError;
-      if (error != null) ErrorSnackBar.show(context, error);
+      if (error != null) AppToast.showError(context, error);
     });
 
     final PaginationStatus<CategoryModel> status =

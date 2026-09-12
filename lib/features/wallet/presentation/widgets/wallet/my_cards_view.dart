@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
 import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
@@ -63,22 +63,21 @@ class MyCardsView extends ConsumerWidget {
       AsyncValue<void> next,
     ) {
       if (next.hasError && !next.isLoading) {
-        ErrorSnackBar.show(context, next.error.toString());
+        AppToast.showError(context, next.error.toString());
       }
     });
 
     // Set-default runs under a blocking overlay (below); on failure the list is
-    // left untouched, so the sheet is dismissed and the error surfaced on the
-    // wallet screen behind it. Guarding on "was loading" keeps the initial data
-    // state from firing.
+    // left untouched, so surface the error and keep the sheet open (the toast
+    // floats on the root overlay, above it). Guarding on "was loading" keeps the
+    // initial data state from firing.
     ref.listen<AsyncValue<CardPaymentModel?>>(defaultPaymentCardProvider, (
       AsyncValue<CardPaymentModel?>? previous,
       AsyncValue<CardPaymentModel?> next,
     ) {
       if (previous?.isLoading != true) return;
       if (next.hasError && !next.isLoading) {
-        ErrorSnackBar.show(context, next.error.toString());
-        context.pop();
+        AppToast.showError(context, next.error.toString());
       }
     });
 

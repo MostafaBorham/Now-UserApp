@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -119,7 +119,7 @@ class _HomeDeliveryAddressViewState
 
     if (placemark == null) {
       setState(() => _resolvingPick = false);
-      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
+      AppToast.showError(context, LangKeys.failedToGetAddress);
       return;
     }
 
@@ -156,7 +156,7 @@ class _HomeDeliveryAddressViewState
         final String? nextPageError =
             PaginationStatus<AddressModel>.from(next).nextPageError;
         if (nextPageError != null) {
-          ErrorSnackBar.show(context, nextPageError);
+          AppToast.showError(context, nextPageError);
         }
       },
     );

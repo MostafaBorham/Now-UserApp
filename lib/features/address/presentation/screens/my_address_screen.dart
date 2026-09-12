@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/success_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
@@ -71,7 +70,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     ) {
       next.whenOrNull(
         error: (Object error, StackTrace stackTrace) =>
-            ErrorSnackBar.show(context, error.toString()),
+            AppToast.showError(context, error.toString()),
       );
     });
 
@@ -84,12 +83,12 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     ) {
       if (previous?.isLoading != true) return;
       next.whenOrNull(
-        data: (_) => SuccessSnackBar.show(
+        data: (_) => AppToast.showSuccess(
           context,
           LangKeys.addressDeletedSuccessfully,
         ),
         error: (Object error, StackTrace stackTrace) =>
-            ErrorSnackBar.show(context, error.toString()),
+            AppToast.showError(context, error.toString()),
       );
     });
 

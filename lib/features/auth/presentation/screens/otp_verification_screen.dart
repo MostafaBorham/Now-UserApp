@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
@@ -83,7 +83,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
           }
         },
         error: (Object error, StackTrace stackTrace) =>
-            ErrorSnackBar.show(context, error.toString()),
+            AppToast.showError(context, error.toString()),
       );
     });
     final bool isVerifyOtpLoading = ref.watch(verifyOtpProvider).isLoading;

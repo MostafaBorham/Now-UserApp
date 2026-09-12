@@ -9,7 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/arrow_back_button.dart';
@@ -76,7 +76,7 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
   Future<void> _onEnterAddressTapped() async {
     final LatLng? location = _selectedLocation;
     if (location == null) {
-      ErrorSnackBar.show(context, LangKeys.failedToGetAddress);
+      AppToast.showError(context, LangKeys.failedToGetAddress);
       return;
     }
 
@@ -87,7 +87,7 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
     if (!mounted) return;
 
     result.fold(
-      (Failure failure) => ErrorSnackBar.show(context, failure.message),
+      (Failure failure) => AppToast.showError(context, failure.message),
       // Push (not replace) so this map stays underneath: the "Change" action on
       // the details screen pops back to it instead of building a fresh map. On
       // a successful save the details screen pops this map itself, returning to

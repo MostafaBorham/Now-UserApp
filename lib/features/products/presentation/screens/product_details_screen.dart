@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
@@ -109,7 +109,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                   },
                   error: (error, _) {
                     ref.read(_isBuyNowProvider.notifier).state = false;
-                    ErrorSnackBar.show(context, error.toString());
+                    AppToast.showError(context, error.toString());
                   },
                 );
               });

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -65,7 +65,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     // chosen) address there's no id to send, so surface an error and stop here
     // instead of firing the request with a placeholder id.
     if (_addressId == null) {
-      ErrorSnackBar.show(context, LangKeys.pleaseSelectAddressKey.tr());
+      AppToast.showError(context, LangKeys.pleaseSelectAddressKey.tr());
       return;
     }
 
@@ -178,7 +178,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           );
         },
         error: (Object error, StackTrace stackTrace) =>
-            ErrorSnackBar.show(context, error.toString()),
+            AppToast.showError(context, error.toString()),
       );
     });
 

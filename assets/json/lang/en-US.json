@@ -270,6 +270,8 @@
   "resend": "Resend",
   "resetFilter": "Reset Filter",
   "retry": "Retry",
+  "errorTitle": "Error",
+  "successTitle": "Success",
   "returnToHomePage": "Return to Home Page",
   "rewardPoints": "Reward Points",
   "sampleBrandCategory": "Dark Chocolate",

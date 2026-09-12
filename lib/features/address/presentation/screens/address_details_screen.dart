@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
@@ -210,7 +210,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
           if (widget.cameFromMap) router.pop();
         },
         error: (Object error, _) {
-          ErrorSnackBar.show(context, error.toString());
+          AppToast.showError(context, error.toString());
         },
       );
     });
@@ -300,7 +300,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   // Tappable while disabled, so the button can say why instead
                   // of just refusing to react.
                   ? GestureDetector(
-                      onTap: () => ErrorSnackBar.show(
+                      onTap: () => AppToast.showError(
                         context,
                         // Say which field is wrong: a half-typed phone blocks
                         // Save too, and "complete the address info" points at

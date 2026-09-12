@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
@@ -68,10 +68,10 @@ class _ApplyDiscountCodeViewState
     setState(() => _isApplying = false);
 
     result.fold(
-      (failure) => ErrorSnackBar.show(context, failure.message),
+      (failure) => AppToast.showError(context, failure.message),
       (model) {
         if (!model.applied) {
-          ErrorSnackBar.show(context, model.reason ?? LangKeys.discount.tr());
+          AppToast.showError(context, model.reason ?? LangKeys.discount.tr());
           return;
         }
         ref.read(appliedDiscountsProvider.notifier).add(

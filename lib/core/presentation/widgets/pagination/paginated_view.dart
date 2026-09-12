@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -133,7 +133,7 @@ class PaginatedView<T> extends ConsumerWidget {
           PaginationStatus<T>.from(next).nextPageError;
       if (nextPageError == null) return;
 
-      ErrorSnackBar.show(context, nextPageError);
+      AppToast.showError(context, nextPageError);
     });
 
     final PaginationStatus<T> status =

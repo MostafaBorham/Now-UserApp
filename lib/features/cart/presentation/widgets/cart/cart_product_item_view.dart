@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -99,7 +99,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
           () => _quantity = widget.product?.quantity ?? widget.initialQuantity,
         );
 
-        ErrorSnackBar.show(context, error.toString());
+        AppToast.showError(context, error.toString());
       },
     );
   }
@@ -127,7 +127,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                   ref.read(getCartProvider.notifier).updateCartState(cart);
                 },
                 error: (Object error, StackTrace _) =>
-                    ErrorSnackBar.show(dialogContext, error.toString()),
+                    AppToast.showError(dialogContext, error.toString()),
               );
             },
           );

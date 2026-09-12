@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
@@ -122,10 +122,10 @@ class PurchaseVouchersStrip extends ConsumerWidget {
     result.fold(
       // Voucher rejection reasons come back as raw untranslated keys, so never
       // surface the server text — show a generic message.
-      (_) => ErrorSnackBar.show(context, LangKeys.voucherApplyFailedKey.tr()),
+      (_) => AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr()),
       (model) {
         if (!model.applied) {
-          ErrorSnackBar.show(context, LangKeys.voucherApplyFailedKey.tr());
+          AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr());
           return;
         }
         ref.read(appliedDiscountsProvider.notifier).add(

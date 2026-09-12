@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -53,7 +53,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   void _onLoadMoreStateChanged() {
     final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
     if (loadMoreState.hasError && mounted) {
-      ErrorSnackBar.show(context, loadMoreState.error.toString());
+      AppToast.showError(context, loadMoreState.error.toString());
     }
   }
 

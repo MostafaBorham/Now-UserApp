@@ -5,8 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/error_snackbar.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/success_snackbar.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
@@ -33,10 +32,10 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
       next.whenOrNull(
         data: (cart) {
           if (cart == null) return;
-          SuccessSnackBar.show(context, LangKeys.productAddedToCartKey.tr());
+          AppToast.showSuccess(context, LangKeys.productAddedToCartKey.tr());
         },
         error: (error, _) {
-          ErrorSnackBar.show(context, error.toString());
+          AppToast.showError(context, error.toString());
         },
       );
     });
