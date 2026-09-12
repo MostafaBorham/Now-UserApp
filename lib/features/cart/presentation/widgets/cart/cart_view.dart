@@ -125,7 +125,7 @@ class _CartViewState extends ConsumerState<CartView> {
                           // Owns the top spacing AppWavedView drops when a
                           // scroll controller is wired in, so it scrolls up with
                           // the content and flattens the wave.
-                          padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
+                          padding: const EdgeInsets.fromLTRB(3, 57, 3, 20),
                           itemBuilder: (context, index) {
                             final CartVendorModel cartVendor =
                                 cart.vendors[index];

@@ -1,21 +1,16 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_product_vm.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
@@ -31,7 +26,6 @@ class CartProductItemView extends ConsumerStatefulWidget {
     this.oldPrice = '10',
     this.newPrice = '10',
     this.initialQuantity = 1,
-    this.onDelete,
     // this.onQuantityChanged,
   });
 
@@ -48,7 +42,6 @@ class CartProductItemView extends ConsumerStatefulWidget {
   final String oldPrice;
   final String newPrice;
   final int initialQuantity;
-  final VoidCallback? onDelete;
   // final ValueChanged<int>? onQuantityChanged;
 
   @override
@@ -104,52 +97,6 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     );
   }
 
-  /// Asks the user to confirm removing this line, then runs the deletion inside
-  /// the dialog: on success the dialog closes and the fresh cart is pushed into
-  /// [getCartProvider] (no refetch), on failure it stays open with an error
-  /// snackbar. The dialog watches [deleteCartProductProvider] itself, so the
-  /// spinner and the disabled buttons follow the request automatically.
-  void _showDeleteDialog(String productName) {
-    final int? productId = widget.product?.productId;
-    if (productId == null) return;
-
-    AppCustomAlertDialog.show(
-      context,
-      (_) => Consumer(
-        builder: (BuildContext dialogContext, WidgetRef dialogRef, Widget? _) {
-          dialogRef.listen<AsyncValue<CartModel?>>(
-            deleteCartProductProvider(productId),
-            (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) {
-              next.whenOrNull(
-                data: (CartModel? cart) {
-                  if (cart == null) return;
-                  Navigator.of(dialogContext).pop();
-                  ref.read(getCartProvider.notifier).updateCartState(cart);
-                },
-                error: (Object error, StackTrace _) =>
-                    AppToast.showError(dialogContext, error.toString()),
-              );
-            },
-          );
-
-          return AppCustomAlertDialog(
-            title: LangKeys.removeProductKey.tr(),
-            message: LangKeys.removeProductConfirmationKey.tr(
-              namedArgs: <String, String>{'name': productName},
-            ),
-            confirmLabel: LangKeys.deleteKey.tr(),
-            isLoading: dialogRef
-                .watch(deleteCartProductProvider(productId))
-                .isLoading,
-            onConfirm: () => dialogRef
-                .read(deleteCartProductProvider(productId).notifier)
-                .deleteCartProduct(),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -169,9 +116,6 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     final String productName = product != null
         ? context.getLocalizedApiText(product.name)
         : widget.productName;
-    final String storeName = widget.vendorName != null
-        ? context.getLocalizedApiText(widget.vendorName)
-        : widget.storeName;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,17 +126,19 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
             AppRoutes.productDetailsScreen,
             extra: product?.slug,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(7),
-            child: SizedBox(
+          child: Container(
+            width: 76,
+            height: 76,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              boxShadow: AppBoxShadows.greyElevation3,
+            ),
+            child: AppCachedNetworkImage(
               width: 76,
               height: 76,
-              child: AppCachedNetworkImage(
-                width: 76,
-                height: 76,
-                fit: BoxFit.cover,
-                imageUrl: widget.product?.images?.firstOrNull ?? '',
-              ),
+              fit: BoxFit.cover,
+              imageUrl: widget.product?.images?.firstOrNull ?? '',
             ),
           ),
         ),
@@ -201,37 +147,12 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16,
-                children: [
-                  Expanded(
-                    child: Text(
-                      productName,
-                      maxLines: 1,
-                      style: AppTextStyles.style16Medium.copyWith(
-                        color: colors.tertiaryContainer,
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => _showDeleteDialog(productName),
-                    customBorder: const CircleBorder(),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: colors.error.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Assets.media.images.svg.deleteIcon.svg(
-                        colorFilter: ColorFilter.mode(
-                          colors.onError,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                productName,
+                maxLines: 1,
+                style: AppTextStyles.style16Medium.copyWith(
+                  color: colors.tertiaryContainer,
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

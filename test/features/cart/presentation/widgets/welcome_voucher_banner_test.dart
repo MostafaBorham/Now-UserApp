@@ -117,7 +117,7 @@ class _FakeAuthSessionVM extends AuthSessionViewModel {
   }
 
   @override
-  Future<void> resolveSession() async {}
+  Future<void> resolveSession({bool awaitDependencies = false}) async {}
 }
 
 class _FakeMyOrdersVM extends GetMyOrdersViewModel {

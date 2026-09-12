@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_product_item_view.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -39,6 +40,27 @@ class CartBrandItemDetailsView extends StatelessWidget {
       spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: InkWell(
+            onTap: () => AppCustomAlertDialog.show(
+              context,
+              (BuildContext dialogContext) => AppCustomAlertDialog(
+                title: LangKeys.removeItemFromCartKey.tr(),
+                message: LangKeys.removeItemFromCartConfirmationKey.tr(),
+                confirmLabel: LangKeys.deleteKey.tr(),
+                onConfirm: () => Navigator.of(dialogContext).pop(),
+              ),
+            ),
+            child: Text(
+              LangKeys.deleteAllKey.tr(),
+              style: AppTextStyles.style14Bold.copyWith(
+                color: colors.errorContainer,
+              ),
+            ),
+          ),
+        ),
+
         ListView.separated(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
