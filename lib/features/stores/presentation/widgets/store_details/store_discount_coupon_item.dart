@@ -10,12 +10,11 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 // Ticket geometry from the design: 121 x 158 with a 60-tall coloured head and
-// a 32px notch centred on both side edges, 46 above the bottom.
+// a 32px notch centred (vertically) on both side edges.
 const double _ticketWidth = 121;
 const double _ticketHeight = 158;
 const double _headHeight = 60;
 const double _notchSize = 32;
-const double _notchFromBottom = 46;
 
 // Horizontal body padding, and how far the notches punch past it into the body.
 // The validity text sits level with the notches, so it must clear this overlap
@@ -92,54 +91,63 @@ class StoreDiscountCouponItem extends StatelessWidget {
         opacity: isSelected ? _selectedOpacity : 1,
         child: Container(
           width: _ticketWidth,
-          height: _ticketHeight,
+          // No fixed height: the ticket grows to fit its (un-truncated) text.
+          // [_ticketHeight] is only the floor, and the list equalises every
+          // ticket to the tallest one so the row still reads as one height.
+          constraints: const BoxConstraints(minHeight: _ticketHeight),
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(borderRadius: AppBorderRadius.brCircular16),
-          child: Stack(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  Container(
-                    height: _headHeight,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    color: headColor,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 2,
-                      children: [
-                        coupon.isPercentage ?? true
-                            ? Text(
-                                '$discountValue%',
-                                textDirection: TextDirection.ltr,
-                                style: AppTextStyles.style20SemiBold.copyWith(
-                                  color: discountColor,
-                                  height: 1,
-                                ),
-                              )
-                            : NewPriceWidget(
-                                color: discountColor,
-                                price: discountValue,
-                                size: 20,
-                              ),
-                        Text(
-                          '${LangKeys.inStoreKey.tr()} $storeName',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.style12SemiBold.copyWith(
-                            color: storeNameColor,
+              Container(
+                constraints: const BoxConstraints(minHeight: _headHeight),
+                width: double.infinity,
+                color: headColor,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 2,
+                  children: [
+                    coupon.isPercentage ?? true
+                        ? Text(
+                            '$discountValue%',
+                            textDirection: TextDirection.ltr,
+                            style: AppTextStyles.style20SemiBold.copyWith(
+                              color: discountColor,
+                              height: 1,
+                            ),
+                          )
+                        : NewPriceWidget(
+                            color: discountColor,
+                            price: discountValue,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                    Text(
+                      '${LangKeys.inStoreKey.tr()} $storeName',
+                      textAlign: TextAlign.center,
+                      // AppTextStyles bake in ellipsis; override so the full
+                      // text wraps instead of being truncated.
+                      overflow: TextOverflow.visible,
+                      style: AppTextStyles.style12SemiBold.copyWith(
+                        color: storeNameColor,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
+                  ],
+                ),
+              ),
+              Expanded(
+                // The notches are painted inside the body so they centre on the
+                // body's height, not the whole ticket's.
+                child: Stack(
+                  children: [
+                    Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: _bodyHPadding,
-                        vertical: 10,
+                      padding: const EdgeInsets.only(
+                        left: _bodyHPadding,
+                        right: _bodyHPadding,
+                        top: 10,
+                        bottom: 8,
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -148,54 +156,66 @@ class StoreDiscountCouponItem extends StatelessWidget {
                           colors: darkHead ? _creamBody : _greenBody,
                         ),
                       ),
+                      // Name pinned to the top, logo at the bottom. The validity
+                      // is centred in the free space between them, with a fixed
+                      // 8px gap kept above the logo.
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 4,
                         children: [
                           Text(
                             coupon.name ?? LangKeys.discountCouponKey.tr(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            // Tight line height so the box hugs the glyphs; the
+                            // default leading would pad the name's bottom.
                             style: AppTextStyles.style16Medium.copyWith(
                               color: colors.primaryContainer,
+                              height: 1,
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: validityText.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: _notchOverlap,
+                                      ),
+                                      child: Text(
+                                        validityText,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.visible,
+                                        style: AppTextStyles.style10Medium
+                                            .copyWith(
+                                              color: colors.neutral500,
+                                              height: 1,
+                                            ),
+                                      ),
+                                    ),
                             ),
                           ),
                           if (validityText.isNotEmpty)
-                            Padding(
-                              // Keep the text clear of the side notches so a long
-                              // validity string wraps to a second line instead of
-                              // being covered by the half-discs.
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: _notchOverlap,
-                              ),
-                              child: Text(
-                                validityText,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.style10Medium.copyWith(
-                                  color: colors.neutral500,
-                                ),
-                              ),
-                            ),
+                            const SizedBox(height: 8),
                           Assets.media.images.svg.appLogo.svg(width: 64),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              // Half-discs painted in the page colour: the ticket clips away the
-              // outer half, leaving a notch punched into each side edge.
-              Positioned(
-                left: -_notchSize / 2,
-                top: _notchTop,
-                child: _notch(context),
-              ),
-              Positioned(
-                right: -_notchSize / 2,
-                top: _notchTop,
-                child: _notch(context),
+                    // Half-discs painted in the page colour: the ticket clips
+                    // away the outer half, leaving a notch punched into each
+                    // side edge, centred on the body's height.
+                    Positioned(
+                      left: -_notchSize / 2,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(child: _notch(context)),
+                    ),
+                    Positioned(
+                      right: -_notchSize / 2,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(child: _notch(context)),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -203,9 +223,6 @@ class StoreDiscountCouponItem extends StatelessWidget {
       ),
     );
   }
-
-  static const double _notchTop =
-      _ticketHeight - _notchFromBottom - _notchSize / 2;
 
   Widget _notch(BuildContext context) => Container(
     width: _notchSize,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
@@ -15,6 +16,10 @@ class StoreDetailsBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isAr = context.locale.languageCode == 'ar';
+    final String imageUrl =
+        (isAr ? banner.imageAr : banner.imageEn) ?? banner.image ?? '';
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -31,7 +36,7 @@ class StoreDetailsBanner extends StatelessWidget {
           borderRadius: BorderRadiusGeometry.circular(16),
         ),
         child: AppCachedNetworkImage(
-          imageUrl: banner.image ?? '',
+          imageUrl: imageUrl,
           width: double.infinity,
         ),
       ),

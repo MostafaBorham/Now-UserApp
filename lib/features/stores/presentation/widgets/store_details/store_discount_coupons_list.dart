@@ -35,19 +35,29 @@ class _StoreDiscountCouponsListState
 
     if (coupons.isEmpty) return const SizedBox.shrink();
 
-    return SizedBox(
-      height: 158,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: coupons.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 16),
-        itemBuilder: (_, index) => StoreDiscountCouponItem(
-          coupon: coupons[index],
-          storeName: context.getLocalizedApiText(store.name),
-          darkHead: index.isOdd,
-          isSelected: _selectedIndex == index,
-          onTap: () => _select(index, coupons[index]),
+    final String storeName = context.getLocalizedApiText(store.name);
+
+    // Tickets grow to fit their full (un-truncated) text, so heights differ.
+    // IntrinsicHeight + a stretched Row sizes every ticket to the tallest one,
+    // keeping the row visually uniform. The coupon count is small, so the extra
+    // intrinsic pass is cheap.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (int index = 0; index < coupons.length; index++) ...[
+              if (index > 0) const SizedBox(width: 16),
+              StoreDiscountCouponItem(
+                coupon: coupons[index],
+                storeName: storeName,
+                darkHead: index.isOdd,
+                isSelected: _selectedIndex == index,
+                onTap: () => _select(index, coupons[index]),
+              ),
+            ],
+          ],
         ),
       ),
     );

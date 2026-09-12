@@ -16,29 +16,26 @@ class OldPriceWidget extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            textDirection: TextDirection.ltr,
-            spacing: 2,
-            children: [
-              Assets.media.images.svg.realSaudiCurrency.svg(
-                width: size ?? 14,
-                height: size ?? 14,
-                fit: BoxFit.contain,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          textDirection: TextDirection.ltr,
+          spacing: 2,
+          children: [
+            Assets.media.images.svg.realSaudiCurrency.svg(
+              width: size ?? 14,
+              height: size ?? 14,
+              fit: BoxFit.contain,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
+            AutoSizeText(
+              price,
+              style: AppTextStyles.style14Medium.copyWith(
+                color: color,
+                height: 1,
+                fontSize: size,
               ),
-              AutoSizeText(
-                price,
-                style: AppTextStyles.style14Medium.copyWith(
-                  color: color,
-                  height: 1,
-                  fontSize: size,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
 
         Positioned.fill(
@@ -46,7 +43,7 @@ class OldPriceWidget extends StatelessWidget {
             child: Transform.rotate(
               angle: -0.3,
               child: Container(
-                height: 2,
+                height: 1,
                 color: colors.neutral400,
               ),
             ),

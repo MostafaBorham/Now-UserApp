@@ -1,13 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
@@ -67,106 +68,99 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
               top: false,
               child: ProviderScope(
                 overrides: [storeProvider.overrideWithValue(store)],
-                child: AppRefreshIndicator(
-                  // Background reload so the pull keeps the store (and the
-                  // spinner) on screen instead of flashing the whole page back
-                  // to the shimmer, which would tear down this indicator and the
-                  // NestedScrollView mid-gesture.
-                  onRefresh: () => ref
-                      .read(getStoreDetailsProvider(widget.storeId).notifier)
-                      .refresh(),
-                  child: NestedScrollView(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    // Header + banners scroll away with the content; only the
-                    // CustomButtonTabBar (the NestedScrollView body) stays
-                    // pinned to the top while the product grid scrolls.
-                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: [
-                            AspectRatio(
-                              aspectRatio: 390 / 240,
-                              child: StoreDetailsInfoHeader(),
+                child: NestedScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  // Header + banners scroll away with the content; only the
+                  // CustomButtonTabBar (the NestedScrollView body) stays
+                  // pinned to the top while the product grid scrolls.
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 390 / 240,
+                            child: StoreDetailsInfoHeader(),
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            color: colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            width: double.infinity,
+                            child: Column(
+                              spacing: 20,
+                              children: [
+                                AppSlider(
+                                  sliderItems: (store.banners ?? const [])
+                                      .map(
+                                        (BannerModel banner) =>
+                                            StoreDetailsBanner(
+                                              banner: banner,
+                                            ),
+                                      )
+                                      .toList(),
+                                  itemAspectRatio: 3,
+                                ),
+                                UniqueStoreProductsSlider(),
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: StoreDiscountCouponsList(),
+                                ),
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: StoreCategoryCirclesList(),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 16),
-                            Container(
-                              color: colors.white,
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              width: double.infinity,
-                              child: Column(
-                                spacing: 5,
-                                children: [
-                                  AppSlider(
-                                    sliderItems: (store.banners ?? const [])
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  body: Container(
+                    color: colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: LayoutBuilder(
+                      builder:
+                          (BuildContext context, BoxConstraints constraints) {
+                            const double minTabBarHeight = 70;
+                            return ClipRect(
+                              child: OverflowBox(
+                                alignment: AlignmentDirectional.topStart,
+                                minHeight: 0,
+                                maxHeight: double.infinity,
+                                child: SizedBox(
+                                  height:
+                                      constraints.maxHeight < minTabBarHeight
+                                      ? minTabBarHeight
+                                      : constraints.maxHeight,
+                                  width: constraints.maxWidth,
+                                  child: CustomButtonTabBar(
+                                    tabs: ProductFilters.values
                                         .map(
-                                          (BannerModel banner) =>
-                                              StoreDetailsBanner(
-                                                banner: banner,
+                                          (ProductFilters filter) =>
+                                              filter.label,
+                                        )
+                                        .toList(),
+                                    views: ProductFilters.values
+                                        .map(
+                                          (ProductFilters filter) =>
+                                              StoreDetailsProductsView(
+                                                storeId: widget.storeId,
+                                                filter: filter,
                                               ),
                                         )
                                         .toList(),
-                                    itemAspectRatio: 3,
-                                  ),
-                                  UniqueStoreProductsSlider(),
-                                  Align(
-                                      alignment: AlignmentDirectional.centerStart,
-                                      child: StoreDiscountCouponsList()),
-                                  Align(
-                                      alignment: AlignmentDirectional.centerStart,
-                                      child: StoreCategoryCirclesList()),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    body: Container(
-                      color: colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                              const double minTabBarHeight = 70;
-                              return ClipRect(
-                                child: OverflowBox(
-                                  alignment: AlignmentDirectional.topStart,
-                                  minHeight: 0,
-                                  maxHeight: double.infinity,
-                                  child: SizedBox(
-                                    height:
-                                        constraints.maxHeight < minTabBarHeight
-                                        ? minTabBarHeight
-                                        : constraints.maxHeight,
-                                    width: constraints.maxWidth,
-                                    child: CustomButtonTabBar(
-                                      tabs: ProductFilters.values
-                                          .map(
-                                            (ProductFilters filter) =>
-                                                filter.label,
-                                          )
-                                          .toList(),
-                                      views: ProductFilters.values
-                                          .map(
-                                            (ProductFilters filter) =>
-                                                StoreDetailsProductsView(
-                                                  storeId: widget.storeId,
-                                                  filter: filter,
-                                                ),
-                                          )
-                                          .toList(),
-                                      // selectedTabColor: colors.tertiaryContainer,
-                                      unSelectedTabColor: colors.neutral400
-                                          .withValues(alpha: 0.2),
-                                      selectedLabelColor: colors.white,
-                                      unSelectedLabelColor: colors.black,
-                                    ),
+                                    // selectedTabColor: colors.tertiaryContainer,
+                                    unSelectedTabColor: colors.neutral400
+                                        .withValues(alpha: 0.2),
+                                    selectedLabelColor: colors.white,
+                                    unSelectedLabelColor: colors.black,
                                   ),
                                 ),
-                              );
-                            },
-                      ),
+                              ),
+                            );
+                          },
                     ),
                   ),
                 ),
@@ -179,7 +173,19 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
         loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
-
+        // Tapping the cart drops every route pushed on top of the main screen
+        // (store details and anything in between) and switches the main screen's
+        // bottom nav to the cart tab (index 2) instead of pushing a new cart
+        // route on top of the store details stack.
+        onCartTap: () {
+          ref.read(mainTabIndexProvider.notifier).state = 2;
+          // Capture the router once: after the first pop this widget's context is
+          // defunct, so drive the loop off the router instance, not context.
+          final GoRouter router = GoRouter.of(context);
+          while (router.canPop()) {
+            router.pop();
+          }
+        },
         bodyPadding: EdgeInsets.zero,
       ),
     );
