@@ -380,16 +380,14 @@ class _ProductsByCategorySection extends StatelessWidget {
     final CategoryModel category = section.category ?? const CategoryModel();
 
     if (section.displayDesign == 'color_with_image') {
-      return AspectRatio(
-        aspectRatio: 1.1,
-        child: HomeAppCategoryWithLogoSectionView(
-          categoryModel: category,
-          productModels: section.products,
-          imageUrl: context.getLocalizedApiText(section.media),
-          primaryColor: section.primaryColor,
-          textColor: section.textColor,
-          showViewAll: section.showViewAll,
-        ),
+      // Self-sizing: the section sets its own height from the design ratio.
+      return HomeAppCategoryWithLogoSectionView(
+        categoryModel: category,
+        productModels: section.products,
+        imageUrl: context.getLocalizedApiText(section.media),
+        primaryColor: section.primaryColor,
+        textColor: section.textColor,
+        showViewAll: section.showViewAll,
       );
     }
 
