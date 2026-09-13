@@ -65,13 +65,16 @@ class _CartViewState extends ConsumerState<CartView> {
   /// Drafts an order group and, only if the server accepted it, opens the
   /// checkout screen.
   ///
-  /// [vendorId] `null` checks out every store (bottom button); a concrete id
-  /// checks out that single store (its own pill). On failure the reason is
-  /// shown in a snackbar.
+  /// [vendorId] `null` checks out every store via the all-stores
+  /// `checkout/cart/preview` endpoint (bottom button); a concrete id checks out
+  /// that single store via the dedicated `checkout/vendor/{id}/preview` endpoint
+  /// (its own pill). On failure the reason is shown in a toast.
   Future<void> _checkout({int? vendorId}) async {
-    final String? error = await ref
-        .read(checkoutProvider.notifier)
-        .checkout(vendorId: vendorId);
+    final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
+
+    final String? error = vendorId == null
+        ? await checkoutVm.checkout()
+        : await checkoutVm.checkoutForSingleStore(vendorId: vendorId);
 
     if (!mounted) return;
 
