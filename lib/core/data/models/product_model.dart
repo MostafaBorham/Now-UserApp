@@ -14,6 +14,7 @@ class ProductModel {
   final Map<String, dynamic>? shortDescription;
   final Map<String, dynamic>? description;
   final double? price;
+  final double? discountPrice;
   final double? effectivePrice;
   final double? dealDiscountAmount;
 
@@ -56,6 +57,7 @@ class ProductModel {
     this.shortDescription,
     this.description,
     this.price,
+    this.discountPrice,
     this.effectivePrice,
     this.dealDiscountAmount,
     this.discountPercentage,
@@ -97,6 +99,7 @@ class ProductModel {
     Map<String, dynamic>? shortDescription,
     Map<String, dynamic>? description,
     double? price,
+    double? discountPrice,
     double? effectivePrice,
     double? dealDiscountAmount,
     double? discountPercentage,
@@ -132,6 +135,7 @@ class ProductModel {
       shortDescription: shortDescription ?? this.shortDescription,
       description: description ?? this.description,
       price: price ?? this.price,
+      discountPrice: discountPrice ?? this.discountPrice,
       effectivePrice: effectivePrice ?? this.effectivePrice,
       dealDiscountAmount: dealDiscountAmount ?? this.dealDiscountAmount,
       discountPercentage: discountPercentage ?? this.discountPercentage,
@@ -173,6 +177,7 @@ class ProductModel {
           : ActiveDealModel.fromJson(json['active_deal']),
       // shortDescription: json['short_description'],
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
+      discountPrice: (json['discount_price'] as num?)?.toDouble(),
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
       discountPercentage: (json['discount_percentage'] as num?)?.toDouble(),
@@ -256,6 +261,7 @@ class ProductModel {
       'short_description': shortDescription,
       'description': description,
       'price': price,
+      'discount_price': discountPrice,
       'effective_price': effectivePrice,
       'deal_discount_amount': dealDiscountAmount,
       'discount_percentage': discountPercentage,

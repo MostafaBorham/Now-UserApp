@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -169,10 +170,10 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if ((widget.product?.comparePrice ?? 0) > 0)
+                        if ((widget.product?.discountPrice ?? 0) > 0)
                           OldPriceWidget(
                             color: colors.neutral500,
-                            price: '123212',
+                            price: '${formatDouble(widget.product?.discountPrice)}',
                             size: 12,
                           ),
                       ],
