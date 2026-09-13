@@ -11,6 +11,13 @@ abstract class CheckoutEndpoints {
   static Map<String, dynamic> checkoutBody({int? vendorId}) =>
       <String, dynamic>{'vendor_id': vendorId};
 
+  /// Single-store checkout preview. Unlike [checkout], this endpoint scopes the
+  /// preview to one vendor via the path and its response carries a single
+  /// `vendor` with a top-level `products` list (not `vendor_groups`).
+  /// [vendorId] identifies that store.
+  static String checkoutForSingleStore(int vendorId) =>
+      '/api/v1/checkout/vendor/$vendorId/preview';
+
   /// Stateless per-vendor coupon calculator. The server reads the user's own
   /// selected cart rows for the vendor, so the body carries only the vendor and
   /// the code — no cart/draft reference.

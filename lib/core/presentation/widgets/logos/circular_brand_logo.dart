@@ -10,7 +10,7 @@ class CircularBrandLogo extends StatelessWidget {
     required this.logoUrl,
     this.backgroundColor,
     this.elevation = 0,
-    this.logoScale = 0.7,
+    this.logoScale = 1.1,
   });
 
   final double radius;

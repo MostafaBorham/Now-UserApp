@@ -29,6 +29,16 @@ class CheckoutApiService {
     );
   }
 
+  /// Drafts a single-store checkout preview scoped to [vendorId] via the
+  /// `POST /api/v1/checkout/vendor/{vendorId}/preview` endpoint. Authentication
+  /// is applied by `AuthTokenInterceptor` from the cached session.
+  Future<Response> checkoutForSingleStore({required int vendorId}) {
+    return _dio.post(
+      CheckoutEndpoints.checkoutForSingleStore(vendorId),
+      cancelToken: _canceller.token,
+    );
+  }
+
   /// Applies coupon [code] for [vendorId] and returns the per-vendor discount
   /// calculation. Stateless — the server reads the user's own cart.
   /// Authentication is applied by `AuthTokenInterceptor` from the cached
