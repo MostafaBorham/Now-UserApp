@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
-import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 
 class ApplyDiscountCodeView extends ConsumerStatefulWidget {
   const ApplyDiscountCodeView({
@@ -60,7 +60,7 @@ class _ApplyDiscountCodeViewState
     setState(() => _isApplying = true);
 
     final result = await ref
-        .read(checkoutProvider.notifier)
+        .read(checkoutDiscountProvider)
         .applyCoupon(vendorId: vendorId, code: code);
 
     if (!mounted) return;

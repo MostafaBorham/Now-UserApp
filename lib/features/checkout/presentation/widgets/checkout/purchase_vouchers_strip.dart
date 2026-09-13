@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_mode
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
-import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/viewmodel/get_purchase_vouchers_vm.dart';
@@ -114,7 +114,7 @@ class PurchaseVouchersStrip extends ConsumerWidget {
     int vendorId,
   ) async {
     final result = await ref
-        .read(checkoutProvider.notifier)
+        .read(checkoutDiscountProvider)
         .applyPurchaseVoucher(vendorId: vendorId, code: voucher.code);
 
     if (!context.mounted) return;

@@ -234,9 +234,20 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               if (error != null) {
                 return ServerConnectionErrorWidget(
                   message: error.toString(),
-                  onRetry: () => ref
-                      .read(checkoutProvider.notifier)
-                      .checkout(vendorId: widget.storeId),
+                  // Retry through the same endpoint the draft came from: the
+                  // single-store preview when a store id is set, the all-stores
+                  // preview otherwise.
+                  onRetry: () {
+                    final CheckoutViewModel checkoutVm = ref.read(
+                      checkoutProvider.notifier,
+                    );
+                    final int? storeId = widget.storeId;
+                    if (storeId == null) {
+                      checkoutVm.checkout();
+                    } else {
+                      checkoutVm.checkoutForSingleStore(vendorId: storeId);
+                    }
+                  },
                 );
               }
 

@@ -52,6 +52,48 @@ class CheckoutRepo {
     }
   }
 
+  /// Fetches the single-store checkout preview for [vendorId] via
+  /// `POST /api/v1/checkout/vendor/{vendorId}/preview`, parsing the single-store
+  /// payload onto the shared [CheckoutModel].
+  Future<Either<Failure, CheckoutModel>> checkoutForSingleStore({
+    required int vendorId,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _checkoutApiService.checkoutForSingleStore(
+        vendorId: vendorId,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+
+      if (!success) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final CheckoutModel checkout = CheckoutModel.fromSingleStoreJson(
+        body['data'] as Map<String, dynamic>?,
+      );
+
+      return Right(checkout);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (e, stackTrace) {
+      debugPrint('$e');
+      debugPrint('$stackTrace');
+
+      return Left(Failure(e.toString()));
+    }
+  }
+
   /// Applies coupon [code] for [vendorId] via the stateless
   /// `POST /api/v1/coupons/apply` calculator.
   ///

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -21,17 +22,19 @@ class CartProductsImagesListView extends StatelessWidget {
       children: [
         ...((products ?? [])
             .map(
-              (product) => ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: SizedBox(
+              (product) => Container(
+                width: 56,
+                height: 56,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: AppBoxShadows.greyElevation3,
+                ),
+                child: AppCachedNetworkImage(
                   width: 56,
                   height: 56,
-                  child: AppCachedNetworkImage(
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                    imageUrl: product.images?.firstOrNull ?? '',
-                  ),
+                  fit: BoxFit.cover,
+                  imageUrl: product.images?.firstOrNull ?? '',
                 ),
               ),
             )

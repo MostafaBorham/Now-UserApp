@@ -36,6 +36,16 @@ class CartApiService {
     );
   }
 
+  /// Removes every cart line belonging to [vendorId] in one request. The server
+  /// answers with the fresh cart. Authentication is applied by
+  /// `AuthTokenInterceptor` from the cached session.
+  Future<Response> deleteCartVendorItem(int vendorId) {
+    return _dio.delete(
+      CartEndpoints.cartVendor(vendorId),
+      cancelToken: _canceller.token,
+    );
+  }
+
   /// Sets the cart line for [productId] to [quantity]. Authentication is applied
   /// by `AuthTokenInterceptor` from the cached session.
   Future<Response> updateCartProductQuantity(int productId, int quantity) {
