@@ -7,6 +7,11 @@ abstract class CartEndpoints {
   static String cartProduct(int productId) =>
       '/api/v1/cart/items/$productId';
 
+  /// Every cart line of a single vendor, identified by its vendor id. Used to
+  /// clear a whole store from the cart at once.
+  static String cartVendor(int vendorId) =>
+      '/api/v1/cart/vendors/$vendorId';
+
   /// Body the cart-line endpoint expects: the new [quantity] (`0` removes the
   /// line).
   static Map<String, dynamic> quantityBody(int quantity) => <String, dynamic>{

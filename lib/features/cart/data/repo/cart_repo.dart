@@ -85,6 +85,43 @@ class CartRepo {
     }
   }
 
+  Future<Either<Failure, CartModel>> deleteCartVendorItem(int vendorId) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _cartApiService.deleteCartVendorItem(
+        vendorId,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+
+      if (response.statusCode != 200 || !success) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final CartModel cart = CartModel.fromJson(
+        body['data'] as Map<String, dynamic>?,
+      );
+
+      return Right(cart);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+
+      return Left(Failure(e.toString()));
+    }
+  }
+
   Future<Either<Failure, CartModel>> updateCartProductQuantity(
     int productId,
     int quantity,

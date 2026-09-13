@@ -166,14 +166,16 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price: '${widget.product?.price}',
+                          price: '${(widget.product?.discountPrice ?? 0) < 0
+                              ? widget.product?.price
+                              : widget.product?.discountPrice}',
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
                         if ((widget.product?.discountPrice ?? 0) > 0)
                           OldPriceWidget(
                             color: colors.neutral500,
-                            price: '${formatDouble(widget.product?.discountPrice)}',
+                            price: '${formatDouble(widget.product?.price)}',
                             size: 12,
                           ),
                       ],

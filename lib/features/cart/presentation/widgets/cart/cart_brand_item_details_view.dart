@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -8,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_product_item_view.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/delete_cart_vendor_vm.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
@@ -36,6 +39,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final int? vendorId = store?.id;
     return Column(
       spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,15 +47,60 @@ class CartBrandItemDetailsView extends StatelessWidget {
         Align(
           alignment: AlignmentDirectional.centerEnd,
           child: InkWell(
-            onTap: () => AppCustomAlertDialog.show(
-              context,
-              (BuildContext dialogContext) => AppCustomAlertDialog(
-                title: LangKeys.removeItemFromCartKey.tr(),
-                message: LangKeys.removeItemFromCartConfirmationKey.tr(),
-                confirmLabel: LangKeys.deleteKey.tr(),
-                onConfirm: () => Navigator.of(dialogContext).pop(),
-              ),
-            ),
+            // With no vendor id there is nothing to clear, so the action is
+            // left inert rather than firing a request that can't be built.
+            onTap: vendorId == null
+                ? null
+                : () => AppCustomAlertDialog.show(
+                    context,
+                    // The dialog owns the request via its own Consumer: it stays
+                    // mounted with the dialog route (unlike this card, which is
+                    // torn down the moment the store leaves the refreshed cart),
+                    // drives the spinner, pops itself on success and toasts on
+                    // failure.
+                    (BuildContext dialogContext) => Consumer(
+                      builder: (BuildContext consumerContext, WidgetRef ref, _) {
+                        ref.listen<AsyncValue<CartModel?>>(
+                          deleteCartVendorProvider(vendorId),
+                          (
+                            AsyncValue<CartModel?>? previous,
+                            AsyncValue<CartModel?> next,
+                          ) {
+                            next.whenOrNull(
+                              data: (CartModel? cart) {
+                                if (cart == null) return;
+                                Navigator.of(dialogContext).pop();
+                              },
+                              error: (Object error, StackTrace _) {
+                                Navigator.of(dialogContext).pop();
+                                AppToast.showError(
+                                  consumerContext,
+                                  error.toString(),
+                                );
+                              },
+                            );
+                          },
+                        );
+
+                        final bool isDeleting = ref.watch(
+                          deleteCartVendorProvider(vendorId).select(
+                            (AsyncValue<CartModel?> state) => state.isLoading,
+                          ),
+                        );
+
+                        return AppCustomAlertDialog(
+                          title: LangKeys.removeItemFromCartKey.tr(),
+                          message:
+                              LangKeys.removeItemFromCartConfirmationKey.tr(),
+                          confirmLabel: LangKeys.deleteKey.tr(),
+                          isLoading: isDeleting,
+                          onConfirm: () => ref
+                              .read(deleteCartVendorProvider(vendorId).notifier)
+                              .deleteCartVendor(),
+                        );
+                      },
+                    ),
+                  ),
             child: Text(
               LangKeys.deleteAllKey.tr(),
               style: AppTextStyles.style14Bold.copyWith(
