@@ -39,17 +39,41 @@ class OldPriceWidget extends StatelessWidget {
         ),
 
         Positioned.fill(
-          child: Center(
-            child: Transform.rotate(
-              angle: -0.3,
-              child: Container(
-                height: 1,
-                color: colors.neutral400,
-              ),
-            ),
+          child: CustomPaint(
+            painter: _StrikeThroughPainter(color: colors.neutral400),
           ),
         ),
       ],
     );
   }
+}
+
+/// Draws the old-price strike as a diagonal from the lower-start corner to the
+/// upper-end corner, its endpoints kept a fixed [_verticalInset] off the text's
+/// top and bottom. Anchoring to the corners (instead of a fixed rotation angle)
+/// keeps the ends aligned with the start and end of the price no matter how
+/// long it grows.
+class _StrikeThroughPainter extends CustomPainter {
+  const _StrikeThroughPainter({required this.color});
+
+  final Color color;
+
+  static const double _verticalInset = 3;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(0, size.height - _verticalInset),
+      Offset(size.width, _verticalInset),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_StrikeThroughPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

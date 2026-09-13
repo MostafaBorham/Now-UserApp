@@ -169,7 +169,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        // if ((widget.product?.comparePrice ?? 0) > 0)
+                        if ((widget.product?.comparePrice ?? 0) > 0)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: '123212',

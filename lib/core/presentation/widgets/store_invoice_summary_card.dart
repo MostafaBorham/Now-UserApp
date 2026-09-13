@@ -26,7 +26,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.neutral500.withValues(alpha: 0.15),
+        color: colors.neutral500.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -42,74 +42,86 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
           Column(
             spacing: 8,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      LangKeys.subtotalKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.black,
+              if ((subtotal ?? 0) > 0)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.subtotalKey.tr(),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  NewPriceWidget(
-                    color: colors.black,
-                    price: '${subtotal ?? 0}',
-                    size: 13,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      LangKeys.vatFivePercentKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.black,
+                    NewPriceWidget(
+                      fontWeight: FontWeight.w700,
+                      color: colors.black,
+                      price: '${subtotal ?? 0}',
+                      size: 14,
+                    ),
+                  ],
+                ),
+              if ((tax ?? 0) > 0)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.vatFivePercentKey.tr(),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  NewPriceWidget(
-                    color: colors.black,
-                    price: '${tax ?? 0}',
-                    size: 13,
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      LangKeys.deliveryFeesKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.black,
+                    NewPriceWidget(
+                      fontWeight: FontWeight.w700,
+                      color: colors.black,
+                      price: '${tax ?? 0}',
+                      size: 14,
+                    ),
+                  ],
+                ),
+              if ((deliveryFee ?? 0) > 0)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.deliveryFeesKey.tr(),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  NewPriceWidget(
-                    color: colors.black,
-                    price: '${deliveryFee ?? 0}',
-                    size: 13,
-                  ),
-                ],
-              ),
-              if((discount??0)>0) Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      LangKeys.discountLabelKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.black,
+                    NewPriceWidget(
+                      fontWeight: FontWeight.w700,
+                      color: colors.black,
+                      price: '${deliveryFee ?? 0}',
+                      size: 14,
+                    ),
+                  ],
+                ),
+              if ((discount ?? 0) > 0)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.discountLabelKey.tr(),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  NewPriceWidget(
-                    color: colors.errorContainer,
-                    price: '${discount ?? 0}',
-                    size: 13,
-                  ),
-                ],
-              ),
+                    NewPriceWidget(
+                      fontWeight: FontWeight.w700,
+                      color: colors.errorContainer,
+                      price: '${discount ?? 0}',
+                      size: 14,
+                    ),
+                  ],
+                ),
             ],
           ),
         ],

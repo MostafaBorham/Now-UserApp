@@ -79,7 +79,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
               context.pushNamed(AppRoutes.storeDetailsScreen, extra: store?.id),
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: colors.white,
               borderRadius: BorderRadius.circular(8),

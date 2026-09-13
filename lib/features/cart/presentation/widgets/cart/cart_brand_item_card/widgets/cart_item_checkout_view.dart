@@ -54,6 +54,7 @@ class CartItemCheckoutView extends StatelessWidget {
                 NewPriceWidget(
                   color: colors.black,
                   price: total,
+                  fontWeight: FontWeight.bold,
                   size: 17,
                 ),
               ],

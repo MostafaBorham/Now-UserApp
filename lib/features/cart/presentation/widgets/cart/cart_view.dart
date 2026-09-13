@@ -113,47 +113,56 @@ class _CartViewState extends ConsumerState<CartView> {
                 message: error.toString(),
                 onRetry: () => ref.read(getCartProvider.notifier).getCart(),
               ),
-          data: (CartModel cart) => AppRefreshIndicator(
-            onRefresh: () async => ref.read(getCartProvider.notifier).getCart(),
-            child: cart.vendors.isEmpty
-                ? const CartEmptyView()
-                : Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                          controller: _scrollController,
-                          // Owns the top spacing AppWavedView drops when a
-                          // scroll controller is wired in, so it scrolls up with
-                          // the content and flattens the wave.
-                          padding: const EdgeInsets.fromLTRB(3, 57, 3, 20),
-                          itemBuilder: (context, index) {
-                            final CartVendorModel cartVendor =
-                                cart.vendors[index];
-                            final int? vendorId = cartVendor.vendor.id;
+          data: (CartModel cart) {
+            // A vendor with no store (null id) can't be rendered or checked
+            // out on its own, so it is dropped from the list entirely.
+            final List<CartVendorModel> vendors = cart.vendors
+                .where((CartVendorModel v) => v.vendor.id != null)
+                .toList();
 
-                            return CartBrandItemCard(
-                              cartVendor: cartVendor,
-                              // A store with no id can't be drafted on its own:
-                              // passing `null` down would check out the whole
-                              // cart instead, so its pill stays inert.
-                              onCheckout: vendorId == null
-                                  ? null
-                                  : () => _checkout(vendorId: vendorId),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return 20.hSpace;
-                          },
-                          itemCount: cart.vendors.length,
+            return AppRefreshIndicator(
+              onRefresh: () async =>
+                  ref.read(getCartProvider.notifier).getCart(),
+              child: vendors.isEmpty
+                  ? const CartEmptyView()
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: ListView.separated(
+                            controller: _scrollController,
+                            // Always scrollable so pull-to-refresh fires even
+                            // when a single item doesn't fill the viewport;
+                            // otherwise the list can't overscroll and the
+                            // gesture never reaches the refresh indicator.
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            // Owns the top spacing AppWavedView drops when a
+                            // scroll controller is wired in, so it scrolls up
+                            // with the content and flattens the wave.
+                            padding: const EdgeInsets.fromLTRB(3, 57, 3, 20),
+                            itemBuilder: (context, index) {
+                              final CartVendorModel cartVendor = vendors[index];
+
+                              return CartBrandItemCard(
+                                cartVendor: cartVendor,
+                                onCheckout: () => _checkout(
+                                  vendorId: cartVendor.vendor.id!,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return 20.hSpace;
+                            },
+                            itemCount: vendors.length,
+                          ),
                         ),
-                      ),
-                      PrimaryAppButton(
-                        title: LangKeys.checkoutKey.tr(),
-                        onTap: () => _checkout(),
-                      ),
-                    ],
-                  ),
-          ),
+                        PrimaryAppButton(
+                          title: LangKeys.checkoutKey.tr(),
+                          onTap: () => _checkout(),
+                        ),
+                      ],
+                    ),
+            );
+          },
         ),
       ),
     );
