@@ -127,16 +127,16 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
             extra: product?.slug,
           ),
           child: Container(
-            width: 76,
-            height: 76,
+            width: 70,
+            height: 70,
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
               boxShadow: AppBoxShadows.greyElevation3,
             ),
             child: AppCachedNetworkImage(
-              width: 76,
-              height: 76,
+              width: 70,
+              height: 70,
               fit: BoxFit.cover,
               imageUrl: widget.product?.images?.firstOrNull ?? '',
             ),
@@ -157,23 +157,26 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    textDirection: TextDirection.ltr,
-                    spacing: 4,
-                    children: [
-                      if ((widget.product?.comparePrice ?? 0) > 0)
-                        OldPriceWidget(
-                          color: colors.neutral500,
-                          price: '${widget.product?.comparePrice}',
-                          size: 10,
+                  Expanded(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      runSpacing: 6,
+                      spacing: 6,
+                      children: [
+                        NewPriceWidget(
+                          color: colors.black,
+                          price: '${widget.product?.price}',
+                          size: 14,
+                          fontWeight: FontWeight.bold,
                         ),
-                      NewPriceWidget(
-                        color: colors.black,
-                        price: '${widget.product?.price}',
-                        size: 14,
-                      ),
-                    ],
+                        // if ((widget.product?.comparePrice ?? 0) > 0)
+                          OldPriceWidget(
+                            color: colors.neutral500,
+                            price: '123212',
+                            size: 12,
+                          ),
+                      ],
+                    ),
                   ),
                   AbsorbPointer(
                     absorbing: isUpdating,
@@ -185,27 +188,27 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                           onTap: () => _updateQuantity(_quantity + 1),
                           customBorder: const CircleBorder(),
                           child: Container(
-                            width: 28,
-                            height: 28,
+                            width: 20,
+                            height: 20,
                             decoration: BoxDecoration(
                               color: colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.add_rounded,
-                              size: 16,
+                              size: 12,
                               color: colors.black,
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 28,
-                          height: 28,
+                          width: 20,
+                          height: 20,
                           child: Center(
                             child: isUpdating
                                 ? SizedBox(
-                                    width: 16,
-                                    height: 16,
+                                    width: 12,
+                                    height: 12,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       color: colors.black,
@@ -214,7 +217,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                 : Text(
                                     _quantity.toString(),
                                     textAlign: TextAlign.center,
-                                    style: AppTextStyles.style14Medium.copyWith(
+                                    style: AppTextStyles.style12Medium.copyWith(
                                       color: colors.tertiaryContainer,
                                     ),
                                   ),
@@ -226,15 +229,15 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                               : null,
                           customBorder: const CircleBorder(),
                           child: Container(
-                            width: 28,
-                            height: 28,
+                            width: 20,
+                            height: 20,
                             decoration: BoxDecoration(
                               color: colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.remove_rounded,
-                              size: 16,
+                              size: 12,
                               color: colors.neutral500,
                             ),
                           ),

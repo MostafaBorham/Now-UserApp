@@ -43,7 +43,7 @@ class CartItemCheckoutView extends StatelessWidget {
             flex: 5,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 12,
+              spacing: 8,
               children: [
                 Text(
                   LangKeys.totalKey.tr(),
