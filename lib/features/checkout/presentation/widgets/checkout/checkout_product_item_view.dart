@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class CheckoutProductItemView extends StatelessWidget {
@@ -21,23 +23,26 @@ class CheckoutProductItemView extends StatelessWidget {
       spacing: 12,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(7),
-          child: SizedBox(
+        Container(
+          width: 76,
+          height: 76,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            boxShadow: AppBoxShadows.greyElevation3,
+          ),
+          child: AppCachedNetworkImage(
             width: 76,
             height: 76,
-            child: AppCachedNetworkImage(
-              width: 76,
-              height: 76,
-              fit: BoxFit.cover,
-              imageUrl: '',
-            ),
+            fit: BoxFit.cover,
+            imageUrl: item?.images?.firstOrNull ?? '',
           ),
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
+            spacing: 8,
             children: [
               Text(
                 context.getLocalizedApiText(item?.name),
@@ -46,23 +51,39 @@ class CheckoutProductItemView extends StatelessWidget {
                   color: colors.tertiaryContainer,
                 ),
               ),
-              Text(
-                'x${item?.quantity ?? 0}',
-                maxLines: 1,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.neutral500,
-                ),
-              ),
-              10.hSpace,
               Row(
-                mainAxisSize: MainAxisSize.min,
-                textDirection: TextDirection.ltr,
-                spacing: 4,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  NewPriceWidget(
-                    color: colors.black,
-                    price: '${item?.price ?? 0}',
-                    size: 14,
+                  Expanded(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      runSpacing: 6,
+                      spacing: 6,
+                      children: [
+                        NewPriceWidget(
+                          color: colors.black,
+                          price: '${(item?.discountPrice ?? 0) < 0
+                              ? item?.price
+                              : item?.discountPrice}',
+                          size: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        if ((item?.discountPrice ?? 0) > 0)
+                          OldPriceWidget(
+                            color: colors.neutral500,
+                            price: '${formatDouble(item?.price)}',
+                            size: 12,
+                          ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'x${item?.quantity ?? 0}',
+                    maxLines: 1,
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.neutral500,
+                    ),
                   ),
                 ],
               ),

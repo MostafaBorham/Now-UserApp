@@ -31,11 +31,6 @@ class _ApplyDiscountCodeViewState
   final TextEditingController _controller = TextEditingController();
   bool _isApplying = false;
 
-  /// The user tapped ✕ on the applied chip, so show the editable field again.
-  /// There is no cancel API, so the applied discount stays in the summary — ✕
-  /// only lets the user enter a different code.
-  bool _dismissed = false;
-
   @override
   void dispose() {
     _controller.dispose();
@@ -82,7 +77,6 @@ class _ApplyDiscountCodeViewState
                 isVoucher: false,
               ),
             );
-        setState(() => _dismissed = false);
       },
     );
   }
@@ -91,9 +85,9 @@ class _ApplyDiscountCodeViewState
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Show the applied chip when this vendor's slot holds a coupon and the user
-    // hasn't tapped ✕. A voucher slot (or no slot) falls back to the editable
-    // field, so applying a voucher automatically de-selects the coupon chip.
+    // Show the applied chip when this vendor's slot holds a coupon. A voucher
+    // slot (or no slot) falls back to the editable field, so applying a voucher
+    // automatically de-selects the coupon chip.
     AppliedDiscountModel? slot;
     for (final AppliedDiscountModel d in ref.watch(appliedDiscountsProvider)) {
       if (d.vendorId == widget.vendorId) {
@@ -101,7 +95,7 @@ class _ApplyDiscountCodeViewState
         break;
       }
     }
-    final bool showChip = slot != null && !slot.isVoucher && !_dismissed;
+    final bool showChip = slot != null && !slot.isVoucher;
 
     return Container(
       width: double.infinity,
@@ -111,12 +105,7 @@ class _ApplyDiscountCodeViewState
         borderRadius: BorderRadius.circular(12),
       ),
       child: IntrinsicHeight(
-        child: showChip
-            ? _AppliedChip(
-                code: slot.code,
-                onClear: () => setState(() => _dismissed = true),
-              )
-            : _buildInputRow(colors),
+        child: showChip ? _AppliedChip(code: slot.code) : _buildInputRow(colors),
       ),
     );
   }
@@ -188,13 +177,13 @@ class _ApplyDiscountCodeViewState
   }
 }
 
-/// The applied-coupon state (Figma): the accepted code with an ✕ to reset, and
-/// a green "Applied" button.
+/// The applied-coupon state (Figma): the accepted code shown in a non-editable
+/// field outlined in primary-500 with a trailing check icon, and a primary-500
+/// "Applied" button.
 class _AppliedChip extends StatelessWidget {
-  const _AppliedChip({required this.code, required this.onClear});
+  const _AppliedChip({required this.code});
 
   final String code;
-  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -210,22 +199,31 @@ class _AppliedChip extends StatelessWidget {
             decoration: BoxDecoration(
               color: colors.onPrimaryContainer,
               borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: colors.primary500Main),
             ),
             child: Row(
+              spacing: 8,
               children: [
                 Expanded(
-                  child: Text(
-                    code,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: TextFormField(
+                    initialValue: code,
+                    readOnly: true,
+                    enableInteractiveSelection: false,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.black,
                     ),
+                    decoration: const InputDecoration(
+                      isCollapsed: true,
+                      isDense: true,
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
-                InkWell(
-                  onTap: onClear,
-                  child: Icon(Icons.close, size: 18, color: colors.neutral500),
+                Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: colors.primary500Main,
                 ),
               ],
             ),
