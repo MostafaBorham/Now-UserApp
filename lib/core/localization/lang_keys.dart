@@ -376,6 +376,7 @@ abstract class LangKeys {
   static const String editKey = 'edit';
   static const String noAddressKey = 'noAddress';
   static const String noAddressSelectedKey = 'noAddressSelected';
+  static const String noDeliveryAddressSelectedKey = 'noDeliveryAddressSelected';
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
   static const String addWalletKey = 'addWallet';
