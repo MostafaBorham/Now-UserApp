@@ -279,6 +279,20 @@ class ProductDetailsScreen extends ConsumerWidget {
         ),
         appBarTitle: LangKeys.productDetailsKey.tr(),
         hasCartIcon: true,
+        // Tapping the cart drops every route pushed on top of the main screen
+        // (product details and anything in between) and switches the main
+        // screen's bottom nav to the cart tab (index 2) instead of pushing a
+        // new cart route on top of the product details stack — same behaviour
+        // as the store details screen.
+        onCartTap: () {
+          ref.read(mainTabIndexProvider.notifier).state = 2;
+          // Capture the router once: after the first pop this widget's context
+          // is defunct, so drive the loop off the router instance, not context.
+          final GoRouter router = GoRouter.of(context);
+          while (router.canPop()) {
+            router.pop();
+          }
+        },
       ),
     );
   }
