@@ -26,25 +26,6 @@ class GeocodingRepo {
       return const Left(Failure(LangKeys.failedToGetAddress));
     }
 
-    return Right(_compose(placemark, location));
-  }
-
-  /// The area is built from the most specific administrative parts the geocoder
-  /// filled in, falling back to the place name when it filled in none.
-  static AddressModel _compose(Placemark placemark, LatLng location) {
-    final String area = <String?>[
-      placemark.subLocality,
-      placemark.locality,
-      placemark.administrativeArea,
-    ].whereType<String>().where((String part) => part.isNotEmpty).join(' - ');
-
-    return AddressModel(
-      country: placemark.country,
-      city: placemark.locality,
-      area: area.isEmpty ? placemark.name : area,
-      street: placemark.street,
-      latitude: location.latitude.toString(),
-      longitude: location.longitude.toString(),
-    );
+    return Right(AddressModel.fromPlacemark(placemark, location));
   }
 }
