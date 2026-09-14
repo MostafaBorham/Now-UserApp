@@ -1,61 +1,64 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
-/// Shows the delivery instructions carried by the selected address — the
-/// "directions to your address" note captured on the address screen, i.e.
-/// `AddressModel.notes`. Tapping routes there to edit it, because that is the
-/// only place the value is persisted: confirm-order sends an address id, not
-/// instructions, so an inline field here would have nowhere to submit to.
-class DeliveryInstructionsCard extends ConsumerWidget {
-  const DeliveryInstructionsCard({super.key});
+/// Inline editor for the per-order delivery instructions ("directions to the
+/// driver"). The typed text is submitted with the order as `delivery_instructions`;
+/// the parent owns the [controller] so it can read that value on confirm.
+///
+/// The field auto-grows: it starts one line tall and expands the card as the
+/// text wraps onto more lines, up to [maxLines] before it starts scrolling.
+class DeliveryInstructionsCard extends StatelessWidget {
+  const DeliveryInstructionsCard({super.key, required this.controller});
+
+  final TextEditingController controller;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final AddressModel? address = ref.watch(defaultAddressProvider).valueOrNull;
-    final String? instructions = address?.notes?.trim().isEmpty ?? true
-        ? null
-        : address!.notes;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => context.pushNamed(AppRoutes.myAddressScreen),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: colors.onPrimaryContainer,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 8,
-          children: [
-            Text(
-              LangKeys.deliveryInstructionsKey.tr(),
-              style: AppTextStyles.style16Medium.copyWith(
-                color: colors.tertiaryContainer,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.onPrimaryContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          Text(
+            LangKeys.deliveryInstructionsKey.tr(),
+            style: AppTextStyles.style16Medium.copyWith(
+              color: colors.tertiaryContainer,
+            ),
+          ),
+          TextField(
+            controller: controller,
+            minLines: 1,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
+            style: AppTextStyles.style14Regular.copyWith(color: colors.black),
+            cursorColor: colors.tertiaryContainer,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              hintText: LangKeys.addInstructionsHintKey.tr(),
+              hintStyle: AppTextStyles.style14Regular.copyWith(
+                color: colors.neutral500,
               ),
             ),
-            Text(
-              instructions ?? LangKeys.addInstructionsHintKey.tr(),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.style14Regular.copyWith(
-                color: instructions == null ? colors.neutral500 : colors.black,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

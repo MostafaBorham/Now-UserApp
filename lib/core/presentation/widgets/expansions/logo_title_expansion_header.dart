@@ -42,8 +42,7 @@ class LogoTitleExpansionHeader extends StatelessWidget {
                 radius: 24,
                 elevation: 1,
                 backgroundColor: colors.onTertiaryContainer,
-                logoUrl: logoUrl ??
-                    'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
+                logoUrl: logoUrl,
               ),
               Text(
                 title,

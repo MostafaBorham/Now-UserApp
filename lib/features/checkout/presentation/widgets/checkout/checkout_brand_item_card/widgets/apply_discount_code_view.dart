@@ -103,9 +103,17 @@ class _ApplyDiscountCodeViewState
       decoration: BoxDecoration(
         color: colors.primaryFixed,
         borderRadius: BorderRadius.circular(12),
+        border: showChip ? Border.all(color: colors.primary500Main) : null,
       ),
       child: IntrinsicHeight(
-        child: showChip ? _AppliedChip(code: slot.code) : _buildInputRow(colors),
+        child: showChip
+            ? _AppliedChip(
+                code: slot.code,
+                onRemove: () => ref
+                    .read(appliedDiscountsProvider.notifier)
+                    .remove(widget.vendorId!),
+              )
+            : _buildInputRow(colors),
       ),
     );
   }
@@ -177,73 +185,63 @@ class _ApplyDiscountCodeViewState
   }
 }
 
-/// The applied-coupon state (Figma): the accepted code shown in a non-editable
-/// field outlined in primary-500 with a trailing check icon, and a primary-500
-/// "Applied" button.
+/// The applied-coupon state (Figma): a solid primary-500 "Applied" button
+/// alongside a neutral pill holding a remove (×) control and the accepted code.
 class _AppliedChip extends StatelessWidget {
-  const _AppliedChip({required this.code});
+  const _AppliedChip({required this.code, required this.onRemove});
 
   final String code;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 12,
       children: [
         Expanded(
-          flex: 3,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: colors.onPrimaryContainer,
               borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: colors.primary500Main),
             ),
             child: Row(
               spacing: 8,
               children: [
                 Expanded(
-                  child: TextFormField(
-                    initialValue: code,
-                    readOnly: true,
-                    enableInteractiveSelection: false,
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  child: Text(
+                    code,
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.style14Regular.copyWith(
                       color: colors.black,
                     ),
-                    decoration: const InputDecoration(
-                      isCollapsed: true,
-                      isDense: true,
-                      border: InputBorder.none,
-                    ),
                   ),
                 ),
-                Icon(
-                  Icons.check_circle,
-                  size: 18,
-                  color: colors.primary500Main,
+                InkWell(
+                  onTap: onRemove,
+                  customBorder: const CircleBorder(),
+                  child: Icon(
+                    Icons.close,
+                    size: 14,
+                    color: colors.neutral500,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: colors.primary500Main,
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                LangKeys.appliedKey.tr(),
-                style: AppTextStyles.style14Medium.copyWith(
-                  color: colors.onPrimaryContainer,
-                ),
-              ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          decoration: BoxDecoration(
+            color: colors.primary500Main,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Text(
+            LangKeys.appliedKey.tr(),
+            style: AppTextStyles.style14Medium.copyWith(
+              color: colors.white,
             ),
           ),
         ),

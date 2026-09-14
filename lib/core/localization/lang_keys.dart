@@ -13,6 +13,7 @@ abstract class LangKeys {
   static const String categoriesKey = 'categories';
   static const String discountUpToKey = 'discountUpTo';
   static const String discountCouponKey = 'discountCoupon';
+  static const String purchaseVoucherKey = 'purchaseVoucher';
   static const String inStoreKey = 'inStore';
   static const String showMoreKey = 'showMore';
   static const String offersKey = 'offers';

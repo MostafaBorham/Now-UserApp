@@ -4,22 +4,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/discount_code_item.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vouchers/voucher_ticket.dart';
+import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vouchers/voucher_tickets_list.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/viewmodel/get_purchase_vouchers_vm.dart';
 
 /// The purchase-vouchers strip on the checkout screen.
 ///
 /// Fetches vouchers for the checkout's vendor(s) and renders each as the shared
-/// [DiscountCodeItem] ticket. A voucher applicable to this checkout is tappable
+/// [VoucherTicket]. A voucher applicable to this checkout is tappable
 /// (tapping applies it to its vendor); others are dimmed. The applied voucher
 /// gets a highlight border. Hidden entirely while loading, on error, or when
 /// there are no vouchers.
@@ -77,58 +77,51 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     // ticket is locked so a second voucher can't be applied concurrently.
     final bool isApplying = _applyingKey != null;
 
-    return SizedBox(
-      height: 158,
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAlias,
-        scrollDirection: Axis.horizontal,
-        itemCount: vouchers.length,
-        separatorBuilder: (_, _) => 16.wSpace,
-        itemBuilder: (BuildContext context, int index) {
-          final PurchaseVoucherModel voucher = vouchers[index];
-          final int? targetVendorId = _resolveVendorId(voucher, vendorIds);
-          final bool applicable = targetVendorId != null;
+    return VoucherTicketsList(
+      itemCount: vouchers.length,
+      itemBuilder: (BuildContext context, int index, bool darkHead) {
+        final PurchaseVoucherModel voucher = vouchers[index];
+        final int? targetVendorId = _resolveVendorId(voucher, vendorIds);
+        final bool applicable = targetVendorId != null;
 
-          final bool selected =
-              applicable &&
-              applied.any(
-                (AppliedDiscountModel d) =>
-                    d.vendorId == targetVendorId &&
-                    d.isVoucher &&
-                    d.code == voucher.code,
-              );
+        final bool selected =
+            applicable &&
+            applied.any(
+              (AppliedDiscountModel d) =>
+                  d.vendorId == targetVendorId &&
+                  d.isVoucher &&
+                  d.code == voucher.code,
+            );
 
-          final bool isLoading =
-              applicable &&
-              _applyingKey == _voucherKey(targetVendorId, voucher.code);
+        final bool isLoading =
+            applicable &&
+            _applyingKey == _voucherKey(targetVendorId, voucher.code);
 
-          // Clip the overlay to the ticket's rounded corners so the progress
-          // barrier doesn't paint white squares over the transparent corners.
-          final Widget card = ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: BlockingLoadingOverlay(
-              isLoading: isLoading,
-              child: DiscountCodeItem(
-                percentage: _discountText(voucher),
-                storeName: _storeName(context, voucher),
-                validity: _validity(context, voucher),
-                isDimmed: !applicable,
-                isSelected: selected,
-              ),
+        // Non-applicable tickets are never tappable; while an apply is in
+        // flight every other ticket is locked too.
+        final bool tappable = applicable && !isApplying;
+
+        // Clip the overlay to the ticket's rounded corners so the progress
+        // barrier doesn't paint white squares over the transparent corners.
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BlockingLoadingOverlay(
+            isLoading: isLoading,
+            child: VoucherTicket(
+              discountValue: _discountText(voucher),
+              isPercentage: voucher.isPercentage,
+              name: voucher.name,
+              validityText: _validity(context, voucher),
+              darkHead: darkHead,
+              isDimmed: !applicable,
+              isSelected: selected,
+              onTap: tappable
+                  ? () => _onTap(voucher, targetVendorId, selected)
+                  : null,
             ),
-          );
-
-          // Non-applicable tickets are never tappable; while an apply is in
-          // flight every other ticket is locked too.
-          if (!applicable || isApplying) return card;
-
-          return GestureDetector(
-            onTap: () => _onTap(voucher, targetVendorId, selected),
-            child: card,
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -195,19 +188,14 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     );
   }
 
+  /// The bare discount amount (no `%`/currency — [VoucherTicket] adds the unit).
   String _discountText(PurchaseVoucherModel voucher) {
     final double v = voucher.discountValue;
-    final String value = v % 1 == 0 ? v.toInt().toString() : v.toString();
-    return voucher.isPercentage ? '$value%' : value;
+    return v % 1 == 0 ? v.toInt().toString() : v.toString();
   }
 
-  String _storeName(BuildContext context, PurchaseVoucherModel voucher) {
-    if (voucher.isPlatform || voucher.stores.isEmpty) {
-      return LangKeys.allStoresKey.tr();
-    }
-    return context.getLocalizedApiText(voucher.stores.first.name);
-  }
-
+  /// Validity window as "from {startsAt} to {expiresAt}", with each side
+  /// dropped when its date is missing.
   String _validity(BuildContext context, PurchaseVoucherModel voucher) {
     final String start = context.getLocalizedApiDate(
       apiDateTimeStamp: voucher.startsAt,
@@ -215,6 +203,9 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     final String end = context.getLocalizedApiDate(
       apiDateTimeStamp: voucher.expiresAt,
     );
-    return '$start - $end';
+    return [
+      if (start.isNotEmpty) '${LangKeys.fromKey.tr()} $start',
+      if (end.isNotEmpty) '${LangKeys.toKey.tr()} $end',
+    ].join(' ');
   }
 }

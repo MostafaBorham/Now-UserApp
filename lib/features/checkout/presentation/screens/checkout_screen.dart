@@ -44,6 +44,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   int? _addressId;
 
+  // Holds the per-order delivery instructions the user types inline; read on
+  // confirm and sent as the order `delivery_instructions`.
+  final TextEditingController _instructionsController = TextEditingController();
+
   // Drives the wave-flatten animation in [AppWavedView]: as the body scrolls
   // off the top the header wave straightens out.
   final ScrollController _scrollController = ScrollController();
@@ -54,6 +58,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   @override
   void dispose() {
+    _instructionsController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -84,13 +89,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     final List<AppliedDiscountModel> coupons = ref.read(
       appliedDiscountsProvider,
     );
-    const String? notes = null;
+    final String deliveryInstructions = _instructionsController.text.trim();
 
     final String idempotencyKey = _idempotencyKey.forRequest(
       _placeFingerprint(
         addressId: _addressId,
         driverTip: _driverTip,
-        notes: notes,
+        deliveryInstructions: deliveryInstructions,
         paymentMethod: paymentMethod,
         coupons: coupons,
       ),
@@ -104,19 +109,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           addressId: _addressId!,
           paymentMethod: paymentMethod,
           driverTip: _driverTip,
-          notes: notes,
+          deliveryInstructions: deliveryInstructions,
           coupons: coupons,
         );
   }
 
   /// A fingerprint of exactly the fields the place request carries (and the
-  /// server hashes): address, tip, notes, payment method and the *coupon* codes
-  /// (vouchers aren't sent). Two submits with the same fingerprint are the same
-  /// order and may share an idempotency key.
+  /// server hashes): address, tip, delivery instructions, payment method and
+  /// the *coupon* codes (vouchers aren't sent). Two submits with the same
+  /// fingerprint are the same order and may share an idempotency key.
   String _placeFingerprint({
     int? addressId,
     double? driverTip,
-    String? notes,
+    String? deliveryInstructions,
     String? paymentMethod,
     List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
   }) {
@@ -134,7 +139,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return <String>[
       '${addressId ?? ''}',
       '$driverTip',
-      notes ?? '',
+      deliveryInstructions ?? '',
       paymentMethod ?? 'wallet',
       sortedCoupons,
     ].join('|');
@@ -216,7 +221,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   DeliveryAddressCard(
                     onAddressIdChanged: (int? id) => _addressId = id,
                   ),
-                  const DeliveryInstructionsCard(),
+                  DeliveryInstructionsCard(
+                    controller: _instructionsController,
+                  ),
                   TipYourDriverView(
                     initialTip: 2,
                     onTipChanged: (double tip) => _driverTip = tip,

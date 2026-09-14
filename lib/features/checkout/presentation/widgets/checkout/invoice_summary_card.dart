@@ -53,7 +53,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
         children: [
           Text(
             LangKeys.invoiceSummaryKey.tr(),
-            style: AppTextStyles.style16Medium.copyWith(
+            style: AppTextStyles.style16Bold.copyWith(
               color: colors.tertiaryContainer,
             ),
           ),
@@ -65,7 +65,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       LangKeys.subtotalKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
+                      style: AppTextStyles.style14SemiBold.copyWith(
                         color: colors.black,
                       ),
                     ),
@@ -73,7 +73,8 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   NewPriceWidget(
                     color: colors.black,
                     price: '${formatDouble(orderGroup.subtotal)}',
-                    size: 13,
+                    size: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ],
               ),
@@ -82,7 +83,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       LangKeys.vatFivePercentKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
+                      style: AppTextStyles.style14SemiBold.copyWith(
                         color: colors.black,
                       ),
                     ),
@@ -90,7 +91,8 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   NewPriceWidget(
                     color: colors.black,
                     price: '${formatDouble(orderGroup.tax)}',
-                    size: 13,
+                    size: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ],
               ),
@@ -99,7 +101,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       LangKeys.deliveryFeesKey.tr(),
-                      style: AppTextStyles.style14Regular.copyWith(
+                      style: AppTextStyles.style14SemiBold.copyWith(
                         color: colors.black,
                       ),
                     ),
@@ -107,7 +109,8 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   NewPriceWidget(
                     color: colors.black,
                     price: '${formatDouble(orderGroup.deliveryFee)}',
-                    size: 13,
+                    size: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ],
               ),
@@ -117,7 +120,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         LangKeys.discountLabelKey.tr(),
-                        style: AppTextStyles.style14Regular.copyWith(
+                        style: AppTextStyles.style14SemiBold.copyWith(
                           color: colors.black,
                         ),
                       ),
@@ -125,7 +128,8 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     NewPriceWidget(
                       color: colors.errorContainer,
                       price: '${formatDouble(discount)}',
-                      size: 13,
+                      size: 15,
+                      fontWeight: FontWeight.w600,
                     ),
                   ],
                 ),
@@ -141,7 +145,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
               Expanded(
                 child: Text(
                   LangKeys.totalKey.tr(),
-                  style: AppTextStyles.style14SemiBold.copyWith(
+                  style: AppTextStyles.style16Bold.copyWith(
                     color: colors.black,
                   ),
                 ),
@@ -149,7 +153,8 @@ class InvoiceSummaryCard extends ConsumerWidget {
               NewPriceWidget(
                 color: colors.primary500Main,
                 price: '${formatDouble(total)}',
-                size: 13,
+                size: 20,
+                fontWeight: FontWeight.w700,
               ),
             ],
           ),

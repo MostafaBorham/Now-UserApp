@@ -75,6 +75,7 @@ class CheckoutApiService {
     String? paymentMethod,
     double? driverTip,
     String? notes,
+    String? deliveryInstructions,
     Map<int, String>? coupons,
   }) {
     return _dio.post(
@@ -84,6 +85,7 @@ class CheckoutApiService {
         paymentMethod: paymentMethod,
         driverTip: driverTip,
         notes: notes,
+        deliveryInstructions: deliveryInstructions,
         coupons: coupons,
       ),
       // Placing is the one non-idempotent step: the server dedupes retries by

@@ -49,6 +49,7 @@ class ConfirmOrderViewModel
     String? paymentMethod,
     double? driverTip,
     String? notes,
+    String? deliveryInstructions,
     List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
   }) async {
     state = const AsyncValue<List<OrderModel>>.loading();
@@ -59,6 +60,7 @@ class ConfirmOrderViewModel
       paymentMethod: paymentMethod,
       driverTip: driverTip,
       notes: notes,
+      deliveryInstructions: deliveryInstructions,
       // Only coupons are sent to the backend at placement — vouchers are not
       // persisted there, so a voucher slot must not be posted as a coupon.
       coupons: <int, String>{

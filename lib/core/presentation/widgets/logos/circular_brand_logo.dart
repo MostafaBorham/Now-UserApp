@@ -14,7 +14,7 @@ class CircularBrandLogo extends StatelessWidget {
   });
 
   final double radius;
-  final String logoUrl;
+  final String? logoUrl;
   final Color? backgroundColor;
   final double? elevation;
 
@@ -24,6 +24,17 @@ class CircularBrandLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final String? url = logoUrl?.trim();
+    final Uri? uri = (url == null || url.isEmpty) ? null : Uri.tryParse(url);
+    final bool hasValidUrl =
+        uri != null && uri.hasScheme && uri.host.isNotEmpty;
+    final Widget noImage = FractionallySizedBox(
+      widthFactor: 2,
+      heightFactor: 2,
+      child: Assets.media.images.png.noImageAvail.image(
+        fit: BoxFit.contain,
+      ),
+    );
     return Material(
       elevation: elevation!,
       shape: CircleBorder(),
@@ -32,28 +43,24 @@ class CircularBrandLogo extends StatelessWidget {
         radius: radius,
         backgroundColor: backgroundColor ?? colors.onPrimaryContainer,
         child: Center(
-          child: CachedNetworkImage(
-            imageUrl: logoUrl,
-            fit: BoxFit.contain,
-            width: radius * logoScale,
-            placeholder: (context, url) => Center(
-              child: SizedBox(
-                width: radius * 0.7,
-                height: radius * 0.7,
-                child: CircularProgressIndicator(
-                  color: colors.primary500Main,
-                  strokeWidth: radius * 0.1,
+          child: !hasValidUrl
+              ? noImage
+              : CachedNetworkImage(
+                  imageUrl: url!,
+                  fit: BoxFit.contain,
+                  width: radius * logoScale,
+                  placeholder: (context, url) => Center(
+                    child: SizedBox(
+                      width: radius * 0.7,
+                      height: radius * 0.7,
+                      child: CircularProgressIndicator(
+                        color: colors.primary500Main,
+                        strokeWidth: radius * 0.1,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => noImage,
                 ),
-              ),
-            ),
-            errorWidget: (context, url, error) => FractionallySizedBox(
-              widthFactor: 2,
-              heightFactor: 2,
-              child: Assets.media.images.png.noImageAvail.image(
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
         ),
       ),
     );

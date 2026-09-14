@@ -168,6 +168,7 @@ class CheckoutRepo {
     String? paymentMethod,
     double? driverTip,
     String? notes,
+    String? deliveryInstructions,
     Map<int, String>? coupons,
   }) async {
     if (!await ConnectionChecker.isConnected) {
@@ -182,6 +183,7 @@ class CheckoutRepo {
         paymentMethod: paymentMethod,
         driverTip: driverTip,
         notes: notes,
+        deliveryInstructions: deliveryInstructions,
         coupons: coupons,
       );
 

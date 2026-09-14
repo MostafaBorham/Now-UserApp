@@ -39,21 +39,25 @@ abstract class CheckoutEndpoints {
   static String confirmOrder(String orderGroupUuid) =>
       '/api/v1/checkout/cart/$orderGroupUuid';
 
-  /// Builds the confirm-order request body. Only [addressId] and
-  /// [paymentMethod] are always sent; the optional fields are omitted when not
-  /// provided so the server keeps whatever the draft already holds. [coupons]
-  /// maps a vendor id to its coupon code and — JSON object keys must be
-  /// strings — is serialized with the vendor ids in their string form.
+  /// Builds the confirm-order request body. Only [addressId], [paymentMethod]
+  /// and [deliveryInstructions] are always sent; the remaining optional fields
+  /// are omitted when not provided so the server keeps whatever the draft
+  /// already holds. [deliveryInstructions] carries the driver directions typed
+  /// on the checkout screen and defaults to an empty string. [coupons] maps a
+  /// vendor id to its coupon code and — JSON object keys must be strings — is
+  /// serialized with the vendor ids in their string form.
   static Map<String, dynamic> confirmOrderBody({
     int? addressId,
     String? paymentMethod,
     double? driverTip,
     String? notes,
+    String? deliveryInstructions,
     Map<int, String>? coupons,
   }) => <String, dynamic>{
     'address_id': addressId,
     'driver_tip': ?driverTip,
     'notes': ?notes,
+    'delivery_instructions': deliveryInstructions ?? '',
     'payment_method': paymentMethod ?? 'wallet',
     if (coupons != null && coupons.isNotEmpty)
       'coupons': coupons.map(
