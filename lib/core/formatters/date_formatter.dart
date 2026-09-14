@@ -26,6 +26,28 @@ String formatLocalizedDate(
   return DateFormat.yMMMMd(languageCode).format(utcDate);
 }
 
+/// Formats a **date-only** API value (`YYYY-MM-DD`, e.g. a birthday) as a
+/// localized date. Returns null when [dateString] is null, empty or
+/// unparseable, so callers can fall back to a hint.
+///
+/// Unlike [formatLocalizedDate] this deliberately does **not** convert to UTC.
+/// A date with no time parses as local midnight, so shifting it by the device's
+/// offset lands on the previous day everywhere east of Greenwich — a birthday
+/// of `2001-04-17` would read as 16 April in Egypt and Saudi Arabia.
+String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
+  if (dateString == null || dateString.trim().isEmpty) {
+    return null;
+  }
+
+  final parsedDate = DateTime.tryParse(dateString);
+
+  if (parsedDate == null) {
+    return null;
+  }
+
+  return DateFormat.yMMMMd(context.locale.languageCode).format(parsedDate);
+}
+
 /// Formats a raw API timestamp as a localized numeric `dd-MM-yyyy` date
 /// (e.g. `10-04-2026`, and `١٠-٠٤-٢٠٢٦` with Arabic-Indic digits under `ar`),
 /// following the current app locale. Like [formatLocalizedDate] it returns an

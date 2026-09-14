@@ -444,5 +444,10 @@
   "editInformation": "تعديل المعلومات",
   "save": "حفظ",
   "chooseFromGallery": "اختر من المعرض",
-  "removePhoto": "إزالة الصورة"
+  "removePhoto": "إزالة الصورة",
+  "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+  "profileUpdated": "تم تحديث معلوماتك",
+  "discardChanges": "تجاهل التعديلات؟",
+  "discardChangesMessage": "لم يتم حفظ تعديلاتك. الخروج الآن سيؤدي إلى تجاهلها.",
+  "discard": "تجاهل"
 }

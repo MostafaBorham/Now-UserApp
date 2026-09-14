@@ -48,4 +48,14 @@ class AppValidator {
     final String? tail = saudiLocalPhoneTail(raw);
     return tail == null ? (raw ?? '') : '+96605$tail';
   }
+
+  static final RegExp _emailRegExp = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
+
+  /// Whether [email] is a plausible address.
+  ///
+  /// Deliberately permissive: the server is the authority on what it will
+  /// accept, and an over-strict client regex rejects valid addresses (plus
+  /// tags, long TLDs, subdomains). This exists only to catch the obvious typo
+  /// before spending a round-trip on it.
+  static bool isValidEmail(String email) => _emailRegExp.hasMatch(email.trim());
 }

@@ -458,4 +458,11 @@ abstract class LangKeys {
   static const String welcomeVoucherMiddleKey = 'welcomeVoucherMiddle';
   static const String welcomeVoucherDiscountKey = 'welcomeVoucherDiscount';
   static const String welcomeVoucherSuffixKey = 'welcomeVoucherSuffix';
+
+  // Personal information - editing
+  static const String invalidEmailKey = 'invalidEmail';
+  static const String profileUpdatedKey = 'profileUpdated';
+  static const String discardChangesKey = 'discardChanges';
+  static const String discardChangesMessageKey = 'discardChangesMessage';
+  static const String discardKey = 'discard';
 }

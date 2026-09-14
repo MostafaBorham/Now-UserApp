@@ -445,5 +445,10 @@
   "editInformation": "Edit Information",
   "save": "Save",
   "chooseFromGallery": "Choose from gallery",
-  "removePhoto": "Remove photo"
+  "removePhoto": "Remove photo",
+  "invalidEmail": "Please enter a valid email address",
+  "profileUpdated": "Your information has been updated",
+  "discardChanges": "Discard changes?",
+  "discardChangesMessage": "Your edits have not been saved. Leaving now will discard them.",
+  "discard": "Discard"
 }
