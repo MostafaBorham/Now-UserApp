@@ -10,10 +10,15 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses
 /// [AddressModel] returned by the backend. Trigger with
 /// `ref.read(addAddressProvider.notifier).addAddress(address: ...)` and watch
 /// the provider to react to loading / error / success.
+///
+/// `autoDispose` because this action state is scoped to the details screen:
+/// leaving it cancels any in-flight request through the repo, and does not
+/// leave a finished save's result parked for the next visit.
 final addAddressProvider =
-    StateNotifierProvider<AddAddressViewModel, AsyncValue<AddressModel?>>(
-      (Ref ref) => AddAddressViewModel(const AsyncValue.data(null), ref),
-    );
+    StateNotifierProvider.autoDispose<
+      AddAddressViewModel,
+      AsyncValue<AddressModel?>
+    >((Ref ref) => AddAddressViewModel(const AsyncValue.data(null), ref));
 
 class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   AddAddressViewModel(super.initialState, this._ref);
