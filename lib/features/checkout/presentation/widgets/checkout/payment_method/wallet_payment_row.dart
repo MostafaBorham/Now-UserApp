@@ -9,106 +9,102 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 
-/// The wallet payment option, shown under the payment methods section: the
-/// balance with a checkbox that is ticked by default, and — while it is ticked
-/// — a note explaining that the method picked above only covers the shortfall.
+/// The wallet payment row that closes the payment methods card: the balance
+/// with a checkbox ticked by default, and — while it is ticked — a note
+/// explaining that the method picked above only covers the shortfall.
+///
+/// Renders bare (no surrounding card) so it drops into the payment methods
+/// list as just another row alongside the saved cards — [PaymentMethodsCard]
+/// owns the grey card that wraps the whole list.
 ///
 /// The note hangs off the checkbox rather than off a balance-vs-total
 /// comparison: it is guidance about how the wallet is charged, which stops
 /// being true the moment the wallet is switched off.
-class WalletPaymentOption extends ConsumerWidget {
-  const WalletPaymentOption({super.key});
+class WalletPaymentRow extends ConsumerWidget {
+  const WalletPaymentRow({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final bool selected = ref.watch(walletPaymentProvider);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colors.onPrimaryContainer,
-        borderRadius: AppBorderRadius.brCircular12,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 12,
-        children: [
-          InkWell(
-            onTap: () =>
-                ref.read(walletPaymentProvider.notifier).state = !selected,
-            borderRadius: AppBorderRadius.brCircular12,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.primaryFixed,
-                borderRadius: AppBorderRadius.brCircular12,
-              ),
-              child: Row(
-                spacing: 12,
-                children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: colors.primary100,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Assets.media.images.svg.wallet2.svg(
-                      width: 24,
-                      height: 24,
-                    ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      spacing: 12,
+      children: [
+        InkWell(
+          onTap: () =>
+              ref.read(walletPaymentProvider.notifier).state = !selected,
+          borderRadius: AppBorderRadius.brCircular12,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: colors.primaryFixed,
+              borderRadius: AppBorderRadius.brCircular12,
+            ),
+            child: Row(
+              spacing: 12,
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: colors.primary100,
+                    shape: BoxShape.circle,
                   ),
-                  Expanded(
-                    child: Row(
-                      spacing: 16,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                LangKeys.walletKey.tr(),
-                                style: AppTextStyles.style16Medium.copyWith(
-                                  color: colors.tertiaryContainer,
+                  child: Assets.media.images.svg.wallet2.svg(
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    spacing: 16,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              LangKeys.walletKey.tr(),
+                              style: AppTextStyles.style16Medium.copyWith(
+                                color: colors.tertiaryContainer,
+                              ),
+                            ),
+                            Row(
+                              spacing: 4,
+                              children: [
+                                Text(
+                                  LangKeys.balanceKey.tr(),
+                                  style: AppTextStyles.style14Regular
+                                      .copyWith(color: colors.neutral500),
                                 ),
-                              ),
-                              Row(
-                                spacing: 4,
-                                children: [
-                                  Text(
-                                    LangKeys.balanceKey.tr(),
-                                    style: AppTextStyles.style14Regular
-                                        .copyWith(color: colors.neutral500),
-                                  ),
-                                  // ponytail: hard-coded like the rest of the
-                                  // wallet feature — there is no balance endpoint
-                                  // yet. Swap for the real balance when it lands.
-                                  NewPriceWidget(
-                                    color: colors.neutral1200,
-                                    size: 15,
-                                    price: '150.00',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                // ponytail: hard-coded like the rest of the
+                                // wallet feature — there is no balance endpoint
+                                // yet. Swap for the real balance when it lands.
+                                NewPriceWidget(
+                                  color: colors.neutral1200,
+                                  size: 15,
+                                  price: '150.00',
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        _WalletCheckbox(selected: selected),
-                      ],
-                    ),
+                      ),
+                      _WalletCheckbox(selected: selected),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          if (selected) const _ShortfallNote(),
-        ],
-      ),
+        ),
+        if (selected) const _ShortfallNote(),
+      ],
     );
   }
 }

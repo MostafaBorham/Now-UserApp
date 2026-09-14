@@ -6,9 +6,14 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/payment_methods_radio_group.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_row.dart';
 
 /// A soft grey card that lists the available payment methods with a single
-/// (radio-style) selection, followed by an "Add New Card" outlined button.
+/// (radio-style) selection, closes with the wallet as one more selectable row,
+/// and ends with an "Add New Card" outlined button.
+///
+/// This is the populated half of the payment section — [CheckoutPaymentSection]
+/// swaps it for the red "choose a method" prompt when no card is on file.
 ///
 /// Selection state is kept internally; [onChanged] reports the picked index
 /// and [onAddNewCard] fires when the bottom button is tapped.
@@ -88,6 +93,7 @@ class _PaymentMethodsCardState
               widget.onChanged?.call(index);
             },
           ),
+          const WalletPaymentRow(),
           InkWell(
             onTap: widget.onAddNewCard,
             borderRadius: AppBorderRadius.brCircular8,

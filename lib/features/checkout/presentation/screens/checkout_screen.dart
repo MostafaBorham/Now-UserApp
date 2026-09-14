@@ -21,7 +21,6 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/purchase_vouchers_strip.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/checkout_payment_section.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_option.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/tip_your_driver_view.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
@@ -223,7 +222,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     onTipChanged: (double tip) => _driverTip = tip,
                   ),
                   const CheckoutPaymentSection(),
-                  const WalletPaymentOption(),
                   const PurchaseVouchersStrip(),
                   const InvoiceSummarySection(),
 

@@ -1,7 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_option.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_row.dart';
 
 import '../helpers/categories_test_harness.dart';
 
@@ -16,7 +16,7 @@ void main() {
   testWidgets('starts ticked, and the note tracks the tick', (
     WidgetTester tester,
   ) async {
-    await pumpCategoriesWidget(tester, const WalletPaymentOption());
+    await pumpCategoriesWidget(tester, const WalletPaymentRow());
 
     expect(note(), findsOneWidget);
 
@@ -27,7 +27,7 @@ void main() {
   });
 
   testWidgets('the note is never truncated', (WidgetTester tester) async {
-    await pumpCategoriesWidget(tester, const WalletPaymentOption());
+    await pumpCategoriesWidget(tester, const WalletPaymentRow());
 
     // Every `AppTextStyles` entry bakes in `TextOverflow.ellipsis`, and an
     // ellipsis with no `maxLines` collapses the paragraph to a single line —
