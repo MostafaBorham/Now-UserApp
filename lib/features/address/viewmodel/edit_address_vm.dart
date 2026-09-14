@@ -29,9 +29,15 @@ class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   }
 
   Future<void> editAddress({
-    required int addressId,
+    required int? addressId,
     required AddressModel address,
   }) async {
+    // An address with no id was never saved server-side — there is nothing to
+    // update, and the caller's `?? 0` fallback used to turn that into a PUT to
+    // /addresses/0. Guarded here rather than at the call site so every caller
+    // is covered, the way [DeleteAddressViewModel.deleteAddress] does it.
+    if (addressId == null) return;
+
     state = const AsyncValue.loading();
 
     final result = await _repo.editAddress(

@@ -179,7 +179,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     if (widget.isEditScreen) {
       ref
           .read(editAddressProvider.notifier)
-          .editAddress(addressId: widget.address.id ?? 0, address: address);
+          .editAddress(addressId: widget.address.id, address: address);
     } else {
       ref.read(addAddressProvider.notifier).addAddress(address: address);
     }
