@@ -14,13 +14,23 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 /// error message (a [LangKeys] key or a raw server message — callers apply
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class AddressRepo {
-  final AddressApiService _addressApiService = AddressApiService();
+  /// Both collaborators are injectable so the repo can be exercised without a
+  /// live [Dio] singleton or a real connectivity probe — [ConnectionChecker]
+  /// reaches the network, which a unit test cannot do. Production callers keep
+  /// using `AddressRepo()` and get the real ones.
+  AddressRepo({AddressApiService? api, Future<bool> Function()? isConnected})
+      : _addressApiService = api ?? AddressApiService(),
+        _isConnected = isConnected ?? (() => ConnectionChecker.isConnected);
+
+  final AddressApiService _addressApiService;
+  final Future<bool> Function() _isConnected;
+
   void cancelRequests() => _addressApiService.cancelRequests();
 
   Future<Either<Failure, PaginationModel<AddressModel>>> getMyAddresses({
     required int page,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -61,7 +71,7 @@ class AddressRepo {
   Future<Either<Failure, AddressModel>> addAddress({
     required AddressModel address,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -94,7 +104,7 @@ class AddressRepo {
     required int addressId,
     required AddressModel address,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -126,7 +136,7 @@ class AddressRepo {
   }
 
   Future<Either<Failure, AddressModel>> getDefaultAddress() async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -154,7 +164,7 @@ class AddressRepo {
   Future<Either<Failure, AddressModel>> setDefaultAddress({
     required int addressId,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -189,7 +199,7 @@ class AddressRepo {
   Future<Either<Failure, Unit>> deleteAddress({
     required int addressId,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
