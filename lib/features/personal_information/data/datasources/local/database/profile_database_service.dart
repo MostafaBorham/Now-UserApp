@@ -21,6 +21,7 @@ class ProfileDatabaseService {
   Future<void> saveProfile(String data) =>
       _box.put(HiveKeys.userProfilePayload, data);
 
-  /// Removes the cached payload entirely.
-  Future<void> clearProfile() => _box.delete(HiveKeys.userProfilePayload);
+  // Clearing on logout is not done here: `CachePurger` wipes this box along with
+  // every other user-scoped one, from the single place the session drops to
+  // guest, so no feature has to remember to do it.
 }

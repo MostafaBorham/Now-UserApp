@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/database/cache_purger.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
@@ -126,14 +127,14 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
         );
         return _loadUserDependencies();
       case SessionType.guest:
-        if (previous == SessionType.user) {
-          _disposeUserDependencies();
-        }
+        final Future<void> disposal = previous == SessionType.user
+            ? _disposeUserDependencies()
+            : Future<void>.value();
         state = state.copyWith(
           sessionType: next,
           dependenciesStatus: AppDependenciesStatus.ready,
         );
-        return Future<void>.value();
+        return disposal;
     }
   }
 
@@ -159,7 +160,14 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
 
     state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
   }
-  void _disposeUserDependencies() {
+  /// Drops everything the previous user left behind: first the in-memory
+  /// providers, then their Hive mirrors on disk.
+  ///
+  /// The order matters. Invalidating a provider disposes its view model, which
+  /// cancels that feature's in-flight requests — so nothing can land after the
+  /// purge and write the old user's payload straight back into a box we just
+  /// cleared.
+  Future<void> _disposeUserDependencies() async {
     _ref.invalidate(getMyOrdersProvider);
     _ref.invalidate(getMyAddressesProvider);
     _ref.invalidate(defaultAddressProvider);
@@ -170,5 +178,10 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     // Holds its own state seeded once from the cards list, so it must be dropped
     // explicitly — otherwise the next user would inherit this user's default.
     _ref.invalidate(defaultPaymentCardProvider);
+
+    // Providers are memory only. Without this the cached profile, orders, cards
+    // and wallet stay on disk and are served to the next user as the offline
+    // fallback — see [CachePurger].
+    await CachePurger.purgeUserData();
   }
 }
