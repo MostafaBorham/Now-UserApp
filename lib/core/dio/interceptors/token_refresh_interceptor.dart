@@ -78,6 +78,14 @@ class TokenRefreshInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+    // A multipart body is a one-shot stream: by the time the `401` comes back it
+    // has already been consumed, so replaying it would upload an empty file and
+    // report success. Surface the `401` instead and let the caller re-submit —
+    // a visible error beats a save that silently drops the user's picture.
+    if (request.data is FormData) {
+      return handler.next(err);
+    }
+
     // Another request already refreshed the token while this one was in flight:
     // the cached access token no longer matches the one we sent, so just replay
     // — don't spend the refresh token a second time.

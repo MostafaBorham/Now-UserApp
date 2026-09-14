@@ -31,14 +31,23 @@ class ProfileRepo {
   /// Fetches the authenticated user's profile.
   ///
   /// Always tries the server first: on success the fresh payload is cached and
-  /// returned; on failure it falls back to the cached copy in Hive, and only
-  /// surfaces the original failure when nothing has been cached yet.
+  /// returned; when the device is offline it falls back to the cached copy in
+  /// Hive, and only surfaces the original failure when nothing has been cached.
+  ///
+  /// The fall-back is deliberately limited to *connectivity* failures. A 401
+  /// whose refresh failed, or a 4xx/5xx, means the server rejected us — showing
+  /// a cached profile there hides a session that has actually ended, and leaves
+  /// the user looking at a record they may no longer own.
   Future<Either<Failure, PersonalInformationData>> getProfile() async {
     final Either<Failure, Map<String, dynamic>> serverResult =
         await _fetch(_api.getProfile);
 
     return serverResult.fold(
-      (Failure serverFailure) => _readFromCache(serverFailure),
+      (Failure serverFailure) => _isUnreachable(serverFailure)
+          ? _readFromCache(serverFailure)
+          : Future<Either<Failure, PersonalInformationData>>.value(
+              Left<Failure, PersonalInformationData>(serverFailure),
+            ),
       (Map<String, dynamic> data) async {
         await _cache(data);
         return Right<Failure, PersonalInformationData>(_parse(data));
@@ -46,7 +55,7 @@ class ProfileRepo {
     );
   }
 
-  /// Persists the edited [body] (from [ProfileModel.toUpdateJson]) — text only,
+  /// Persists the edited [body] (from [ProfileModel.changesFrom]) — text only,
   /// via PUT + JSON — refreshes the cache, and returns the updated profile.
   Future<Either<Failure, PersonalInformationData>> updateProfile(
     Map<String, dynamic> body,
@@ -55,8 +64,9 @@ class ProfileRepo {
   }
 
   /// Persists text [fields] together with an avatar change (a new [avatar] file
-  /// or [removeAvatar]) via POST + multipart. [fields] must already exclude
-  /// nulls — multipart can't carry them.
+  /// or [removeAvatar]) via POST + multipart. [fields] is the same diff the JSON
+  /// path sends, nulls included — dio renders a null field as an empty string,
+  /// which the backend reads back as null.
   Future<Either<Failure, PersonalInformationData>> updateProfileWithMedia({
     required Map<String, dynamic> fields,
     File? avatar,
@@ -110,7 +120,18 @@ class ProfileRepo {
 
       return Right(body['data'] as Map<String, dynamic>);
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
+      final Response<dynamic>? response = exception.response;
+
+      // No response at all means we never reached the server (DNS, timeout,
+      // connection dropped, request cancelled). That is a different failure from
+      // one the server answered with, and only this kind may fall back to cache
+      // — so it gets its own key rather than `ApiErrorHandler`'s untranslated
+      // English default.
+      if (response == null) {
+        return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      }
+
+      final dynamic data = response.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data
           : null;
@@ -119,6 +140,12 @@ class ProfileRepo {
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
+
+  /// Whether [failure] means we never got an answer from the server, as opposed
+  /// to an answer we did not like. Only the former may be served from cache.
+  bool _isUnreachable(Failure failure) =>
+      failure.message == LangKeys.noInternetConnectionKey ||
+      failure.message == LangKeys.serverConnectionFailedKey;
 
   /// Assembles the screen state from a raw server (or cached) `data` envelope.
   PersonalInformationData _parse(Map<String, dynamic> data) {

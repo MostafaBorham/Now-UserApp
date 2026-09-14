@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A pill-shaped segmented control used across the app.
+/// A pill-shaped segmented control.
 ///
-/// It started life as the gender toggle (Male / Female) on the Edit
-/// Information screen and now also backs the Home / Work / Other selector on
-/// the Address Details screen.
+/// Currently used only by the gender toggle (Male / Female) on the Edit
+/// Information screen. `AppSegmentedSelector` in
+/// `core/presentation/widgets/selectors/` is the app-wide equivalent (it backs
+/// the Home / Work / Other selector on Address Details); this one is scheduled
+/// to be folded into it.
 ///
 /// When [icons] is provided, each segment shows a leading icon next to its
 /// label. Icons are recolored at runtime — using [activeFontColor] when the
@@ -59,7 +61,7 @@ class CommonScreenTabs extends StatefulWidget {
   /// Tab selected on first build.
   final int initialIndex;
 
-  /// Fill color of the selected segment. Defaults to [Colors.green].
+  /// Fill color of the selected segment. Defaults to the brand green.
   final Color? activeColor;
 
   /// Color of the track behind the segments. Defaults to a light grey from
@@ -70,10 +72,10 @@ class CommonScreenTabs extends StatefulWidget {
   final double iconSize;
 
   @override
-  State<CommonScreenTabs> createState() => _BookingHistroyScreenTabsState();
+  State<CommonScreenTabs> createState() => _CommonScreenTabsState();
 }
 
-class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
+class _CommonScreenTabsState extends State<CommonScreenTabs> {
   late List<bool> taps;
 
   @override
@@ -87,9 +89,10 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
 
   @override
   Widget build(BuildContext context) {
-    final Color activeFont = widget.activeFontColor ?? const Color(0xffEC5B13);
+    final AppColorScheme colors = context.colors;
+    final Color activeFont = widget.activeFontColor ?? colors.white;
     final Color inactiveFont =
-        widget.inactiveFontColor ?? context.colors.primary500Main;
+        widget.inactiveFontColor ?? colors.primary500Main;
 
     return Container(
       width: double.maxFinite,
@@ -97,7 +100,7 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
       padding: widget.padding,
       margin: EdgeInsetsDirectional.symmetric(horizontal: widget.margin),
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? context.colors.onPrimaryContainer,
+        color: widget.backgroundColor ?? colors.onPrimaryContainer,
         borderRadius: BorderRadiusDirectional.circular(widget.radius ?? 100),
       ),
       child: LayoutBuilder(
@@ -111,18 +114,18 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
           splashColor: Colors.transparent,
           fillColor: Colors.transparent,
           onPressed: (index) {
-            for (int tapIndex = 0; tapIndex < taps.length; tapIndex++) {
-              taps[tapIndex] = tapIndex == index;
-            }
+            setState(() {
+              for (int tapIndex = 0; tapIndex < taps.length; tapIndex++) {
+                taps[tapIndex] = tapIndex == index;
+              }
+            });
             widget.onTaptab(index);
-            setState(() {});
           },
           children: [
             ...List.generate(widget.tabsName.length, (index) {
               final bool selected = taps.elementAt(index);
               final Color foreground = selected ? activeFont : inactiveFont;
               return Container(
-                width: double.maxFinite / 2,
                 alignment: AlignmentDirectional.center,
                 key: ValueKey<bool>(selected),
                 margin: const EdgeInsetsDirectional.symmetric(
@@ -133,7 +136,9 @@ class _BookingHistroyScreenTabsState extends State<CommonScreenTabs> {
                   borderRadius: BorderRadiusDirectional.circular(
                     widget.tapRadius ?? 8,
                   ),
-                  color: selected ? (widget.activeColor ?? Colors.green) : null,
+                  color: selected
+                      ? (widget.activeColor ?? colors.primary500Main)
+                      : null,
                 ),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,

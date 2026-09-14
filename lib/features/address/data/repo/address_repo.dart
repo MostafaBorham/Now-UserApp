@@ -13,204 +13,165 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 /// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
 /// error message (a [LangKeys] key or a raw server message — callers apply
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+///
+/// The connection check, status handling and error mapping live in [_fetch],
+/// which also runs the parsing — so a payload in an unexpected shape fails the
+/// same way a rejected request does, instead of throwing past the caller. Each
+/// method below is left with nothing but the shape of its own response.
 class AddressRepo {
-  final AddressApiService _addressApiService = AddressApiService();
+  /// Both collaborators are injectable so the repo can be exercised without a
+  /// live [Dio] singleton or a real connectivity probe — [ConnectionChecker]
+  /// reaches the network, which a unit test cannot do. Production callers keep
+  /// using `AddressRepo()` and get the real ones.
+  AddressRepo({AddressApiService? api, Future<bool> Function()? isConnected})
+      : _addressApiService = api ?? AddressApiService(),
+        _isConnected = isConnected ?? (() => ConnectionChecker.isConnected);
+
+  final AddressApiService _addressApiService;
+  final Future<bool> Function() _isConnected;
+
   void cancelRequests() => _addressApiService.cancelRequests();
 
   Future<Either<Failure, PaginationModel<AddressModel>>> getMyAddresses({
     required int page,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
+  }) {
+    return _fetch(
+      () => _addressApiService.getMyAddresses(page: page),
+      (Map<String, dynamic> body) {
+        final Map<String, dynamic> data =
+            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
 
-    try {
-      final Response response =
-          await _addressApiService.getMyAddresses(page: page);
+        final List<dynamic> rawAddresses =
+            data['addresses'] as List<dynamic>? ?? <dynamic>[];
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data =
-          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
-
-      final Map<String, dynamic> paginationData =
-          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
-      final List<dynamic> rawAddresses =
-          data['addresses'] as List<dynamic>? ?? <dynamic>[];
-
-      final List<AddressModel> addresses = rawAddresses
-          .map((dynamic e) => AddressModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-
-      return Right(
-        PaginationModel<AddressModel>.fromJson(paginationData, addresses),
-      );
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
+        return PaginationModel<AddressModel>.fromJson(
+          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{},
+          rawAddresses
+              .map(
+                (dynamic e) =>
+                    AddressModel.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
+        );
+      },
+    );
   }
+
   Future<Either<Failure, AddressModel>> addAddress({
     required AddressModel address,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response =
-          await _addressApiService.addAddress(address: address);
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-
-      return Right(
-        AddressModel.fromJson(data['address'] as Map<String, dynamic>?),
-      );
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
+  }) {
+    return _fetch(
+      () => _addressApiService.addAddress(address: address),
+      _address,
+    );
   }
 
   Future<Either<Failure, AddressModel>> editAddress({
     required int addressId,
     required AddressModel address,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response = await _addressApiService.editAddress(
+  }) {
+    return _fetch(
+      () => _addressApiService.editAddress(
         addressId: addressId,
         address: address,
-      );
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-
-      return Right(
-        AddressModel.fromJson(data['address'] as Map<String, dynamic>?),
-      );
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
+      ),
+      _address,
+    );
   }
 
-  Future<Either<Failure, AddressModel>> getDefaultAddress() async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response = await _addressApiService.getDefaultAddress();
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-
-      return Right(AddressModel.fromJson(data['address'] as Map<String, dynamic>));
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
+  Future<Either<Failure, AddressModel>> getDefaultAddress() {
+    return _fetch(_addressApiService.getDefaultAddress, _address);
   }
+
   Future<Either<Failure, AddressModel>> setDefaultAddress({
     required int addressId,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response =
-          await _addressApiService.setDefaultAddress(addressId: addressId);
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-
-      return Right(
-        AddressModel.fromJson(data['address'] as Map<String, dynamic>?),
-      );
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
+  }) {
+    return _fetch(
+      () => _addressApiService.setDefaultAddress(addressId: addressId),
+      _address,
+    );
   }
 
   /// Deletes the address with [addressId]. On success the response carries no
-  /// data worth keeping (`data: []`), so a plain [Unit] is returned; the caller
-  /// shows its own localized success message.
-  Future<Either<Failure, Unit>> deleteAddress({
-    required int addressId,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
+  /// data worth keeping (`data: []`, or no body at all on a `204`), so a plain
+  /// [Unit] is returned; the caller shows its own localized success message.
+  Future<Either<Failure, Unit>> deleteAddress({required int addressId}) {
+    return _fetch(
+      () => _addressApiService.deleteAddress(addressId: addressId),
+      (_) => unit,
+    );
+  }
+
+  /// Shared request envelope: connection check, non-2xx handling, parsing and
+  /// error mapping.
+  ///
+  /// Any 2xx counts as success, not just 200 — a create answers `201` and a
+  /// delete can answer `204` with no body at all, both of which used to be
+  /// reported to the user as failures.
+  ///
+  /// [parse] runs inside the same guard as the request, so a payload in a shape
+  /// we did not expect surfaces as a [Failure] rather than throwing out of the
+  /// repo and into a snackbar as a raw Dart error string.
+  Future<Either<Failure, T>> _fetch<T>(
+    Future<Response> Function() request,
+    T Function(Map<String, dynamic> body) parse,
+  ) async {
+    if (!await _isConnected()) {
+      return Left<Failure, T>(
+        const Failure(LangKeys.noInternetConnectionKey),
+      );
     }
 
     try {
-      final Response response =
-          await _addressApiService.deleteAddress(addressId: addressId);
+      final Response response = await request();
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      // A `204` answers with no body; anything else unexpected is treated the
+      // same way, so the status check below is what decides the outcome.
+      final dynamic raw = response.data;
+      final Map<String, dynamic> body =
+          raw is Map<String, dynamic> ? raw : <String, dynamic>{};
 
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      final int statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
+        return Left<Failure, T>(
+          Failure(ApiErrorHandler.extractErrorMessage(body)),
+        );
       }
 
-      return const Right(unit);
+      return Right<Failure, T>(parse(body));
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+      final Response<dynamic>? response = exception.response;
+
+      // No response at all means we never reached the server (DNS, timeout,
+      // connection dropped, request cancelled). That is a different failure
+      // from one the server answered with, so it gets its own key rather than
+      // `ApiErrorHandler`'s untranslated English default — which an Arabic user
+      // would otherwise be shown verbatim.
+      if (response == null) {
+        return Left<Failure, T>(
+          const Failure(LangKeys.serverConnectionFailedKey),
+        );
+      }
+
+      final dynamic data = response.data;
+      return Left<Failure, T>(
+        Failure(
+          ApiErrorHandler.extractErrorMessage(
+            data is Map<String, dynamic> ? data : null,
+          ),
+        ),
+      );
+    } catch (_) {
+      // Never surface a raw exception string: it ends up in a snackbar.
+      return Left<Failure, T>(
+        const Failure(LangKeys.serverConnectionFailedKey),
+      );
     }
+  }
+
+  /// The `data.address` object every single-address endpoint answers with.
+  static AddressModel _address(Map<String, dynamic> body) {
+    final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+    return AddressModel.fromJson(data['address'] as Map<String, dynamic>?);
   }
 }

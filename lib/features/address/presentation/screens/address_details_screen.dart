@@ -1,15 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_segmented_selector.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
@@ -68,6 +70,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
 
   int _selectedLabelIndex = 0;
 
+  /// The form exactly as [initState] prefilled it, so back can tell an
+  /// untouched form from an edited one. Captured from the controllers after the
+  /// prefill rather than rebuilt from [widget.address], so the comparison can
+  /// never drift from what was actually put in the fields.
+  late final List<String> _baselineFields;
+  late final int _baselineLabelIndex;
+
   /// Drives the Save button between its disabled and active states. Only the
   /// required fields (floor / building) feed it; the phone is optional but
   /// must still be well-formed once something is typed into it.
@@ -117,9 +126,45 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     // one stored without a floor or building must not submit those blanks.
     _isFormValid = _isRequiredFieldsFilled();
 
+    _baselineFields = _fieldValues();
+    _baselineLabelIndex = _selectedLabelIndex;
+
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
     _buildingNameController.addListener(_onRequiredFieldChanged);
+  }
+
+  /// Every text field's current value, in a fixed order, for comparing the form
+  /// against [_baselineFields].
+  List<String> _fieldValues() => <String>[
+    _phoneController.text,
+    _floorNumberController.text,
+    _apartmentController.text,
+    _buildingNameController.text,
+    _instructionsController.text,
+  ];
+
+  /// Whether anything the user typed or picked would be lost by leaving.
+  bool get _hasUnsavedChanges =>
+      _selectedLabelIndex != _baselineLabelIndex ||
+      !listEquals(_fieldValues(), _baselineFields);
+
+  /// Asks before throwing the form away. Returns true when the user confirms.
+  Future<bool> _confirmDiscard() async {
+    bool discard = false;
+    await AppCustomAlertDialog.show(
+      context,
+      (BuildContext dialogContext) => AppCustomAlertDialog(
+        title: LangKeys.discardChangesKey.tr(),
+        message: LangKeys.discardChangesMessageKey.tr(),
+        confirmLabel: LangKeys.discardKey.tr(),
+        onConfirm: () {
+          discard = true;
+          Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+    return discard;
   }
 
   /// The Save button's condition: both required fields filled, and the phone
@@ -179,7 +224,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     if (widget.isEditScreen) {
       ref
           .read(editAddressProvider.notifier)
-          .editAddress(addressId: widget.address.id ?? 0, address: address);
+          .editAddress(addressId: widget.address.id, address: address);
     } else {
       ref.read(addAddressProvider.notifier).addAddress(address: address);
     }
@@ -217,109 +262,135 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
 
     final bool isSaving = ref.watch(statusProvider).isLoading;
 
-    return Scaffold(
-      backgroundColor: context.colors.white,
-      body: AppWavedView(
-        appBarTitle: widget.isEditScreen
-            ? LangKeys.editAddress.tr()
-            : LangKeys.addressDetails.tr(),
-        scrollController: _scrollController,
-        body: SingleChildScrollView(
-          controller: _scrollController,
-          // Owns the top spacing AppWavedView drops when a scroll controller is
-          // wired in, so it scrolls up with the content and flattens the wave.
-          padding: const EdgeInsets.only(top: 57),
-          child: Column(
-            spacing: 16,
-            children: [
-              AreaSelector(
-                value: (area == null || area.isEmpty)
-                    ? LangKeys.failedToGetArea.tr()
-                    : area,
-                onChange: () {
-                  // Coming from the map, just reveal it again; otherwise (edit
-                  // from the address list) open a map to re-pick the location.
-                  if (widget.cameFromMap) {
-                    context.pop();
-                  } else {
-                    context.pushReplacementNamed(
-                      AppRoutes.addNewAddressFromMapScreen,
-                      extra: widget.address,
-                    );
-                  }
-                },
-              ),
-              AppSegmentedSelector(
-                items: [
-                  LangKeys.homeAddressSelector.tr(),
-                  LangKeys.workAddressSelector.tr(),
-                  LangKeys.otherAddressSelector.tr(),
-                ],
-                itemIcons: [
-                  Assets.media.images.svg.homeSelected.svg(),
-                  Assets.media.images.svg.workSelected.svg(),
-                  Assets.media.images.svg.otherSelected.svg(),
-                ],
-                selectedColor: colors.primary500Main,
-                // 4px track padding around a 44px pill, per the design.
-                height: 52,
-                initialIndex: _selectedLabelIndex,
-                onChanged: (int index) =>
-                    setState(() => _selectedLabelIndex = index),
-              ),
-              AddressField(
-                hintText: hints[0].tr(),
-                controller: _floorNumberController,
-              ),
-              AddressField(
-                hintText: hints[1].tr(),
-                controller: _apartmentController,
-              ),
-              AddressField(
-                hintText: LangKeys.building.tr(),
-                controller: _buildingNameController,
-              ),
-              AddressField(
-                hintText: LangKeys.instructions.tr(),
-                controller: _instructionsController,
-              ),
-              AddressField(
-                hintText: LangKeys.phoneNumberOptional.tr(),
-                prefixText: _phonePrefix,
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  // Room for a number pasted or typed in full (12 digits for
-                  // `+966…`); it is reduced to the 8-digit tail on save rather
-                  // than being truncated to something valid but wrong.
-                  LengthLimitingTextInputFormatter(12),
-                ],
-              ),
-              !_isFormValid && !isSaving
-                  // Tappable while disabled, so the button can say why instead
-                  // of just refusing to react.
-                  ? GestureDetector(
-                      onTap: () => AppToast.showError(
-                        context,
-                        // Say which field is wrong: a half-typed phone blocks
-                        // Save too, and "complete the address info" points at
-                        // the wrong part of the form.
-                        _phoneController.text.isNotEmpty &&
-                                _composedPhone() == null
-                            ? LangKeys.enterValidMobileNumber
-                            : LangKeys.completeAddressInfo,
-                      ),
-                      child: PrimaryAppDisabledButton(
+    return PopScope(
+      // Always false, never `!_hasUnsavedChanges`: `canPop` is read at build
+      // time, and typing in a field does not rebuild, so a computed value would
+      // answer with whatever was true when the form was last painted. Deciding
+      // inside the callback asks the question at the moment back is pressed.
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        if (didPop) return;
+        if (!_hasUnsavedChanges) {
+          context.pop();
+          return;
+        }
+        final bool discard = await _confirmDiscard();
+        if (!context.mounted) return;
+        if (discard) context.pop();
+      },
+      child: Scaffold(
+        backgroundColor: context.colors.white,
+        body: AppWavedView(
+          appBarTitle: widget.isEditScreen
+              ? LangKeys.editAddress.tr()
+              : LangKeys.addressDetails.tr(),
+          scrollController: _scrollController,
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            // Owns the top spacing AppWavedView drops when a scroll controller is
+            // wired in, so it scrolls up with the content and flattens the wave.
+            padding: const EdgeInsets.only(top: 57),
+            child: Column(
+              spacing: 16,
+              children: [
+                AreaSelector(
+                  value: (area == null || area.isEmpty)
+                      ? LangKeys.failedToGetArea.tr()
+                      : area,
+                  onChange: () async {
+                    // Either branch leaves this screen and comes back to a freshly
+                    // built form, so the typed values are gone either way — ask
+                    // first, the same as pressing back. Neither `context.pop` nor
+                    // `pushReplacementNamed` consults the `PopScope` below (only
+                    // the system gesture and `Navigator.maybePop` do), so asking
+                    // here does not double-prompt.
+                    if (_hasUnsavedChanges && !await _confirmDiscard()) return;
+                    if (!context.mounted) return;
+
+                    // Coming from the map, just reveal it again; otherwise (edit
+                    // from the address list) open a map to re-pick the location.
+                    if (widget.cameFromMap) {
+                      context.pop();
+                    } else {
+                      context.pushReplacementNamed(
+                        AppRoutes.addNewAddressFromMapScreen,
+                        extra: widget.address,
+                      );
+                    }
+                  },
+                ),
+                AppSegmentedSelector(
+                  items: [
+                    LangKeys.homeAddressSelector.tr(),
+                    LangKeys.workAddressSelector.tr(),
+                    LangKeys.otherAddressSelector.tr(),
+                  ],
+                  itemIcons: [
+                    Assets.media.images.svg.homeSelected.svg(),
+                    Assets.media.images.svg.workSelected.svg(),
+                    Assets.media.images.svg.otherSelected.svg(),
+                  ],
+                  selectedColor: colors.primary500Main,
+                  // 4px track padding around a 44px pill, per the design.
+                  height: 52,
+                  initialIndex: _selectedLabelIndex,
+                  onChanged: (int index) =>
+                      setState(() => _selectedLabelIndex = index),
+                ),
+                AddressField(
+                  hintText: hints[0].tr(),
+                  controller: _floorNumberController,
+                ),
+                AddressField(
+                  hintText: hints[1].tr(),
+                  controller: _apartmentController,
+                ),
+                AddressField(
+                  hintText: LangKeys.building.tr(),
+                  controller: _buildingNameController,
+                ),
+                AddressField(
+                  hintText: LangKeys.instructions.tr(),
+                  controller: _instructionsController,
+                ),
+                AddressField(
+                  hintText: LangKeys.phoneNumberOptional.tr(),
+                  prefixText: _phonePrefix,
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    // Room for a number pasted or typed in full (12 digits for
+                    // `+966…`); it is reduced to the 8-digit tail on save rather
+                    // than being truncated to something valid but wrong.
+                    LengthLimitingTextInputFormatter(12),
+                  ],
+                ),
+                !_isFormValid && !isSaving
+                    // Tappable while disabled, so the button can say why instead
+                    // of just refusing to react.
+                    ? GestureDetector(
+                        onTap: () => AppToast.showError(
+                          context,
+                          // Say which field is wrong: a half-typed phone blocks
+                          // Save too, and "complete the address info" points at
+                          // the wrong part of the form.
+                          _phoneController.text.isNotEmpty &&
+                                  _composedPhone() == null
+                              ? LangKeys.enterValidMobileNumber
+                              : LangKeys.completeAddressInfo,
+                        ),
+                        child: PrimaryAppDisabledButton(
+                          title: LangKeys.saveAddress.tr(),
+                        ),
+                      )
+                    : PrimaryAppButton(
                         title: LangKeys.saveAddress.tr(),
+                        isLoading: isSaving,
+                        onTap: _saveAddress,
                       ),
-                    )
-                  : PrimaryAppButton(
-                      title: LangKeys.saveAddress.tr(),
-                      isLoading: isSaving,
-                      onTap: _saveAddress,
-                    ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

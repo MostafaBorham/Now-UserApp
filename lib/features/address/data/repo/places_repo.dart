@@ -60,7 +60,7 @@ class PlacesRepo {
 
       return Right(suggestions);
     } on DioException catch (exception) {
-      return Left(Failure(_extractPlacesError(_responseBody(exception))));
+      return Left(Failure(_dioError(exception)));
     } catch (_) {
       // Never surface a raw exception string: it ends up in a snackbar.
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
@@ -102,16 +102,25 @@ class PlacesRepo {
 
       return Right(LatLng(latitude, longitude));
     } on DioException catch (exception) {
-      return Left(Failure(_extractPlacesError(_responseBody(exception))));
+      return Left(Failure(_dioError(exception)));
     } catch (_) {
       // Never surface a raw exception string: it ends up in a snackbar.
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
-  static Map<String, dynamic>? _responseBody(DioException exception) {
-    final dynamic data = exception.response?.data;
-    return data is Map<String, dynamic> ? data : null;
+  /// Maps a [DioException] to a user-facing message.
+  ///
+  /// No response at all means we never reached Google (DNS, timeout, connection
+  /// dropped, request cancelled) — a different failure from one it answered
+  /// with, and one [ApiErrorHandler] would otherwise report using its
+  /// untranslated English default.
+  static String _dioError(DioException exception) {
+    final Response<dynamic>? response = exception.response;
+    if (response == null) return LangKeys.serverConnectionFailedKey;
+
+    final dynamic data = response.data;
+    return _extractPlacesError(data is Map<String, dynamic> ? data : null);
   }
 
   /// Places (New) reports failures as `{"error": {"message": ...}}`, one level

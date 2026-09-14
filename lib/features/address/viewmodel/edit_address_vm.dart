@@ -11,10 +11,15 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses
 /// [AddressModel] returned by the backend. Trigger with
 /// `ref.read(editAddressProvider.notifier).editAddress(addressId: ..., address: ...)`
 /// and watch the provider to react to loading / error / success.
+///
+/// `autoDispose` because this action state is scoped to the details screen:
+/// leaving it cancels any in-flight request through the repo, and does not
+/// leave a finished save's result parked for the next visit.
 final editAddressProvider =
-    StateNotifierProvider<EditAddressViewModel, AsyncValue<AddressModel?>>(
-      (Ref ref) => EditAddressViewModel(const AsyncValue.data(null), ref),
-    );
+    StateNotifierProvider.autoDispose<
+      EditAddressViewModel,
+      AsyncValue<AddressModel?>
+    >((Ref ref) => EditAddressViewModel(const AsyncValue.data(null), ref));
 
 class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   EditAddressViewModel(super.initialState, this._ref);
@@ -29,9 +34,15 @@ class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   }
 
   Future<void> editAddress({
-    required int addressId,
+    required int? addressId,
     required AddressModel address,
   }) async {
+    // An address with no id was never saved server-side — there is nothing to
+    // update, and the caller's `?? 0` fallback used to turn that into a PUT to
+    // /addresses/0. Guarded here rather than at the call site so every caller
+    // is covered, the way [DeleteAddressViewModel.deleteAddress] does it.
+    if (addressId == null) return;
+
     state = const AsyncValue.loading();
 
     final result = await _repo.editAddress(

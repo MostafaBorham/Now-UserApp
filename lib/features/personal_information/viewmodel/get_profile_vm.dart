@@ -31,7 +31,11 @@ class GetProfileViewModel
   }
 
   Future<void> getProfile() async {
-    state = const AsyncValue.loading();
+    // Keep whatever is already held while the refetch runs. This provider is
+    // shared app-wide, so a plain `AsyncValue.loading()` would blank the profile
+    // header in settings every time someone retried from another screen.
+    state = const AsyncValue<PersonalInformationData>.loading()
+        .copyWithPrevious(state);
 
     final result = await _repo.getProfile();
 

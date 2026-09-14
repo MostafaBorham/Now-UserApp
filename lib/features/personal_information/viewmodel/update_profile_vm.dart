@@ -7,8 +7,9 @@ import 'package:nowdelivery_user_app/features/personal_information/data/models/p
 import 'package:nowdelivery_user_app/features/personal_information/data/repo/profile_repo.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
-/// Single task: save edits from the Edit Information screen via
-/// `PUT /api/v1/user/profile`.
+/// Single task: save edits from the Edit Information screen —
+/// `PUT /api/v1/user/profile` for text, `POST` + multipart when the avatar
+/// changed too.
 ///
 /// The state is the request status (`data(null)` idle, `loading`, `error`) so
 /// the screen can disable the Save button while in flight and surface the error
@@ -33,25 +34,40 @@ class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
     super.dispose();
   }
 
-  /// Saves [edited]. When an [avatar] file is picked or [removeAvatar] is set,
-  /// the whole update goes through POST + multipart; otherwise text-only via
-  /// PUT + JSON. Returns true on success (caller pops); on failure returns
-  /// false and leaves the error message in [state].
+  /// Saves whatever [edited] changed relative to [original]. When an [avatar]
+  /// file is picked or [removeAvatar] is set, the whole update goes through
+  /// POST + multipart; otherwise text-only via PUT + JSON. Returns true on
+  /// success (caller pops); on failure returns false and leaves the error
+  /// message in [state].
+  ///
+  /// Both transports are handed the *same* body — the diff from
+  /// [ProfileModel.changesFrom]. They used to disagree (the JSON path sent
+  /// nulls, the multipart path stripped them), so whether a blank field cleared
+  /// the server value depended on whether the user happened to also change
+  /// their picture.
+  ///
+  /// A save with nothing to send is not a request: if the user changed no text
+  /// and no picture, this succeeds immediately.
   Future<bool> save(
     ProfileModel edited, {
+    required ProfileModel? original,
     File? avatar,
     bool removeAvatar = false,
   }) async {
+    final bool hasMedia = avatar != null || removeAvatar;
+    final Map<String, dynamic> changes = edited.changesFrom(original);
+
+    if (changes.isEmpty && !hasMedia) return true;
+
     state = const AsyncValue.loading();
 
-    final bool hasMedia = avatar != null || removeAvatar;
     final result = hasMedia
         ? await _repo.updateProfileWithMedia(
-            fields: _nonNull(edited.toUpdateJson()),
+            fields: changes,
             avatar: avatar,
             removeAvatar: removeAvatar,
           )
-        : await _repo.updateProfile(edited.toUpdateJson());
+        : await _repo.updateProfile(changes);
 
     if (!mounted) return false;
 
@@ -67,11 +83,4 @@ class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
       },
     );
   }
-
-  /// Multipart can't carry null (an empty string fails the email/gender/date
-  /// rules), so only send the fields the user actually filled.
-  Map<String, dynamic> _nonNull(Map<String, dynamic> source) => {
-    for (final MapEntry<String, dynamic> e in source.entries)
-      if (e.value != null) e.key: e.value,
-  };
 }
