@@ -172,9 +172,12 @@ class _TipPill extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: isWide ? 16 : 12, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: isWide ? 16 : 12,
+          vertical: 12,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? colors.tertiaryContainer : colors.primaryFixed,
+          color: isSelected ? colors.primary500Main : Colors.transparent,
           borderRadius: BorderRadius.circular(999),
         ),
         child: SizedBox(

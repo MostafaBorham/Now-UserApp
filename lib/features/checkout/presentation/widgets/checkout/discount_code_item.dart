@@ -28,146 +28,149 @@ class DiscountCodeItem extends StatelessWidget {
   final String? validity;
   final bool? isDimmed;
 
-  /// Draws a highlight border when this voucher is the one currently applied.
+  /// Fades the whole ticket when this voucher is the one currently applied,
+  /// matching the store-details coupon selection style.
   final bool isSelected;
+
+  /// The opacity a selected ticket fades to (matches store-details coupons).
+  static const double _selectedOpacity = 0.15;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final String resolvedValidity = validity ?? LangKeys.sampleValidityKey.tr();
 
-    return SizedBox(
-      width: 120,
-      height: 158,
-      child: OverlayOpacityWidget(
-        disabled: isDimmed!,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Column(
-                children: [
-                  // Yellow header: discount value + store name.
-                  Container(
-                    height: 60,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    color: colors.onSecondaryFixedVariant,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 2,
-                      children: [
-                        Text(
-                          percentage,
-                          style: AppTextStyles.style20SemiBold.copyWith(
-                            color: colors.primaryContainer,
-                          ),
-                        ),
-                        Text(
-                          '${LangKeys.inKey.tr()} ${storeName??'Panda Store'}',
-                          maxLines: 1,
-                          style: AppTextStyles.style12SemiBold.copyWith(
-                            color: colors.tertiaryContainer,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Green body: coupon label, validity window, logo.
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context,con) {
-                        return Stack(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [colors.primary200.withValues(alpha: 0.2),colors.primary200.withValues(alpha: 0.4),],
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                spacing: 6,
-                                children: [
-                                  Text(
-                                    LangKeys.discountCouponKey.tr(),
-                                    maxLines: 1,
-                                    style: AppTextStyles.style12Medium.copyWith(
-                                      color: colors.primaryContainer,
-                                    ),
-                                  ),
-                                  Text(
-                                    resolvedValidity,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyles.style8Medium.copyWith(
-                                      color: colors.neutral500,
-                                    ),
-                                  ),
-                                  Assets.media.images.svg.appLogo.svg(
-                                    width: con.maxWidth*0.6
-                                  ),
-                                ],
-                              ),
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 150),
+      opacity: isSelected ? _selectedOpacity : 1,
+      child: SizedBox(
+        width: 120,
+        height: 158,
+        child: OverlayOpacityWidget(
+          disabled: isDimmed!,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Column(
+                  children: [
+                    // Yellow header: discount value + store name.
+                    Container(
+                      height: 60,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      color: colors.onSecondaryFixedVariant,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 2,
+                        children: [
+                          Text(
+                            percentage,
+                            style: AppTextStyles.style20SemiBold.copyWith(
+                              color: colors.primaryContainer,
                             ),
-                            Positioned.fill(
-                              left: -20,
-                              right: -20,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          Text(
+                            '${LangKeys.inKey.tr()} ${storeName ?? 'Panda Store'}',
+                            maxLines: 1,
+                            style: AppTextStyles.style12SemiBold.copyWith(
+                              color: colors.tertiaryContainer,
                             ),
-                          ],
-                        );
-                      }
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Torn-ticket notches punched into the left/right edges, centred
-            // vertically within the green body (matches the Figma geometry).
-            if (isSelected)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: colors.primary500Main,
-                        width: 2,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+                    // Green body: coupon label, validity window, logo.
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, con) {
+                          return Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      colors.primary200.withValues(alpha: 0.2),
+                                      colors.primary200.withValues(alpha: 0.4),
+                                    ],
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  spacing: 6,
+                                  children: [
+                                    Text(
+                                      LangKeys.discountCouponKey.tr(),
+                                      maxLines: 1,
+                                      style: AppTextStyles.style12Medium
+                                          .copyWith(
+                                            color: colors.primaryContainer,
+                                          ),
+                                    ),
+                                    Text(
+                                      resolvedValidity,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.style8Medium
+                                          .copyWith(color: colors.neutral500),
+                                    ),
+                                    Assets.media.images.svg.appLogo.svg(
+                                      width: con.maxWidth * 0.6,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned.fill(
+                                left: -20,
+                                right: -20,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).scaffoldBackgroundColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).scaffoldBackgroundColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
@@ -23,10 +24,51 @@ final defaultAddressProvider =
 
 class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   DefaultAddressViewModel(this._ref)
-    : super(const AsyncValue<AddressModel?>.data(null));
+    : super(const AsyncValue<AddressModel?>.data(null)) {
+    _listenToMyAddresses();
+  }
 
   final Ref _ref;
   final AddressRepo _repo = AddressRepo();
+
+  /// Keeps the default in step with the loaded address list: every time the
+  /// list resolves to data (add, edit, delete, refetch), the default is
+  /// re-derived from it so the checkout delivery card never shows a stale one.
+  ///
+  /// `fireImmediately` covers the case where the list has already resolved
+  /// before this viewmodel is first watched.
+  void _listenToMyAddresses() {
+    _ref.listen<AsyncValue<PaginationModel<AddressModel>>>(
+      getMyAddressesProvider,
+      (_, AsyncValue<PaginationModel<AddressModel>> next) =>
+          _syncDefaultFromList(next.valueOrNull),
+      fireImmediately: true,
+    );
+  }
+
+  /// Re-derives the default from [addresses]:
+  /// - an address the list marks `isDefault` becomes the default (authoritative,
+  ///   since [setDefaultAddress] patches the list to match);
+  /// - an empty list clears the default to `null`, so deleting the last address
+  ///   drops it out of the checkout card instead of leaving it stale;
+  /// - a non-empty list with no `isDefault` flag on the loaded pages is left
+  ///   untouched — the real default may sit on a page that wasn't fetched.
+  void _syncDefaultFromList(PaginationModel<AddressModel>? addresses) {
+    if (addresses == null) return;
+
+    for (final AddressModel address in addresses.data) {
+      if (address.isDefault ?? false) {
+        if (state.valueOrNull?.id != address.id) {
+          state = AsyncValue<AddressModel?>.data(address);
+        }
+        return;
+      }
+    }
+
+    if (addresses.data.isEmpty && state.valueOrNull != null) {
+      state = const AsyncValue<AddressModel?>.data(null);
+    }
+  }
 
   @override
   void dispose() {

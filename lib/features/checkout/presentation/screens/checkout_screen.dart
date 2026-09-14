@@ -14,7 +14,6 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_mode
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/add_notes_field.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/delivery_address_card.dart';
@@ -30,7 +29,6 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
-
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key, this.storeId});
 
@@ -43,16 +41,23 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
-
   double _driverTip = 0;
-  String _notes = '';
-
 
   int? _addressId;
+
+  // Drives the wave-flatten animation in [AppWavedView]: as the body scrolls
+  // off the top the header wave straightens out.
+  final ScrollController _scrollController = ScrollController();
 
   // Idempotency key for the place request: reused across retries of an
   // unchanged order, rotated when the order changes or after one is placed.
   final IdempotencyKey _idempotencyKey = IdempotencyKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _onConfirmOrder() {
     // Read from the async provider rather than [checkoutModelProvider]: the
@@ -77,8 +82,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     final String? paymentMethod = ref.read(walletPaymentProvider)
         ? 'wallet'
         : checkout.orderGroup.paymentMethod;
-    final List<AppliedDiscountModel> coupons = ref.read(appliedDiscountsProvider);
-    final String? notes = _notes.trim().isEmpty ? null : _notes.trim();
+    final List<AppliedDiscountModel> coupons = ref.read(
+      appliedDiscountsProvider,
+    );
+    const String? notes = null;
 
     final String idempotencyKey = _idempotencyKey.forRequest(
       _placeFingerprint(
@@ -119,11 +126,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         if (!d.isVoucher) d.vendorId: d.code,
     };
     final String sortedCoupons =
-        (couponMap.entries.toList()
-              ..sort(
-                (MapEntry<int, String> a, MapEntry<int, String> b) =>
-                    a.key.compareTo(b.key),
-              ))
+        (couponMap.entries.toList()..sort(
+              (MapEntry<int, String> a, MapEntry<int, String> b) =>
+                  a.key.compareTo(b.key),
+            ))
             .map((MapEntry<int, String> e) => '${e.key}:${e.value}')
             .join(',');
     return <String>[
@@ -185,6 +191,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     return Scaffold(
       body: AppWavedView(
         appBarTitle: LangKeys.checkoutKey.tr(),
+        scrollController: _scrollController,
         body: ProviderScope(
           overrides: [
             // A derived override, not a value one: the scope is built once and
@@ -198,6 +205,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             // `child` is built once, outside the builder, and handed back
             // untouched — so even the error/body swap can't rebuild the body.
             child: SingleChildScrollView(
+              controller: _scrollController,
+              // Owns the top spacing AppWavedView drops when a scroll controller
+              // is wired in, so it scrolls up with the content and flattens the
+              // wave.
+              padding: const EdgeInsets.only(top: 57),
               child: Column(
                 spacing: 16,
                 children: [
@@ -213,7 +225,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   const CheckoutPaymentSection(),
                   const WalletPaymentOption(),
                   const PurchaseVouchersStrip(),
-                  AddNotesField(onChanged: (String notes) => _notes = notes),
                   const InvoiceSummarySection(),
 
                   ConfirmOrderButton(onConfirm: _onConfirmOrder),

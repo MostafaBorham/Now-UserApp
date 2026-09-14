@@ -20,9 +20,7 @@ class DeliveryInstructionsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    final AddressModel? address = ref
-        .watch(defaultAddressProvider)
-        .valueOrNull;
+    final AddressModel? address = ref.watch(defaultAddressProvider).valueOrNull;
     final String? instructions = address?.notes?.trim().isEmpty ?? true
         ? null
         : address!.notes;
@@ -48,25 +46,12 @@ class DeliveryInstructionsCard extends ConsumerWidget {
                 color: colors.tertiaryContainer,
               ),
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
-              decoration: BoxDecoration(
-                color: colors.primaryFixed,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                instructions ?? LangKeys.addInstructionsHintKey.tr(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: instructions == null
-                      ? colors.neutral500
-                      : colors.black,
-                ),
+            Text(
+              instructions ?? LangKeys.addInstructionsHintKey.tr(),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.style14Regular.copyWith(
+                color: instructions == null ? colors.neutral500 : colors.black,
               ),
             ),
           ],

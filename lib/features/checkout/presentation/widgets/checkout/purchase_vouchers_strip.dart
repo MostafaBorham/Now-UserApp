@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
@@ -22,11 +23,29 @@ import 'package:nowdelivery_user_app/features/purchase_vouchers/viewmodel/get_pu
 /// (tapping applies it to its vendor); others are dimmed. The applied voucher
 /// gets a highlight border. Hidden entirely while loading, on error, or when
 /// there are no vouchers.
-class PurchaseVouchersStrip extends ConsumerWidget {
+///
+/// While an apply request is in flight the tapped ticket shows a blocking
+/// progress overlay and every other ticket is disabled, so only one voucher can
+/// be applied at a time. On failure nothing is applied (the previous selection
+/// stands) and an error toast is shown; on success the voucher stays selected.
+class PurchaseVouchersStrip extends ConsumerStatefulWidget {
   const PurchaseVouchersStrip({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PurchaseVouchersStrip> createState() =>
+      _PurchaseVouchersStripState();
+}
+
+class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
+  /// Identifies the voucher whose apply request is currently in flight
+  /// (`'<vendorId>:<code>'`), or `null` when none is. Drives the per-ticket
+  /// progress overlay and locks every other ticket until the request settles.
+  String? _applyingKey;
+
+  String _voucherKey(int vendorId, String code) => '$vendorId:$code';
+
+  @override
+  Widget build(BuildContext context) {
     final List<OrderModel> orders =
         ref.watch(
           checkoutModelProvider.select(
@@ -54,6 +73,10 @@ class PurchaseVouchersStrip extends ConsumerWidget {
       appliedDiscountsProvider,
     );
 
+    // One apply may be in flight across the whole strip; while it is, every
+    // ticket is locked so a second voucher can't be applied concurrently.
+    final bool isApplying = _applyingKey != null;
+
     return SizedBox(
       height: 158,
       child: ListView.separated(
@@ -67,7 +90,8 @@ class PurchaseVouchersStrip extends ConsumerWidget {
           final int? targetVendorId = _resolveVendorId(voucher, vendorIds);
           final bool applicable = targetVendorId != null;
 
-          final bool selected = applicable &&
+          final bool selected =
+              applicable &&
               applied.any(
                 (AppliedDiscountModel d) =>
                     d.vendorId == targetVendorId &&
@@ -75,18 +99,32 @@ class PurchaseVouchersStrip extends ConsumerWidget {
                     d.code == voucher.code,
               );
 
-          final Widget card = DiscountCodeItem(
-            percentage: _discountText(voucher),
-            storeName: _storeName(context, voucher),
-            validity: _validity(context, voucher),
-            isDimmed: !applicable,
-            isSelected: selected,
+          final bool isLoading =
+              applicable &&
+              _applyingKey == _voucherKey(targetVendorId, voucher.code);
+
+          // Clip the overlay to the ticket's rounded corners so the progress
+          // barrier doesn't paint white squares over the transparent corners.
+          final Widget card = ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BlockingLoadingOverlay(
+              isLoading: isLoading,
+              child: DiscountCodeItem(
+                percentage: _discountText(voucher),
+                storeName: _storeName(context, voucher),
+                validity: _validity(context, voucher),
+                isDimmed: !applicable,
+                isSelected: selected,
+              ),
+            ),
           );
 
-          if (!applicable) return card;
+          // Non-applicable tickets are never tappable; while an apply is in
+          // flight every other ticket is locked too.
+          if (!applicable || isApplying) return card;
 
           return GestureDetector(
-            onTap: () => _onTap(context, ref, voucher, targetVendorId),
+            onTap: () => _onTap(voucher, targetVendorId, selected),
             child: card,
           );
         },
@@ -108,27 +146,44 @@ class PurchaseVouchersStrip extends ConsumerWidget {
   }
 
   Future<void> _onTap(
-    BuildContext context,
-    WidgetRef ref,
     PurchaseVoucherModel voucher,
     int vendorId,
+    bool selected,
   ) async {
+    // Tapping the already-applied voucher unselects it, leaving the vendor with
+    // no discount — the user can proceed without a voucher. This is a local
+    // toggle, so no request and no loading state.
+    if (selected) {
+      ref.read(appliedDiscountsProvider.notifier).remove(vendorId);
+      return;
+    }
+
+    // Lock the strip on this ticket while the calculator runs.
+    setState(() => _applyingKey = _voucherKey(vendorId, voucher.code));
+
     final result = await ref
         .read(checkoutDiscountProvider)
         .applyPurchaseVoucher(vendorId: vendorId, code: voucher.code);
 
-    if (!context.mounted) return;
+    if (!mounted) return;
+
+    // Clearing the key first hands control back to the user regardless of the
+    // outcome; the applied discount itself is only touched on success.
+    setState(() => _applyingKey = null);
 
     result.fold(
       // Voucher rejection reasons come back as raw untranslated keys, so never
-      // surface the server text — show a generic message.
+      // surface the server text — show a generic message. Nothing was applied,
+      // so the previous selection (if any) still stands.
       (_) => AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr()),
       (model) {
         if (!model.applied) {
           AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr());
           return;
         }
-        ref.read(appliedDiscountsProvider.notifier).add(
+        ref
+            .read(appliedDiscountsProvider.notifier)
+            .add(
               AppliedDiscountModel(
                 vendorId: vendorId,
                 code: voucher.code,
