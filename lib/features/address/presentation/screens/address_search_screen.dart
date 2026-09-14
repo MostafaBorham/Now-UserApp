@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,6 +9,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -29,9 +29,13 @@ class AddressSearchScreen extends ConsumerStatefulWidget {
     this.isChangingAddress = false,
   });
 
+  /// Where the map's pin currently sits. Handed to Places as a location bias so
+  /// suggestions are ranked near what the user is already looking at; null when
+  /// the map has not resolved a location yet.
   final LatLng? currentLocation;
 
-
+  /// True when an existing address's location is being changed rather than a
+  /// new address added. Drives the app bar title only.
   final bool isChangingAddress;
 
   @override

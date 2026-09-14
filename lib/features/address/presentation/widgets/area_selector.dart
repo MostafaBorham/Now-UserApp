@@ -66,7 +66,7 @@ class AreaSelector extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: onChange,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
               child: Text(
                 LangKeys.change.tr(),
                 style: AppTextStyles.style14SemiBold.copyWith(
