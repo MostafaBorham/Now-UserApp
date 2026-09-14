@@ -35,16 +35,22 @@ class ProfileApiService {
   /// Update with an avatar change. Multipart requires POST (PHP can't parse
   /// multipart on PUT), so the whole update — text [fields] plus the [avatar]
   /// file or [removeAvatar] flag — goes through the POST alias.
+  ///
+  /// [fields] may contain nulls: dio writes a null field as an empty string,
+  /// which is how "the user cleared this" survives the multipart encoding. That
+  /// keeps this path's semantics identical to the JSON one.
   Future<Response> updateProfileMultipart({
     required Map<String, dynamic> fields,
     File? avatar,
     bool removeAvatar = false,
-  }) {
+  }) async {
     final FormData form = FormData.fromMap({
       ...fields,
       if (removeAvatar) 'remove_avatar': '1',
+      // Read off the UI isolate: the sync variant blocks the frame for as long
+      // as it takes to pull a multi-megabyte photo off disk.
       if (avatar != null)
-        'avatar': MultipartFile.fromFileSync(
+        'avatar': await MultipartFile.fromFile(
           avatar.path,
           filename: avatar.uri.pathSegments.last,
         ),
