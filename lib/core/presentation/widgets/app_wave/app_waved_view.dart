@@ -111,7 +111,12 @@ class _AppWavedViewState extends State<AppWavedView> {
                 children: [
                   widget.leading?? (widget.canPop ?? context.canPop()
                       ? InkWell(
-                    onTap: () => context.pop(),
+                    // `maybePop`, not `context.pop()`: go_router pops the
+                    // navigator directly, which walks straight past any
+                    // `PopScope` the screen installed (an unsaved-changes
+                    // confirm, an in-flight request lock). This makes the app
+                    // bar arrow behave like the system back gesture.
+                    onTap: () => Navigator.maybePop(context),
                     child: ReverseWidget(
                       applyReverse: context.isRTL,
                       child: CircleAvatar(
