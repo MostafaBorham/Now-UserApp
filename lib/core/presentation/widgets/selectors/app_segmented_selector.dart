@@ -15,9 +15,9 @@ class AppSegmentedSelector extends StatefulWidget {
     this.initialIndex = 0,
     this.onChanged,
     this.height = 58,
-    this.trackColor = const Color(0xFFF1F1F1),
+    this.trackColor,
     this.selectedLabelColor,
-    this.unselectedLabelColor = const Color(0xFF212121),
+    this.unselectedLabelColor,
     this.itemIcons,
   }) : assert(
          itemIcons == null || itemIcons.length == items.length,
@@ -33,11 +33,17 @@ class AppSegmentedSelector extends StatefulWidget {
   final ValueChanged<int>? onChanged;
   final double height;
 
-  /// Background of the rounded track behind all segments.
-  final Color trackColor;
+  /// Background of the rounded track behind all segments. Defaults to the
+  /// theme's light grey (`context.colors.onPrimaryContainer`), the same fill
+  /// the app's other grey pills use.
+  final Color? trackColor;
 
   final Color? selectedLabelColor;
-  final Color unselectedLabelColor;
+
+  /// Label color of the unselected segments. Defaults to
+  /// `context.colors.tertiaryContainer`, the same near-black the app's input
+  /// text uses.
+  final Color? unselectedLabelColor;
 
   /// Optional prefix icon per segment. Pass `null` at an index to omit that
   /// segment's icon while keeping icons on others. Must match [items.length]
@@ -53,11 +59,13 @@ class _AppSegmentedSelectorState extends State<AppSegmentedSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+
     return Container(
       height: widget.height,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: widget.trackColor,
+        color: widget.trackColor ?? colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(29),
       ),
       child: Row(
@@ -99,7 +107,7 @@ class _SegmentItem extends StatelessWidget {
   final bool isSelected;
   final Color selectedColor;
   final Color? selectedLabelColor;
-  final Color unselectedLabelColor;
+  final Color? unselectedLabelColor;
   final VoidCallback? onTap;
 
   @override
@@ -107,7 +115,7 @@ class _SegmentItem extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final Color labelColor = isSelected
         ? (selectedLabelColor ?? colors.white)
-        : unselectedLabelColor;
+        : (unselectedLabelColor ?? colors.tertiaryContainer);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
