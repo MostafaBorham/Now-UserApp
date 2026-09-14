@@ -55,7 +55,6 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                 ? CheckoutProductsDetailsView(order: widget.order)
                 : CheckoutProductsImagesListView(
                     items: widget.order?.items,
-                    onMoreTap: () => setState(() => _isExpanded = true),
                   ),
 
             ApplyDiscountCodeView(vendorId: widget.order?.vendorId),

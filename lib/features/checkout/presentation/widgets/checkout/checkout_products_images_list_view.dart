@@ -8,12 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 /// thumbnails followed by a "+" tile that expands the card into the full
 /// item list (same action as the header chevron).
 class CheckoutProductsImagesListView extends StatelessWidget {
-  const CheckoutProductsImagesListView({super.key, this.items, this.onMoreTap});
+  const CheckoutProductsImagesListView({super.key, this.items});
 
   final List<ProductModel>? items;
-
-  /// Tapping the trailing "+" tile. Null hides the tile.
-  final VoidCallback? onMoreTap;
 
   static const int _maxThumbnails = 2;
   static const double _tileSize = 56;
@@ -42,21 +39,6 @@ class CheckoutProductsImagesListView extends StatelessWidget {
               height: _tileSize,
               fit: BoxFit.cover,
               imageUrl: product.images?.firstOrNull ?? '',
-            ),
-          ),
-        if (onMoreTap != null)
-          InkWell(
-            borderRadius: BorderRadius.circular(6),
-            onTap: onMoreTap,
-            child: Container(
-              width: _tileSize,
-              height: _tileSize,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: colors.white,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Icon(Icons.add, size: 20, color: colors.tertiaryContainer),
             ),
           ),
       ],
