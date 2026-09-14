@@ -2,11 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/formatters/date_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
@@ -77,6 +79,10 @@ class _ProfileBody extends StatelessWidget {
   final String? avatarUrl;
   final ScrollController? scrollController;
 
+  /// Placeholder for a value the user has not set and that has no hint of its
+  /// own to offer (a name or phone they cannot fill in from here).
+  static const String _emptyHint = '—';
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -101,12 +107,14 @@ class _ProfileBody extends StatelessWidget {
                   InfoField(
                     label: LangKeys.fullNameKey.tr(),
                     value: profile.fullName,
-                    hint: '—',
+                    hint: _emptyHint,
                   ),
                   InfoField(
                     label: LangKeys.phoneKey.tr(),
-                    value: profile.phone,
-                    hint: '—',
+                    value: AppValidator.saudiPhoneDisplay(profile.phone),
+                    hint: _emptyHint,
+                    // The only always-Latin value on this screen.
+                    forceLtrValue: true,
                   ),
                   InfoField(
                     label: LangKeys.emailKey.tr(),
@@ -116,11 +124,13 @@ class _ProfileBody extends StatelessWidget {
                   InfoField(
                     label: LangKeys.genderKey.tr(),
                     value: _localizedGender(profile.gender),
-                    hint: '—',
+                    hint: _emptyHint,
                   ),
                   InfoField(
                     label: LangKeys.dateOfBirthKey.tr(),
-                    value: profile.birthday,
+                    // Localized, so the same birthday reads the same here as it
+                    // does in the editor.
+                    value: formatLocalizedDateOnly(context, profile.birthday),
                     hint: LangKeys.selectDateOfBirthKey.tr(),
                   ),
                   InfoField(

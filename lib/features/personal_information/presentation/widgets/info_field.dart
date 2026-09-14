@@ -11,12 +11,18 @@ class InfoField extends StatelessWidget {
     this.value,
     this.hint,
     this.showDivider = true,
+    this.forceLtrValue = false,
   });
 
   final String label;
   final String? value;
   final String? hint;
   final bool showDivider;
+
+  /// Renders the value left-to-right regardless of the app locale. Only for
+  /// values that are always Latin-script, such as the phone number — forcing it
+  /// on an Arabic name or nationality misplaces their punctuation.
+  final bool forceLtrValue;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class InfoField extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 hasValue ? value! : (hint ?? ''),
-                textDirection: TextDirection.ltr,
+                textDirection: forceLtrValue ? TextDirection.ltr : null,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,

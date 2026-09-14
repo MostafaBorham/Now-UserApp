@@ -72,11 +72,20 @@ class ProfileAvatar extends StatelessWidget {
 
   Widget _image(BuildContext context) {
     if (imageFile != null) {
+      final int decodeSize =
+          (size * MediaQuery.devicePixelRatioOf(context)).round();
       return Image.file(
         imageFile!,
         fit: BoxFit.cover,
         width: size,
         height: size,
+        // A camera photo is many megapixels; decoding it at full resolution for
+        // a ~112px circle costs tens of MB of image memory for nothing.
+        cacheWidth: decodeSize,
+        cacheHeight: decodeSize,
+        // The picked file can be gone by the time we paint (the OS reclaiming a
+        // gallery temp file); fall back to the placeholder rather than throwing.
+        errorBuilder: (_, _, _) => _placeholder(),
       );
     }
 
@@ -94,10 +103,9 @@ class ProfileAvatar extends StatelessWidget {
       );
     }
 
-    return Assets.media.images.png.userAvatarPlaceholderImg.image(
-      fit: BoxFit.cover,
-      width: size,
-      height: size,
-    );
+    return _placeholder();
   }
+
+  Widget _placeholder() => Assets.media.images.png.userAvatarPlaceholderImg
+      .image(fit: BoxFit.cover, width: size, height: size);
 }

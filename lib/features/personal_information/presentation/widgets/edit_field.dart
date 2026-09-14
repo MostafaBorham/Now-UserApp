@@ -22,6 +22,7 @@ class EditField extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.valueText,
+    this.errorText,
   });
 
   final String label;
@@ -42,11 +43,29 @@ class EditField extends StatelessWidget {
   final bool readOnly;
   final String? valueText;
 
+  /// Validation message shown under the pill, which also turns red. Null when
+  /// the field is valid.
+  final String? errorText;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [_labelRow(context), const SizedBox(height: 8), _pill(context)],
+      children: [
+        _labelRow(context),
+        const SizedBox(height: 8),
+        _pill(context),
+        if (errorText != null) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16),
+            child: Text(
+              errorText!,
+              style: TextStyle(fontSize: 12, color: context.colors.red300Main),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -89,6 +108,10 @@ class EditField extends StatelessWidget {
         Expanded(
           child: Text(
             hasValue ? valueText! : (hintText ?? ''),
+            // The pill is a fixed 54px: without this a long value wraps to a
+            // second line and overflows it.
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 16,
               color: hasValue
@@ -146,6 +169,9 @@ class EditField extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colors.onPrimaryContainer,
         borderRadius: BorderRadius.circular(999),
+        border: errorText == null
+            ? null
+            : Border.all(color: context.colors.red300Main),
       ),
       child: Row(children: children),
     );
