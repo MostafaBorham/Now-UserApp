@@ -36,6 +36,14 @@ class WalletRepo {
   /// The key inside the set-default `data` payload that carries the card.
   static const String _defaultCardKey = 'card';
 
+  /// The key carrying the wallet account itself. Present in both the wallet
+  /// `data` payload and the top-up one.
+  static const String _walletKey = 'wallet';
+
+  /// The key carrying the funding limits and suggested amounts. Present in the
+  /// wallet `data` payload only — the top-up response omits it.
+  static const String _topUpKey = 'top_up';
+
   /// Cancels every in-flight request of this repo. The actual cancellation
   /// mechanism (CancelToken) lives entirely inside the data source layer.
   void cancelRequests() => _walletApiService.cancelRequests();
@@ -168,20 +176,23 @@ class WalletRepo {
   }
 
   /// Tops the wallet up with [amount] via [paymentMethodId] and returns the
-  /// server's fresh [WalletModel], parsed from the response `data` payload.
-  /// [idempotencyKey] lets the server dedupe retries of the same top-up.
+  /// server's fresh [WalletModel]. [idempotencyKey] lets the server dedupe
+  /// retries of the same top-up.
   ///
-  /// Server-first, cache-second: on success the same raw `data` that the model
-  /// is parsed from also overwrites the wallet-info (Hive) cache, so the local
-  /// copy tracks the new balance without a follow-up [getWalletInfo] round-trip.
+  /// The top-up response is **not** shaped like the wallet response: its `data`
+  /// is `{transaction, wallet}`, carrying no `top_up` block. Parsing it with
+  /// [WalletModel.fromJson] as-is would therefore null out the funding limits and
+  /// blank the suggested amounts — and caching it would persist that loss, so a
+  /// later offline read would serve a wallet with no limits at all. Instead the
+  /// fresh `wallet` is recombined with the last known `top_up` back into the
+  /// wallet-response shape, and that is what gets parsed and cached.
+  ///
   /// A failure surfaces as-is — a write is never satisfied from stale cache.
   Future<Either<Failure, WalletModel>> topUpWallet({
     required int amount,
     required int paymentMethodId,
     required String idempotencyKey,
   }) async {
-    // Fetch the raw server `data` object so it can be both cached verbatim and
-    // parsed — the cache round-trips through the same parsing the server uses.
     final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.topUpWallet(
         amount: amount,
@@ -194,10 +205,35 @@ class WalletRepo {
     return serverResult.fold(
       (Failure serverFailure) => Left<Failure, WalletModel>(serverFailure),
       (Map<String, dynamic> data) async {
-        await _cacheWalletInfo(data);
-        return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+        final Map<String, dynamic> walletData = <String, dynamic>{
+          _walletKey: data[_walletKey],
+          // Absent on the very first action of a session that somehow skipped a
+          // wallet read; the caller's follow-up getWalletInfo() then restores it.
+          ...?_cachedTopUp(),
+        };
+
+        await _cacheWalletInfo(walletData);
+        return Right<Failure, WalletModel>(WalletModel.fromJson(walletData));
       },
     );
+  }
+
+  /// The `top_up` entry of the cached wallet payload — the funding limits and
+  /// suggested amounts — or `null` when nothing usable is cached. Returned as a
+  /// single-entry map so it can be spread straight into a rebuilt payload.
+  Map<String, dynamic>? _cachedTopUp() {
+    try {
+      final String? cached = _walletInfoDatabaseService.getWalletInfo();
+      if (cached == null) return null;
+
+      final Map<String, dynamic> data =
+          jsonDecode(cached) as Map<String, dynamic>;
+      final Map<String, dynamic>? topUp =
+          data[_topUpKey] as Map<String, dynamic>?;
+      return topUp == null ? null : <String, dynamic>{_topUpKey: topUp};
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Deletes the saved card [id]. Success-only response (no data payload).
@@ -265,8 +301,13 @@ class WalletRepo {
     }
   }
 
-  /// Shared request envelope: connection check, non-200 handling, and
+  /// Shared request envelope: connection check, non-success handling, and
   /// Dio/exception mapping, so each method only describes its own [parse].
+  ///
+  /// Both 200 and 201 count as success: the reads answer 200, but
+  /// `POST /api/v1/wallet/top-up` answers **201** — including when it replays an
+  /// already-completed attempt. Treating that 201 as a failure would tell the
+  /// customer a charge failed that the server had already taken.
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
     T Function(Map<String, dynamic> data) parse,
@@ -279,7 +320,8 @@ class WalletRepo {
       final Response response = await request();
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
-      if (response.statusCode != 200) {
+      final int statusCode = response.statusCode ?? 0;
+      if (statusCode != 200 && statusCode != 201) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
