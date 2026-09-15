@@ -7,11 +7,14 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/utils/uuid.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/my_cards_database_service.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/top_up_attempt_database_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/local/database/wallet_info_database_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/datasources/remote/api/wallet_api_service.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_top_up_attempt.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transaction_model.dart';
 
 /// All data operations of the wallet feature.
@@ -26,6 +29,8 @@ class WalletRepo {
       MyCardsDatabaseService();
   final WalletInfoDatabaseService _walletInfoDatabaseService =
       WalletInfoDatabaseService();
+  final TopUpAttemptDatabaseService _topUpAttemptDatabaseService =
+      TopUpAttemptDatabaseService();
 
   /// The key inside the transactions `data` payload that carries the list.
   static const String _transactionsListKey = 'transactions';
@@ -233,6 +238,75 @@ class WalletRepo {
       return topUp == null ? null : <String, dynamic>{_topUpKey: topUp};
     } catch (_) {
       return null;
+    }
+  }
+
+  /// The attempt to send for a top-up of [amountHalalas] on [paymentMethodId].
+  ///
+  /// Reuses the stored attempt when it is for the same amount and card: that is
+  /// a retry of a submit whose outcome is unknown, and it has to carry the
+  /// original key so the server replays the first result instead of charging
+  /// again. Anything else is a new deliberate top-up and gets a fresh key.
+  ///
+  /// The attempt is persisted *before* the request goes out, so it survives the
+  /// process being killed mid-flight — which is the whole point, since that does
+  /// not cancel the attempt server-side.
+  Future<WalletTopUpAttempt> resolveTopUpAttempt({
+    required int amountHalalas,
+    required int paymentMethodId,
+  }) async {
+    final WalletTopUpAttempt? stored = readTopUpAttempt();
+    if (stored != null &&
+        stored.matches(
+          amountHalalas: amountHalalas,
+          paymentMethodId: paymentMethodId,
+        )) {
+      return stored;
+    }
+
+    // ponytail: one attempt slot — starting a different top-up overwrites an
+    // unresolved one, losing its key for reconciliation. Keep a short list
+    // keyed by idempotency key if support ever needs to chase those.
+    final WalletTopUpAttempt attempt = WalletTopUpAttempt(
+      amountHalalas: amountHalalas,
+      paymentMethodId: paymentMethodId,
+      idempotencyKey: generateUuidV4(),
+    );
+
+    try {
+      await _topUpAttemptDatabaseService
+          .saveTopUpAttempt(jsonEncode(attempt.toJson()));
+    } catch (_) {
+      // A disk that won't take the write still leaves this session's retries
+      // working off the returned attempt; only a restart would lose the key.
+      // Failing the top-up outright would be the worse trade.
+    }
+
+    return attempt;
+  }
+
+  /// The outstanding top-up attempt, or `null` when there is none (or the stored
+  /// record can't be read).
+  WalletTopUpAttempt? readTopUpAttempt() {
+    try {
+      final String? stored = _topUpAttemptDatabaseService.getTopUpAttempt();
+      if (stored == null) return null;
+
+      return WalletTopUpAttempt.fromJson(
+        jsonDecode(stored) as Map<String, dynamic>,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Drops the stored attempt once the server has confirmed it, so a later
+  /// deliberate top-up mints a fresh key rather than replaying this one.
+  Future<void> clearTopUpAttempt() async {
+    try {
+      await _topUpAttemptDatabaseService.clearTopUpAttempt();
+    } catch (_) {
+      // Best-effort: a stale record is re-resolved by amount and card anyway.
     }
   }
 

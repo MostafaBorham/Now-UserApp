@@ -56,6 +56,12 @@ abstract class HiveKeys {
   /// proper `String`-keyed maps.
   static const String walletInfoPayload = 'wallet_info_payload';
 
+  /// Key inside [HiveBoxes.walletTopUpAttempt] holding the JSON-encoded `String`
+  /// payload of the unresolved top-up attempt (`WalletTopUpAttempt.toJson`) —
+  /// the amount in halalas, the card being charged, and the idempotency key a
+  /// retry of that same submit must resend.
+  static const String walletTopUpAttemptPayload = 'wallet_top_up_attempt_payload';
+
   /// Key inside [HiveBoxes.homeSections] holding the JSON-encoded `String`
   /// payload of the home feed — the raw server `data` object
   /// (`{'sections': [...]}`). Stored as a JSON string so it round-trips back

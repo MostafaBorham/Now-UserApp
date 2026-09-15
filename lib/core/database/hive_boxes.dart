@@ -45,6 +45,14 @@ abstract class HiveBoxes {
   /// from the server on every successful wallet fetch.
   static const String walletInfo = 'wallet_info_box';
 
+  /// Box storing the signed-in user's unresolved wallet top-up attempt — the
+  /// amount, card and idempotency key of a submit whose outcome isn't known yet.
+  /// Unlike the other boxes this is not a cache: cancelling a request or killing
+  /// the app does not cancel the attempt server-side, so the record has to
+  /// outlive the process or a retry would mint a new key and charge twice.
+  /// Cleared the moment the server confirms the top-up.
+  static const String walletTopUpAttempt = 'wallet_top_up_attempt_box';
+
   /// Box storing the cached home feed payload (the `sections` list from
   /// `GET /api/v1/home-sections`), so the home screen can render its last-seen
   /// content when the server is unreachable. It is refreshed from the server on

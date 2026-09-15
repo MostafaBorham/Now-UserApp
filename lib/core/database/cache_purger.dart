@@ -23,6 +23,11 @@ class CachePurger {
     HiveBoxes.myOrders,
     HiveBoxes.myCards,
     HiveBoxes.walletInfo,
+    // Not a cache, but just as user-scoped: an unresolved top-up attempt names
+    // one customer's amount and card, and must never be inherited by whoever
+    // signs in next — replaying it under another account is the whole risk the
+    // record exists to prevent.
+    HiveBoxes.walletTopUpAttempt,
     HiveBoxes.recentSearches,
     HiveBoxes.recentAddressSearches,
   ];
