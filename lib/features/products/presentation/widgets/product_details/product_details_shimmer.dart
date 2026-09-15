@@ -21,6 +21,9 @@ class ProductDetailsShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      // Mirror the real view's top offset so the shimmer sits under the wave at
+      // the same height instead of jumping up when the data resolves.
+      padding: const EdgeInsets.only(top: 57),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
