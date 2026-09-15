@@ -130,6 +130,20 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   },
                 );
               });
+              // Resolve each section's data up front so the section is dropped
+              // whenever it has nothing to show — not just when the raw list is
+              // null/empty, but also when every entry resolves to blank.
+              final List<String> keyFeatures = (product.mainFeatures ?? [])
+                  .map((feature) => context.getLocalizedApiText(feature))
+                  .where((text) => text.isNotEmpty)
+                  .toList();
+              final specifications = (product.specifications ?? [])
+                  .where(
+                    (spec) =>
+                        (spec.key?.isNotEmpty ?? false) ||
+                        (spec.value?.isNotEmpty ?? false),
+                  )
+                  .toList();
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
                 child: AppRefreshIndicator(
@@ -210,24 +224,18 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   ),
                                 ),
                               ),
-                          if (product.mainFeatures?.isNotEmpty ?? false)
+                          if (keyFeatures.isNotEmpty)
                             Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: ProductKeyFeaturesView(
-                                productFeatures: product.mainFeatures!
-                                    .map(
-                                      (feature) =>
-                                          context.getLocalizedApiText(feature),
-                                    )
-                                    .where((text) => text.isNotEmpty)
-                                    .toList(),
+                                productFeatures: keyFeatures,
                               ),
                             ),
-                          if (product.specifications?.isNotEmpty ?? false)
+                          if (specifications.isNotEmpty)
                             Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: ProductBasicSpecificationsView(
-                                specifications: product.specifications!,
+                                specifications: specifications,
                               ),
                             ),
                           Container(
