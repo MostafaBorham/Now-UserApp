@@ -37,10 +37,11 @@ class ProductKeyFeaturesView extends StatelessWidget {
                 spacing: 8,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: CircleAvatar(
-                      radius: 2,
-                      backgroundColor: colors.black,
+                    padding: const EdgeInsets.only(top: 7.0),
+                    child: Container(
+                      width: 4,
+                      height: 4,
+                      color: colors.black,
                     ),
                   ),
                   Expanded(
