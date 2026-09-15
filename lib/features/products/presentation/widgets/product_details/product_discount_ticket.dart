@@ -24,20 +24,26 @@ class ProductDiscountTicket extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Assets.media.images.svg.discountTicketIcon.svg(height: 48),
-        if (isPercentage)
-          Text(
-            '$value%',
-            textDirection: TextDirection.ltr,
-            style: AppTextStyles.style14Bold.copyWith(color: colors.white),
-          )
-        else
-          NewPriceWidget(
-            color: colors.white,
-            price: value,
-            size: 13,
-            fontWeight: FontWeight.bold,
-          ),
+        Assets.media.images.svg.discountTicketIcon.svg(height: 40),
+        // The ticket's colored body sits left of the notched tail, so nudge the
+        // text off the SVG's geometric center to land on the body's center.
+        Padding(
+          padding: const EdgeInsets.only(right: 14),
+          child: isPercentage
+              ? Text(
+                  '$value%',
+                  textDirection: TextDirection.ltr,
+                  style: AppTextStyles.style14Bold.copyWith(
+                    color: colors.white,
+                  ),
+                )
+              : NewPriceWidget(
+                  color: colors.white,
+                  price: value,
+                  size: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+        ),
       ],
     );
   }

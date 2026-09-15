@@ -5,15 +5,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import 'product_colors_selector.dart';
-import 'product_main_info_card.dart';
 
 class ProductDetailsShimmer extends StatelessWidget {
   const ProductDetailsShimmer({super.key});
@@ -46,7 +39,7 @@ class ProductDetailsShimmer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  CircularAppFavouriteIcon(onFavouriteChanged: (p0) {}),
+                  const CircleAvatar(radius: 20, backgroundColor: Colors.black),
                 ],
               ),
             ),
