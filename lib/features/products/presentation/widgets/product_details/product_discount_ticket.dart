@@ -47,29 +47,33 @@ class ProductDiscountTicket extends StatelessWidget {
           ),
           // Constrain the text to the ticket bounds and scale it down so it
           // never grows past the image or overflows its edges.
-          SizedBox(
+          Container(
             width: ticketWidth,
             height: ticketHeight,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 5),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: isPercentage
-                    ? Text(
-                        '$value%',
-                        textDirection: TextDirection.ltr,
-                        style: AppTextStyles.style14Bold.copyWith(
-                          color: colors.white,
-                          fontSize: fontSize,
-                        ),
-                      )
-                    : NewPriceWidget(
+            // The leading ~23% of the ticket image is the grommet/pointed tip,
+            // not flat label space. Inset the text by that amount so aligning it
+            // to the left lands on the body's edge, not over the tip/hole.
+            // Fixed to the left (not direction-aware) since the ticket itself
+            // never mirrors with the layout direction.
+            padding: const EdgeInsets.only(left: ticketWidth * 0.23),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: isPercentage
+                  ? Text(
+                      '$value%',
+                      textDirection: TextDirection.ltr,
+                      style: AppTextStyles.style14Bold.copyWith(
                         color: colors.white,
-                        price: value,
-                        size: fontSize,
-                        fontWeight: FontWeight.bold,
+                        fontSize: fontSize,
                       ),
-              ),
+                    )
+                  : NewPriceWidget(
+                      color: colors.white,
+                      price: value,
+                      size: fontSize,
+                      fontWeight: FontWeight.bold,
+                    ),
             ),
           ),
         ],
