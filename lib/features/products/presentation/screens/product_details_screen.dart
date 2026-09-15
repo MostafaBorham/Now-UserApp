@@ -217,6 +217,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   storeName: context.getLocalizedApiText(
                                     product.vendor?.name,
                                   ),
+                                  isTrusted: false,
                                 ),
                                 if (product.colors?.isNotEmpty ?? false)
                                   Align(

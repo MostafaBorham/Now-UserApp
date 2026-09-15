@@ -1,70 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
-import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupon_item.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vouchers/voucher_ticket.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
+import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupons_list.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 
-/// The ticket is a tight 121x158 box, so these tests double as an overflow
-/// guard: any RenderFlex overflow inside it fails the pump.
+/// The store-details coupons strip renders each coupon as the shared
+/// [VoucherTicket]. Each ticket is a tight 121-wide box, so these tests double
+/// as an overflow guard: any RenderFlex overflow inside one fails the pump.
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
+  StoreModel storeWith(List<CouponModel> coupons) =>
+      sampleStore().copyWith(coupons: coupons);
+
+  Future<void> pumpCoupons(WidgetTester tester, List<CouponModel> coupons) =>
+      pumpCategoriesWidget(
+        tester,
+        const StoreDiscountCouponsList(),
+        overrides: [storeProvider.overrideWithValue(storeWith(coupons))],
+      );
+
   const CouponModel coupon = CouponModel(
     code: 'SAVE20',
+    name: 'Panda',
     discountValue: 20,
     startsAt: '2026-01-10',
     expiresAt: '2026-01-31',
   );
 
-  Future<void> pumpTicket(WidgetTester tester, {bool darkHead = false}) =>
-      pumpCategoriesWidget(
-        tester,
-        Center(
-          child: StoreDiscountCouponItem(
-            coupon: coupon,
-            storeName: 'Panda',
-            darkHead: darkHead,
-          ),
-        ),
-      );
-
-  testWidgets('renders the discount, the store name and the validity', (
+  testWidgets('renders the discount, the coupon name and the validity', (
     WidgetTester tester,
   ) async {
-    await pumpTicket(tester);
+    await pumpCoupons(tester, const [coupon]);
 
     expect(find.text('20%'), findsOneWidget);
     expect(find.textContaining('Panda'), findsOneWidget);
     expect(find.textContaining('January 10, 2026'), findsOneWidget);
-    expect(
-      tester.getSize(find.byType(StoreDiscountCouponItem)),
-      const Size(121, 158),
-    );
+
+    // The ticket keeps its fixed 121 width; height grows to fit its text but
+    // never drops below the design floor.
+    final Size size = tester.getSize(find.byType(VoucherTicket));
+    expect(size.width, 121);
+    expect(size.height, greaterThanOrEqualTo(158));
   });
 
-  testWidgets('renders the dark head variant', (WidgetTester tester) async {
-    await pumpTicket(tester, darkHead: true);
+  testWidgets('renders the dark-head variant without overflow', (
+    WidgetTester tester,
+  ) async {
+    // The list alternates the head colour down the row, so the second ticket
+    // takes the dark head — a two-coupon list exercises that path.
+    await pumpCoupons(tester, const [coupon, coupon]);
 
-    expect(find.text('20%'), findsOneWidget);
+    expect(find.byType(VoucherTicket), findsNWidgets(2));
   });
 
   testWidgets('drops the percent sign for a fixed-amount coupon', (
     WidgetTester tester,
   ) async {
-    await pumpCategoriesWidget(
-      tester,
-      const Center(
-        child: StoreDiscountCouponItem(
-          coupon: CouponModel(
-            code: 'FLAT15',
-            isPercentage: false,
-            discountValue: 15,
-          ),
-          storeName: 'Panda',
-        ),
-      ),
-    );
+    await pumpCoupons(tester, const [
+      CouponModel(code: 'FLAT15', isPercentage: false, discountValue: 15),
+    ]);
 
     expect(find.text('15'), findsOneWidget);
     expect(find.text('15%'), findsNothing);
