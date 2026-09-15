@@ -149,23 +149,27 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
             ),
           ),
           8.hSpace,
-          Row(
-            spacing: 10,
-            children: [
-              Expanded(
-                child: PrimaryAppButton(
-                  title: widget.viewCartLabel ?? LangKeys.viewCartKey.tr(),
-                  onTap: widget.onViewCart,
+          SizedBox(
+            height: 50,
+            child: Row(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: PrimaryAppButton(
+                    title: widget.viewCartLabel ?? LangKeys.viewCartKey.tr(),
+                    onTap: widget.onViewCart,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: UnPrimaryAppButton(
-                  title: widget.continueShoppingLabel ??
-                      LangKeys.continueShoppingKey.tr(),
-                  onTap: widget.onContinueShopping,
+                Expanded(
+                  child: UnPrimaryAppButton(
+                    title: widget.continueShoppingLabel ??
+                        LangKeys.continueShoppingKey.tr(),
+                    onTap: widget.onContinueShopping,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
