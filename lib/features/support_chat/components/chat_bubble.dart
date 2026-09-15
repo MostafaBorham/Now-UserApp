@@ -97,7 +97,7 @@ class _PersonAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: Assets.media.images.svg.personPng.image(
+      child: Assets.media.images.svg.person.image(
         width: size,
         height: size,
         fit: BoxFit.cover,
