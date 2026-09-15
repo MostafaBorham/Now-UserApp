@@ -19,12 +19,15 @@ class ProductDetailsShimmer extends StatelessWidget {
       // Mirror the real view's top offset so the shimmer sits under the wave at
       // the same height instead of jumping up when the data resolves.
       padding: const EdgeInsets.only(top: 57),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          spacing: 16,
-          children: [
-            AppShimmer(
+      child: Column(
+        spacing: 16,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              spacing: 16,
+              children: [
+                AppShimmer(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -231,13 +234,18 @@ class ProductDetailsShimmer extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              color: Colors.grey,
-              width: double.infinity,
-              height: 1,
-              padding: EdgeInsets.symmetric(vertical: 15),
+              ],
             ),
-            AppShimmer(
+          ),
+          // Full-width divider — no horizontal padding, matching the real view.
+          Container(
+            color: Colors.grey,
+            width: double.infinity,
+            height: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: AppShimmer(
               child: Row(
                 spacing: 10,
                 children: [
@@ -262,8 +270,8 @@ class ProductDetailsShimmer extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

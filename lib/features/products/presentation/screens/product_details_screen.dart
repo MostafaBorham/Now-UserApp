@@ -13,7 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indic
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
@@ -70,6 +70,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     return Scaffold(
       body: AppWavedView(
         scrollController: _scrollController,
+        // Drop the wave's default horizontal body padding so the divider
+        // section can span edge to edge; sections 1 and 3 carry their own
+        // horizontal padding instead.
+        bodyPadding: const EdgeInsets.only(bottom: 20),
         body: SafeArea(
           child: productDetailsState.when(
             loading: () {
@@ -155,160 +159,192 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     // the flattening wave.
                     padding: const EdgeInsets.only(top: 57),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                      ).copyWith(bottom: 16),
+                      padding: const EdgeInsets.only(bottom: 16),
                       child: Column(
                         spacing: 16,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (product.activeDeal != null &&
-                                  (product.activeDeal!.discountValue ?? 0) > 0)
-                                ProductDiscountTicket(
-                                  deal: product.activeDeal!,
-                                )
-                              else
-                                const SizedBox.shrink(),
-                              CircularAppFavouriteIcon(
-                                favouriteType: FavouriteType.product,
-                                itemId: product.id,
-                                isFavourite: product.isFavorite ?? false,
-                                onFavouriteChanged: (p0) {},
-                              ),
-                            ],
-                          ),
-                          AppSlider(
-                            sliderItems: (product.images ?? [])
-                                .map(
-                                  (image) => AppCachedNetworkImage(
-                                    imageUrl: image,
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    fit: BoxFit.contain,
-                                    placeholderType: LoadingViewTypes.circular,
-                                    circularProgressSize: 50,
-                                  ),
-                                )
-                                .toList(),
-                            itemAspectRatio: 1.5,
-                          ),
-                          ProductMainInfoCard(
-                            description: context.getLocalizedApiText(
-                              product.description,
+                          // Section 1: everything from the top down to the
+                          // Basic Specifications view, carrying the shared
+                          // horizontal padding.
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
                             ),
-                            storeName: context.getLocalizedApiText(
-                              product.vendor?.name,
-                            ),
-                          ),
-                          if (product.colors?.isNotEmpty ?? false)
-                            Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: ProductColorsSelector(
-                                colors: product.colors!,
-                              ),
-                            ),
-                          // Every variant attribute (Size, Material, …) becomes
-                          // its own labelled selector section.
-                          ...(product.attributes ?? [])
-                              .where(
-                                (attribute) =>
-                                    attribute.values?.isNotEmpty ?? false,
-                              )
-                              .map(
-                                (attribute) => Align(
-                                  alignment: AlignmentDirectional.centerStart,
-                                  child: ProductSizeSelector(
-                                    attribute: attribute,
-                                  ),
+                            child: Column(
+                              spacing: 16,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (product.activeDeal != null &&
+                                        (product.activeDeal!.discountValue ??
+                                                0) >
+                                            0)
+                                      ProductDiscountTicket(
+                                        deal: product.activeDeal!,
+                                      )
+                                    else
+                                      const SizedBox.shrink(),
+                                    CircularAppFavouriteIcon(
+                                      favouriteType: FavouriteType.product,
+                                      itemId: product.id,
+                                      isFavourite: product.isFavorite ?? false,
+                                      onFavouriteChanged: (p0) {},
+                                    ),
+                                  ],
                                 ),
-                              ),
-                          if (keyFeatures.isNotEmpty)
-                            Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: ProductKeyFeaturesView(
-                                productFeatures: keyFeatures,
-                              ),
-                            ),
-                          if (specifications.isNotEmpty)
-                            Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: ProductBasicSpecificationsView(
-                                specifications: specifications,
-                              ),
-                            ),
-                          Container(
-                            color: colors.neutral500.withValues(alpha: 0.3),
-                            width: double.infinity,
-                            height: 1,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                          ),
-                          if ((product.stock ?? 1) >= 1)
-                          Row(
-                            spacing: 10,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: PrimaryAppPrefixIconButton(
-                                  isLoading: isAddingToCart,
-                                  onTap: () {
-                                    final productQuantity = ref.read(
-                                      productQuantityProvider,
-                                    );
-                                    if (product.id != null) {
-                                      ref
-                                          .read(
-                                            updateCartProductProvider(
-                                              product.id!,
-                                            ).notifier,
-                                          )
-                                          .addToCart(productQuantity);
-                                    }
-                                  },
-                                  title: LangKeys.addToCartKey.tr(),
-                                  buttonPadding: 10,
-                                  buttonRadius: 8,
-                                  prefixIcon: ReverseWidget(
-                                    child: Assets
-                                        .media
-                                        .images
-                                        .svg
-                                        .shoppingCartIcon
-                                        .svg(
-                                          width: 20,
-                                          colorFilter: ColorFilter.mode(
-                                            colors.white,
-                                            BlendMode.srcIn,
-                                          ),
+                                AppSlider(
+                                  sliderItems: (product.images ?? [])
+                                      .map(
+                                        (image) => AppCachedNetworkImage(
+                                          imageUrl: image,
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          fit: BoxFit.contain,
+                                          placeholderType:
+                                              LoadingViewTypes.circular,
+                                          circularProgressSize: 50,
                                         ),
+                                      )
+                                      .toList(),
+                                  itemAspectRatio: 1.5,
+                                ),
+                                ProductMainInfoCard(
+                                  description: context.getLocalizedApiText(
+                                    product.description,
+                                  ),
+                                  storeName: context.getLocalizedApiText(
+                                    product.vendor?.name,
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: UnPrimaryButton(
-                                  isLoading: isBuyNowLoading,
-                                  title: LangKeys.buyNowKey.tr(),
-                                  buttonPadding: 10,
-                                  onTap: () {
-                                    final productQuantity = ref.read(
-                                      productQuantityProvider,
-                                    );
-                                    if (product.id != null) {
-                                      ref.read(_isBuyNowProvider.notifier).state = true;
-                                      ref
-                                          .read(
-                                            updateCartProductProvider(
-                                              product.id!,
-                                            ).notifier,
-                                          )
-                                          .addToCart(productQuantity);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
+                                if (product.colors?.isNotEmpty ?? false)
+                                  Align(
+                                    alignment: AlignmentDirectional.centerStart,
+                                    child: ProductColorsSelector(
+                                      colors: product.colors!,
+                                    ),
+                                  ),
+                                // Every variant attribute (Size, Material, …)
+                                // becomes its own labelled selector section.
+                                ...(product.attributes ?? [])
+                                    .where(
+                                      (attribute) =>
+                                          attribute.values?.isNotEmpty ?? false,
+                                    )
+                                    .map(
+                                      (attribute) => Align(
+                                        alignment:
+                                            AlignmentDirectional.centerStart,
+                                        child: ProductSizeSelector(
+                                          attribute: attribute,
+                                        ),
+                                      ),
+                                    ),
+                                if (keyFeatures.isNotEmpty)
+                                  Align(
+                                    alignment: AlignmentDirectional.centerStart,
+                                    child: ProductKeyFeaturesView(
+                                      productFeatures: keyFeatures,
+                                    ),
+                                  ),
+                                if (specifications.isNotEmpty)
+                                  Align(
+                                    alignment: AlignmentDirectional.centerStart,
+                                    child: ProductBasicSpecificationsView(
+                                      specifications: specifications,
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
+                          // Section 2: full-width divider — no horizontal
+                          // padding so it spans edge to edge. Hidden together
+                          // with the buttons row when the product is out of
+                          // stock.
+                          if ((product.stock ?? 1) >= 1)
+                            Container(
+                              color: colors.neutral500.withValues(alpha: 0.3),
+                              width: double.infinity,
+                              height: 1,
+                            ),
+                          // Section 3: the add-to-cart / buy-now buttons row,
+                          // carrying the same horizontal padding as section 1.
+                          if ((product.stock ?? 1) >= 1)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: PrimaryAppPrefixIconButton(
+                                      isLoading: isAddingToCart,
+                                      onTap: () {
+                                        final productQuantity = ref.read(
+                                          productQuantityProvider,
+                                        );
+                                        if (product.id != null) {
+                                          ref
+                                              .read(
+                                                updateCartProductProvider(
+                                                  product.id!,
+                                                ).notifier,
+                                              )
+                                              .addToCart(productQuantity);
+                                        }
+                                      },
+                                      title: LangKeys.addToCartKey.tr(),
+                                      buttonPadding: 10,
+                                      buttonRadius: 8,
+                                      prefixIcon: ReverseWidget(
+                                        child: Assets
+                                            .media
+                                            .images
+                                            .svg
+                                            .shoppingCartIcon
+                                            .svg(
+                                              width: 20,
+                                              colorFilter: ColorFilter.mode(
+                                                colors.white,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: UnPrimaryAppButton(
+                                      isLoading: isBuyNowLoading,
+                                      title: LangKeys.buyNowKey.tr(),
+                                      buttonPadding: 10,
+                                      onTap: () {
+                                        final productQuantity = ref.read(
+                                          productQuantityProvider,
+                                        );
+                                        if (product.id != null) {
+                                          ref
+                                                  .read(
+                                                    _isBuyNowProvider.notifier,
+                                                  )
+                                                  .state =
+                                              true;
+                                          ref
+                                              .read(
+                                                updateCartProductProvider(
+                                                  product.id!,
+                                                ).notifier,
+                                              )
+                                              .addToCart(productQuantity);
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
