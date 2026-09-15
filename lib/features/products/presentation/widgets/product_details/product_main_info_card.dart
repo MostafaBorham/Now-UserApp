@@ -226,10 +226,11 @@ class ProductMainInfoCard extends ConsumerWidget {
                         spacing: 4,
                         children: [
                           // Priced the same way a cart line is: the new price is
-                          // the discounted one (falling back to the base price
-                          // when there's no discount), and the struck-through
-                          // old price only appears when a discount applies.
-                          if ((product.discountPrice ?? 0) > 0)
+                          // the discounted one, and the struck-through old price
+                          // (the base price) only appears when a discount
+                          // applies. With no discount, only the base price shows
+                          // in the new-price widget.
+                          if (product.discountPrice != null)
                             OldPriceWidget(
                               color: colors.neutral500,
                               size: con.maxWidth * 0.05,
@@ -238,7 +239,8 @@ class ProductMainInfoCard extends ConsumerWidget {
                           NewPriceWidget(
                             size: con.maxWidth * 0.07,
                             color: colors.neutral1200,
-                            price: '${(product.discountPrice ?? 0) < 0 ? product.price : product.discountPrice}',
+                            price:
+                                '${formatDouble(product.discountPrice ?? product.price)}',
                             fontWeight: FontWeight.bold,
                           ),
                         ],

@@ -59,7 +59,7 @@ class ProductSizeSelector extends StatelessWidget {
             if (isRequired)
               Text.rich(
                 TextSpan(
-                  text: hint,
+                  text: '($hint) ',
                   style: AppTextStyles.style10Medium.copyWith(
                     color: colors.onPrimaryFixed,
                   ),

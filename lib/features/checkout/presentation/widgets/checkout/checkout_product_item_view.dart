@@ -63,13 +63,12 @@ class CheckoutProductItemView extends StatelessWidget {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price: '${(item?.discountPrice ?? 0) < 0
-                              ? item?.price
-                              : item?.discountPrice}',
+                          price:
+                              '${formatDouble(item?.discountPrice ?? item?.price)}',
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if ((item?.discountPrice ?? 0) > 0)
+                        if (item?.discountPrice != null)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: '${formatDouble(item?.price)}',

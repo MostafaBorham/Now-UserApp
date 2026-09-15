@@ -60,7 +60,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
             if (widget.isRequired)
               Text.rich(
                 TextSpan(
-                  text: hint,
+                  text: '($hint) ',
                   style: AppTextStyles.style10Medium.copyWith(
                     color: colors.onPrimaryFixed,
                   ),
