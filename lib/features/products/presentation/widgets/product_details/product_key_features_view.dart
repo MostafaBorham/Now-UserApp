@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart' as html_parser;
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -11,6 +12,10 @@ class ProductKeyFeaturesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final String parsedFeatures = productFeatures
+        .map((feature) => html_parser.parse(feature).body?.text.trim() ?? '')
+        .where((text) => text.isNotEmpty)
+        .join('\n');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -29,35 +34,14 @@ class ProductKeyFeaturesView extends StatelessWidget {
             color: colors.neutral500.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Column(
-            spacing: 16,
-            children: productFeatures.map(
-              (feature) => Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 7.0),
-                    child: Container(
-                      width: 4,
-                      height: 4,
-                      color: colors.black,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      feature,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      style: AppTextStyles.style14Medium.copyWith(
-                        color: colors.black,
-                        height: 1.5,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ).toList(),
+          child: Text(
+            parsedFeatures,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            style: AppTextStyles.style14Medium.copyWith(
+              color: colors.black,
+              height: 1.5,
+            ),
           ),
         )
       ],
