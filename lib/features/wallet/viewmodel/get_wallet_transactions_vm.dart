@@ -30,6 +30,15 @@ class GetWalletTransactionsViewModel
     return _repo.getWalletTransactions(page: page);
   }
 
+  /// History is newest-first, so a transaction landing while the customer is
+  /// paging pushes every row down a slot and the tail of the page just read
+  /// reappears at the head of the next one. Transaction ids are stable, so
+  /// matching on them keeps that row from being listed twice.
+  @override
+  bool Function(WalletTransactionModel, WalletTransactionModel)?
+      get isSameItem => (WalletTransactionModel a, WalletTransactionModel b) =>
+          a.id != null && a.id == b.id;
+
   @override
   void dispose() {
     _repo.cancelRequests();

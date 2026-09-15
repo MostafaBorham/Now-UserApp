@@ -42,6 +42,16 @@ abstract class PaginatedViewModel<T>
   @protected
   Future<Either<Failure, PaginationModel<T>>> fetchPage(int page);
 
+  /// How two items are recognised as the same row, for dropping duplicates when
+  /// a page is appended.
+  ///
+  /// Offset pagination shifts when rows are inserted server-side between two
+  /// page requests, so an already-loaded item can arrive again on the next page.
+  /// Override this wherever the list has a stable id and that would be visible.
+  /// `null` (the default) appends without deduplication.
+  @protected
+  bool Function(T a, T b)? get isSameItem => null;
+
   /// Loads (or reloads) the first page, dropping whatever was loaded before.
   ///
   /// Used for the initial fetch, pull-to-refresh, and retrying a failed first
@@ -94,8 +104,9 @@ abstract class PaginatedViewModel<T>
             failure.message,
             StackTrace.current,
           ).copyWithPrevious(state),
-      (PaginationModel<T> nextPage) =>
-          AsyncValue<PaginationModel<T>>.data(currentPage.appendPage(nextPage)),
+      (PaginationModel<T> nextPage) => AsyncValue<PaginationModel<T>>.data(
+            currentPage.appendPage(nextPage, isSameItem: isSameItem),
+          ),
     );
   }
 

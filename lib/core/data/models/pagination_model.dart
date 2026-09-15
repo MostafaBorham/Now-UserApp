@@ -57,14 +57,36 @@ class PaginationModel<T> {
   /// Merges a freshly fetched [nextPage] into this one: the counters come from
   /// [nextPage] (it is the page now loaded), the items are this page's followed
   /// by the new ones.
-  PaginationModel<T> appendPage(PaginationModel<T> nextPage) {
+  ///
+  /// Pass [isSameItem] to drop an incoming item that is already loaded. Offset
+  /// pagination shifts when rows are inserted server-side between two page
+  /// requests, so an item from the end of page 1 can arrive again at the start
+  /// of page 2 — appending blindly then shows it twice. Omitted, the merge is a
+  /// plain concatenation, which is what a list with no stable identity wants.
+  PaginationModel<T> appendPage(
+    PaginationModel<T> nextPage, {
+    bool Function(T a, T b)? isSameItem,
+  }) {
+    final List<T> merged = <T>[...data];
+
+    for (final T item in nextPage.data) {
+      // ponytail: linear scan per incoming item, so O(page × loaded). Fine for
+      // pages of 15 over a few hundred rows; index the identity into a Set if a
+      // list ever grows big enough to feel it.
+      final bool alreadyLoaded = isSameItem != null &&
+          merged.any((T existing) => isSameItem(existing, item));
+      if (alreadyLoaded) continue;
+
+      merged.add(item);
+    }
+
     return PaginationModel<T>(
       currentPage: nextPage.currentPage,
       lastPage: nextPage.lastPage,
       perPage: nextPage.perPage,
       total: nextPage.total,
       hasMore: nextPage.hasMore,
-      data: <T>[...data, ...nextPage.data],
+      data: merged,
     );
   }
 }

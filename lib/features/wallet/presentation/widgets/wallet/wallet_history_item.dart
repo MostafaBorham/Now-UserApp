@@ -18,12 +18,34 @@ class WalletHistoryItem extends StatelessWidget {
 
   final WalletTransactionModel transaction;
 
+  /// The row's main label.
+  ///
+  /// `title` leads because it is the customer-facing, localized description of
+  /// what the transaction *is* — the merchant is only who it involves. On a
+  /// top-up those differ: the merchant is the platform identity ("Now
+  /// Delivery"), so keying off it labelled every top-up with the company name
+  /// instead of "Wallet top-up". The merchant name is kept as a fallback, and
+  /// `description` behind it (which may be internal English, so it goes last).
+  String _rowTitle(BuildContext context) {
+    final String? title = transaction.title;
+    if (title != null && title.trim().isNotEmpty) return title;
+
+    final WalletTransactionMerchant? merchant = transaction.merchant;
+    final String merchantName = context.getLocalizedApiText(merchant?.name);
+    if (merchantName.isNotEmpty) return merchantName;
+
+    final String? displayName = merchant?.displayName;
+    if (displayName != null && displayName.isNotEmpty) return displayName;
+
+    return transaction.description ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final WalletTransactionMerchant? merchant = transaction.merchant;
     final String logoUrl = merchant?.logoUrl ?? '';
-    final String title = context.getLocalizedApiText(merchant?.name);
+    final String title = _rowTitle(context);
     // The status drives the chip's colors and the amount color, mapped through
     // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
     final WalletTransactionStatus status = transaction.status;
@@ -31,13 +53,17 @@ class WalletHistoryItem extends StatelessWidget {
     // back to the raw status value the status carries.
     final String statusLabel = transaction.displayStatus ?? status.name;
     final String price = transaction.amountLabel ?? '';
-    // The transaction date, from `created_at`, shown as a localized numeric
-    // `dd-MM-yyyy` (e.g. 10-04-2026, Arabic-Indic digits under ar-EG) via the
-    // shared [context.getLocalizedNumericApiDate]; it returns an empty string
-    // when the server omits or sends an unparseable timestamp, so the
+    // The transaction date, shown as a localized numeric `dd-MM-yyyy` (e.g.
+    // 10-04-2026, Arabic-Indic digits under ar-EG) via the shared
+    // [context.getLocalizedNumericApiDate]; it returns an empty string when the
+    // server omits or sends an unparseable timestamp, so the
     // `if (date.isNotEmpty)` below hides the row with no extra guard here.
+    //
+    // From `occurred_at` — when the transaction actually happened — falling back
+    // to `created_at`. The two carry the same value today, so this is only
+    // future-proofing against them diverging.
     final String date = context.getLocalizedNumericApiDate(
-      apiDateTimeStamp: transaction.createdAt,
+      apiDateTimeStamp: transaction.occurredAt ?? transaction.createdAt,
     );
 
     return LayoutBuilder(
