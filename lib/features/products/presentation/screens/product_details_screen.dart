@@ -114,7 +114,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             : '',
                         onViewCart: () {
                           Navigator.of(sheetContext).pop();
-                          context.pushNamed(AppRoutes.cartScreen);
+                          ref.read(mainTabIndexProvider.notifier).state = 2;
+                          final GoRouter router = GoRouter.of(context);
+                          while (router.canPop()) {
+                            router.pop();
+                          }
                         },
                         onContinueShopping: () {
                           Navigator.of(sheetContext).pop();
@@ -146,6 +150,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   onRefresh: () async => _fetchProductDetails(),
                   child: SingleChildScrollView(
                     controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(top: 57),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
