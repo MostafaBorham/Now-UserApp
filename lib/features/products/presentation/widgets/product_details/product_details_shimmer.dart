@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -13,6 +15,7 @@ class ProductDetailsShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
       // Mirror the real view's top offset so the shimmer sits under the wave at
       // the same height instead of jumping up when the data resolves.
       padding: const EdgeInsets.only(top: 57),
@@ -25,9 +28,28 @@ class ProductDetailsShimmer extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Assets.media.images.svg.discountTicketIcon.svg(
-                    height: 35,
-                    width: 70,
+                  // Placeholder for the real ProductDiscountTicket: a plain
+                  // block tilted with the exact same rotation. The SizedBox
+                  // reserves the tilted block's bounding box (a 55x35 tag turned
+                  // 65° spans ~55x65) so the whole shape stays inside the shimmer
+                  // gradient's paint bounds — otherwise the overflowing corners
+                  // render as a static color instead of shimmering.
+                  SizedBox(
+                    width: 55,
+                    height: 65,
+                    child: Center(
+                      child: Transform.rotate(
+                        angle: -65 * math.pi / 180,
+                        child: Container(
+                          width: 55,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   const CircleAvatar(radius: 20, backgroundColor: Colors.black),
                 ],
