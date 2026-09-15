@@ -91,9 +91,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       isSelected: _selectedActionIndex == 0,
                       onTap: () => _openActionSheet(
                         index: 0,
-                        sheet: AddBalanceView(
-                          walletModel: infoState.valueOrNull,
-                        ),
+                        // No wallet snapshot passed in: the sheet watches the
+                        // provider itself, so limits and suggested amounts that
+                        // arrive while it is open still reach it.
+                        sheet: const AddBalanceView(),
                         maxHeight: screenHeight * 0.9,
                         backgroundColor: colors.white,
                         isScrollControlled: true,

@@ -1,3 +1,5 @@
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
+
 /// API endpoints owned by the wallet feature.
 ///
 /// Paths and query maps are built from the caller's arguments — the class holds
@@ -43,11 +45,15 @@ abstract class WalletEndpoints {
 
   /// Builds the top-up request body: the amount to add and the payment method
   /// to charge.
+  ///
+  /// [amountHalalas] is serialised as the two-decimal SAR string the endpoint
+  /// documents (`"10.50"`). It travels as whole halalas right up to this point
+  /// so no float ever rounds the customer's amount on the way to the wire.
   static Map<String, dynamic> topUpWalletBody({
-    required int amount,
+    required int amountHalalas,
     required int paymentMethodId,
   }) => <String, dynamic>{
-    'amount': amount,
+    'amount': formatHalalasAsSar(amountHalalas),
     'payment_method_id': paymentMethodId,
   };
 }

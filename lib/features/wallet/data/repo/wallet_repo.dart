@@ -175,8 +175,8 @@ class WalletRepo {
     );
   }
 
-  /// Tops the wallet up with [amount] via [paymentMethodId] and returns the
-  /// server's fresh [WalletModel]. [idempotencyKey] lets the server dedupe
+  /// Tops the wallet up with [amountHalalas] via [paymentMethodId] and returns
+  /// the server's fresh [WalletModel]. [idempotencyKey] lets the server dedupe
   /// retries of the same top-up.
   ///
   /// The top-up response is **not** shaped like the wallet response: its `data`
@@ -189,13 +189,13 @@ class WalletRepo {
   ///
   /// A failure surfaces as-is — a write is never satisfied from stale cache.
   Future<Either<Failure, WalletModel>> topUpWallet({
-    required int amount,
+    required int amountHalalas,
     required int paymentMethodId,
     required String idempotencyKey,
   }) async {
     final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _walletApiService.topUpWallet(
-        amount: amount,
+        amountHalalas: amountHalalas,
         paymentMethodId: paymentMethodId,
         idempotencyKey: idempotencyKey,
       ),

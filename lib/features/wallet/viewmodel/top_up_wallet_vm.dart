@@ -42,7 +42,7 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
     super.dispose();
   }
 
-  Future<String?> topUpWallet({required int amount}) async {
+  Future<String?> topUpWallet({required int amountHalalas}) async {
     // The payment method is always the customer's current default card. If none
     // is selected there is nothing to charge, so fail fast with a message before
     // hitting the repo.
@@ -60,9 +60,10 @@ class TopUpWalletViewModel extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue<void>.loading();
 
     final Either<Failure, WalletModel> result = await _repo.topUpWallet(
-      amount: amount,
+      amountHalalas: amountHalalas,
       paymentMethodId: paymentMethodId,
-      idempotencyKey: _idempotencyKey.forRequest('$amount|$paymentMethodId'),
+      idempotencyKey:
+          _idempotencyKey.forRequest('$amountHalalas|$paymentMethodId'),
     );
 
     if (!mounted) return null;

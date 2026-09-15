@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -14,22 +14,22 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/money_amount_picker.dart';
-import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/top_up_wallet_vm.dart';
 
 class AddBalanceView extends ConsumerStatefulWidget {
-  const AddBalanceView({super.key, this.walletModel});
-
-  final WalletModel? walletModel;
+  const AddBalanceView({super.key});
 
   @override
   ConsumerState<AddBalanceView> createState() => _AddBalanceViewState();
 }
 
 class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
-  String? moneyAmount;
+  /// The chosen amount in whole halalas, or null while nothing submittable is
+  /// entered.
+  int? amountHalalas;
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -49,35 +49,17 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     });
   }
 
-  /// Parses the picker's amount string into the whole number the API expects.
-  int? _parseAmount(String? raw) {
-    if (raw == null || raw.isEmpty) return null;
-    return int.tryParse(raw) ?? double.tryParse(raw)?.round();
-  }
-
   Future<void> _onContinue() async {
-    final int? amount = _parseAmount(moneyAmount);
+    final int? amount = amountHalalas;
     if (amount == null) return;
 
-    // Topping up charges a saved card, so there must be one to charge. Gate the
-    // top-up on the shared cards list: only proceed once it has resolved with a
-    // non-empty list — otherwise there is no payment method, so surface a
-    // message and stop before hitting the top-up flow.
-    final List<CardPaymentModel>? cards =
-        ref.read(getMyCardsProvider).valueOrNull;
-    if (cards == null || cards.isEmpty) {
-      // No saved card to charge: surface the error and keep the sheet open so the
-      // customer can act on it. The toast floats on the root overlay, above the
-      // sheet.
-      AppToast.showError(context, LangKeys.selectPaymentMethodFirstKey.tr());
-      return;
-    }
-
     // While this awaits, the sheet is watching `topUpWalletProvider` so the
-    // button spins and `PopScope` blocks every dismissal path.
+    // button spins and `PopScope` blocks every dismissal path. There is no card
+    // check here: the button is disabled until a chargeable card resolves, and
+    // the view model refuses the call outright if one somehow doesn't.
     final String? error = await ref
         .read(topUpWalletProvider.notifier)
-        .topUpWallet(amount: amount);
+        .topUpWallet(amountHalalas: amount);
 
     if (!mounted) return;
 
@@ -99,6 +81,22 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     final AppColorScheme colors = context.colors;
 
     final bool isSubmitting = ref.watch(topUpWalletProvider).isLoading;
+
+    // The funding limits are watched rather than snapshotted at open time, so a
+    // wallet fetch that lands while the sheet is up fills the chips in. Both
+    // limits must be present: without them there is nothing to validate an
+    // amount against, and inventing a ceiling only produces amounts the server
+    // rejects — so the sheet waits instead of guessing.
+    final WalletModel? wallet = ref.watch(getWalletInfoProvider).valueOrNull;
+    final double? minimum = wallet?.minimum;
+    final double? maximum = wallet?.maximum;
+    final bool hasLimits = minimum != null && maximum != null;
+
+    // Topping up charges a card, so the button stays disabled until one has
+    // resolved — a list that is empty, still loading, or holds only expired
+    // cards all leave this null.
+    final CardPaymentModel? fundingCard =
+        ref.watch(defaultPaymentCardProvider).valueOrNull;
 
     // Lift the whole sheet above the keyboard; the sheet grows by the keyboard
     // height (up to its max), then the middle area scrolls once capped.
@@ -148,18 +146,16 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 15,
                     children: [
-                      MoneyAmountPicker(
-                        maxAmount: widget.walletModel?.maximum,
-                        options: widget.walletModel?.suggestedAmounts
-                            .map((amount) => formatDouble(amount).toString())
-                            .toList(),
-                        onAmountChanged: (amount) {
-                          moneyAmount = amount;
-                          setState(() {});
-                          debugPrint('selected amount ==== $amount');
-                        },
-                        onOtherSelected: _scrollToEnd,
-                      ),
+                      if (hasLimits)
+                        MoneyAmountPicker(
+                          minAmountHalalas: sarDoubleToHalalas(minimum),
+                          maxAmountHalalas: sarDoubleToHalalas(maximum),
+                          options: wallet?.suggestedAmounts,
+                          onAmountChanged: (int? amount) {
+                            setState(() => amountHalalas = amount);
+                          },
+                          onOtherSelected: _scrollToEnd,
+                        ),
                     ],
                   ),
                 ),
@@ -168,7 +164,11 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
               PrimaryAppButton(
                 title: LangKeys.topUpKey.tr(),
                 isLoading: isSubmitting,
-                isDisabled: moneyAmount == null || moneyAmount!.isEmpty,
+                // A valid amount, real limits to have validated it against, and
+                // a card that can actually be charged — all three, before the
+                // customer can submit anything.
+                isDisabled:
+                    amountHalalas == null || !hasLimits || fundingCard == null,
                 onTap: _onContinue,
               ),
             ],

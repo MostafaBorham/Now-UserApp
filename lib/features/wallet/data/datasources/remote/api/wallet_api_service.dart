@@ -55,21 +55,21 @@ class WalletApiService {
     );
   }
 
-  /// Tops the wallet up with [amount] via [paymentMethodId].
+  /// Tops the wallet up with [amountHalalas] via [paymentMethodId].
   ///
   /// Topping up is non-idempotent: the server dedupes retries by
   /// [idempotencyKey] (same key + same body → replays the original result), so
   /// the caller reuses one key across retries of the same top-up and rotates it
   /// once the top-up succeeds or its inputs change.
   Future<Response> topUpWallet({
-    required int amount,
+    required int amountHalalas,
     required int paymentMethodId,
     required String idempotencyKey,
   }) {
     return _dio.post(
       WalletEndpoints.topUpWallet,
       data: WalletEndpoints.topUpWalletBody(
-        amount: amount,
+        amountHalalas: amountHalalas,
         paymentMethodId: paymentMethodId,
       ),
       options: Options(headers: <String, dynamic>{
