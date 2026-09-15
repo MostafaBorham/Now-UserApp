@@ -51,7 +51,11 @@ class OnlineCardRadioSelector extends StatelessWidget {
           ),
           confirmDismiss: (_) => _confirmDelete(card),
           child: InkWell(
-            onTap: () => onCardSelected?.call(card),
+            // An unusable card can't be made the default — the server rejects
+            // it — so the row takes no tap at all rather than rippling into a
+            // call that does nothing. Swiping it away still works: an expired
+            // card is exactly the one a customer wants to delete.
+            onTap: card.isUsable ? () => onCardSelected?.call(card) : null,
             child: OnlineCardRadioSelectorItem(
               cardItem: card,
               isSelected: card.isDefault,

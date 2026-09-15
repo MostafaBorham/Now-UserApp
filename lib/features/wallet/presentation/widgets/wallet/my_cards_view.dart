@@ -174,14 +174,18 @@ class MyCardsView extends ConsumerWidget {
                                   ? OnlineCardTypes.master
                                   : OnlineCardTypes.visa,
                               isDefault: card.isDefault ?? false,
+                              isUsable: card.isUsable,
                             ),
                           )
                           .toList(),
                       onCardSelected: (card) {
-                        // Already the default, or never saved server-side —
+                        // Already the default, never saved server-side, or
+                        // expired (the server would reject the charge) —
                         // nothing to do.
                         final int? id = card.id;
-                        if (card.isDefault || id == null) return;
+                        if (card.isDefault || id == null || !card.isUsable) {
+                          return;
+                        }
                         ref
                             .read(defaultPaymentCardProvider.notifier)
                             .setPaymentCardDefault(id);

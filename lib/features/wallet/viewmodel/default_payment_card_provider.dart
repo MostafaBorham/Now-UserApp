@@ -8,10 +8,17 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.d
 /// The customer's current default payment card — and the one place that changes
 /// it.
 ///
-/// Unlike a derived provider, this holds its **own** state. It is seeded **once**
-/// — to the first card in [getMyCardsProvider] the moment that list first has
-/// data — and from then on a cards refetch never writes back into it (see
-/// [DefaultPaymentCardViewModel._seedOnce]); the provider owns the default.
+/// Unlike a derived provider, this holds its **own** state, resolved from
+/// [getMyCardsProvider]rather than from a position in that list: the default is
+/// the card the server marks `is_default`, falling back to the first *usable*
+/// one (see [CardPaymentModel.isUsable]).
+///
+/// It keeps following the list rather than seeding once, because the chosen card
+/// can stop existing underneath it — a delete makes the server promote a new
+/// default, and that must land here too, or the next top-up would charge a card
+/// that is gone. A deliberate choice is still preserved: while the selected card
+/// is still present and usable it is left alone, so an ordinary refetch never
+/// moves the selection (see [DefaultPaymentCardViewModel._applyCards]).
 ///
 /// [DefaultPaymentCardViewModel.setPaymentCardDefault] is the only mutator: it
 /// talks to the repo directly, and only on a confirmed server success does it
@@ -32,48 +39,76 @@ class DefaultPaymentCardViewModel
     extends StateNotifier<AsyncValue<CardPaymentModel?>> {
   DefaultPaymentCardViewModel(this._ref)
       : super(const AsyncValue<CardPaymentModel?>.data(null)) {
-    _seedOnce();
+    _followCards();
   }
 
   final Ref _ref;
   final WalletRepo _repo = WalletRepo();
-  ProviderSubscription<AsyncValue<List<CardPaymentModel>>>? _seedSub;
+  ProviderSubscription<AsyncValue<List<CardPaymentModel>>>? _cardsSub;
 
   @override
   void dispose() {
-    _seedSub?.close();
+    _cardsSub?.close();
     _repo.cancelRequests();
     super.dispose();
   }
 
-  /// Seeds the default to the first card in [getMyCardsProvider] the first time
-  /// that list has data, then stops listening — so later cards fetches (the
-  /// login refetch, the post-set-default refetch, a delete) never modify this
-  /// provider. If the list is already loaded when this VM is created, it seeds
-  /// synchronously and never listens at all.
-  void _seedOnce() {
-    final List<CardPaymentModel>? loaded =
-        _ref.read(getMyCardsProvider).valueOrNull;
-    if (loaded != null) {
-      state = AsyncValue<CardPaymentModel?>.data(
-        loaded.isEmpty ? null : loaded.first,
-      );
-      return;
-    }
+  /// Resolves the default from the cards already loaded (synchronously, if there
+  /// are any) and keeps following [getMyCardsProvider] for every later change.
+  void _followCards() {
+    _applyCards(_ref.read(getMyCardsProvider).valueOrNull);
 
-    _seedSub = _ref.listen<AsyncValue<List<CardPaymentModel>>>(
+    _cardsSub = _ref.listen<AsyncValue<List<CardPaymentModel>>>(
       getMyCardsProvider,
       (AsyncValue<List<CardPaymentModel>>? _,
-          AsyncValue<List<CardPaymentModel>> next) {
-        final List<CardPaymentModel>? cards = next.valueOrNull;
-        if (cards == null) return;
-        state = AsyncValue<CardPaymentModel?>.data(
-          cards.isEmpty ? null : cards.first,
-        );
-        _seedSub?.close();
-        _seedSub = null;
-      },
+              AsyncValue<List<CardPaymentModel>> next) =>
+          _applyCards(next.valueOrNull),
     );
+  }
+
+  /// Reconciles the held default against a freshly loaded [cards] list.
+  ///
+  /// A selection the customer made is preserved: while the held card is still
+  /// present and usable, it stays selected (refreshed to the server's copy so
+  /// its flags track reality) and an ordinary refetch moves nothing. Only when
+  /// it has gone — deleted, expired, or no longer returned — is the default
+  /// re-resolved, which is what keeps a deleted card from being charged.
+  ///
+  /// A `null` [cards] (the list loading or failed) changes nothing.
+  void _applyCards(List<CardPaymentModel>? cards) {
+    if (cards == null) return;
+
+    final int? heldId = state.valueOrNull?.id;
+    if (heldId != null) {
+      for (final CardPaymentModel card in cards) {
+        if (card.id == heldId && card.isUsable) {
+          state = AsyncValue<CardPaymentModel?>.data(card);
+          return;
+        }
+      }
+    }
+
+    state = AsyncValue<CardPaymentModel?>.data(_resolveDefault(cards));
+  }
+
+  /// The card that should fund a top-up: the one the server marks `is_default`,
+  /// else the first usable one. Only usable cards are considered
+  /// ([CardPaymentModel.isUsable]) — the server rejects the rest, so preselecting
+  /// one would guarantee a failed charge. `null` when nothing qualifies.
+  ///
+  /// Resolved from the flag rather than list position: the server happens to
+  /// return the default first today, but relying on that ordering means the app
+  /// charges whatever sits at index 0 the day it changes.
+  static CardPaymentModel? _resolveDefault(List<CardPaymentModel> cards) {
+    CardPaymentModel? firstUsable;
+
+    for (final CardPaymentModel card in cards) {
+      if (!card.isUsable) continue;
+      if (card.isDefault ?? false) return card;
+      firstUsable ??= card;
+    }
+
+    return firstUsable;
   }
 
   /// Marks the card [id] as the default. Talks to the repo directly; only on a
@@ -105,8 +140,8 @@ class DefaultPaymentCardViewModel
       (CardPaymentModel card) {
         state = AsyncValue<CardPaymentModel?>.data(card);
         // Confirmed by the server: re-sync the cards list from the repo. The
-        // one-shot seed is already closed, so this refetch does not write back
-        // into this provider.
+        // refetch lands back in [_applyCards], which finds this card still
+        // present and usable and so leaves the selection exactly here.
         _ref.read(getMyCardsProvider.notifier).getMyCards();
         return null;
       },

@@ -33,6 +33,18 @@ class CardPaymentModel extends Equatable {
     this.isDefault,
   });
 
+  /// Whether this saved method can actually fund a top-up: a real card, not one
+  /// the server already knows to be expired, and saved server-side (so it has an
+  /// id to send).
+  ///
+  /// The top-up endpoint rejects a non-card method and a known-expired card, so
+  /// an unusable entry must never be preselected as the default or offered for
+  /// selection — doing so guarantees a failed charge. A `null` [type] is treated
+  /// as a card and a `null` [isExpired] as not-yet-expired: both mean *unknown*,
+  /// and only a positive signal is worth blocking on.
+  bool get isUsable =>
+      id != null && (type ?? 'card') == 'card' && isExpired != true;
+
   factory CardPaymentModel.fromJson(Map<String, dynamic> json) {
     return CardPaymentModel(
       id: (json['id'] as num?)?.toInt(),
