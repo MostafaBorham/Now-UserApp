@@ -2,45 +2,44 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_attribute_model.dart';
 
-class ProductSizeSelector extends StatefulWidget {
+/// One selectable variant attribute (e.g. Size, Material) rendered as a
+/// labelled section: the attribute's localized [ProductAttributeModel.name] as
+/// the header, and a horizontal selector built from its
+/// [ProductAttributeModel.values] (each value's localized `{ar, en}` label).
+/// The product details screen maps every attribute to one of these.
+class ProductSizeSelector extends StatelessWidget {
   const ProductSizeSelector({
     super.key,
-    this.title,
+    required this.attribute,
     this.hint,
     this.isRequired = true,
-    this.sizeOptions,
     this.initialSelectedIndex = 0,
-    this.onSizeSelected,
+    this.onValueSelected,
   });
 
-  final String? title;
+  final ProductAttributeModel attribute;
   final String? hint;
   final bool isRequired;
-  final List<String>? sizeOptions;
   final int initialSelectedIndex;
-  final ValueChanged<int>? onSizeSelected;
 
-  @override
-  State<ProductSizeSelector> createState() => _ProductSizeSelectorState();
-}
+  /// Fired with the selected [ProductAttributeValueModel] whenever the choice
+  /// changes.
+  final ValueChanged<ProductAttributeValueModel>? onValueSelected;
 
-class _ProductSizeSelectorState extends State<ProductSizeSelector> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final String title = widget.title ?? LangKeys.sizeKey.tr();
-    final String hint = widget.hint ?? LangKeys.selectRequiredKey.tr();
-    final List<String> sizeOptions =
-        widget.sizeOptions ??
-        [
-          LangKeys.size16InchKey.tr(),
-          LangKeys.size15InchKey.tr(),
-          LangKeys.size17InchKey.tr(),
-          LangKeys.size16InchKey.tr(),
-        ];
+    final String title = context.getLocalizedApiText(attribute.name);
+    final String hint = this.hint ?? LangKeys.selectRequiredKey.tr();
+    final List<ProductAttributeValueModel> values = attribute.values ?? [];
+    final List<String> options = values
+        .map((value) => context.getLocalizedApiText(value.name))
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -57,7 +56,7 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
                 color: colors.black,
               ),
             ),
-            if (widget.isRequired)
+            if (isRequired)
               Text.rich(
                 TextSpan(
                   text: hint,
@@ -75,13 +74,14 @@ class _ProductSizeSelectorState extends State<ProductSizeSelector> {
           ],
         ),
         AppSelector(
-          items: sizeOptions,
-          initialIndex: widget.initialSelectedIndex,
+          items: options,
+          initialIndex: initialSelectedIndex,
           selectedColor: colors.tertiaryContainer,
           unselectedColor: colors.white,
           borderColor: colors.neutral500.withValues(alpha: 0.3),
           radius: 14,
           height: 45,
+          onChanged: (index) => onValueSelected?.call(values[index]),
         ),
       ],
     );

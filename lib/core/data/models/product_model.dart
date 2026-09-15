@@ -18,9 +18,11 @@ class ProductModel {
   final Map<String, dynamic>? shortDescription;
   final Map<String, dynamic>? description;
 
-  /// The product's headline selling points as a `{ar, en}` translation map
-  /// (the `main_features` field).
-  final Map<String, dynamic>? mainFeatures;
+  /// The product's headline selling points (the `main_features` field). The
+  /// backend sends either a single `{ar, en}` translation map (one feature) or
+  /// a list of them; both are normalized to a list here so callers always
+  /// iterate — see [_mainFeaturesFrom].
+  final List<Map<String, dynamic>>? mainFeatures;
   final double? price;
   final double? discountPrice;
   final double? effectivePrice;
@@ -147,7 +149,7 @@ class ProductModel {
     String? sku,
     Map<String, dynamic>? shortDescription,
     Map<String, dynamic>? description,
-    Map<String, dynamic>? mainFeatures,
+    List<Map<String, dynamic>>? mainFeatures,
     double? price,
     double? discountPrice,
     double? effectivePrice,
@@ -239,7 +241,7 @@ class ProductModel {
       vendorId: (json['vendor_id'] as num?)?.toInt(),
       name: json.localized('name'),
       description: json.localized('description'),
-      mainFeatures: json.localized('main_features'),
+      mainFeatures: _mainFeaturesFrom(json),
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
@@ -312,6 +314,28 @@ class ProductModel {
     return logoUrl == null || logoUrl.isEmpty
         ? null
         : StoreModel(logoUrl: logoUrl);
+  }
+
+  /// The product's `main_features`, normalized to a list of `{ar, en}`
+  /// translation maps. The backend sends either a single map (one feature) or a
+  /// list of them — a single map is wrapped in a one-element list, a list is
+  /// kept as-is. Bare-string elements are mirrored into both locales so every
+  /// element reads like any other localized field.
+  static List<Map<String, dynamic>>? _mainFeaturesFrom(
+    Map<String, dynamic> json,
+  ) {
+    final dynamic raw = json['main_features'];
+    if (raw == null) return null;
+    final List<dynamic> items = raw is List ? raw : <dynamic>[raw];
+    final List<Map<String, dynamic>> features = <Map<String, dynamic>>[];
+    for (final dynamic item in items) {
+      if (item is Map<String, dynamic>) {
+        features.add(item);
+      } else if (item is String) {
+        features.add(<String, dynamic>{'ar': item, 'en': item});
+      }
+    }
+    return features.isEmpty ? null : features;
   }
 
   /// Image URLs for the product. Prefers the `images` gallery (sent by the

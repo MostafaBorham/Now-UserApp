@@ -225,15 +225,21 @@ class ProductMainInfoCard extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                         spacing: 4,
                         children: [
-                          OldPriceWidget(
-                            color: colors.neutral500,
-                            size: con.maxWidth * 0.04,
-                            price: '${product.comparePrice}',
-                          ),
+                          // Priced the same way a cart line is: the new price is
+                          // the discounted one (falling back to the base price
+                          // when there's no discount), and the struck-through
+                          // old price only appears when a discount applies.
+                          if ((product.discountPrice ?? 0) > 0)
+                            OldPriceWidget(
+                              color: colors.neutral500,
+                              size: con.maxWidth * 0.05,
+                              price: '${formatDouble(product.price)}',
+                            ),
                           NewPriceWidget(
                             size: con.maxWidth * 0.07,
                             color: colors.neutral1200,
-                            price: '${product.price}',
+                            price: '${(product.discountPrice ?? 0) < 0 ? product.price : product.discountPrice}',
+                            fontWeight: FontWeight.bold,
                           ),
                         ],
                       ),

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -25,6 +24,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/providers/pr
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_discount_ticket.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
@@ -35,24 +35,41 @@ import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_det
 
 final _isBuyNowProvider = StateProvider.autoDispose<bool>((ref) => false);
 
-class ProductDetailsScreen extends ConsumerWidget {
+class ProductDetailsScreen extends ConsumerStatefulWidget {
   const ProductDetailsScreen({super.key, required this.productSlug});
   final String productSlug;
 
-  void _fetchProductDetails(WidgetRef ref) {
+  @override
+  ConsumerState<ProductDetailsScreen> createState() =>
+      _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
+  // Drives the wave flattening: as the content scrolls up, [AppWavedView]
+  // straightens its top wave.
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _fetchProductDetails() {
     ref
-        .read(getProductDetailsProvider(productSlug).notifier)
+        .read(getProductDetailsProvider(widget.productSlug).notifier)
         .getProductDetails();
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final productDetailsState = ref.watch(
-      getProductDetailsProvider(productSlug),
+      getProductDetailsProvider(widget.productSlug),
     );
     return Scaffold(
       body: AppWavedView(
+        scrollController: _scrollController,
         body: SafeArea(
           child: productDetailsState.when(
             loading: () {
@@ -61,7 +78,7 @@ class ProductDetailsScreen extends ConsumerWidget {
             error: (Object error, StackTrace stackTrace) =>
                 ServerConnectionErrorWidget(
                   message: error.toString(),
-                  onRetry: () => _fetchProductDetails(ref),
+                  onRetry: _fetchProductDetails,
                 ),
             data: (product) {
               final cartState = ref.watch(updateCartProductProvider(product.id ?? -1));
@@ -116,8 +133,13 @@ class ProductDetailsScreen extends ConsumerWidget {
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
                 child: AppRefreshIndicator(
-                  onRefresh: () async => _fetchProductDetails(ref),
+                  onRefresh: () async => _fetchProductDetails(),
                   child: SingleChildScrollView(
+                    controller: _scrollController,
+                    // The wave owns no top spacing once a scroll controller is
+                    // wired in, so the content carries it and scrolls up under
+                    // the flattening wave.
+                    padding: const EdgeInsets.only(top: 57),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8.0,
@@ -128,22 +150,13 @@ class ProductDetailsScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 5,
-                                  horizontal: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: colors.errorContainer,
-                                ),
-                                child: Text(
-                                  '${product.activeDeal?.discountValue ?? 0}%',
-                                  style: AppTextStyles.style14Bold.copyWith(
-                                    color: colors.white,
-                                  ),
-                                ),
-                              ),
+                              if (product.activeDeal != null &&
+                                  (product.activeDeal!.discountValue ?? 0) > 0)
+                                ProductDiscountTicket(
+                                  deal: product.activeDeal!,
+                                )
+                              else
+                                const SizedBox.shrink(),
                               CircularAppFavouriteIcon(
                                 favouriteType: FavouriteType.product,
                                 itemId: product.id,
@@ -175,28 +188,48 @@ class ProductDetailsScreen extends ConsumerWidget {
                               product.vendor?.name,
                             ),
                           ),
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: ProductColorsSelector(),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: ProductSizeSelector(),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: ProductKeyFeaturesView(
-                              productFeatures: [
-                                LangKeys.sampleProductFeatureKey.tr(),
-                                LangKeys.sampleProductFeatureKey.tr(),
-                                LangKeys.sampleProductFeatureKey.tr(),
-                              ],
+                          if (product.colors?.isNotEmpty ?? false)
+                            Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: ProductColorsSelector(
+                                colors: product.colors!,
+                              ),
                             ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: ProductBasicSpecificationsView(),
-                          ),
+                          // Every variant attribute (Size, Material, …) becomes
+                          // its own labelled selector section.
+                          ...(product.attributes ?? [])
+                              .where(
+                                (attribute) =>
+                                    attribute.values?.isNotEmpty ?? false,
+                              )
+                              .map(
+                                (attribute) => Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: ProductSizeSelector(
+                                    attribute: attribute,
+                                  ),
+                                ),
+                              ),
+                          if (product.mainFeatures?.isNotEmpty ?? false)
+                            Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: ProductKeyFeaturesView(
+                                productFeatures: product.mainFeatures!
+                                    .map(
+                                      (feature) =>
+                                          context.getLocalizedApiText(feature),
+                                    )
+                                    .where((text) => text.isNotEmpty)
+                                    .toList(),
+                              ),
+                            ),
+                          if (product.specifications?.isNotEmpty ?? false)
+                            Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: ProductBasicSpecificationsView(
+                                specifications: product.specifications!,
+                              ),
+                            ),
                           Container(
                             color: colors.neutral500.withValues(alpha: 0.3),
                             width: double.infinity,

@@ -3,30 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_specification_model.dart';
 
+/// Renders the product's free-text specification rows: each row's
+/// [ProductSpecificationModel.key] as the title (start) and its
+/// [ProductSpecificationModel.value] as the data (end).
 class ProductBasicSpecificationsView extends StatelessWidget {
   const ProductBasicSpecificationsView({
     super.key,
-    this.specifications,
+    required this.specifications,
   });
 
-  final Map<String, String>? specifications;
+  final List<ProductSpecificationModel> specifications;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final Map<String, String> resolvedSpecifications =
-        specifications ??
-        {
-          LangKeys.specProcessorKey.tr(): LangKeys.specProcessorValueKey.tr(),
-          LangKeys.specRamKey.tr(): LangKeys.specRamValueKey.tr(),
-          LangKeys.specStorageKey.tr(): LangKeys.specStorageValueKey.tr(),
-          LangKeys.specDisplayKey.tr(): LangKeys.specDisplayValueKey.tr(),
-          LangKeys.specBatteryKey.tr(): LangKeys.specBatteryValueKey.tr(),
-          LangKeys.specWeightKey.tr(): LangKeys.specWeightValueKey.tr(),
-        };
-    final List<MapEntry<String, String>> entries =
-        resolvedSpecifications.entries.toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,11 +41,11 @@ class ProductBasicSpecificationsView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (int i = 0; i < entries.length; i++)
+              for (int i = 0; i < specifications.length; i++)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    border: i == entries.length - 1
+                    border: i == specifications.length - 1
                         ? null
                         : Border(
                             bottom: BorderSide(color: colors.neutral200),
@@ -64,7 +56,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                     spacing: 8,
                     children: [
                       Text(
-                        entries[i].key,
+                        specifications[i].key ?? '',
                         style: AppTextStyles.style14Regular.copyWith(
                           color: colors.neutral500,
                           fontSize: 13,
@@ -73,7 +65,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          entries[i].value,
+                          specifications[i].value ?? '',
                           textAlign: TextAlign.end,
                           style: AppTextStyles.style14SemiBold.copyWith(
                             color: colors.black,
