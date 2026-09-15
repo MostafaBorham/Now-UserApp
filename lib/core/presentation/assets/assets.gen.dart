@@ -81,6 +81,14 @@ class $AssetsMediaImagesGen {
 class $AssetsMediaImagesPngGen {
   const $AssetsMediaImagesPngGen();
 
+  /// File path: assets/media/images/png/app-icon-foreground.png
+  AssetGenImage get appIconForeground =>
+      const AssetGenImage('assets/media/images/png/app-icon-foreground.png');
+
+  /// File path: assets/media/images/png/app-icon.png
+  AssetGenImage get appIcon =>
+      const AssetGenImage('assets/media/images/png/app-icon.png');
+
   /// File path: assets/media/images/png/bottom-nav-bar-background.png
   AssetGenImage get bottomNavBarBackground => const AssetGenImage(
     'assets/media/images/png/bottom-nav-bar-background.png',
@@ -109,6 +117,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get increamentIcon =>
       const AssetGenImage('assets/media/images/png/increament-icon.png');
 
+  /// File path: assets/media/images/png/logo-android12.png
+  AssetGenImage get logoAndroid12 =>
+      const AssetGenImage('assets/media/images/png/logo-android12.png');
+
   /// File path: assets/media/images/png/no-image-avail.png
   AssetGenImage get noImageAvail =>
       const AssetGenImage('assets/media/images/png/no-image-avail.png');
@@ -130,29 +142,26 @@ class $AssetsMediaImagesPngGen {
     'assets/media/images/png/user-avatar-placeholder-img.png',
   );
 
-  /// File path: assets/media/images/png/white-app-logo-android12.png
-  AssetGenImage get whiteAppLogoAndroid12 => const AssetGenImage(
-    'assets/media/images/png/white-app-logo-android12.png',
-  );
-
   /// File path: assets/media/images/png/white-app-logo.png
   AssetGenImage get whiteAppLogo =>
       const AssetGenImage('assets/media/images/png/white-app-logo.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
+    appIconForeground,
+    appIcon,
     bottomNavBarBackground,
     decrementIcon,
     englishOffersCannotMissLogo,
     guestWelcomeDiscountMotorbike,
     homeNeverMissOffersLogo,
     increamentIcon,
+    logoAndroid12,
     noImageAvail,
     onboardingImg,
     removeIcon,
     starsBackground,
     userAvatarPlaceholderImg,
-    whiteAppLogoAndroid12,
     whiteAppLogo,
   ];
 }
