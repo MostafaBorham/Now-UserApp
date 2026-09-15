@@ -18,7 +18,7 @@ class CircularBrandLogo extends StatelessWidget {
   final Color? backgroundColor;
   final double? elevation;
 
-  /// Width of the logo itself as a multiple of [radius].
+
   final double logoScale;
 
   @override

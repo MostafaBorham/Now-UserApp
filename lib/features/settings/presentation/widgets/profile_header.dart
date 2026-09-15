@@ -3,28 +3,28 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/arrow_back_button.dart';
 
-/// Yellow header at the top of the screen.
-///
-/// Fills the area behind the status bar, centers the screen [title], draws
-/// the white wave asset along its bottom edge, and — when [onBack] is
-/// provided — shows a circular back button on the left.
+
+
+
+
+
 class CommonHeader extends StatelessWidget {
   const CommonHeader({super.key, this.title = 'Profile', this.onBack});
 
   final String title;
 
-  /// When non-null a circular back button is shown on the left and this
-  /// callback runs when it is tapped.
+
+
   final VoidCallback? onBack;
 
-  /// The wave asset keeps a fixed 390 x 41 aspect ratio.
+
   static const double _waveAspect = 41 / 390;
 
   @override
   Widget build(BuildContext context) {
     final double topInset = MediaQuery.of(context).padding.top;
     final double width = MediaQuery.of(context).size.width;
-    // 2px of horizontal overscan so the wave covers the extreme corners.
+
     final double waveHeight = (width + 2) * _waveAspect;
     final double headerHeight = topInset + 120;
 
@@ -75,7 +75,7 @@ class CommonHeader extends StatelessWidget {
   }
 }
 
-/// White circular back button using the provided chevron asset.
+
 class _BackButton extends StatelessWidget {
   const _BackButton({required this.onTap});
 

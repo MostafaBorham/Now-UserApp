@@ -50,7 +50,7 @@ class MostPopularScreen extends StatelessWidget {
                     MostPopularFilterView(filterName: 'Shoes'),
                     MostPopularFilterView(filterName: 'Devices'),
                   ],
-                  // selectedTabColor: colors.secondary600.withValues(alpha: 0.8),
+
                   unSelectedTabColor: colors.neutral400.withValues(
                     alpha: 0.2,
                   ),

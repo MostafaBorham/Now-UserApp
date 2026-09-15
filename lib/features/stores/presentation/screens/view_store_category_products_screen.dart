@@ -18,9 +18,6 @@ class ViewStoreCategoryProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
-      // Reuse the category details products view: it pages this category's
-      // products by [categoryProvider]'s slug (overridden here) and filters them
-      // by [categoryProductsSearchProvider], which the search field below feeds.
       overrides: <Override>[
         categoryProvider.overrideWithValue(category),
       ],
@@ -30,8 +27,6 @@ class ViewStoreCategoryProductsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
             children: <Widget>[
-              // The field debounces internally and hands back the settled term;
-              // writing it into the provider re-queries the grid with it.
               PrimarySearchField(
                 isAnimated: false,
                 onSearch: (String query) => ref

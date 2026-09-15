@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-/// The red field revealed behind a swipe-to-delete list item, showing a trash
-/// icon on the side the swipe uncovers. Pass it as a [Dismissible]'s
-/// `background` / `secondaryBackground`, one per side via [alignment].
+
+
+
 class DeleteSwipeBackground extends StatelessWidget {
   const DeleteSwipeBackground({
     super.key,

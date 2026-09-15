@@ -16,11 +16,11 @@ import 'package:nowdelivery_user_app/features/home/presentation/controllers/feat
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/glass_product_item_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
-/// One page of the featured-stores carousel: a store's identity (logo, name,
-/// delivery details) over a 2×2 grid of its products.
-///
-/// Tapping the header opens the store; tapping a product tile opens that
-/// product (the tile owns its own add-to-cart and favourite actions).
+
+
+
+
+
 class HomeFeaturedStoreItem extends StatelessWidget {
   const HomeFeaturedStoreItem({
     super.key,
@@ -30,11 +30,11 @@ class HomeFeaturedStoreItem extends StatelessWidget {
 
   final StoreModel store;
 
-  /// How many stores the carousel holds — the number of indicator dots.
+
   final int storesCount;
 
-  /// The design's 2×2 grid; a store sending more products than that keeps only
-  /// the first four.
+
+
   static const int _maxProducts = 4;
 
   @override
@@ -42,8 +42,8 @@ class HomeFeaturedStoreItem extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final List<ProductModel> products =
         (store.products ?? const <ProductModel>[]).take(_maxProducts).toList();
-    // The vendor item's own `store_color`; the design's blue stands in for a
-    // store the admin left uncoloured.
+
+
     final Color tint = store.storeColor ?? const Color(0xFF4968B7);
     return Stack(
       children: [
@@ -92,8 +92,8 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                             radius: con.maxWidth * 0.07,
                             logoUrl: store.logoUrl ?? '',
                             backgroundColor: colors.onError,
-                            // Fills the circle, matching the design's cover
-                            // -cropped store avatar.
+
+
                             logoScale: 2,
                           ),
                           Expanded(
@@ -175,10 +175,10 @@ class HomeFeaturedStoreItem extends StatelessWidget {
   }
 }
 
-/// The page-indicator dots. Isolated as the only widget that watches the
-/// current index so an auto-play page change rebuilds just these dots — never
-/// the slide's gradient, avatar, or product grid. Wrapped in a
-/// [RepaintBoundary] so its repaints stay local.
+
+
+
+
 class _FeaturedStoresIndicator extends ConsumerWidget {
   const _FeaturedStoresIndicator({required this.count});
 

@@ -6,11 +6,11 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-/// A single full-width promo banner between two home sections.
-///
-/// [banner] is a feed banner item (`promo_block_middle` / `promo_block_footer`);
-/// the hardcoded placeholder artwork stands in when it is null, or when the
-/// admin published the slot without an image for the current locale.
+
+
+
+
+
 class HomeBannerView extends StatelessWidget {
   const HomeBannerView({super.key, this.banner});
 
@@ -56,10 +56,10 @@ class HomeBannerView extends StatelessWidget {
   }
 
   void _onTap(BuildContext context) {
-    // Same limitation as the top banner: both screens navigate by slug, and the
-    // feed sends numeric `product_id` / `main_category_id` only, so taps are
-    // inert until it emits slugs — at which point BannerModel picks them up and
-    // this starts working with no change here.
+
+
+
+
     if (banner?.productSlug != null) {
       context.pushNamed(
         AppRoutes.productDetailsScreen,

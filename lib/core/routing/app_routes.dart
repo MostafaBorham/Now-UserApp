@@ -1,7 +1,7 @@
-/// Route names & paths used by GoRouter.
-///
-/// `name` constants are used with `context.pushNamed` / `context.goNamed`;
-/// `path` constants are the URL paths registered in [AppRouter].
+
+
+
+
 abstract class AppRoutes {
   static const String splashScreen = 'splash';
   static const String noInternetScreen = 'no-internet';

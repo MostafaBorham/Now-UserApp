@@ -3,27 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/repo/recent_keywords_repo.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 
-/// Manages one search's recent keywords, exposed as `AsyncValue<List<String>>`.
-///
-/// Every operation replaces the state with the up-to-date list the repo returns,
-/// so screens only need to `ref.watch(...)` the provider and render the
-/// [AsyncValue]. Which box the keywords live in — and how many are kept — is the
-/// [RecentKeywordsRepo] the provider hands in, so products and addresses share
-/// this class without sharing their recents.
+
+
+
+
+
+
+
 class RecentKeywordsViewModel extends StateNotifier<AsyncValue<List<String>>> {
   RecentKeywordsViewModel(this._repo) : super(const AsyncValue.loading());
 
   final RecentKeywordsRepo _repo;
 
-  /// Loads the stored recent keywords. Synchronous read (Hive), so no
-  /// `mounted` guard is needed.
+
+
   void getRecentSearches() {
     state = const AsyncValue<List<String>>.loading();
     state = _apply(_repo.getRecentSearches());
   }
 
-  /// Narrows the shown keywords to those matching [searchKey]. Synchronous read
-  /// (Hive), so no `mounted` guard is needed.
+
+
   void filterRecentSearch(String searchKey) {
     state = _apply(_repo.filterRecentSearch(searchKey));
   }

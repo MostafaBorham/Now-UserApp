@@ -4,10 +4,10 @@ import 'package:nowdelivery_user_app/core/database/hive_boxes.dart';
 import 'package:nowdelivery_user_app/core/database/hive_keys.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 
-/// The user's recent product-search keywords.
-///
-/// Loads as soon as the provider is first watched, so screens only need to
-/// `ref.watch(recentSearchProvider)` and render the [AsyncValue].
+
+
+
+
 final recentSearchProvider =
     StateNotifierProvider.autoDispose<
       RecentKeywordsViewModel,

@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
-/// A single category node from `GET /api/v1/categories/tree`.
-///
-/// The endpoint returns a nested tree, so [children] holds the same type.
+
+
+
 class CategoryModel extends Equatable {
   final int? id;
   final Map<String, dynamic>? name;

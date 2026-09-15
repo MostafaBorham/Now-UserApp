@@ -8,9 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 
-/// Courier card on the Track Order screen: the courier/store badge plus the
-/// chat and call actions (the chat & call SVGs are self-contained coloured
-/// buttons, so they are rendered as-is).
+
+
+
 class CourierSection extends StatelessWidget {
   const CourierSection({
     super.key,

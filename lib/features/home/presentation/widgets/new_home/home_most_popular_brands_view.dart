@@ -27,7 +27,7 @@ class HomeMostPopularBrandsView extends ConsumerWidget {
       getFeaturedStoresProvider,
     );
 
-    // Nothing featured → hide the whole section (header included).
+
     if (state.hasValue && state.value!.data.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -79,9 +79,9 @@ class HomeMostPopularBrandsView extends ConsumerWidget {
     );
   }
 
-  /// The grid area under the header. Data wins whenever a page is loaded — it
-  /// stays put while the shared provider fetches a further page for the
-  /// top-brands screen, instead of the carousel flickering back to a shimmer.
+
+
+
   Widget _brandsArea({
     required BuildContext context,
     required WidgetRef ref,
@@ -174,8 +174,8 @@ class _BrandCard extends StatelessWidget {
   final double width;
   final double height;
 
-  /// Null in the loading (shimmer) state — the card then paints neutral
-  /// placeholder blocks for AppShimmer to run over.
+
+
   final StoreModel? store;
 
   @override

@@ -10,12 +10,12 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 class StoreModel {
   final int? id;
 
-  /// Localized store name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
+
+
   final Map<String, dynamic>? name;
 
-  /// Localized store description as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(description)`.
+
+
   final Map<String, dynamic>? description;
   final String? logoUrl;
   final String? coverUrl;
@@ -34,10 +34,10 @@ class StoreModel {
   final List<BannerModel>? banners;
   final bool? isFavorite;
 
-  /// The store's own accent colour (`store_color`), sent by the home feed's
-  /// `featured_stores` vendor items and used to tint that store's card. Null
-  /// when the admin left it unset or sent a malformed hex, so the card falls
-  /// back to its default tint.
+
+
+
+
   final Color? storeColor;
 
   const StoreModel({
@@ -63,15 +63,15 @@ class StoreModel {
     this.storeColor,
   });
 
-  /// Normalizes an API translation field into a `{'en': ..., 'ar': ...}` map.
-  ///
-  /// The same field is not always sent as a map: a store with no description
-  /// serializes it as an empty JSON array, and the thin vendor items some
-  /// `/home-sections` types still send carry `name` as an already-localized
-  /// plain string. Both used to be cast straight to a map, which threw and —
-  /// since the throw happened while parsing the feed — took down the whole home
-  /// screen, not just the one store. A string is mirrored into both locales;
-  /// anything else becomes null.
+
+
+
+
+
+
+
+
+
   static Map<String, dynamic>? _translations(Object? raw) {
     if (raw is Map<String, dynamic>) return raw;
     if (raw is String) return <String, dynamic>{'en': raw, 'ar': raw};
@@ -112,9 +112,9 @@ class StoreModel {
       banners: (json['banners'] as List?)
           ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
-      // Both spellings are in use across endpoints — the `/home-sections`
-      // feed's vendor items send the British `is_favourite`, and reading only
-      // the American one left every home store's heart unfilled.
+
+
+
       isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
       storeColor: json.colorHex('store_color'),
     );
@@ -141,7 +141,7 @@ class StoreModel {
       'offers': offers?.map((e) => e.toJson()).toList(),
       'banners': banners?.map((e) => e.toJson()).toList(),
       'is_favorite': isFavorite,
-      // Round-trips through `colorHex`, which accepts a bare 8-digit hex.
+
       'store_color': storeColor?.toARGB32().toRadixString(16),
     };
   }

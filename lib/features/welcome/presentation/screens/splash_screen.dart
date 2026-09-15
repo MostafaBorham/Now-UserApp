@@ -30,16 +30,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       _appCategoriesSub;
   ProviderSubscription<AsyncValue<CouponModel>>? _welcomeVoucherSub;
 
-  // Flipped once the logo animation ends; from then on the loader is shown
-  // continuously — whatever happens in the background — until the splash leaves.
+
+
   bool _animationDone = false;
 
-  // Latches once we navigate away, so a second listener firing (both the
-  // session and the location gates settle independently) can never push twice.
+
+
   bool _navigated = false;
 
-  // Latches once we decide to close the app on a refused location, so the exit
-  // is requested only once.
+
+
   bool _closing = false;
 
   @override
@@ -48,12 +48,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     _logoController = AnimationController(vsync: this);
     _logoController.addStatusListener(_logoAnimationListener);
 
-    // Always warm up the (kept-alive) application-information provider here so
-    // the FAQ/privacy screens reuse the data instead of refetching. If the
-    // warm-up fails, drop this subscription first, then invalidate the errored
-    // instance — so it is disposed with no listeners and gets recreated (and
-    // refetched) automatically the next time a screen opens it, rather than
-    // inheriting the cached error.
+
+
+
+
+
+
     _appInfoSub = ref.listenManual(
       getAppInfoProvider,
       (AsyncValue<AppInfoModel>? previous, AsyncValue<AppInfoModel> next) {
@@ -65,10 +65,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       },
     );
 
-    // Same warm-up for the (kept-alive) app-categories provider: preload the
-    // first page here so the home carousel and categories screen reuse it. On
-    // failure, drop the subscription and invalidate the errored instance so it
-    // is recreated (and refetched) the next time a screen opens it.
+
+
+
+
     _appCategoriesSub = ref.listenManual(
       getAppCategoriesProvider,
       (
@@ -83,12 +83,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       },
     );
 
-    // Warm up the (kept-alive) welcome-voucher provider so the empty cart and
-    // guest settings reuse the code instead of refetching. The repo already
-    // falls back to the cached code when the server is unreachable, so this only
-    // reaches an error state when both the server fails and the cache is empty —
-    // in which case drop the subscription and invalidate the errored instance so
-    // it is recreated (and refetched) the next time a screen opens it.
+
+
+
+
+
+
     _welcomeVoucherSub = ref.listenManual(
       welcomeVoucherProvider,
       (AsyncValue<CouponModel>? previous, AsyncValue<CouponModel> next) {
@@ -105,8 +105,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Two independent gates must both settle before the splash may leave: the
-    // session orchestrator's dependencies, and the guaranteed current location.
+
+
     ref.listen(
       authSessionProvider.select((s) => s.dependenciesStatus),
       (AppDependenciesStatus? previous, AppDependenciesStatus next) =>
@@ -115,8 +115,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     ref.listen(
       currentLocationProvider,
       (CurrentLocationStatus? previous, CurrentLocationStatus next) {
-        // A refused location means there is nothing to enter the app with:
-        // close it. Otherwise, re-check whether both gates are ready.
+
+
         if (next == CurrentLocationStatus.declined) {
           _closeApp();
         } else {
@@ -150,9 +150,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 },
               ),
             ),
-            // Once the logo settles, the loader spins continuously until the
-            // splash leaves — regardless of any background work (data, location,
-            // permissions).
+
+
+
             if (_animationDone)
               Padding(
                 padding: EdgeInsets.only(
@@ -188,9 +188,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void _warmUp() {
-    // Both bootstraps run in parallel; the splash leaves only once both settle
-    // (see [_maybeLeaveSplash]). Location resolution requests its own service
-    // prompt and permission as part of fetching the current fix.
+
+
+
     ref.read(currentLocationProvider.notifier).resolve();
     ref.read(authSessionProvider.notifier).resolveSession();
   }

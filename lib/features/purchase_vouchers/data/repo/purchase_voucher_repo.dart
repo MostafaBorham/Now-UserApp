@@ -8,15 +8,15 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/datasources/remote/api/purchase_voucher_api_service.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 
-/// Data operations of the purchase-vouchers feature. Every method returns
-/// `Either<Failure, T>`.
+
+
 class PurchaseVoucherRepo {
   final PurchaseVoucherApiService _apiService = PurchaseVoucherApiService();
 
   void cancelRequests() => _apiService.cancelRequests();
 
-  /// Fetches one page of vouchers. [storeId] returns platform-wide vouchers
-  /// plus that store's vouchers; `null` returns everything.
+
+
   Future<Either<Failure, PaginationModel<PurchaseVoucherModel>>>
   getPurchaseVouchers({int? storeId, int page = 1}) async {
     if (!await ConnectionChecker.isConnected) {

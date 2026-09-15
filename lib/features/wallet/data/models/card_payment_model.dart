@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-/// A single saved payment card — one entry of the `cards` list from
-/// `GET /api/v1/payment-methods/cards`.
-///
-/// The expiry fields (`expiry_month` / `expiry_year` / `expiry`) and
-/// `is_expired` may all come back `null` for a given card, so every field is
-/// nullable.
+
+
+
+
+
+
 class CardPaymentModel extends Equatable {
   final int? id;
   final String? type;

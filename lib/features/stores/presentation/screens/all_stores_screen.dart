@@ -37,8 +37,6 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
     });
   }
 
-  /// The [CategoryModel] behind a tab index over `[All, ...categories]`
-  /// (index 0 = All = null).
   CategoryModel? _categoryAt(int index, List<CategoryModel> categories) =>
       index > 0 && index - 1 < categories.length ? categories[index - 1] : null;
 
@@ -48,25 +46,15 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
     final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
         .watch(getAppCategoriesProvider);
 
-    // Keep the screen's search/filter state alive for as long as the screen is
-    // on-screen (it auto-disposes when we leave).
     final StoresSearchFilter filter = ref.watch(storesSearchFilterProvider);
 
     final List<CategoryModel> categories =
         categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
 
-    // The tab index behind the currently selected category (0 = "All"), so the
-    // tab bar follows a category picked in the filter sheet. `-1` (not found)
-    // falls back to "All".
     final int selectedIndex = filter.category == null
         ? 0
         : categories.indexOf(filter.category!) + 1;
 
-    // Tabs and views are always the same length: index 0 = "All", then one
-    // entry per loaded category. While categories are still loading, only the
-    // "All" tab exists. The tab count grows once they arrive, so the tab bar is
-    // keyed by that count to rebuild its internally-owned TabController to the
-    // matching length (it fixes the length at first build).
     final List<String> tabs = [
       LangKeys.allKey.tr(),
       ...categories.map((c) => context.getLocalizedApiText(c.name)),
@@ -84,18 +72,13 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
             ),
             Expanded(
               child: CustomButtonTabBar(
-                // Rebuild (and re-size the TabController) when the tab count
-                // changes — e.g. once categories finish loading.
                 key: ValueKey<int>(tabs.length),
-                // Follow the category picked in the filter sheet.
                 selectedIndex: selectedIndex,
                 filterWidget: AppFilterIcon(
                   onTap: () => showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     builder: (context) => StoresFilterView(
-                      // (2) Returned from the filter → update category + rating,
-                      // and move the tab bar to the picked category.
                       onApply: (type, rating, categoryIndex) {
                         final int index = categoryIndex ?? 0;
                         ref
@@ -111,8 +94,6 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                 onTap: (index) {
                   final CategoryModel? category =
                       _categoryAt(index, categories);
-                  // Drop the tab's previously loaded stores so opening it
-                  // always refetches instead of showing a cached list.
                   if (category != null) {
                     ref.invalidate(
                       getCategoryStoresProvider((

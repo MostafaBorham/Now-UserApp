@@ -164,7 +164,7 @@ class _HomeOffersItemState extends State<HomeOffersItem> {
 
                   ],
                 ),
-                // ReverseWidget(child: Assets.media.images.svg.addToCartBtn.svg())
+
                 showAddToCartCounter
                     ? AnimatedScale(
                   scale: showAddToCartCounter ? 1 : 0,

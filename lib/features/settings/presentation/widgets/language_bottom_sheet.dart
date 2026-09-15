@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Bottom sheet for picking the app language, opened from the "Language"
-/// row on the Profile/Settings screen.
+
+
 class LanguageBottomSheet extends StatelessWidget {
   const LanguageBottomSheet({super.key});
 

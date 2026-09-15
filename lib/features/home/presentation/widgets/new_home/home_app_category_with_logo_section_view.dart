@@ -10,13 +10,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
-/// A `products_by_category` section in its `color_with_image` design: the
-/// category name and the section's own artwork over a wave washed in
-/// [primaryColor], with a row of that category's products beneath it.
-///
-/// Positions/sizes come from the Figma frame (390pt wide, node 7137:26670) and
-/// are scaled by the available width so the section keeps the design's
-/// proportions on any device.
+
+
+
+
+
+
+
 class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
   const HomeAppCategoryWithLogoSectionView({
     super.key,
@@ -31,17 +31,17 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
   final CategoryModel categoryModel;
   final List<ProductModel> productModels;
 
-  /// The section's header artwork, already resolved to the current locale.
-  /// Empty or null renders the header as title-only.
+
+
   final String? imageUrl;
 
-  /// Section theming from the feed; each falls back to a theme colour when the
-  /// admin left it unset.
+
+
   final Color? primaryColor;
   final Color? textColor;
   final bool showViewAll;
 
-  /// Design frame width the absolute positions below were measured against.
+
   static const double _designWidth = 390;
 
   @override
@@ -57,8 +57,8 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // Wave: bleeds the full width, solid accent at the top fading to
-              // white at 80.3% (matches the Figma fill exactly).
+
+
               Positioned(
                 left: 0,
                 right: 0,
@@ -80,10 +80,10 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                   ),
                 ),
               ),
-              // Category artwork, near the top and poking above the wave.
-              // Directional so it mirrors with the layout: the design's Arabic
-              // screen-x 51..215 maps to `start: 175` (390 − 215) from the
-              // trailing edge.
+
+
+
+
               if (image.isNotEmpty)
                 PositionedDirectional(
                   start: 175 * s,
@@ -98,8 +98,8 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                     errorWidget: (context, url, error) => const SizedBox.shrink(),
                   ),
                 ),
-              // Category name: two white kashida-stretched lines on the leading
-              // side (right in Arabic). Design box is 43pt in from that edge.
+
+
               PositionedDirectional(
                 start: 43 * s,
                 top: 14 * s,
@@ -120,10 +120,10 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                   ),
                 ),
               ),
-              // See all, on the trailing side (left in Arabic).
-              // ponytail: the chip is inert — the feed sends the category's id
-              // and name but no slug, and category details fetches by slug. Wire
-              // the tap once the payload carries `category_slug`.
+
+
+
+
               if (showViewAll)
                 PositionedDirectional(
                   end: 16 * s,
@@ -134,7 +134,7 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                     endBackgroundColor: accent.withValues(alpha: 0.1),
                   ),
                 ),
-              // Product rail, sitting on the white lower part of the wave.
+
               Positioned(
                 left: 0,
                 right: 0,

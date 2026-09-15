@@ -15,8 +15,8 @@ class CartBrandItemCard extends StatefulWidget {
 
   final CartVendorModel cartVendor;
 
-  /// Fired when this store's checkout pill is tapped. `null` leaves the pill
-  /// inert — the parent owns both the request and the navigation.
+
+
   final VoidCallback? onCheckout;
 
   @override
@@ -65,7 +65,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                     storeId: widget.cartVendor.vendor.id,
                   ),
 
-            // Total + checkout pill (shared between both states)
+
             CartItemCheckoutView(
               total: '${pricing.total}',
               onCheckout: widget.onCheckout,

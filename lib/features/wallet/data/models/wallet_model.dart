@@ -1,20 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-/// The customer wallet from `GET /api/v1/wallet`.
-///
-/// The endpoint splits its `data` payload into two maps — `wallet` (the account
-/// itself) and `top_up` (the funding limits and suggested amounts). This model
-/// flattens both into a single object: the [id]/[balance]/[balanceHalalas]/
-/// [currency] fields come from `wallet`, and [minimum]/[maximum]/
-/// [suggestedAmounts] come from `top_up`.
+
+
+
+
+
+
+
 class WalletModel extends Equatable {
-  // From the `wallet` map.
+
   final int? id;
   final double? balance;
   final int? balanceHalalas;
   final String? currency;
 
-  // From the `top_up` map.
+
   final double? minimum;
   final double? maximum;
   final List<double> suggestedAmounts;

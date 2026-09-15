@@ -13,10 +13,10 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 
-/// A rich product card used inside the "Most Popular" horizontal slider.
-///
-/// Dummy/static content is hardcoded inline for fast UI iteration; real data
-/// will be wired in later.
+
+
+
+
 class MostPopularSliderItemCard extends StatelessWidget {
   const MostPopularSliderItemCard({super.key});
 
@@ -30,7 +30,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
         color: colors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [BoxShadow(
-          color: colors.neutral500.withValues(alpha: 0.3), // #00000014
+          color: colors.neutral500.withValues(alpha: 0.3),
           offset: const Offset(0, 4),
           blurRadius: 10,
           spreadRadius: 0,
@@ -69,7 +69,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
     );
   }
 
-  /// Product image with rank badge, discount circle and feature tags.
+
   Widget _imageSection(AppColorScheme colors) {
     return Stack(
       children: [
@@ -84,7 +84,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
         Positioned.fill(
           child: WhiteGradientOverlayEffect(),
         ),
-        // Rank badge (top-start)
+
         PositionedDirectional(
           top: 12,
           start: 12,
@@ -116,7 +116,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
           ),
         ),
 
-        // Discount circle (top-end)
+
         PositionedDirectional(
           top: 12,
           end: 12,
@@ -140,7 +140,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
           ),
         ),
 
-        // Feature tags (bottom-start)
+
         PositionedDirectional(
           bottom: 12,
           start: 12,
@@ -175,7 +175,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
     );
   }
 
-  /// Brand + product name on the start side, current/previous price on the end.
+
   Widget _titleAndPriceSection(AppColorScheme colors) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +215,7 @@ class MostPopularSliderItemCard extends StatelessWidget {
     );
   }
 
-  /// Rating, review count and units-sold metadata.
+
   Widget _ratingRow(AppColorScheme colors) {
     return Row(
       children: [

@@ -54,9 +54,9 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
         body: appInfoState.when(
           loading: () => AppShimmer(
             child: ListView.separated(
-              // Matches the loaded list's top spacing so the loading and data
-              // states line up under the wave (AppWavedView drops the body's
-              // top padding once a scroll controller is wired in).
+
+
+
               padding: const EdgeInsets.only(top: 57),
               itemCount: 6,
               separatorBuilder: (_, _) => const SizedBox(height: 14),
@@ -80,9 +80,9 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                   : ListView.separated(
                       controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      // Owns the top spacing AppWavedView drops when a scroll
-                      // controller is wired in, so it scrolls up with the
-                      // content and flattens the wave.
+
+
+
                       padding: const EdgeInsets.only(top: 57),
                       itemCount: faqs.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 14),

@@ -11,22 +11,22 @@ import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dar
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_welcome_voucher_vm.dart';
 
-/// First-order incentive shown on the empty cart: a lavender pill inviting the
-/// user to use the welcome voucher, which copies the code to the clipboard on tap.
-///
-/// Renders `SizedBox.shrink()` (nothing) unless the user is eligible:
-/// * a **guest** — guests can't have placed an order, so they always qualify; or
-/// * a **registered** user whose order count is exactly zero
-///   ([getMyOrdersProvider] `total == 0`).
-///
-/// and the welcome coupon actually loads. After the first order is placed the
-/// orders list is refreshed (see checkout success handler), `total` becomes ≥1,
-/// and this banner disappears on its own.
+
+
+
+
+
+
+
+
+
+
+
 class WelcomeVoucherBanner extends ConsumerWidget {
   const WelcomeVoucherBanner({super.key});
 
-  // Figma 9648-57591 tokens (not app-theme colors — this pill is intentionally
-  // off-palette).
+
+
   static const Color _bg = Color(0xFFEEF2FF);
   static const Color _text = Color(0xFF615FFF);
   static const Color _discount = Color(0xFFE32B3D);
@@ -40,8 +40,8 @@ class WelcomeVoucherBanner extends ConsumerWidget {
     if (isGuest) {
       hasNoOrders = true;
     } else {
-      // Pre-fetched at session resolve; treat unknown (null) as "not eligible"
-      // so the pill never flashes for a user who may already have orders.
+
+
       final orders = ref.watch(getMyOrdersProvider).valueOrNull;
       hasNoOrders = orders != null && orders.total == 0;
     }

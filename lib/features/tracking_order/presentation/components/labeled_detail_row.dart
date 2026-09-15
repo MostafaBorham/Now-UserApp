@@ -4,10 +4,10 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// A single "label … value" line used inside the Delivery Details card and the
-/// amount card. Pass either a plain [value] string or a custom [trailing]
-/// widget (e.g. a price with its currency glyph); the trailing content is
-/// always pinned to the end of the row.
+
+
+
+
 class LabeledDetailRow extends StatelessWidget {
   const LabeledDetailRow({
     super.key,

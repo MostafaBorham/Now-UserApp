@@ -9,8 +9,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 class TopBrandsItem extends StatelessWidget {
   const TopBrandsItem({super.key, this.store});
 
-  /// Null in the loading (shimmer) state — the item then paints neutral
-  /// placeholder blocks for AppShimmer to run over.
+
+
   final StoreModel? store;
 
   @override

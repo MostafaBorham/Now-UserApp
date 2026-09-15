@@ -9,9 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 
-/// Top row of the Track Order screen: the order glyph, the order number and a
-/// status chip. Uses the same status chip as the order details header — colors
-/// from the shared [OrderStatusPalette] and the localized status label.
+
+
+
 class TrackOrderNumberHeader extends StatelessWidget {
   const TrackOrderNumberHeader({
     super.key,
@@ -22,10 +22,10 @@ class TrackOrderNumberHeader extends StatelessWidget {
 
   final String orderNumber;
 
-  /// Lifecycle state (from `order.status`), used to resolve the chip colors.
+
   final OrderStatus status;
 
-  /// Localized status text (from `order.orderStatus`); falls back to "pending".
+
   final String? statusLabel;
 
   @override
@@ -61,8 +61,8 @@ class TrackOrderNumberHeader extends StatelessWidget {
             ),
           ),
           12.wSpace,
-          // Status chip is pinned to the bottom of the row while the glyph and
-          // order-number column stay vertically centred.
+
+
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(

@@ -3,9 +3,6 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
-/// First-load skeleton for [CategoryStoresView]: a list of shimmering store
-/// cards laid out exactly like the real stores, so the loading state matches
-/// their geometry.
 class CategoryStoresViewShimmer extends StatelessWidget {
   const CategoryStoresViewShimmer({super.key});
 

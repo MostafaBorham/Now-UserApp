@@ -2,25 +2,25 @@ import 'package:equatable/equatable.dart';
 import 'package:nowdelivery_user_app/core/enums/wallet_transaction_status.dart';
 import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
-/// A single wallet transaction — one entry of the `transactions` list from
-/// `GET /api/v1/wallet/transactions`.
-///
-/// The `merchant` and `reference` sub-objects are parsed into their own nested
-/// models ([WalletTransactionMerchant] / [WalletTransactionReference]); both may
-/// be absent on a given transaction, so both are nullable.
+
+
+
+
+
+
 class WalletTransactionModel extends Equatable {
   final int? id;
   final String? type;
   final String? source;
 
-  /// The transaction status, parsed into a type-safe [WalletTransactionStatus]
-  /// (its [WalletTransactionStatus.name] keeps the raw value).
-  ///
-  /// Sourced from the API's `display_status`, not `status`: `status` is only the
-  /// coarse processing state (`pending`/`successful`/`failed`) and never carries
-  /// `refunded` — a refund arrives as `status: successful`, `display_status:
-  /// refunded`. Since the color mapping needs to tell a refund apart from a
-  /// plain success, it is driven by the granular `display_status`.
+
+
+
+
+
+
+
+
   final WalletTransactionStatus status;
   final String? displayStatus;
   final double? amount;
@@ -133,14 +133,14 @@ class WalletTransactionModel extends Equatable {
   ];
 }
 
-/// The `merchant` sub-object of a wallet transaction — the vendor/brand the
-/// transaction relates to.
+
+
 class WalletTransactionMerchant extends Equatable {
   final String? type;
   final int? id;
 
-  /// The `{ar, en}` translation map (a bare string is mirrored into both
-  /// locales by [JsonParsing.localized]).
+
+
   final Map<String, dynamic>? name;
   final String? displayName;
   final String? logoUrl;
@@ -188,8 +188,8 @@ class WalletTransactionMerchant extends Equatable {
   ];
 }
 
-/// The `reference` sub-object of a wallet transaction — what the transaction
-/// points back to (e.g. the order that was refunded).
+
+
 class WalletTransactionReference extends Equatable {
   final String? type;
   final int? id;

@@ -1,5 +1,5 @@
 abstract class LangKeys {
-  // App / auth / onboarding (existing)
+
   static const String appNameKey = 'appName';
   static const String loginKey = 'login';
   static const String loginAsGuestKey = 'loginAsGuest';
@@ -54,16 +54,16 @@ abstract class LangKeys {
   static const String privacyPolicy = 'privacyPolicy';
   static const String logout = 'logout';
 
-  // Privacy screen header (static labels; the date comes from the backend)
+
   static const String privacyEffectiveDate = 'privacyEffectiveDate';
   static const String privacyIntro = 'privacyIntro';
 
-  // Privacy screen section titles (content comes from the app-info backend)
+
   static const String appTerms = 'appTerms';
   static const String appPrivacy = 'appPrivacy';
   static const String appAbout = 'appAbout';
 
-  // Categories & favourites
+
   static const String productsKey = 'products';
   static const String storesKey = 'stores';
   static const String favouriteKey = 'favourite';
@@ -85,7 +85,7 @@ abstract class LangKeys {
   static const String homeAddressSelector = 'homeAddressSelector';
   static const String workAddressSelector = 'workAddressSelector';
   static const String otherAddressSelector = 'otherAddressSelector';
-  // First two address fields are re-labelled when the "work" label is selected.
+
   static const String floor = 'floor';
   static const String floorWork = 'floorWork';
   static const String floorNumberOptional = 'floorNumberOptional';
@@ -107,7 +107,7 @@ abstract class LangKeys {
   static const String noSavedAddresses = 'noSavedAddresses';
   static const String addressDeletedSuccessfully = 'addressDeletedSuccessfully';
 
-  // Bottom navigation
+
   static const String homeKey = 'home';
   static const String ordersKey = 'orders';
   static const String expiryDateHintKey = 'expiryDateHintKey';
@@ -119,7 +119,7 @@ abstract class LangKeys {
   static const String imagePickingErrorKey = 'imagePickingErrorKey';
   static const String searchForBrandKey = 'searchForBrandKey';
 
-  // Home
+
   static const String shopNowKey = 'shopNow';
   static const String topNearbyStoresKey = 'topNearbyStores';
   static const String dontMissTheseOffersKey = 'dontMissTheseOffers';
@@ -136,12 +136,12 @@ abstract class LangKeys {
   static const String minutesKey = 'minutes';
   static const String kmKey = 'km';
 
-  // Onboarding
+
   static const String thatSuitKey = 'thatSuit';
   static const String youKey = 'you';
   static const String continueAsGuestKey = 'continueAsGuest';
 
-  // Wallet
+
   static const String walletKey = 'wallet';
   static const String support = 'supportTitle';
   static const String walletRecordKey = 'walletRecord';
@@ -168,7 +168,7 @@ abstract class LangKeys {
   static const String cardNumberKey = 'cardNumber';
   static const String expirationDateKey = 'expirationDate';
 
-  // Payment methods
+
   static const String paymentMethodsKey = 'paymentMethods';
   static const String savedCardsKey = 'savedCards';
   static const String defaultCardKey = 'defaultCard';
@@ -179,7 +179,7 @@ abstract class LangKeys {
   static const String addKey = 'add';
   static const String addNewPaymentCardKey = 'addNewPaymentCard';
 
-  // Guest verification
+
   static const String verificationCodeKey = 'verificationCode';
   static const String verifyGuestViaPhoneKey = 'verifyGuestViaPhone';
   static const String phoneVerificationSubtitleKey =
@@ -198,7 +198,7 @@ abstract class LangKeys {
   static const String chooseFromGalleryKey = 'chooseFromGallery';
   static const String removePhotoKey = 'removePhoto';
 
-  // Personal information (read-only profile) screen
+
   static const String fullNameKey = 'fullName';
   static const String phoneKey = 'phone';
   static const String emailKey = 'email';
@@ -218,7 +218,7 @@ abstract class LangKeys {
   static const String enterYourEmailKey = 'enterYourEmail';
   static const String skipKey = 'skip';
 
-  // Orders
+
   static const String myOrdersKey = 'myOrders';
   static const String orderDetailsKey = 'orderDetails';
   static const String orderNumberKey = 'orderNumber';
@@ -243,7 +243,7 @@ abstract class LangKeys {
   static const String totalKey = 'total';
   static const String printInvoiceKey = 'printInvoice';
 
-  // Order tracking (Order Confirmed / Track Order / Payment Failed)
+
   static const String orderConfirmedTitleKey = 'orderConfirmedTitle';
   static const String orderConfirmedSubtitleKey = 'orderConfirmedSubtitle';
   static const String returnToHomePageKey = 'returnToHomePage';
@@ -262,7 +262,7 @@ abstract class LangKeys {
       'orderConfirmedBeingPrepared';
   static const String onTheWayToYouKey = 'onTheWayToYou';
 
-  // Order-status descriptions shown under the order number in the my-orders list
+
   static const String awaitingOrderConfirmationKey =
       'awaitingOrderConfirmation';
   static const String preparingYourOrderKey = 'preparingYourOrder';
@@ -286,7 +286,7 @@ abstract class LangKeys {
   static const String continueShoppingKey = 'continueShopping';
   static const String viewOrdersKey = 'viewOrders';
 
-  // Complaints & rating
+
   static const String fileComplaintKey = 'fileComplaint';
   static const String submitComplaintKey = 'submitComplaint';
   static const String submitAComplaintKey = 'submitAComplaint';
@@ -308,7 +308,7 @@ abstract class LangKeys {
   static const String ratingGoodKey = 'ratingGood';
   static const String ratingExcellentKey = 'ratingExcellent';
 
-  // Errors & states
+
   static const String noItemsYetKey = 'noItemsYet';
   static const String noFaqsYetKey = 'noFaqsYet';
   static const String serverConnectionFailedKey = 'serverConnectionFailed';
@@ -332,13 +332,13 @@ abstract class LangKeys {
       'appUnderMaintenanceSubtitle';
   static const String notifyMeWhenDoneKey = 'notifyMeWhenDone';
 
-  // Notifications
+
   static const String notificationsKey = 'notifications';
   static const String todayKey = 'today';
   static const String yesterdayKey = 'yesterday';
   static const String justNowKey = 'justNow';
 
-  // Search
+
   static const String searchKey = 'search';
   static const String recentKey = 'recent';
   static const String oldestKey = 'oldest';
@@ -363,7 +363,7 @@ abstract class LangKeys {
   static const String minimumLimitKey = 'minimumLimit';
   static const String noResultFoundKey = 'noResultFound';
 
-  // Checkout
+
   static const String addNotesHintKey = 'addNotesHint';
   static const String applyKey = 'apply';
   static const String appliedKey = 'applied';
@@ -387,7 +387,7 @@ abstract class LangKeys {
   static const String sampleStoreNameKey = 'sampleStoreName';
   static const String sampleValidityKey = 'sampleValidity';
 
-  // Cart
+
   static const String cartEmptyTitleKey = 'cartEmptyTitle';
   static const String cartEmptySubtitleKey = 'cartEmptySubtitle';
   static const String browseProductsKey = 'browseProducts';
@@ -400,10 +400,10 @@ abstract class LangKeys {
   static const String cancelKey = 'cancel';
   static const String deleteKey = 'delete';
 
-  // Dialogs
+
   static const String logoutConfirmationKey = 'logoutConfirmation';
 
-  // Product details
+
   static const String buyNowKey = 'buyNow';
   static const String sampleProductFeatureKey = 'sampleProductFeature';
   static const String basicSpecificationsKey = 'basicSpecifications';
@@ -415,12 +415,12 @@ abstract class LangKeys {
   static const String viewCartKey = 'viewCart';
   static const String trustedProductKey = 'trustedProduct';
   static const String outOfStockKey = 'outOfStock';
-  // Sample / placeholder color names
+
   static const String colorBlueKey = 'colorBlue';
   static const String colorSilverKey = 'colorSilver';
   static const String colorGoldKey = 'colorGold';
   static const String colorAstronautGrayKey = 'colorAstronautGray';
-  // Sample / placeholder specifications
+
   static const String specProcessorKey = 'specProcessor';
   static const String specRamKey = 'specRam';
   static const String specStorageKey = 'specStorage';
@@ -433,35 +433,35 @@ abstract class LangKeys {
   static const String specDisplayValueKey = 'specDisplayValue';
   static const String specBatteryValueKey = 'specBatteryValue';
   static const String specWeightValueKey = 'specWeightValue';
-  // Sample / placeholder size options
+
   static const String size16InchKey = 'size16Inch';
   static const String size15InchKey = 'size15Inch';
   static const String size17InchKey = 'size17Inch';
 
-  // Store details - sample brand info card
+
   static const String sampleBrandCategoryKey = 'sampleBrandCategory';
   static const String sampleBrandNameKey = 'sampleBrandName';
   static const String sampleBrandDescriptionKey = 'sampleBrandDescription';
   static const String thousandSuffixKey = 'thousandSuffix';
 
-  // Address search
+
   static const String searchForAddressKey = 'searchForAddress';
   static const String noAddressResultsKey = 'noAddressResults';
 
-  // Clipboard
+
   static const String codeCopiedKey = 'codeCopied';
 
-  // Store details
+
   static const String storeCategoriesKey = 'storeCategories';
 
-  // Welcome voucher (empty cart, first order). Fragments so the code and the
-  // "discount" word can be styled individually.
+
+
   static const String welcomeVoucherPrefixKey = 'welcomeVoucherPrefix';
   static const String welcomeVoucherMiddleKey = 'welcomeVoucherMiddle';
   static const String welcomeVoucherDiscountKey = 'welcomeVoucherDiscount';
   static const String welcomeVoucherSuffixKey = 'welcomeVoucherSuffix';
 
-  // Personal information - editing
+
   static const String invalidEmailKey = 'invalidEmail';
   static const String profileUpdatedKey = 'profileUpdated';
   static const String discardChangesKey = 'discardChanges';

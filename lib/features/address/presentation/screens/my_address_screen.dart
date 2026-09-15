@@ -22,8 +22,8 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_
 import 'package:nowdelivery_user_app/features/address/viewmodel/delete_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
-/// The user's saved addresses: pick the delivery default, edit one, or add a
-/// new one from the map.
+
+
 class MyAddressScreen extends ConsumerStatefulWidget {
   const MyAddressScreen({super.key});
 
@@ -45,8 +45,8 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
   @override
   void initState() {
     super.initState();
-    // The list is normally filled at login. Fetch here only if that never
-    // happened or failed — an already-loaded list is kept as-is (no refetch).
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || ref.read(getMyAddressesProvider).hasValue) return;
       ref.read(getMyAddressesProvider.notifier).loadFirstPage();
@@ -58,9 +58,9 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     final GetMyAddressesViewModel viewModel = ref.read(
       getMyAddressesProvider.notifier,
     );
-    // The overlay means "an in-place action is in flight" — either setting the
-    // default or deleting. Neither provider loads on watch, so nothing else can
-    // put them in the loading state.
+
+
+
     final bool isSettingDefault = ref.watch(defaultAddressProvider).isLoading;
     final bool isDeleting = ref.watch(deleteAddressProvider).isLoading;
 
@@ -74,9 +74,9 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
       );
     });
 
-    // A delete confirms with a success snackbar and, on failure, an error one —
-    // the address itself is already restored to the list by the view model.
-    // Guarding on "was loading" keeps the initial data state from firing.
+
+
+
     ref.listen<AsyncValue<void>>(deleteAddressProvider, (
       AsyncValue<void>? previous,
       AsyncValue<void> next,
@@ -107,9 +107,9 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                   scrollController: _scrollController,
                   onRefresh: viewModel.loadFirstPage,
                   onLoadNextPage: viewModel.loadNextPage,
-                  // The list owns the top spacing AppWavedView drops when a
-                  // scroll controller is wired in, so it scrolls up with the
-                  // cards and flattens the wave.
+
+
+
                   layout: const PaginatedListLayout(
                     separatorBuilder: _separator,
                     padding: EdgeInsets.only(top: 57),
@@ -164,8 +164,8 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
   }
 
   void _onSelect(AddressModel address) {
-    // An address with no id cannot be addressed on the server — nothing to do
-    // but ignore the tap, rather than send a request that can only fail.
+
+
     final int? addressId = address.id;
     if (addressId == null || (address.isDefault ?? false)) return;
     ref
@@ -173,10 +173,10 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
         .setDefaultAddress(addressId: addressId);
   }
 
-  /// Swiping a card fires the delete but never dismisses the card itself:
-  /// returning `false` springs it back into place, and the view model removes it
-  /// (by refetching the list) only once the server confirms the delete. So the
-  /// address stays on screen — under the blocking overlay — until success.
+
+
+
+
   Future<bool> _onDelete(AddressModel address) async {
     ref.read(deleteAddressProvider.notifier).deleteAddress(address: address);
     return false;

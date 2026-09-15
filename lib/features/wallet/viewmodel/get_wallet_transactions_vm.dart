@@ -6,13 +6,13 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_mo
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transaction_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart';
 
-/// Single task: page through the wallet transaction history.
-///
-/// `autoDispose`: the wallet screen is the only consumer, so the paged state is
-/// torn down when it leaves. The first page starts as soon as the provider is
-/// first read/watched; `loadNextPage()` and `loadFirstPage()` (refresh / retry)
-/// come from [PaginatedViewModel]. Screens `ref.watch` the provider and render
-/// the pagination state.
+
+
+
+
+
+
+
 final getWalletTransactionsProvider = StateNotifierProvider.autoDispose<
     GetWalletTransactionsViewModel,
     AsyncValue<PaginationModel<WalletTransactionModel>>>(

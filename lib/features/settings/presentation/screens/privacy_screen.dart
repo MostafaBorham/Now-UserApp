@@ -48,9 +48,9 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
           loading: () => const AppShimmer(
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
-              // Matches the loaded content's top spacing so the loading and data
-              // states line up under the wave (AppWavedView drops the body's top
-              // padding once a scroll controller is wired in).
+
+
+
               padding: EdgeInsets.only(top: 57),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,9 +95,9 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
                 : SingleChildScrollView(
                     controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
-                    // Owns the top spacing AppWavedView drops when a scroll
-                    // controller is wired in, so it scrolls up with the content
-                    // and flattens the wave.
+
+
+
                     padding: const EdgeInsets.only(top: 57),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

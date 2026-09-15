@@ -11,20 +11,20 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_list_item.dart';
 
-/// The `nearby_stores` section: a horizontal list of the stores closest to the
-/// customer, each card tappable through to its store details.
-///
-/// The feed decides what "nearby" means — for a guest it measures from the
-/// device coordinates the Home tab sends, and for a logged-in user from the
-/// address on their profile (see `HomeView._loadFeed`). This widget only
-/// renders whatever order it is handed.
+
+
+
+
+
+
+
 class BestNearbyStoresSection extends StatelessWidget {
   const BestNearbyStoresSection({super.key, this.title, required this.stores});
 
-  /// Section title as the feed's `{ar, en}` map — the backend owns section
-  /// headings, so whatever it returns for the current locale is displayed
-  /// as-is. The app's own label stands in only when the admin left the title
-  /// empty, never to override a title that was sent.
+
+
+
+
   final Map<String, dynamic>? title;
   final List<StoreModel> stores;
 
@@ -56,8 +56,8 @@ class BestNearbyStoresSection extends StatelessWidget {
               itemBuilder: (context, index) {
                 final StoreModel store = stores[index];
                 return InkWell(
-                  // A store arriving without an id can't be opened; its card
-                  // still renders, it just doesn't navigate.
+
+
                   onTap: store.id == null
                       ? null
                       : () => context.pushNamed(

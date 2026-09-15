@@ -8,16 +8,16 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_
 
 import '../helpers/categories_test_harness.dart';
 
-/// Geometry check for the home top banner. `HomeTopBannerSectionView` has to
-/// back `AppSlider`'s per-item padding out of both the side margin and the
-/// carousel's aspect ratio to land on the Figma box (355×118 inset 17.5px on a
-/// 390pt screen — node 7137:26468), so assert the rendered result, not the
-/// arithmetic.
+
+
+
+
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  /// A banner with no artwork: `AppCachedNetworkImage` short-circuits an empty
-  /// URL to its error placeholder, which fills the box without any network.
+
+
   const BannerModel bannerNoImage = BannerModel(id: 1);
 
   Future<void> pumpSection(

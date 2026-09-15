@@ -54,11 +54,11 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     final double screenHeight = MediaQuery.sizeOf(context).height;
     final Size screenSize = MediaQuery.sizeOf(context);
 
-    // The balance card and the three action buttons stay on screen in every
-    // state of the wallet-info fetch; only the balance shown in the card follows
-    // the provider — it arrives once the state turns to data (null until then).
-    // The transaction history below owns its own loading / error / data states
-    // independently, inside WalletTransactionsView.
+
+
+
+
+
     final AsyncValue<WalletModel> infoState =
         ref.watch(getWalletInfoProvider);
 
@@ -97,9 +97,9 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         maxHeight: screenHeight * 0.9,
                         backgroundColor: colors.white,
                         isScrollControlled: true,
-                        // The sheet blocks dismissal while a top-up is in
-                        // flight via PopScope; drag-to-dismiss would bypass it,
-                        // so it's disabled — the X button / barrier remain.
+
+
+
                         enableDrag: false,
                       ),
                     ),
@@ -114,11 +114,11 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       onTap: () => _openActionSheet(
                         index: 1,
                         sheet: MyCardsView(),
-                        // The sheet sizes to its content and only grows to this
-                        // cap (80% of the screen), past which the cards list
-                        // scrolls inside it — so short lists leave no dead space
-                        // below them. isScrollControlled lets it exceed the
-                        // default half-screen ceiling to reach that cap.
+
+
+
+
+
                         maxHeight: screenHeight * 0.8,
                         backgroundColor: colors.white,
                         isScrollControlled: true,

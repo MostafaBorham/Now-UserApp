@@ -11,21 +11,21 @@ import 'package:nowdelivery_user_app/features/support/data/models/rate_request_m
 import 'package:nowdelivery_user_app/features/support/data/models/rate_response_model.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 
-/// All data operations of the support feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a clean server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
-/// The connection check and error mapping live in [_guard].
+
+
+
+
+
+
 class SupportRepo {
   final SupportApiService _supportApiService = SupportApiService();
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _supportApiService.cancelRequests();
 
-  /// Creates a support ticket from the user's complaint and returns the
-  /// created ticket (the response's `data.ticket` object).
+
+
   Future<Either<Failure, ComplaintResponseModel>> submitComplaint({
     required ComplaintRequestModel complaint,
   }) {
@@ -37,8 +37,8 @@ class SupportRepo {
     );
   }
 
-  /// Loads the support FAQs — parses only the `data.faqs` list of the
-  /// about-section application information into [FaqModel]s.
+
+
   Future<Either<Failure, List<FaqModel>>> getSupportFaqs() {
     return _guard(
       () => _supportApiService.getSupportFaqs(),
@@ -49,8 +49,8 @@ class SupportRepo {
     );
   }
 
-  /// Rates a store (vendor) against an order and returns the created rating
-  /// (the response's `data.rating` object).
+
+
   Future<Either<Failure, RateResponseModel>> rateStore({
     required RateRequestModel rate,
   }) {
@@ -62,8 +62,8 @@ class SupportRepo {
     );
   }
 
-  /// Rates a delivery man against an order and returns the created rating
-  /// (the response's `data.rating` object).
+
+
   Future<Either<Failure, RateResponseModel>> rateDeliveryMan({
     required RateRequestModel rate,
   }) {
@@ -75,8 +75,8 @@ class SupportRepo {
     );
   }
 
-  /// Shared request envelope: connection check, non-2xx handling, and
-  /// Dio/exception mapping, so each method only describes its own [parse].
+
+
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
     T Function(Map<String, dynamic> data) parse,

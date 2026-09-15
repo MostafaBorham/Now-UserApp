@@ -55,8 +55,8 @@ void main() {
     });
 
     test('page argument flows through independently per call', () {
-      // Guards the old bug: paging state is no longer shared/static, so two
-      // different page requests do not clobber each other.
+
+
       final storesPage2 = CategoriesEndpoints.categoryStoresQuery(page: 2);
       final productsPage9 = CategoriesEndpoints.categoryProductsQuery(page: 9);
       expect(storesPage2['page'], 2);

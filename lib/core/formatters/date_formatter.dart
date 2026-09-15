@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-/// Formats a raw API timestamp as a localized date (Arabic/English month names)
-/// following the current app locale. Returns an empty string when the value is
-/// null, empty or unparseable, so callers can use it directly — display the
-/// result as-is, or guard visibility with `.isNotEmpty` — without re-checking or
-/// re-parsing the timestamp themselves.
+
+
+
+
+
 String formatLocalizedDate(
     BuildContext context,
     String? dateString,
@@ -26,14 +26,14 @@ String formatLocalizedDate(
   return DateFormat.yMMMMd(languageCode).format(utcDate);
 }
 
-/// Formats a **date-only** API value (`YYYY-MM-DD`, e.g. a birthday) as a
-/// localized date. Returns null when [dateString] is null, empty or
-/// unparseable, so callers can fall back to a hint.
-///
-/// Unlike [formatLocalizedDate] this deliberately does **not** convert to UTC.
-/// A date with no time parses as local midnight, so shifting it by the device's
-/// offset lands on the previous day everywhere east of Greenwich — a birthday
-/// of `2001-04-17` would read as 16 April in Egypt and Saudi Arabia.
+
+
+
+
+
+
+
+
 String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
   if (dateString == null || dateString.trim().isEmpty) {
     return null;
@@ -48,15 +48,15 @@ String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
   return DateFormat.yMMMMd(context.locale.languageCode).format(parsedDate);
 }
 
-/// Formats a raw API timestamp as a localized numeric `dd-MM-yyyy` date
-/// (e.g. `10-04-2026`, and `١٠-٠٤-٢٠٢٦` with Arabic-Indic digits under `ar`),
-/// following the current app locale. Like [formatLocalizedDate] it returns an
-/// empty string when the value is null, empty or unparseable, so callers can use
-/// it directly — display the result as-is, or guard visibility with `.isNotEmpty`
-/// — without re-checking or re-parsing the timestamp themselves.
-///
-/// intl's pattern formatter keeps Latin digits even for the Arabic locale, so
-/// the digits are converted to Arabic-Indic explicitly when the app is Arabic.
+
+
+
+
+
+
+
+
+
 String formatLocalizedNumericDate(
     BuildContext context,
     String? dateString,
@@ -78,13 +78,13 @@ String formatLocalizedNumericDate(
   return languageCode == 'ar' ? _toArabicIndicDigits(formatted) : formatted;
 }
 
-/// Arabic-Indic digits ٠١٢٣٤٥٦٧٨٩ indexed by their Latin value 0–9.
+
 const List<String> _arabicIndicDigits = [
   '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩',
 ];
 
-/// Replaces the Latin digits 0–9 in [input] with their Arabic-Indic equivalents,
-/// leaving every other character (separators, letters) untouched.
+
+
 String _toArabicIndicDigits(String input) {
   final StringBuffer buffer = StringBuffer();
   for (final int codeUnit in input.codeUnits) {

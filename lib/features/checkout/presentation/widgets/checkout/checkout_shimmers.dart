@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder for the checkout screen's store cards, mirroring a
-/// collapsed `CheckoutBrandItemCard`: logo + store name + chevron, the product
-/// thumbnails row, and the discount-code row.
-///
-/// This and [InvoiceSummaryShimmer] are the only two loading states on the
-/// checkout screen — every other widget renders its real self from the first
-/// frame, since none of them needs the draft to be meaningful.
+
+
+
+
+
+
+
 class CheckoutBrandCardsShimmer extends StatelessWidget {
   const CheckoutBrandCardsShimmer({super.key, this.cardsCount = 2});
 
-  /// How many placeholder cards to draw. The real store count is unknown until
-  /// the draft resolves, so this is a guess at the common case.
+
+
   final int cardsCount;
 
   @override
@@ -59,9 +59,9 @@ class CheckoutBrandCardsShimmer extends StatelessWidget {
   }
 }
 
-/// Skeleton placeholder for `InvoiceSummaryCard`: the title, its four price
-/// lines, the divider and the total row. Sized and coloured like the real card
-/// so the swap to live totals doesn't shift the layout.
+
+
+
 class InvoiceSummaryShimmer extends StatelessWidget {
   const InvoiceSummaryShimmer({super.key});
 
@@ -102,15 +102,15 @@ class InvoiceSummaryShimmer extends StatelessWidget {
   }
 }
 
-/// A card matching the checkout cards' background/radius, with its [child]
-/// shimmered on top so only the inner content animates.
+
+
 class _ShimmerCard extends StatelessWidget {
   const _ShimmerCard({required this.child, required this.padding, this.color});
 
   final Widget child;
   final EdgeInsets padding;
 
-  /// Defaults to the store-card background when omitted.
+
   final Color? color;
 
   @override
@@ -128,7 +128,7 @@ class _ShimmerCard extends StatelessWidget {
   }
 }
 
-/// A single black placeholder block, meant to be painted under an [AppShimmer].
+
 class _SkeletonBox extends StatelessWidget {
   const _SkeletonBox({
     this.width,

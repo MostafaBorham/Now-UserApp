@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 
-/// One placed order in the my-orders list, rendered from [orderModel].
+
 class OrderListItem extends ConsumerWidget {
   const OrderListItem({super.key, required this.orderModel});
 
@@ -32,9 +32,9 @@ class OrderListItem extends ConsumerWidget {
       orderModel.orderStatus,
     );
 
-    // Dates the status descriptions embed: delivered shows when the order
-    // arrived (`delivered_at`, a localized map), refunded shows when it was
-    // placed (`created_at`). formatLocalizedDate parses the raw ISO-8601 value.
+
+
+
     final String deliveredDate = context.getLocalizedApiDate(
       apiDateTimeStamp: context.getLocalizedApiText(orderModel.deliveredAt),
     );
@@ -44,10 +44,10 @@ class OrderListItem extends ConsumerWidget {
 
     final OrderStatus status = OrderStatus.fromKey(orderModel.status);
 
-    // Status-dependent description text. Branching over the sealed OrderStatus
-    // keeps this exhaustive and type-safe; the embedded dates come from this
-    // context. The chip colors come from the shared [OrderStatusPalette] so the
-    // status→color mapping stays defined in one place (see the details header).
+
+
+
+
     final String statusDescription = switch (status) {
       AcceptedStatus() => LangKeys.preparingYourOrderKey.tr(),
       OnTheWayStatus() => LangKeys.orderOnTheWayKey.tr(),
@@ -66,8 +66,8 @@ class OrderListItem extends ConsumerWidget {
     final Color statusBackground = statusPalette.background;
     final Color statusColor = statusPalette.foreground;
 
-    // Tracking is only meaningful while the order is still in flight; the
-    // sealed OrderStatus decides that (in-flight states are trackable).
+
+
     final bool showTrackButton = status.isTrackable;
 
     return Container(

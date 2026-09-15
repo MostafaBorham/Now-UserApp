@@ -10,17 +10,17 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 
 import '../helpers/categories_test_harness.dart';
 
-/// Render checks for the `all_stores` section. Never `pumpAndSettle` these —
-/// see the harness note (images and shimmers animate forever).
-///
-/// The two tab families have different sources, which is what these pin down:
-/// "All" lists the feed's own items, every category tab fetches that category's
-/// stores. Whether the section appears at all is `HomeView`'s call (it mounts
-/// this widget only when the feed publishes the section).
+
+
+
+
+
+
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  /// A store shaped like the feed's `all_stores` vendor item.
+
   StoreModel feedStore({required int id, required String name}) => StoreModel(
     id: id,
     name: <String, dynamic>{'en': name, 'ar': name},
@@ -41,8 +41,8 @@ void main() {
     List<StoreModel> categoryStores = const <StoreModel>[],
   }) => pumpCategoriesWidget(
     tester,
-    // The section is taller than the screen once its cards are real, so it
-    // needs the scrolling parent `HomeView` gives it.
+
+
     SingleChildScrollView(child: HomeAllStoresSectionView(stores: stores)),
     overrides: <Override>[
       overrideAppCategories(
@@ -77,7 +77,7 @@ void main() {
   testWidgets('caps the All tab at the handful the category tabs show', (
     WidgetTester tester,
   ) async {
-    // The rest are behind "See All" — the section is a preview, not the list.
+
     await pumpSection(
       tester,
       stores: List<StoreModel>.generate(
@@ -95,7 +95,7 @@ void main() {
   testWidgets('an empty all_stores section shows the no-results widget', (
     WidgetTester tester,
   ) async {
-    // Not the demo placeholder cards the tab used to render before it was fed.
+
     await pumpSection(tester, stores: const <StoreModel>[]);
 
     expect(find.byType(NoResultsWidget), findsOneWidget);

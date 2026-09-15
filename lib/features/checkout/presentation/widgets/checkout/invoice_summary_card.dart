@@ -17,9 +17,9 @@ class InvoiceSummaryCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    // Falls back to the zeroed group so the card stays renderable even outside
-    // a resolved draft; in practice [InvoiceSummarySection] only mounts it once
-    // the draft is in.
+
+
+
     final OrderGroupModel orderGroup =
         ref.watch(
           checkoutModelProvider.select(
@@ -28,9 +28,9 @@ class InvoiceSummaryCard extends ConsumerWidget {
         ) ??
         const OrderGroupModel();
 
-    // Coupon/voucher apply is a stateless per-vendor calculator that returns
-    // only the discount, so the applied discounts are summed here and reflected
-    // locally: added to the discount line and subtracted from the total.
+
+
+
     final double appliedDiscount = ref
         .watch(appliedDiscountsProvider)
         .fold<double>(

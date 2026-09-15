@@ -22,8 +22,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_d
 class FileComplaintScreen extends ConsumerStatefulWidget {
   const FileComplaintScreen({super.key, required this.order});
 
-  /// The order this complaint / rating is about — supplies the ids sent to the
-  /// rating endpoints (order id as the source, store/driver id as the rateable).
+
+
   final OrderModel order;
 
   @override
@@ -36,15 +36,15 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
 
   final TextEditingController _descriptionController = TextEditingController();
 
-  /// Drives the [AppWavedView] wave animation — the wave flattens while the
-  /// content is scrolled away from the top and restores once it settles back.
+
+
   final ScrollController _scrollController = ScrollController();
 
   List<File> _images = const [];
 
-  /// The committed star values shown by the two cards. They only advance once
-  /// the matching rating request succeeds (driven by the response's `score`);
-  /// on error they stay put and the card reverts its bar.
+
+
+
   int _storeRating = _initialRating;
   int _deliveryRating = _initialRating;
 
@@ -55,13 +55,13 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     super.dispose();
   }
 
-  /// Surfaces a provider error as a snackbar, but on the *next* frame rather
-  /// than inline in the `ref.listen` callback. The rating errors settle in the
-  /// same state change that flips `isLoading` off — which tears down each
-  /// card's loading animation and remounts its bar — so reading the theme
-  /// (`context.colors`, an inherited-widget lookup) synchronously here would
-  /// hit the mid-teardown tree and throw "deactivated widget's ancestor is
-  /// unsafe", swallowing the snackbar. Deferring lets the tree settle first.
+
+
+
+
+
+
+
   void _showError(Object error) {
     if (!mounted) return;
     final String message = error.toString();
@@ -70,10 +70,10 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     });
   }
 
-  /// Validates the form, then builds the request model (description + the picked
-  /// photos mapped to base64 attachments — an empty list when none were picked)
-  /// and hands it to the submit-complaint viewmodel. The button's loading and
-  /// the success/error feedback are driven by the provider in [build].
+
+
+
+
   Future<void> _onSubmit() async {
     final String description = _descriptionController.text.trim();
     if (description.isEmpty) {
@@ -94,8 +94,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
         .submitComplaint(complaint: complaint);
   }
 
-  /// Rates the store: order id as the source, the order's vendor id as the
-  /// rateable, the tapped stars as the score and the emotion text as comment.
+
+
   void _onStoreRatingChanged(int rating, String comment) {
     ref.read(rateStoreProvider.notifier).rateStore(
           rate: RateRequestModel.store(
@@ -107,8 +107,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
         );
   }
 
-  /// Rates the delivery man: order id as the source, the order's driver id as
-  /// the rateable, the tapped stars as the score and the emotion text as comment.
+
+
   void _onDeliveryRatingChanged(int rating, String comment) {
     ref.read(rateDeliveryManProvider.notifier).rateDeliveryMan(
           rate: RateRequestModel.deliveryMan(
@@ -133,8 +133,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
               context,
               LangKeys.complaintSubmittedSuccessfullyKey.tr(),
             );
-            // Only leave the screen if it's still mounted and on the stack —
-            // the user may have navigated away while the request was in flight.
+
+
             if (context.canPop()) context.pop();
           },
           error: (Object error, _) => _showError(error),
@@ -142,8 +142,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
       },
     );
 
-    // Store rating: commit the returned score on success, show an error
-    // snackbar on failure — both only while the screen is still mounted.
+
+
     ref.listen<AsyncValue<RateResponseModel?>>(
       rateStoreProvider,
       (AsyncValue<RateResponseModel?>? previous,
@@ -158,7 +158,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
       },
     );
 
-    // Delivery-man rating: same success/error handling as the store card.
+
     ref.listen<AsyncValue<RateResponseModel?>>(
       rateDeliveryManProvider,
       (AsyncValue<RateResponseModel?>? previous,
@@ -177,10 +177,10 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     final bool isRatingStore = ref.watch(rateStoreProvider).isLoading;
     final bool isRatingDelivery = ref.watch(rateDeliveryManProvider).isLoading;
 
-    // Each rating card is only offered when the order actually carries the
-    // party it rates: the store slice is always present as an object but empty
-    // (null id) when there's no vendor, and the courier is null until one is
-    // assigned — so gate on real data, not mere non-null.
+
+
+
+
     final bool hasStore = widget.order.vendor.id != null;
     final bool hasDeliveryMan = widget.order.driver != null;
 
@@ -196,9 +196,9 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  // Owns the top spacing AppWavedView drops when a scroll
-                  // controller is wired in, so it scrolls up with the content
-                  // and flattens the wave.
+
+
+
                   padding: const EdgeInsets.only(top: 57),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

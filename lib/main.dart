@@ -16,9 +16,9 @@ void main() {
     await EasyLocalization.ensureInitialized();
     await SharedPrefManager.init();
     await HiveManager.init();
-    // Wire up DI and preload app-lifetime resources (e.g. the immutable map
-    // style JSON + parsed marker vector) before the first frame, so the first
-    // map screen never pays to read the asset or parse the SVG.
+
+
+
     await setupServiceLocator();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(

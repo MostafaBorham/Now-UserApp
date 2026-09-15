@@ -35,8 +35,8 @@ class SuccessAddToCartView extends StatefulWidget {
 
 class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
     with SingleTickerProviderStateMixin {
-  // Drives the badge's pop. The full cycle is 4 seconds and repeats forever:
-  // the scale pops in over the first ~30%, then holds until the next cycle.
+
+
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 4),
@@ -75,7 +75,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // Soft halo behind the product badge.
+
           Container(
             width: 120,
             height: 120,
@@ -84,7 +84,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
               shape: BoxShape.circle,
             ),
           ),
-          // Product image circle with the green success glow.
+
           Container(
             width: 96,
             height: 96,
@@ -107,7 +107,7 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
               ),
             ),
           ),
-          // Success check badge.
+
           PositionedDirectional(
             start: 4,
             bottom: 4,

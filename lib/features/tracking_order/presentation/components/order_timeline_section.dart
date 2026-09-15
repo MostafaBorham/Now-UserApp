@@ -9,11 +9,11 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 import 'order_timeline_step.dart';
 
-/// "Track Order" progress section: the estimated-time header followed by the
-/// four-step delivery timeline. The step illustrations already encode their
-/// active/inactive state, so this widget only drives the rail markers & the
-/// connector colours from each step's [OrderStepStatus], derived here from the
-/// order's live [status].
+
+
+
+
+
 class OrderTimelineSection extends StatelessWidget {
   const OrderTimelineSection({
     super.key,
@@ -21,17 +21,17 @@ class OrderTimelineSection extends StatelessWidget {
     this.estimatedTime = '',
   });
 
-  /// The order's current lifecycle state, mapped onto the four milestones.
+
   final OrderStatus status;
   final String estimatedTime;
 
-  /// The milestone the order is currently working toward — the step that shows
-  /// the active (green-circle) marker; every step before it is already done
-  /// (checkmark). `accepted` and `preparing` sit on the "confirmed & being
-  /// prepared" milestone, while `ready` advances to "on the way" (the order is
-  /// prepared and waiting for pickup) and `on_the_way` advances to the final
-  /// "delivered" milestone. Terminal / unknown states park at the first
-  /// milestone (they aren't tracked here — the section is hidden for them).
+
+
+
+
+
+
+
   int get _reachedMilestone => switch (status) {
     PendingStatus() => 0,
     AcceptedStatus() || PreparingStatus() => 1,
@@ -43,8 +43,8 @@ class OrderTimelineSection extends StatelessWidget {
   OrderStepStatus _stepStatus(int index) {
     if (index < _reachedMilestone) return OrderStepStatus.done;
     if (index > _reachedMilestone) return OrderStepStatus.pending;
-    // The reached milestone is the active one, unless the order is delivered:
-    // its final step is complete, not in-progress.
+
+
     return status is DeliveredStatus
         ? OrderStepStatus.done
         : OrderStepStatus.current;

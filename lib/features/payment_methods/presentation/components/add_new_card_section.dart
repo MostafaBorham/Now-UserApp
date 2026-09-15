@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'add_new_card_form.dart';
 import 'section_title.dart';
 
-/// "Add New Card" section — the header plus the card entry form.
+
 class AddNewCardSection extends StatelessWidget {
   const AddNewCardSection({super.key});
 

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Bottom message composer: a rounded text field plus the green send button.
-///
-/// The send button is drawn straight from `send.svg` (which already includes
-/// its own green circle), so it is used as-is.
+
+
+
+
 class MessageInputBar extends StatelessWidget {
   const MessageInputBar({super.key, this.controller, this.onSend});
 

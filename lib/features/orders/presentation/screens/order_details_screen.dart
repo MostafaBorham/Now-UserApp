@@ -26,11 +26,11 @@ import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_invoice_row.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
-/// Full details of a single placed order, fetched by the [orderUuid] handed in
-/// by the screen that opened this one (the my-orders list item). The uuid keys
-/// the [getOrderDetailsProvider] family, so the request starts on first watch
-/// and this screen just renders its [AsyncValue] — a shimmer while loading, an
-/// error state with retry, and the wired layout on success.
+
+
+
+
+
 class OrderDetailsScreen extends ConsumerStatefulWidget {
   const OrderDetailsScreen({super.key, required this.orderUuid});
 
@@ -83,8 +83,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             final String localizedStatus = context.getLocalizedApiText(
               order.orderStatus,
             );
-            // Same status chip as the my-orders list item: colors from the
-            // shared palette and an empty label falls back to "pending".
+
+
             final OrderStatus status = OrderStatus.fromKey(order.status);
             final ({Color background, Color foreground}) statusPalette = status
                 .palette(colors);
@@ -94,8 +94,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             final String orderDate = context.getLocalizedApiDate(
               apiDateTimeStamp: order.createdAt,
             );
-            // Show the payment method exactly as the model returns it (`cod`,
-            // ...) — no relabeling.
+
+
             final String paymentMethodLabel = order.paymentMethod ?? '';
 
             return AppRefreshIndicator(
@@ -105,9 +105,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
-                // Owns the top spacing AppWavedView drops when a scroll
-                // controller is wired in, so it scrolls up with the content and
-                // flattens the wave.
+
+
+
                 padding: const EdgeInsets.only(top: 57),
                 child: Column(
                   spacing: 15,
@@ -509,10 +509,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                 .copyWith(color: colors.black),
                                           ),
                                           2.hSpace,
-                                          // Detail page: show the full delivery
-                                          // address — no line clamp / ellipsis.
-                                          // The app text styles bake in ellipsis,
-                                          // so overflow is forced visible to wrap.
+
+
+
+
                                           Text(
                                             order.deliveryAddress ?? '',
                                             overflow: TextOverflow.visible,
@@ -646,7 +646,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   value: order.deliveryFee,
                                   valueColor: colors.black,
                                 ),
-                                // Only surfaced when there is an actual discount.
+
                                 if (order.discount != 0)
                                   OrderInvoiceRow(
                                     label: LangKeys.discountLabelKey.tr(),
@@ -672,8 +672,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         ],
                       ),
                     ),
-                    // The complaint flow only applies once the order has been
-                    // delivered — hide the button for every other status.
+
+
                     if (status is DeliveredStatus)
                       PrimaryButton(
                         buttonPadding: 16,

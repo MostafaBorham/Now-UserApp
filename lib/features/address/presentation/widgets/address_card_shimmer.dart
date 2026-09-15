@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder mirroring [AddressCard]'s geometry — the radio + title +
-/// edit slot row and the address line row — so both the first-load shimmer and
-/// the load-more placeholder lay out like a real address card.
+
+
+
 class AddressCardShimmer extends StatelessWidget {
   const AddressCardShimmer({super.key});
 
@@ -23,7 +23,7 @@ class AddressCardShimmer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Row 1 — radio + title + edit slot.
+
             Row(
               children: [
                 Container(
@@ -57,7 +57,7 @@ class AddressCardShimmer extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // Row 2 — pin icon + address line.
+
             Row(
               children: [
                 Container(

@@ -6,12 +6,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
 
-/// The shared chrome for a filter bottom sheet: rounded top container, close
-/// header, the caller's [filters] controls, then Apply / Reset buttons.
-///
-/// Each screen keeps its own filter state and supplies the middle [filters];
-/// this widget owns only the layout, the header, and the two actions. The sheet
-/// closes itself after Apply.
+
+
+
+
+
+
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({
     super.key,

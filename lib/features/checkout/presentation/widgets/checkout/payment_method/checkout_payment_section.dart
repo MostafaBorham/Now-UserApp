@@ -7,13 +7,6 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/providers/ch
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/choose_payment_method.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/payment_methods_card.dart';
 
-/// Picks the payment widget that matches the draft: the saved-methods list once
-/// the group carries a payment method, otherwise the "choose a method" prompt
-/// that routes to the add-card screen.
-///
-/// Not a loading section — the prompt is the honest state before the draft
-/// resolves, so this renders real content from the first frame and swaps only
-/// if the resolved draft already has a method.
 class CheckoutPaymentSection extends ConsumerWidget {
   const CheckoutPaymentSection({super.key});
 

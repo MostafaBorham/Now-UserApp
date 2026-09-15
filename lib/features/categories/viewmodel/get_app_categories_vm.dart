@@ -6,21 +6,21 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_mo
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/repo/categories_repo.dart';
 
-/// Single task: page through the app categories.
-///
-/// Kept alive (not `autoDispose`) so the first page is preloaded once on the
-/// splash screen and then reused — the home categories carousel and the
-/// categories screen share the same fetched data instead of refetching. The
-/// first page starts as soon as the provider is first read/watched, so screens
-/// only `ref.watch(getAppCategoriesProvider)` and render the pagination state;
-/// `loadNextPage()` and `loadFirstPage()` (refresh / retry) come from
-/// [PaginatedViewModel]. A consumer opened while this shared state has no value
-/// (never loaded, or errored) calls `loadFirstPage()` from its `initState` so
-/// it flips to loading and shows its shimmer first; a loaded list is kept.
-///
-/// This is the unfiltered, app-wide list. The search screen narrows its own
-/// copy through `searchCategoriesProvider` (search feature), which seeds itself
-/// from here — this provider is never filtered by a search term.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 final getAppCategoriesProvider =
     StateNotifierProvider<GetAppCategoriesViewModel,
         AsyncValue<PaginationModel<CategoryModel>>>(

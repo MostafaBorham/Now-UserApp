@@ -1,12 +1,12 @@
 import 'dart:math';
 
-/// Generates a random RFC-4122 version-4 UUID (36 chars) without a package
-/// dependency. Used for idempotency keys on the place/confirm request.
+
+
 String generateUuidV4() {
   final Random rng = Random.secure();
   final List<int> bytes = List<int>.generate(16, (_) => rng.nextInt(256));
 
-  // Set the version (4) and variant (RFC 4122) bits.
+
   bytes[6] = (bytes[6] & 0x0f) | 0x40;
   bytes[8] = (bytes[8] & 0x3f) | 0x80;
 

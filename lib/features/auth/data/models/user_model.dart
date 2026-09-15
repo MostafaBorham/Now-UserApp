@@ -1,5 +1,5 @@
-/// The authenticated user as returned by the auth endpoints
-/// (the `data.user` map of the OTP verify response).
+
+
 class UserModel {
   final int id;
   final String name;

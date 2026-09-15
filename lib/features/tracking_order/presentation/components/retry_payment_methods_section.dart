@@ -8,10 +8,10 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/components/payment_option.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/components/payment_option_tile.dart';
 
-/// "Try another payment method" section on the Payment Failed screen.
-///
-/// Reuses the shared [PaymentOptionTile] / [PaymentOption] from the payment
-/// methods feature and keeps the current selection locally.
+
+
+
+
 class RetryPaymentMethodsSection extends StatefulWidget {
   const RetryPaymentMethodsSection({super.key, this.initial});
 

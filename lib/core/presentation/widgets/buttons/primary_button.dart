@@ -18,7 +18,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? titleColor;
   final Color? buttonColor;
 
-  /// Replaces the title with a circular indicator and disables taps.
+
   final bool isLoading;
 
   @override

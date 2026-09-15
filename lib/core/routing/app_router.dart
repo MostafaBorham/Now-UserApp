@@ -50,12 +50,12 @@ import 'package:nowdelivery_user_app/features/welcome/presentation/screens/splas
 import 'app_routes.dart';
 
 abstract class AppRouter {
-  /// Shared redirect of the verification flow (phone + OTP screens).
-  ///
-  /// Those screens exist only to log a guest in, so once an access token is
-  /// cached (a logged-in user) they redirect to the main screen. A guest
-  /// session stores only a guest token, and guests are exactly who these
-  /// screens are for.
+
+
+
+
+
+
   static String? _redirectLoggedInUserToMain(
     BuildContext context,
     GoRouterState state,
@@ -88,9 +88,9 @@ abstract class AppRouter {
         name: AppRoutes.onBoardingScreen,
         path: '/${AppRoutes.onBoardingScreen}',
         redirect: (context, state) {
-          // Onboarding is only for a brand-new install with no session yet.
-          // Once any token exists — a guest token or a logged-in user's access
-          // token — skip straight to the main screen.
+
+
+
           final TokenCacheService tokenCache = TokenCacheService();
           final bool hasToken =
               tokenCache.hasAccessToken || tokenCache.hasGuestToken;
@@ -267,9 +267,9 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.checkoutScreen,
         path: '/${AppRoutes.checkoutScreen}',
-        // Checkout is only for authenticated users. A guest session
-        // (isGuest == true) or no session at all is rerouted to phone
-        // verification to log in; a registered user continues to checkout.
+
+
+
         redirect: _redirectToLogin,
         builder: (context, state) =>
             CheckoutScreen(storeId: state.extra as int?),
@@ -285,12 +285,12 @@ abstract class AppRouter {
         path: '/${AppRoutes.addressDetailsScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) {
-          // Opened either from the address list (extra is the AddressModel —
-          // editing an existing address) or from the map (extra is a record
-          // carrying the fromMap flag, so the "Change" action can pop back to
-          // the map still in the stack). Coming from the map covers both
-          // creating a new address and relocating an existing one, which is
-          // what isEdit distinguishes.
+
+
+
+
+
+
           final Object? extra = state.extra;
           if (extra is ({AddressModel address, bool fromMap, bool isEdit})) {
             return AddressDetailsScreen(
@@ -310,7 +310,7 @@ abstract class AppRouter {
         path: '/${AppRoutes.addNewAddressFromMapScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) {
-          // Non-null only when changing an existing address's location.
+
           final address = state.extra as AddressModel?;
           return AddNewAddressFromMap(address: address);
         },

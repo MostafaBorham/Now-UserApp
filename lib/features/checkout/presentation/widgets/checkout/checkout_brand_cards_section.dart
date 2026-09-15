@@ -6,19 +6,11 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/checkout_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_shimmers.dart';
 
-/// One of the checkout screen's two loading sections: shows
-/// [CheckoutBrandCardsShimmer] until the draft resolves, then a
-/// [CheckoutBrandItemCard] per store in the group.
-///
-/// Watching only `orders` keeps the rest of the screen out of this rebuild —
-/// the siblings never see the draft arrive.
 class CheckoutBrandCardsSection extends ConsumerWidget {
   const CheckoutBrandCardsSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // `null` while the draft is loading — the model provider itself is null
-    // until then.
     final List<OrderModel>? orders = ref.watch(
       checkoutModelProvider.select(
         (CheckoutModel? checkout) => checkout?.orderGroup.orders,

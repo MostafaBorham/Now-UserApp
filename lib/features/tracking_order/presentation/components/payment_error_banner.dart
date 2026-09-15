@@ -7,15 +7,15 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// Red banner on the Payment Failed screen explaining why the charge failed
-/// (declined card + error code), with a trailing info glyph.
+
+
 class PaymentErrorBanner extends StatelessWidget {
   const PaymentErrorBanner({super.key});
 
-  /// Pale-red banner fill — no equivalent in the theme [ColorScheme].
+
   static const Color _bannerBackground = Color(0xffFFF5F5);
 
-  /// Pale-red banner border — no equivalent in the theme [ColorScheme].
+
   static const Color _bannerBorder = Color(0xffFEE2E2);
 
   @override

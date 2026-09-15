@@ -9,9 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
-/// A `products_by_category` section in its `color_only` design: the category
-/// name over a wave washed in the section's own [primaryColor], and a row of
-/// that category's products.
+
+
+
 class HomeAppCategorySectionView extends StatelessWidget {
   const HomeAppCategorySectionView({
     super.key,
@@ -25,8 +25,8 @@ class HomeAppCategorySectionView extends StatelessWidget {
   final CategoryModel categoryModel;
   final List<ProductModel> productModels;
 
-  /// Section theming from the feed; each falls back to a theme colour when the
-  /// admin left it unset.
+
+
   final Color? primaryColor;
   final Color? textColor;
   final bool showViewAll;
@@ -37,9 +37,9 @@ class HomeAppCategorySectionView extends StatelessWidget {
     final Color accent = primaryColor ?? colors.onInverseSurface;
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Same rail height as the `color_with_image` design
-        // ([HomeAppCategoryWithLogoSectionView]: 245pt of its 390pt frame), so
-        // a product card is the same size in both category sections.
+
+
+
         final double productRowHeight = constraints.maxWidth * 245 / 390;
         return Stack(
           children: [
@@ -85,10 +85,10 @@ class HomeAppCategorySectionView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // ponytail: the chip is inert — the feed sends the
-                      // category's id and name but no slug, and category
-                      // details fetches by slug. Wire the tap once the payload
-                      // carries `category_slug`.
+
+
+
+
                       if (showViewAll)
                         HomeViewAllWidget(
                           size: 15,

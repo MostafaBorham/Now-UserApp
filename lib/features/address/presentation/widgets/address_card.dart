@@ -4,14 +4,14 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single saved address (Home, Office, …) rendered as a selectable card.
-///
-/// The default card is filled with a soft green gradient, framed by a thin
-/// green border and shows a filled green radio; every other card is a flat
-/// grey card with a hollow radio.
-///
-/// Tapping anywhere on the card triggers [onSelect]; the pen icon in the
-/// top-right corner triggers [onEdit].
+
+
+
+
+
+
+
+
 class AddressCard extends StatelessWidget {
   const AddressCard({
     super.key,
@@ -22,25 +22,25 @@ class AddressCard extends StatelessWidget {
     this.onEdit,
   });
 
-  /// Short label for the address, e.g. "Home" or "Office".
+
   final String title;
 
-  /// Full, human-readable address line.
+
   final String address;
 
-  /// When true this is the selected / default address and is highlighted.
+
   final bool isDefault;
 
-  /// Called when the card is tapped (selects this address).
+
   final VoidCallback? onSelect;
 
-  /// Called when the trailing pen icon is tapped.
+
   final VoidCallback? onEdit;
 
   static const double _radius = 20;
 
-  /// Width of the leading slot (radio / pin) so the title and the address
-  /// line share the same left text column.
+
+
   static const double _leadingSlot = 20;
   static const double _leadingGap = 12;
 
@@ -75,7 +75,7 @@ class AddressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Row 1 — radio, title and the edit action.
+
                 Row(
                   children: [
                     _Radio(selected: isDefault),
@@ -99,7 +99,7 @@ class AddressCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 14),
-                // Row 2 — location pin and the address line.
+
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -133,7 +133,7 @@ class AddressCard extends StatelessWidget {
   }
 }
 
-/// Custom radio: a filled green dot when [selected], otherwise a hollow ring.
+
 class _Radio extends StatelessWidget {
   const _Radio({required this.selected});
 
@@ -169,7 +169,7 @@ class _Radio extends StatelessWidget {
   }
 }
 
-/// Circular, tappable pen icon shown in the top-right corner of a card.
+
 class _EditButton extends StatelessWidget {
   const _EditButton({this.onTap});
 

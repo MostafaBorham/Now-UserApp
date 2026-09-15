@@ -1,8 +1,8 @@
-/// API endpoints owned by the categories feature.
-///
-/// Paths and query maps are built from the caller's arguments — the class holds
-/// no request state of its own, so concurrent requests (e.g. the Products and
-/// Stores tabs paging at the same time) can't clobber each other.
+
+
+
+
+
 abstract class CategoriesEndpoints {
   static const int _perPage = 15;
 

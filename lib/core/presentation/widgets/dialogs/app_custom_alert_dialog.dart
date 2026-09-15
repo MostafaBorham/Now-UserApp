@@ -4,17 +4,17 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// App-wide confirmation dialog: a title, a message and a Cancel / confirm pair.
-///
-/// The dialog is presentational only — it owns no state. The caller decides what
-/// happens on confirm and drives [isLoading]; while it is true the confirm label
-/// is replaced by a spinner, both buttons are disabled and the dialog can not be
-/// dismissed (barrier + back button), so the action can never be fired twice.
-///
-/// Closing is the caller's job as well: pop the dialog once the action succeeds
-/// and keep it open (with [isLoading] back to false) on failure.
-///
-/// Always open it through [show] so the barrier stays non-dismissible.
+
+
+
+
+
+
+
+
+
+
+
 class AppCustomAlertDialog extends StatelessWidget {
   const AppCustomAlertDialog({
     super.key,
@@ -30,19 +30,19 @@ class AppCustomAlertDialog extends StatelessWidget {
   final String title;
   final String message;
 
-  /// Label of the confirming action (e.g. Delete, Log Out).
+
   final String confirmLabel;
 
-  /// Defaults to the localized "Cancel".
+
   final String? cancelLabel;
 
-  /// Defaults to the destructive color (`colorScheme.onError`).
+
   final Color? confirmColor;
 
   final VoidCallback onConfirm;
   final bool isLoading;
 
-  /// Shows [builder]'s dialog with a non-dismissible barrier.
+
   static Future<void> show(BuildContext context, WidgetBuilder builder) {
     return showDialog<void>(
       context: context,
@@ -56,7 +56,7 @@ class AppCustomAlertDialog extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final Color actionColor = confirmColor ?? colors.onError;
 
-    // While the action is running the dialog must not be dismissible in any way.
+
     return PopScope(
       canPop: !isLoading,
       child: Dialog(
@@ -72,9 +72,9 @@ class AppCustomAlertDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // `AppTextStyles` sets `overflow: ellipsis` on every style, so
-              // we override it here — the dialog wraps to as many lines as the
-              // title/message need instead of truncating.
+
+
+
               Text(
                 title,
                 overflow: TextOverflow.visible,
@@ -93,15 +93,15 @@ class AppCustomAlertDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Both buttons are `Flexible` so a long Cancel / confirm label
-              // grows the button horizontally first, and once it hits the row's
-              // share of the width the text wraps to a new line inside the
-              // button instead of ellipsizing.
+
+
+
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Cancel is dimmed and disabled while the action is running.
+
                   Flexible(
                     child: TextButton(
                       onPressed: isLoading
@@ -123,8 +123,8 @@ class AppCustomAlertDialog extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: isLoading ? null : onConfirm,
-                    // Minimum width keeps the spinner and short labels
-                    // aligned; longer labels grow the slot before wrapping.
+
+
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(minWidth: 64),
                       child: Padding(

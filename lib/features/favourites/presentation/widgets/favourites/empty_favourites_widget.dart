@@ -5,15 +5,15 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The empty state for a favourites list: the empty-favourites illustration with
-/// the "favourites is empty" message below it. Shaped like [NoResultsWidget] but
-/// scoped to the favourites feature, so the favourites screen shows its own
-/// artwork and copy instead of the generic no-results one.
+
+
+
+
 class EmptyFavouritesWidget extends StatelessWidget {
   const EmptyFavouritesWidget({super.key, this.isScrollable = false});
 
-  /// Wraps the content in a scroll view that fills the viewport, so it works as
-  /// a paginated list's empty state (keeps pull-to-refresh reachable).
+
+
   final bool isScrollable;
 
   @override

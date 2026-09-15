@@ -39,23 +39,23 @@ class AppSearchField extends ConsumerStatefulWidget {
   final bool? enableRecentKeywords;
   final List<String>? recentKeywords;
 
-  /// Optional external controller. When omitted, the field owns and disposes
-  /// its own; provide one only when the parent needs to read/set the text.
+
+
   final TextEditingController? controller;
 
-  /// Fired on every keystroke — used to filter the recent keywords live.
+
   final ValueChanged<String>? onChanged;
 
-  /// Fired when the user submits the field (keyboard search/enter action).
-  /// The field unfocuses itself before invoking this.
+
+
   final ValueChanged<String>? onSubmitted;
 
   final ValueChanged<String>? onRecentSelect;
   final ValueChanged<String>? onRecentRemove;
   final VoidCallback? onRecentClear;
 
-  /// Label of the recents "remove them all" action. Defaults to
-  /// [LangKeys.clearKey]; the address search passes [LangKeys.deleteKey].
+
+
   final String? recentClearLabel;
   final GestureTapCallback? onFilterTap;
   @override
@@ -65,7 +65,7 @@ class AppSearchField extends ConsumerStatefulWidget {
 class _AppSearchFieldState extends ConsumerState<AppSearchField> {
   final FocusNode _focusNode = FocusNode();
 
-  /// Falls back to an internally owned controller when the parent supplies none.
+
   late final TextEditingController _controller =
       widget.controller ?? TextEditingController();
 
@@ -84,8 +84,8 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
     setState(() {});
   }
 
-  /// Puts the picked keyword into the field and dismisses the recents view by
-  /// unfocusing (req 4). The parent callback still fires for any extra handling.
+
+
   void _onRecentSelect(String term) {
     _controller
       ..text = term
@@ -94,7 +94,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
     widget.onRecentSelect?.call(term);
   }
 
-  /// Unfocuses before handing the submitted term to the parent (req 6).
+
   void _onSubmitted(String value) {
     _focusNode.unfocus();
     widget.onSubmitted?.call(value);
@@ -105,7 +105,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
     _focusNode
       ..removeListener(_onFocusChange)
       ..dispose();
-    // Only dispose the controller we created ourselves.
+
     if (widget.controller == null) _controller.dispose();
     super.dispose();
   }

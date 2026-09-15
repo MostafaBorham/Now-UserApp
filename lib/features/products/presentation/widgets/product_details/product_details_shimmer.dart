@@ -16,8 +16,8 @@ class ProductDetailsShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
-      // Mirror the real view's top offset so the shimmer sits under the wave at
-      // the same height instead of jumping up when the data resolves.
+
+
       padding: const EdgeInsets.only(top: 57),
       child: Column(
         spacing: 16,
@@ -31,12 +31,12 @@ class ProductDetailsShimmer extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Placeholder for the real ProductDiscountTicket: a plain
-                  // block tilted with the exact same rotation. The SizedBox
-                  // reserves the tilted block's bounding box (a 55x35 tag turned
-                  // 65° spans ~55x65) so the whole shape stays inside the shimmer
-                  // gradient's paint bounds — otherwise the overflowing corners
-                  // render as a static color instead of shimmering.
+
+
+
+
+
+
                   SizedBox(
                     width: 55,
                     height: 65,
@@ -237,7 +237,7 @@ class ProductDetailsShimmer extends StatelessWidget {
               ],
             ),
           ),
-          // Full-width divider — no horizontal padding, matching the real view.
+
           Container(
             color: Colors.grey,
             width: double.infinity,

@@ -4,9 +4,9 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Shown in place of [DeliveryAddressCard] when the user has no delivery
-/// address yet: a prompt to add one, with a trailing red "+" tile. Tapping it
-/// opens the address screen via [onTap].
+
+
+
 class SelectAddressButton extends StatelessWidget {
   const SelectAddressButton({super.key, this.onTap});
 

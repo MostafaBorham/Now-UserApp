@@ -7,14 +7,14 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/lists/infinite_au
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 
-/// The `flash_offers` section: an endlessly scrolling strip of the most deeply
-/// discounted products, each card owning its own favourite and cart actions.
-///
-/// The heading is the design's own logo artwork (Arabic / English), not the
-/// feed's `title` — the backend only titles text headings. It does colour the
-/// section though: [backgroundColor] washes the top of the strip and
-/// [viewAllTextColor] / [viewAllUnderlineColor] paint the "See All" chip. Each
-/// falls back to the theme colour the design shipped with.
+
+
+
+
+
+
+
+
 class HomeNeverMissOffersSection extends StatelessWidget {
   const HomeNeverMissOffersSection({
     super.key,

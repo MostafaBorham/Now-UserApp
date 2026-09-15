@@ -31,8 +31,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key, this.storeId});
 
-  /// `null` checks out every store in the cart; a concrete id checks out only
-  /// that single store.
+
+
   final int? storeId;
 
   @override
@@ -44,16 +44,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   int? _addressId;
 
-  // Holds the per-order delivery instructions the user types inline; read on
-  // confirm and sent as the order `delivery_instructions`.
+
+
   final TextEditingController _instructionsController = TextEditingController();
 
-  // Drives the wave-flatten animation in [AppWavedView]: as the body scrolls
-  // off the top the header wave straightens out.
+
+
   final ScrollController _scrollController = ScrollController();
 
-  // Idempotency key for the place request: reused across retries of an
-  // unchanged order, rotated when the order changes or after one is placed.
+
+
   final IdempotencyKey _idempotencyKey = IdempotencyKey();
 
   @override
@@ -64,25 +64,25 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   void _onConfirmOrder() {
-    // Read from the async provider rather than [checkoutModelProvider]: the
-    // latter only exists inside the scope below, which this `ref` is above.
+
+
     final CheckoutModel? checkout = ref.read(checkoutProvider).valueOrNull;
 
     if (checkout == null) return;
 
-    // Block the order until a delivery address is resolved: with no default (or
-    // chosen) address there's no id to send, so surface an error and stop here
-    // instead of firing the request with a placeholder id.
+
+
+
     if (_addressId == null) {
       AppToast.showError(context, LangKeys.pleaseSelectAddressKey.tr());
       return;
     }
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
-    // The wallet wins while its checkbox is ticked (the default); untick it and
-    // the draft's own method pays. ponytail: there is no split-payment field on
-    // the confirm request yet, so the shortfall the note promises is settled
-    // server-side — the app only says which method leads.
+
+
+
+
     final String? paymentMethod = ref.read(walletPaymentProvider)
         ? 'wallet'
         : checkout.orderGroup.paymentMethod;
@@ -114,10 +114,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         );
   }
 
-  /// A fingerprint of exactly the fields the place request carries (and the
-  /// server hashes): address, tip, delivery instructions, payment method and
-  /// the *coupon* codes (vouchers aren't sent). Two submits with the same
-  /// fingerprint are the same order and may share an idempotency key.
+
+
+
+
   String _placeFingerprint({
     int? addressId,
     double? driverTip,
@@ -147,31 +147,31 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Nothing is `watch`ed here on purpose: this build must run once, or the
-    // whole body would be rebuilt with it.
 
-    // React to the outcome of a confirm-order request: on success push the
-    // confirmation screen, on failure surface the message via the shared
-    // error snackbar. Uses `listen` (not `watch`) so this fires only on state
-    // transitions, never on unrelated rebuilds.
+
+
+
+
+
+
     ref.listen<AsyncValue<List<OrderModel>>>(confirmOrderProvider, (
       AsyncValue<List<OrderModel>>? previous,
       AsyncValue<List<OrderModel>> next,
     ) {
       next.whenOrNull(
-        // `listen` fires only on transitions, so reaching `data` here means the
-        // confirm request just succeeded (never the initial idle state).
+
+
         data: (List<OrderModel> placedOrders) {
-          // A confirmed placement: consume the key so any later order is
-          // treated as new rather than replaying this one.
+
+
           _idempotencyKey.markConsumed();
-          // Refresh the orders list so its `total` reflects the just-placed
-          // order — this is what makes the first-order welcome voucher stop
-          // showing on the (now empty) cart.
+
+
+
           ref.read(getMyOrdersProvider.notifier).getOrders();
-          // What was just placed no longer belongs to the cart, so drop it:
-          // the whole cart for an all-stores checkout, that one store for a
-          // single-store one.
+
+
+
           final GetCartViewModel cartNotifier = ref.read(
             getCartProvider.notifier,
           );
@@ -180,8 +180,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           } else {
             cartNotifier.removeVendor(widget.storeId!);
           }
-          // Hand the confirmation screen the orders the server actually
-          // created (with real order numbers), not the preview draft.
+
+
           context.pushReplacementNamed(
             AppRoutes.orderConfirmedScreen,
             extra: placedOrders,
@@ -198,21 +198,21 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         scrollController: _scrollController,
         body: ProviderScope(
           overrides: [
-            // A derived override, not a value one: the scope is built once and
-            // recomputes this provider itself, so the subtree below is never
-            // rebuilt wholesale — only its `select`ing descendants are.
+
+
+
             checkoutModelProvider.overrideWith(
               (Ref ref) => ref.watch(checkoutProvider).valueOrNull,
             ),
           ],
           child: Consumer(
-            // `child` is built once, outside the builder, and handed back
-            // untouched — so even the error/body swap can't rebuild the body.
+
+
             child: SingleChildScrollView(
               controller: _scrollController,
-              // Owns the top spacing AppWavedView drops when a scroll controller
-              // is wired in, so it scrolls up with the content and flattens the
-              // wave.
+
+
+
               padding: const EdgeInsets.only(top: 57),
               child: Column(
                 spacing: 16,
@@ -238,9 +238,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              // A failed draft still replaces the whole page — the sections
-              // below it would have nothing to show. Watching the error alone
-              // means the loading → data transition doesn't even run this.
+
+
+
               final Object? error = ref.watch(
                 checkoutProvider.select(
                   (AsyncValue<CheckoutModel?> state) => state.error,
@@ -250,9 +250,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               if (error != null) {
                 return ServerConnectionErrorWidget(
                   message: error.toString(),
-                  // Retry through the same endpoint the draft came from: the
-                  // single-store preview when a store id is set, the all-stores
-                  // preview otherwise.
+
+
+
                   onRetry: () {
                     final CheckoutViewModel checkoutVm = ref.read(
                       checkoutProvider.notifier,

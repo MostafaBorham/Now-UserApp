@@ -6,15 +6,15 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_mo
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
 
-/// Single task: fetch the current user's saved addresses, one page at a time.
-///
-/// Pagination itself — first page, next page, append, and the loading/error
-/// bookkeeping — comes from [PaginatedViewModel]; only the fetch and the
-/// in-place list edits are specific to addresses.
-///
-/// Deliberately **not** `autoDispose`: the loaded list outlives the address
-/// screen. `AuthSessionViewModel` fills it at login and invalidates it at
-/// logout, and the checkout delivery card reads from it.
+
+
+
+
+
+
+
+
+
 final getMyAddressesProvider =
     StateNotifierProvider<
       GetMyAddressesViewModel,
@@ -35,8 +35,8 @@ class GetMyAddressesViewModel extends PaginatedViewModel<AddressModel> {
     return _repo.getMyAddresses(page: page);
   }
 
-  /// Replaces an address already on screen with its updated version, so a save
-  /// on the details screen shows up without refetching the list.
+
+
   void updateAddress({required AddressModel address}) {
     _replaceItems(
       (List<AddressModel> items) => items
@@ -46,7 +46,7 @@ class GetMyAddressesViewModel extends PaginatedViewModel<AddressModel> {
     );
   }
 
-  /// Moves the "default" flag onto [address], clearing it everywhere else.
+
   void updateDefaultInMyAddress({required AddressModel address}) {
     _replaceItems(
       (List<AddressModel> items) => items
@@ -59,9 +59,9 @@ class GetMyAddressesViewModel extends PaginatedViewModel<AddressModel> {
     );
   }
 
-  /// Applies [transform] to the loaded items, but only once the address
-  /// [whenContains] is actually among them — an edit to an address on a page
-  /// that was never loaded must not rewrite the list.
+
+
+
   void _replaceItems(
     List<AddressModel> Function(List<AddressModel> items) transform, {
     required int? whenContains,

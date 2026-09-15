@@ -27,14 +27,14 @@ class SearchTopCategoriesList extends ConsumerWidget {
   static const int _firstPagePlaceholders = 5;
   static const int _nextPagePlaceholders = 2;
 
-  /// Every card's width ÷ height. The strip is laid out at the card height so a
-  /// horizontal [AspectRatio] resolves each cell back to a third of the screen.
+
+
   static const double _cardAspectRatio = 0.85;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // A next-page failure never takes over the strip: report it and leave the
-    // loaded cards untouched. The first-page failure is handled below instead.
+
+
     ref.listen(provider, (
       AsyncValue<PaginationModel<CategoryModel>>? previous,
       AsyncValue<PaginationModel<CategoryModel>> next,
@@ -48,19 +48,19 @@ class SearchTopCategoriesList extends ConsumerWidget {
     final PaginationStatus<CategoryModel> status =
         PaginationStatus<CategoryModel>.from(ref.watch(provider));
 
-    // A third of the screen wide at [_cardAspectRatio]; the strip is exactly
-    // that tall so the per-cell [AspectRatio] resolves each width back to that
-    // third. The card and its shimmer share the cell, so they always match.
+
+
+
     final double cardWidth = MediaQuery.sizeOf(context).width / 3;
     final double cardHeight = cardWidth / _cardAspectRatio;
 
     final Widget strip;
-    // Nothing loaded and the first page failed, or it came back empty: one
-    // no-results state for both (req 10).
+
+
     if (status.firstPageError != null || status.isEmpty) {
       strip = const NoResultsWidget();
     } else if (!status.hasLoadedPage) {
-      // First page still loading: a strip of shimmer cards (req 10).
+
       strip = _CardsStrip(
         cardWidth: cardWidth,
         itemCount: _firstPagePlaceholders,
@@ -95,8 +95,8 @@ class SearchTopCategoriesList extends ConsumerWidget {
   }
 }
 
-/// The horizontal, fixed-width-card list shared by every state so the shimmer
-/// strip and the loaded strip line up cell for cell.
+
+
 class _CardsStrip extends StatelessWidget {
   const _CardsStrip({
     required this.cardWidth,
@@ -112,13 +112,13 @@ class _CardsStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       scrollDirection: Axis.horizontal,
-      // Horizontal-only padding: the cell keeps the strip's full height, so the
-      // AspectRatio holds and the width stays a third of the screen.
+
+
       padding: const EdgeInsets.all(2),
       itemCount: itemCount,
       separatorBuilder: (_, _) => 20.wSpace,
-      // Fix the width to a third of the screen, then let AspectRatio derive the
-      // height from it — the card and its shimmer are both sized this way.
+
+
       itemBuilder: (BuildContext context, int index) => SizedBox(
         width: cardWidth,
         child: AspectRatio(

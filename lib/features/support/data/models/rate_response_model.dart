@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// The rating returned by `POST /api/v1/ratings` (the `data.rating` object),
-/// shared by both the store rating and the delivery-man rating.
+
+
 class RateResponseModel extends Equatable {
   final int? id;
   final RatingSource? source;
@@ -83,7 +83,7 @@ class RateResponseModel extends Equatable {
       ];
 }
 
-/// The `source` object nested inside a rating (what was rated against).
+
 class RatingSource extends Equatable {
   final String? type;
   final int? id;
@@ -101,7 +101,7 @@ class RatingSource extends Equatable {
   List<Object?> get props => <Object?>[type, id];
 }
 
-/// The `rater` object nested inside a rating (who left it).
+
 class RatingRater extends Equatable {
   final String? type;
   final int? id;
@@ -121,7 +121,7 @@ class RatingRater extends Equatable {
   List<Object?> get props => <Object?>[type, id, isMe];
 }
 
-/// The `rateable` object nested inside a rating (the rated entity).
+
 class RatingRateable extends Equatable {
   final String? type;
   final int? id;

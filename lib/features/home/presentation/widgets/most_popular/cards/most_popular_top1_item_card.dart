@@ -11,10 +11,10 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 
-/// A compact horizontal product card used inside the "Most Popular" filters list.
-///
-/// Static/dummy content is hardcoded inline for fast UI iteration; real data
-/// will be wired in later.
+
+
+
+
 class MostPopularTop1ItemCard extends StatelessWidget {
   const MostPopularTop1ItemCard({super.key});
   @override
@@ -81,7 +81,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   spacing: 5,
                   children: [
-                    // Brand, name, favourite + Hot tag
+
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 3,
@@ -107,7 +107,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
 
                               },
                             ),
-                            // Icon(Icons.favorite_outline, color: colors.neutral500, size: con.maxWidth*0.06),
+
                           ],
                         ),
                         Text(
@@ -210,194 +210,7 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-              /*          Stack(
-                children: [
-                  Positioned.fill(
-                    child: AppCachedNetworkImage(
-                      imageUrl:
-                          'https://images3.alphacoders.com/641/thumb-1920-641462.jpg',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                  ),
-                  PositionedDirectional(
-                    top: 8,
-                    start: 8,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: colors.primaryFixedDim,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        '#1',
-                        style: AppTextStyles.style10Medium.copyWith(
-                          color: colors.onPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Brand, name, favourite + Hot tag
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'VALENTINO',
-                                    maxLines: 1,
-                                    style: AppTextStyles.style10Regular.copyWith(
-                                      color: colors.neutral500,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                                  2.hSpace,
-                                  Text(
-                                    'Valentino Uomo Noir',
-                                    maxLines: 1,
-                                    style: AppTextStyles.style16Bold.copyWith(
-                                      color: colors.neutral1200,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            8.wSpace,
-                            Assets.media.images.svg.favouriteIcon.svg(
-                              width: 18,
-                              height: 18,
-                              colorFilter: ColorFilter.mode(
-                                colors.neutral500,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ],
-                        ),
-                        8.hSpace,
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.primaryFixedDim.withValues(alpha: 0.13),
-                            borderRadius: AppBorderRadius.brCircular30,
-                          ),
-                          child: Text(
-                            '🔥 ${LangKeys.hotKey.tr()}',
-                            style: AppTextStyles.style10Regular.copyWith(
-                              color: colors.primaryFixedDim,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Rating, price + add button
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  Assets.media.images.svg.starRate.svg(
-                                    width: 12,
-                                    height: 12,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.primaryFixedDim,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  4.wSpace,
-                                  Text(
-                                    '4.9',
-                                    style: AppTextStyles.style12SemiBold.copyWith(
-                                      color: colors.neutral1200,
-                                    ),
-                                  ),
-                                  4.wSpace,
-                                  Flexible(
-                                    child: Text(
-                                      '· 12.4k ${LangKeys.soldKey.tr()}',
-                                      maxLines: 1,
-                                      style: AppTextStyles.style12Regular.copyWith(
-                                        color: colors.neutral500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              4.hSpace,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Assets.media.images.svg.realSaudiCurrency.svg(
-                                    width: 20,
-                                    height: 22,
-                                    fit: BoxFit.contain,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.primaryFixedDim,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                  4.wSpace,
-                                  Text(
-                                    '10',
-                                    style: AppTextStyles.style32SemiBold.copyWith(
-                                      color: colors.primaryFixedDim,
-                                      height: 1,
-                                    ),
-                                  ),
-                                  8.wSpace,
-                                  const PreviousPriceWithCurrency(),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        8.wSpace,
-                        Container(
-                          width: 38,
-                          height: 38,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: colors.primaryFixedDim,
-                            borderRadius: AppBorderRadius.brCircular14,
-                          ),
-                          child: Assets.media.images.svg.addToCartIcon.svg(
-                            width: 18,
-                            height: 18,
-                            colorFilter: ColorFilter.mode(
-                              colors.onPrimary,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),*/
+
             ],
           ),
         );

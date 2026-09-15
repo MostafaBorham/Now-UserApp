@@ -7,8 +7,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'labeled_detail_row.dart';
 import 'tracking_section_card.dart';
 
-/// "Delivery Details" section: receiver, address, contact, store, item count,
-/// the chosen payment method and the amount to pay.
+
+
 class DeliveryDetailsSection extends StatelessWidget {
   const DeliveryDetailsSection({
     super.key,

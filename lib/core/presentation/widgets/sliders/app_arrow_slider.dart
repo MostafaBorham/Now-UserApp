@@ -18,20 +18,20 @@ class AppArrowSlider extends StatefulWidget {
   final Color? activeDotColor;
   final Color? dotColor;
 
-  // The image at the heart of each page — the arrows are centered on this and
-  // this alone. Built per page so each slide can show its own product image.
+
+
   final IndexedWidgetBuilder sliderItemBuilder;
 
-  // Extra content stacked inside every page, above and below the image, so the
-  // whole column (e.g. wordmark → image → details card) swipes as one unit. They
-  // span the full page width; only the image is inset for the arrow gutters.
+
+
+
   final IndexedWidgetBuilder? aboveImageBuilder;
   final IndexedWidgetBuilder? belowImageBuilder;
 
   final double sliderSpace;
 
-  // Each page is a column whose height can't be expressed as one aspect ratio,
-  // so it is fixed here; the image is the flexible member and absorbs the slack.
+
+
   final double itemHeight;
   final int itemCount;
 
@@ -72,17 +72,17 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                       clipBehavior: Clip.none,
                       alignment: AlignmentDirectional.center,
                       children: [
-                        // Inset so the image sits between the arrows while its
-                        // shadow still bleeds out under them.
+
+
                         Padding(
                           padding: const EdgeInsetsDirectional.symmetric(
                             horizontal: 44,
                           ),
                           child: widget.sliderItemBuilder(itemContext, index),
                         ),
-                        // A lone product has nowhere to page to, so the arrows
-                        // are dropped entirely — only the single image (and its
-                        // solitary dot below) remain.
+
+
+
                         if (widget.itemCount > 1) ...[
                           PositionedDirectional(
                             start: 0,
@@ -112,8 +112,8 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
               clipBehavior: Clip.none,
               autoPlay: false,
               height: widget.itemHeight,
-              // Only the arrow buttons drive the slider; manual swipe/drag
-              // scrolling is disabled.
+
+
               scrollPhysics: const NeverScrollableScrollPhysics(),
               onPageChanged: (index, _) {
                 setState(() => _currentIndex = index);
@@ -121,7 +121,7 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
             ),
           ),
         ),
-        // A single product needs no pager, so the dots are hidden too.
+
         if (widget.itemCount > 1)
           DotsIndicator(
             currentIndex: _currentIndex,

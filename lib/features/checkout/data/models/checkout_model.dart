@@ -1,15 +1,15 @@
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 
-/// Parsed representation of a checkout preview (`/api/v1/checkout/cart/preview`).
-///
-/// The endpoint is a stateless pricing preview: the response `data` carries a
-/// `checkout` object with `vendor_groups` (one store each, with its products
-/// and per-store summary) plus a group-level `summary`. There is no persisted
-/// draft and no `order_group`/`uuid`.
-///
-/// [fromJson] receives the response `data` object and adapts that
-/// `vendor_groups` shape onto [OrderGroupModel]/[OrderModel] — the shape the
-/// checkout UI already renders — so each vendor group becomes one "order".
+
+
+
+
+
+
+
+
+
+
 class CheckoutModel {
   final OrderGroupModel orderGroup;
 
@@ -20,9 +20,9 @@ class CheckoutModel {
       return const CheckoutModel();
     }
 
-    // Older builds nested the payload under `order_group`; the live backend
-    // nests it under `checkout`. Fall back to `json` itself so a future
-    // un-nested response still parses.
+
+
+
     final Map<String, dynamic> checkout =
         (json['checkout'] as Map<String, dynamic>?) ??
         (json['order_group'] as Map<String, dynamic>?) ??
@@ -54,15 +54,15 @@ class CheckoutModel {
     );
   }
 
-  /// Parses the single-store preview
-  /// (`POST /api/v1/checkout/vendor/{vendorId}/preview`).
-  ///
-  /// That endpoint's `checkout` object describes a single store directly — one
-  /// `vendor`, a top-level `products` list and a `summary` — with no
-  /// `vendor_groups`. It is itself exactly one vendor group, so the whole
-  /// `checkout` object is reshaped through [_vendorGroupToOrderJson] into the
-  /// single [OrderModel] the checkout UI already renders, and the same summary
-  /// doubles as the group total (one store ⇒ store total == group total).
+
+
+
+
+
+
+
+
+
   factory CheckoutModel.fromSingleStoreJson(Map<String, dynamic>? json) {
     if (json == null) {
       return const CheckoutModel();
@@ -93,8 +93,8 @@ class CheckoutModel {
     );
   }
 
-  /// Reshapes one preview `vendor_group` into the JSON [OrderModel.fromJson]
-  /// expects, so a single store's card renders from its products and summary.
+
+
   static Map<String, dynamic> _vendorGroupToOrderJson(dynamic group) {
     final Map<String, dynamic> g =
         (group as Map<String, dynamic>?) ?? const {};
@@ -115,8 +115,8 @@ class CheckoutModel {
       'items': ((g['products'] as List?) ?? const <dynamic>[]).map((dynamic p) {
         final Map<String, dynamic> item =
             (p as Map<String, dynamic>?) ?? const {};
-        // OrderModel.fromJson remaps product_*/unit_price onto the product
-        // schema, so hand it those keys from the preview's item shape.
+
+
         return <String, dynamic>{
           'product_id': item['product_id'],
           'product_name': item['name'],

@@ -8,13 +8,13 @@ import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vo
 import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vouchers/voucher_tickets_list.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 
-/// The store-details discount-coupons strip: the store's coupons rendered as the
-/// shared [VoucherTicket]s. Selection is radio behaviour — tapping a ticket
-/// selects it (and clears any other), tapping the selected one again clears it.
+
+
+
 class StoreDiscountCouponsList extends ConsumerStatefulWidget {
   const StoreDiscountCouponsList({super.key, this.onCouponSelected});
 
-  /// Called with the selected coupon, or null when the selection is cleared.
+
   final ValueChanged<CouponModel?>? onCouponSelected;
 
   @override
@@ -27,7 +27,7 @@ class _StoreDiscountCouponsListState
   int? _selectedIndex;
 
   void _select(int index, CouponModel coupon) {
-    // Radio behaviour: tapping the selected ticket again clears the selection.
+
     final bool isDeselecting = _selectedIndex == index;
     setState(() => _selectedIndex = isDeselecting ? null : index);
     widget.onCouponSelected?.call(isDeselecting ? null : coupon);

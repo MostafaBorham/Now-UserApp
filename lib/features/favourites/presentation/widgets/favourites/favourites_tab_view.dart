@@ -11,13 +11,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_b
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
 
-/// The chrome shared by both favourites tabs: a search field over an app-category
-/// [CustomButtonTabBar], with one paginated list per category tab below. It owns
-/// no filter state itself — the search text and selected category live in
-/// [favouritesFilterProvider] keyed by [type], so every category view reacts to
-/// a single change. [listBuilder] builds the paginated list for a given category
-/// (`null` = the "All" tab), keeping this widget type-agnostic across products
-/// and stores.
+
+
+
+
+
+
+
 class FavouritesTabView extends ConsumerWidget {
   const FavouritesTabView({
     super.key,
@@ -25,15 +25,15 @@ class FavouritesTabView extends ConsumerWidget {
     required this.listBuilder,
   });
 
-  /// API discriminator of the tab — `product` / `vendor`. Also the
-  /// [favouritesFilterProvider] family key.
+
+
   final String type;
 
-  /// Builds the paginated list for a tab. `null` is the "All" tab.
+
   final Widget Function(CategoryModel? category) listBuilder;
 
-  /// The [CategoryModel] behind a tab index over `[All, ...categories]`
-  /// (index 0 = All = null).
+
+
   CategoryModel? _categoryAt(int index, List<CategoryModel> categories) =>
       index > 0 && index - 1 < categories.length ? categories[index - 1] : null;
 
@@ -47,16 +47,16 @@ class FavouritesTabView extends ConsumerWidget {
     final List<CategoryModel> categories =
         categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
 
-    // The tab index behind the currently selected category (0 = "All"). `-1`
-    // (not found) falls back to "All".
+
+
     final int selectedIndex = filter.category == null
         ? 0
         : categories.indexOf(filter.category!) + 1;
 
-    // Tabs and views are always the same length: index 0 = "All", then one
-    // entry per loaded category. While categories load, only "All" exists; the
-    // tab count grows once they arrive, so the tab bar is keyed by that count to
-    // rebuild its internally-owned TabController to the matching length.
+
+
+
+
     final List<String> tabs = <String>[
       LangKeys.allKey.tr(),
       ...categories.map(
@@ -75,8 +75,8 @@ class FavouritesTabView extends ConsumerWidget {
         ),
         Expanded(
           child: CustomButtonTabBar(
-            // Rebuild (and re-size the TabController) when the tab count changes
-            // — e.g. once categories finish loading.
+
+
             key: ValueKey<int>(tabs.length),
             selectedIndex: selectedIndex,
             tabs: tabs,

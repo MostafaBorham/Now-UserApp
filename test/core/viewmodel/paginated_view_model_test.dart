@@ -5,9 +5,9 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 
-/// Minimal concrete VM so the base's `removeItemsWhere` can be exercised
-/// without a repo. `loadFirstPage` is counted, not run, so the reload branch is
-/// observable without any fetch.
+
+
+
 class _TestViewModel extends PaginatedViewModel<int> {
   int loadFirstPageCalls = 0;
 

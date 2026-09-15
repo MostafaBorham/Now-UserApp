@@ -64,11 +64,11 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   }
 }
 
-/// A single selectable radio row rendered as a soft rounded card.
-///
-/// Shows a [label] on the leading (right, in RTL) edge, an optional [badge]
-/// pill, and a circular indicator that fills green with a check mark when
-/// [selected]. Reusable on its own outside [PaymentMethodSelector].
+
+
+
+
+
 class NowRadioTile extends StatelessWidget {
   const NowRadioTile({
     super.key,
@@ -82,7 +82,7 @@ class NowRadioTile extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  /// Optional trailing pill text (e.g. an account name). Hidden when null.
+
   final String? badge;
 
   static const Color _green = Color(0xFF4BB749);
@@ -126,8 +126,8 @@ class NowRadioTile extends StatelessWidget {
   }
 }
 
-/// Circular selection indicator: a thin grey ring when unselected, a filled
-/// green circle with a white check mark when selected.
+
+
 class _RadioIndicator extends StatelessWidget {
   const _RadioIndicator({required this.selected});
 
@@ -158,7 +158,7 @@ class _RadioIndicator extends StatelessWidget {
   }
 }
 
-/// Light-green rounded pill used for the trailing account name badge.
+
 class _NameBadge extends StatelessWidget {
   const _NameBadge({required this.text});
 
@@ -185,7 +185,7 @@ class _NameBadge extends StatelessWidget {
   }
 }
 
-/// Centered "- أو -" (or) divider shown between the two options.
+
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
 

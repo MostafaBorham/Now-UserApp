@@ -4,9 +4,9 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder mirroring [OrderListItem]'s geometry — a logo block, the
-/// order-number / date lines, the status chips, the price, and the two action
-/// buttons — so the loading state lays out exactly like a real order card.
+
+
+
 class OrderListItemShimmer extends StatelessWidget {
   const OrderListItemShimmer({super.key});
 
@@ -130,9 +130,9 @@ class OrderListViewShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      // Matches the loaded list's top spacing so the loading and data states
-      // line up under the wave (AppWavedView drops the body's top padding once a
-      // scroll controller is wired in).
+
+
+
       padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
       itemCount: 4,
       separatorBuilder: (BuildContext context, int index) =>

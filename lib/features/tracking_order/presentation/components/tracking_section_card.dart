@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// Pale gradient wrapper shared by the Track Order sections
-/// ("Item Information", "Delivery Details"): a soft cream→green card with a
-/// [title] header and a white inner surface that hosts [child].
-///
-/// Mirrors the card style already used on the Order Details screen so the
-/// tracking flow reads as part of the same family.
+
+
+
+
+
+
 class TrackingSectionCard extends StatelessWidget {
   const TrackingSectionCard({
     super.key,

@@ -10,9 +10,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// "I did not receive the code (mm:ss) Resend" with a live countdown, plus a
-/// "Paste Code" pill. Resend only fires once the countdown reaches zero, then
-/// the countdown restarts.
+
+
+
 class OtpActionsRow extends StatefulWidget {
   const OtpActionsRow({
     super.key,
@@ -23,8 +23,8 @@ class OtpActionsRow extends StatefulWidget {
 
   final VoidCallback onResend;
 
-  /// Fires with the digits extracted from the clipboard when "Paste Code" is
-  /// tapped. Empty if the clipboard holds no digits.
+
+
   final ValueChanged<String> onPaste;
   final Duration countdown;
 

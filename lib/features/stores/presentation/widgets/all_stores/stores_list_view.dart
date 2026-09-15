@@ -10,13 +10,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 
-/// One store tab on [AllStoresScreen]. The "All" tab passes no [category] and
-/// shows demo placeholder cards; every other tab is bound to its own [category].
-///
-/// It listens to [storesSearchFilterProvider] and, whenever it changes, checks
-/// whether the currently selected category is this view's [category]. Only then
-/// does it query [getCategoryStoresProvider] — forwarding the search key and its
-/// own category slug — and render the stores. Otherwise it stays a placeholder.
 class StoresListView extends ConsumerWidget {
   const StoresListView({super.key, this.category});
 
@@ -26,7 +19,6 @@ class StoresListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel? category = this.category;
 
-    // "All" tab: no category wired to a data source yet — demo placeholder cards.
     if (category == null) {
       return ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 2),

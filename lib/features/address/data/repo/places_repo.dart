@@ -8,17 +8,17 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/remote/api/places_api_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/place_suggestion_model.dart';
 
-/// Google Places (New) data operations backing the address search.
-///
-/// Same contract as the rest of the app's repos: `Left` carries a user-facing
-/// message (a [LangKeys] key or a raw message — callers apply `.tr()`, which
-/// leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class PlacesRepo {
   final PlacesApiService _placesApiService = PlacesApiService();
 
   void cancelRequests() => _placesApiService.cancelRequests();
 
-  /// Address predictions for [input], ready to render as list tiles.
+
   Future<Either<Failure, List<PlaceSuggestionModel>>> autocomplete({
     required String input,
     required String languageCode,
@@ -43,16 +43,16 @@ class PlacesRepo {
         return Left(Failure(_extractPlacesError(body)));
       }
 
-      // `suggestions` is omitted entirely — not sent empty — when nothing
-      // matches the input.
+
+
       final List<dynamic> rawSuggestions =
           body['suggestions'] as List<dynamic>? ?? <dynamic>[];
 
       final List<PlaceSuggestionModel> suggestions = rawSuggestions
           .whereType<Map<String, dynamic>>()
           .map((Map<String, dynamic> e) => e['placePrediction'])
-          // Drops the `queryPrediction` entries, which have no place id and so
-          // cannot be resolved to coordinates.
+
+
           .whereType<Map<String, dynamic>>()
           .map(PlaceSuggestionModel.fromJson)
           .where((PlaceSuggestionModel s) => s.placeId.isNotEmpty)
@@ -62,13 +62,13 @@ class PlacesRepo {
     } on DioException catch (exception) {
       return Left(Failure(_dioError(exception)));
     } catch (_) {
-      // Never surface a raw exception string: it ends up in a snackbar.
+
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
-  /// Resolves the coordinates of [placeId], so the map can recenter on the
-  /// address the user picked.
+
+
   Future<Either<Failure, LatLng>> getPlaceLocation({
     required String placeId,
     required String languageCode,
@@ -104,17 +104,17 @@ class PlacesRepo {
     } on DioException catch (exception) {
       return Left(Failure(_dioError(exception)));
     } catch (_) {
-      // Never surface a raw exception string: it ends up in a snackbar.
+
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
-  /// Maps a [DioException] to a user-facing message.
-  ///
-  /// No response at all means we never reached Google (DNS, timeout, connection
-  /// dropped, request cancelled) — a different failure from one it answered
-  /// with, and one [ApiErrorHandler] would otherwise report using its
-  /// untranslated English default.
+
+
+
+
+
+
   static String _dioError(DioException exception) {
     final Response<dynamic>? response = exception.response;
     if (response == null) return LangKeys.serverConnectionFailedKey;
@@ -123,9 +123,9 @@ class PlacesRepo {
     return _extractPlacesError(data is Map<String, dynamic> ? data : null);
   }
 
-  /// Places (New) reports failures as `{"error": {"message": ...}}`, one level
-  /// deeper than the app's own API, so [ApiErrorHandler] is fed the nested
-  /// object and falls back to its generic message when the shape differs.
+
+
+
   static String _extractPlacesError(Map<String, dynamic>? body) {
     final dynamic error = body?['error'];
     return ApiErrorHandler.extractErrorMessage(

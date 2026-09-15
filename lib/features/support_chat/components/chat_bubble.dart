@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single chat message.
+
 class ChatMessage {
   const ChatMessage({
     required this.text,
@@ -13,15 +13,15 @@ class ChatMessage {
   final String text;
   final String time;
 
-  /// true → the "now" support agent (grey bubble, right, logo avatar);
-  /// false → the customer (green bubble, left, photo avatar).
+
+
   final bool fromAgent;
 }
 
-/// One message row: avatar + bubble on a line, timestamp beneath.
-///
-/// Customer messages sit on the left with the person photo; agent ("now")
-/// messages sit on the right with the brand-logo avatar.
+
+
+
+
 class ChatBubble extends StatelessWidget {
   const ChatBubble({super.key, required this.message});
 
@@ -88,7 +88,7 @@ class ChatBubble extends StatelessWidget {
   }
 }
 
-/// Circular customer photo.
+
 class _PersonAvatar extends StatelessWidget {
   const _PersonAvatar({required this.size});
 
@@ -106,7 +106,7 @@ class _PersonAvatar extends StatelessWidget {
   }
 }
 
-/// Circular "now" brand avatar used for agent messages.
+
 class _NowAvatar extends StatelessWidget {
   const _NowAvatar({required this.size});
 

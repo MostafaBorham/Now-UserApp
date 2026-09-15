@@ -9,17 +9,17 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 
-/// The wallet payment row that closes the payment methods card: the balance
-/// with a checkbox ticked by default, and — while it is ticked — a note
-/// explaining that the method picked above only covers the shortfall.
-///
-/// Renders bare (no surrounding card) so it drops into the payment methods
-/// list as just another row alongside the saved cards — [PaymentMethodsCard]
-/// owns the grey card that wraps the whole list.
-///
-/// The note hangs off the checkbox rather than off a balance-vs-total
-/// comparison: it is guidance about how the wallet is charged, which stops
-/// being true the moment the wallet is switched off.
+
+
+
+
+
+
+
+
+
+
+
 class WalletPaymentRow extends ConsumerWidget {
   const WalletPaymentRow({super.key});
 
@@ -82,9 +82,9 @@ class WalletPaymentRow extends ConsumerWidget {
                                   style: AppTextStyles.style14Regular
                                       .copyWith(color: colors.neutral500),
                                 ),
-                                // ponytail: hard-coded like the rest of the
-                                // wallet feature — there is no balance endpoint
-                                // yet. Swap for the real balance when it lands.
+
+
+
                                 NewPriceWidget(
                                   color: colors.neutral1200,
                                   size: 15,
@@ -109,8 +109,8 @@ class WalletPaymentRow extends ConsumerWidget {
   }
 }
 
-/// The square tick that marks the wallet as a payment method: filled green when
-/// on, an empty outlined box when off.
+
+
 class _WalletCheckbox extends StatelessWidget {
   const _WalletCheckbox({required this.selected});
 
@@ -137,8 +137,8 @@ class _WalletCheckbox extends StatelessWidget {
   }
 }
 
-/// The hint under the wallet row: a second payment method takes over whatever
-/// the balance cannot cover.
+
+
 class _ShortfallNote extends StatelessWidget {
   const _ShortfallNote();
 
@@ -158,9 +158,9 @@ class _ShortfallNote extends StatelessWidget {
           Expanded(
             child: Text(
               LangKeys.walletShortfallHintKey.tr(),
-              // Every `AppTextStyles` entry carries `TextOverflow.ellipsis`,
-              // and an ellipsis with no `maxLines` collapses the paragraph to
-              // one line — the hint has to opt out to wrap in full.
+
+
+
               overflow: TextOverflow.visible,
               style: AppTextStyles.style12Regular.copyWith(
                 color: colors.neutral500,

@@ -35,7 +35,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       extendBody: false,
       body: Stack(
         children: [
-          // Home دايمًا في الشجرة (مخفية لما مش مختارة) عشان حالتها تتحفظ.
+
           Offstage(
             offstage: currentPageIndex != 0,
             child: TickerMode(
@@ -43,7 +43,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               child: mainPages[0],
             ),
           ),
-          // باقي الصفحات: تتبني من جديد كل دخول، وتتشال أول ما تسيبها.
+
           if (currentPageIndex != 0) mainPages[currentPageIndex],
         ],
       ),

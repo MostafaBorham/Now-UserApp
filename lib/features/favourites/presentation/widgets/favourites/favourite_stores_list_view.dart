@@ -11,15 +11,15 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card
 import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/get_favourite_stores_vm.dart';
 
-/// One category tab of the favourites Stores tab. The "All" tab passes no
-/// [category] and lists every favourited store; every other tab is bound to its
-/// own [category].
-///
-/// It listens to [favouritesFilterProvider] for `vendor` and, whenever it
-/// changes, checks whether the selected category is this view's [category].
-/// Only then does it query [getFavouriteStoresProvider] — forwarding the search
-/// key and its own category id — and render the stores. Otherwise it stays a
-/// shimmer placeholder, so only the visible tab paginates.
+
+
+
+
+
+
+
+
+
 class FavouriteStoresListView extends ConsumerWidget {
   const FavouriteStoresListView({super.key, this.category});
 
@@ -69,9 +69,9 @@ class FavouriteStoresListView extends ConsumerWidget {
         aspectRatio: 1.75,
         child: StoreCardView(
           store: store,
-          // Unfavouriting reloads this — the currently selected — category tab
-          // from the server, so the list reflects the server's favourites state
-          // rather than only dropping the card locally.
+
+
+
           onFavouriteChanged: (bool isFavourite) {
             if (!isFavourite) viewModel.loadFirstPage();
           },

@@ -8,16 +8,16 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/counters/full_wid
 class TipYourDriverView extends StatefulWidget {
   const TipYourDriverView({super.key, this.initialTip, this.onTipChanged});
 
-  /// The tip to preselect. When it matches one of the preset amounts the
-  /// matching pill is highlighted; any other non-null value is treated as a
-  /// custom amount and lights up "Other" with the counter opened on it.
-  /// `null` (or `0`) preselects nothing, matching the "no tip" default.
+
+
+
+
   final double? initialTip;
 
-  /// Reports the tip the user picked — a preset amount, or the counter value
-  /// while "Other" is selected. Also fired once after the first frame with
-  /// [initialTip] when it's non-null, so the parent's stored value stays in
-  /// sync with the visually preselected pill.
+
+
+
+
   final ValueChanged<double>? onTipChanged;
 
   @override
@@ -25,8 +25,8 @@ class TipYourDriverView extends StatefulWidget {
 }
 
 class _TipYourDriverViewState extends State<TipYourDriverView> {
-  /// The amount the counter starts at when "Other" is selected without an
-  /// initial value being carried in.
+
+
   static const int _otherTipInitialValue = 15;
 
   static const List<String> _presetTips = <String>['2', '5', '7', '10'];
@@ -36,12 +36,12 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
     LangKeys.otherKey.tr(),
   ];
 
-  /// Which pill is highlighted, resolved from [TipYourDriverView.initialTip].
-  /// `null` = nothing selected (no tip).
+
+
   late int? _selectedIndex = _indexForInitialTip(widget.initialTip);
 
-  /// The counter's starting value when "Other" is preselected — either the
-  /// carried-in custom amount or the built-in default.
+
+
   late final int _otherCounterInitial = _isCustomInitial(widget.initialTip)
       ? widget.initialTip!.round()
       : _otherTipInitialValue;
@@ -62,7 +62,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
     if (tip == null || tip <= 0) return null;
     final int preset = _presetIndex(tip);
     if (preset >= 0) return preset;
-    // Any other non-null amount is a custom tip → the "Other" pill.
+
     return _tips.length - 1;
   }
 
@@ -71,8 +71,8 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
     super.initState();
     final double? initial = widget.initialTip;
     if (initial == null || initial <= 0) return;
-    // Fire after the first frame so the parent's setState (if any) doesn't
-    // race with this widget's first build.
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       widget.onTipChanged?.call(initial);
@@ -114,9 +114,9 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
               color: colors.tertiaryContainer,
             ),
           ),
-          // A plain Row, not [AppSelector]: the design fixes the four presets to
-          // an equal width and lets "Other" flex into whatever is left, which a
-          // scrollable equal-treatment list can't express.
+
+
+
           Row(
             spacing: 8,
             children: <Widget>[
@@ -148,9 +148,9 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
   }
 }
 
-/// One tip amount. Presets size their label to a fixed width so all four pills
-/// come out equal regardless of digit count; [isWide] is the "Other" pill, which
-/// the parent wraps in an [Expanded] to eat the rest of the row.
+
+
+
 class _TipPill extends StatelessWidget {
   const _TipPill({
     required this.label,

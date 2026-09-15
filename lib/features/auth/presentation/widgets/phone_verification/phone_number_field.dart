@@ -9,13 +9,13 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 
-/// White, shadowed field with a leading mobile icon, a small "Mobile Number"
-/// label and a phone-number input.
-///
-/// Validates the input against the Saudi mobile format (`+9665XXXXXXXX`,
-/// spaces and dashes ignored) and reports the result via [onValidChanged]
-/// whenever the validity flips. Parents don't need to know the rule — they
-/// only receive a `bool` to drive their button state.
+
+
+
+
+
+
+
 class PhoneNumberField extends StatefulWidget {
   const PhoneNumberField({
     super.key,
@@ -93,10 +93,10 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                 TextFormField(
                   controller: widget.controller,
                   keyboardType: TextInputType.phone,
-                  // The number always reads left-to-right so the "(05)" head
-                  // stays on the correct side of the digits, but the field
-                  // aligns to the locale's start edge: left in English, right
-                  // in Arabic.
+
+
+
+
                   textDirection: TextDirection.ltr,
                   textAlign: Directionality.of(context) == TextDirection.rtl
                       ? TextAlign.right
@@ -110,9 +110,9 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                     counterText: "",
                     isCollapsed: true,
                     hintText: widget.hint ?? '(05) 555-0108',
-                    // Keep the hint reading left-to-right so the "(05)" head
-                    // stays on the left in Arabic too — matching the order of
-                    // the digits the user will actually type.
+
+
+
                     hintTextDirection: TextDirection.ltr,
                     hintStyle: AppTextStyles.style16Medium.copyWith(
                       color: context.colors.neutral500,
@@ -132,12 +132,12 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   }
 }
 
-/// Keeps the field showing a fixed `(05) ` head in front of whatever the user
-/// types: the prefix appears with the first digit and disappears again once
-/// every typed digit is deleted, so the placeholder can show through.
-///
-/// The stored text stays human-readable (`(05) 12345678`); callers turn it
-/// into the backend's `+9665XXXXXXXX` with [AppValidator.saudiPhoneToInternational].
+
+
+
+
+
+
 class _SaudiPhonePrefixFormatter extends TextInputFormatter {
   const _SaudiPhonePrefixFormatter();
 
@@ -149,12 +149,12 @@ class _SaudiPhonePrefixFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     String digits = newValue.text.replaceAll(RegExp(r'\D'), '');
-    // The prefix already carries the leading "05" — drop it so only the
-    // 8 significant digits remain.
+
+
     if (newValue.text.startsWith(_prefix) && digits.startsWith('05')) {
       digits = digits.substring(2);
     }
-    // A full local/international paste still carries its own 05/966 head.
+
     final String? tail = AppValidator.saudiLocalPhoneTail(digits);
     final String significant =
         tail ?? (digits.length > 8 ? digits.substring(0, 8) : digits);

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single read-only row on the Personal Information screen: a small grey
-/// label with its value (or a greyed-out hint when empty) and an optional
-/// bottom divider.
+
+
+
 class InfoField extends StatelessWidget {
   const InfoField({
     super.key,
@@ -19,9 +19,9 @@ class InfoField extends StatelessWidget {
   final String? hint;
   final bool showDivider;
 
-  /// Renders the value left-to-right regardless of the app locale. Only for
-  /// values that are always Latin-script, such as the phone number — forcing it
-  /// on an Arabic name or nationality misplaces their punctuation.
+
+
+
   final bool forceLtrValue;
 
   @override

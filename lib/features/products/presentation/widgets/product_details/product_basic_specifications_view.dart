@@ -5,9 +5,6 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/products/data/models/product_specification_model.dart';
 
-/// Renders the product's free-text specification rows: each row's
-/// [ProductSpecificationModel.key] as the title (start) and its
-/// [ProductSpecificationModel.value] as the data (end).
 class ProductBasicSpecificationsView extends StatelessWidget {
   const ProductBasicSpecificationsView({
     super.key,

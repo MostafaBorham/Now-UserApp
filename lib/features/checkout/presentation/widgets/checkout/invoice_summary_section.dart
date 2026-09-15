@@ -5,13 +5,6 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/providers/ch
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_shimmers.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/invoice_summary_card.dart';
 
-/// One of the checkout screen's two loading sections: shows
-/// [InvoiceSummaryShimmer] until the draft resolves, then the real
-/// [InvoiceSummaryCard].
-///
-/// The watched slice is a plain `bool`, so this wrapper rebuilds only on the
-/// loading ⇄ loaded flip; later total changes (applying a coupon, say) rebuild
-/// [InvoiceSummaryCard] alone, which watches the order group itself.
 class InvoiceSummarySection extends ConsumerWidget {
   const InvoiceSummarySection({super.key});
 

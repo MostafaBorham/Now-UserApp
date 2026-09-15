@@ -13,8 +13,8 @@ class AppSlider extends ConsumerWidget {
   final double? sliderSpace;
   final double? itemAspectRatio;
 
-  /// Whether to show the page-dots indicator under the carousel (only ever
-  /// shown for multi-item sliders). Off for the home top banner.
+
+
   final bool showIndicator;
   final HomeController _homeController = HomeController();
   @override
@@ -33,16 +33,16 @@ class AppSlider extends ConsumerWidget {
             );
           },
           options: CarouselOptions(
-            // height: 150,
+
             enlargeCenterPage: false,
             autoPlay: !isSingleItem,
-            // App-wide motion rule: anything that moves on its own travels
-            // with the locale's reading sweep — right-to-left in Arabic,
-            // left-to-right in English (the same rule the delivery-man
-            // animation follows via `ReverseWidget`). A `PageView` lays its
-            // pages out in index order, which drifts the opposite way in both
-            // locales, so `reverse` flips it: the next item enters from the
-            // leading edge and the current one leaves by the trailing edge.
+
+
+
+
+
+
+
             reverse: true,
             scrollPhysics: isSingleItem ? const NeverScrollableScrollPhysics() : null,
             aspectRatio: itemAspectRatio!,

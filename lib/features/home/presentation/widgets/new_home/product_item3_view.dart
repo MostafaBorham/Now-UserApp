@@ -26,15 +26,15 @@ class ProductItem3View extends StatelessWidget {
     this.onTap,
   });
 
-  /// The product to render. When `null` (e.g. the home view has no data wired
-  /// up yet, or a card is built without a model) the card falls back to
-  /// [_placeholderProduct] so it still looks populated instead of showing empty
-  /// texts and blank slots.
+
+
+
+
   final ProductModel? product;
 
-  /// Dummy stand-in used whenever no [product] is passed, so the card renders
-  /// with plausible-looking data. Temporary until the home view is integrated
-  /// with the backend.
+
+
+
   static const ProductModel _placeholderProduct = ProductModel(
     id: 0,
     productId: 0,
@@ -42,12 +42,12 @@ class ProductItem3View extends StatelessWidget {
       'en': 'Fresh Orange Juice 1L',
       'ar': 'عصير برتقال طازج ١ لتر',
     },
-    // Old price ([price]) shown struck-through next to the new discounted price
-    // ([dealDiscountAmount]); [activeDeal] drives the red discount badge.
+
+
     price: 99.99,
     dealDiscountAmount: 74.99,
     activeDeal: ActiveDealModel(discountValue: 25),
-    // Temporary internet images for the product photo and the brand logo.
+
     images: <String>[
       'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600',
     ],
@@ -59,19 +59,19 @@ class ProductItem3View extends StatelessWidget {
     isFavorite: false,
   );
 
-  /// Called with the new favourite status whenever it settles for this card, so
-  /// the owner of the list can persist the change onto its product model.
+
+
   final ValueChanged<bool>? onFavouriteChanged;
 
-  /// Tap handler for the whole card. Defaults to opening the product details
-  /// screen for [product] (passing its slug), matching the other product cards.
+
+
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final ProductModel product = this.product ?? _placeholderProduct;
-    // A running deal drives the discount badge and the struck-through old price.
+
     final bool hasDeal = product.activeDeal != null;
     return InkWell(
       onTap:
@@ -130,10 +130,10 @@ class ProductItem3View extends StatelessWidget {
                       PositionedDirectional(
                         end: 5,
                         bottom: 5,
-                        // With no stock left there is nothing to add, so show an
-                        // "out of stock" chip instead of a cart button that would
-                        // only flip open and collapse again (matches the product
-                        // cards). Absent stock (`null`) is treated as available.
+
+
+
+
                         child: (product.stock ?? 1) < 1
                             ? OutOfStockLabel(fontSize: con.maxWidth * 0.06)
                             : AnimatedCartButton(
@@ -191,9 +191,9 @@ class ProductItem3View extends StatelessWidget {
                                 : SizedBox.shrink(),
                           ],
                         ),
-                        // Prices never push past 75% of the card: a very large
-                        // number is scaled down by the FittedBox to fit that slot
-                        // instead of overflowing the card width.
+
+
+
                         ConstrainedBox(
                           constraints: BoxConstraints(
                             maxWidth: con.maxWidth * 0.75,
@@ -204,8 +204,8 @@ class ProductItem3View extends StatelessWidget {
                             child: product.dealDiscountAmount != null &&
                                     product.dealDiscountAmount! > 0
                                 ? Row(
-                                    // Sizes to its content — required under the
-                                    // FittedBox's unbounded width.
+
+
                                     mainAxisSize: MainAxisSize.min,
                                     spacing: 4,
                                     children: [

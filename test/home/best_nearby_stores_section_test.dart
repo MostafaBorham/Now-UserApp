@@ -12,16 +12,16 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 
 import '../helpers/categories_test_harness.dart';
 
-/// Render checks for the `nearby_stores` section. Never `pumpAndSettle` these —
-/// see the harness note (images and shimmers animate forever).
-///
-/// The harness loads no translations, so `.tr()` returns the key itself: the
-/// unit suffixes below assert on `minutes` / `km` rather than real copy.
+
+
+
+
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  /// A store shaped like the enriched feed vendor item — everything the card
-  /// renders, and nothing the section doesn't use.
+
+
   StoreModel nearbyStore({
     int? id = 3,
     String name = 'Al-Nour Store',
@@ -44,8 +44,8 @@ void main() {
     isFavorite: isFavorite,
   );
 
-  /// The section needs a bounded height (its list sits in an `Expanded`), the
-  /// same way `HomeView` wraps it in an `AspectRatio`.
+
+
   Future<void> pumpSection(
     WidgetTester tester,
     List<StoreModel> stores, {
@@ -64,9 +64,9 @@ void main() {
     await pumpSection(tester, <StoreModel>[nearbyStore()]);
 
     expect(find.text('Al-Nour Store'), findsOneWidget);
-    // Rating and its count share one pill: "5 (2)".
+
     expect(find.text('5 (2)'), findsOneWidget);
-    // Delivery fee, beside the riyal glyph.
+
     expect(find.text('12'), findsOneWidget);
     expect(find.text('15-25 minutes'), findsOneWidget);
     expect(find.text('0.6 km'), findsOneWidget);
@@ -80,11 +80,11 @@ void main() {
     final CircularAppFavouriteIcon heart = tester.widget(
       find.byType(CircularAppFavouriteIcon),
     );
-    // Integrated, not the local-flip fallback: a tap hits the favourites API.
+
     expect(heart.favouriteType, FavouriteType.store);
     expect(heart.itemId, 3);
-    // Seeded from the feed, so an already-favourited store opens filled and
-    // its first tap removes rather than re-adds.
+
+
     expect(heart.isFavourite, isTrue);
   });
 
@@ -108,8 +108,8 @@ void main() {
     final CircularAppFavouriteIcon heart = tester.widget(
       find.byType(CircularAppFavouriteIcon),
     );
-    // No id to favourite by, so the icon falls back to flipping locally
-    // instead of firing a request that could not name a store.
+
+
     expect(heart.itemId, isNull);
     expect(tester.takeException(), isNull);
   });
@@ -128,7 +128,7 @@ void main() {
     ]);
 
     expect(find.text('Al-Nour Store'), findsOneWidget);
-    // Nothing rendered as a zero in place of the missing details.
+
     expect(find.textContaining('minutes'), findsNothing);
     expect(find.textContaining('km'), findsNothing);
     expect(find.text('0'), findsNothing);
@@ -138,9 +138,9 @@ void main() {
   testWidgets('heads the section with the title the feed sent', (
     WidgetTester tester,
   ) async {
-    // The backend owns section headings — it sends both locales and the app
-    // picks the current one, displaying it verbatim rather than second-guessing
-    // it with its own label. The harness runs in English.
+
+
+
     await pumpSection(
       tester,
       <StoreModel>[nearbyStore()],
@@ -154,8 +154,8 @@ void main() {
   testWidgets('uses the other locale when the feed titled only one', (
     WidgetTester tester,
   ) async {
-    // Several sections come back with `ar` alone; showing that beats falling
-    // back to the app's own label, which would ignore the admin's heading.
+
+
     await pumpSection(
       tester,
       <StoreModel>[nearbyStore()],
@@ -169,8 +169,8 @@ void main() {
   testWidgets('falls back to the app label when the feed sent no title', (
     WidgetTester tester,
   ) async {
-    // Only an empty/absent title hands over to the app's own label, which the
-    // harness renders as the bare key (it loads no translations).
+
+
     for (final Map<String, dynamic>? empty in <Map<String, dynamic>?>[
       null,
       <String, dynamic>{},
@@ -182,10 +182,10 @@ void main() {
   });
 
   test('the fallback label is translated in both shipped locales', () {
-    // Guards the fallback path above: a key missing from either bundle would
-    // put the bare `bestNearbyStores` on screen, and an identical pair would
-    // reintroduce the bug this section already hit once — one language reading
-    // the other's heading.
+
+
+
+
     Map<String, dynamic> bundle(String locale) =>
         jsonDecode(File('assets/json/lang/$locale.json').readAsStringSync())
             as Map<String, dynamic>;

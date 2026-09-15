@@ -5,12 +5,12 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/chec
 
 import '../helpers/categories_test_harness.dart';
 
-/// Guards the wallet toggle: ticked on arrival (so the wallet is the default
-/// payment method), and the shortfall note follows it.
+
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  // No translations are loaded in the harness, so `.tr()` yields the key.
+
   Finder note() => find.text(LangKeys.walletShortfallHintKey);
 
   testWidgets('starts ticked, and the note tracks the tick', (
@@ -29,9 +29,9 @@ void main() {
   testWidgets('the note is never truncated', (WidgetTester tester) async {
     await pumpCategoriesWidget(tester, const WalletPaymentRow());
 
-    // Every `AppTextStyles` entry bakes in `TextOverflow.ellipsis`, and an
-    // ellipsis with no `maxLines` collapses the paragraph to a single line —
-    // so the note must opt back out or it loses everything past line one.
+
+
+
     final RenderParagraph paragraph = tester.renderObject<RenderParagraph>(
       note(),
     );

@@ -16,7 +16,6 @@ class AddCardForm extends StatelessWidget {
   final Color? fieldColor;
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

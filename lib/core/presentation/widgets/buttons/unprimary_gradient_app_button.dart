@@ -19,7 +19,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
   final Gradient buttonGradient;
   final Color? backgroundColor;
 
-  /// Replaces the title with a circular indicator and disables taps.
+
   final bool isLoading;
 
   @override
@@ -40,7 +40,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundColor ?? colors.white,
             borderRadius: BorderRadius.circular(8),
-            // border: Border.all(color: colors.primary500Main, width: 2),
+
           ),
           child: isLoading
               ? Center(

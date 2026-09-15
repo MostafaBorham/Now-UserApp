@@ -16,9 +16,9 @@ class DeliveryAddressCard extends ConsumerStatefulWidget {
     this.onAddressIdChanged,
   });
 
-  /// Reports the id of the resolved default address (`null` when there is no
-  /// default) whenever it changes. Lets the parent submit the order with this
-  /// id instead of reading `orderGroup.addressId`.
+
+
+
   final ValueChanged<int?>? onAddressIdChanged;
 
   @override
@@ -33,9 +33,9 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
   void initState() {
     super.initState();
 
-    // Seed from the provider if it already holds data on first build, and
-    // report that id up after the first frame (so the parent isn't mutated
-    // mid-build).
+
+
+
     _address = ref.read(defaultAddressProvider).valueOrNull;
     if (_address != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,8 +48,8 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Only adopt a new address when the provider is in the data state.
-    // On loading / error the previous address stays untouched.
+
+
     ref.listen<AsyncValue<AddressModel?>>(
       defaultAddressProvider,
       (previous, next) {
@@ -60,8 +60,8 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
       },
     );
 
-    // No delivery address yet: show the "add address" prompt in place of the
-    // card, which routes the user to the address screen to pick or create one.
+
+
     if (_address == null) {
       return SelectAddressButton(
         onTap: () => context.pushNamed(AppRoutes.myAddressScreen),

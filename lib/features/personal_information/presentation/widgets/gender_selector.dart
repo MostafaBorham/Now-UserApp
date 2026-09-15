@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A pill-shaped segmented control.
-///
-/// Currently used only by the gender toggle (Male / Female) on the Edit
-/// Information screen. `AppSegmentedSelector` in
-/// `core/presentation/widgets/selectors/` is the app-wide equivalent (it backs
-/// the Home / Work / Other selector on Address Details); this one is scheduled
-/// to be folded into it.
-///
-/// When [icons] is provided, each segment shows a leading icon next to its
-/// label. Icons are recolored at runtime — using [activeFontColor] when the
-/// segment is selected and [inactiveFontColor] otherwise — via a
-/// [ColorFilter], so a single asset renders correctly on both the green
-/// (selected) pill and the plain (unselected) background regardless of the
-/// color baked into the SVG.
-///
-/// The track ([backgroundColor]), the selected-pill fill ([activeColor]) and
-/// the initially selected tab ([initialIndex]) are all configurable so the
-/// same control fits both a grey-tracked toggle and a transparent, brand-green
-/// selector.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class CommonScreenTabs extends StatefulWidget {
   const CommonScreenTabs({
     super.key,
@@ -45,8 +45,8 @@ class CommonScreenTabs extends StatefulWidget {
 
   final List<String> tabsName;
 
-  /// Optional SVG asset path per tab, shown before the label. When provided it
-  /// must be the same length as [tabsName].
+
+
   final List<String>? icons;
 
   final double margin;
@@ -58,17 +58,17 @@ class CommonScreenTabs extends StatefulWidget {
   final Color? activeFontColor;
   final EdgeInsetsDirectional? padding;
 
-  /// Tab selected on first build.
+
   final int initialIndex;
 
-  /// Fill color of the selected segment. Defaults to the brand green.
+
   final Color? activeColor;
 
-  /// Color of the track behind the segments. Defaults to a light grey from
-  /// the theme (`context.colors.onPrimaryContainer`).
+
+
   final Color? backgroundColor;
 
-  /// Size of the leading icon when [icons] is provided.
+
   final double iconSize;
 
   @override

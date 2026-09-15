@@ -18,33 +18,33 @@ class ProductModel {
   final Map<String, dynamic>? shortDescription;
   final Map<String, dynamic>? description;
 
-  /// The product's headline selling points (the `main_features` field). The
-  /// backend sends either a single `{ar, en}` translation map (one feature) or
-  /// a list of them; both are normalized to a list here so callers always
-  /// iterate — see [_mainFeaturesFrom].
+
+
+
+
   final List<Map<String, dynamic>>? mainFeatures;
   final double? price;
   final double? discountPrice;
   final double? effectivePrice;
   final double? dealDiscountAmount;
 
-  /// Discount off [price] as a percentage (e.g. `32.0`), already resolved by
-  /// the backend for this product. Preferred over `activeDeal.discountValue`
-  /// for a "-N%" badge: a fixed-amount deal's `discountValue` is an amount,
-  /// not a percentage.
+
+
+
+
   final double? discountPercentage;
   final double? comparePrice;
   final int? stock;
 
-  /// Smallest quantity that can be added to the cart at once
-  /// (`min_order_quantity`).
+
+
   final int? minOrderQuantity;
 
-  /// The unit the product is sold by, e.g. `piece`, `kg` (`unit`).
+
   final String? unit;
   final bool? inStock;
 
-  /// Whether the product is already in the current user's cart (`in_cart`).
+
   final bool? inCart;
   final String? status;
   final bool? isFeatured;
@@ -52,38 +52,38 @@ class ProductModel {
   final String? metaTitle;
   final String? metaDescription;
   final String? searchKeywords;
-  // final String? primaryImage;
+
   final List<String>? images;
   final bool? hasVariants;
 
-  /// Raw variant combinations (`variants`). Empty for products with no
-  /// variants; the per-variant shape is still evolving on the backend, so it's
-  /// carried through untyped rather than guessed at.
+
+
+
   final List<dynamic>? variants;
 
-  /// Free-text spec rows (`specifications`).
+
   final List<ProductSpecificationModel>? specifications;
 
-  /// Selectable variant attributes such as Size or Material (`attributes`).
+
   final List<ProductAttributeModel>? attributes;
 
-  /// Selectable colours (`colors`).
+
   final List<ProductColorModel>? colors;
   final StoreModel? vendor;
   final String? createdAt;
   final String? updatedAt;
-  // final String? imageUrl;
+
   final ActiveDealModel? activeDeal;
   final int? quantity;
   final bool? isSelected;
   final int? cartQuantity;
   final bool? isFavorite;
 
-  /// The product's own (leaf) category (`category`).
+
   final CategoryModel? category;
 
-  /// The product's sub-category, which carries the parent chain up to the
-  /// root category (`sub_category`).
+
+
   final CategoryModel? subCategory;
   final RatingModel? rating;
 
@@ -115,7 +115,7 @@ class ProductModel {
     this.metaTitle,
     this.metaDescription,
     this.searchKeywords,
-    // this.primaryImage,
+
     this.images,
     this.hasVariants,
     this.variants,
@@ -128,7 +128,7 @@ class ProductModel {
     this.activeDeal,
     this.quantity,
     this.isSelected,
-    // this.imageUrl,
+
     this.cartQuantity,
     this.isFavorite,
     this.category,
@@ -136,9 +136,9 @@ class ProductModel {
     this.rating,
   });
 
-  /// Returns a copy with the given fields replaced. Used for in-place list
-  /// edits (e.g. flipping [isFavorite] on the single product whose favourite
-  /// status changed, without refetching the list).
+
+
+
   ProductModel copyWith({
     int? id,
     int? productId,
@@ -247,7 +247,7 @@ class ProductModel {
       activeDeal: json['active_deal'] == null
           ? null
           : ActiveDealModel.fromJson(json['active_deal']),
-      // shortDescription: json['short_description'],
+
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       discountPrice: (json['discount_price'] as num?)?.toDouble(),
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
@@ -263,10 +263,10 @@ class ProductModel {
       status: json['status'] as String?,
       isFeatured: json['is_featured'] as bool?,
       publishedAt: json['published_at'] as String?,
-      // metaTitle: json['meta_title'] as String?,
-      // metaDescription: json['meta_description'] as String?,
+
+
       searchKeywords: json['search_keywords'] as String?,
-      // imageUrl: json['image_url'] as String?,
+
       images: _imagesFrom(json),
       hasVariants: json['has_variants'] as bool?,
       variants: json['variants'] as List<dynamic>?,
@@ -294,18 +294,18 @@ class ProductModel {
       quantity: (json['quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
-      // Both spellings are in use across endpoints — the `/home-sections`
-      // feed's product items send the British `is_favourite`.
+
+
       isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
       subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
       rating: RatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
     );
   }
 
-  /// The store this product belongs to. Most endpoints nest the whole `vendor`
-  /// object; the `/home-sections` feed sends only `vendor_logo_url`, which is
-  /// all a product card renders — carried through as a logo-only store so the
-  /// card reads it from the same place either way.
+
+
+
+
   static StoreModel? _vendorFrom(Map<String, dynamic> json) {
     final Object? vendor = json['vendor'];
     if (vendor is Map<String, dynamic>) return StoreModel.fromJson(vendor);
@@ -316,11 +316,11 @@ class ProductModel {
         : StoreModel(logoUrl: logoUrl);
   }
 
-  /// The product's `main_features`, normalized to a list of `{ar, en}`
-  /// translation maps. The backend sends either a single map (one feature) or a
-  /// list of them — a single map is wrapped in a one-element list, a list is
-  /// kept as-is. Bare-string elements are mirrored into both locales so every
-  /// element reads like any other localized field.
+
+
+
+
+
   static List<Map<String, dynamic>>? _mainFeaturesFrom(
     Map<String, dynamic> json,
   ) {
@@ -338,15 +338,15 @@ class ProductModel {
     return features.isEmpty ? null : features;
   }
 
-  /// Image URLs for the product. Prefers the `images` gallery (sent by the
-  /// product-details endpoint), then the single `primary_image` object (most
-  /// list endpoints send only that), then a bare `image_url` string (the
-  /// `/home-sections` feed's flattened product items) — so list cards always
-  /// have an image whichever shape the endpoint chose.
+
+
+
+
+
   static List<String> _imagesFrom(Map<String, dynamic> json) {
-    // A gallery entry is an attachment object (`download_url`) on most
-    // endpoints, but the feed sends bare URL strings — subscripting one of
-    // those threw and took the whole parse down with it.
+
+
+
     final List<String> gallery = (json['images'] as List<dynamic>?)
             ?.map((e) => e is Map<String, dynamic> ? e['download_url'] : e)
             .whereType<String>()
@@ -393,8 +393,8 @@ class ProductModel {
       'meta_title': metaTitle,
       'meta_description': metaDescription,
       'search_keywords': searchKeywords,
-      // 'primary_image': primaryImage,
-      // 'image_url': imageUrl,
+
+
       'images': images,
       'has_variants': hasVariants,
       'variants': variants,

@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-/// The `content` section of `GET /api/v1/application-information`.
-///
-/// Groups the app's legal/informational text blocks — terms of service,
-/// privacy policy and about. Each block arrives from the server as a single
-/// map holding both the localized text (keyed by locale, `ar` / `en`) and an
-/// `updated_at` timestamp; this model splits every block into its localized
-/// [Map] (e.g. [terms]) and its `updated_at` string (e.g. [termsUpdatedAt]).
+
+
+
+
+
+
+
 class PrivacyModel extends Equatable {
   final Map<String, dynamic>? terms;
   final String? termsUpdatedAt;
@@ -47,18 +47,18 @@ class PrivacyModel extends Equatable {
     };
   }
 
-  /// The localized text of a content block (its `ar` / `en` values), i.e. the
-  /// raw block map without its `updated_at` timestamp.
+
+
   static Map<String, dynamic>? _translations(dynamic raw) {
     if (raw is! Map<String, dynamic>) return null;
     return Map<String, dynamic>.from(raw)..remove('updated_at');
   }
 
-  /// The `updated_at` timestamp of a content block, as a string.
+
   static String? _updatedAt(dynamic raw) =>
       raw is Map<String, dynamic> ? raw['updated_at']?.toString() : null;
 
-  /// Rebuilds a server block map from its split [translations] + [updatedAt].
+
   static Map<String, dynamic>? _block(
     Map<String, dynamic>? translations,
     String? updatedAt,

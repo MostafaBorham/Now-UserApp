@@ -3,8 +3,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_answer_chat.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_card_shell.dart';
 
-/// An expandable FAQ card: the [question] with a chevron, and — when [expanded]
-/// — the [answer] beneath. Tapping anywhere toggles it via [onTap].
+
+
 class FaqTile extends StatelessWidget {
   const FaqTile({
     super.key,

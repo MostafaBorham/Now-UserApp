@@ -13,11 +13,11 @@ import 'package:nowdelivery_user_app/features/categories/presentation/widgets/ca
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-/// The app categories as an infinite-scrolling grid.
-///
-/// Only describes *what* the grid shows — the paging behaviour (next page on
-/// scroll, pull-to-refresh, loading, empty and error states) lives in
-/// [PaginatedView] and [GetAppCategoriesViewModel].
+
+
+
+
+
 class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
 
@@ -37,10 +37,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    // The categories are preloaded on splash and reused here. Fetch only if
-    // that never happened or failed (no value yet) — already-loaded data is
-    // kept as-is (no refetch) — so opening this while errored flips it to
-    // loading and the shimmer grid shows first.
+
+
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || ref.read(getAppCategoriesProvider).hasValue) return;
       ref.read(getAppCategoriesProvider.notifier).loadFirstPage();
@@ -64,8 +64,8 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             onLoadNextPage: categoriesViewModel.loadNextPage,
             layout: const PaginatedGridLayout(gridDelegate: _gridDelegate),
             firstPagePlaceholdersCount: 9,
-            // Fills the grid while the first page loads and trails it while the
-            // next one does, so the skeleton always matches the real cards.
+
+
             placeholderBuilder: (BuildContext context) =>
                 const AppShimmer(child: CategoryCardShimmer()),
             itemBuilder:

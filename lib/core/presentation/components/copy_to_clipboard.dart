@@ -5,16 +5,9 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// App-wide "copy code to clipboard" action.
-///
-/// Copies [code] to the system clipboard and confirms it with a single,
-/// consistent floating snackbar, so every place that lets the user copy a code
-/// behaves and looks the same.
 class CopyToClipboard {
   const CopyToClipboard._();
 
-  /// Copies [code] to the clipboard and shows the confirmation snackbar on the
-  /// nearest [ScaffoldMessenger], replacing any snackbar currently on screen.
   static void copy(BuildContext context, String code) {
     Clipboard.setData(ClipboardData(text: code));
 

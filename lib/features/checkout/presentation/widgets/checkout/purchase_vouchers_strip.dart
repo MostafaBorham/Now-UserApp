@@ -16,18 +16,18 @@ import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vo
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/viewmodel/get_purchase_vouchers_vm.dart';
 
-/// The purchase-vouchers strip on the checkout screen.
-///
-/// Fetches vouchers for the checkout's vendor(s) and renders each as the shared
-/// [VoucherTicket]. A voucher applicable to this checkout is tappable
-/// (tapping applies it to its vendor); others are dimmed. The applied voucher
-/// gets a highlight border. Hidden entirely while loading, on error, or when
-/// there are no vouchers.
-///
-/// While an apply request is in flight the tapped ticket shows a blocking
-/// progress overlay and every other ticket is disabled, so only one voucher can
-/// be applied at a time. On failure nothing is applied (the previous selection
-/// stands) and an error toast is shown; on success the voucher stays selected.
+
+
+
+
+
+
+
+
+
+
+
+
 class PurchaseVouchersStrip extends ConsumerStatefulWidget {
   const PurchaseVouchersStrip({super.key});
 
@@ -37,9 +37,9 @@ class PurchaseVouchersStrip extends ConsumerStatefulWidget {
 }
 
 class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
-  /// Identifies the voucher whose apply request is currently in flight
-  /// (`'<vendorId>:<code>'`), or `null` when none is. Drives the per-ticket
-  /// progress overlay and locks every other ticket until the request settles.
+
+
+
   String? _applyingKey;
 
   String _voucherKey(int vendorId, String code) => '$vendorId:$code';
@@ -59,8 +59,8 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
         if (order.vendorId != null) order.vendorId!,
     };
 
-    // Filter the list to this store when the checkout is single-vendor; fetch
-    // everything for an all-stores checkout and resolve applicability per card.
+
+
     final int? storeId = vendorIds.length == 1 ? vendorIds.first : null;
 
     final List<PurchaseVoucherModel> vouchers =
@@ -73,8 +73,8 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
       appliedDiscountsProvider,
     );
 
-    // One apply may be in flight across the whole strip; while it is, every
-    // ticket is locked so a second voucher can't be applied concurrently.
+
+
     final bool isApplying = _applyingKey != null;
 
     return VoucherTicketsList(
@@ -97,12 +97,12 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
             applicable &&
             _applyingKey == _voucherKey(targetVendorId, voucher.code);
 
-        // Non-applicable tickets are never tappable; while an apply is in
-        // flight every other ticket is locked too.
+
+
         final bool tappable = applicable && !isApplying;
 
-        // Clip the overlay to the ticket's rounded corners so the progress
-        // barrier doesn't paint white squares over the transparent corners.
+
+
         return ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: BlockingLoadingOverlay(
@@ -125,10 +125,10 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     );
   }
 
-  /// The vendor a voucher applies to within this checkout, or `null` if none.
-  /// A store voucher targets the first of its stores present in the cart; a
-  /// platform voucher targets the single checkout vendor, else the first.
-  /// ponytail: first-vendor fallback for the rare platform + multi-vendor cart.
+
+
+
+
   int? _resolveVendorId(PurchaseVoucherModel voucher, Set<int> vendorIds) {
     if (vendorIds.isEmpty) return null;
     if (voucher.isPlatform) return vendorIds.first;
@@ -143,15 +143,15 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     int vendorId,
     bool selected,
   ) async {
-    // Tapping the already-applied voucher unselects it, leaving the vendor with
-    // no discount — the user can proceed without a voucher. This is a local
-    // toggle, so no request and no loading state.
+
+
+
     if (selected) {
       ref.read(appliedDiscountsProvider.notifier).remove(vendorId);
       return;
     }
 
-    // Lock the strip on this ticket while the calculator runs.
+
     setState(() => _applyingKey = _voucherKey(vendorId, voucher.code));
 
     final result = await ref
@@ -160,14 +160,14 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
 
     if (!mounted) return;
 
-    // Clearing the key first hands control back to the user regardless of the
-    // outcome; the applied discount itself is only touched on success.
+
+
     setState(() => _applyingKey = null);
 
     result.fold(
-      // Voucher rejection reasons come back as raw untranslated keys, so never
-      // surface the server text — show a generic message. Nothing was applied,
-      // so the previous selection (if any) still stands.
+
+
+
       (_) => AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr()),
       (model) {
         if (!model.applied) {
@@ -188,14 +188,14 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     );
   }
 
-  /// The bare discount amount (no `%`/currency — [VoucherTicket] adds the unit).
+
   String _discountText(PurchaseVoucherModel voucher) {
     final double v = voucher.discountValue;
     return v % 1 == 0 ? v.toInt().toString() : v.toString();
   }
 
-  /// Validity window as "from {startsAt} to {expiresAt}", with each side
-  /// dropped when its date is missing.
+
+
   String _validity(BuildContext context, PurchaseVoucherModel voucher) {
     final String start = context.getLocalizedApiDate(
       apiDateTimeStamp: voucher.startsAt,

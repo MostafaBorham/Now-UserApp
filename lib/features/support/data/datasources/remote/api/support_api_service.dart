@@ -5,24 +5,24 @@ import 'package:nowdelivery_user_app/features/support/data/datasources/remote/ap
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_request_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/rate_request_model.dart';
 
-/// Raw API calls for the support feature.
-///
-/// Each method only performs the request and returns the Dio [Response].
-/// Error handling and response parsing are intentionally left to the caller
-/// (the repository layer), and the request body is the model's own
-/// [ComplaintRequestModel.toJson].
-///
-/// Cancellation is fully encapsulated here: every request carries the token
-/// of [_canceller], and callers only see the plain [cancelRequests] method.
+
+
+
+
+
+
+
+
+
 class SupportApiService {
   final Dio _dio = DioFactory.getDio();
   final RequestCanceller _canceller = RequestCanceller();
 
-  /// Cancels every in-flight request issued by this service instance.
+
   void cancelRequests() => _canceller.cancel();
 
-  /// Loads the about-section application information (used for its FAQ list)
-  /// for the user scope.
+
+
   Future<Response> getSupportFaqs() {
     return _dio.get(
       SupportEndpoints.aboutInformation,
@@ -39,8 +39,8 @@ class SupportApiService {
     );
   }
 
-  /// Rates a store (vendor) against an order. The [rate] body must carry a
-  /// `vendor` rateable type — build it with [RateRequestModel.store].
+
+
   Future<Response> rateStore({required RateRequestModel rate}) {
     return _dio.post(
       SupportEndpoints.ratings,
@@ -49,8 +49,8 @@ class SupportApiService {
     );
   }
 
-  /// Rates a delivery man against an order. The [rate] body must carry a
-  /// `delivery_man` rateable type — build it with [RateRequestModel.deliveryMan].
+
+
   Future<Response> rateDeliveryMan({required RateRequestModel rate}) {
     return _dio.post(
       SupportEndpoints.ratings,

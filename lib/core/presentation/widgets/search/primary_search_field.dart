@@ -26,38 +26,38 @@ class PrimarySearchField extends StatefulWidget {
     this.recentClearLabel,
   });
 
-  /// Fired when the bar is tapped. When non-null the field is read-only and
-  /// acts as a tap target (e.g. to navigate to a search screen). When null the
-  /// field becomes editable and shows the keyboard on tap.
+
+
+
   final VoidCallback? onTap;
 
-  /// Debounced search callback — fires 1 second after the user stops typing.
+
   final ValueChanged<String>? onSearch;
 
-  /// Fired on every keystroke, unbounced — lets the parent react immediately
-  /// (e.g. toggle a recents panel the moment the field goes empty / non-empty)
-  /// without waiting on the debounce.
+
+
+
   final ValueChanged<String>? onChanged;
 
-  /// Fired when the field is submitted from the keyboard; the field unfocuses
-  /// itself first.
+
+
   final ValueChanged<String>? onSubmitted;
 
-  /// Optional external controller (editable mode). Provide one when the parent
-  /// needs to read or set the text — e.g. to fill it from a picked recent. When
-  /// omitted the field owns and disposes its own.
+
+
+
   final TextEditingController? controller;
 
-  /// When `true` (default) the read-only hint cycles through [_hints] with a
-  /// rising animation. When `false` no animation is created at all — the hint
-  /// is a plain static line showing only the first hint.
+
+
+
   final bool isAnimated;
 
-  /// Recent keywords shown under the field while it is focused (editable mode).
-  /// Pass an empty list to hide them — e.g. once the user starts typing. The
-  /// recents panel is scrollable and fills the height it is given, so the field
-  /// must be laid out with a bounded height (wrap it in [Flexible]/[Expanded])
-  /// whenever this is enabled.
+
+
+
+
+
   final bool enableRecentKeywords;
   final List<String>? recentKeywords;
   final ValueChanged<String>? onRecentSelect;
@@ -65,7 +65,7 @@ class PrimarySearchField extends StatefulWidget {
   final VoidCallback? onRecentClear;
   final String? recentClearLabel;
 
-  /// Localization keys used as the placeholder hints.
+
   static const List<String> _hints = <String>[
     LangKeys.searchHintKey,
     LangKeys.searchForAProductKey,
@@ -78,7 +78,7 @@ class PrimarySearchField extends StatefulWidget {
 }
 
 class _PrimarySearchFieldState extends State<PrimarySearchField> {
-  /// Falls back to an internally owned controller when the parent supplies none.
+
   late final TextEditingController _controller =
       widget.controller ?? TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -89,7 +89,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   @override
   void initState() {
     super.initState();
-    // Only needed to show / hide the recents as focus changes.
+
     if (widget.enableRecentKeywords) {
       _focusNode.addListener(_onFocusChange);
     }
@@ -98,7 +98,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   void _onFocusChange() => setState(() {});
 
   void _onChanged(String value) {
-    // Unbounced: lets the parent react the instant typing starts / stops.
+
     widget.onChanged?.call(value);
     _debounce?.cancel();
     _debounce = Timer(const Duration(seconds: 1), () {
@@ -106,14 +106,14 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     });
   }
 
-  /// Unfocuses before handing the submitted term to the parent.
+
   void _onSubmitted(String value) {
     _focusNode.unfocus();
     widget.onSubmitted?.call(value);
   }
 
-  /// Puts the picked keyword into the field and dismisses the recents by
-  /// unfocusing, then lets the parent run the search for it.
+
+
   void _onRecentSelect(String term) {
     _debounce?.cancel();
     _controller
@@ -128,7 +128,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     _debounce?.cancel();
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
-    // Only dispose the controller we created ourselves.
+
     if (widget.controller == null) _controller.dispose();
     super.dispose();
   }
@@ -219,18 +219,18 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           child,
-          // Fills the height the field is given below its box and scrolls, so a
-          // long recents list never overflows or pushes the rest off-screen.
-          // The fold/fade opens and closes as focus toggles the panel; fully
-          // collapsed it takes no height, so the categories sit right under the
-          // field exactly as before.
+
+
+
+
+
           Flexible(
             child: _CollapsibleRecents(
               show: showRecent,
               child: Padding(
                 padding: const EdgeInsets.only(top: 20),
-                // No keyboard-dismiss on drag: scrolling the recents must keep
-                // the field focused so the panel stays open while browsing.
+
+
                 child: SingleChildScrollView(
                   child: RecentSearchWidget(
                     keywords: keywords,
@@ -258,14 +258,14 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   }
 }
 
-/// A vertically-scrolling placeholder that rises: the current phrase slides up
-/// and out through the top while the next enters from the bottom.
-///
-/// Performance notes: a single [AnimationController] runs only during the
-/// ~500ms transition and stays completely idle (no ticks) during the dwell,
-/// which is timed by one cheap [Timer]. Movement uses [FractionalTranslation]
-/// (a plain transform, no `saveLayer`) clipped by [ClipRect], and the whole
-/// thing sits behind a [RepaintBoundary] so it never repaints the page.
+
+
+
+
+
+
+
+
 class _AnimatedSearchHint extends StatefulWidget {
   const _AnimatedSearchHint({
     required this.hints,
@@ -310,8 +310,8 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
 
   void _onStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      // Adopt the incoming phrase as the resting one, then snap back to the
-      // steady state. Setting value fires a single rebuild — no full setState.
+
+
       _current = _next;
       _controller.value = 0;
     }
@@ -335,12 +335,12 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
             return Stack(
               alignment: AlignmentDirectional.centerStart,
               children: <Widget>[
-                // Resting / outgoing phrase: rises from center to the top.
+
                 FractionalTranslation(
                   translation: Offset(0, -t),
                   child: _line(_current),
                 ),
-                // Incoming phrase: only built while a transition is running.
+
                 if (t > 0)
                   FractionalTranslation(
                     translation: Offset(0, 1 - t),
@@ -364,9 +364,9 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
   }
 }
 
-/// Opens and closes the recents panel with a fold (from the top) and a fade as
-/// [show] toggles. At rest it stays in the tree at zero height, so the layout
-/// slot is identical to the panel being absent — no jump when it collapses.
+
+
+
 class _CollapsibleRecents extends StatefulWidget {
   const _CollapsibleRecents({required this.show, required this.child});
 

@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// Failure header of the Payment Failed screen: the red error mark inside a
-/// soft halo, followed by the failure title and reassurance copy.
+
+
 class PaymentFailedHeader extends StatelessWidget {
   const PaymentFailedHeader({super.key});
 
@@ -20,7 +20,7 @@ class PaymentFailedHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: .center,
           children: [
-            // CircleBackButton(),
+
             Assets.media.images.svg.paymentNotComplete.svg(),
           ],
         ),

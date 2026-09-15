@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// A single favourite entry from `POST /api/v1/favorites`.
-///
-/// Wraps the `favorite` object returned inside `data`.
+
+
+
 class FavouriteModel extends Equatable {
   final int? id;
   final String? type;
@@ -54,12 +54,12 @@ class FavouriteModel extends Equatable {
       ];
 }
 
-/// The polymorphic target of a favourite (product / store / ...).
+
 class FavoritableModel extends Equatable {
   final int? id;
 
-  /// Localized name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
+
+
   final Map<String, dynamic>? name;
   final String? slug;
   final String? price;

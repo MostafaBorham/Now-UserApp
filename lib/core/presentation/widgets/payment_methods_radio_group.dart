@@ -3,11 +3,11 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// A single payment method entry passed to [PaymentMethodsRadioGroup].
-///
-/// A plain record (no model class): [icon] and [color] describe the brand
-/// badge, [solid] fills the circle with [color] (e.g. Apple Pay black) instead
-/// of a light tint, and [subtitle] is optional supporting text.
+
+
+
+
+
 typedef PaymentMethodEntry = ({
   IconData icon,
   Color color,
@@ -16,12 +16,12 @@ typedef PaymentMethodEntry = ({
   String? subtitle,
 });
 
-/// A single-select list of payment method rows. Each row shows a brand badge,
-/// a title with an optional subtitle, and a radio-style indicator that fills
-/// green when selected.
-///
-/// Controlled widget: the parent owns [selectedIndex] and is notified through
-/// [onChanged].
+
+
+
+
+
+
 class PaymentMethodsRadioGroup extends StatelessWidget {
   const PaymentMethodsRadioGroup({
     super.key,

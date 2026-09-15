@@ -1,10 +1,10 @@
-/// A purchase voucher from `GET /api/v1/purchase-vouchers` (public list).
-///
-/// [type] is `platform` (applies to any vendor) or `store` (only the vendors in
-/// [stores]). [discountType] is `percentage` or `fixed`. [startsAt]/[expiresAt]
-/// are raw ISO-8601 strings for `context.getLocalizedApiDate`. Store [name]s are
-/// API translation maps (`{'en': ..., 'ar': ...}`) — resolve with
-/// `context.getLocalizedApiText`.
+
+
+
+
+
+
+
 class PurchaseVoucherModel {
   final int id;
   final String code;
@@ -56,11 +56,11 @@ class PurchaseVoucherModel {
   }
 }
 
-/// A vendor a store-type voucher is attached to.
+
 class PurchaseVoucherStore {
   final int id;
 
-  /// API translation map (`{'en': ..., 'ar': ...}`).
+
   final Map<String, dynamic>? name;
 
   const PurchaseVoucherStore({this.id = 0, this.name});

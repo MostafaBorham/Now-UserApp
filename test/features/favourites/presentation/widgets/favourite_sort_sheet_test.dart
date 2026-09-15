@@ -19,7 +19,7 @@ void main() {
       ),
     );
 
-    // Labels fall back to their LangKeys keys under the empty test loader.
+
     expect(find.text('recent'), findsOneWidget);
     expect(find.text('oldest'), findsOneWidget);
     expect(find.text('priceLowestToHighest'), findsOneWidget);
@@ -58,9 +58,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(UnPrimaryAppButton)); // reset → recent
+    await tester.tap(find.byType(UnPrimaryAppButton));
     await tester.pump();
-    await tester.tap(find.byType(PrimaryAppButton)); // apply
+    await tester.tap(find.byType(PrimaryAppButton));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 

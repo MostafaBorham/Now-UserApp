@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Large title + supporting subtitle shown at the top of the verification
-/// screens. [subtitle] is a widget so callers can inline coloured spans
-/// (e.g. the phone number in green on the OTP screen).
+
+
+
 class VerificationHeadline extends StatelessWidget {
   const VerificationHeadline({
     super.key,

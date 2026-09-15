@@ -4,13 +4,13 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The visual card of [AppToast], matching the Figma "Toast 03" design: a white
-/// rounded card with accent left/right borders and a soft shadow, a bold [title]
-/// over a muted [message], and a colored rounded-square icon badge holding a
-/// dashed ring around a white glyph.
-///
-/// Direction-aware: the icon leads the row, so it sits on the right in RTL
-/// (matching the Arabic Figma) and on the left in LTR, with start-aligned text.
+
+
+
+
+
+
+
 class AppToastCard extends StatelessWidget {
   const AppToastCard({
     super.key,

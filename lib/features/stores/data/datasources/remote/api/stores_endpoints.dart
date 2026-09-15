@@ -1,4 +1,4 @@
-/// API endpoints owned by the stores feature.
+
 abstract class StoresEndpoints {
   static String get getStoreDetails =>
       '$getStores/$storeId';
@@ -15,7 +15,7 @@ abstract class StoresEndpoints {
   static int productsPerPage = 15;
   static int productsPage = 1;
 
-  /// Query parameters for getStoreCategoryProducts
+
   static Map<String, dynamic> get getStoreCategoryProductsQuery => {
     'filter': productsFilter,
     'per_page': productsPerPage,

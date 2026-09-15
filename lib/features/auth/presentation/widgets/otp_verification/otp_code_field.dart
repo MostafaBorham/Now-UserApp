@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A row of boxes that displays an OTP. A single transparent field overlaid on
-/// top captures all input (typing, backspace and paste); the boxes are
-/// display-only and reflect [controller]'s current value.
+
+
+
 class OtpCodeField extends StatefulWidget {
   const OtpCodeField({
     super.key,
@@ -19,9 +19,9 @@ class OtpCodeField extends StatefulWidget {
   final int length;
   final ValueChanged<String>? onCompleted;
 
-  /// Fires with `true` once all [length] digits are entered and `false` when
-  /// the code becomes incomplete again (e.g. on backspace). Only fires on a
-  /// change of state, so the parent can drive its button toggle off it.
+
+
+
   final ValueChanged<bool>? onCompletionChanged;
 
   @override
@@ -40,10 +40,10 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
   }
 
   void _onChanged() {
-    // A programmatic assignment (e.g. paste) bypasses the field's input
-    // formatters, so clamp the length here to keep the field the single owner
-    // of the [length] constraint. The reassignment re-triggers this listener
-    // with the clamped value, which then falls through to the logic below.
+
+
+
+
     if (widget.controller.text.length > widget.length) {
       final String clamped = widget.controller.text.substring(0, widget.length);
       widget.controller.value = TextEditingValue(

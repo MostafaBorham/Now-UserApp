@@ -17,17 +17,17 @@ import 'package:nowdelivery_user_app/features/orders/viewmodel/cancel_order_vm.d
 import 'cancel_sheet_scaffold.dart';
 import 'order_canceled_view.dart';
 
-/// The [MainScreen] bottom-nav index of the My Orders tab (Home, Favourites,
-/// Cart, **My Orders**, Settings).
+
+
 const int _myOrdersTabIndex = 3;
 
-/// Confirmation bottom sheet shown when the user taps "Cancel Order" on the
-/// Track Order screen. Confirming fires [cancelOrderProvider] for [orderUuid];
-/// on success the same sheet swaps its body to the [OrderCanceledView] success
-/// state (no second sheet is opened), on failure the sheet stays open and the
-/// message is surfaced inline above the actions. (A floating snackbar can't be
-/// used here — it renders inside the underlying screen's [Scaffold] and would
-/// be hidden behind this sheet.)
+
+
+
+
+
+
+
 class CancelOrderBottomSheet extends ConsumerStatefulWidget {
   const CancelOrderBottomSheet({
     super.key,
@@ -42,7 +42,7 @@ class CancelOrderBottomSheet extends ConsumerStatefulWidget {
   final int itemsCount;
   final String amount;
 
-  /// Presents the sheet, wired to the order it belongs to.
+
   static Future<void> show(
     BuildContext context, {
     required String orderUuid,
@@ -73,25 +73,25 @@ class CancelOrderBottomSheet extends ConsumerStatefulWidget {
 
 class _CancelOrderBottomSheetState
     extends ConsumerState<CancelOrderBottomSheet> {
-  /// Flips to `true` once the order is cancelled, swapping the confirmation body
-  /// for the [OrderCanceledView] success state within this same sheet.
+
+
   bool _canceled = false;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Success state: the order was cancelled, so the sheet keeps its frame and
-    // shows the confirmation view in place of the prompt. It's freely
-    // dismissible (no PopScope / lock) — the request is already done.
+
+
+
     if (_canceled) {
       return CancelSheetScaffold(
         children: [
           OrderCanceledView(
-            // Just dismisses the sheet, returning to the (now cancelled) order.
+
             onContinueShopping: () => context.pop(),
-            // Resets the whole navigation stack to the Main screen and selects
-            // the My Orders tab, so nothing from the cancel flow is left behind.
+
+
             onViewOrders: () {
               ref.read(mainTabIndexProvider.notifier).state = _myOrdersTabIndex;
               context.goNamed(AppRoutes.mainScreen);
@@ -105,14 +105,14 @@ class _CancelOrderBottomSheetState
       cancelOrderProvider(widget.orderUuid),
     );
     final bool isLoading = cancelState.isLoading;
-    // On failure `cancelOrder()` leaves the notifier in an error state; surface
-    // that message inline (the sheet stays open so the user can retry).
+
+
     final String? errorMessage = cancelState.hasError
         ? cancelState.error.toString()
         : null;
-    // While the cancel request is in flight the sheet is fully locked: back
-    // gesture / button, drag-down and scrim tap are blocked by PopScope, the
-    // close button by [canClose], and the action buttons disable themselves.
+
+
+
     return PopScope(
       canPop: !isLoading,
       child: CancelSheetScaffold(
@@ -162,8 +162,8 @@ class _CancelOrderBottomSheetState
                   .cancelOrder();
 
               if (!mounted) return;
-              // On failure the notifier holds the error and the banner above
-              // renders it; the sheet stays open so the user can retry.
+
+
               if (error != null) return;
               setState(() => _canceled = true);
             },
@@ -182,7 +182,7 @@ class _CancelOrderBottomSheetState
   }
 }
 
-/// The order at a glance (number, item count and total) with its package glyph.
+
 class _OrderSummaryCard extends StatelessWidget {
   const _OrderSummaryCard({
     required this.orderNumber,
@@ -245,10 +245,10 @@ class _OrderSummaryCard extends StatelessWidget {
   }
 }
 
-/// Inline error surfaced inside the sheet when cancelling fails, so the message
-/// stays visible above the actions (a floating snackbar would sit behind the
-/// sheet). [message] may be a [LangKeys] key or a raw server message — it is
-/// passed through `.tr()`, which leaves non-key strings untouched.
+
+
+
+
 class _CancelErrorBanner extends StatelessWidget {
   const _CancelErrorBanner({required this.message});
 

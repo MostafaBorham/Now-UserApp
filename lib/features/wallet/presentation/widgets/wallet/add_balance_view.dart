@@ -49,7 +49,7 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     });
   }
 
-  /// Parses the picker's amount string into the whole number the API expects.
+
   int? _parseAmount(String? raw) {
     if (raw == null || raw.isEmpty) return null;
     return int.tryParse(raw) ?? double.tryParse(raw)?.round();
@@ -59,22 +59,22 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     final int? amount = _parseAmount(moneyAmount);
     if (amount == null) return;
 
-    // Topping up charges a saved card, so there must be one to charge. Gate the
-    // top-up on the shared cards list: only proceed once it has resolved with a
-    // non-empty list — otherwise there is no payment method, so surface a
-    // message and stop before hitting the top-up flow.
+
+
+
+
     final List<CardPaymentModel>? cards =
         ref.read(getMyCardsProvider).valueOrNull;
     if (cards == null || cards.isEmpty) {
-      // No saved card to charge: surface the error and keep the sheet open so the
-      // customer can act on it. The toast floats on the root overlay, above the
-      // sheet.
+
+
+
       AppToast.showError(context, LangKeys.selectPaymentMethodFirstKey.tr());
       return;
     }
 
-    // While this awaits, the sheet is watching `topUpWalletProvider` so the
-    // button spins and `PopScope` blocks every dismissal path.
+
+
     final String? error = await ref
         .read(topUpWalletProvider.notifier)
         .topUpWallet(amount: amount);
@@ -82,13 +82,13 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     if (!mounted) return;
 
     if (error != null) {
-      // Surface the error and keep the sheet open so the customer can retry; the
-      // toast floats on the root overlay, above the sheet.
+
+
       AppToast.showError(context, error);
       return;
     }
 
-    // Success: pull the new balance and the fresh history, then close the sheet.
+
     ref.read(getWalletInfoProvider.notifier).getWalletInfo();
     ref.read(getWalletTransactionsProvider.notifier).loadFirstPage();
     context.pop();
@@ -100,8 +100,8 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
 
     final bool isSubmitting = ref.watch(topUpWalletProvider).isLoading;
 
-    // Lift the whole sheet above the keyboard; the sheet grows by the keyboard
-    // height (up to its max), then the middle area scrolls once capped.
+
+
     return PopScope(
       canPop: !isSubmitting,
       child: Padding(

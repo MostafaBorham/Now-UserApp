@@ -18,14 +18,14 @@ class PrimaryAppButton extends StatelessWidget {
   final GestureTapCallback? onTap;
   final double? buttonPadding;
 
-  /// Overrides the default 18/SemiBold label style.
+
   final TextStyle? titleStyle;
 
-  /// Replaces the title with a circular indicator and disables taps.
+
   final bool isLoading;
 
-  /// Greys out the button and disables taps while keeping the same size,
-  /// so callers can toggle enabled/disabled without swapping widgets.
+
+
   final bool isDisabled;
 
   @override

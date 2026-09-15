@@ -115,7 +115,7 @@ class MultiRadioTile<T> extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       ),
       child: RadioGroup<T>(
-        groupValue: groupValue, // ربط القيمة المختارة بالـ RadioGroup
+        groupValue: groupValue,
         onChanged: onSelected,
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -13,7 +13,7 @@ class PrimaryAppPrefixIconButton extends StatelessWidget {
   final Widget? prefixIcon;
   final Color? buttonColor;
 
-  /// Replaces the content with a circular indicator and disables taps.
+
   final bool isLoading;
 
   @override

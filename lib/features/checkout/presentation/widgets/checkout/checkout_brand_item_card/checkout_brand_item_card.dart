@@ -13,7 +13,7 @@ class CheckoutBrandItemCard extends StatefulWidget {
     this.readyToCheckout = false,
   });
 
-  /// The single store's draft order rendered by this card.
+
   final OrderModel? order;
   final bool? readyToCheckout;
 

@@ -19,13 +19,13 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/sticky_on_scroll.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
-/// The `all_stores` section: a category filter over a list of stores.
-///
-/// The two tab families have different sources. **All** shows [stores] — the
-/// feed's own `all_stores` items, already in hand, so switching back to it
-/// costs no request. **Every category tab** fetches that category's stores from
-/// `getCategoryStoresProvider`, because the feed carries one flat store list
-/// with no category dimension to filter on.
+
+
+
+
+
+
+
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   const HomeAllStoresSectionView({
     super.key,
@@ -33,11 +33,11 @@ class HomeAllStoresSectionView extends ConsumerStatefulWidget {
     this.stores = const <StoreModel>[],
   });
 
-  /// When set, the tab bar pins this many pixels below the viewport top (i.e.
-  /// right under the pinned search bar) as the page scrolls. Null disables it.
+
+
   final ValueListenable<double>? pinTop;
 
-  /// The feed's `all_stores` items, shown under the "All" tab.
+
   final List<StoreModel> stores;
 
   @override
@@ -49,8 +49,8 @@ class _HomeAllStoresSectionViewState
     extends ConsumerState<HomeAllStoresSectionView> {
   int _selectedIndex = 0;
 
-  // Height reserved for the pills row. The store list is offset below it and
-  // scrolls with the page, while the pills stay parked here once pinned.
+
+
   static const double _pillsBarHeight = HomeStoresListView.tabRowHeight;
 
   @override
@@ -84,8 +84,8 @@ class _HomeAllStoresSectionViewState
         views: List<Widget>.filled(tabs.length, const SizedBox.shrink()),
         onTap: (int index) {
           if (index == _selectedIndex) return;
-          // Drop the tab's previously loaded stores so opening it always
-          // refetches from the server instead of showing a cached list.
+
+
           final CategoryModel? category =
               index == 0 ? null : categories[index - 1];
           if (category != null) {
@@ -107,8 +107,8 @@ class _HomeAllStoresSectionViewState
       pills = StickyOnScroll(
         pinTop: pinTop,
         background: Theme.of(context).scaffoldBackgroundColor,
-        // The section is inset by 16; bleed the pinned backdrop back out to the
-        // screen edges so scrolling cards don't show through beside the pills.
+
+
         horizontalBleed: 16,
         child: pills,
       );
@@ -168,8 +168,8 @@ class _HomeAllStoresSectionViewState
   }
 }
 
-/// One tab's store list: [category]'s stores fetched on demand, or — with no
-/// category, i.e. the "All" tab — the [stores] the feed already sent.
+
+
 class HomeStoresListView extends ConsumerWidget {
   const HomeStoresListView({
     super.key,
@@ -183,21 +183,21 @@ class HomeStoresListView extends ConsumerWidget {
   static const int itemCount = 7;
   static const double separator = 15;
 
-  // Reserved height for the pills row that sits above the list. Covers the
-  // TabBar row plus CustomButtonTabBar's own 16px gap below it, with a little
-  // slack so the (emptied) TabBarView never forces a RenderFlex overflow.
+
+
+
   static const double tabRowHeight = 66;
 
-  // The store card cover scales with width (w * 0.32) while its text block is a
-  // roughly constant ~110px, so this tracks the card's natural height closely.
+
+
   static double itemHeight(double width) => width * 0.32 + 110;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel? category = this.category;
     if (category == null) {
-      // The "All" tab: the feed's own items, capped to the same handful the
-      // category tabs show. The rest are behind "See All".
+
+
       final List<StoreModel> all = stores.take(itemCount).toList();
       if (all.isEmpty) return const NoResultsWidget();
       return _StoresList(

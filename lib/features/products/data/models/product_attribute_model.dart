@@ -1,20 +1,8 @@
-/// A variant attribute of a product (e.g. Size, Material, Storage Capacity) as
-/// sent by the API under the `attributes` list:
-/// ```json
-/// {
-///   "attribute_id": "VAR-00302",
-///   "name": { "ar": "المقاس", "en": "Size" },
-///   "value_ids": [64, 65],
-///   "values": [ { "id": 64, "slug": "medium", "ar": "متوسط", "en": "Medium" }, ... ]
-/// }
-/// ```
 class ProductAttributeModel {
   final String? attributeId;
 
-  /// The localized attribute label as a `{ar, en}` translation map.
   final Map<String, dynamic>? name;
 
-  /// Ids of the values available for this attribute (mirrors [values] ids).
   final List<int>? valueIds;
 
   final List<ProductAttributeValueModel>? values;
@@ -70,10 +58,6 @@ class ProductAttributeModel {
   }
 }
 
-/// A single selectable value of a [ProductAttributeModel]. The localized label
-/// arrives as sibling `ar`/`en` keys (not nested under a `name`), folded here
-/// into a `{ar, en}` translation map so it reads like every other localized
-/// field.
 class ProductAttributeValueModel {
   final int? id;
   final String? slug;

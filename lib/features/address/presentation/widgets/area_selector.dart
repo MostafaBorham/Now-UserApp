@@ -5,17 +5,17 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Grey "Area" summary row pinned to the top of the Address Details form.
-///
-/// Shows a location pin, the small "Area" label above the selected [value],
-/// and a green "Change" action on the trailing edge.
+
+
+
+
 class AreaSelector extends StatelessWidget {
   const AreaSelector({super.key, required this.value, this.onChange});
 
-  /// The selected area, e.g. "Downtown - Tahrir".
+
   final String value;
 
-  /// Called when the trailing "Change" action is tapped.
+
   final VoidCallback? onChange;
 
   @override
@@ -28,7 +28,7 @@ class AreaSelector extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // White-stroked asset recolored grey so it reads on the grey pill.
+
           Assets.media.images.svg.addressCuttedGrey.svg(
             width: 16,
             height: 16,

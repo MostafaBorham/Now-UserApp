@@ -14,54 +14,54 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
-/// All data operations of the categories feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a clean server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
-/// The connection check and error mapping live in [_guard].
+
+
+
+
+
+
 class CategoriesRepo {
   final CategoriesApiService _categoriesApiService = CategoriesApiService();
   final AppCategoriesDatabaseService _appCategoriesDatabaseService =
       AppCategoriesDatabaseService();
 
-  /// The key inside the categories `data` payload that carries the list — the
-  /// same key the server uses and the cached copy mirrors.
+
+
   static const String _categoriesListKey = 'categories';
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _categoriesApiService.cancelRequests();
 
-  /// The app categories list, server-first with a local (Hive) fallback.
-  ///
-  /// The server is always tried first, and a successful **first-page** fetch
-  /// refreshes the cache so the local copy tracks the server. When the server
-  /// is unreachable the first page is served from the cache instead; later
-  /// pages have no cached copy and simply surface the server failure.
-  ///
-  /// [search] narrows the list to matching categories. The cache mirrors only
-  /// the full (unsearched) list, so a searched fetch neither writes to nor reads
-  /// from it — a search failure just surfaces the server error.
+
+
+
+
+
+
+
+
+
+
   Future<Either<Failure, PaginationModel<CategoryModel>>> getAppCategories({
     required int page,
     String? search,
   }) async {
     final bool isSearching = search != null && search.isNotEmpty;
 
-    // Fetch the raw server `data` object so it can be both cached verbatim and
-    // parsed — the cache round-trips through the same parsing the server uses.
+
+
     final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
       () => _categoriesApiService.getAppCategories(page: page, search: search),
       (Map<String, dynamic> data) => data,
     );
 
     return serverResult.fold(
-      // Server failed → fall back to the cached first page (full list only).
+
       (Failure serverFailure) => isSearching
           ? Left<Failure, PaginationModel<CategoryModel>>(serverFailure)
           : _readCategoriesFromCache(page, serverFailure),
-      // Server succeeded → refresh the cache (full list, first page only).
+
       (Map<String, dynamic> data) async {
         if (!isSearching && page == PaginatedViewModel.firstPageNumber) {
           await _cacheAppCategories(data);
@@ -73,19 +73,19 @@ class CategoriesRepo {
     );
   }
 
-  /// Persists the raw first-page [data] payload. Best-effort: a cache write
-  /// failure is a side effect, not part of the result, so it is swallowed.
+
+
   Future<void> _cacheAppCategories(Map<String, dynamic> data) async {
     try {
       await _appCategoriesDatabaseService.saveAppCategories(jsonEncode(data));
     } catch (_) {
-      // Intentionally ignored — caching must never break a successful fetch.
+
     }
   }
 
-  /// Serves the cached first page when the server is unreachable. Only the
-  /// first page is cached, so any other page (or a missing/corrupt cache)
-  /// surfaces the original [serverFailure].
+
+
+
   Future<Either<Failure, PaginationModel<CategoryModel>>>
       _readCategoriesFromCache(int page, Failure serverFailure) async {
     if (page != PaginatedViewModel.firstPageNumber) {
@@ -142,8 +142,8 @@ class CategoriesRepo {
     );
   }
 
-  /// Turns a `{meta, <listKey>: [...]}` payload into a [PaginationModel]. The
-  /// three list endpoints differ only by their list key and item type.
+
+
   PaginationModel<T> _paginated<T>(
     Map<String, dynamic> data,
     String listKey,
@@ -157,8 +157,8 @@ class CategoriesRepo {
     return PaginationModel<T>.fromJson(meta, items);
   }
 
-  /// Shared request envelope: connection check, non-200 handling, and
-  /// Dio/exception mapping, so each method only describes its own [parse].
+
+
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
     T Function(Map<String, dynamic> data) parse,

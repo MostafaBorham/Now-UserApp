@@ -2,13 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-/// A single address entry from `GET /api/v1/addresses`.
+
 class AddressModel extends Equatable {
   final int? id;
   final int? userId;
 
-  /// Localized address label as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(label)`.
+
+
   final Map<String, dynamic>? label;
   final String? phone;
   final String? country;
@@ -49,12 +49,12 @@ class AddressModel extends Equatable {
     this.deletedAt,
   });
 
-  /// The `label` values the backend accepts, in the order the details screen's
-  /// segmented selector shows them (home / work / other).
-  ///
-  /// Each entry mirrors the API translation shape (`{'en': ..., 'ar': ...}`) so
-  /// the label round-trips as a localized value rather than a bare identifier.
-  /// Editing the copy here changes stored data, not just what is displayed.
+
+
+
+
+
+
   static const List<Map<String, String>> labelOptions = <Map<String, String>>[
     <String, String>{'en': 'Home', 'ar': 'المنزل'},
     <String, String>{'en': 'Work', 'ar': 'العمل'},
@@ -91,10 +91,10 @@ class AddressModel extends Equatable {
     );
   }
 
-  /// Builds a display/draft address from a reverse-geocoded [placemark] at
-  /// [location]. Composes the area from the placemark's locality parts and
-  /// carries the picked coordinates; the backend still owns `full_address`, so
-  /// it is left unset here.
+
+
+
+
   factory AddressModel.fromPlacemark(Placemark placemark, LatLng location) {
     final String area = <String?>[
       placemark.subLocality,
@@ -112,10 +112,10 @@ class AddressModel extends Equatable {
     );
   }
 
-  /// Full serialization mirroring [fromJson]'s server keys, so an address can be
-  /// round-tripped through local cache without losing a field. Unlike
-  /// [toRequestJson] (which sends only client-owned fields to the API) this
-  /// keeps `id`, `full_address`, the timestamps and the raw `label` map intact.
+
+
+
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
@@ -184,13 +184,13 @@ class AddressModel extends Equatable {
     );
   }
 
-  /// The request body for creating and updating an address — the same shape
-  /// for both.
-  ///
-  /// Only client-owned fields are sent: `id`, `user_id`, `full_address` and the
-  /// timestamps are assigned by the server. `label` goes out as its English
-  /// value (the backend owns the translation), and the coordinates as numbers
-  /// rather than the strings the read model keeps them in.
+
+
+
+
+
+
+
   Map<String, dynamic> toRequestJson() {
     return <String, dynamic>{
       'label': label?['en'],

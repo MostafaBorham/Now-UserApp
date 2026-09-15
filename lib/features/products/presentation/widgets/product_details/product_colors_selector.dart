@@ -17,16 +17,12 @@ class ProductColorsSelector extends StatefulWidget {
     this.onColorSelected,
   });
 
-  /// The product's selectable colours. The swatch is painted from each colour's
-  /// [ProductColorModel.color] (its hex) and labelled with its localized
-  /// [ProductColorModel.name].
   final List<ProductColorModel> colors;
   final String? title;
   final String? hint;
   final bool isRequired;
   final int initialSelectedIndex;
 
-  /// Fired with the selected [ProductColorModel] whenever the choice changes.
   final ValueChanged<ProductColorModel>? onColorSelected;
 
   @override

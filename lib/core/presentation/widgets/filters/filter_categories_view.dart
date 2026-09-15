@@ -12,11 +12,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-/// Listens to [getAppCategoriesProvider] (read-only — never triggers a fetch) and
-/// renders selectable category chips prefixed with an "All" chip. While the shared
-/// categories are loading it shows the All chip plus shimmer placeholders; on error
-/// it falls back to the All chip only. [onChanged] reports the selected index over
-/// the displayed `[All, ...categories]` list, so index 0 is All.
 class FilterCategoriesView extends ConsumerWidget {
   const FilterCategoriesView({
     super.key,

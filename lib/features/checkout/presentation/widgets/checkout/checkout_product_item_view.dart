@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 class CheckoutProductItemView extends StatelessWidget {
   const CheckoutProductItemView({super.key, this.item});
 
-  /// Draft order line whose data drives this row.
+
   final ProductModel? item;
 
   @override

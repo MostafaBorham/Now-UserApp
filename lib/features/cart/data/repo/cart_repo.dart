@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -40,10 +39,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -77,10 +73,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -114,10 +107,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -155,10 +145,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -167,8 +154,8 @@ class CartRepo {
     int productId,
     int quantity,
   ) async {
-    // Adding to the cart creates a new resource, so the API answers with
-    // `201 Created` (not `200`) on success — accept both.
+
+
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -199,10 +186,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }

@@ -15,9 +15,6 @@ class UniqueStoreProductsSlider extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    // The first offer's products drive the slider; anything past that offer is
-    // ignored. Nothing to show when the store has no offers or an empty first
-    // offer, so the slider collapses out of the column.
     final List<OfferModel>? offers = ref.watch(storeProvider).offers;
     final List<ProductModel> products =
         (offers != null && offers.isNotEmpty ? offers.first.products : null) ??

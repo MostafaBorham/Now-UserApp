@@ -15,19 +15,19 @@ import 'language_bottom_sheet.dart';
 import 'settings_section.dart';
 import 'settings_tile.dart';
 
-/// Guest variant of the settings screen body: a welcome discount banner, a
-/// login / create-account call to action, and the subset of settings a guest
-/// can reach (language, FAQs, privacy policy).
-///
-/// The rows reuse [SettingsSection] / [SettingsTile] with the exact same
-/// behaviour as the logged-in settings screen — the language row opens the
-/// shared [LanguageBottomSheet], FAQs and privacy push their existing routes.
-/// The login / create-account button pushes the phone verification screen.
+
+
+
+
+
+
+
+
 class SettingsGuestView extends ConsumerWidget {
   const SettingsGuestView({super.key});
 
-  // Art aspect ratio + the motorbike's placement rect inside the 234x254
-  // source artwork (the `guest-welcome-discount-img.svg` viewBox).
+
+
   static const double _artWidth = 234;
   static const double _artHeight = 254;
   static const double _bikeTop = 15.7188;
@@ -35,8 +35,8 @@ class SettingsGuestView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    // The badge promo code comes from the same first-order welcome voucher the
-    // empty cart shows; fall back to the canonical code until it loads.
+
+
     final String? apiCode =
         ref.watch(welcomeVoucherProvider).valueOrNull?.code;
     final String promoCode = (apiCode != null && apiCode.isNotEmpty)
@@ -45,13 +45,13 @@ class SettingsGuestView extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Top spacing lives inside the scroll view (owned by SettingsScreen)
-        // so it scrolls up with the content when the wave flattens on scroll.
+
+
         const SizedBox(height: 57),
-        // Welcome discount banner: the SVG carries the "BIG DISCOUNT / خصم
-        // كبير" lettering as vectors, but its motorbike is a raster inside an
-        // SVG <pattern> that flutter_svg can't paint — so the same cutout is
-        // overlaid as a PNG, positioned to match its rect in the artwork.
+
+
+
+
         Center(
           child: SizedBox(
             height: 243,
@@ -83,8 +83,8 @@ class SettingsGuestView extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 8),
-        // Promo strip: "promo code" + WELCOME badge on the start side, "on
-        // first order" on the end side.
+
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(

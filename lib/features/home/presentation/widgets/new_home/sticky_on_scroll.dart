@@ -2,15 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-/// Pins its [child] to the top of the enclosing scroll view once the child's
-/// leading edge scrolls up to [pinTop] pixels from the viewport top, then holds
-/// it there while the rest of the page keeps scrolling underneath.
-///
-/// It drives the *real* child (a single instance — no duplicated overlay copy)
-/// with a scroll-following [Transform.translate], so any state the child owns is
-/// preserved. While pinned an opaque [background] is painted behind it, bled out
-/// by [horizontalBleed] on each side so it can span the full screen width even
-/// when the child sits inside a horizontally-padded parent.
 class StickyOnScroll extends StatefulWidget {
   const StickyOnScroll({
     super.key,
@@ -20,16 +11,10 @@ class StickyOnScroll extends StatefulWidget {
     this.horizontalBleed = 0,
   });
 
-  /// Distance from the viewport top at which the child locks in place (e.g. the
-  /// height of an already-pinned bar above it). Updates re-resolve the anchor.
   final ValueListenable<double> pinTop;
 
-  /// Painted behind the child while pinned, so content scrolling beneath does
-  /// not show through the child's transparent regions.
   final Color background;
 
-  /// How far the background extends past the child on each side, to reach the
-  /// screen edges through a padded ancestor.
   final double horizontalBleed;
 
   final Widget child;
@@ -44,9 +29,6 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
 
   ScrollPosition? _position;
 
-  /// Scroll offset at which the child's top reaches [pinTop]. Resolved lazily
-  /// (while still unpinned, so the measurement isn't skewed by our own
-  /// translate) and cached; invalidated when [pinTop] changes.
   double? _threshold;
 
   @override
@@ -97,8 +79,6 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
     if (position == null) return;
     final double? threshold = _resolveThreshold();
     if (threshold == null) return;
-    // Beyond the threshold, translate down by exactly the extra scroll so the
-    // child stays parked at [pinTop]; before it, ride along with the page.
     final double dy = (position.pixels - threshold).clamp(0.0, double.infinity);
     if (dy != _translation.value) _translation.value = dy;
   }

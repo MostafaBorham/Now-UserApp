@@ -6,20 +6,20 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/favourites/data/repo/favourites_repo.dart';
 
-/// The query one [GetFavouriteStoresViewModel] pages through: the caller's
-/// favourited stores, optionally narrowed to a single app [categoryId]
-/// (`null` = the "All" tab) and a [searchKey] text filter. Used as the
-/// [getFavouriteStoresProvider] family key, so each category tab — and the same
-/// tab with vs. without a search term — keeps its own pagination state.
+
+
+
+
+
 typedef FavouriteStoresArgs = ({int? categoryId, String? searchKey});
 
-/// Single task: page through the caller's favourited stores for one category
-/// tab of the favourites Stores tab.
-///
-/// A `family` keyed by [FavouriteStoresArgs]: each query gets its own view
-/// model and state, so switching category tabs never clobbers another tab's
-/// stores. The first page is kicked off on first watch; `loadNextPage()` and
-/// `loadFirstPage()` (refresh / retry) are inherited from [PaginatedViewModel].
+
+
+
+
+
+
+
 final getFavouriteStoresProvider = StateNotifierProvider.autoDispose.family<
     GetFavouriteStoresViewModel,
     AsyncValue<PaginationModel<StoreModel>>,
@@ -33,12 +33,12 @@ class GetFavouriteStoresViewModel extends PaginatedViewModel<StoreModel> {
 
   final FavouritesRepo _repo = FavouritesRepo();
 
-  /// The query the loaded pages belong to, kept so that loading another page,
-  /// refreshing or retrying asks for the same stores.
+
+
   final FavouriteStoresArgs args;
 
-  /// Flips [StoreModel.isFavorite] on the single loaded store with [storeId] in
-  /// place, leaving the rest of the list (and its scroll position) untouched.
+
+
   void updateStoreFavourite(int? storeId, bool isFavourite) {
     if (storeId == null) return;
     updateItemsWhere(

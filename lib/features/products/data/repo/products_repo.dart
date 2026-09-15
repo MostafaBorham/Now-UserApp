@@ -4,22 +4,19 @@ import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/features/categories/data/datasources/remote/api/categories_api_service.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
 import 'package:nowdelivery_user_app/features/products/data/datasources/remote/api/products_api_service.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
-/// All data operations of the categories feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a raw server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class ProductsRepo {
   final ProductsApiService _productsApiService = ProductsApiService();
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _productsApiService.cancelRequests();
 
   Future<Either<Failure, List<ProductModel>>> getProducts({int? categoryId}) async {
@@ -80,8 +77,7 @@ class ProductsRepo {
       final Map<String, dynamic>? responseBody =
       data is Map<String, dynamic> ? data : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception,stackTrac) {
-      print(stackTrac);
+    } catch (exception) {
       return Left(Failure(exception.toString()));
     }
   }

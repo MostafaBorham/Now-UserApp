@@ -25,9 +25,9 @@ class HomeHeaderView extends ConsumerStatefulWidget {
 
   final Key? searchFieldKey;
 
-  /// Whether the categories carousel (and its "see all") render. The header
-  /// chrome — greeting, address, search, logo, motorcycle — is always shown; a
-  /// missing `categories` section only hides the carousel, not the header.
+
+
+
   final bool showCategories;
 
   @override
@@ -40,11 +40,11 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
   @override
   void initState() {
     super.initState();
-    // The default delivery address is the device's current location, cached by
-    // the splash before the app is ever entered (guaranteed non-null there) —
-    // not the first saved address. Seeded in a post-frame callback so the
-    // localized name resolution has a context. The user can still override it by
-    // picking another address from the sheet (see [_openDeliveryAddressSheet]).
+
+
+
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final AddressModel? current =
@@ -190,8 +190,8 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                       flex: 2,
                       child: AnimatedDeliveryManMotorcycleView(),
                     ),
-                    // The categories carousel + its "see all" are driven by the
-                    // `categories` home section; hidden when it is absent.
+
+
                     if (widget.showCategories) ...<Widget>[
                       Expanded(flex: 4, child: HomeAppCategoriesView()),
                       Expanded(

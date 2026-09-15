@@ -18,7 +18,7 @@ class ApplyDiscountCodeView extends ConsumerStatefulWidget {
 
   final String? hintText;
 
-  /// The vendor this discount applies to (the card's own store).
+
   final int? vendorId;
 
   @override
@@ -37,15 +37,15 @@ class _ApplyDiscountCodeViewState
     super.dispose();
   }
 
-  /// Applies the entered code to this vendor via `POST /api/v1/coupons/apply`.
-  /// A no-op unless the field holds a code and the vendor is known.
-  ///
-  /// The endpoint is a stateless calculator: it returns the discount for this
-  /// vendor even when the code is rejected (`applied:false` + a reason), so the
-  /// result is inspected rather than the HTTP status. On acceptance the code is
-  /// registered in [appliedDiscountsProvider] (feeding the invoice summary and,
-  /// for coupons, the confirm-order request); a rejection or transport error is
-  /// shown in a snackbar.
+
+
+
+
+
+
+
+
+
   Future<void> _onApply() async {
     final String code = _controller.text.trim();
     final int? vendorId = widget.vendorId;
@@ -85,9 +85,9 @@ class _ApplyDiscountCodeViewState
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Show the applied chip when this vendor's slot holds a coupon. A voucher
-    // slot (or no slot) falls back to the editable field, so applying a voucher
-    // automatically de-selects the coupon chip.
+
+
+
     AppliedDiscountModel? slot;
     for (final AppliedDiscountModel d in ref.watch(appliedDiscountsProvider)) {
       if (d.vendorId == widget.vendorId) {
@@ -185,8 +185,8 @@ class _ApplyDiscountCodeViewState
   }
 }
 
-/// The applied-coupon state (Figma): a solid primary-500 "Applied" button
-/// alongside a neutral pill holding a remove (×) control and the accepted code.
+
+
 class _AppliedChip extends StatelessWidget {
   const _AppliedChip({required this.code, required this.onRemove});
 

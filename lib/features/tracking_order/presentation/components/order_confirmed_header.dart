@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// Success header of the Order Confirmed screen: the green check inside a soft
-/// halo, followed by the confirmation title and supporting copy.
+
+
 class OrderConfirmedHeader extends StatelessWidget {
   const OrderConfirmedHeader({super.key});
 
@@ -17,9 +17,9 @@ class OrderConfirmedHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // `order_done.svg` draws the 96px circle inside a 156px canvas, so it
-        // carries its own ~30px halo/shadow margin — that stands in for the
-        // design's 24px of padding above and below the check circle.
+
+
+
         Assets.media.images.svg.orderDone.svg(),
         Text(
           LangKeys.orderConfirmedTitleKey.tr(),

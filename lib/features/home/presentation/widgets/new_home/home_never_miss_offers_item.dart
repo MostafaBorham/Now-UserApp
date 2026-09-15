@@ -17,12 +17,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
-/// One card of the `flash_offers` section.
-///
-/// The favourite heart and the cart control are the wired shared widgets, so
-/// both act on the real product: the heart drives `productFavouriteProvider`
-/// via [CircularAppFavouriteIcon], and [AnimatedCartButton] drives
-/// `updateCartProductProvider`. Tapping anywhere else opens product details.
+
+
+
+
+
+
 class HomeNeverMissOffersItem extends StatelessWidget {
   const HomeNeverMissOffersItem({super.key, required this.product});
 
@@ -31,8 +31,8 @@ class HomeNeverMissOffersItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    // The price actually charged: `effective_price` already has the running
-    // deal applied, and falls back to the list price when no deal is on.
+
+
     final double? price = product.effectivePrice ?? product.price;
     final double? discount = product.discountPercentage;
     final bool isDiscounted = discount != null && discount > 0;
@@ -77,10 +77,10 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                           ),
                           child: Stack(
                             children: [
-                              // A widget rather than a DecorationImage: this one
-                              // shows a shimmer while loading and a placeholder
-                              // when the URL is missing or fails, instead of
-                              // letting the provider's error escape the card.
+
+
+
+
                               Positioned.fill(
                                 child: AppCachedNetworkImage(
                                   imageUrl: imageUrl,
@@ -92,8 +92,8 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Hidden outright when the product carries no
-                                  // discount, rather than showing a "0%" badge.
+
+
                                   if (isDiscounted)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -182,10 +182,10 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Bounded, so a long real price pair wraps onto a
-                        // second line instead of overflowing the card — the
-                        // placeholder prices this card was built against were
-                        // short enough to hide that.
+
+
+
+
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,8 +200,8 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                     price: price?.toStringAsFixed(2) ?? '0.00',
                                     size: con.maxWidth * 0.1,
                                   ),
-                                  // The struck-through list price only makes
-                                  // sense while a deal is actually cutting it.
+
+
                                   if (isDiscounted)
                                     OldPriceWidget(
                                       color: colors.neutral500,

@@ -32,9 +32,9 @@ class StoreDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
-  // Wired to both the NestedScrollView (outer position) and AppWavedView so the
-  // top wave flattens into a straight edge while scrolled and restores at the
-  // top — same behavior as the settings screen.
+
+
+
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -71,9 +71,9 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                 child: NestedScrollView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  // Header + banners scroll away with the content; only the
-                  // CustomButtonTabBar (the NestedScrollView body) stays
-                  // pinned to the top while the product grid scrolls.
+
+
+
                   headerSliverBuilder: (context, innerBoxIsScrolled) => [
                     SliverToBoxAdapter(
                       child: Column(
@@ -148,7 +148,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                               ),
                                         )
                                         .toList(),
-                                    // selectedTabColor: colors.tertiaryContainer,
+
                                     unSelectedTabColor: colors.neutral400
                                         .withValues(alpha: 0.2),
                                     selectedLabelColor: colors.white,
@@ -170,14 +170,14 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
         loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
-        // Tapping the cart drops every route pushed on top of the main screen
-        // (store details and anything in between) and switches the main screen's
-        // bottom nav to the cart tab (index 2) instead of pushing a new cart
-        // route on top of the store details stack.
+
+
+
+
         onCartTap: () {
           ref.read(mainTabIndexProvider.notifier).state = 2;
-          // Capture the router once: after the first pop this widget's context is
-          // defunct, so drive the loop off the router instance, not context.
+
+
           final GoRouter router = GoRouter.of(context);
           while (router.canPop()) {
             router.pop();

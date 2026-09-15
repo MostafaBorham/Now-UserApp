@@ -5,12 +5,12 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/geocoding_repo.dart';
 
-/// Resolves the point picked on the map into an [AddressModel].
-///
-/// The state is only the request status — the resolved address is returned to
-/// the caller instead of being pushed into it, because the map navigates on
-/// success and shows a snackbar on failure; nothing on the map itself changes
-/// either way. Same shape as `PlaceAutocompleteViewModel.resolveLocation`.
+
+
+
+
+
+
 final resolveMapAddressProvider =
     StateNotifierProvider.autoDispose<
       ResolveMapAddressViewModel,

@@ -11,8 +11,8 @@ import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_welcome_vo
 
 import '../../../../helpers/categories_test_harness.dart';
 
-/// Guards the show/hide gate: the banner appears only for a guest or a
-/// zero-order user *and* when the welcome coupon actually loaded.
+
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
 

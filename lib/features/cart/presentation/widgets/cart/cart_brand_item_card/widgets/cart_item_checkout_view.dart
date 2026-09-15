@@ -17,8 +17,8 @@ class CartItemCheckoutView extends StatelessWidget {
 
   final String total;
 
-  /// Reported to the parent, which drafts the order group for this store and
-  /// navigates only once the request succeeded.
+
+
   final VoidCallback? onCheckout;
 
   @override

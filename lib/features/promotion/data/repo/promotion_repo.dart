@@ -9,11 +9,11 @@ import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/features/promotion/data/datasources/local/welcome_voucher_cache_service.dart';
 import 'package:nowdelivery_user_app/features/promotion/data/datasources/remote/api/promotion_api_service.dart';
 
-/// All data operations of the promotion feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a raw server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class PromotionRepo {
   final PromotionApiService _promotionApiService = PromotionApiService();
   final WelcomeVoucherCacheService _welcomeVoucherCacheService =
@@ -62,12 +62,12 @@ class PromotionRepo {
     }
   }
 
-  /// Fetches a single coupon by its [code] from `GET /api/v1/coupons/{code}`.
-  ///
-  /// The endpoint is public (no auth) and returns `{ data: { coupon: {…} } }`.
-  /// A missing/inactive/non-public code answers 404, which surfaces here as a
-  /// [Left] — callers (the welcome-voucher banner) treat any [Left] as "don't
-  /// show".
+
+
+
+
+
+
   Future<Either<Failure, CouponModel>> getCoupon(String code) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -102,19 +102,19 @@ class PromotionRepo {
     }
   }
 
-  /// The first-order welcome voucher, server-first with an offline cache.
-  ///
-  /// Always hits the server ([getCoupon]) first: on success the fresh code is
-  /// persisted (best-effort) and the coupon returned; on any failure it falls
-  /// back to the cached code — reconstructed into a [CouponModel] carrying just
-  /// the code — and only surfaces the original failure when the cache is empty.
+
+
+
+
+
+
   Future<Either<Failure, CouponModel>> getWelcomeVoucher(String code) async {
     final Either<Failure, CouponModel> serverResult = await getCoupon(code);
 
     return serverResult.fold(
-      // Server failed → fall back to the cached code.
+
       (Failure serverFailure) => _readWelcomeCodeFromCache(serverFailure),
-      // Server succeeded → persist the fresh code, then return the coupon.
+
       (CouponModel coupon) async {
         final String? freshCode = coupon.code;
         if (freshCode != null && freshCode.isNotEmpty) {
@@ -129,7 +129,7 @@ class PromotionRepo {
     try {
       await _welcomeVoucherCacheService.saveWelcomeCode(code);
     } catch (_) {
-      // Intentionally ignored — caching is a side effect, not part of the result.
+
     }
   }
 

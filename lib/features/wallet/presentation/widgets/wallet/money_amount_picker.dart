@@ -17,11 +17,11 @@ class MoneyAmountPicker extends StatefulWidget {
     this.onOtherSelected,
   });
 
-  /// Falls back to [_defaultMaxAmount] when the wallet doesn't supply a limit.
+
   final double? maxAmount;
 
-  /// The suggested amount chips. When null/empty no chips are shown — only the
-  /// "Other" selector remains, letting the user type a custom amount.
+
+
   final List<String>? options;
 
   final ValueChanged<String?>? onAmountChanged;
@@ -38,12 +38,12 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
   final TextEditingController amountController = TextEditingController();
   bool isOtherSelected = false;
 
-  /// True when the custom amount is typed above the allowed [_maxAmount].
+
   bool exceedsMax = false;
 
-  /// True when the field holds text that isn't a valid top-up amount — a
-  /// decimal point, a comma, a minus sign, or anything below 1 (e.g. `0`). Kept
-  /// separate from [exceedsMax] so the "maximum" hint only reddens on overflow.
+
+
+
   bool hasInvalidAmount = false;
 
   List<String> get _options => widget.options ?? const <String>[];
@@ -55,8 +55,8 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // With no suggested chips, start on the "Other" selector so the custom
-      // amount field is the immediate (and only) way to enter an amount.
+
+
       if (_options.isEmpty) {
         setState(() => isOtherSelected = true);
         widget.onOtherSelected?.call();
@@ -72,7 +72,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
     super.dispose();
   }
 
-  /// A suggested chip is always a valid whole amount, so any error clears here.
+
   void _updateSelectedValue(String newValue) {
     selectedValue = newValue;
     exceedsMax = false;
@@ -81,12 +81,12 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
     setState(() {});
   }
 
-  /// Validates the typed custom amount on every keystroke. Only a whole number
-  /// of 1 or more, within [_maxAmount], is valid — a decimal point, a comma, a
-  /// minus sign, or a value below 1 (like `0`) is rejected. `int.tryParse`
-  /// returns `null` for the first three and lets the `>= 1` check catch the
-  /// rest. On any invalid input `null` is reported so the parent's button stays
-  /// disabled.
+
+
+
+
+
+
   void _applyCustomAmount(String value) {
     final String trimmed = value.trim();
     final int? parsed = int.tryParse(trimmed);
@@ -108,8 +108,8 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Pins the section to full width so its position/alignment never
-        // shifts when the custom-amount field appears or disappears below.
+
+
         const SizedBox(width: double.infinity),
         Text(
           LangKeys.topUpAmountKey.tr(),

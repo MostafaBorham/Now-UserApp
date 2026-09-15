@@ -3,12 +3,12 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// A single selectable payment row — a saved card or an alternative payment
-/// method. Shows a leading brand badge, a title (+ optional subtitle) and a
-/// trailing radio indicator. Tapping anywhere on the row selects it.
+
+
+
 class PaymentOptionTile extends StatelessWidget {
-  /// Pale-green fill of the selected row — no equivalent in the theme
-  /// [ColorScheme].
+
+
   static const Color _selectedBackground = Color(0xFFF4FBF3);
 
   const PaymentOptionTile({
@@ -76,8 +76,8 @@ class PaymentOptionTile extends StatelessWidget {
   }
 }
 
-/// Radio-style indicator: a green ring + filled dot when selected,
-/// a plain grey ring when not.
+
+
 class _SelectionIndicator extends StatelessWidget {
   const _SelectionIndicator({required this.isSelected});
 

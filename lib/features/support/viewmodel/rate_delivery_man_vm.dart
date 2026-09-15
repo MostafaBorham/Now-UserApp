@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/features/support/data/models/rate_request_m
 import 'package:nowdelivery_user_app/features/support/data/models/rate_response_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/repo/support_repo.dart';
 
-/// Single task: rate a delivery man against an order.
-///
-/// Starts idle (`AsyncValue.data(null)`); on success the data holds the created
-/// [RateResponseModel]. Trigger with
-/// `ref.read(rateDeliveryManProvider.notifier).rateDeliveryMan(rate: ...)` and
-/// watch/listen the provider to react to loading / error / success.
+
+
+
+
+
+
 final rateDeliveryManProvider = StateNotifierProvider.autoDispose<
     RateDeliveryManViewModel, AsyncValue<RateResponseModel?>>(
   (Ref ref) => RateDeliveryManViewModel(const AsyncValue.data(null)),

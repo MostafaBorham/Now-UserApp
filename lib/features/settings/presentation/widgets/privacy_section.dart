@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single privacy-policy block: a bold [title] over a muted [body] paragraph.
-///
-/// Reused for every clause on the privacy screen (Use of Service, Delivery,
-/// etc.). [titleStyle] defaults to the 16px medium heading and is overridden
-/// for the emphasized last clause.
+
+
+
+
+
 class PrivacySection extends StatelessWidget {
   const PrivacySection({
     super.key,

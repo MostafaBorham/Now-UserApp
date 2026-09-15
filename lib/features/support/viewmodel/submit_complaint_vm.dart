@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/features/support/data/models/complaint_requ
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_response_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/repo/support_repo.dart';
 
-/// Single task: submit a support ticket (complaint) for the current user.
-///
-/// Starts idle (`AsyncValue.data(null)`); on success the data holds the created
-/// [ComplaintResponseModel] returned by the backend. Trigger with
-/// `ref.read(submitComplaintProvider.notifier).submitComplaint(complaint: ...)`
-/// and watch/listen the provider to react to loading / error / success.
+
+
+
+
+
+
 final submitComplaintProvider =
     StateNotifierProvider.autoDispose<SubmitComplaintViewModel,
         AsyncValue<ComplaintResponseModel?>>(

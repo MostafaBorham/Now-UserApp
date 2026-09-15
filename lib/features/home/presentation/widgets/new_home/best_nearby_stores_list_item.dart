@@ -18,12 +18,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
-/// A detail row of the store card, shrunk to fit rather than overflowing.
-///
-/// The rows hold feed-driven text of unpredictable width, so they are sized
-/// down as a whole — keeping the design's icon-to-text proportions — instead of
-/// ellipsizing one value or clipping the row. Same approach as
-/// `HomeFeaturedStoreItem`'s store info row.
+
+
+
+
+
+
 class _ScaledRow extends StatelessWidget {
   const _ScaledRow({required this.children});
 
@@ -43,13 +43,13 @@ class _ScaledRow extends StatelessWidget {
   }
 }
 
-/// One store card of the `nearby_stores` section: the store's cover with its
-/// logo centred over it, a favourite toggle, then the store's name, rating,
-/// delivery fee, travel time and distance.
-///
-/// Every detail below the name is optional — a feed section still sending the
-/// thin vendor item (id/name/image_url only) leaves them null, and each row is
-/// simply left out rather than rendered as a zero.
+
+
+
+
+
+
+
 class BestNearbyStoresListItem extends StatelessWidget {
   const BestNearbyStoresListItem({super.key, required this.store});
 
@@ -60,8 +60,8 @@ class BestNearbyStoresListItem extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
       builder: (context, constrains) {
-        // Icon and text sizes are proportional to the card so the section keeps
-        // its design proportions at any height the home feed gives it.
+
+
         final double iconSize = constrains.maxHeight * 0.08;
         return SizedBox(
           width: constrains.maxHeight * 1.1,
@@ -85,11 +85,11 @@ class BestNearbyStoresListItem extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      // The design's scrim over the cover, so a light storefront
-                      // photo never washes out the logo sitting on top of it.
-                      // Both stops are the design's literal values — neither
-                      // has a theme token (the palette's nearest neutral is
-                      // #A1A1A1, visibly lighter than the #666 this fades to).
+
+
+
+
+
                       const Positioned.fill(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -107,9 +107,9 @@ class BestNearbyStoresListItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.center,
                         child: CircularBrandLogo(
-                          // 0.12 of the card height puts the circle at the
-                          // design's 48px, and the logo inside it fills the
-                          // design's ~28px rather than the 0.7 default's 17px.
+
+
+
                           radius: constrains.maxHeight * 0.12,
                           logoUrl: store.logoUrl ?? '',
                           backgroundColor: colors.white,
@@ -146,11 +146,11 @@ class BestNearbyStoresListItem extends StatelessWidget {
                         ),
                       ),
                       2.hSpace,
-                      // Both detail rows scale down instead of overflowing:
-                      // their content is data-driven (a '120-150' delivery
-                      // window, a two-digit distance, a four-figure rating
-                      // count) and the card is only ever as wide as the height
-                      // the feed gives the section.
+
+
+
+
+
                       _ScaledRow(
                         children: [
                           if (store.deliveryFee != null) ...[

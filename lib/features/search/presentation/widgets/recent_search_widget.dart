@@ -17,8 +17,8 @@ class RecentSearchWidget extends StatefulWidget {
 
   final List<String> keywords;
 
-  /// Label of the "remove them all" action. Defaults to [LangKeys.clearKey];
-  /// the address search passes [LangKeys.deleteKey] as its design asks for.
+
+
   final String? clearLabel;
   final ValueChanged<String>? onRemove;
   final VoidCallback? onClear;

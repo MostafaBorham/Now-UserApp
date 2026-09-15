@@ -8,14 +8,14 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
-/// Bottom sheet for entering a new payment card. Opened from the
-/// "Add New Card" button and reuses the shared [AddCardForm] rather than
-/// re-implementing the fields.
+
+
+
 class AddNewCardBottomSheet extends StatelessWidget {
   const AddNewCardBottomSheet({super.key});
 
-  /// Presents the sheet as a scroll-controlled modal with a rounded top,
-  /// so it can grow with its content and lift above the keyboard.
+
+
   static Future<void> show(BuildContext context) {
     return showModalBottomSheet<void>(
       context: context,
@@ -87,7 +87,7 @@ class AddNewCardBottomSheet extends StatelessWidget {
   }
 }
 
-/// Small grabber shown at the top of the sheet.
+
 class _DragHandle extends StatelessWidget {
   const _DragHandle();
 

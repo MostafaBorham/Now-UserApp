@@ -4,9 +4,9 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder mirroring the cart screen's loaded layout — a list of
-/// 3 collapsed [CartBrandItemCard]s plus the bottom checkout button — meant to
-/// be rendered inside an [AppShimmer] while the cart is loading.
+
+
+
 class CartShimmerView extends StatelessWidget {
   const CartShimmerView({super.key});
 
@@ -19,9 +19,9 @@ class CartShimmerView extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.separated(
-              // Matches the loaded list's top spacing so the loading and data
-              // states line up under the wave (AppWavedView drops the body's top
-              // padding once a scroll controller is wired in).
+
+
+
               padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
               itemBuilder: (context, index) {
                 return Container(
@@ -36,7 +36,7 @@ class CartShimmerView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     spacing: 20,
                     children: [
-                      // Logo + store name expansion header.
+
                       Row(
                         children: [
                           Container(
@@ -68,7 +68,7 @@ class CartShimmerView extends StatelessWidget {
                         ],
                       ),
       
-                      // Collapsed products images preview.
+
                       Row(
                         spacing: 8,
                         children: [
@@ -84,7 +84,7 @@ class CartShimmerView extends StatelessWidget {
                         ],
                       ),
       
-                      // Total + checkout pill.
+
                       Container(
                         width: double.infinity,
                         height: 52,

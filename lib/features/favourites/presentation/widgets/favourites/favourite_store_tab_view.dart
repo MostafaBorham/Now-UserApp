@@ -3,11 +3,11 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourite_stores_list_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/favourites_tab_view.dart';
 
-/// The caller's favourited stores: a search field over an app-category tab bar,
-/// each tab an infinite-scrolling list of [FavouriteStoresListView].
-///
-/// Kept alive across the outer Products/Stores tab switch by the enclosing
-/// [AppTabBar]; the filter selection lives in a provider, so it survives too.
+
+
+
+
+
 class FavouriteStoreTabView extends StatelessWidget {
   const FavouriteStoreTabView({super.key});
 

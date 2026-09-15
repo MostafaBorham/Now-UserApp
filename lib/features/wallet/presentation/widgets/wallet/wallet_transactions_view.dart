@@ -8,14 +8,14 @@ import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_history_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
 
-/// The wallet transaction history list.
-///
-/// Watches [getWalletTransactionsProvider] and renders it through
-/// [PaginatedView], independently of the rest of the wallet screen: a shimmering
-/// [WalletHistoryItem] list while the first page loads, the real transactions
-/// once they arrive (with infinite scroll and pull-to-refresh), a trailing
-/// shimmer while the next page loads, and the shared error widget (with retry)
-/// when the first page fails.
+
+
+
+
+
+
+
+
 class WalletTransactionsView extends ConsumerWidget {
   const WalletTransactionsView({super.key});
 
@@ -29,8 +29,8 @@ class WalletTransactionsView extends ConsumerWidget {
       provider: getWalletTransactionsProvider,
       onRefresh: viewModel.loadFirstPage,
       onLoadNextPage: viewModel.loadNextPage,
-      // The list sits in a fixed slot under the card and actions, so the error
-      // scales to fit that slot instead of scrolling within it.
+
+
       isFirstPageErrorScrollable: false,
       layout: PaginatedListLayout(
         separatorBuilder: (BuildContext context, int index) => 12.hSpace,

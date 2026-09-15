@@ -3,7 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Rounded input that fills grey and turns white with a green border on focus.
+
 class RoundedField extends StatefulWidget {
   const RoundedField({
     super.key,

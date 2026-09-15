@@ -16,14 +16,14 @@ import '../widgets/info_field.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/profile_avatar.dart';
 
-/// Read-only "Personal Information" screen, shown when the user taps the
-/// Personal Information tile on the profile screen.
-///
-/// Watches [getProfileProvider] (`GET /api/v1/user/profile`) and renders the
-/// [AsyncValue]: a spinner while loading, the shared error widget with retry on
-/// failure, and the read-only [InfoField]s on success. The avatar is a static
-/// placeholder for now (avatar wiring is deferred). The "Edit" button opens
-/// [EditInformationScreen].
+
+
+
+
+
+
+
+
 class PersonalInformationScreen extends ConsumerStatefulWidget {
   const PersonalInformationScreen({super.key});
 
@@ -79,16 +79,16 @@ class _ProfileBody extends StatelessWidget {
   final String? avatarUrl;
   final ScrollController? scrollController;
 
-  /// Placeholder for a value the user has not set and that has no hint of its
-  /// own to offer (a name or phone they cannot fill in from here).
+
+
   static const String _emptyHint = '—';
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: scrollController,
-      // Owns the top spacing AppWavedView drops when a scroll controller is
-      // wired in, so it scrolls up with the content and flattens the wave.
+
+
       padding: const EdgeInsets.only(top: 57, bottom: 32),
       child: Column(
         children: [
@@ -113,7 +113,7 @@ class _ProfileBody extends StatelessWidget {
                     label: LangKeys.phoneKey.tr(),
                     value: AppValidator.saudiPhoneDisplay(profile.phone),
                     hint: _emptyHint,
-                    // The only always-Latin value on this screen.
+
                     forceLtrValue: true,
                   ),
                   InfoField(
@@ -128,8 +128,8 @@ class _ProfileBody extends StatelessWidget {
                   ),
                   InfoField(
                     label: LangKeys.dateOfBirthKey.tr(),
-                    // Localized, so the same birthday reads the same here as it
-                    // does in the editor.
+
+
                     value: formatLocalizedDateOnly(context, profile.birthday),
                     hint: LangKeys.selectDateOfBirthKey.tr(),
                   ),
@@ -153,9 +153,9 @@ class _ProfileBody extends StatelessWidget {
     );
   }
 
-  /// Maps the raw server gender ('male' | 'female' | 'other') to its localized
-  /// label. Returns null (so the hint shows) when empty, and falls back to the
-  /// raw value for any unexpected server string.
+
+
+
   String? _localizedGender(String? value) {
     switch (value?.toLowerCase()) {
       case 'male':

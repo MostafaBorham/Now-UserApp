@@ -31,8 +31,8 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
               return Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  // The logo (64 across, 4px white ring) straddles the cover's
-                  // bottom edge, so the cover stops half a logo short.
+
+
                   Padding(
                     padding: const EdgeInsets.only(bottom: 32),
                     child: AppCachedNetworkImage(

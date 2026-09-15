@@ -45,8 +45,6 @@ class ProductDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
-  // Drives the wave flattening: as the content scrolls up, [AppWavedView]
-  // straightens its top wave.
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -70,9 +68,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     return Scaffold(
       body: AppWavedView(
         scrollController: _scrollController,
-        // Drop the wave's default horizontal body padding so the divider
-        // section can span edge to edge; sections 1 and 3 carry their own
-        // horizontal padding instead.
         bodyPadding: const EdgeInsets.only(bottom: 20),
         body: SafeArea(
           child: productDetailsState.when(
@@ -134,9 +129,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   },
                 );
               });
-              // Resolve each section's data up front so the section is dropped
-              // whenever it has nothing to show — not just when the raw list is
-              // null/empty, but also when every entry resolves to blank.
               final List<String> keyFeatures = (product.mainFeatures ?? [])
                   .map((feature) => context.getLocalizedApiText(feature))
                   .where((text) => text.isNotEmpty)
@@ -154,18 +146,12 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   onRefresh: () async => _fetchProductDetails(),
                   child: SingleChildScrollView(
                     controller: _scrollController,
-                    // The wave owns no top spacing once a scroll controller is
-                    // wired in, so the content carries it and scrolls up under
-                    // the flattening wave.
                     padding: const EdgeInsets.only(top: 57),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Column(
                         spacing: 16,
                         children: [
-                          // Section 1: everything from the top down to the
-                          // Basic Specifications view, carrying the shared
-                          // horizontal padding.
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
@@ -226,8 +212,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                       colors: product.colors!,
                                     ),
                                   ),
-                                // Every variant attribute (Size, Material, …)
-                                // becomes its own labelled selector section.
                                 ...(product.attributes ?? [])
                                     .where(
                                       (attribute) =>
@@ -259,18 +243,12 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                               ],
                             ),
                           ),
-                          // Section 2: full-width divider — no horizontal
-                          // padding so it spans edge to edge. Hidden together
-                          // with the buttons row when the product is out of
-                          // stock.
                           if ((product.stock ?? 1) >= 1)
                             Container(
                               color: colors.neutral500.withValues(alpha: 0.3),
                               width: double.infinity,
                               height: 1,
                             ),
-                          // Section 3: the add-to-cart / buy-now buttons row,
-                          // carrying the same horizontal padding as section 1.
                           if ((product.stock ?? 1) >= 1)
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -357,15 +335,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         ),
         appBarTitle: LangKeys.productDetailsKey.tr(),
         hasCartIcon: true,
-        // Tapping the cart drops every route pushed on top of the main screen
-        // (product details and anything in between) and switches the main
-        // screen's bottom nav to the cart tab (index 2) instead of pushing a
-        // new cart route on top of the product details stack — same behaviour
-        // as the store details screen.
         onCartTap: () {
           ref.read(mainTabIndexProvider.notifier).state = 2;
-          // Capture the router once: after the first pop this widget's context
-          // is defunct, so drive the loop off the router instance, not context.
           final GoRouter router = GoRouter.of(context);
           while (router.canPop()) {
             router.pop();

@@ -14,7 +14,7 @@ class PriceCancelLine extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: child,
         ),
-        /// الخط المائل
+
         Positioned.fill(
           child: IgnorePointer(
             child: Center(
@@ -29,10 +29,7 @@ class PriceCancelLine extends StatelessWidget {
             ),
           ),
         ),
-/*        Transform.rotate(
-          angle: -0.3,
-          child: Container(width: 60, height: 1.5, color: colors.neutral400),
-        ),*/
+
       ],
     );
   }

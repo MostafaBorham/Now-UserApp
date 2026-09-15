@@ -6,20 +6,20 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/features/promotion/data/repo/promotion_repo.dart';
 
-/// Single task: fetch the available coupons, one page at a time.
-///
-/// [getCoupons] is never tied to this provider's creation — callers fire it when
-/// they actually need the data (the auth orchestrator once a user session is
-/// confirmed, and [DiscountCodeScreen] when it opens). The starting state is
-/// therefore [AsyncValue.loading] until someone kicks the first page off.
-///
-/// The provider is kept alive (not `autoDispose`). It never invalidates itself:
-/// dropping a failed instance is the caller's job (see the auth orchestrator and
-/// [DiscountCodeScreen]), so this VM only reports the error through its state and
-/// lets whoever fired the fetch decide to invalidate. Later pages are pulled in
-/// with [loadMore], whose progress is exposed separately through
-/// [GetCouponsViewModel.loadMoreState] so the already-visible list is never
-/// replaced by a full-screen loading/error state.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 final getCouponsProvider =
     StateNotifierProvider<
       GetCouponsViewModel,
@@ -88,7 +88,7 @@ class GetCouponsViewModel
         );
       },
       (PaginationModel<CouponModel> newPage) {
-        // Append the freshly fetched page to the visible list.
+
         state = AsyncValue<PaginationModel<CouponModel>>.data(
           currentPage.appendPage(newPage),
         );

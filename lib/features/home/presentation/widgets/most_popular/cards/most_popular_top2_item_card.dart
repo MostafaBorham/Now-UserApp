@@ -9,10 +9,10 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 
-/// A compact horizontal product card used inside the "Most Popular" filters list.
-///
-/// Static/dummy content is hardcoded inline for fast UI iteration; real data
-/// will be wired in later.
+
+
+
+
 class MostPopularTop2ItemCard extends StatelessWidget {
   const MostPopularTop2ItemCard({super.key});
   @override
@@ -28,7 +28,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: colors.neutral500.withValues(alpha: 0.2), // #00000014
+                color: colors.neutral500.withValues(alpha: 0.2),
                 offset: const Offset(0, 4),
                 blurRadius: 8,
                 spreadRadius: 0,
@@ -200,21 +200,7 @@ class MostPopularTop2ItemCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          /*                   FloatingActionButton(
-                            onPressed: () {},
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(17),
-                            ),
-                            mini: true,
-                            backgroundColor: colors.onSecondaryContainer,
-                            child: Text(
-                              '+',
-                              style: AppTextStyles.style20SemiBold.copyWith(
-                                color: colors.onPrimary,
-                              ),
-                            ),
-                          ),*/
+
                         ],
                       ),
                     ],

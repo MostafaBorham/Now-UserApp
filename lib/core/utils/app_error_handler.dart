@@ -3,12 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-/// Single, app-wide entry point for uncaught errors.
-///
-/// Logs every exception to the terminal in a compact format: one line for the
-/// error, plus only the stack frames that originate from the app's own code.
-/// Repeated identical errors are throttled so the console stays readable when
-/// connectivity drops and dozens of image/API requests fail at once.
 abstract final class AppErrorHandler {
   static void runGuarded(void Function() body) {
     runZonedGuarded(

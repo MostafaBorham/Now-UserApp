@@ -5,9 +5,9 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Shared frame for the Cancel Order bottom sheets: a drag handle, the
-/// "Cancel Order" title with a close button, and a scrollable body that hosts
-/// the sheet's [children] (so tall content never overflows on short screens).
+
+
+
 class CancelSheetScaffold extends StatelessWidget {
   const CancelSheetScaffold({
     super.key,
@@ -17,9 +17,9 @@ class CancelSheetScaffold extends StatelessWidget {
 
   final List<Widget> children;
 
-  /// Whether the top-right close button dismisses the sheet. Set to `false`
-  /// while a blocking action is in flight (e.g. cancelling the order) so the
-  /// sheet can't be dismissed mid-request.
+
+
+
   final bool canClose;
 
   @override

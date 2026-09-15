@@ -7,8 +7,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
-/// Outlined summary card on the Payment Failed screen: the order number and the
-/// amount still due.
+
+
 class OrderAmountCard extends StatelessWidget {
   const OrderAmountCard({
     super.key,

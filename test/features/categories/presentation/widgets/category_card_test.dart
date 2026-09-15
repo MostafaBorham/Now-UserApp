@@ -36,9 +36,9 @@ void main() {
         ),
       );
 
-      // Card is mounted (guards against a false pass on an empty tree)...
+
       expect(find.text('Food'), findsOneWidget);
-      // ...and the badge text ("<n> % discount") is absent with the offer off.
+
       expect(find.textContaining('%'), findsNothing);
     });
 

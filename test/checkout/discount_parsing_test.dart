@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/vendor_discount_application_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 
-// Guards the money/parse logic the two discount features depend on: decimal
-// *string* money → double, applied:false-with-reason, and the voucher's typed
-// fields + store translation map.
+
+
+
 void main() {
   test('VendorDiscountApplicationModel parses string money and applied flag', () {
     final applied = VendorDiscountApplicationModel.fromJson(<String, dynamic>{
@@ -31,7 +31,7 @@ void main() {
       'reason': 'Coupon not found.',
     });
 
-    // A 200 with applied:false must parse cleanly and carry the reason.
+
     expect(rejected.applied, isFalse);
     expect(rejected.discount, 0.0);
     expect(rejected.reason, 'Coupon not found.');

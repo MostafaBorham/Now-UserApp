@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/privacy_model.dart';
 
-/// The `data` payload of `GET /api/v1/application-information`.
-///
-/// Combines the two sub-models of the endpoint: [content] (the legal/info text
-/// blocks — see [PrivacyModel]) and [faqs] (the list of [FaqModel] entries).
+
+
+
+
 class AppInfoModel extends Equatable {
   final String? scope;
   final PrivacyModel? content;

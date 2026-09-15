@@ -19,12 +19,12 @@ import 'profile_info_shimmer.dart';
 import 'settings_section.dart';
 import 'settings_tile.dart';
 
-/// Logged-in variant of the settings screen body: profile header followed by
-/// the full set of setting groups and the logout action.
-///
-/// Only rendered for [SessionType.user], so it reads `/user/profile` directly
-/// and owns the logout listener (which resets the stack to onboarding on
-/// success). Scrolling is owned by the enclosing `SettingsScreen`.
+
+
+
+
+
+
 class SettingsUserView extends ConsumerWidget {
   const SettingsUserView({super.key});
 
@@ -35,7 +35,7 @@ class SettingsUserView extends ConsumerWidget {
       AsyncValue<dynamic> next,
     ) {
       next.whenOrNull(
-        // Logged out: reset the stack so onboarding is the only screen left.
+
         data: (dynamic value) {
           if (value != null) {
             context.goNamed(AppRoutes.onBoardingScreen);
@@ -47,18 +47,18 @@ class SettingsUserView extends ConsumerWidget {
     });
 
     final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
-    // Fetched once when the session resolves and shared with the Personal
-    // Information screen.
+
+
     final AsyncValue<PersonalInformationData> profile =
         ref.watch(getProfileProvider);
 
     return Column(
       children: [
-        // Top spacing lives inside the scroll view so it scrolls up with the
-        // content when the wave flattens on scroll.
+
+
         const SizedBox(height: 57),
-        // While loading, show a same-size shimmer avatar + name bar instead of
-        // the default placeholder, then swap in the real picture and name.
+
+
         profile.when(
           loading: () => const ProfileInfoShimmer(),
           error: (_, _) => const ProfileInfo(name: ''),
@@ -129,9 +129,9 @@ class SettingsUserView extends ConsumerWidget {
         15.hSpace,
         LogoutButton(
           isLoading: isLoggingOut,
-          // Confirm first; the dialog closes as soon as the user confirms and
-          // the request's progress is shown on the button itself (the listener
-          // above handles success / failure).
+
+
+
           onPressed: () => AppCustomAlertDialog.show(
             context,
             (BuildContext dialogContext) => AppCustomAlertDialog(

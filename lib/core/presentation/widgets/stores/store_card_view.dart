@@ -28,8 +28,8 @@ class StoreCardView extends StatelessWidget {
 
   final ValueChanged<bool>? onFavouriteChanged;
 
-  /// Tap handler for the whole card. Defaults to opening the store details
-  /// screen for [store] (passing its id), matching [StoreItem].
+
+
   final VoidCallback? onTap;
 
   static const String _demoCoverUrl =
@@ -157,9 +157,9 @@ class StoreCardView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       spacing: 8,
                       children: [
-                        // Logo reserves only its lower half in the row and
-                        // overflows upward to overlap the cover, so the name
-                        // is laid out beside it automatically (no manual padding).
+
+
+
                         SizedBox(
                           width: logoRadius * 2,
                           height: logoRadius,

@@ -3,11 +3,11 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-/// White circular back button used on the plain (non-waved) tracking screens
-/// (Order Confirmed, Payment Failed).
-///
-/// Mirrors the back affordance inside `AppWavedScaffold` but adds a soft shadow
-/// so it stays legible on a white background.
+
+
+
+
+
 class CircleBackButton extends StatelessWidget {
   const CircleBackButton({super.key, this.onTap});
 

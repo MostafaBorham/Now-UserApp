@@ -7,11 +7,6 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_selector.dart';
 import 'package:nowdelivery_user_app/features/products/data/models/product_attribute_model.dart';
 
-/// One selectable variant attribute (e.g. Size, Material) rendered as a
-/// labelled section: the attribute's localized [ProductAttributeModel.name] as
-/// the header, and a horizontal selector built from its
-/// [ProductAttributeModel.values] (each value's localized `{ar, en}` label).
-/// The product details screen maps every attribute to one of these.
 class ProductSizeSelector extends StatelessWidget {
   const ProductSizeSelector({
     super.key,
@@ -27,8 +22,6 @@ class ProductSizeSelector extends StatelessWidget {
   final bool isRequired;
   final int initialSelectedIndex;
 
-  /// Fired with the selected [ProductAttributeValueModel] whenever the choice
-  /// changes.
   final ValueChanged<ProductAttributeValueModel>? onValueSelected;
 
   @override

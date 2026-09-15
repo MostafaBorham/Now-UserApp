@@ -8,9 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
 
-/// Sort sheet for the favourites list — the four orders the endpoint
-/// understands, single-select. Commits the pick through [onApply] before it
-/// pops itself, mirroring the shared FilterBottomSheet chrome.
+
+
+
 class FavouriteSortSheet extends StatefulWidget {
   const FavouriteSortSheet({
     super.key,

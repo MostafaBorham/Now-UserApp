@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Loading placeholder for [ProfileInfo]: a circular block the exact size of the
-/// avatar plus a short bar where the name will appear, both masked by the app
-/// shimmer. Shown while the profile is being fetched so the default avatar never
-/// flashes before the real picture and name arrive.
+
+
+
+
 class ProfileInfoShimmer extends StatelessWidget {
   const ProfileInfoShimmer({super.key, this.size = 120});
 

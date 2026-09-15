@@ -4,10 +4,10 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Full-width red "Log Out" button with the provided logout icon.
-///
-/// While [isLoading] is true it shows a spinner and ignores taps, so the
-/// logout request can't be fired twice.
+
+
+
+
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key, this.onPressed, this.isLoading = false});
 

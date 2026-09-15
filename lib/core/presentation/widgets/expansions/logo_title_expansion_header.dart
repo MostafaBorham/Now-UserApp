@@ -16,11 +16,11 @@ class LogoTitleExpansionHeader extends StatelessWidget {
   final bool isExpanded;
   final ValueChanged<bool> onToggle;
 
-  /// Localized store name as an API translation map. Falls back to a
-  /// placeholder title when null.
+
+
   final Map<String, dynamic>? storeName;
 
-  /// Store logo url. Falls back to a placeholder logo when null.
+
   final String? logoUrl;
 
   @override

@@ -21,7 +21,7 @@ class UnPrimaryButton extends StatelessWidget {
   final bool isLoading;
   final Color? backgroundColor;
 
-  /// Overrides the default 14/Medium label style.
+
   final TextStyle? titleStyle;
 
   @override

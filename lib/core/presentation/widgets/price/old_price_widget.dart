@@ -48,11 +48,11 @@ class OldPriceWidget extends StatelessWidget {
   }
 }
 
-/// Draws the old-price strike as a diagonal from the lower-start corner to the
-/// upper-end corner, its endpoints kept a fixed [_verticalInset] off the text's
-/// top and bottom. Anchoring to the corners (instead of a fixed rotation angle)
-/// keeps the ends aligned with the start and end of the price no matter how
-/// long it grows.
+
+
+
+
+
 class _StrikeThroughPainter extends CustomPainter {
   const _StrikeThroughPainter({required this.color});
 

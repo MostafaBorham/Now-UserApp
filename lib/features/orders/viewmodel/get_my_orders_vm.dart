@@ -68,7 +68,7 @@ class GetMyOrdersViewModel
         );
       },
       (PaginationModel<OrderModel> newPage) {
-        // Append the freshly fetched page to the visible list.
+
         state = AsyncValue<PaginationModel<OrderModel>>.data(
           currentPage.appendPage(newPage),
         );
@@ -78,14 +78,14 @@ class GetMyOrdersViewModel
   }
 
 
-  /// Replaces the matching order in the loaded list with [order], in place.
-  ///
-  /// A no-op unless the list is already loaded (`state` holds data) and it
-  /// contains an order with the same identity — [OrderModel.uuid], falling back
-  /// to [OrderModel.id]. Every page counter and the order's position are kept
-  /// (via [PaginationModel.copyWithData]), so a status change made on the
-  /// details or cancel flow shows here without a full refetch — keeping the
-  /// my-orders list consistent with the details screen for the same order.
+
+
+
+
+
+
+
+
   void updateOrder(OrderModel order) {
     final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
     if (currentPage == null) return;

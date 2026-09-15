@@ -1,11 +1,3 @@
-/// A single free-text specification row of a product as sent by the API under
-/// the `specifications` list, e.g.
-/// ```json
-/// { "key": "Processor", "value": "Snapdragon 8 Gen 3" }
-/// ```
-///
-/// Neither side is a localization map — the backend stores whatever text the
-/// vendor typed, so both are plain strings.
 class ProductSpecificationModel {
   final String? key;
   final String? value;

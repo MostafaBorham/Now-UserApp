@@ -19,7 +19,7 @@ import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
-/// Step 2 of login: enter the OTP sent to the phone number.
+
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key, required this.phoneNumber});
 
@@ -45,20 +45,20 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     _otpController.text = digits;
   }
 
-  /// Exits the verification flow after a successful login.
-  ///
-  /// Pops this OTP screen and the phone screen beneath it so back never
-  /// returns into the flow, landing on the screen the flow was opened from
-  /// (e.g. payment methods or the pre-checkout screen). When there is no
-  /// meaningful screen to return to — the flow was entered from onboarding
-  /// or opened directly — the stack is reset to the main screen instead.
-  /// Route-level redirects don't run on pop, so the onboarding case is
-  /// detected and rerouted here.
+
+
+
+
+
+
+
+
+
   void _leaveVerificationFlow() {
     final GoRouter router = GoRouter.of(context);
 
-    if (router.canPop()) router.pop(); // this OTP screen
-    if (router.canPop()) router.pop(); // the phone screen beneath it
+    if (router.canPop()) router.pop();
+    if (router.canPop()) router.pop();
 
     final String? landedOn = router.state.topRoute?.name;
     if (landedOn == null ||
@@ -121,10 +121,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                     setState(() => _isCodeComplete = isComplete),
               ),
               const SizedBox(height: 16),
-              // Give the resend action its own scoped instance of
-              // requestOtpProvider. The phone screen (still mounted below in
-              // the stack) listens to the root instance, so a resend here does
-              // not trigger its listener and re-navigate to this screen.
+
+
+
+
               ProviderScope(
                 overrides: [
                   requestOtpProvider.overrideWith(

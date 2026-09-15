@@ -3,8 +3,8 @@ import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 
 void main() {
   test('productSlug reads the nested product.slug from /api/v1/banners', () {
-    // Shape emitted by BannerResource (public banners endpoint): product slug
-    // is nested, categories carry ids only (no slug).
+
+
     final BannerModel banner = BannerModel.fromJson(<String, dynamic>{
       'id': 1,
       'link_type': 'product',
@@ -17,7 +17,7 @@ void main() {
   });
 
   test('productSlug still reads the flat product_slug from store banners', () {
-    // Shape emitted by PublicStoreResource (embedded store banners): flat slug.
+
     final BannerModel banner = BannerModel.fromJson(<String, dynamic>{
       'id': 2,
       'link_type': 'product',

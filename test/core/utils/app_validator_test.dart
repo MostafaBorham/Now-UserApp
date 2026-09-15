@@ -25,7 +25,7 @@ void main() {
     });
 
     test('treats 8 digits as a tail even when they start like a prefix', () {
-      // The tail of 0505123456 — not a duplicated "05".
+
       expect(AppValidator.saudiLocalPhoneTail('05123456'), '05123456');
     });
 
@@ -34,8 +34,8 @@ void main() {
         null,
         '',
         '1234',
-        '05000000000', // 11 digits
-        '9665123456', // 10 digits behind a country code
+        '05000000000',
+        '9665123456',
         'abc',
       ]) {
         expect(
@@ -47,8 +47,8 @@ void main() {
     });
   });
 
-  // The login flow identifies a user by the exact phone string it sends, so this
-  // rule must keep accepting the international format only.
+
+
   test('isValidSaudiPhone still accepts +9665XXXXXXXX and only that', () {
     expect(AppValidator.isValidSaudiPhone('+966512345678'), isTrue);
     expect(AppValidator.isValidSaudiPhone('+966 51 234 5678'), isTrue);

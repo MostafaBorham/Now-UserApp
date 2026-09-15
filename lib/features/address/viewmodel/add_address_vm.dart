@@ -4,16 +4,16 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 
-/// Single task: create a new address for the current user.
-///
-/// Starts idle (`AsyncValue.data(null)`); on success the data holds the created
-/// [AddressModel] returned by the backend. Trigger with
-/// `ref.read(addAddressProvider.notifier).addAddress(address: ...)` and watch
-/// the provider to react to loading / error / success.
-///
-/// `autoDispose` because this action state is scoped to the details screen:
-/// leaving it cancels any in-flight request through the repo, and does not
-/// leave a finished save's result parked for the next visit.
+
+
+
+
+
+
+
+
+
+
 final addAddressProvider =
     StateNotifierProvider.autoDispose<
       AddAddressViewModel,
@@ -43,8 +43,8 @@ class AddAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (AddressModel created) {
-        // Refetch rather than append: the server assigns the id and decides
-        // where the new address lands in the list order.
+
+
         _ref.read(getMyAddressesProvider.notifier).loadFirstPage();
         return AsyncValue.data(created);
       },

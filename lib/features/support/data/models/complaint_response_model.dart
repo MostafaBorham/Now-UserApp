@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-/// The support ticket returned by `POST /api/v1/me/support-tickets`
-/// (the `data.ticket` object of the response).
+
+
 class ComplaintResponseModel extends Equatable {
   final int? id;
   final String? ticketNumber;
@@ -142,7 +142,7 @@ class ComplaintResponseModel extends Equatable {
       ];
 }
 
-/// The `user` object nested inside a ticket.
+
 class ComplaintTicketUser extends Equatable {
   final int? id;
   final String? name;
@@ -169,7 +169,7 @@ class ComplaintTicketUser extends Equatable {
   List<Object?> get props => <Object?>[id, name, email, phone];
 }
 
-/// A stored file returned inside a ticket's `attachments` list.
+
 class ComplaintTicketAttachment extends Equatable {
   final int? id;
   final String? originalName;
@@ -219,7 +219,7 @@ class ComplaintTicketAttachment extends Equatable {
       ];
 }
 
-/// A single entry of a ticket's `status_history`.
+
 class ComplaintTicketStatusHistory extends Equatable {
   final int? id;
   final String? fromStatus;

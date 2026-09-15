@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Wraps [child] and, while [isLoading] is true, covers it with a translucent
-/// barrier holding a centered progress indicator.
-///
-/// Use it for in-place actions that must not be interrupted (e.g. changing the
-/// default address): the content stays visible underneath but cannot be tapped,
-/// so no second request can be fired while the first one is in flight.
+
+
+
+
+
+
 class BlockingLoadingOverlay extends StatelessWidget {
   const BlockingLoadingOverlay({
     super.key,
@@ -16,8 +16,8 @@ class BlockingLoadingOverlay extends StatelessWidget {
 
   final Widget child;
 
-  /// When true the barrier and the progress indicator are shown and every
-  /// pointer event on [child] is swallowed.
+
+
   final bool isLoading;
 
   @override

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A labelled, editable field on the Edit Information screen.
-///
-/// Renders a grey label (with an optional live character counter) above a
-/// rounded input "pill". The pill can hold a leading and/or trailing SVG icon
-/// around either a [TextField] (default) or, when [onTap] is provided with
-/// [readOnly] set, tappable display text (used for the date picker).
+
+
+
+
+
+
 class EditField extends StatelessWidget {
   const EditField({
     super.key,
@@ -33,18 +33,18 @@ class EditField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
 
-  /// Shows a live "current/max" counter on the right of the label.
+
   final bool showCounter;
 
-  /// When set, the pill becomes tappable (e.g. to open a date picker).
+
   final VoidCallback? onTap;
 
-  /// When true the pill shows [valueText]/[hintText] instead of a [TextField].
+
   final bool readOnly;
   final String? valueText;
 
-  /// Validation message shown under the pill, which also turns red. Null when
-  /// the field is valid.
+
+
   final String? errorText;
 
   @override
@@ -108,8 +108,8 @@ class EditField extends StatelessWidget {
         Expanded(
           child: Text(
             hasValue ? valueText! : (hintText ?? ''),
-            // The pill is a fixed 54px: without this a long value wraps to a
-            // second line and overflows it.
+
+
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

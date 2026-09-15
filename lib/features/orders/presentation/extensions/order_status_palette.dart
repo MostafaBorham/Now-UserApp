@@ -2,12 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The status-chip colors for an [OrderStatus], resolved from the theme.
-///
-/// Single source of truth shared by every place that paints an order's status
-/// pill (the my-orders list item and the order details header), so the mapping
-/// from a lifecycle state to its background / foreground is defined once instead
-/// of being re-hardcoded per screen.
+
+
+
+
+
+
 extension OrderStatusPalette on OrderStatus {
   ({Color background, Color foreground}) palette(AppColorScheme colors) =>
       switch (this) {

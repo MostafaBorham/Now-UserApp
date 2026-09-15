@@ -1,19 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-/// A single row of the address search results — one prediction returned by
-/// Google Places Autocomplete (New).
-///
-/// Built from a `suggestions[].placePrediction` object; the sibling
-/// `queryPrediction` entries carry no place id and are dropped by the repo.
 class PlaceSuggestionModel extends Equatable {
-  /// Google place id, used to fetch the coordinates from Place Details.
   final String placeId;
 
-  /// Highlighted part of the prediction (e.g. `Cairo`) — the tile title.
   final String mainText;
 
-  /// Remainder of the prediction (e.g. `Cairo Governorate, Egypt`) — the tile
-  /// subtitle. Empty when Google returns no structured format.
   final String secondaryText;
 
   const PlaceSuggestionModel({
@@ -41,8 +32,6 @@ class PlaceSuggestionModel extends Equatable {
 
     return PlaceSuggestionModel(
       placeId: json['placeId']?.toString() ?? '',
-      // `structuredFormat` is optional — fall back to the flat `text` field so
-      // the tile is never blank.
       mainText: main?['text']?.toString() ?? text?['text']?.toString() ?? '',
       secondaryText: secondary?['text']?.toString() ?? '',
     );

@@ -184,8 +184,8 @@ class _FilterPriceViewState extends State<FilterPriceView> {
   }
 }
 
-/// Yellow slider thumb with a soft halo ring, matching the Figma range
-/// slider (28px sub-container with an inner dot).
+
+
 class _FilterSliderThumbShape extends RangeSliderThumbShape {
   const _FilterSliderThumbShape({
     required this.thumbColor,

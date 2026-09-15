@@ -13,8 +13,8 @@ import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_ord
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 
-/// Lists the signed-in user's orders in a single, non-paged list: a first-load
-/// shimmer, an error state with retry, an empty state and pull-to-refresh.
+
+
 class MyOrderScreen extends ConsumerStatefulWidget {
   const MyOrderScreen({super.key});
 
@@ -26,10 +26,10 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   final ScrollController _scrollController = ScrollController();
   late final GetMyOrdersViewModel viewModel;
 
-  /// Guards the one-shot auto-retry: the app pre-fetches orders on session
-  /// start, and if that failed the screen opens on a stale error state. We
-  /// silently retry once (showing the shimmer, not the error widget) and only
-  /// surface the error widget if that retry also fails.
+
+
+
+
   bool _didAutoRetry = false;
 
   @override
@@ -58,11 +58,11 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   }
 
   void _onScroll() {
-    // Only load more once the very end of the list is fully visible on screen.
-    // `extentAfter` is the amount of scrollable content still hidden below the
-    // viewport, so it reaches 0 exactly when no part of the list tail is
-    // clipped off-screen — unlike a fixed pixel threshold, which re-fires while
-    // the user is still near (but not at) the bottom with the tail cut off.
+
+
+
+
+
     if (_scrollController.position.extentAfter <= 0) {
       viewModel.loadMore();
     }
@@ -80,9 +80,9 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
       body: ordersState.when(
         loading: () => OrderListViewShimmer(),
         error: (Object error, StackTrace stackTrace) {
-          // First time we land on an error state (a stale pre-fetch failure),
-          // show the shimmer and silently retry once — after this frame, since
-          // a provider cannot be modified during build.
+
+
+
           if (!_didAutoRetry) {
             _didAutoRetry = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -114,9 +114,9 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                           return ListView.separated(
                             controller: _scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
-                            // Owns the top spacing AppWavedView drops when a
-                            // scroll controller is wired in, so it scrolls up
-                            // with the content and flattens the wave.
+
+
+
                             padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
                             itemCount: items.length + loadingItemsCount,
                             separatorBuilder:

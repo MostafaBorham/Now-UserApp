@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The shared card shell behind every FAQ row: a flat `#F5F5F5` fill with a soft
-/// hairline drop shadow, rounded corners, and a clipped ink ripple. Used by both
-/// [FaqTile] and the trailing "Other" tile so they stay identical.
+
+
+
 class FaqCardShell extends StatelessWidget {
   const FaqCardShell({super.key, required this.child, this.onTap});
 
@@ -30,7 +30,7 @@ class FaqCardShell extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          // No ripple/highlight tint on expand/collapse — the card stays flat.
+
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

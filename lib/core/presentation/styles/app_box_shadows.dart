@@ -31,14 +31,14 @@ class AppBoxShadows {
   ];
 
   static final List<BoxShadow> greyElevation2 = [BoxShadow(
-    color: const Color(0x14000000), // #00000014
+    color: const Color(0x14000000),
     offset: const Offset(0, 4),
     blurRadius: 16,
     spreadRadius: 0,
   )];
 
   static final List<BoxShadow> greyElevation3 = [BoxShadow(
-    color: const Color(0x0F000000), // #0000000F (black 6%)
+    color: const Color(0x0F000000),
     offset: const Offset(0, 2),
     blurRadius: 8,
     spreadRadius: 0,
@@ -46,13 +46,13 @@ class AppBoxShadows {
 
   static final List<BoxShadow> brandCard = [
     BoxShadow(
-      color: const Color(0x0F000000), // black 6%
+      color: const Color(0x0F000000),
       offset: const Offset(0, 12),
       blurRadius: 28,
       spreadRadius: -12,
     ),
     BoxShadow(
-      color: const Color(0x0A000000), // black 4%
+      color: const Color(0x0A000000),
       offset: const Offset(0, 2),
       blurRadius: 10,
       spreadRadius: 0,

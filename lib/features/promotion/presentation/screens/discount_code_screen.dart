@@ -34,8 +34,8 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
     _scrollController.addListener(_onScroll);
     viewModel = ref.read(getCouponsProvider.notifier);
     viewModel.loadMoreState.addListener(_onLoadMoreStateChanged);
-    // Load the coupons the first time this screen opens, or retry if a previous
-    // open failed; an already-loaded list is kept as-is (no refetch).
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getCouponsProvider).hasValue) {
         viewModel.getCoupons();
@@ -49,19 +49,19 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
-    // Leaving on a failed load: drop the kept-alive provider from the outside so
-    // the next open starts fresh in `loading` and refetches, instead of
-    // reopening onto the stale error. Doing it here (not while watching) avoids
-    // recreating the provider under a live listener, so there is no permanent
-    // shimmer and no refetch loop.
+
+
+
+
+
     if (ref.read(getCouponsProvider).hasError) {
       ref.invalidate(getCouponsProvider);
     }
     super.dispose();
   }
 
-  /// Surfaces a load-more failure as an error snackbar, so a paging error is
-  /// shown without replacing the already-visible list with a full-screen error.
+
+
   void _onLoadMoreStateChanged() {
     final AsyncValue<bool> loadMoreState = viewModel.loadMoreState.value;
     if (loadMoreState.hasError && mounted) {
@@ -70,10 +70,10 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
   }
 
   void _onScroll() {
-    // Only load more once the very end of the list is fully visible on screen.
-    // `extentAfter` is the amount of scrollable content still hidden below the
-    // viewport, so it reaches 0 exactly when no part of the list tail is
-    // clipped off-screen.
+
+
+
+
     if (_scrollController.position.extentAfter <= 0) {
       viewModel.loadMore();
     }
@@ -121,9 +121,9 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
                             return ListView.separated(
                               controller: _scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              // Owns the top spacing AppWavedView drops when a
-                              // scroll controller is wired in, so it scrolls up
-                              // with the content and flattens the wave.
+
+
+
                               padding: const EdgeInsets.only(top: 57),
                               itemCount: coupons.length + loadingItemsCount,
                               separatorBuilder:

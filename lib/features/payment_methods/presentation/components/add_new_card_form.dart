@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// The "Add New Card" entry form — a light card holding the cardholder name,
-/// card number (with brand logos), expiry date and CVV, split by hairlines.
+
+
 class AddNewCardForm extends StatelessWidget {
   const AddNewCardForm({super.key});
 
@@ -73,8 +73,8 @@ class AddNewCardForm extends StatelessWidget {
   }
 }
 
-/// A single labelled field: muted label on top, editable value below,
-/// with optional trailing content (used for the card-number brand logos).
+
+
 class _CardField extends StatelessWidget {
   const _CardField({
     required this.label,
@@ -127,7 +127,7 @@ class _CardField extends StatelessWidget {
   }
 }
 
-/// Full-width hairline between the form's fields.
+
 class _FormDivider extends StatelessWidget {
   const _FormDivider();
 

@@ -8,8 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_ra
 class StoresFilterView extends StatefulWidget {
   const StoresFilterView({super.key, this.onApply});
 
-  /// [categoryIndex] is the selected chip index over the `[All, ...categories]`
-  /// list (0 = All), matching the tab order in [AllStoresScreen].
+
+
   final void Function(
     StoresSortType? type,
     String? rating,
@@ -25,8 +25,8 @@ class _StoresFilterViewState extends State<StoresFilterView> {
   StoresSortType? selectedType;
   String? selectedRating;
 
-  /// Defaults to 0 (the "All" chip that [AppSelector] pre-selects) so apply always
-  /// reports the highlighted category — even when the user leaves it on All.
+
+
   int selectedCategoryIndex = 0;
   int filtersKey = 0;
 
@@ -48,7 +48,7 @@ class _StoresFilterViewState extends State<StoresFilterView> {
         selectedRating,
         selectedCategoryIndex,
       ),
-      // onReset: resetFilters,
+
       filters: [
         FilterCategoriesView(
           key: ValueKey('categories_$filtersKey'),

@@ -2,29 +2,10 @@ import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
 import 'package:nowdelivery_user_app/core/caching/cache_keys.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
 
-/// The single source of truth for the three session tokens the app persists.
-///
-/// Tokens are an app-wide concern — read by `AuthTokenInterceptor`, the router
-/// redirects, and the token-refresh flow — so they live here in the core
-/// caching layer instead of being duplicated across feature cache services.
-///
-/// Three distinct tokens are stored under their own keys ([CacheKeys]):
-///
-/// * [getGuestToken] — the guest session; sent as `X-Guest-Token`. Issued only
-///   when continuing as a guest from onboarding.
-/// * [getAccessToken] — the logged-in user's bearer token; sent as
-///   `Authorization: Bearer`. Issued by OTP verification and by a refresh.
-/// * [getRefreshToken] — used only to mint a fresh access token on a `401`.
-///
-/// Reads are tolerant: a missing value returns `null` (never throws), so a
-/// cold cache can never crash a redirect or an interceptor. Writes and removals
-/// surface failures as [CacheException] for callers to map into a `Failure`.
 class TokenCacheService {
-  // ---- Guest token ---------------------------------------------------------
 
   String? getGuestToken() => SharedPrefManager.getString(CacheKeys.guestToken);
 
-  /// Persists the guest token, replacing any previous guest token.
   Future<void> saveGuestToken(String token) async {
     final bool saved =
         await SharedPrefManager.setString(CacheKeys.guestToken, token);
@@ -33,13 +14,10 @@ class TokenCacheService {
     }
   }
 
-  // ---- Access token --------------------------------------------------------
 
   String? getAccessToken() =>
       SharedPrefManager.getString(CacheKeys.accessToken);
 
-  /// Persists the access token on its own (e.g. after a refresh that only
-  /// returned a new access token).
   Future<void> saveAccessToken(String token) async {
     final bool saved =
         await SharedPrefManager.setString(CacheKeys.accessToken, token);
@@ -48,12 +26,10 @@ class TokenCacheService {
     }
   }
 
-  // ---- Refresh token -------------------------------------------------------
 
   String? getRefreshToken() =>
       SharedPrefManager.getString(CacheKeys.refreshToken);
 
-  /// Persists the refresh token on its own.
   Future<void> saveRefreshToken(String token) async {
     final bool saved =
         await SharedPrefManager.setString(CacheKeys.refreshToken, token);
@@ -62,10 +38,7 @@ class TokenCacheService {
     }
   }
 
-  // ---- Composite operations ------------------------------------------------
 
-  /// Persists the access and refresh tokens together — the pair issued by OTP
-  /// verification and by the refresh endpoint. Both must succeed.
   Future<void> saveUserTokens({
     required String accessToken,
     required String refreshToken,
@@ -74,17 +47,11 @@ class TokenCacheService {
     await saveRefreshToken(refreshToken);
   }
 
-  /// `true` when a logged-in user's access token is cached — the single test
-  /// used across the app to tell a user session from a guest session.
   bool get hasAccessToken => (getAccessToken() ?? '').isNotEmpty;
 
-  /// `true` when a guest token is cached.
   bool get hasGuestToken => (getGuestToken() ?? '').isNotEmpty;
 
-  // ---- Removal -------------------------------------------------------------
 
-  /// Removes the access and refresh tokens (logout), leaving the app in a
-  /// logged-out state.
   Future<void> clearUserTokens() async {
     final bool accessRemoved =
         await SharedPrefManager.remove(CacheKeys.accessToken);
@@ -95,7 +62,6 @@ class TokenCacheService {
     }
   }
 
-  /// Removes the guest token.
   Future<void> clearGuestToken() async {
     final bool removed =
         await SharedPrefManager.remove(CacheKeys.guestToken);

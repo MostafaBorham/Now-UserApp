@@ -24,14 +24,14 @@ import '../components/item_information_section.dart';
 import '../components/order_timeline_section.dart';
 import '../components/track_order_number_header.dart';
 
-/// Track Order screen: order summary, item & delivery details, the courier
-/// contact card and the live delivery timeline, with a cancel action.
-///
-/// Fed by the [orderUuid] handed in by the screen that opened this one (the
-/// my-orders list item's "Track Order" button). The uuid keys the
-/// [getOrderDetailsProvider] family, so the request starts on first watch and
-/// this screen just renders its [AsyncValue] — a shimmer while loading, an
-/// error state with retry, and the wired layout on success.
+
+
+
+
+
+
+
+
 class TrackOrderScreen extends ConsumerStatefulWidget {
   const TrackOrderScreen({super.key, required this.orderUuid});
 
@@ -87,9 +87,9 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
-                // Owns the top spacing AppWavedView drops when a scroll
-                // controller is wired in, so it scrolls up with the content and
-                // flattens the wave.
+
+
+
                 padding: const EdgeInsets.only(top: 57),
                 child: Column(
                   spacing: 16,
@@ -111,9 +111,9 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     paymentMethod: order.paymentMethod ?? '',
                     amount: order.total.toStringAsFixed(2),
                   ),
-                  // The courier is only assigned once the order is out for
-                  // delivery, so the card only shows when the payload actually
-                  // carries a driver.
+
+
+
                   if (orderStatus is OnTheWayStatus && order.driver != null)
                     CourierSection(
                       courierName: order.driver?.name ?? '',
@@ -129,8 +129,8 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                         apiDateTimeStamp: order.estimatedDeliveryTime,
                       ),
                     ),
-                  // The cancel action is only offered while the order can still
-                  // be cancelled (before the vendor starts preparing it).
+
+
                   if (orderStatus.isCancellable) ...[
                     4.hSpace,
                     PrimaryButton(

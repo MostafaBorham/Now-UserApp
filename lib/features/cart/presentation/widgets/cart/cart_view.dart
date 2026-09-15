@@ -19,22 +19,22 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 
-/// The cart screen's body.
-///
-/// Checking out is driven from here — both from a single store's pill and from
-/// the bottom button — instead of from the checkout screen: the draft request
-/// is fired first and the screen is pushed only once it succeeded, so checkout
-/// never opens on a request that turns out to fail.
+
+
+
+
+
+
 class CartView extends ConsumerStatefulWidget {
   const CartView({super.key, this.canPop});
 
-  /// Whether the app bar shows a back arrow.
-  ///
-  /// Left `null` the view falls back to `context.canPop()`, which is right for
-  /// the pushed [CartScreen]. The copy embedded in the main screen's tab bar
-  /// must pass `false`: it shares the root navigator, so once checkout is
-  /// pushed `context.canPop()` turns `true` for it too and any rebuild while
-  /// checkout is open leaves a back arrow behind after popping back.
+
+
+
+
+
+
+
   final bool? canPop;
 
   @override
@@ -53,8 +53,8 @@ class _CartViewState extends ConsumerState<CartView> {
   @override
   void initState() {
     super.initState();
-    // Load the cart the first time it's opened, or retry if a previous open
-    // failed; an already-loaded cart is kept as-is (no refetch).
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!ref.read(getCartProvider).hasValue) {
         ref.read(getCartProvider.notifier).getCart();
@@ -62,13 +62,13 @@ class _CartViewState extends ConsumerState<CartView> {
     });
   }
 
-  /// Drafts an order group and, only if the server accepted it, opens the
-  /// checkout screen.
-  ///
-  /// [vendorId] `null` checks out every store via the all-stores
-  /// `checkout/cart/preview` endpoint (bottom button); a concrete id checks out
-  /// that single store via the dedicated `checkout/vendor/{id}/preview` endpoint
-  /// (its own pill). On failure the reason is shown in a toast.
+
+
+
+
+
+
+
   Future<void> _checkout({int? vendorId}) async {
     final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
 
@@ -83,11 +83,11 @@ class _CartViewState extends ConsumerState<CartView> {
       return;
     }
 
-    // The cart is left alone here: drafting isn't placing. It's emptied on the
-    // checkout screen, once the order is actually confirmed.
 
-    // The id is forwarded so the checkout screen can re-fire the very same
-    // request if the user retries after a later failure.
+
+
+
+
     context.pushNamed(AppRoutes.checkoutScreen, extra: vendorId);
   }
 
@@ -95,8 +95,8 @@ class _CartViewState extends ConsumerState<CartView> {
   Widget build(BuildContext context) {
     final AsyncValue<CartModel> cartState = ref.watch(getCartProvider);
 
-    // The draft request blocks the whole screen: no second checkout — of the
-    // same store or of another one — may start while one is in flight.
+
+
     final bool isCheckingOut = ref.watch(
       checkoutProvider.select(
         (AsyncValue<CheckoutModel?> state) => state.isLoading,
@@ -117,8 +117,8 @@ class _CartViewState extends ConsumerState<CartView> {
                 onRetry: () => ref.read(getCartProvider.notifier).getCart(),
               ),
           data: (CartModel cart) {
-            // A vendor with no store (null id) can't be rendered or checked
-            // out on its own, so it is dropped from the list entirely.
+
+
             final List<CartVendorModel> vendors = cart.vendors
                 .where((CartVendorModel v) => v.vendor.id != null)
                 .toList();
@@ -133,14 +133,14 @@ class _CartViewState extends ConsumerState<CartView> {
                         Expanded(
                           child: ListView.separated(
                             controller: _scrollController,
-                            // Always scrollable so pull-to-refresh fires even
-                            // when a single item doesn't fill the viewport;
-                            // otherwise the list can't overscroll and the
-                            // gesture never reaches the refresh indicator.
+
+
+
+
                             physics: const AlwaysScrollableScrollPhysics(),
-                            // Owns the top spacing AppWavedView drops when a
-                            // scroll controller is wired in, so it scrolls up
-                            // with the content and flattens the wave.
+
+
+
                             padding: const EdgeInsets.fromLTRB(3, 57, 3, 20),
                             itemBuilder: (context, index) {
                               final CartVendorModel cartVendor = vendors[index];

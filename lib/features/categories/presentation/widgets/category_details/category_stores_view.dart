@@ -16,12 +16,12 @@ import 'package:nowdelivery_user_app/features/categories/presentation/providers/
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 
-/// The stores of the opened category as an infinite-scrolling list.
-///
-/// Mirrors [CategoryProductsView]: a manual [ScrollController] drives next-page
-/// loading, and the coarse view shape (first-load shimmer, empty, error,
-/// trailing next-page shimmer) is read off the view model's paginated state via
-/// [PaginationStatus] instead of the generic `PaginatedView`.
+
+
+
+
+
+
 class CategoryStoresView extends ConsumerStatefulWidget {
   const CategoryStoresView({
     super.key,
@@ -36,9 +36,9 @@ class CategoryStoresView extends ConsumerStatefulWidget {
 class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   final ScrollController _scrollController = ScrollController();
 
-  /// The query currently on screen. Recomputed in [build] from the debounced
-  /// search term, so [_onScroll] always pages the family member being shown.
-  // TODO: forward widget.sortType to the API once the stores sort param is wired.
+
+
+
   late CategoryStoresArgs _args;
 
   @override
@@ -56,11 +56,11 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   }
 
   void _onScroll() {
-    // Only load more once the very end of the list is fully visible on screen.
-    // `extentAfter` is the amount of scrollable content still hidden below the
-    // viewport, so it reaches 0 exactly when no part of the list tail is
-    // clipped off-screen. `loadNextPage` is itself a no-op unless another page
-    // may be requested, so calling it on every such frame is safe.
+
+
+
+
+
     if (_scrollController.position.extentAfter <= 0) {
       ref.read(getCategoryStoresProvider(_args).notifier).loadNextPage();
     }
@@ -68,8 +68,8 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
 
   @override
   Widget build(BuildContext context) {
-    // React to the debounced search term: each distinct query is its own family
-    // member with independent pagination state.
+
+
     final String search = ref.watch(categoryStoresSearchProvider);
     _args = (
       categorySlug: ref.read(categoryProvider).slug ?? '',
@@ -80,9 +80,9 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
     final GetCategoryStoresViewModel viewModel =
         ref.read(getCategoryStoresProvider(_args).notifier);
 
-    // Surface a failed next-page load without disturbing the list. The message
-    // stays in state until the next load settles, so this only fires when it
-    // actually changes.
+
+
+
     ref.listen<String?>(
       getCategoryStoresProvider(_args).select(
         (AsyncValue<PaginationModel<StoreModel>> state) =>
@@ -93,10 +93,10 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
       },
     );
 
-    // Watch only the coarse view shape — first-load / error / item count /
-    // whether a next page is in flight — not the stores themselves. Appending a
-    // page keeps every existing store's identity, so those items never rebuild;
-    // only the trailing shimmer count and length change here.
+
+
+
+
     final ({
       bool isFirstPageLoading,
       String? firstPageError,
@@ -152,10 +152,10 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
   }
 }
 
-/// A single store cell that watches **only its own store** in the paginated
-/// state. Because appending a page keeps every already-loaded store's identity,
-/// `select`'s `==` check leaves this cell untouched when the next page arrives —
-/// only genuinely new cells build.
+
+
+
+
 class _CategoryStoreItem extends ConsumerWidget {
   const _CategoryStoreItem({required this.args, required this.index});
 

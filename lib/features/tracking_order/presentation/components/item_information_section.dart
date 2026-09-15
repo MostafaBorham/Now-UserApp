@@ -12,9 +12,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 
 import 'tracking_section_card.dart';
 
-/// "Item Information" section: every product in the order with its thumbnail,
-/// localized name, price and ordered quantity. A detail-page list, so all items
-/// are shown in full rather than clamped to one.
+
+
+
 class ItemInformationSection extends StatelessWidget {
   const ItemInformationSection({super.key, this.items = const <ProductModel>[]});
 

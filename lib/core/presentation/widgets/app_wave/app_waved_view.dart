@@ -75,13 +75,13 @@ class _AppWavedViewState extends State<AppWavedView> {
           horizontal: 16,
           vertical: 57,
         ).copyWith(bottom: 20);
-    // With a scroll controller wired in, the caller owns the top spacing inside
-    // its scroll view so it scrolls up with the content when the wave flattens.
+
+
     final EdgeInsets effectiveBodyPadding = widget.scrollController != null
         ? bodyPadding.copyWith(top: 0)
         : bodyPadding;
-    // While scrolled off the top the wave flattens: a null clipper makes
-    // [ClipPath] fall back to the plain rectangular bounds (straight edge).
+
+
     final TopWaveClipper? waveClipper = _isFlattened
         ? null
         : const TopWaveClipper();
@@ -93,8 +93,8 @@ class _AppWavedViewState extends State<AppWavedView> {
           center: Alignment.topCenter,
           radius: 0.5,
           colors: [
-            colors.onSecondaryFixed.withValues(alpha: 0.7), // Center
-            colors.onSecondaryFixed, // Edge
+            colors.onSecondaryFixed.withValues(alpha: 0.7),
+            colors.onSecondaryFixed,
           ],
           stops: [0.0, 1.0],
         ),
@@ -111,11 +111,11 @@ class _AppWavedViewState extends State<AppWavedView> {
                 children: [
                   widget.leading?? (widget.canPop ?? context.canPop()
                       ? InkWell(
-                    // `maybePop`, not `context.pop()`: go_router pops the
-                    // navigator directly, which walks straight past any
-                    // `PopScope` the screen installed (an unsaved-changes
-                    // confirm, an in-flight request lock). This makes the app
-                    // bar arrow behave like the system back gesture.
+
+
+
+
+
                     onTap: () => Navigator.maybePop(context),
                     child: ReverseWidget(
                       applyReverse: context.isRTL,
@@ -209,7 +209,7 @@ class _AppWavedViewState extends State<AppWavedView> {
                             color: Colors.black,
                             blurRadius: 20,
                             spreadRadius: 0,
-                            offset: const Offset(0, -8), // Shadow to the top
+                            offset: const Offset(0, -8),
                           ),
                         ],
                       ),

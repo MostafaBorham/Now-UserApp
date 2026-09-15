@@ -19,13 +19,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
-/// Product tile with a frosted-glass info panel, used by the featured-stores
-/// carousel ([HomeFeaturedStoreItem]).
-///
-/// The favourite heart and the cart control are the wired shared widgets, so
-/// both act on the real product: the heart drives `productFavouriteProvider`
-/// via [CircularAppFavouriteIcon], and [AnimatedCartButton] drives
-/// `updateCartProductProvider`. Tapping anywhere else opens product details.
+
+
+
+
+
+
+
 class GlassProductItemView extends StatelessWidget {
   const GlassProductItemView({
     super.key,
@@ -35,15 +35,15 @@ class GlassProductItemView extends StatelessWidget {
 
   final ProductModel product;
 
-  /// Called with the new favourite status whenever it settles for this tile, so
-  /// the owner of the list can persist the change onto its product model.
+
+
   final ValueChanged<bool>? onFavouriteChanged;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    // The price actually charged: `effective_price` already has the running
-    // deal applied, and falls back to the list price when no deal is on.
+
+
     final double? price = product.effectivePrice ?? product.price;
     final double? discount = product.discountPercentage;
     return InkWell(
@@ -106,9 +106,9 @@ class GlassProductItemView extends StatelessWidget {
                           magnification: 1,
                         ),
                       ),
-                      // The lens hugs this Column exactly — same width and height.
-                      // A single white line on the top edge only; the other
-                      // edges stay borderless.
+
+
+
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border(
@@ -154,10 +154,10 @@ class GlassProductItemView extends StatelessWidget {
                                   price: price?.toStringAsFixed(2) ?? '0.00',
                                   size: 16,
                                 ),
-                                // Reserve the slot the cart control occupies so
-                                // the price keeps its place. The real control is a
-                                // Stack overlay below, so its counter can expand
-                                // over the price/name without shifting them.
+
+
+
+
                                 SizedBox.square(
                                   dimension:
                                       MediaQuery.sizeOf(context).width * 0.075,
@@ -170,12 +170,12 @@ class GlassProductItemView extends StatelessWidget {
                     ),
                   ],
                 ),
-                // The cart control floats at its original bottom-end corner.
-                // Living in the card Stack (not the price Row) lets the counter
-                // grow up and inward over the price and name when it opens —
-                // on top of them and without moving them — while staying fully
-                // tappable inside the card bounds. Insets match the glass
-                // panel's padding so it lines up with the reserved slot above.
+
+
+
+
+
+
                 PositionedDirectional(
                   bottom: 8,
                   end: 8,
@@ -185,11 +185,11 @@ class GlassProductItemView extends StatelessWidget {
                     stock: product.stock,
                   ),
                 ),
-                // Diagonal discount badge wrapping the top-start corner, with
-                // the discount text laid along the band. The SVG is mirrored in
-                // LTR so the band always sits on the start corner; the text
-                // rotates to match the band direction on each side. Hidden
-                // outright when the product carries no discount.
+
+
+
+
+
                 if (discount != null && discount > 0)
                   PositionedDirectional(
                     top: 0,

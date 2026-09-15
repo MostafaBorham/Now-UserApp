@@ -33,12 +33,12 @@ void main() {
       overrides: detailsOverrides(),
     );
 
-    // Title comes from the category name map (English).
+
     expect(find.text('Food'), findsOneWidget);
-    // Tab labels fall back to their LangKeys keys under the empty test loader.
+
     expect(find.text('products'), findsOneWidget);
     expect(find.text('stores'), findsOneWidget);
-    // Products tab is active first and shows the product cards.
+
     expect(find.byType(ProductItemCard2), findsWidgets);
   });
 
@@ -51,21 +51,21 @@ void main() {
     );
 
     await tester.tap(find.text('stores'));
-    await tester.pump(); // start the tab transition
-    await tester.pump(const Duration(milliseconds: 500)); // finish it
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
-    // StoreItem's inner text Row overflows under the fixed-width "Ahem" test
-    // font (it fits with the real IBM Plex font at this width). That's a
-    // test-only rendering artifact in a shared core widget, not a categories
-    // bug — drain those layout errors, but assert each really is an overflow so
-    // a genuine exception would still fail the test.
+
+
+
+
+
     for (dynamic ex = tester.takeException();
         ex != null;
         ex = tester.takeException()) {
       expect(ex.toString(), contains('overflow'));
     }
 
-    // The stores content mounted, so the tab switched.
+
     expect(find.byType(StoreItem), findsWidgets);
   });
 }

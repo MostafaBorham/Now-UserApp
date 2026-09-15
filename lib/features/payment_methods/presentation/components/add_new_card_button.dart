@@ -6,8 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Outlined "Add New Card" action shown beneath the form — a light bordered
-/// button with a leading plus-circle icon.
+
+
 class AddNewCardButton extends StatelessWidget {
   const AddNewCardButton({super.key, this.onTap});
 

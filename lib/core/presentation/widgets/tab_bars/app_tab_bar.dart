@@ -18,9 +18,9 @@ class AppTabBar extends StatelessWidget {
   final List<Widget> views;
   final Color selectedTabColor;
 
-  /// Optional prefix icon for each tab. Pass `null` at an index to omit that
-  /// tab's icon while keeping icons on others. Must match `tabs.length` when
-  /// provided.
+
+
+
   final List<Widget>? tabIcons;
 
   @override
@@ -103,10 +103,10 @@ class AppTabBar extends StatelessWidget {
   }
 }
 
-/// Keeps its [child] alive across tab switches so a view is built (and its
-/// data loaded) only the first time its tab is opened. `TabBarView` still
-/// builds each view lazily on first open, then honors this keep-alive request
-/// instead of disposing the view when another tab is selected.
+
+
+
+
 class _KeepAliveView extends StatefulWidget {
   const _KeepAliveView({required this.child});
 

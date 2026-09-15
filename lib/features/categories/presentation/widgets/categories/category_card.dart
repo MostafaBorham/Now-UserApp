@@ -46,10 +46,10 @@ class CategoryCard extends StatelessWidget {
                     height: double.infinity,
                     fit: BoxFit.cover,
                   ),
-                  // White glow: the image fades to white at its bottom edge so
-                  // the card blends into the surface below it, matching the
-                  // design (and the home category item's glow). Transparent at
-                  // the top so the product stays fully visible.
+
+
+
+
                   Positioned.fill(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
@@ -62,10 +62,10 @@ class CategoryCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // ponytail: placeholder discount badge. CategoryModel has no
-                  // discount field yet, so `hasOffer` is never set true and the
-                  // badge stays hidden. Wire to a real discount value from the
-                  // API, then the text below can stop borrowing descendantsCount.
+
+
+
+
                   if (hasOffer)
                     Container(
                       padding: const EdgeInsets.all(7),
@@ -85,9 +85,9 @@ class CategoryCard extends StatelessWidget {
               ),
             ),
           ),
-          // Fixed two-line slot so a wrapping label never shrinks the image;
-          // shorter labels just leave the second line empty, keeping every
-          // card's image the same height across the grid.
+
+
+
           SizedBox(
             height: 36,
             child: Text(

@@ -74,9 +74,9 @@ class AuthRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      // Logging in as a user overrides any guest session: save the access +
-      // refresh pair and drop the guest token so the interceptor stops sending
-      // `X-Guest-Token`.
+
+
+
       await _tokenCache.saveUserTokens(
         accessToken: accessToken,
         refreshToken: refreshToken,

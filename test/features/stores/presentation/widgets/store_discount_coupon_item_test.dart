@@ -8,9 +8,6 @@ import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_
 
 import '../../../../helpers/categories_test_harness.dart';
 
-/// The store-details coupons strip renders each coupon as the shared
-/// [VoucherTicket]. Each ticket is a tight 121-wide box, so these tests double
-/// as an overflow guard: any RenderFlex overflow inside one fails the pump.
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
@@ -41,8 +38,6 @@ void main() {
     expect(find.textContaining('Panda'), findsOneWidget);
     expect(find.textContaining('January 10, 2026'), findsOneWidget);
 
-    // The ticket keeps its fixed 121 width; height grows to fit its text but
-    // never drops below the design floor.
     final Size size = tester.getSize(find.byType(VoucherTicket));
     expect(size.width, 121);
     expect(size.height, greaterThanOrEqualTo(158));
@@ -51,8 +46,6 @@ void main() {
   testWidgets('renders the dark-head variant without overflow', (
     WidgetTester tester,
   ) async {
-    // The list alternates the head colour down the row, so the second ticket
-    // takes the dark head — a two-coupon list exercises that path.
     await pumpCoupons(tester, const [coupon, coupon]);
 
     expect(find.byType(VoucherTicket), findsNWidgets(2));

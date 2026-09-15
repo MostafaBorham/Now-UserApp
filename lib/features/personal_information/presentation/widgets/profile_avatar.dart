@@ -7,15 +7,15 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
-/// Circular profile avatar.
-///
-/// Renders, in priority order: a locally-picked [imageFile] (edit preview), the
-/// remote [imageUrl], or the circular user placeholder. The remote avatar lives
-/// on a private disk, so the request carries the user's bearer token.
-///
-/// When [showCameraOverlay] is true a translucent strip with a camera icon is
-/// drawn over the lower part of the circle (the "change photo" affordance on
-/// the edit screen), tappable via [onCameraTap].
+
+
+
+
+
+
+
+
+
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     super.key,
@@ -79,12 +79,12 @@ class ProfileAvatar extends StatelessWidget {
         fit: BoxFit.cover,
         width: size,
         height: size,
-        // A camera photo is many megapixels; decoding it at full resolution for
-        // a ~112px circle costs tens of MB of image memory for nothing.
+
+
         cacheWidth: decodeSize,
         cacheHeight: decodeSize,
-        // The picked file can be gone by the time we paint (the OS reclaiming a
-        // gallery temp file); fall back to the placeholder rather than throwing.
+
+
         errorBuilder: (_, _, _) => _placeholder(),
       );
     }
@@ -96,8 +96,8 @@ class ProfileAvatar extends StatelessWidget {
         imageUrl: url,
         width: size,
         height: size,
-        // Shimmer (not a spinner) while the picture downloads; the app-wide
-        // no-image placeholder shows if the request fails.
+
+
         placeholderType: LoadingViewTypes.shimmer,
         httpHeaders: {'Authorization': 'Bearer $token'},
       );

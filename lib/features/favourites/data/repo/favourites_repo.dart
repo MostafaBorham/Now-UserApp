@@ -11,21 +11,21 @@ import 'package:nowdelivery_user_app/features/favourites/data/datasources/remote
 import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
 import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_model.dart';
 
-/// All data operations of the favourites feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a raw server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class FavouritesRepo {
   final FavouritesApiService _favouritesApiService = FavouritesApiService();
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _favouritesApiService.cancelRequests();
 
-  /// One page of favourited products. Each favourite wraps the product under
-  /// `favoritable`, returned with the full storefront card contract, so it maps
-  /// straight onto [ProductModel] and reuses the catalogue product card.
+
+
+
   Future<Either<Failure, PaginationModel<ProductModel>>> getFavouriteProducts({
     required int page,
     String? search,
@@ -44,8 +44,8 @@ class FavouritesRepo {
     );
   }
 
-  /// One page of favourited stores. Same shape as [getFavouriteProducts], with
-  /// the `favoritable` carrying the store card contract → [StoreModel].
+
+
   Future<Either<Failure, PaginationModel<StoreModel>>> getFavouriteStores({
     required int page,
     String? search,
@@ -64,7 +64,7 @@ class FavouritesRepo {
     );
   }
 
-  /// The category chip row for a tab (`product` / `vendor`).
+
   Future<Either<Failure, List<FavouriteCategoryModel>>> getFavouriteCategories({
     required String type,
   }) {
@@ -77,9 +77,9 @@ class FavouritesRepo {
     );
   }
 
-  /// Turns a `{favorites: [{favoritable: {...}}], pagination: {...}}` payload
-  /// into a [PaginationModel] of the favourited targets. A favourite whose
-  /// target went missing (`favoritable` null) is skipped rather than faked.
+
+
+
   PaginationModel<T> _paginated<T>(
     Map<String, dynamic> data,
     T Function(Map<String, dynamic> favoritable) fromFavoritable,
@@ -99,8 +99,8 @@ class FavouritesRepo {
     return PaginationModel<T>.fromJson(pagination, items);
   }
 
-  /// Shared request envelope: connection check, non-200 handling, and
-  /// Dio/exception mapping, so each method only describes its own [parse].
+
+
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
     T Function(Map<String, dynamic> data) parse,

@@ -18,10 +18,10 @@ import '../../../../helpers/favourites_test_harness.dart';
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  // The category chip row is the app-category list; keep it empty (only the
-  // "All" tab) unless a test overrides it. With no other tab there is no
-  // sibling list view rendering its unselected-tab shimmer, so what the tests
-  // below find belongs to the "All" tab alone.
+
+
+
+
   final Override noChips = overrideAppCategories(
     AsyncValue<PaginationModel<CategoryModel>>.data(
       pageOf<CategoryModel>(const <CategoryModel>[]),
@@ -43,8 +43,8 @@ void main() {
       );
 
       expect(find.byType(AppShimmer), findsWidgets);
-      // A placeholder card renders ProductItem3View's own dummy product, so the
-      // fixture's name — not the card type — is what marks "loaded".
+
+
       expect(find.text('Pizza'), findsNothing);
     });
 
@@ -122,7 +122,7 @@ void main() {
         ],
       );
 
-      // StoreCardView overflows under the fixed-width test font; drain those.
+
       for (dynamic ex = tester.takeException();
           ex != null;
           ex = tester.takeException()) {
@@ -137,7 +137,7 @@ void main() {
   group('FavouritesTabView filters', () {
     testWidgets('typing in the search field applies a debounced search filter',
         (WidgetTester tester) async {
-      // Every query the visible list view asks for, in order.
+
       final List<List<Object?>> queries = <List<Object?>>[];
       await pumpCategoriesWidget(
         tester,
@@ -154,14 +154,14 @@ void main() {
         ],
       );
 
-      // The unfiltered "All" query the tab opens on.
+
       expect(queries, <List<Object?>>[
         <Object?>[null, null],
       ]);
       queries.clear();
 
       await tester.enterText(find.byType(TextField), 'shoes');
-      // Nothing before the debounce window elapses.
+
       await tester.pump(const Duration(milliseconds: 500));
       expect(queries, isEmpty);
       await tester.pump(const Duration(seconds: 1));
@@ -199,10 +199,10 @@ void main() {
       queries.clear();
 
       await tester.tap(find.text('Food'));
-      await tester.pump(); // start the tab transition
-      await tester.pump(const Duration(milliseconds: 500)); // finish it
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-      // The Food tab is now the selected one, so it — and only it — queries.
+
       expect(queries, <List<Object?>>[
         <Object?>[7, null],
       ]);

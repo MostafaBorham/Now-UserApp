@@ -15,8 +15,8 @@ import 'components/add_new_card_section.dart';
 import 'components/payment_option.dart';
 import 'components/section_title.dart';
 
-/// Payment Methods screen: pick a saved card or another payment method,
-/// or fill in a new card, then continue.
+
+
 class PaymentMethodsScreen extends StatefulWidget {
   const PaymentMethodsScreen({super.key});
 
@@ -98,8 +98,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   }
 }
 
-/// Docked actions below the scrolling content: the outlined "Add New Card"
-/// button and the primary "Continue" button, framed by hairlines.
+
+
 class _BottomActions extends StatelessWidget {
   const _BottomActions();
 

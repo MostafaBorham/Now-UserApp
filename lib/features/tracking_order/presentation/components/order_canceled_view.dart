@@ -7,11 +7,11 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
-/// Success state shown inside the Cancel Order bottom sheet once the order is
-/// canceled: confirms the refund and offers to keep shopping or review orders.
-/// It renders only the sheet's body — the hosting [CancelSheetScaffold]
-/// supplies the drag handle, title and close button — so the flow swaps this in
-/// place of the confirmation view without opening a second sheet.
+
+
+
+
+
 class OrderCanceledView extends StatelessWidget {
   const OrderCanceledView({
     super.key,
@@ -19,10 +19,10 @@ class OrderCanceledView extends StatelessWidget {
     required this.onViewOrders,
   });
 
-  /// Dismisses the sheet, returning to the (now cancelled) order.
+
   final VoidCallback onContinueShopping;
 
-  /// Resets the navigation stack to the Main screen on the My Orders tab.
+
   final VoidCallback onViewOrders;
 
   @override

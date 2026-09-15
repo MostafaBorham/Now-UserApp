@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
-/// First-load skeleton for [CategoryProductsView]: a grid of shimmering product
-/// cards laid out exactly like the real products, so the loading state matches
-/// their geometry.
 class CategoryProductsViewShimmer extends StatelessWidget {
   const CategoryProductsViewShimmer({super.key});
 

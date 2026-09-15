@@ -50,7 +50,7 @@ abstract class AppThemes {
       inverseSurface: Color(0xff897EF6),
     ),
   );
-  //////////////////////////////////////////////////////////////////////////////
+
   static ThemeData getDarkModeTheme() => ThemeData(
     fontFamily: FontFamily.cairo,
     scaffoldBackgroundColor: Colors.black,

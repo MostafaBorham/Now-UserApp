@@ -7,24 +7,24 @@ import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interce
 class DioFactory {
   DioFactory._();
 
-  /// Single, immutable Dio instance. As a `static final` it is created lazily
-  /// on first access and exactly once, so the same instance is reused for the
-  /// whole app lifetime.
+
+
+
   static final Dio _dio = _createAndConfigureDio();
 
-  /// Second singleton, dedicated to Google Places (New). Created lazily on
-  /// first access, so apps that never open the address search never build it.
+
+
   static final Dio _placesDio = _createAndConfigurePlacesDio();
 
-  /// Always returns the one shared [Dio] singleton.
+
   static Dio getDio() => _dio;
 
-  /// Returns the shared [Dio] used for Google Places (New) requests.
-  ///
-  /// A separate instance is required for two reasons: Places lives on another
-  /// host ([DioConstants.placesBaseUrl]), and it must **not** carry
-  /// [AuthTokenInterceptor] — the user's bearer token has no business being
-  /// sent to Google. Authentication here is the API key header instead.
+
+
+
+
+
+
   static Dio getPlacesDio() => _placesDio;
 
   static Dio _createAndConfigureDio() {
@@ -39,10 +39,10 @@ class DioFactory {
       ),
     );
 
-    // Order matters: attach the token first so the logger prints the final
-    // outgoing headers, then let the logger record the response/error, and
-    // finally give the refresh interceptor the last word so it can turn a
-    // logged `401` into a transparent token refresh + replay.
+
+
+
+
     dio.interceptors.add(AuthTokenInterceptor());
     dio.interceptors.add(DioLogger.logger);
     dio.interceptors.add(TokenRefreshInterceptor(dio));
@@ -65,7 +65,7 @@ class DioFactory {
       ),
     );
 
-    // No auth interceptor here — see [getPlacesDio].
+
     dio.interceptors.add(DioLogger.logger);
 
     return dio;

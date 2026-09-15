@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Data model describing a single tappable row inside a [SettingsSection].
+
 class SettingsItem {
   const SettingsItem({
     required this.iconAsset,
@@ -10,20 +10,20 @@ class SettingsItem {
     this.onTap,
   });
 
-  /// Path to the SVG icon (from the `assets/svg` folder).
+
   final String iconAsset;
 
-  /// Text shown next to the icon.
+
   final String label;
 
-  /// Called when the row is tapped.
+
   final VoidCallback? onTap;
 }
 
-/// A single settings row: leading icon, label, and a trailing chevron.
-///
-/// Icons are rendered straight from the provided SVG assets, so they are
-/// used as-is (placeholders) and never redrawn in code.
+
+
+
+
 class SettingsTile extends StatelessWidget {
   const SettingsTile({super.key, required this.item});
 

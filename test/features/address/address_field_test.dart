@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/widgets/address_field.dart';
 
-/// Wraps [child] in the minimum an [AddressField] needs: a theme (for
-/// `context.colors`) and a text direction.
+
+
 Widget _host(Widget child, {TextDirection direction = TextDirection.ltr}) {
   return MaterialApp(
     home: Directionality(
@@ -17,8 +17,8 @@ void main() {
   testWidgets('prefix is visible while the field is empty and unfocused', (
     WidgetTester tester,
   ) async {
-    // The reason the prefix is a leading Text and not
-    // InputDecoration.prefixText, which Flutter fades out in this exact state.
+
+
     await tester.pumpWidget(
       _host(const AddressField(hintText: 'Mobile number', prefixText: '05')),
     );

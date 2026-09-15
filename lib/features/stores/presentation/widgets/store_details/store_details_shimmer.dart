@@ -102,7 +102,7 @@ class StoreDetailsShimmer extends StatelessWidget {
             child: Column(
               spacing: 15,
               children: [
-                // Banner slider
+
                 AppShimmer(
                   child: AspectRatio(
                     aspectRatio: 3.4,
@@ -114,10 +114,10 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Brands slider block: wordmark, image, the brand info card and
-                // the dots indicator — the same order the real slide stacks them.
-                // Only the image is inset for the arrow gutters; the wordmark and
-                // card span the full width, like the real layout.
+
+
+
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 20,
@@ -272,7 +272,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ],
                 ),
-                // Discount coupons horizontal list
+
                 AppShimmer(
                   child: SizedBox(
                     height: 158,
@@ -292,7 +292,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Category circles list
+
                 AppShimmer(
                   child: SizedBox(
                     height: 110,
@@ -322,7 +322,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Tab bar chips
+
                 AppShimmer(
                   child: Row(
                     spacing: 12,
@@ -339,7 +339,7 @@ class StoreDetailsShimmer extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Products grid
+
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

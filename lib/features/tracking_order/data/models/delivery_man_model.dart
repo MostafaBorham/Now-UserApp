@@ -1,12 +1,12 @@
-/// The delivery courier assigned to an order, carried on the order payload as
-/// the nested `driver` object.
-///
-/// Deliberately a lightweight display slice — only the fields the tracking UI
-/// needs (id, localized [name], [profileImg] and [phone]).
+
+
+
+
+
 class DeliveryManModel {
   final int? id;
 
-  /// Courier name as a plain display string.
+
   final String? name;
 
   final String? profileImg;

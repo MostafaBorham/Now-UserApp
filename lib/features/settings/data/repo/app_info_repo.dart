@@ -21,9 +21,9 @@ class AppInfoRepo {
     final Either<Failure, AppInfoModel> serverResult = await _fetchFromServer();
 
     return serverResult.fold(
-      // Server failed → fall back to the cache.
+
       (Failure serverFailure) => _readFromCache(serverFailure),
-      // Server succeeded → persist the fresh data, then return it.
+
       (AppInfoModel appInfo) async {
         await _cacheAppInfo(appInfo);
         return Right<Failure, AppInfoModel>(appInfo);
@@ -62,7 +62,7 @@ class AppInfoRepo {
     try {
       await _appInfoDatabaseService.saveAppInfo(jsonEncode(appInfo.toJson()));
     } catch (_) {
-      // Intentionally ignored — caching is a side effect, not part of the result.
+
     }
   }
 

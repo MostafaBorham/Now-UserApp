@@ -29,13 +29,13 @@ class AddressSearchScreen extends ConsumerStatefulWidget {
     this.isChangingAddress = false,
   });
 
-  /// Where the map's pin currently sits. Handed to Places as a location bias so
-  /// suggestions are ranked near what the user is already looking at; null when
-  /// the map has not resolved a location yet.
+
+
+
   final LatLng? currentLocation;
 
-  /// True when an existing address's location is being changed rather than a
-  /// new address added. Drives the app bar title only.
+
+
   final bool isChangingAddress;
 
   @override
@@ -58,8 +58,8 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
     super.dispose();
   }
 
-  /// Every path into a search funnels through here — typing and picking a
-  /// recent both mean the same thing to the results list.
+
+
   void _onQueryChanged(String value) {
     setState(() => _query = value);
     ref
@@ -71,23 +71,23 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
         );
   }
 
-  /// Submitting from the keyboard remembers the term even if the user never
-  /// picks a result.
+
+
   void _onSubmitted(String value) {
     final String term = value.trim();
     if (term.isEmpty) return;
     ref.read(recentAddressSearchProvider.notifier).addSearchKey(term);
   }
 
-  /// Resolves the picked suggestion to coordinates and hands them back to the
-  /// map, which recenters its pin so the user can confirm it before entering
-  /// the address details.
+
+
+
   Future<void> _onSuggestionTapped(PlaceSuggestionModel suggestion) async {
     if (_isResolving) return;
     setState(() => _isResolving = true);
 
-    // A term that led to a pick is worth remembering, and re-adding one that
-    // is already stored moves it back to the front.
+
+
     final String term = _searchController.text.trim();
     if (term.isNotEmpty) {
       await ref.read(recentAddressSearchProvider.notifier).addSearchKey(term);
@@ -143,14 +143,14 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
                 controller: _searchController,
                 hintText: LangKeys.searchForAddressKey.tr(),
                 enableRecentKeywords: true,
-                // Recents belong to the empty-query state only: handing the
-                // field an empty list is what closes them once the user types.
+
+
                 recentKeywords: _hasQuery ? const <String>[] : recentSearches,
                 recentClearLabel: LangKeys.deleteKey.tr(),
                 onChanged: _onQueryChanged,
                 onSubmitted: _onSubmitted,
-                // The field has already filled itself and unfocused, so the
-                // recents are gone; all that is left is to search for the term.
+
+
                 onRecentSelect: _onQueryChanged,
                 onRecentRemove: recentVm.removeSearchKey,
                 onRecentClear: recentVm.clearAll,
@@ -160,8 +160,8 @@ class _AddressSearchScreenState extends ConsumerState<AddressSearchScreen> {
                     ? const SizedBox(width: double.infinity)
                     : suggestions.when(
                         loading: () => const PlacesShimmerView(),
-                        // `Failure.message` is a LangKeys key or a raw message
-                        // from Google — `.tr()` leaves the latter untouched.
+
+
                         error: (Object error, StackTrace _) =>
                             ServerConnectionErrorWidget(
                               message: error.toString(),

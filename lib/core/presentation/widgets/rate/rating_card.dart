@@ -10,14 +10,14 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:simple_animated_rating_bar/simple_animated_rating_bar.dart';
 import 'package:simple_animated_rating_bar/utils/arb_type.dart';
 
-/// Fired when the user settles on a new star value. Carries both the star
-/// [rating] and the matching emotion [comment] ("Excellent 😍") so the caller
-/// doesn't re-derive the wording — the emotion mapping lives here.
+
+
+
 typedef RatingChangedCallback = void Function(int rating, String comment);
 
-/// Maps a star count (0–5) to the emoji + label shown in the emotion pill.
-/// Kept as data (label key + emoji) so the wording stays in the lang JSON and
-/// the emoji — a presentation detail — stays here in Dart.
+
+
+
 ({String labelKey, String emoji}) _emotionForRating(int rating) {
   return switch (rating) {
     <= 0 => (labelKey: LangKeys.ratingVeryBadKey, emoji: '😡'),
@@ -29,17 +29,17 @@ typedef RatingChangedCallback = void Function(int rating, String comment);
   };
 }
 
-/// A controlled rating card: it renders the committed [rating] and reports the
-/// user's new pick through [onRatingChanged], but never advances the committed
-/// value (nor the emotion text) on its own — the parent decides that, typically
-/// after the rating request succeeds, by passing a new [rating].
-///
-/// While [isLoading] the fill animates back and forth between the committed
-/// value and the value the user just picked, using the stars' own colors (no
-/// dimming), and the bar ignores touch. When the request settles the parent
-/// flips [isLoading] off and either commits the new [rating] (success — the
-/// fill stops on the picked star) or leaves it unchanged (error — the fill
-/// snaps back to where it was); the emotion text follows the committed value.
+
+
+
+
+
+
+
+
+
+
+
 class RatingCard extends StatefulWidget {
   const RatingCard({
     super.key,
@@ -51,16 +51,16 @@ class RatingCard extends StatefulWidget {
 
   final String title;
 
-  /// The committed star value the card shows (0–5). Owned by the parent.
+
   final int rating;
 
-  /// While true the fill oscillates between the old and picked value and the
-  /// bar ignores touch, until the parent commits/reverts and flips it off.
+
+
   final bool isLoading;
 
-  /// Fires the settled star value (and its emotion comment) once the user's
-  /// pick stops changing — the package streams a value per cascade step, so
-  /// the card debounces and only emits the final one.
+
+
+
   final RatingChangedCallback? onRatingChanged;
 
   @override
@@ -69,28 +69,28 @@ class RatingCard extends StatefulWidget {
 
 class _RatingCardState extends State<RatingCard>
     with SingleTickerProviderStateMixin {
-  /// Drives the back-and-forth loading fill (0→1 fills from [_from] to [_to],
-  /// 1→0 empties back), running only while a request is in flight.
-  ///
-  /// Built in [initState] (not as a lazy `late final`) so its ticker is created
-  /// while the widget is mounted. A lazy initializer would run on first *read* —
-  /// which, for a card that's disposed before ever loading, is `dispose()`
-  /// itself — constructing the controller (and its `TickerMode.of(context)`
-  /// lookup) against a deactivated element and throwing "Looking up a
-  /// deactivated widget's ancestor is unsafe".
+
+
+
+
+
+
+
+
+
   late final AnimationController _controller;
 
-  /// The star the user picked and is now awaiting a response for; the loading
-  /// fill animates from the committed [RatingCard.rating] up to this value.
+
+
   late int _pendingRating = widget.rating;
 
-  /// Endpoints of the loading fill: [_from] is the committed value when the
-  /// request started, [_to] the picked value being confirmed.
+
+
   int _from = 0;
   int _to = 0;
 
-  /// Bumped to remount the (uncontrolled) [AnimatedRatingBar] so it re-seeds
-  /// from the committed value — used to commit on success and revert on error.
+
+
   int _barGeneration = 0;
 
   Timer? _debounce;
@@ -106,8 +106,8 @@ class _RatingCardState extends State<RatingCard>
     super.didUpdateWidget(oldWidget);
 
     if (!oldWidget.isLoading && widget.isLoading) {
-      // A request just started: oscillate the fill between the value at rest
-      // and the picked one until it settles.
+
+
       _debounce?.cancel();
       _from = widget.rating;
       _to = _pendingRating;
@@ -117,9 +117,9 @@ class _RatingCardState extends State<RatingCard>
         ..reset()
         ..repeat(reverse: true);
     } else if (oldWidget.isLoading && !widget.isLoading) {
-      // The request settled: stop animating and remount the interactive bar so
-      // it re-seeds from the committed value — the picked star on success, the
-      // previous star on error.
+
+
+
       _controller.stop();
       _barGeneration++;
     }
@@ -132,9 +132,9 @@ class _RatingCardState extends State<RatingCard>
     super.dispose();
   }
 
-  /// The package streams a value per animation step (and once on mount); the
-  /// card debounces and reports only the settled value — and only when it
-  /// actually differs from the committed one (dropping the mount echo/no-ops).
+
+
+
   void _onBarChanged(int rating) {
     if (!mounted || rating == widget.rating) return;
 
@@ -154,8 +154,8 @@ class _RatingCardState extends State<RatingCard>
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    // The emotion pill tracks the committed value only, so its text stays put
-    // through the whole request and changes solely when the parent commits.
+
+
     final ({String labelKey, String emoji}) emotion =
         _emotionForRating(widget.rating);
 
@@ -206,8 +206,8 @@ class _RatingCardState extends State<RatingCard>
             ),
           ),
 
-          // Emotion pill: emoji + label reflecting the committed star value,
-          // swapped smoothly whenever that value changes.
+
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -232,9 +232,9 @@ class _RatingCardState extends State<RatingCard>
             ),
           ),
 
-          // While a request is in flight the interactive bar is swapped for a
-          // non-interactive fill that oscillates between the old and picked
-          // value; otherwise the tappable bar, remounted to re-seed on settle.
+
+
+
           if (widget.isLoading)
             AnimatedBuilder(
               animation: _controller,

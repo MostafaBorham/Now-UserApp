@@ -13,8 +13,8 @@ import '../components/payment_error_banner.dart';
 import '../components/payment_failed_header.dart';
 import '../components/retry_payment_methods_section.dart';
 
-/// Payment Failed screen: explains the failed charge, shows the amount due,
-/// lets the user pick another method and retry — or go back to the order.
+
+
 class PaymentFailedScreen extends StatelessWidget {
   const PaymentFailedScreen({super.key});
 

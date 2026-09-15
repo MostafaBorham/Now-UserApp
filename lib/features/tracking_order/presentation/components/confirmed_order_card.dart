@@ -10,12 +10,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
-/// Order summary card shown on the Order Confirmed screen: a thumbnail, the
-/// order number & price, the awaiting-confirmation line, status chips and a
-/// "Track Order" CTA.
-///
-/// The just-confirmed orders are always pending, so this mirrors the shape of
-/// the my-orders list item ([OrderListItem]) in its pending state.
+
+
+
+
+
+
 class ConfirmedOrderCard extends StatelessWidget {
   const ConfirmedOrderCard({
     super.key,
@@ -26,7 +26,7 @@ class ConfirmedOrderCard extends StatelessWidget {
     this.onTrack,
   });
 
-  /// Placeholder thumbnail used when an order carries no vendor logo.
+
   static const String fallbackImageUrl =
       'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg';
 

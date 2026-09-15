@@ -1,6 +1,6 @@
-// ponytail: lives in core but still imports features/cart for the cart button;
-// decoupling means relocating the cart viewmodel too — do that when cart is
-// refactored, not before.
+
+
+
 import 'dart:async';
 import 'package:go_router/go_router.dart';
 
@@ -35,9 +35,9 @@ class ProductItemCard2 extends StatefulWidget {
   final ProductModel? productModel;
   final GestureTapCallback? onTap;
 
-  /// Forwarded to the heart button — fired with the new status after a
-  /// successful favourite toggle. Lets a list remove the card when it is
-  /// unfavourited (see the favourites screen).
+
+
+
   final ValueChanged<bool>? onFavouriteChanged;
   @override
   State<ProductItemCard2> createState() => _ProductItemCard2State();

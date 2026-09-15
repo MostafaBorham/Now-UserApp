@@ -3,10 +3,10 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder mirroring [WalletHistoryItem]'s geometry — the circular
-/// logo, the merchant-name bar, the status chip and the amount — as blank
-/// shimmering blocks. It carries no real content, only the layout, so the
-/// loading state lays out exactly like a real transaction row.
+
+
+
+
 class WalletHistoryItemShimmer extends StatelessWidget {
   const WalletHistoryItemShimmer({super.key});
 

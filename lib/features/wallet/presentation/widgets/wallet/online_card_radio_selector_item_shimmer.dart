@@ -4,10 +4,10 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder mirroring [OnlineCardRadioSelectorItem]'s geometry — the
-/// circular radio, the cardholder / number bars and the brand logo — as blank
-/// shimmering blocks. It carries no real content, only the layout, so the
-/// loading state lays out exactly like a real card row.
+
+
+
+
 class OnlineCardRadioSelectorItemShimmer extends StatelessWidget {
   const OnlineCardRadioSelectorItemShimmer({super.key});
 

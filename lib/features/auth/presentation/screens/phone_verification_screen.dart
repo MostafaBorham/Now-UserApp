@@ -14,7 +14,7 @@ import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart
 import '../widgets/phone_verification/phone_number_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
-/// Step 1 of login: collect the mobile number to send an OTP to.
+
 class PhoneVerificationScreen extends ConsumerStatefulWidget {
   const PhoneVerificationScreen({super.key});
 

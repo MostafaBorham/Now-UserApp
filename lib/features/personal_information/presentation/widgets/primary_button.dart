@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Full-width green call-to-action button (used for "Edit" and "Save").
+
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
@@ -13,7 +13,7 @@ class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
 
-  /// When true the label is replaced by a spinner and taps are ignored.
+
   final bool isLoading;
 
   @override

@@ -4,8 +4,8 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 class BannerModel extends Equatable {
   final int? id;
 
-  /// Localized text fields as API translation maps (`{'en': ..., 'ar': ...}`).
-  /// Resolve for display with `context.getLocalizedApiText(...)`.
+
+
   final Map<String, dynamic>? title;
   final Map<String, dynamic>? subtitle;
   final Map<String, dynamic>? description;
@@ -17,10 +17,10 @@ class BannerModel extends Equatable {
   final String? productSlug;
   final String? categorySlug;
 
-  /// Locale-agnostic fallback image (`image.download_url`).
+
   final String? image;
 
-  /// Per-locale banner images (`image_ar.download_url` / `image_en.download_url`).
+
   final String? imageAr;
   final String? imageEn;
   final String? startAt;
@@ -60,8 +60,8 @@ class BannerModel extends Equatable {
       defaultUrl: json['default_url']?.toString(),
       index: (json['index'] as num?)?.toInt(),
       isFeatured: json['is_featured'] as bool?,
-      // Store banners send a flat `product_slug`; the `/api/v1/banners` endpoint
-      // nests it under `product.slug`. Read either so both sources work.
+
+
       productSlug: json['product_slug']?.toString() ??
           (json['product'] is Map
               ? (json['product'] as Map)['slug']?.toString()

@@ -63,7 +63,7 @@ class ProductMainInfoCard extends ConsumerWidget {
           BoxShadow(
             color: colors.neutral500.withValues(
               alpha: 0.3,
-            ), // #0000000F (black 6%)
+            ),
             offset: const Offset(0, 2),
             blurRadius: 30,
           ),
@@ -225,11 +225,11 @@ class ProductMainInfoCard extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                         spacing: 4,
                         children: [
-                          // Priced the same way a cart line is: the new price is
-                          // the discounted one, and the struck-through old price
-                          // (the base price) only appears when a discount
-                          // applies. With no discount, only the base price shows
-                          // in the new-price widget.
+
+
+
+
+
                           if (product.discountPrice != null)
                             OldPriceWidget(
                               color: colors.neutral500,

@@ -3,18 +3,18 @@ import 'package:nowdelivery_user_app/core/data/datasources/local/database/recent
 import 'package:nowdelivery_user_app/core/database/database_exceptions.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 
-/// Recent-keyword operations for a search, local and Hive-backed.
-///
-/// The database service only reads/writes raw values; this repo owns the
-/// recents rules (dedup / trim / filter) and the error handling. `Left` carries
-/// a user-facing message (a [DatabaseException] message key or a raw string —
-/// callers apply `.tr()`, which leaves non-key strings untouched). Every method
-/// returns the up-to-date `List<String>` (most-recent first) on `Right`, so
-/// callers can render the result without a second read. No connectivity check:
-/// recents are local-only.
-///
-/// One instance per search — the box, the key and how many entries are kept are
-/// the only things that vary between them.
+
+
+
+
+
+
+
+
+
+
+
+
 class RecentKeywordsRepo {
   RecentKeywordsRepo({
     required String boxName,
@@ -27,11 +27,11 @@ class RecentKeywordsRepo {
 
   final RecentKeywordsDatabaseService _databaseService;
 
-  /// The newest [maxKeywords] entries are kept; older ones are dropped.
+
   final int maxKeywords;
 
-  /// Casts the raw stored value into a `List<String>` (most-recent first),
-  /// returning an empty list when nothing is stored yet.
+
+
   List<String> _readKeywords() {
     final dynamic raw = _databaseService.getRecentSearches();
     if (raw is! List) return <String>[];
@@ -48,8 +48,8 @@ class RecentKeywordsRepo {
     }
   }
 
-  /// Filters the stored keywords by [searchKey] (case-insensitive substring
-  /// match), most-recent first. A blank [searchKey] returns the full list.
+
+
   Either<Failure, List<String>> filterRecentSearch(String searchKey) {
     try {
       final String query = searchKey.trim().toLowerCase();
@@ -68,8 +68,8 @@ class RecentKeywordsRepo {
     }
   }
 
-  /// Prepends [keyword] to the recent list — de-duplicated (an existing entry
-  /// moves to the front) and trimmed to the newest [maxKeywords].
+
+
   Future<Either<Failure, List<String>>> addSearchKey(String keyword) async {
     try {
       final String term = keyword.trim();

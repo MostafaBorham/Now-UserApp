@@ -3,10 +3,6 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/ticket_clipper.dart';
 
-/// Loading placeholder for the discount card: only the outer ticket silhouette —
-/// a full-width rounded block whose height is half its width, clipped with the
-/// same top/bottom half-circle notch as the real card ([TicketClipper]) — with
-/// no inner detail shimmers.
 class DiscountCardShimmer extends StatelessWidget {
   const DiscountCardShimmer({super.key});
 

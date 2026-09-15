@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  // 42
+
   static TextStyle get style42Regular => TextStyle(
     fontSize: 42,
     fontWeight: FontWeight.w400,
@@ -29,7 +29,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 36
+
   static TextStyle get style36Regular => TextStyle(
     fontSize: 36,
     fontWeight: FontWeight.w400,
@@ -54,7 +54,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 32
+
   static TextStyle get style32Regular => TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.w400,
@@ -79,7 +79,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 28
+
   static TextStyle get style28Regular => TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w400,
@@ -104,7 +104,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 24
+
   static TextStyle get style24Regular => TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w400,
@@ -130,7 +130,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 20
+
   static TextStyle get style20Regular => TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w400,
@@ -155,7 +155,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 18
+
   static TextStyle get style18Regular => TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w400,
@@ -180,7 +180,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 16
+
   static TextStyle get style16Regular => TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
@@ -205,7 +205,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 14
+
   static TextStyle get style14Regular => TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
@@ -230,7 +230,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 12
+
   static TextStyle get style12Regular => TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
@@ -255,7 +255,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 10
+
   static TextStyle get style10Regular => TextStyle(
     fontSize: 10,
     fontWeight: FontWeight.w400,
@@ -280,7 +280,7 @@ class AppTextStyles {
     overflow: TextOverflow.ellipsis,
   );
 
-  // 8
+
   static TextStyle get style8Regular => TextStyle(
     fontSize: 8,
     fontWeight: FontWeight.w400,

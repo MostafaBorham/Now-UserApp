@@ -52,9 +52,9 @@ class CheckoutRepo {
     }
   }
 
-  /// Fetches the single-store checkout preview for [vendorId] via
-  /// `POST /api/v1/checkout/vendor/{vendorId}/preview`, parsing the single-store
-  /// payload onto the shared [CheckoutModel].
+
+
+
   Future<Either<Failure, CheckoutModel>> checkoutForSingleStore({
     required int vendorId,
   }) async {
@@ -94,13 +94,13 @@ class CheckoutRepo {
     }
   }
 
-  /// Applies coupon [code] for [vendorId] via the stateless
-  /// `POST /api/v1/coupons/apply` calculator.
-  ///
-  /// A rejected code is **not** a [Left]: the request returns 200 with
-  /// `applied:false` and a reason, so the model is returned either way and the
-  /// caller inspects [VendorDiscountApplicationModel.applied]. [Left] is only
-  /// for transport/domain failures (offline, 422, network).
+
+
+
+
+
+
+
   Future<Either<Failure, VendorDiscountApplicationModel>> applyCoupon({
     required int vendorId,
     required String code,
@@ -108,9 +108,9 @@ class CheckoutRepo {
     () => _checkoutApiService.applyCoupon(vendorId: vendorId, code: code),
   );
 
-  /// Applies purchase-voucher [code] for [vendorId] via the stateless
-  /// `POST /api/v1/purchase-vouchers/apply` calculator. Same semantics as
-  /// [applyCoupon].
+
+
+
   Future<Either<Failure, VendorDiscountApplicationModel>> applyPurchaseVoucher({
     required int vendorId,
     required String code,
@@ -158,9 +158,9 @@ class CheckoutRepo {
     }
   }
 
-  /// Confirms the draft group and returns the orders the server actually
-  /// created (each carrying its real `order_number`, status, etc.) so the
-  /// confirmation screen renders placed orders rather than the preview draft.
+
+
+
   Future<Either<Failure, List<OrderModel>>> confirmOrder({
     required String orderGroupUuid,
     required String idempotencyKey,
@@ -195,8 +195,8 @@ class CheckoutRepo {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 
-      // The created orders sit on the confirmed order group. Different builds
-      // nest the group under `order_group`; fall back to `data` itself.
+
+
       final Map<String, dynamic>? data =
           body['data'] as Map<String, dynamic>?;
       final Map<String, dynamic> group =

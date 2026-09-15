@@ -8,23 +8,23 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/remote/api/welcome_api_service.dart';
 
-/// All data operations of the welcome feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a raw server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class WelcomeRepo {
   final WelcomeApiService _welcomeApiService = WelcomeApiService();
   final TokenCacheService _tokenCache = TokenCacheService();
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _welcomeApiService.cancelRequests();
 
-  /// Requests a guest token and persists it locally.
-  ///
-  /// `Right` is returned only after the token has been saved to the cache;
-  /// a failed save is a `Left` just like a failed request.
+
+
+
+
   Future<Either<Failure, String>> generateGuestToken() async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));

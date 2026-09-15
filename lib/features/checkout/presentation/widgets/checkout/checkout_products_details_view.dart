@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 class CheckoutProductsDetailsView extends StatelessWidget {
   const CheckoutProductsDetailsView({super.key, this.order});
 
-  /// Draft order whose items and pricing drive the expanded card.
+
   final OrderModel? order;
 
   @override

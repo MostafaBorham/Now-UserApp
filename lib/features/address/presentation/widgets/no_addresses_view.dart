@@ -5,16 +5,16 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Empty state for the addresses screen: a large home-location illustration
-/// with a caption below it.
-///
-/// Scrollable so it still fills the list area and keeps pull-to-refresh working
-/// when there are no addresses to scroll.
+
+
+
+
+
 class NoAddressesView extends StatelessWidget {
   const NoAddressesView({super.key});
 
-  /// The illustration takes half the screen width; its height follows the
-  /// asset's own aspect ratio.
+
+
   static const double _iconWidthFactor = 0.5;
 
   @override

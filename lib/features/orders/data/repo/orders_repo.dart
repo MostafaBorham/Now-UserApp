@@ -52,8 +52,7 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception,stack) {
-      print(stack);
+    } catch (exception) {
       return Left(Failure(exception.toString()));
     }
   }
@@ -94,9 +93,9 @@ class OrdersRepo {
     }
   }
 
-  /// Cancels the order identified by [orderUuid]. The response body only carries
-  /// a status message, so a successful call resolves to [unit] and the caller
-  /// refetches the order to pick up its new (cancelled) state.
+
+
+
   Future<Either<Failure, Unit>> cancelOrder({
     required String orderUuid,
   }) async {

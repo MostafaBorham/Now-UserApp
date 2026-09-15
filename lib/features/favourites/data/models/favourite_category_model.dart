@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
-/// A single category chip on the favourites screen, from
-/// `GET /api/v1/favorites/categories`.
+
+
 class FavouriteCategoryModel extends Equatable {
   final int id;
 
-  /// Localized name as an API translation map (`{'en': ..., 'ar': ...}`).
-  /// Resolve it for display with `context.getLocalizedApiText(name)`.
+
+
   final Map<String, dynamic>? name;
 
-  /// How many of the caller's favourites fall under this (top-level) category.
+
   final int favoritablesCount;
 
   const FavouriteCategoryModel({

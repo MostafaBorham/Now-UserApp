@@ -26,9 +26,9 @@ class CategoryProductsView extends ConsumerStatefulWidget {
 class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   final ScrollController _scrollController = ScrollController();
 
-  /// The view model for the query currently on screen. Re-bound in [build]
-  /// because changing the search term switches to a different family member
-  /// (and so a different view model instance).
+
+
+
   GetCategoryProductsViewModel? _viewModel;
 
   @override
@@ -54,11 +54,11 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   }
 
   void _onScroll() {
-    // Only load more once the very end of the grid is fully visible on screen.
-    // `extentAfter` is the amount of scrollable content still hidden below the
-    // viewport, so it reaches 0 exactly when no part of the grid tail is
-    // clipped off-screen — unlike a fixed pixel threshold, which re-fires while
-    // the user is still near (but not at) the bottom with the tail cut off.
+
+
+
+
+
     if (_scrollController.position.extentAfter <= 0) {
       _viewModel?.loadMore();
     }
@@ -66,8 +66,8 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
 
   @override
   Widget build(BuildContext context) {
-    // React to the debounced search term: each distinct query is its own family
-    // member with independent pagination state.
+
+
     final String search = ref.watch(categoryProductsSearchProvider);
     final CategoryProductsArgs args = (
       categorySlug: ref.read(categoryProvider).slug ?? '',
@@ -75,8 +75,8 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
       searchKey: search.isEmpty ? null : search,
     );
 
-    // Re-bind to the current query's view model and move the load-more error
-    // listener onto it whenever the query (and so the instance) changes.
+
+
     final GetCategoryProductsViewModel viewModel = ref.read(
       getCategoryProductsProvider(args).notifier,
     );

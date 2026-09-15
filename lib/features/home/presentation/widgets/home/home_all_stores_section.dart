@@ -63,7 +63,7 @@ class HomeAllStoresSection extends StatelessWidget {
                   );
                 },
               ),),
-              // selectedTabColor: colors.tertiaryContainer,
+
               unSelectedTabColor: colors.primaryFixed,
             ),
           ),

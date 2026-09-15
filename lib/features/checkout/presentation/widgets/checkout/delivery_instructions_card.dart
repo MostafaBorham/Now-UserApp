@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// Inline editor for the per-order delivery instructions ("directions to the
-/// driver"). The typed text is submitted with the order as `delivery_instructions`;
-/// the parent owns the [controller] so it can read that value on confirm.
-///
-/// The field auto-grows: it starts one line tall and expands the card as the
-/// text wraps onto more lines, up to [maxLines] before it starts scrolling.
+
+
+
+
+
+
 class DeliveryInstructionsCard extends StatelessWidget {
   const DeliveryInstructionsCard({super.key, required this.controller});
 

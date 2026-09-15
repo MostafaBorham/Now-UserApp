@@ -2,17 +2,17 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/data/models/delivery_man_model.dart';
 
-/// A single store's order, with its own totals and [items]. Used both for the
-/// draft group in checkout and for placed orders in the orders feature.
-///
-/// The two endpoints name the money fields differently — checkout's draft
-/// returns `tax` / `discount` / `total`, `/api/v1/my/orders` returns
-/// `tax_amount` / `discount_amount` / `total_amount` — so [fromJson] reads the
-/// plain key first and falls back to the `*_amount` one.
-///
-/// Line items are parsed as [ProductModel] — the order-item payload is a strict
-/// subset of the product payload, so we remap the `product_*` / `unit_price`
-/// keys onto the product schema instead of maintaining a parallel model.
+
+
+
+
+
+
+
+
+
+
+
 class OrderModel {
   final int? id;
   final String? uuid;
@@ -21,33 +21,33 @@ class OrderModel {
   final int? vendorId;
   final int? branchId;
 
-  /// The store this order is placed with. Populated from the nested `vendor`
-  /// object on the response, mirroring the cart's convention — only the
-  /// display-facing slice (`id`, `name`, `logo_url`) is carried so the card
-  /// header can render without a second lookup.
+
+
+
+
   final StoreModel vendor;
 
-  /// The customer who placed the order, as the lite slice the order payload
-  /// carries (`id`, `name`, `phone`) — not the authenticated-user model.
+
+
   final OrderUserModel user;
 
-  /// The courier assigned to this order, from the nested `driver` object.
-  /// Null until a delivery man is assigned (i.e. before the order is out for
-  /// delivery).
+
+
+
   final DeliveryManModel? driver;
 
-  /// The raw machine status key (`pending`, `delivered`, …) used for logic.
-  /// For the human-readable label use [orderStatus] instead.
+
+
   final String? status;
 
-  /// The localized order status, read from `order_status`. The API sends it as
-  /// a translation map (`{'ar': ..., 'en': ...}`); when only the machine
-  /// [status] string is present (e.g. the checkout draft payload) it is
-  /// normalized into a map with both languages set to it, so the presentation
-  /// layer always reads it through [BuildContext.getLocalizedApiText].
+
+
+
+
+
   final Map<String, dynamic>? orderStatus;
 
-  /// Whether this order currently exposes live driver tracking (`is_tracking`).
+
   final bool isTracking;
 
   final String? paymentStatus;
@@ -60,14 +60,14 @@ class OrderModel {
   final String? paymentMethod;
   final String? deliveryAddress;
 
-  /// The delivery region split into `city` / `area`, from the `region` object.
+
   final OrderRegionModel region;
 
   final String? cancelReason;
   final String? notes;
 
-  /// Lifecycle timestamps, kept as the raw ISO-8601 strings the API sends;
-  /// parse/format them at the presentation layer.
+
+
   final String? estimatedDeliveryTime;
   final String? deliveredTime;
   final String? respondByAt;
@@ -80,10 +80,10 @@ class OrderModel {
   final String? createdAt;
   final String? updatedAt;
 
-  /// The delivered-at value. Like [status], the API may send it as a plain
-  /// string or as a translation map (`{'ar': ..., 'en': ...}`); a plain string
-  /// is normalized to a map with both languages set to it, so the presentation
-  /// layer reads it through [BuildContext.getLocalizedApiText].
+
+
+
+
   final Map<String, dynamic>? deliveredAt;
 
   final List<ProductModel> items;
@@ -207,11 +207,11 @@ class OrderModel {
                 (e as Map<String, dynamic>?) ?? <String, dynamic>{};
             final Map<String, dynamic>? product =
                 item['product'] as Map<String, dynamic>?;
-            // Prefer the nested `product` object (localized name, images,
-            // rating, deal) when present, overlaying the ordered [quantity]
-            // from the line item. Fall back to remapping the flat order-item
-            // keys onto the product schema for payloads (e.g. the checkout
-            // draft) that don't nest a full product.
+
+
+
+
+
             if (product != null) {
               return ProductModel.fromJson(<String, dynamic>{
                 ...product,
@@ -231,8 +231,8 @@ class OrderModel {
   }
 }
 
-/// The delivery region carried on an order payload (`region` object), split
-/// into its `city` and `area` parts.
+
+
 class OrderRegionModel {
   final String? city;
   final String? area;
@@ -251,11 +251,11 @@ class OrderRegionModel {
   }
 }
 
-/// The customer slice carried on an order payload (`user` object).
-///
-/// Deliberately separate from the auth feature's `UserModel`: that one models
-/// the authenticated account (roles, permissions, profile completion), this one
-/// only the three display fields an order carries.
+
+
+
+
+
 class OrderUserModel {
   final int? id;
   final String? name;

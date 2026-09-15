@@ -8,14 +8,14 @@ import 'package:nowdelivery_user_app/features/address/data/datasources/remote/ap
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/data/repo/address_repo.dart';
 
-/// Pins the failure contract of [AddressRepo].
-///
-/// The repo answers six endpoints through six hand-copied try/catch blocks, and
-/// this file exists because that duplication is about to be collapsed into one
-/// envelope. The `parsing` and `already correct` groups say what must survive
-/// that rewrite untouched; the `must be fixed` group says what the rewrite is
-/// for — a timeout that shows untranslated English, a raw Dart cast error in a
-/// snackbar, and a 201/204 the repo refuses to accept.
+
+
+
+
+
+
+
+
 void main() {
   const Map<String, dynamic> addressJson = <String, dynamic>{
     'id': 12,
@@ -32,12 +32,12 @@ void main() {
     );
   }
 
-  /// The server answered, with [data] as its body.
+
   _FakeAddressApi replying(int statusCode, dynamic data) =>
       _FakeAddressApi(response: answer(statusCode, data));
 
-  /// The request never got an answer — timeout, DNS, dropped connection,
-  /// cancellation. `DioException.response` is null for all of them.
+
+
   _FakeAddressApi unreachable() => _FakeAddressApi(
         error: DioException(
           requestOptions: RequestOptions(path: '/addresses'),
@@ -49,7 +49,7 @@ void main() {
     return AddressRepo(api: api, isConnected: () async => connected);
   }
 
-  /// The message of a `Left`, or a failing matcher if the result was a `Right`.
+
   String failureMessage(Either<Failure, Object?> result) {
     return result.fold((Failure failure) => failure.message, (Object? right) {
       fail('expected a Left, got Right($right)');
@@ -190,8 +190,8 @@ void main() {
       final Either<Failure, PaginationModel<AddressModel>> result =
           await repo.getMyAddresses(page: 1);
 
-      // Not ApiErrorHandler's untranslated English default, which an Arabic
-      // user would be shown verbatim.
+
+
       expect(failureMessage(result), LangKeys.serverConnectionFailedKey);
     });
 
@@ -219,7 +219,7 @@ void main() {
     });
 
     test('a malformed payload never leaks a Dart exception string', () async {
-      // `data` present but null: the repo casts it to a non-nullable Map.
+
       final AddressRepo repo = repoOn(
         replying(200, <String, dynamic>{'data': null}),
       );
@@ -234,18 +234,18 @@ void main() {
   });
 }
 
-/// Stands in for the real service, which would build the app-wide Dio singleton
-/// (auth and token-refresh interceptors included) in its field initializer.
-///
-/// Every endpoint funnels into the same canned answer: these tests are about the
-/// envelope around the call, never about which URL was hit.
+
+
+
+
+
 class _FakeAddressApi implements AddressApiService {
   _FakeAddressApi({this.response, this.error});
 
   final Response<dynamic>? response;
   final Object? error;
 
-  /// How many requests actually went out — the offline path must leave this 0.
+
   int calls = 0;
 
   Future<Response> _answer() async {

@@ -3,7 +3,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-/// One category shown in the spool slider.
+
 class SpoolItem {
   const SpoolItem({
     required this.label,
@@ -14,27 +14,27 @@ class SpoolItem {
 
   final String label;
 
-  /// Placeholder icon, used when [image] is null so the widget runs with no
-  /// assets. Swap in [image] for real category thumbnails.
+
+
   final IconData? icon;
 
-  /// Real thumbnail, e.g. NetworkImage(...) or AssetImage(...).
+
   final ImageProvider? image;
 
-  /// Background tint behind the placeholder icon.
+
   final Color color;
 }
 
-// ---------------------------------------------------------------------------
-// THE SPOOL SLIDER
-// ---------------------------------------------------------------------------
 
-/// A curved carousel where items ride along an arc. The centred item is
-/// enlarged and reported through [onSelected]. Drag horizontally to rotate;
-/// it snaps to the nearest item and supports fling.
-///
-/// All of the geometry is driven by [angularSpacing] (gap between items) and
-/// [curvature] (how flat the arc is), so it adapts to any width.
+
+
+
+
+
+
+
+
+
 class SpoolSlider extends StatefulWidget {
   const SpoolSlider({
     super.key,
@@ -44,12 +44,12 @@ class SpoolSlider extends StatefulWidget {
     this.height = 230,
     this.itemDiameter = 72,
     this.minScale = 0.55,
-    this.angularSpacing = 0.30, // radians between neighbours (~17°)
-    this.curvature = 1.25, // arc radius = width * curvature (bigger = flatter)
+    this.angularSpacing = 0.30,
+    this.curvature = 1.25,
     this.arcColor = const Color(0xFFFFC107),
     this.selectedLabelColor = const Color(0xFF2E9E3F),
     this.labelColor = const Color(0xFF7A7A7A),
-    this.reverse = false, // flip drag direction (handy for RTL feel)
+    this.reverse = false,
   });
 
   final List<SpoolItem> items;
@@ -71,17 +71,17 @@ class SpoolSlider extends StatefulWidget {
 
 class _SpoolSliderState extends State<SpoolSlider>
     with SingleTickerProviderStateMixin {
-  /// Fractional index currently sitting at the centre slot.
+
   late double _page;
 
   late final AnimationController _controller;
   Animation<double>? _anim;
   int _reported = -1;
 
-  /// Pixels of horizontal drag that equal moving by one item.
+
   static const double _dragPerIndex = 105;
 
-  /// Items past this angular offset are off the visible arc.
+
   static const double _maxPhi = 1.0;
 
   @override
@@ -128,7 +128,7 @@ class _SpoolSliderState extends State<SpoolSlider>
 
   void _onDragEnd(DragEndDetails d) {
     final dir = widget.reverse ? -1 : 1;
-    // Convert the fling velocity into an index velocity and project a little.
+
     final indexVelocity = -dir * d.velocity.pixelsPerSecond.dx / _dragPerIndex;
     final projected = _page + indexVelocity * 0.12;
     final target = projected.round().clamp(0, _maxIndex).toDouble();
@@ -160,11 +160,11 @@ class _SpoolSliderState extends State<SpoolSlider>
             final w = constraints.maxWidth;
             final cx = w / 2;
             final radius = w * widget.curvature;
-            // y of the centred item's circle-centre.
-            final topY = widget.itemDiameter * 0.95;
-            final cy = topY + radius; // circle centre sits far below the view
 
-            // Work out which items are on-screen and where.
+            final topY = widget.itemDiameter * 0.95;
+            final cy = topY + radius;
+
+
             final placed = <_Placed>[];
             for (var i = 0; i < widget.items.length; i++) {
               final phi = (i - _page) * widget.angularSpacing;
@@ -173,7 +173,7 @@ class _SpoolSliderState extends State<SpoolSlider>
               final y = cy - radius * math.cos(phi);
               placed.add(_Placed(i, phi, x, y));
             }
-            // Paint outermost first so the centre item ends up on top.
+
             placed.sort((a, b) => b.phi.abs().compareTo(a.phi.abs()));
 
             return Stack(
@@ -185,8 +185,8 @@ class _SpoolSliderState extends State<SpoolSlider>
                       color: widget.arcColor,
                       cx: cx,
                       cy: cy,
-                      // Crest sits just under the item centres so they "rest"
-                      // on the hill.
+
+
                       radius: radius - widget.itemDiameter * 0.18,
                     ),
                   ),
@@ -254,18 +254,18 @@ class _SpoolSliderState extends State<SpoolSlider>
   }
 }
 
-/// Resolved on-screen placement for one item.
+
 class _Placed {
   _Placed(this.index, this.phi, this.x, this.y);
   final int index;
-  final double phi; // angular offset from centre
+  final double phi;
   final double x;
   final double y;
 }
 
-// ---------------------------------------------------------------------------
-// VISUAL PIECES
-// ---------------------------------------------------------------------------
+
+
+
 
 class _Thumb extends StatelessWidget {
   const _Thumb({
@@ -316,7 +316,7 @@ class _Thumb extends StatelessWidget {
   }
 }
 
-/// Fills everything below a circular crest, producing the yellow hill.
+
 class _ArcPainter extends CustomPainter {
   _ArcPainter({
     required this.color,
@@ -339,7 +339,7 @@ class _ArcPainter extends CustomPainter {
       ).createShader(rect);
 
     final path = Path()..moveTo(0, size.height);
-    // Trace the circle's top edge across the width.
+
     for (double x = 0; x <= size.width; x += 3) {
       final dx = x - cx;
       final inside = radius * radius - dx * dx;
@@ -360,9 +360,9 @@ class _ArcPainter extends CustomPainter {
       old.color != color;
 }
 
-// ---------------------------------------------------------------------------
-// DEMO  (delete everything below when you drop SpoolSlider into your app)
-// ---------------------------------------------------------------------------
+
+
+
 
 class SpoolDemoPage extends StatefulWidget {
   const SpoolDemoPage({super.key});
@@ -372,13 +372,13 @@ class SpoolDemoPage extends StatefulWidget {
 }
 
 class _SpoolDemoPageState extends State<SpoolDemoPage> {
-  // عروض is placed in the middle so it starts centred.
+
   static const _items = <SpoolItem>[
     SpoolItem(label: 'المنزل', icon: Icons.chair_rounded),
     SpoolItem(label: 'الإلكترونيات', icon: Icons.devices_rounded),
     SpoolItem(label: 'الخضروات', icon: Icons.eco_rounded),
     SpoolItem(label: 'الموضة', icon: Icons.checkroom_rounded),
-    SpoolItem(label: 'عروض', icon: Icons.local_offer_rounded), // centre
+    SpoolItem(label: 'عروض', icon: Icons.local_offer_rounded),
     SpoolItem(label: 'الجمال', icon: Icons.brush_rounded),
     SpoolItem(label: 'الرياضة', icon: Icons.sports_soccer_rounded),
     SpoolItem(label: 'الأطفال', icon: Icons.toys_rounded),
@@ -427,7 +427,7 @@ class _SpoolDemoPageState extends State<SpoolDemoPage> {
   }
 }
 
-/// The pink "80% clearance" pill at the top of the reference image.
+
 class _ClearanceBanner extends StatelessWidget {
   const _ClearanceBanner();
 

@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 
-/// Pins the two shapes [AddressModel] serializes into, which are deliberately
-/// not the same one.
-///
-/// [AddressModel.toJson] mirrors the server's own keys so an address can be
-/// cached and read back whole. [AddressModel.toRequestJson] is narrower: it
-/// sends only the fields a client owns, flattens the label to its English
-/// value, and converts the coordinates the read model holds as strings back
-/// into numbers. Getting either wrong writes bad data rather than failing
-/// loudly, so both are pinned here.
+
+
+
+
+
+
+
+
+
 void main() {
   const Map<String, dynamic> serverJson = <String, dynamic>{
     'id': 12,
@@ -38,8 +38,8 @@ void main() {
       final Map<String, dynamic> body =
           AddressModel.fromJson(serverJson).toRequestJson();
 
-      // The backend owns the translation; it stores what this sends. Changing
-      // AddressModel.labelOptions therefore changes stored data, not just copy.
+
+
       expect(body['label'], 'Home');
     });
 
@@ -93,16 +93,16 @@ void main() {
     });
 
     test('is_default falls back to false when the model has none', () {
-      // A first address is therefore created as non-default. Whether the
-      // backend promotes it is the backend's call, not this model's.
+
+
       expect(const AddressModel().toRequestJson()['is_default'], isFalse);
     });
   });
 
   group('fromJson', () {
     test('a bare-string label is widened to a translation map', () {
-      // Some endpoints answer with a plain string where others send the map;
-      // widening here keeps `context.getLocalizedApiText` working for both.
+
+
       final AddressModel address = AddressModel.fromJson(<String, dynamic>{
         'label': 'Work',
       });

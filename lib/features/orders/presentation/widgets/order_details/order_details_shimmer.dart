@@ -4,9 +4,9 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/// Skeleton placeholder for [OrderDetailsScreen] — a header row and a stack of
-/// section cards — so the loading state lays out like the real details screen
-/// instead of a bare spinner.
+
+
+
 class OrderDetailsShimmer extends StatelessWidget {
   const OrderDetailsShimmer({super.key});
 
@@ -36,9 +36,9 @@ class OrderDetailsShimmer extends StatelessWidget {
     return AppShimmer(
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
-        // Matches the loaded content's top spacing so the loading and data
-        // states line up under the wave (AppWavedView drops the body's top
-        // padding once a scroll controller is wired in).
+
+
+
         padding: const EdgeInsets.only(top: 57),
         child: Column(
           spacing: 15,

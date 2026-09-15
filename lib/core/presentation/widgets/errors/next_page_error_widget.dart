@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-/// Retry affordance for a page of a list that failed to load, sized to sit at
-/// the end of an existing list instead of replacing it — the items already on
-/// screen stay, this only reports that the *next* page did not arrive.
-///
-/// Use [ServerConnectionErrorWidget] instead when the first page failed and
-/// there is nothing to show.
+
+
+
+
+
+
 class NextPageErrorWidget extends StatelessWidget {
   const NextPageErrorWidget({
     super.key,

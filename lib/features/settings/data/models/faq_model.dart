@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-/// A single FAQ entry from `GET /api/v1/application-information`.
-///
-/// [question] and [answer] are localized maps keyed by locale (`ar` / `en`);
-/// [answer] values may contain HTML markup as returned by the server.
+
+
+
+
 class FaqModel extends Equatable {
   final int? id;
   final Map<String, dynamic>? question;

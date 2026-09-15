@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// A value selector shaped like [AppTabBar]: a rounded grey track with a
-/// highlighted pill marking the selected segment. Unlike a tab bar it has no
-/// paged views — it only reports the selected index through [onChanged].
-///
-/// Segments share the available width equally.
+
+
+
+
+
 class AppSegmentedSelector extends StatefulWidget {
   const AppSegmentedSelector({
     super.key,
@@ -26,28 +26,28 @@ class AppSegmentedSelector extends StatefulWidget {
 
   final List<String> items;
 
-  /// Fill color of the pill behind the selected segment.
+
   final Color selectedColor;
 
   final int initialIndex;
   final ValueChanged<int>? onChanged;
   final double height;
 
-  /// Background of the rounded track behind all segments. Defaults to the
-  /// theme's light grey (`context.colors.onPrimaryContainer`), the same fill
-  /// the app's other grey pills use.
+
+
+
   final Color? trackColor;
 
   final Color? selectedLabelColor;
 
-  /// Label color of the unselected segments. Defaults to
-  /// `context.colors.tertiaryContainer`, the same near-black the app's input
-  /// text uses.
+
+
+
   final Color? unselectedLabelColor;
 
-  /// Optional prefix icon per segment. Pass `null` at an index to omit that
-  /// segment's icon while keeping icons on others. Must match [items.length]
-  /// when provided.
+
+
+
   final List<Widget?>? itemIcons;
 
   @override

@@ -6,33 +6,33 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_type.dart';
 
-/// App-wide toast, shown as a top overlay above every other layer — including
-/// modal bottom sheets and dialogs, which a [SnackBar] renders *behind*. This
-/// replaces the former `ErrorSnackBar` / `SuccessSnackBar`.
-///
-/// It inserts into the root [Overlay], so a single call from anywhere floats an
-/// [AppToastCard] down from the top, auto-dismisses after a few seconds, and can
-/// be tapped or swiped up to dismiss early. Only one toast is on screen at a
-/// time — a new one replaces the current.
-///
-/// [message] may be a [LangKeys] key or a raw server message; it is passed
-/// through `.tr()`, which leaves non-key strings untouched. [title] defaults to a
-/// localized severity label.
+
+
+
+
+
+
+
+
+
+
+
+
 class AppToast {
   const AppToast._();
 
   static const Duration _visibleDuration = Duration(seconds: 4);
 
-  /// A toast shown within this window of a navigation is kept, not dismissed by
-  /// it — that is the deliberate "show a message, then leave" pattern, where the
-  /// toast is meant to be read on the destination. Genuine user navigation
-  /// happens well after this.
+
+
+
+
   static const Duration _routeChangeGrace = Duration(milliseconds: 500);
 
   static OverlayEntry? _entry;
   static DateTime? _shownAt;
 
-  /// Shows an error toast (red accent, alert icon).
+
   static void showError(BuildContext context, String message, {String? title}) {
     _show(
       context,
@@ -42,7 +42,7 @@ class AppToast {
     );
   }
 
-  /// Shows a success toast (green accent, check icon).
+
   static void showSuccess(
     BuildContext context,
     String message, {
@@ -89,10 +89,10 @@ class AppToast {
     overlay.insert(entry);
   }
 
-  /// Dismisses the visible toast when the user leaves the page it belongs to.
-  /// Called by [AppToastRouteObserver] on every navigation. A toast shown in the
-  /// same beat as the navigation (within [_routeChangeGrace]) is left alone, so
-  /// deliberate "show a message, then navigate" flows still reach the next page.
+
+
+
+
   static void dismissForRouteChange() {
     if (_entry == null) return;
     final DateTime? shownAt = _shownAt;
@@ -111,8 +111,8 @@ class AppToast {
   }
 }
 
-/// Hosts one toast: slides + fades it in from the top, holds for [duration],
-/// then animates out. Dismisses early on tap or an upward swipe.
+
+
 class _AppToastOverlay extends StatefulWidget {
   const _AppToastOverlay({
     required this.type,
