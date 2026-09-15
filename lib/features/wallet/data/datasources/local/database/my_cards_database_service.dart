@@ -20,7 +20,4 @@ class MyCardsDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveMyCards(String data) =>
       _box.put(HiveKeys.myCardsPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearMyCards() => _box.delete(HiveKeys.myCardsPayload);
 }

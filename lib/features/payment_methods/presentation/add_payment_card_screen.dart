@@ -26,7 +26,7 @@ class AddPaymentCardScreen extends StatelessWidget {
             spacing: 16,
             children: [
               Text(
-                "Add New Card",
+                LangKeys.addNewCardKey.tr(),
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,
                 ),
@@ -41,12 +41,12 @@ class AddPaymentCardScreen extends StatelessWidget {
                   ),
                 ),
                 child: AddCardForm(
-                  lableColor: colors.white,
+                  labelColor: colors.white,
                   hintColor: Colors.white,
                 ),
               ),
               Text(
-                "Another payment method",
+                LangKeys.anotherPaymentMethodKey.tr(),
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,
                 ),
@@ -55,12 +55,12 @@ class AddPaymentCardScreen extends StatelessWidget {
                 colors: colors,
                 items: [
                   PaymentMethodItem(
-                    title: "Apple Pay",
+                    title: LangKeys.applePayKey.tr(),
                     icon: Assets.media.images.svg.applePay.svg(),
                     value: "apple_pay",
                   ),
                   PaymentMethodItem(
-                    title: "STC pay",
+                    title: LangKeys.stcPayKey.tr(),
                     icon: Assets.media.images.svg.stc.svg(),
                     value: "stc_pay",
                   ),
@@ -68,7 +68,7 @@ class AddPaymentCardScreen extends StatelessWidget {
                 onSelected: (value) {},
               ),
               PrimaryAppPrefixIconButton(
-                title: "Add",
+                title: LangKeys.addKey.tr(),
                 prefixIcon: Assets.media.images.svg.addCircle.svg(),
                 onTap: () => context.pushNamed(AppRoutes.paymentMethodsScreen),
               ),
@@ -115,7 +115,7 @@ class MultiRadioTile<T> extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       ),
       child: RadioGroup<T>(
-        groupValue: groupValue, // ربط القيمة المختارة بالـ RadioGroup
+        groupValue: groupValue,
         onChanged: onSelected,
         child: Column(
           mainAxisSize: MainAxisSize.min,

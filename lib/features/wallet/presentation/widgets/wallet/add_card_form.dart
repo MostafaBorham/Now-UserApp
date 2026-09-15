@@ -7,22 +7,21 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 class AddCardForm extends StatelessWidget {
   const AddCardForm({
     super.key,
-    this.lableColor,
+    this.labelColor,
     this.hintColor,
     this.fieldColor,
   });
-  final Color? lableColor;
+  final Color? labelColor;
   final Color? hintColor;
   final Color? fieldColor;
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _FieldLabel(LangKeys.cardholderNameKey.tr(), color: lableColor),
+          _FieldLabel(LangKeys.cardholderNameKey.tr(), color: labelColor),
           const SizedBox(height: 10),
           _CardInputField(
             hintText: LangKeys.nameHintKey.tr(),
@@ -32,7 +31,7 @@ class AddCardForm extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          _FieldLabel(LangKeys.cardNumberKey.tr(), color: lableColor),
+          _FieldLabel(LangKeys.cardNumberKey.tr(), color: labelColor),
           const SizedBox(height: 10),
           _CardInputField(
             hintText: '1111-1111-1111-1111',
@@ -50,7 +49,7 @@ class AddCardForm extends StatelessWidget {
                 child: _CardFieldColumn(
                   hintColor: hintColor,
                   fieldColor: fieldColor,
-                  labelColor: lableColor,
+                  labelColor: labelColor,
                   label: LangKeys.expirationDateKey.tr(),
                   hint: LangKeys.expiryDateHintKey.tr(),
                   keyboardType: TextInputType.datetime,
@@ -59,7 +58,7 @@ class AddCardForm extends StatelessWidget {
 
               Expanded(
                 child: _CardFieldColumn(
-                  labelColor: lableColor,
+                  labelColor: labelColor,
                   hintColor: hintColor,
                   fieldColor: fieldColor,
                   label: 'CVV',

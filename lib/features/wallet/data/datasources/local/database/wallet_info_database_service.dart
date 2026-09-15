@@ -20,7 +20,4 @@ class WalletInfoDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveWalletInfo(String data) =>
       _box.put(HiveKeys.walletInfoPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearWalletInfo() => _box.delete(HiveKeys.walletInfoPayload);
 }

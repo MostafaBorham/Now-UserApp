@@ -7,11 +7,6 @@ import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 abstract class WalletEndpoints {
   static const int _perPage = 15;
 
-  /// The saved cards are fetched in a single un-paginated shot: one large page
-  /// covers every card a customer realistically has, so the list layers never
-  /// deal with pages.
-  static const int _cardsPerPage = 500;
-
   /// The wallet balance, currency and top-up limits/suggestions.
   static const String getWalletInfo = '/api/v1/wallet';
 
@@ -23,14 +18,9 @@ abstract class WalletEndpoints {
     'page': page,
   };
 
-  /// The customer's saved payment cards.
+  /// The customer's saved payment cards. Takes no parameters — it returns the
+  /// whole list in one shot, so the feature never paginates cards.
   static const String getMyCards = '/api/v1/payment-methods/cards';
-
-  /// The whole saved-cards list in one shot — a single large [_cardsPerPage]
-  /// page so the feature never paginates cards.
-  static Map<String, dynamic> myCardsQuery() => <String, dynamic>{
-    'per_page': _cardsPerPage,
-  };
 
   /// Deletes the saved card identified by [id].
   static String deletePaymentCard(int id) =>
