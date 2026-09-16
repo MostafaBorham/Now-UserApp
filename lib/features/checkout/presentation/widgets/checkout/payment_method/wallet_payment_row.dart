@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -8,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
 /// The wallet payment option, shown under the payment methods section: the
 /// balance with a checkbox that is ticked by default, and — while it is ticked
@@ -23,6 +25,15 @@ class WalletPaymentRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final bool selected = ref.watch(walletPaymentProvider);
+
+    // The session already fetched this (see `AuthSessionViewModel`), so on a
+    // normal checkout the balance is in memory and renders on the first frame.
+    // Null covers both loading and error: the row stays — it is the payment
+    // choice, and hiding it is what 05e26eb fixed — but the amount is left off
+    // rather than guessed, matching how `WalletCardWidget` treats a null
+    // balance.
+    final double? balance =
+        ref.watch(getWalletInfoProvider).valueOrNull?.balance;
 
     return Container(
       width: double.infinity,
@@ -85,14 +96,12 @@ class WalletPaymentRow extends ConsumerWidget {
                                     style: AppTextStyles.style14Regular
                                         .copyWith(color: colors.neutral500),
                                   ),
-                                  // ponytail: hard-coded like the rest of the
-                                  // wallet feature — there is no balance endpoint
-                                  // yet. Swap for the real balance when it lands.
-                                  NewPriceWidget(
-                                    color: colors.neutral1200,
-                                    size: 15,
-                                    price: '150.00',
-                                  ),
+                                  if (balance != null)
+                                    NewPriceWidget(
+                                      color: colors.neutral1200,
+                                      size: 15,
+                                      price: '${formatDouble(balance)}',
+                                    ),
                                 ],
                               ),
                             ],
