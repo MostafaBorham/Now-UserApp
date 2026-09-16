@@ -85,21 +85,28 @@ class TokenCacheService {
 
   /// Removes the access and refresh tokens (logout), leaving the app in a
   /// logged-out state.
+  ///
+  /// A key that was never written is treated as already removed — the caller
+  /// asked for it to be gone, and it is. Only a token that is still readable
+  /// afterwards is a real failure, because that is the one case where the app
+  /// would carry on believing it is signed in.
   Future<void> clearUserTokens() async {
-    final bool accessRemoved =
-        await SharedPrefManager.remove(CacheKeys.accessToken);
-    final bool refreshRemoved =
-        await SharedPrefManager.remove(CacheKeys.refreshToken);
-    if (!accessRemoved || !refreshRemoved) {
+    await SharedPrefManager.remove(CacheKeys.accessToken);
+    await SharedPrefManager.remove(CacheKeys.refreshToken);
+
+    if (hasAccessToken || (getRefreshToken() ?? '').isNotEmpty) {
       throw const CacheException(CacheException.clearUserSessionFailedMessage);
     }
   }
 
-  /// Removes the guest token.
+  /// Removes the guest token. Same rule as [clearUserTokens]: absent counts as
+  /// removed. Login clears the guest token right after saving the user's pair,
+  /// so throwing over a guest token that never existed would report a failure
+  /// on a session that is in fact signed in.
   Future<void> clearGuestToken() async {
-    final bool removed =
-        await SharedPrefManager.remove(CacheKeys.guestToken);
-    if (!removed) {
+    await SharedPrefManager.remove(CacheKeys.guestToken);
+
+    if (hasGuestToken) {
       throw const CacheException(CacheException.clearUserSessionFailedMessage);
     }
   }

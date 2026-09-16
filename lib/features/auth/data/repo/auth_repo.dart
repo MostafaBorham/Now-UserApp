@@ -100,41 +100,32 @@ class AuthRepo {
     }
   }
 
+  /// Logs the user out. **Always succeeds locally.**
+  ///
+  /// Telling the server is best-effort: it is attempted, and whatever it
+  /// answers — a timeout, a 500, a 401 because the token had already expired,
+  /// or no connection at all — the cached session is cleared and `unit` is
+  /// returned.
+  ///
+  /// This used to gate on connectivity and clear the tokens only on a 2xx,
+  /// which meant a failed request left the user fully signed in after they had
+  /// asked to leave. On a shared device that is the wrong way to fail, and an
+  /// expired token — the most common reason the call fails — is precisely when
+  /// the local session most needs to go.
   Future<Either<Failure, Unit>> logout() async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    try {
+      await _authApiService.logout();
+    } catch (_) {
+      // Deliberately ignored: the local session goes either way.
     }
 
     try {
-      final Response response = await _authApiService.logout();
-
-      final int statusCode = response.statusCode ?? 0;
-
-      if (statusCode != 200 && statusCode != 204) {
-        final String? statusMessage = response.statusMessage?.trim();
-        return Left(
-          Failure(
-            statusMessage != null && statusMessage.isNotEmpty
-                ? statusMessage
-                : ApiErrorHandler.extractErrorMessage(null),
-          ),
-        );
-      }
-
       await _tokenCache.clearUserTokens();
-
-      return const Right(unit);
     } on CacheException catch (exception) {
       return Left(Failure(exception.message));
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
     }
+
+    return const Right(unit);
   }
 
   Future<Either<Failure, SessionType>> getSessionType() async {
