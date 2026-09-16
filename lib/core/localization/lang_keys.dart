@@ -370,6 +370,11 @@ abstract class LangKeys {
   static const String applyKey = 'apply';
   static const String appliedKey = 'applied';
   static const String voucherApplyFailedKey = 'voucherApplyFailed';
+
+  // A vendor carries one discount, so applying a coupon cancels that vendor's
+  // voucher and vice versa; these announce the swap.
+  static const String couponReplacedByVoucherKey = 'couponReplacedByVoucher';
+  static const String voucherReplacedByCouponKey = 'voucherReplacedByCoupon';
   static const String confirmOrderKey = 'confirmOrder';
   static const String confirmAddressKey = 'confirmAddress';
   static const String currentLocationKey = 'currentLocation';

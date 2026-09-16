@@ -46,6 +46,10 @@ class _ApplyDiscountCodeViewState
   /// registered in [appliedDiscountsProvider] (feeding the invoice summary and,
   /// for coupons, the confirm-order request); a rejection or transport error is
   /// shown in a snackbar.
+  ///
+  /// Registering takes the vendor's single discount slot, so an accepted coupon
+  /// cancels a purchase voucher applied to the same vendor — that cancellation
+  /// is announced in a toast.
   Future<void> _onApply() async {
     final String code = _controller.text.trim();
     final int? vendorId = widget.vendorId;
@@ -69,14 +73,28 @@ class _ApplyDiscountCodeViewState
           AppToast.showError(context, model.reason ?? LangKeys.discount.tr());
           return;
         }
-        ref.read(appliedDiscountsProvider.notifier).add(
-              AppliedDiscountModel(
-                vendorId: vendorId,
-                code: code,
-                discount: model.discount,
-                isVoucher: false,
-              ),
-            );
+        final AppliedDiscountModel? replaced =
+            ref.read(appliedDiscountsProvider.notifier).add(
+                  AppliedDiscountModel(
+                    vendorId: vendorId,
+                    code: code,
+                    discount: model.discount,
+                    isVoucher: false,
+                  ),
+                );
+        // The field is about to be swapped for the applied chip; clear it so a
+        // later cancellation (a voucher taking this slot) doesn't bring the
+        // dead code back as editable text.
+        _controller.clear();
+        // A vendor carries one discount, so this coupon just cancelled that
+        // vendor's voucher — say so rather than letting the highlight silently
+        // vanish from the strip.
+        if (replaced != null && replaced.isVoucher) {
+          AppToast.showSuccess(
+            context,
+            LangKeys.voucherReplacedByCouponKey.tr(),
+          );
+        }
       },
     );
   }

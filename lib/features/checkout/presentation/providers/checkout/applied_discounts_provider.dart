@@ -19,15 +19,24 @@ class AppliedDiscountsNotifier
     extends StateNotifier<List<AppliedDiscountModel>> {
   AppliedDiscountsNotifier() : super(const <AppliedDiscountModel>[]);
 
-  /// Registers [discount]. A vendor can only carry one discount at a time, so
-  /// an earlier code for the same vendor is replaced rather than stacked.
-  void add(AppliedDiscountModel discount) {
-    state = <AppliedDiscountModel>[
-      ...state.where(
-        (AppliedDiscountModel applied) => applied.vendorId != discount.vendorId,
-      ),
-      discount,
-    ];
+  /// Registers [discount] and returns the discount it displaced for that
+  /// vendor, or `null` if the slot was free. A vendor can only carry one
+  /// discount at a time, so an earlier code for the same vendor is replaced
+  /// rather than stacked — that replacement is what cancels a voucher when a
+  /// coupon is applied and vice versa, and the returned slot is what lets the
+  /// caller tell the user which code it just cancelled.
+  AppliedDiscountModel? add(AppliedDiscountModel discount) {
+    AppliedDiscountModel? replaced;
+    final List<AppliedDiscountModel> others = <AppliedDiscountModel>[];
+    for (final AppliedDiscountModel applied in state) {
+      if (applied.vendorId == discount.vendorId) {
+        replaced = applied;
+      } else {
+        others.add(applied);
+      }
+    }
+    state = <AppliedDiscountModel>[...others, discount];
+    return replaced;
   }
 
   /// Drops the discount applied for [vendorId], if any.

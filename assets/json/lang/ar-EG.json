@@ -30,6 +30,8 @@
   "apply": "تطبيق",
   "applied": "تم التطبيق",
   "voucherApplyFailed": "لا يمكن تطبيق هذه القسيمة",
+  "couponReplacedByVoucher": "تم إلغاء كوبون الخصم وتطبيق قسيمة الشراء بدلاً منه",
+  "voucherReplacedByCoupon": "تم إلغاء قسيمة الشراء وتطبيق كوبون الخصم بدلاً منها",
   "applyFilters": "تطبيق الفلاتر",
   "areYouSureCancel": "هل أنت متأكد من رغبتك في الإلغاء؟",
   "area": "المنطقة",
