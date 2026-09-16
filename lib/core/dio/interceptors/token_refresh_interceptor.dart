@@ -15,8 +15,9 @@ import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 /// 2. On success the returned `access_token` / `refresh_token` pair is saved to
 ///    the cache, and the original request is replayed once with the new access
 ///    token; its result is resolved as if the `401` never happened.
-/// 3. On any refresh failure we stop and surface the **original** `401` on the
-///    request that triggered it — no retry, no session mutation.
+/// 3. On any refresh failure the session is unrecoverable, so it is ended: the
+///    dead tokens are cleared and [onSessionExpired] runs, then the **original**
+///    `401` is surfaced on the request that triggered it.
 ///
 /// Two guards keep this from misbehaving under load:
 /// * [_retriedFlag] — a replayed request that `401`s again is not refreshed a
@@ -31,6 +32,17 @@ import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 /// own queue. Single-flight is handled explicitly with [_refreshGate] instead.
 class TokenRefreshInterceptor extends Interceptor {
   TokenRefreshInterceptor(this._dio);
+
+  /// Runs once when a refresh fails and the user session is gone for good, so
+  /// the app can drop the previous user's data and return to onboarding.
+  ///
+  /// ponytail: a single static hook, because an interceptor lives outside the
+  /// widget tree and has no Riverpod `Ref`. It is assigned once at the app root
+  /// (`NowUserApp.build`) and is `null` in tests and before the first frame —
+  /// the tokens are cleared either way, so a missing hook only costs the
+  /// navigation. Swap it for a globally held `ProviderContainer` if a second
+  /// listener ever needs the same signal.
+  static Future<void> Function()? onSessionExpired;
 
   /// The shared Dio used to replay the original request (so it re-runs every
   /// interceptor, including the auth-header attachment with the fresh token).
@@ -63,6 +75,11 @@ class TokenRefreshInterceptor extends Interceptor {
   /// runs. `null` when idle; completes `true` on a successful refresh.
   Future<bool>? _refreshGate;
 
+  /// The twin of [_refreshGate], for the expiry itself. Every `401` in a burst
+  /// resumes from the *same* failed refresh, so each one would otherwise run
+  /// the purge and the navigation again.
+  Future<void>? _expiryGate;
+
   @override
   Future<void> onError(
     DioException err,
@@ -86,6 +103,14 @@ class TokenRefreshInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+    // A guest has no session to refresh and none to expire, so a `401` here is
+    // the endpoint's own answer (it wanted a logged-in user), not an expiry.
+    // Without this the refresh below would "fail" for every guest — there is no
+    // refresh token to send — and purge someone who was never signed in.
+    if (!_tokenCache.hasAccessToken) {
+      return handler.next(err);
+    }
+
     // Another request already refreshed the token while this one was in flight:
     // the cached access token no longer matches the one we sent, so just replay
     // — don't spend the refresh token a second time.
@@ -98,12 +123,36 @@ class TokenRefreshInterceptor extends Interceptor {
     // One refresh attempt, shared across concurrent `401`s.
     final bool refreshed = await (_refreshGate ??= _refreshTokens());
 
-    // Refresh failed → stop and surface the original `401` on this request.
+    // Refresh failed → the session cannot be recovered. End it, then surface
+    // the original `401`. Awaiting first is deliberate: the purge invalidates
+    // the calling view model, so its own `!mounted` guard swallows the error
+    // instead of flashing it on a screen that is already being torn down.
     if (!refreshed) {
+      await _expireSession();
       return handler.next(err);
     }
 
     return _replay(request, handler, err);
+  }
+
+  /// Clears the dead tokens and runs [onSessionExpired] exactly once per expiry.
+  ///
+  /// Never throws — a forced logout must not replace the `401` the caller is
+  /// still waiting for. The tokens are cleared here rather than in the hook so
+  /// the session ends even when nothing is wired up (tests, before the first
+  /// frame). The gate is released at the end so a later session can expire in
+  /// its turn.
+  Future<void> _expireSession() {
+    return _expiryGate ??= Future<void>(() async {
+      try {
+        await _tokenCache.clearUserTokens();
+        await onSessionExpired?.call();
+      } catch (_) {
+        // Best-effort: the `401` below is what the caller gets either way.
+      } finally {
+        _expiryGate = null;
+      }
+    });
   }
 
   /// Performs the one refresh request and persists the new tokens. Always
