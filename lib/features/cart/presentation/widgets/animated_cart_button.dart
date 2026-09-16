@@ -6,9 +6,9 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 /// Cart control shown on a product card: a round add-to-cart button that flips
 /// into a quantity counter and back.
@@ -87,7 +87,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   int _quantityFrom(CartModel? cart) {
     if (!_isIntegrated) return _counter;
     if (cart == null) return widget.productQuantity ?? 0;
-    return _quantityOf(cart);
+    return cart.quantityOf(widget.productId!);
   }
 
   @override
@@ -202,7 +202,16 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         // The idle seed of the viewmodel, not a response.
         if (cart == null) return;
 
-        final int newQuantity = _quantityOf(cart);
+        if (mounted) {
+          showCartUpdateFeedback(
+            context,
+            ref,
+            productId: widget.productId!,
+            cart: cart,
+          );
+        }
+
+        final int newQuantity = cart.quantityOf(widget.productId!);
         newQuantity < 1 ? _collapse() : _startCollapseTimer();
       },
       error: (Object error, StackTrace _) {
@@ -218,21 +227,6 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         current < 1 ? _collapse() : _startCollapseTimer();
       },
     );
-  }
-
-  /// Reads this product's quantity out of [cart]; `0` when the line is no longer
-  /// there (it was removed). Cart lines carry the product id in `product_id`,
-  /// while listing products carry it in `id` — match either.
-  int _quantityOf(CartModel cart) {
-    for (final CartVendorModel vendor in cart.vendors) {
-      for (final ProductModel product in vendor.products) {
-        if ((product.productId ?? product.id) == widget.productId) {
-          return product.quantity ?? 0;
-        }
-      }
-    }
-
-    return 0;
   }
 
   /// Collapses the counter view back to the add-to-cart button after a short

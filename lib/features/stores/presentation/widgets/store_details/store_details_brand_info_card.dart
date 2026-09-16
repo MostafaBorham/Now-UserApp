@@ -33,12 +33,11 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
       next.whenOrNull(
         data: (cart) {
           if (cart == null) return;
-          showSuccessAddToCartSheet(
+          showCartUpdateFeedback(
             context,
-            productName: context.getLocalizedApiText(product.name),
-            productImageUrl: (product.images?.isNotEmpty ?? false)
-                ? product.images!.first
-                : '',
+            ref,
+            productId: productId,
+            cart: cart,
           );
         },
         error: (error, _) {

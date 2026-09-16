@@ -82,12 +82,11 @@ class ProductDetailsScreen extends ConsumerWidget {
                       context.goNamed(AppRoutes.mainScreen);
                       return;
                     }
-                    showSuccessAddToCartSheet(
+                    showCartUpdateFeedback(
                       context,
-                      productName: context.getLocalizedApiText(product.name),
-                      productImageUrl: (product.images?.isNotEmpty ?? false)
-                          ? product.images!.first
-                          : '',
+                      ref,
+                      productId: product.id ?? -1,
+                      cart: cart,
                       // Back to whatever list the shopper came from.
                       onContinueShopping: () {
                         if (context.canPop()) context.pop();

@@ -28,17 +28,53 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   final int _productId;
   final CartRepo _repo = CartRepo();
 
+  bool _joinedCart = false;
+  bool _feedbackPending = false;
+
+  /// Whether the update that just settled put this product in the cart for the
+  /// first time, rather than changing a line that was already there. Read it
+  /// when a success lands: it is what separates the confirmation sheet from the
+  /// plain quantity toast.
+  ///
+  /// It is answered from the cart as it stood before the request, so with the
+  /// cart not loaded yet an add reads as a first one — which is what it almost
+  /// always is.
+  bool get joinedCart => _joinedCart;
+
+  /// Claims the right to confirm the update that just settled: true for the
+  /// first caller, false for everyone after it.
+  ///
+  /// One product can be on screen in several places at once — the same card in
+  /// two home sections, a listing behind an open sheet — and they all listen to
+  /// this one notifier. Without this they would each answer the same response,
+  /// stacking duplicate toasts and sheets.
+  bool claimFeedback() {
+    if (!_feedbackPending) return false;
+
+    _feedbackPending = false;
+    return true;
+  }
+
   @override
   void dispose() {
     _repo.cancelRequests();
     super.dispose();
   }
 
-  Future<void> updateCartProductQuantity(int productQuantity) async {
+  /// Sets this product's cart line to [productQuantity]; `0` removes it.
+  Future<void> updateCartProductQuantity(int productQuantity) =>
+      _send(() => _repo.updateCartProductQuantity(_productId, productQuantity));
+
+  /// Puts [productQuantity] of this product in the cart.
+  Future<void> addToCart(int productQuantity) =>
+      _send(() => _repo.addToCart(_productId, productQuantity));
+
+  Future<void> _send(
+    Future<Either<Failure, CartModel>> Function() request,
+  ) async {
     state = const AsyncValue<CartModel?>.loading();
 
-    final Either<Failure, CartModel> result =
-        await _repo.updateCartProductQuantity(_productId, productQuantity);
+    final Either<Failure, CartModel> result = await request();
 
     if (!mounted) return;
 
@@ -46,23 +82,13 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
       (Failure failure) =>
           AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
       (CartModel cart) {
-        _ref.read(getCartProvider.notifier).updateCartState(cart);
-        return AsyncValue<CartModel?>.data(cart);
-      },
-    );
-  }
-  Future<void> addToCart(int productQuantity) async {
-    state = const AsyncValue<CartModel?>.loading();
-
-    final Either<Failure, CartModel> result =
-    await _repo.addToCart(_productId, productQuantity);
-
-    if (!mounted) return;
-
-    state = result.fold(
-          (Failure failure) =>
-      AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
-          (CartModel cart) {
+        // Read before the refresh below: until then the shared cart still holds
+        // this product's quantity as it was before the request.
+        _joinedCart =
+            (_ref.read(getCartProvider).valueOrNull?.quantityOf(_productId) ??
+                0) ==
+            0;
+        _feedbackPending = true;
         _ref.read(getCartProvider.notifier).updateCartState(cart);
         return AsyncValue<CartModel?>.data(cart);
       },

@@ -27,6 +27,22 @@ class CartModel {
   CartModel copyWith({int? id, List<CartVendorModel>? vendors}) {
     return CartModel(id: id ?? this.id, vendors: vendors ?? this.vendors);
   }
+
+  /// This product's line, or `null` when the cart has none. Cart lines carry
+  /// the product id in `product_id`, while listing products carry it in `id` —
+  /// match either.
+  ProductModel? lineOf(int productId) {
+    for (final CartVendorModel vendor in vendors) {
+      for (final ProductModel product in vendor.products) {
+        if ((product.productId ?? product.id) == productId) return product;
+      }
+    }
+
+    return null;
+  }
+
+  /// Quantity this product has in the cart; `0` when it is not in it at all.
+  int quantityOf(int productId) => lineOf(productId)?.quantity ?? 0;
 }
 
 class CartVendorModel {

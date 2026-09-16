@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
@@ -85,7 +86,12 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     state.whenOrNull(
       data: (CartModel? cart) {
         if (cart == null) return;
-        // The VM already pushed the fresh cart into getCartProvider.
+        // The VM already pushed the fresh cart into getCartProvider; all that is
+        // left is telling the shopper the change landed.
+        final int? productId = widget.product?.productId;
+        if (productId == null || !mounted) return;
+
+        showCartUpdateFeedback(context, ref, productId: productId, cart: cart);
       },
       error: (Object error, StackTrace _) {
         if (!mounted) return;

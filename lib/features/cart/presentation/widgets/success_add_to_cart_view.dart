@@ -1,7 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -9,6 +13,46 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
+
+/// The standard answer to a cart update that just succeeded: the confirmation
+/// sheet the first time a product joins the cart, a toast for every quantity
+/// change after that (a removal included).
+///
+/// Every screen that changes a cart line routes its success here, so the two
+/// cases cannot drift apart again. The product's name and image are read off
+/// the fresh [cart] line, so callers need nothing but the id.
+/// [onContinueShopping] is forwarded to the sheet — only screens that need to
+/// step back out of the way pass it.
+void showCartUpdateFeedback(
+  BuildContext context,
+  WidgetRef ref, {
+  required int productId,
+  required CartModel cart,
+  VoidCallback? onContinueShopping,
+}) {
+  final UpdateCartProductViewModel vm = ref.read(
+    updateCartProductProvider(productId).notifier,
+  );
+
+  // Another card showing this product has already answered this response.
+  if (!vm.claimFeedback()) return;
+
+  if (!vm.joinedCart) {
+    AppToast.showSuccess(context, LangKeys.productAddedToCartKey.tr());
+    return;
+  }
+
+  final ProductModel? line = cart.lineOf(productId);
+
+  showSuccessAddToCartSheet(
+    context,
+    productName: line == null ? '' : context.getLocalizedApiText(line.name),
+    productImageUrl: line?.images?.firstOrNull ?? '',
+    onContinueShopping: onContinueShopping,
+  );
+}
 
 /// Opens the confirmation sheet for a product that just landed in the cart.
 ///
