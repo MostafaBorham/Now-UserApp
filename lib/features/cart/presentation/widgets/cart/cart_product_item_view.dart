@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -232,23 +233,32 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                   ),
                           ),
                         ),
+                        // On the last unit there is nothing left to decrement,
+                        // so the icon becomes the delete action — same rule as
+                        // [AnimatedCartCounterView], where `0` removes the line.
                         InkWell(
-                          onTap: _quantity > 1
-                              ? () => _updateQuantity(_quantity - 1)
-                              : null,
+                          onTap: () => _updateQuantity(
+                            _quantity > 1 ? _quantity - 1 : 0,
+                          ),
                           customBorder: const CircleBorder(),
                           child: Container(
                             width: 20,
                             height: 20,
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: colors.white,
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              Icons.remove_rounded,
-                              size: 12,
-                              color: colors.neutral500,
-                            ),
+                            child: _quantity > 1
+                                ? Icon(
+                                    Icons.remove_rounded,
+                                    size: 12,
+                                    color: colors.neutral500,
+                                  )
+                                : Assets.media.images.png.removeIcon.image(
+                                    width: 12,
+                                    color: colors.errorContainer,
+                                  ),
                           ),
                         ),
                       ],
