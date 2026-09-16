@@ -1,13 +1,13 @@
 class ProductSpecificationModel {
-  final String? key;
-  final String? value;
+  final Map<String, dynamic>? key;
+  final Map<String, dynamic>? value;
 
   const ProductSpecificationModel({this.key, this.value});
 
   factory ProductSpecificationModel.fromJson(Map<String, dynamic> json) {
     return ProductSpecificationModel(
-      key: json['key']?.toString(),
-      value: json['value']?.toString(),
+      key: json['key'] as Map<String, dynamic>?,
+      value: json['value'] as Map<String, dynamic>?,
     );
   }
 
@@ -18,7 +18,10 @@ class ProductSpecificationModel {
     };
   }
 
-  ProductSpecificationModel copyWith({String? key, String? value}) {
+  ProductSpecificationModel copyWith({
+    Map<String, dynamic>? key,
+    Map<String, dynamic>? value,
+  }) {
     return ProductSpecificationModel(
       key: key ?? this.key,
       value: value ?? this.value,

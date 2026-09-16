@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/products/data/models/product_specification_model.dart';
 
@@ -53,7 +54,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                     spacing: 8,
                     children: [
                       Text(
-                        specifications[i].key ?? '',
+                        context.getLocalizedApiText(specifications[i].key),
                         style: AppTextStyles.style14Regular.copyWith(
                           color: colors.neutral500,
                           fontSize: 13,
@@ -62,7 +63,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          specifications[i].value ?? '',
+                          context.getLocalizedApiText(specifications[i].value),
                           textAlign: TextAlign.end,
                           style: AppTextStyles.style14SemiBold.copyWith(
                             color: colors.black,

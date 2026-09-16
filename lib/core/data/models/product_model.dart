@@ -270,7 +270,7 @@ class ProductModel {
       images: _imagesFrom(json),
       hasVariants: json['has_variants'] as bool?,
       variants: json['variants'] as List<dynamic>?,
-      specifications: (json['specifications'] as List<dynamic>?)
+      specifications: (json['specifications_translations'] as List<dynamic>?)
           ?.map(
             (e) => ProductSpecificationModel.fromJson(
               e as Map<String, dynamic>,
@@ -398,7 +398,8 @@ class ProductModel {
       'images': images,
       'has_variants': hasVariants,
       'variants': variants,
-      'specifications': specifications?.map((e) => e.toJson()).toList(),
+      'specifications_translations':
+          specifications?.map((e) => e.toJson()).toList(),
       'attributes': attributes?.map((e) => e.toJson()).toList(),
       'colors': colors?.map((e) => e.toJson()).toList(),
       'category': category?.toJson(),
