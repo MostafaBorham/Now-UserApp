@@ -29,7 +29,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_size_selector.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/success_add_to_cart_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
 
@@ -82,29 +82,16 @@ class ProductDetailsScreen extends ConsumerWidget {
                       context.goNamed(AppRoutes.mainScreen);
                       return;
                     }
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(24),
-                        ),
-                      ),
-                      builder: (sheetContext) => SuccessAddToCartView(
-                        productName: context.getLocalizedApiText(product.name),
-                        productImageUrl: (product.images?.isNotEmpty ?? false)
-                            ? product.images!.first
-                            : '',
-                        onViewCart: () {
-                          Navigator.of(sheetContext).pop();
-                          context.pushNamed(AppRoutes.cartScreen);
-                        },
-                        onContinueShopping: () {
-                          Navigator.of(sheetContext).pop();
-                          if (context.canPop()) context.pop();
-                        },
-                      ),
+                    showSuccessAddToCartSheet(
+                      context,
+                      productName: context.getLocalizedApiText(product.name),
+                      productImageUrl: (product.images?.isNotEmpty ?? false)
+                          ? product.images!.first
+                          : '',
+                      // Back to whatever list the shopper came from.
+                      onContinueShopping: () {
+                        if (context.canPop()) context.pop();
+                      },
                     );
                   },
                   error: (error, _) {

@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rating_stars.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
 class StoreDetailsBrandInfoCard extends ConsumerWidget {
@@ -32,7 +33,13 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
       next.whenOrNull(
         data: (cart) {
           if (cart == null) return;
-          AppToast.showSuccess(context, LangKeys.productAddedToCartKey.tr());
+          showSuccessAddToCartSheet(
+            context,
+            productName: context.getLocalizedApiText(product.name),
+            productImageUrl: (product.images?.isNotEmpty ?? false)
+                ? product.images!.first
+                : '',
+          );
         },
         error: (error, _) {
           AppToast.showError(context, error.toString());

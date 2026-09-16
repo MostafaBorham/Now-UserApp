@@ -9,11 +9,15 @@ class UnPrimaryAppButton extends StatelessWidget {
     required this.title,
     this.onTap,
     this.buttonPadding = 12,
+    this.titleStyle,
   });
 
   final String title;
   final GestureTapCallback? onTap;
   final double? buttonPadding;
+
+  /// Overrides the default 14/Medium label style.
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,9 @@ class UnPrimaryAppButton extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           minFontSize: 10,
-          style: AppTextStyles.style14Medium.copyWith(color: colors.primary500Main),
+          style: (titleStyle ?? AppTextStyles.style14Medium).copyWith(
+            color: colors.primary500Main,
+          ),
         ),
       ),
     );

@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
 
 abstract class AppThemes {
+  /// Material's default grabber takes its colour from `onSurfaceVariant`,
+  /// which here is a pale green that all but vanishes on a white sheet.
+  static const BottomSheetThemeData _bottomSheetTheme = BottomSheetThemeData(
+    dragHandleColor: Color(0xffCFCFCF),
+    dragHandleSize: Size(42, 4),
+  );
+
   static ThemeData getLightModeTheme() => ThemeData(
     fontFamily: FontFamily.cairo,
     scaffoldBackgroundColor: Colors.white,
+    bottomSheetTheme: _bottomSheetTheme,
     colorScheme: ColorScheme.light(
       primary: Color(0xff4BB749),
       primaryContainer: Color(0xff255625),
@@ -54,6 +62,7 @@ abstract class AppThemes {
   static ThemeData getDarkModeTheme() => ThemeData(
     fontFamily: FontFamily.cairo,
     scaffoldBackgroundColor: Colors.black,
+    bottomSheetTheme: _bottomSheetTheme,
     colorScheme: ColorScheme.dark(
       primary: Color(0xff4BB749),
       primaryContainer: Color(0xff2B6B2A),
