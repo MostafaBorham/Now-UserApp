@@ -17,8 +17,8 @@ import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
 /// The standard answer to a cart update that just succeeded: the confirmation
-/// sheet the first time a product joins the cart, a toast for every quantity
-/// change after that (a removal included).
+/// sheet the first time a product joins the cart, and after that a toast that
+/// matches what actually changed — the line was added to, reduced, or removed.
 ///
 /// Every screen that changes a cart line routes its success here, so the two
 /// cases cannot drift apart again. The product's name and image are read off
@@ -40,7 +40,13 @@ void showCartUpdateFeedback(
   if (!vm.claimFeedback()) return;
 
   if (!vm.joinedCart) {
-    AppToast.showSuccess(context, LangKeys.productAddedToCartKey.tr());
+    AppToast.showSuccess(
+      context,
+      cartUpdateMessageKey(
+        previousQuantity: vm.previousQuantity,
+        quantity: cart.quantityOf(productId),
+      ).tr(),
+    );
     return;
   }
 
@@ -52,6 +58,21 @@ void showCartUpdateFeedback(
     productImageUrl: line?.images?.firstOrNull ?? '',
     onContinueShopping: onContinueShopping,
   );
+}
+
+/// The message for a settled update of a line that was already in the cart,
+/// chosen by which way the line moved: [previousQuantity] is the quantity before
+/// the request, [quantity] the one the fresh cart reports.
+///
+/// Anything that is not a drop reads as an add, so a quantity the server left
+/// untouched still confirms rather than claiming a change that didn't happen.
+String cartUpdateMessageKey({
+  required int previousQuantity,
+  required int quantity,
+}) {
+  if (quantity < 1) return LangKeys.productRemovedFromCartKey;
+  if (quantity < previousQuantity) return LangKeys.cartQuantityUpdatedKey;
+  return LangKeys.productAddedToCartKey;
 }
 
 /// Opens the confirmation sheet for a product that just landed in the cart.

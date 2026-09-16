@@ -9,6 +9,8 @@
   "addNotesHint": "Add notes.....",
   "addToCart": "Add to Cart",
   "productAddedToCart": "Product added to cart successfully",
+  "productRemovedFromCart": "Product removed from cart successfully",
+  "cartQuantityUpdated": "Quantity updated successfully",
   "purchaseVoucher": "Purchase voucher",
   "addWallet": "+ Add Wallet",
   "address": "Address",

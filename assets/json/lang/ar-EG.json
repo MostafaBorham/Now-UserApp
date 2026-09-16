@@ -9,6 +9,8 @@
   "addNotesHint": "أضف ملاحظات.....",
   "addToCart": "أضف إلى السلة",
   "productAddedToCart": "تمت إضافة المنتج إلى السلة بنجاح",
+  "productRemovedFromCart": "تمت إزالة المنتج من السلة بنجاح",
+  "cartQuantityUpdated": "تم تحديث الكمية بنجاح",
   "purchaseVoucher": "قسيمة شراء",
   "addWallet": "+ إضافة محفظة",
   "address": "العنوان",

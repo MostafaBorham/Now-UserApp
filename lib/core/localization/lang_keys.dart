@@ -30,6 +30,8 @@ abstract class LangKeys {
   static const String exclusiveKey = 'exclusive';
   static const String addToCartKey = 'addToCart';
   static const String productAddedToCartKey = 'productAddedToCart';
+  static const String productRemovedFromCartKey = 'productRemovedFromCart';
+  static const String cartQuantityUpdatedKey = 'cartQuantityUpdated';
   static const String addMoreItemsKey = 'addMoreItems';
   static const String soldKey = 'sold';
   static const String hotKey = 'hot';

@@ -28,18 +28,21 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   final int _productId;
   final CartRepo _repo = CartRepo();
 
-  bool _joinedCart = false;
+  int _previousQuantity = 0;
   bool _feedbackPending = false;
 
-  /// Whether the update that just settled put this product in the cart for the
-  /// first time, rather than changing a line that was already there. Read it
-  /// when a success lands: it is what separates the confirmation sheet from the
-  /// plain quantity toast.
+  /// This product's quantity as the cart stood *before* the update that just
+  /// settled. Read it when a success lands: compared against the fresh cart it
+  /// is what tells an add, a decrement and a removal apart, and `0` marks the
+  /// first add — the one that gets the confirmation sheet instead of a toast.
   ///
-  /// It is answered from the cart as it stood before the request, so with the
-  /// cart not loaded yet an add reads as a first one — which is what it almost
-  /// always is.
-  bool get joinedCart => _joinedCart;
+  /// With the cart not loaded yet it reads `0`, so an add reads as a first one
+  /// — which is what it almost always is.
+  int get previousQuantity => _previousQuantity;
+
+  /// Whether the update that just settled put this product in the cart for the
+  /// first time, rather than changing a line that was already there.
+  bool get joinedCart => _previousQuantity == 0;
 
   /// Claims the right to confirm the update that just settled: true for the
   /// first caller, false for everyone after it.
@@ -84,10 +87,8 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
       (CartModel cart) {
         // Read before the refresh below: until then the shared cart still holds
         // this product's quantity as it was before the request.
-        _joinedCart =
-            (_ref.read(getCartProvider).valueOrNull?.quantityOf(_productId) ??
-                0) ==
-            0;
+        _previousQuantity =
+            _ref.read(getCartProvider).valueOrNull?.quantityOf(_productId) ?? 0;
         _feedbackPending = true;
         _ref.read(getCartProvider.notifier).updateCartState(cart);
         return AsyncValue<CartModel?>.data(cart);
