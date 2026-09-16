@@ -5,17 +5,34 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-class ProductKeyFeaturesView extends StatelessWidget {
+class ProductKeyFeaturesView extends StatefulWidget {
   const ProductKeyFeaturesView({super.key, required this.productFeatures});
 
   final List<String> productFeatures;
+
+  @override
+  State<ProductKeyFeaturesView> createState() => _ProductKeyFeaturesViewState();
+}
+
+class _ProductKeyFeaturesViewState extends State<ProductKeyFeaturesView> {
+  late String _parsedFeatures = _parse(widget.productFeatures);
+
+  @override
+  void didUpdateWidget(covariant ProductKeyFeaturesView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.productFeatures, widget.productFeatures)) {
+      _parsedFeatures = _parse(widget.productFeatures);
+    }
+  }
+
+  String _parse(List<String> features) => features
+      .map((feature) => html_parser.parse(feature).body?.text.trim() ?? '')
+      .where((text) => text.isNotEmpty)
+      .join('\n');
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final String parsedFeatures = productFeatures
-        .map((feature) => html_parser.parse(feature).body?.text.trim() ?? '')
-        .where((text) => text.isNotEmpty)
-        .join('\n');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -35,7 +52,7 @@ class ProductKeyFeaturesView extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
-            parsedFeatures,
+            _parsedFeatures,
             softWrap: true,
             overflow: TextOverflow.visible,
             style: AppTextStyles.style14Medium.copyWith(

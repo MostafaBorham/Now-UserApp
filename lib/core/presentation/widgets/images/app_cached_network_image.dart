@@ -39,6 +39,15 @@ class AppCachedNetworkImage extends StatelessWidget {
 
   static final Set<String> _failedUrls = <String>{};
 
+  static const int _maxFailedUrls = 200;
+
+  static void _rememberFailedUrl(String url) {
+    if (_failedUrls.length >= _maxFailedUrls) {
+      _failedUrls.remove(_failedUrls.first);
+    }
+    _failedUrls.add(url);
+  }
+
 
 
 
@@ -52,9 +61,21 @@ class AppCachedNetworkImage extends StatelessWidget {
     });
   }
 
+  int? _cacheDimension(double? logicalSize, double devicePixelRatio) {
+    if (logicalSize == null ||
+        logicalSize.isInfinite ||
+        logicalSize <= 0) {
+      return null;
+    }
+    return (logicalSize * devicePixelRatio).round();
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final double devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final int? memCacheWidth = _cacheDimension(width, devicePixelRatio);
+    final int? memCacheHeight = _cacheDimension(height, devicePixelRatio);
 
     final Widget errorPlaceholder = Container(
       width: width ?? double.infinity,
@@ -81,11 +102,20 @@ class AppCachedNetworkImage extends StatelessWidget {
       imageUrl: imageUrl,
       httpHeaders: httpHeaders,
       fit: fit,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
       imageBuilder: (context, imageProvider) => Center(
         child: SizedBox(
           width: width,
           height: height,
-          child: Image(image: imageProvider, fit: fit),
+          child: Image(
+            image: ResizeImage.resizeIfNeeded(
+              memCacheWidth,
+              memCacheHeight,
+              imageProvider,
+            ),
+            fit: fit,
+          ),
         ),
       ),
       placeholder: (context, url) {
@@ -109,10 +139,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         }
       },
       errorWidget: (_, url, _) {
-        _failedUrls.add(url);
-
-
-
+        _rememberFailedUrl(url);
         _clearFailedUrlsOnReconnect();
         return errorPlaceholder;
       },

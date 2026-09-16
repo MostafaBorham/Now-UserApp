@@ -67,10 +67,9 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
         mainAxisSize: MainAxisSize.min,
         spacing: 8,
         children: [
-      AnimatedBuilder(
-      animation: _scale,
-      builder: (context, child) =>
-          Transform.scale(scale: _scale.value, child: child),
+      RepaintBoundary(
+      child: ScaleTransition(
+      scale: _scale,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -128,10 +127,9 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
         ],
       ),
     ),
-          AnimatedBuilder(
-            animation: _scale,
-            builder: (context, child) =>
-                Transform.scale(scale: _scale.value, child: child),
+    ),
+          ScaleTransition(
+            scale: _scale,
             child: Text(
               widget.productName,
               textAlign: TextAlign.center,

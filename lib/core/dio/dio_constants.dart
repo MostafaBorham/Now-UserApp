@@ -3,6 +3,8 @@ abstract class DioConstants {
   static const String baseUrl = 'https://www.now-delivery.com';
   static const Duration timeout = Duration(seconds: 15);
 
+  static const int isolateDecodeThreshold = 30 * 1024;
+
   static const Map<String, String> defaultHeaders = <String, String>{
     'Accept': 'application/json',
     'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/utils/isolate/isolate_runner.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/categories/data/datasources/local/database/app_categories_database_service.dart';
 import 'package:nowdelivery_user_app/features/categories/data/datasources/remote/api/categories_api_service.dart';
@@ -98,11 +99,12 @@ class CategoriesRepo {
         return Left<Failure, PaginationModel<CategoryModel>>(serverFailure);
       }
 
-      final Map<String, dynamic> data =
-          jsonDecode(cached) as Map<String, dynamic>;
-      return Right<Failure, PaginationModel<CategoryModel>>(
-        _paginated(data, _categoriesListKey, CategoryModel.fromJson),
-      );
+      final PaginationModel<CategoryModel> categories =
+          await IsolateRunner.parseJson<PaginationModel<CategoryModel>>(
+            cached,
+            _decodeCachedCategories,
+          );
+      return Right<Failure, PaginationModel<CategoryModel>>(categories);
     } catch (_) {
       return Left<Failure, PaginationModel<CategoryModel>>(serverFailure);
     }
@@ -186,4 +188,15 @@ class CategoriesRepo {
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
+}
+
+PaginationModel<CategoryModel> _decodeCachedCategories(Object? decoded) {
+  final Map<String, dynamic> data = decoded as Map<String, dynamic>;
+  final Map<String, dynamic> meta = data['meta'] as Map<String, dynamic>;
+  final List<dynamic> rawItems =
+      data['categories'] as List<dynamic>? ?? <dynamic>[];
+  final List<CategoryModel> items = rawItems
+      .map((dynamic e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+      .toList();
+  return PaginationModel<CategoryModel>.fromJson(meta, items);
 }

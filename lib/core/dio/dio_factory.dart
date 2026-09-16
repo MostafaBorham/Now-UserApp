@@ -43,6 +43,10 @@ class DioFactory {
 
 
 
+    dio.transformer = FusedTransformer(
+      contentLengthIsolateThreshold: DioConstants.isolateDecodeThreshold,
+    );
+
     dio.interceptors.add(AuthTokenInterceptor());
     dio.interceptors.add(DioLogger.logger);
     dio.interceptors.add(TokenRefreshInterceptor(dio));

@@ -267,6 +267,14 @@ class _CategoryCarouselItem extends StatelessWidget {
                               width: imageSize,
                               height: imageSize,
                               fit: BoxFit.contain,
+                              memCacheWidth:
+                                  (imageSize *
+                                          MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
+                              memCacheHeight:
+                                  (imageSize *
+                                          MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
                               placeholder: (context, url) =>
                                   const SizedBox.shrink(),
                               errorWidget: (context, url, error) =>

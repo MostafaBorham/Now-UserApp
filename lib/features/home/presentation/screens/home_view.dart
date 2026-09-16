@@ -9,7 +9,6 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
@@ -176,13 +175,6 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
 
-  HomeSectionModel? _findSection(List<HomeSectionModel> sections, String type) {
-    for (final HomeSectionModel section in sections) {
-      if (section.type == type) return section;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final AsyncValue<List<HomeSectionModel>> feed = ref.watch(
@@ -218,158 +210,101 @@ class _HomeViewState extends ConsumerState<HomeView>
 
 
 
+    final Map<String, HomeSectionModel> byType = <String, HomeSectionModel>{};
+    final List<HomeSectionModel> categorySections = <HomeSectionModel>[];
+    for (final HomeSectionModel section in sections) {
+      final String type = section.type;
+      if (type == 'products_by_category') {
+        categorySections.add(section);
+      } else {
+        byType[type] = section;
+      }
+    }
+
     final bool showCategories =
-        !feed.hasValue ||
-        sections.any((HomeSectionModel s) => s.type == 'categories');
-    final HomeSectionModel? offersSection = _findSection(
-      sections,
-      'featured_offers',
-    );
+        !feed.hasValue || byType.containsKey('categories');
+    final HomeSectionModel? offersSection = byType['featured_offers'];
+    final bool showTopBanner = byType.containsKey('top_banner');
+    final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
+    final HomeSectionModel? nearbyStoresSection = byType['nearby_stores'];
+    final HomeSectionModel? flashOffersSection = byType['flash_offers'];
+    final HomeSectionModel? middlePromoSection = byType['promo_block_middle'];
+    final HomeSectionModel? footerPromoSection = byType['promo_block_footer'];
+    final HomeSectionModel? allStoresSection = byType['all_stores'];
 
-
-    final bool showTopBanner = sections.any(
-      (HomeSectionModel s) => s.type == 'top_banner',
-    );
-    final HomeSectionModel? featuredStoresSection = _findSection(
-      sections,
-      'featured_stores',
-    );
-    final HomeSectionModel? nearbyStoresSection = _findSection(
-      sections,
-      'nearby_stores',
-    );
-    final HomeSectionModel? flashOffersSection = _findSection(
-      sections,
-      'flash_offers',
-    );
-    final HomeSectionModel? middlePromoSection = _findSection(
-      sections,
-      'promo_block_middle',
-    );
-    final HomeSectionModel? footerPromoSection = _findSection(
-      sections,
-      'promo_block_footer',
-    );
-    final HomeSectionModel? allStoresSection = _findSection(
-      sections,
-      'all_stores',
-    );
-
-
-    final List<HomeSectionModel> categorySections = sections
-        .where((HomeSectionModel s) => s.type == 'products_by_category')
-        .toList();
+    final List<Widget> feedChildren = <Widget>[
+      HomeHeaderView(
+        searchFieldKey: _searchFieldKey,
+        showCategories: showCategories,
+      ),
+      if (offersSection != null && offersSection.offers.isNotEmpty)
+        HomeOffersSectionView(
+          title: offersSection.title,
+          offers: offersSection.offers,
+        ),
+      if (showTopBanner) const HomeTopBannerSectionView(),
+      const HomeMostPopularBrandsView(),
+      if (featuredStoresSection != null &&
+          featuredStoresSection.stores.isNotEmpty)
+        HomeFeaturedStoresView(stores: featuredStoresSection.stores),
+      if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
+        AspectRatio(
+          aspectRatio: 1.47,
+          child: BestNearbyStoresSection(
+            title: nearbyStoresSection.title,
+            stores: nearbyStoresSection.stores,
+          ),
+        ),
+      if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
+        AspectRatio(
+          aspectRatio: 1,
+          child: HomeNeverMissOffersSection(
+            products: flashOffersSection.products,
+            backgroundColor: flashOffersSection.backgroundColor,
+            viewAllTextColor: flashOffersSection.viewAllTextColor,
+            viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
+          ),
+        ),
+      if (middlePromoSection != null && middlePromoSection.banners.isNotEmpty)
+        AspectRatio(
+          aspectRatio: 3.5,
+          child: HomeBannerView(banner: middlePromoSection.banners.first),
+        ),
+      for (final HomeSectionModel section in categorySections)
+        if (section.products.isNotEmpty)
+          _ProductsByCategorySection(section: section),
+      if (footerPromoSection != null && footerPromoSection.banners.isNotEmpty)
+        AspectRatio(
+          aspectRatio: 3.5,
+          child: HomeBannerView(banner: footerPromoSection.banners.first),
+        ),
+      if (allStoresSection != null)
+        HomeAllStoresSectionView(
+          pinTop: _searchBarHeight,
+          stores: allStoresSection.stores,
+        ),
+      if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
+    ];
 
     return Stack(
       children: <Widget>[
-        SingleChildScrollView(
+        CustomScrollView(
           controller: _scrollController,
-
-
-          padding: EdgeInsets.only(bottom: showSavedContentCue ? 52 : 0),
-          child: Column(
-            spacing: 24,
-            children: <Widget>[
-
-              HomeHeaderView(
-                searchFieldKey: _searchFieldKey,
-                showCategories: showCategories,
+          slivers: <Widget>[
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: showSavedContentCue ? 52 : 0),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => index.isOdd
+                      ? const SizedBox(height: 24)
+                      : feedChildren[index ~/ 2],
+                  childCount: feedChildren.isEmpty
+                      ? 0
+                      : feedChildren.length * 2 - 1,
+                ),
               ),
-
-              if (offersSection != null && offersSection.offers.isNotEmpty)
-                HomeOffersSectionView(
-                  title: offersSection.title,
-                  offers: offersSection.offers,
-                ),
-
-
-              if (showTopBanner) const HomeTopBannerSectionView(),
-
-
-
-              HomeMostPopularBrandsView(),
-
-
-
-              if (featuredStoresSection != null &&
-                  featuredStoresSection.stores.isNotEmpty)
-                HomeFeaturedStoresView(stores: featuredStoresSection.stores),
-
-
-
-
-
-              if (nearbyStoresSection != null &&
-                  nearbyStoresSection.stores.isNotEmpty)
-                AspectRatio(
-                  aspectRatio: 1.47,
-                  child: BestNearbyStoresSection(
-                    title: nearbyStoresSection.title,
-                    stores: nearbyStoresSection.stores,
-                  ),
-                ),
-
-
-
-
-
-              if (flashOffersSection != null &&
-                  flashOffersSection.products.isNotEmpty)
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: HomeNeverMissOffersSection(
-                    products: flashOffersSection.products,
-                    backgroundColor: flashOffersSection.backgroundColor,
-                    viewAllTextColor: flashOffersSection.viewAllTextColor,
-                    viewAllUnderlineColor:
-                        flashOffersSection.viewAllUnderlineColor,
-                  ),
-                ),
-              2.hSpace,
-
-
-
-
-              if (middlePromoSection != null &&
-                  middlePromoSection.banners.isNotEmpty)
-                AspectRatio(
-                  aspectRatio: 3.5,
-                  child: HomeBannerView(
-                    banner: middlePromoSection.banners.first,
-                  ),
-                ),
-
-
-
-
-              for (final HomeSectionModel section in categorySections)
-                if (section.products.isNotEmpty)
-                  _ProductsByCategorySection(section: section),
-
-
-
-
-              if (footerPromoSection != null &&
-                  footerPromoSection.banners.isNotEmpty)
-                AspectRatio(
-                  aspectRatio: 3.5,
-                  child: HomeBannerView(
-                    banner: footerPromoSection.banners.first,
-                  ),
-                ),
-
-
-
-
-              if (allStoresSection != null)
-                HomeAllStoresSectionView(
-                  pinTop: _searchBarHeight,
-                  stores: allStoresSection.stores,
-                ),
-
-              if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
-            ],
-          ),
+            ),
+          ],
         ),
         Positioned(
           top: 0,

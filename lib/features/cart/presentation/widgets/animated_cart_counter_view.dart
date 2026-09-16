@@ -55,12 +55,9 @@ class AnimatedCartCounterView extends StatelessWidget {
           children: [
             InkWell(
               onTap: isLoading ? null : onInc,
-              child: Opacity(
-                opacity: canIncrement ? 1 : 0.4,
-                child: Assets.media.images.png.increamentIcon.image(
-                  width: 15,
-                  color: colors.white,
-                ),
+              child: Assets.media.images.png.increamentIcon.image(
+                width: 15,
+                color: colors.white.withValues(alpha: canIncrement ? 1 : 0.4),
               ),
             ),
 

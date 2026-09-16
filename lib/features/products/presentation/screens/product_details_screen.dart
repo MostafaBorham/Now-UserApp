@@ -7,21 +7,14 @@ import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
-import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_action_buttons.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_discount_ticket.dart';
@@ -29,11 +22,8 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_size_selector.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
-
-final _isBuyNowProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   const ProductDetailsScreen({super.key, required this.productSlug});
@@ -80,59 +70,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   onRetry: _fetchProductDetails,
                 ),
             data: (product) {
-              final cartState = ref.watch(updateCartProductProvider(product.id ?? -1));
-              final isBuyNow = ref.watch(_isBuyNowProvider);
-              final isAddingToCart = cartState.isLoading && !isBuyNow;
-              final isBuyNowLoading = cartState.isLoading && isBuyNow;
-              ref.listen(updateCartProductProvider(product.id ?? -1), (
-                previous,
-                next,
-              ) {
-                next.whenOrNull(
-                  data: (cart) {
-                    if (cart == null) return;
-                    final wasBuyNow = ref.read(_isBuyNowProvider);
-                    ref.read(_isBuyNowProvider.notifier).state = false;
-                    if (wasBuyNow) {
-                      ref.read(mainTabIndexProvider.notifier).state = 2;
-                      context.goNamed(AppRoutes.mainScreen);
-                      return;
-                    }
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(24),
-                        ),
-                      ),
-                      builder: (sheetContext) => SuccessAddToCartView(
-                        productName: context.getLocalizedApiText(product.name),
-                        productImageUrl: (product.images?.isNotEmpty ?? false)
-                            ? product.images!.first
-                            : '',
-                        onViewCart: () {
-                          Navigator.of(sheetContext).pop();
-                          ref.read(mainTabIndexProvider.notifier).state = 2;
-                          final GoRouter router = GoRouter.of(context);
-                          while (router.canPop()) {
-                            router.pop();
-                          }
-                        },
-                        onContinueShopping: () {
-                          Navigator.of(sheetContext).pop();
-                          if (context.canPop()) context.pop();
-                        },
-                      ),
-                    );
-                  },
-                  error: (error, _) {
-                    ref.read(_isBuyNowProvider.notifier).state = false;
-                    AppToast.showError(context, error.toString());
-                  },
-                );
-              });
               final List<String> keyFeatures = (product.mainFeatures ?? [])
                   .map((feature) => context.getLocalizedApiText(feature))
                   .where((text) => text.isNotEmpty)
@@ -254,80 +191,16 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                               width: double.infinity,
                               height: 1,
                             ),
-                          if ((product.stock ?? 1) >= 1)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
+                          if ((product.stock ?? 1) >= 1 && product.id != null)
+                            ProductActionButtons(
+                              productId: product.id!,
+                              productName: context.getLocalizedApiText(
+                                product.name,
                               ),
-                              child: Row(
-                                spacing: 10,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: PrimaryAppPrefixIconButton(
-                                      isLoading: isAddingToCart,
-                                      onTap: () {
-                                        final productQuantity = ref.read(
-                                          productQuantityProvider,
-                                        );
-                                        if (product.id != null) {
-                                          ref
-                                              .read(
-                                                updateCartProductProvider(
-                                                  product.id!,
-                                                ).notifier,
-                                              )
-                                              .addToCart(productQuantity);
-                                        }
-                                      },
-                                      title: LangKeys.addToCartKey.tr(),
-                                      buttonPadding: 10,
-                                      buttonRadius: 8,
-                                      prefixIcon: ReverseWidget(
-                                        child: Assets
-                                            .media
-                                            .images
-                                            .svg
-                                            .shoppingCartIcon
-                                            .svg(
-                                              width: 20,
-                                              colorFilter: ColorFilter.mode(
-                                                colors.white,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: UnPrimaryAppButton(
-                                      isLoading: isBuyNowLoading,
-                                      title: LangKeys.buyNowKey.tr(),
-                                      buttonPadding: 10,
-                                      onTap: () {
-                                        final productQuantity = ref.read(
-                                          productQuantityProvider,
-                                        );
-                                        if (product.id != null) {
-                                          ref
-                                                  .read(
-                                                    _isBuyNowProvider.notifier,
-                                                  )
-                                                  .state =
-                                              true;
-                                          ref
-                                              .read(
-                                                updateCartProductProvider(
-                                                  product.id!,
-                                                ).notifier,
-                                              )
-                                              .addToCart(productQuantity);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              productImageUrl:
+                                  (product.images?.isNotEmpty ?? false)
+                                  ? product.images!.first
+                                  : '',
                             ),
                         ],
                       ),

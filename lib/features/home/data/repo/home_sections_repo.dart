@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/utils/isolate/isolate_runner.dart';
 import 'package:nowdelivery_user_app/features/home/data/datasources/local/database/home_sections_database_service.dart';
 import 'package:nowdelivery_user_app/features/home/data/datasources/remote/api/home_sections_api_service.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
@@ -117,9 +118,12 @@ class HomeSectionsRepo {
         return Left<Failure, List<HomeSectionModel>>(serverFailure);
       }
 
-      final Map<String, dynamic> data =
-          jsonDecode(cached) as Map<String, dynamic>;
-      return Right<Failure, List<HomeSectionModel>>(_parseSections(data));
+      final List<HomeSectionModel> sections =
+          await IsolateRunner.parseJson<List<HomeSectionModel>>(
+            cached,
+            _decodeHomeSections,
+          );
+      return Right<Failure, List<HomeSectionModel>>(sections);
     } catch (_) {
       return Left<Failure, List<HomeSectionModel>>(serverFailure);
     }
@@ -127,12 +131,16 @@ class HomeSectionsRepo {
 
 
 
-  List<HomeSectionModel> _parseSections(Map<String, dynamic> data) {
-    final List<dynamic> rawSections =
-        data['sections'] as List<dynamic>? ?? <dynamic>[];
-    return rawSections
-        .whereType<Map<String, dynamic>>()
-        .map(HomeSectionModel.fromJson)
-        .toList();
-  }
+  List<HomeSectionModel> _parseSections(Map<String, dynamic> data) =>
+      _decodeHomeSections(data);
+}
+
+List<HomeSectionModel> _decodeHomeSections(Object? decoded) {
+  final Map<String, dynamic> data = decoded as Map<String, dynamic>;
+  final List<dynamic> rawSections =
+      data['sections'] as List<dynamic>? ?? <dynamic>[];
+  return rawSections
+      .whereType<Map<String, dynamic>>()
+      .map(HomeSectionModel.fromJson)
+      .toList();
 }

@@ -62,7 +62,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                     child: LayoutBuilder(
                       builder: (context, con) {
                         return Container(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: colors.white,
