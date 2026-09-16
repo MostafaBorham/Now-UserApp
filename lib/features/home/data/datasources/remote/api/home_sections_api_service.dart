@@ -29,7 +29,7 @@ class HomeSectionsApiService {
   }) {
     final bool hasLocation = lat != null && lng != null;
     return _dio.get(
-      "https://caliber-surgery-sanctuary.ngrok-free.dev/api/v1/home-sections",
+      '/api/v1/home-sections',
       queryParameters: <String, dynamic>{
         'platform': platform,
         'lang': lang,

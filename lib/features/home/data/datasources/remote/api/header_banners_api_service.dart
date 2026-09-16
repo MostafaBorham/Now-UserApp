@@ -18,7 +18,7 @@ class HeaderBannersApiService {
     // feed + banners endpoints only exist on this backend, not the prod baseUrl.
     // Move to DioConstants.baseUrl + an endpoints const once prod has them.
     return _dio.get(
-      'https://caliber-surgery-sanctuary.ngrok-free.dev/api/v1/banners',
+      '/api/v1/banners',
       queryParameters: <String, dynamic>{'type': 'header_main_page'},
       cancelToken: _canceller.token,
     );
