@@ -211,6 +211,23 @@ class _HomeViewState extends ConsumerState<HomeView>
         _refreshHome();
       }
     });
+    // Re-fetch when the signed-in user changes. The feed is session-scoped —
+    // every product and store in it carries that user's `cart_quantity` and
+    // `is_favourite`, and `_loadFeed` even sends a different location for a
+    // guest — so it is invalidated on logout and login alike.
+    //
+    // Reloading has to be driven from here: the fetch needs a `BuildContext`
+    // for the locale, so the session orchestrator cannot kick it off the way it
+    // does the other dependencies. Without this the tab survives a login
+    // (the OTP screen pops back to a still-mounted shell), `initState` never
+    // runs again, and its "fetch only when empty" guard would leave the feed
+    // stranded on its shimmer.
+    ref.listen<SessionType>(authSessionProvider.select((s) => s.sessionType), (
+      SessionType? previous,
+      SessionType next,
+    ) {
+      if (previous != null && previous != next) _loadFeed();
+    });
     // Only cue when there is content to show (cached or live); with no cache the
     // feed errors and the existing _FeedErrorRetry covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;

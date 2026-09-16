@@ -10,9 +10,14 @@ import 'package:nowdelivery_user_app/core/database/hive_manager.dart';
 /// wallet can surface under someone else's account. Clearing on logout is what
 /// keeps that from happening.
 ///
-/// Only *user*-scoped boxes are cleared. Catalogue content is identical for
-/// every user, so wiping it would just cost the next session a cold start with
-/// no privacy gain.
+/// Only *user*-scoped boxes are cleared. Genuine catalogue content — the app
+/// info, the category list, the banner images — is identical for every user, so
+/// wiping it would just cost the next session a cold start with no privacy gain.
+///
+/// "Looks like catalogue" is not the test, though: the home feed and the
+/// featured stores list read like content but every product and store inside
+/// them carries `cart_quantity` and `is_favourite` *for the user who fetched
+/// them*, so they are cleared too.
 class CachePurger {
   CachePurger._();
 
@@ -30,6 +35,12 @@ class CachePurger {
     HiveBoxes.walletTopUpAttempt,
     HiveBoxes.recentSearches,
     HiveBoxes.recentAddressSearches,
+    // Not the catalogue they look like: both payloads embed the fetching user's
+    // `cart_quantity` and `is_favourite` per item, and both are served as the
+    // offline fallback — so the next user would open the app to the previous
+    // one's favourites and basket counts.
+    HiveBoxes.homeSections,
+    HiveBoxes.featuredStores,
   ];
 
   /// Clears every box in [_userScopedBoxes]. Each box is cleared independently

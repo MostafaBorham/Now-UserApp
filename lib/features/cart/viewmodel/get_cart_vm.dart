@@ -13,8 +13,14 @@ import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 ///
 /// This provider is intentionally **not** `autoDispose`: the cart is shared
 /// state that must survive the whole app life cycle (navigating away from the
-/// cart screen must not throw the loaded cart away). It is disposed only on
-/// logout via `ref.invalidate(getCartProvider)`.
+/// cart screen must not throw the loaded cart away). Surviving a *session*
+/// change is a different matter — it is listed in `sessionScopedProviders`
+/// (`features/auth/viewmodel/auth_session_vm.dart`), which is what invalidates
+/// it whenever the signed-in user changes.
+///
+/// That listing is load-bearing, not documentation. Screens here only fetch
+/// when the provider is empty, so a cart left behind by the previous user is
+/// never refetched — it is simply shown to the next one.
 final getCartProvider =
     StateNotifierProvider<GetCartViewModel, AsyncValue<CartModel>>(
       (Ref ref) => GetCartViewModel(const AsyncValue.loading()),

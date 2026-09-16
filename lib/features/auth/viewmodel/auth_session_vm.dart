@@ -5,12 +5,53 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
+
+/// Every kept-alive provider that belongs to the signed-in user.
+///
+/// Adding a provider here is what makes it die when the session changes: the
+/// list is iterated by [AuthSessionViewModel._disposeUserDependencies], so a
+/// provider's classification and its actual behaviour cannot drift apart.
+///
+/// Only **user**-scoped providers belong here. App-wide content and device
+/// state (the locale, the catalogue, where the phone is) outlive the session on
+/// purpose, and `test/core/session/session_scoped_providers_test.dart` keeps a
+/// matching exemption list — it fails when a new non-`autoDispose` provider
+/// appears in `lib/` and is in neither, which is exactly how the cart came to
+/// survive logout unnoticed.
+final List<ProviderOrFamily> sessionScopedProviders = <ProviderOrFamily>[
+  getMyOrdersProvider,
+  getMyAddressesProvider,
+  defaultAddressProvider,
+  getCouponsProvider,
+  getProfileProvider,
+  getMyCardsProvider,
+  getWalletInfoProvider,
+  // Holds its own state seeded once from the cards list, so it must be dropped
+  // explicitly — otherwise the next user would inherit this user's default.
+  defaultPaymentCardProvider,
+  // Kept alive so the cart survives leaving the cart screen — which also made
+  // it survive logout and served the previous user's basket to the next
+  // account, since the cart screen only fetches when the provider is empty.
+  getCartProvider,
+  // The draft order group: the previous user's items, delivery address and
+  // totals.
+  checkoutProvider,
+  // The feed and the "Best brands" carousel are not pure catalogue: every
+  // product and store in their payloads carries `cart_quantity` and
+  // `is_favourite` for the user who fetched it.
+  getHomeSectionsProvider,
+  getFeaturedStoresProvider,
+];
 
 /// Where the app's session-dependent dependencies stand.
 ///
@@ -93,14 +134,36 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// before returning — the login flow uses this so it does not leave the OTP
   /// screen until every session-dependent request has settled. For a guest (no
   /// dependencies) it returns immediately either way.
+  ///
+  /// This is also the forced-logout entry point: once the tokens are gone the
+  /// session reads back as a guest, so clearing them and calling this is all a
+  /// caller outside the provider graph needs to do (see
+  /// `TokenRefreshInterceptor.onSessionExpired`).
   Future<void> resolveSession({bool awaitDependencies = false}) async {
     final result = await _repo.getSessionType();
 
     if (!mounted) return;
 
-    final Future<void> load = _apply(
-      result.fold((Failure _) => SessionType.guest, (SessionType t) => t),
+    final SessionType next = result.fold(
+      (Failure _) => SessionType.guest,
+      (SessionType t) => t,
     );
+
+    // Drop the outgoing session's data before the incoming one is applied —
+    // whichever direction it went. Doing this only on user→guest is what let a
+    // guest's cart carry into the account they logged into.
+    //
+    // Cold boot is exempt: there is no previous session to clear, and wiping
+    // here would throw away the very caches the offline-first repos are about
+    // to read.
+    final bool isBoot = state.dependenciesStatus == AppDependenciesStatus.idle;
+
+    if (!isBoot && state.sessionType != next) {
+      await _disposeUserDependencies();
+      if (!mounted) return;
+    }
+
+    final Future<void> load = _apply(next);
 
     if (awaitDependencies) await load;
   }
@@ -110,15 +173,17 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// * [SessionType.user]  : mark the dependencies [AppDependenciesStatus.loading]
   ///   and kick off [_loadUserDependencies], which flips to
   ///   [AppDependenciesStatus.ready] once every request settles.
-  /// * [SessionType.guest] : drop the previous user's data (only if we *were* a
-  ///   user) and settle straight to [AppDependenciesStatus.ready] — a guest has
-  ///   nothing to wait for.
+  /// * [SessionType.guest] : settle straight to [AppDependenciesStatus.ready] —
+  ///   a guest has nothing to wait for.
   ///
-  /// Returns the load future so [resolveSession] can optionally await it; the
-  /// guest branch has nothing to load and returns an already-completed future.
+  /// Clearing the outgoing session belongs to [resolveSession], which has
+  /// already run by the time this is called.
+  ///
+  /// Deliberately **not** `async`: it *returns* the load future instead of
+  /// awaiting it, so [resolveSession] can choose. An `async` body would await
+  /// the future it returns, and the splash — which only wants the load kicked
+  /// off — would start blocking on every dependency request.
   Future<void> _apply(SessionType next) {
-    final SessionType previous = state.sessionType;
-
     switch (next) {
       case SessionType.user:
         state = state.copyWith(
@@ -127,14 +192,11 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
         );
         return _loadUserDependencies();
       case SessionType.guest:
-        final Future<void> disposal = previous == SessionType.user
-            ? _disposeUserDependencies()
-            : Future<void>.value();
         state = state.copyWith(
           sessionType: next,
           dependenciesStatus: AppDependenciesStatus.ready,
         );
-        return disposal;
+        return Future<void>.value();
     }
   }
 
@@ -147,6 +209,11 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(getProfileProvider.notifier).getProfile(),
       _ref.read(getMyCardsProvider.notifier).getMyCards(),
       _ref.read(getWalletInfoProvider.notifier).getWalletInfo(),
+      // Fetched here rather than left to the cart screen: on guest→login the
+      // main shell (and with it CartView) can stay mounted, so its
+      // "fetch only when empty" guard never runs again and the freshly
+      // invalidated cart would sit empty until a manual pull-to-refresh.
+      _ref.read(getCartProvider.notifier).getCart(),
     ]);
 
     if (!mounted) return;
@@ -168,16 +235,9 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   /// purge and write the old user's payload straight back into a box we just
   /// cleared.
   Future<void> _disposeUserDependencies() async {
-    _ref.invalidate(getMyOrdersProvider);
-    _ref.invalidate(getMyAddressesProvider);
-    _ref.invalidate(defaultAddressProvider);
-    _ref.invalidate(getCouponsProvider);
-    _ref.invalidate(getProfileProvider);
-    _ref.invalidate(getMyCardsProvider);
-    _ref.invalidate(getWalletInfoProvider);
-    // Holds its own state seeded once from the cards list, so it must be dropped
-    // explicitly — otherwise the next user would inherit this user's default.
-    _ref.invalidate(defaultPaymentCardProvider);
+    for (final ProviderOrFamily provider in sessionScopedProviders) {
+      _ref.invalidate(provider);
+    }
 
     // Providers are memory only. Without this the cached profile, orders, cards
     // and wallet stay on disk and are served to the next user as the offline
