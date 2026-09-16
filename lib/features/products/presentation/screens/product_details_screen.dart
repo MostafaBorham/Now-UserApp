@@ -14,6 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slide
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_options_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_action_buttons.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
@@ -70,6 +71,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   onRetry: _fetchProductDetails,
                 ),
             data: (product) {
+              final int? productId = product.id;
+              if (productId != null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return;
+                  ref
+                      .read(productOptionsProvider(productId).notifier)
+                      .seedDefaults(product);
+                });
+              }
               final List<String> keyFeatures = (product.mainFeatures ?? [])
                   .map((feature) => context.getLocalizedApiText(feature))
                   .where((text) => text.isNotEmpty)
@@ -152,6 +162,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                     alignment: AlignmentDirectional.centerStart,
                                     child: ProductColorsSelector(
                                       colors: product.colors!,
+                                      onColorSelected: productId == null
+                                          ? null
+                                          : (color) => ref
+                                                .read(
+                                                  productOptionsProvider(
+                                                    productId,
+                                                  ).notifier,
+                                                )
+                                                .selectColor(color.hex),
                                     ),
                                   ),
                                 ...(product.attributes ?? [])
@@ -165,6 +184,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                             AlignmentDirectional.centerStart,
                                         child: ProductSizeSelector(
                                           attribute: attribute,
+                                          onValueSelected:
+                                              (productId == null ||
+                                                  attribute.attributeId == null)
+                                              ? null
+                                              : (value) {
+                                                  if (value.id == null) return;
+                                                  ref
+                                                      .read(
+                                                        productOptionsProvider(
+                                                          productId,
+                                                        ).notifier,
+                                                      )
+                                                      .selectAttributeValue(
+                                                        attribute.attributeId!,
+                                                        value.id!,
+                                                      );
+                                                },
                                         ),
                                       ),
                                     ),

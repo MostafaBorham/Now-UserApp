@@ -153,6 +153,7 @@ class CartRepo {
   Future<Either<Failure, CartModel>> addToCart(
     int productId,
     int quantity,
+    Map<String, dynamic>? options,
   ) async {
 
 
@@ -164,6 +165,7 @@ class CartRepo {
       final Response response = await _cartApiService.addToCart(
         productId,
         quantity,
+        options,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;

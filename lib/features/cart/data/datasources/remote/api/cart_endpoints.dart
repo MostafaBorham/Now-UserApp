@@ -18,8 +18,13 @@ abstract class CartEndpoints {
         'quantity': quantity,
       };
 
-  static Map<String, dynamic> addToCartBody(int quantity,int productId) => <String, dynamic>{
+  static Map<String, dynamic> addToCartBody(
+    int quantity,
+    int productId,
+    Map<String, dynamic>? options,
+  ) => <String, dynamic>{
     'quantity': quantity,
     'product_id': productId,
+    'options': ?options,
   };
 }

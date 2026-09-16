@@ -56,10 +56,14 @@ class CartApiService {
     );
   }
 
-  Future<Response> addToCart(int productId, int quantity) {
+  Future<Response> addToCart(
+    int productId,
+    int quantity,
+    Map<String, dynamic>? options,
+  ) {
     return _dio.post(
       CartEndpoints.addToCart,
-      data: CartEndpoints.addToCartBody(quantity, productId),
+      data: CartEndpoints.addToCartBody(quantity, productId, options),
       cancelToken: _canceller.token,
     );
   }

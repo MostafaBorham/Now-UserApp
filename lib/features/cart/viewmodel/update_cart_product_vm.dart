@@ -41,11 +41,14 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
       },
     );
   }
-  Future<void> addToCart(int productQuantity) async {
+  Future<void> addToCart(
+    int productQuantity, [
+    Map<String, dynamic>? options,
+  ]) async {
     state = const AsyncValue<CartModel?>.loading();
 
     final Either<Failure, CartModel> result =
-    await _repo.addToCart(_productId, productQuantity);
+    await _repo.addToCart(_productId, productQuantity, options);
 
     if (!mounted) return;
 

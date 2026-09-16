@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_buy_now_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_options_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/success_add_to_cart_view.dart';
 
@@ -38,6 +39,10 @@ class ProductActionButtons extends ConsumerWidget {
     final bool isBuyNow = ref.watch(productBuyNowProvider);
     final bool isAddingToCart = isLoading && !isBuyNow;
     final bool isBuyNowLoading = isLoading && isBuyNow;
+
+    final ProductOptions productOptions = ref.watch(
+      productOptionsProvider(productId),
+    );
 
     ref.listen(updateCartProductProvider(productId), (previous, next) {
       next.whenOrNull(
@@ -95,7 +100,7 @@ class ProductActionButtons extends ConsumerWidget {
                 final int productQuantity = ref.read(productQuantityProvider);
                 ref
                     .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(productQuantity);
+                    .addToCart(productQuantity, productOptions.toBody());
               },
               title: LangKeys.addToCartKey.tr(),
               buttonPadding: 10,
@@ -118,7 +123,7 @@ class ProductActionButtons extends ConsumerWidget {
                 ref.read(productBuyNowProvider.notifier).state = true;
                 ref
                     .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(productQuantity);
+                    .addToCart(productQuantity, productOptions.toBody());
               },
             ),
           ),
