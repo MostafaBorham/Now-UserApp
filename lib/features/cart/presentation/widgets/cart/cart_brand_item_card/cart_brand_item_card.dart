@@ -67,7 +67,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
 
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
-              total: '${pricing.total}',
+              pricing: pricing,
               onCheckout: widget.onCheckout,
             ),
           ],

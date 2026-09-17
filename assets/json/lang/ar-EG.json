@@ -386,6 +386,8 @@
   "removeProduct": "إزالة المنتج",
   "removeProductConfirmation": "هل أنت متأكد من رغبتك في إزالة {name} من سلتك؟",
   "deleteAll": "حذف الكل",
+  "cartMinOrderNotMet": "أضف {amount} أخرى لإتمام الطلب من هذا المتجر",
+  "cartStoreUnavailable": "هذا المتجر لا يستقبل الطلبات حالياً",
   "removeItemFromCart": "إزالة عنصر من السلة",
   "removeItemFromCartConfirmation": "هل أنت متأكد من رغبتك في إزالة عنصر من سلتك؟",
   "cancel": "إلغاء",

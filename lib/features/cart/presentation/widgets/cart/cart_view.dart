@@ -123,6 +123,15 @@ class _CartViewState extends ConsumerState<CartView> {
                 .where((CartVendorModel v) => v.vendor.id != null)
                 .toList();
 
+            // Checking out every store at once only works if every one of them
+            // is checkoutable — one store under its minimum fails the whole
+            // draft server-side, so the button says so up front instead of
+            // spending a request to find out.
+            final bool canCheckoutAll = vendors.every(
+              (CartVendorModel v) =>
+                  v.pricing.available && v.pricing.minOrderMet,
+            );
+
             return AppRefreshIndicator(
               onRefresh: () async =>
                   ref.read(getCartProvider.notifier).getCart(),
@@ -146,10 +155,16 @@ class _CartViewState extends ConsumerState<CartView> {
                               final CartVendorModel cartVendor = vendors[index];
 
                               return CartBrandItemCard(
+                                // The card owns its expanded/collapsed state,
+                                // so it has to be identified by store rather
+                                // than by position — otherwise removing a
+                                // store above an expanded one hands that
+                                // expansion to whichever store slides up into
+                                // its index.
+                                key: ValueKey<int>(cartVendor.vendor.id!),
                                 cartVendor: cartVendor,
-                                onCheckout: () => _checkout(
-                                  vendorId: cartVendor.vendor.id!,
-                                ),
+                                onCheckout: () =>
+                                    _checkout(vendorId: cartVendor.vendor.id!),
                               );
                             },
                             separatorBuilder: (context, index) {
@@ -160,6 +175,7 @@ class _CartViewState extends ConsumerState<CartView> {
                         ),
                         PrimaryAppButton(
                           title: LangKeys.checkoutKey.tr(),
+                          isDisabled: !canCheckoutAll,
                           onTap: () => _checkout(),
                         ),
                       ],

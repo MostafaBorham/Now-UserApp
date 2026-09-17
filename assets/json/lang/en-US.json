@@ -387,6 +387,8 @@
   "removeProduct": "Remove Product",
   "removeProductConfirmation": "Are you sure you want to remove {name} from your cart?",
   "deleteAll": "Delete All",
+  "cartMinOrderNotMet": "Add {amount} more to check out from this store",
+  "cartStoreUnavailable": "This store is not taking orders right now",
   "removeItemFromCart": "Remove item from cart",
   "removeItemFromCartConfirmation": "Are you sure you want to remove an item from your cart?",
   "cancel": "Cancel",

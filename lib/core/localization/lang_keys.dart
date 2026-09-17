@@ -384,7 +384,8 @@ abstract class LangKeys {
   static const String editKey = 'edit';
   static const String noAddressKey = 'noAddress';
   static const String noAddressSelectedKey = 'noAddressSelected';
-  static const String noDeliveryAddressSelectedKey = 'noDeliveryAddressSelected';
+  static const String noDeliveryAddressSelectedKey =
+      'noDeliveryAddressSelected';
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
   static const String addWalletKey = 'addWallet';
@@ -399,8 +400,15 @@ abstract class LangKeys {
   static const String cartEmptySubtitleKey = 'cartEmptySubtitle';
   static const String browseProductsKey = 'browseProducts';
   static const String removeProductKey = 'removeProduct';
-  static const String removeProductConfirmationKey = 'removeProductConfirmation';
+  static const String removeProductConfirmationKey =
+      'removeProductConfirmation';
   static const String deleteAllKey = 'deleteAll';
+
+  /// Why a store's checkout pill is disabled. `cartMinOrderNotMet` takes a
+  /// `{amount}` — how much short of the store's minimum the basket still is.
+  static const String cartMinOrderNotMetKey = 'cartMinOrderNotMet';
+  static const String cartStoreUnavailableKey = 'cartStoreUnavailable';
+
   static const String removeItemFromCartKey = 'removeItemFromCart';
   static const String removeItemFromCartConfirmationKey =
       'removeItemFromCartConfirmation';
