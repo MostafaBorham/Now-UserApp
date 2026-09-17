@@ -3,6 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 
+enum LocationPermissionStatus { granted, denied, deniedForever }
+
 abstract class LocationManager {
   static Future<Placemark?> getAddressFromLocation(LatLng location) async {
     try {
@@ -27,6 +29,45 @@ abstract class LocationManager {
 
     return permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse;
+  }
+
+  static Future<LocationPermissionStatus> requestPermissionStatus() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      return _statusOf(permission);
+    } catch (_) {
+      return LocationPermissionStatus.denied;
+    }
+  }
+
+  static Future<LocationPermissionStatus> currentPermissionStatus() async {
+    try {
+      return _statusOf(await Geolocator.checkPermission());
+    } catch (_) {
+      return LocationPermissionStatus.denied;
+    }
+  }
+
+  static LocationPermissionStatus _statusOf(LocationPermission permission) {
+    if (permission == LocationPermission.deniedForever) {
+      return LocationPermissionStatus.deniedForever;
+    }
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      return LocationPermissionStatus.granted;
+    }
+    return LocationPermissionStatus.denied;
+  }
+
+  static Future<bool> openAppSettings() async {
+    try {
+      return await Geolocator.openAppSettings();
+    } catch (_) {
+      return false;
+    }
   }
 
   /// Whether the device's location service (GPS) is currently switched on.

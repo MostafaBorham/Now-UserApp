@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,9 +23,11 @@ import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
+import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_address_provider.dart';
 
 class HomeDeliveryAddressView extends ConsumerStatefulWidget {
   const HomeDeliveryAddressView({super.key});
@@ -161,10 +165,12 @@ class _HomeDeliveryAddressViewState
       },
     );
 
-    // Resolve the current selection. Unless the user picked a point on the map,
-    // the highlighted address is their explicit list choice, defaulting to the
-    // first address when none has been tapped yet — so the sheet always opens
-    // with the first address selected and shown on the map.
+    // Resolve the current selection. Unless the user picked a point on the map
+    // or tapped a saved address, the sheet opens on the address currently shown
+    // on the home page ([homeAddressProvider]) — the default location when the
+    // user never picked one — so the map mirrors the header from the first
+    // frame instead of resolving the device location.
+    final AddressModel? homeAddress = ref.watch(homeAddressProvider);
     final List<AddressModel> addresses =
         addressesState.valueOrNull?.data ?? const <AddressModel>[];
     AddressModel? selectedAddress;
@@ -177,7 +183,7 @@ class _HomeDeliveryAddressViewState
           break;
         }
       }
-      selectedAddress ??= addresses.isEmpty ? null : addresses.first;
+      selectedAddress ??= homeAddress;
     }
 
     // The location driving the map marker/camera and the confirm button — the
@@ -186,14 +192,6 @@ class _HomeDeliveryAddressViewState
     final LatLng? selectedLocation = selectedAddress == null
         ? null
         : _locationOf(selectedAddress);
-
-    // Hold the map on its loading placeholder until the first selection is
-    // known, so [AppMap] is built with the address location from the start and
-    // never resolves (and jumps to) the device location first. Only a user
-    // waits on the addresses provider; a guest has none, so the map builds
-    // straight away and resolves the device location itself.
-    final bool showMapPlaceholder =
-        isUser && selectedLocation == null && !addressesState.hasValue;
 
     return Container(
       decoration: BoxDecoration(
@@ -259,29 +257,31 @@ class _HomeDeliveryAddressViewState
                     border: Border.all(color: colors.neutral200),
                     borderRadius: AppBorderRadius.brCircular12,
                   ),
-                  child: showMapPlaceholder
-                      ? const Center(child: CircularProgressIndicator())
-                      : Stack(
-                          children: [
-                            Positioned.fill(
-                              child: AppMap(
-                                currentLocation: selectedLocation,
-                                onLocationChanged: _onMapLocationChanged,
-                              ),
-                            ),
-                            // Dim the map with a spinner while a hand-picked point
-                            // is being reverse-geocoded into an address.
-                            if (_resolvingPick)
-                              Positioned.fill(
-                                child: ColoredBox(
-                                  color: colors.black.withValues(alpha: 0.15),
-                                  child: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ),
-                              ),
-                          ],
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: AppMap(
+                          currentLocation: selectedLocation,
+                          onLocationChanged: _onMapLocationChanged,
+                          // Opening the sheet must never prompt for the location:
+                          // it shows the home address (or the fallback), and only
+                          // the current-location button reaches for the device.
+                          resolveDeviceLocationWhenEmpty: false,
                         ),
+                      ),
+                      // Dim the map with a spinner while a hand-picked point is
+                      // being reverse-geocoded into an address.
+                      if (_resolvingPick)
+                        Positioned.fill(
+                          child: ColoredBox(
+                            color: colors.black.withValues(alpha: 0.15),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               // The only scrollable region: the address list. It takes just the
@@ -344,10 +344,20 @@ class _HomeDeliveryAddressViewState
                     )
                   : PrimaryAppButton(
                       title: LangKeys.confirmAddressKey.tr(),
-                      // Close the sheet and hand the picked address back to the
-                      // header. A hand-picked map point has no saved address, so
-                      // nothing is returned in that case.
-                      onTap: () => context.pop(selectedAddress),
+                      // Make this the address the home page shows, then close the
+                      // sheet. The header watches [homeAddressProvider], so the
+                      // pick surfaces there without passing it back through pop.
+                      onTap: () {
+                        final AddressModel confirmed = selectedAddress!;
+                        ref.read(homeAddressProvider.notifier).state =
+                            confirmed;
+                        unawaited(
+                          CurrentLocationCacheService().saveCurrentLocation(
+                            confirmed,
+                          ),
+                        );
+                        context.pop();
+                      },
                     ),
             ],
           ),

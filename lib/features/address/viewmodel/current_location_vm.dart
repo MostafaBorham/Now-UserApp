@@ -10,18 +10,18 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 /// [idle] — nothing resolved yet (the VM was created but the splash has not
 /// called [CurrentLocationViewModel.resolve]). [resolving] — a resolve pass is
 /// in flight. [ready] — a non-null current location is cached; the app may be
-/// entered. [declined] — there is no cached location and the user refused to
-/// switch the location service on (or no fix could be obtained), so the app
-/// cannot be entered and the splash closes it.
-enum CurrentLocationStatus { idle, resolving, ready, declined }
+/// entered. A resolve pass always settles on [ready]: when there is no cached
+/// location and none can be obtained (permission refused, service off, no fix),
+/// it falls back to [CurrentLocationViewModel.defaultLocation] rather than
+/// blocking entry.
+enum CurrentLocationStatus { idle, resolving, ready }
 
 /// App-wide, always-alive orchestrator that guarantees a non-null current
 /// location in the cache before the app is entered — the splash's location gate.
 ///
 /// Deliberately **not** `autoDispose` and does not resolve on creation: the
 /// splash calls [resolve] once its logo animation ends, then watches this state
-/// to know whether it may leave ([ready]) or must close the app because the
-/// user refused to switch the location service on ([declined]).
+/// for [ready] to know it may leave.
 final currentLocationProvider =
     StateNotifierProvider<CurrentLocationViewModel, CurrentLocationStatus>(
   (Ref ref) => CurrentLocationViewModel(),
@@ -32,19 +32,25 @@ class CurrentLocationViewModel extends StateNotifier<CurrentLocationStatus> {
 
   final CurrentLocationCacheService _cache = CurrentLocationCacheService();
 
+  /// The Riyadh coordinates the bootstrap falls back to when no real location
+  /// can be obtained, so the cached current location is never null.
+  static const LatLng defaultLocation = LatLng(24.7136, 46.6753);
+
   /// Runs the current-location scenario:
   ///
   /// * Read whatever is cached (may be null).
   /// * If the location service is off but something is cached, keep the cached
   ///   value — no prompt.
   /// * If the service is off and nothing is cached, ask the user to switch it on
-  ///   through the native in-place system prompt. Refusing it leaves nothing to
-  ///   enter the app with, so we settle on [declined] and the splash closes the
-  ///   app.
+  ///   through the native in-place system prompt.
   /// * Once the service is on (already, or just enabled), get a fresh device
   ///   fix, reverse-geocode it and overwrite the cache.
-  /// * The cached current location may never stay null: a total miss with
-  ///   nothing cached also settles on [declined].
+  /// * When no real location can be obtained and nothing is cached (permission
+  ///   refused, service left off, no fix), fall back to [defaultLocation] so the
+  ///   cache is never null.
+  ///
+  /// A resolve pass always settles on [CurrentLocationStatus.ready]; entry is
+  /// never blocked on the location.
   Future<void> resolve() async {
     state = CurrentLocationStatus.resolving;
 
@@ -57,22 +63,45 @@ class CurrentLocationViewModel extends StateNotifier<CurrentLocationStatus> {
         state = CurrentLocationStatus.ready;
         return;
       }
-      // Nothing cached: we must have a location, so ask to turn the service on
-      // in place. Refusal is terminal — the app cannot be entered.
+      // Nothing cached: ask to turn the service on in place. A refusal falls
+      // back to the default location below rather than blocking entry.
       serviceEnabled = await LocationManager.requestService();
       if (!mounted) return;
-      if (!serviceEnabled) {
-        state = CurrentLocationStatus.declined;
+    }
+
+    if (serviceEnabled) {
+      // Service is on: refresh from a fresh device fix and cache it.
+      final AddressModel? fresh = await _fetchAndCache();
+      if (!mounted) return;
+      if (fresh != null || cached != null) {
+        state = CurrentLocationStatus.ready;
         return;
       }
     }
 
-    // Service is on: refresh from a fresh device fix and cache it.
-    final AddressModel? fresh = await _fetchAndCache();
+    // No cached location and none could be obtained: fall back to the default.
+    await _cacheDefaultLocation();
     if (!mounted) return;
-    state = (fresh != null || cached != null)
-        ? CurrentLocationStatus.ready
-        : CurrentLocationStatus.declined;
+    state = CurrentLocationStatus.ready;
+  }
+
+  /// Reverse-geocodes [defaultLocation] into an [AddressModel] and caches it as
+  /// the current location. On a geocoding miss (no connectivity/coverage) a
+  /// minimal Riyadh model carrying just the coordinates is cached instead, so
+  /// the current location is always non-null.
+  Future<void> _cacheDefaultLocation() async {
+    final Placemark? placemark =
+        await LocationManager.getAddressFromLocation(defaultLocation);
+    final AddressModel address = placemark != null
+        ? AddressModel.fromPlacemark(placemark, defaultLocation)
+        : const AddressModel(
+            country: 'Saudi Arabia',
+            city: 'Riyadh',
+            area: 'Riyadh',
+            latitude: '24.7136',
+            longitude: '46.6753',
+          );
+    await _cache.saveCurrentLocation(address);
   }
 
   /// Gets a fresh device fix, reverse-geocodes it into an [AddressModel] and
