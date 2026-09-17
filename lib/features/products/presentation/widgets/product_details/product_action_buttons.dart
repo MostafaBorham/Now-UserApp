@@ -100,7 +100,10 @@ class ProductActionButtons extends ConsumerWidget {
                 final int productQuantity = ref.read(productQuantityProvider);
                 ref
                     .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(productQuantity, productOptions.toBody());
+                    .addToCart(
+                      productQuantity,
+                      options: productOptions.toBody(),
+                    );
               },
               title: LangKeys.addToCartKey.tr(),
               buttonPadding: 10,
@@ -123,7 +126,10 @@ class ProductActionButtons extends ConsumerWidget {
                 ref.read(productBuyNowProvider.notifier).state = true;
                 ref
                     .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(productQuantity, productOptions.toBody());
+                    .addToCart(
+                      productQuantity,
+                      options: productOptions.toBody(),
+                    );
               },
             ),
           ),

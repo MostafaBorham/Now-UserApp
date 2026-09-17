@@ -7,12 +7,12 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
 final updateCartProductProvider = StateNotifierProvider.autoDispose
     .family<UpdateCartProductViewModel, AsyncValue<CartModel?>, int>(
-  (Ref ref, int productId) => UpdateCartProductViewModel(ref, productId),
-);
+      (Ref ref, int productId) => UpdateCartProductViewModel(ref, productId),
+    );
 
 class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   UpdateCartProductViewModel(this._ref, this._productId)
-      : super(const AsyncValue<CartModel?>.data(null));
+    : super(const AsyncValue<CartModel?>.data(null));
 
   final Ref _ref;
   final int _productId;
@@ -55,20 +55,48 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   }
 
   /// Sets this product's cart line to [productQuantity]; `0` removes it.
-  Future<void> updateCartProductQuantity(int productQuantity) =>
-      _send(() => _repo.updateCartProductQuantity(_productId, productQuantity));
+  ///
+  /// [seededQuantity]: what the caller can already see this line's quantity to
+  /// be — see [_send].
+  Future<void> updateCartProductQuantity(
+    int productQuantity, {
+    int? seededQuantity,
+  }) => _send(
+    () => _repo.updateCartProductQuantity(_productId, productQuantity),
+    seededQuantity: seededQuantity,
+  );
 
   /// Puts [productQuantity] of this product in the cart, with the selected
   /// product [options] when the product has any.
   Future<void> addToCart(
-    int productQuantity, [
+    int productQuantity, {
     Map<String, dynamic>? options,
-  ]) =>
-      _send(() => _repo.addToCart(_productId, productQuantity, options));
+    int? seededQuantity,
+  }) => _send(
+    () => _repo.addToCart(_productId, productQuantity, options),
+    seededQuantity: seededQuantity,
+  );
 
+  /// Fires [request] and, on success, records what this product's quantity was
+  /// beforehand, which is what tells an add from a change.
+  ///
+  /// The shared cart is the best answer whenever it is loaded. When it is not —
+  /// a guest, or a signed-in user during the window the boot fetch is still in
+  /// flight — [seededQuantity] stands in: the quantity the calling card was
+  /// rendered with, which came from the listing payload. Without it every
+  /// increment read as `0` and was answered with the "added to cart" sheet
+  /// instead of a quiet toast.
   Future<void> _send(
-    Future<Either<Failure, CartModel>> Function() request,
-  ) async {
+    Future<Either<Failure, CartModel>> Function() request, {
+    int? seededQuantity,
+  }) async {
+    // Captured before the request, not after it: a sibling update of the same
+    // product can refresh the shared cart while this one is still in flight.
+    final int? cachedQuantity = _ref
+        .read(getCartProvider)
+        .valueOrNull
+        ?.quantityOf(_productId);
+
     state = const AsyncValue<CartModel?>.loading();
 
     final Either<Failure, CartModel> result = await request();
@@ -79,10 +107,7 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
       (Failure failure) =>
           AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
       (CartModel cart) {
-        // Read before the refresh below: until then the shared cart still holds
-        // this product's quantity as it was before the request.
-        _previousQuantity =
-            _ref.read(getCartProvider).valueOrNull?.quantityOf(_productId) ?? 0;
+        _previousQuantity = cachedQuantity ?? seededQuantity ?? 0;
         _feedbackPending = true;
         _ref.read(getCartProvider.notifier).updateCartState(cart);
         return AsyncValue<CartModel?>.data(cart);

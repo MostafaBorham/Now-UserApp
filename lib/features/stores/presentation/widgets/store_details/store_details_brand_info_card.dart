@@ -91,7 +91,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
               spacing: 6,
               children: [
                 Text(
-                  '${product.rating?.average??0} (${product.rating?.total??0})',
+                  '${product.rating?.average ?? 0} (${product.rating?.total ?? 0})',
                   style: AppTextStyles.style12Regular.copyWith(
                     color: colors.neutral400,
                   ),
@@ -159,7 +159,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                       if (product.id == null) return;
                       ref
                           .read(updateCartProductProvider(productId).notifier)
-                          .addToCart(1);
+                          .addToCart(1, seededQuantity: product.cartQuantity);
                     },
                     title: LangKeys.addToCartKey.tr(),
                     buttonColor: colors.secondaryFixedDim,
