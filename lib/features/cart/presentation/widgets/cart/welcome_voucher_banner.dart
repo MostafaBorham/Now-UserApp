@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/copy_to_clipboard.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
@@ -72,8 +72,7 @@ class WelcomeVoucherBanner extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SvgPicture.asset(
-                'assets/media/images/svg/welcome-voucher-tag-icon.svg',
+              Assets.media.images.svg.welcomeVoucherTagIcon.svg(
                 width: 14,
                 height: 14,
               ),

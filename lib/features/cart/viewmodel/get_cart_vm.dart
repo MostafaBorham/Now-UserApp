@@ -61,8 +61,15 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
   /// has been checked out — its products now belong to a draft order group, so
   /// the cart must stop offering them.
   ///
+  /// The local edit is only what the shopper sees on the way back; [getCart] is
+  /// then fired to replace it. Leaving the edit to stand would keep every
+  /// remaining store on its pre-checkout pricing, which is wrong the moment a
+  /// coupon or a delivery-fee threshold spanned more than one of them — and the
+  /// cart screen fetches only when it has no value, so nothing else would ever
+  /// correct it.
+  ///
   /// A no-op while the cart itself is loading or in error: there is nothing
-  /// loaded to remove from, and the next fetch brings the server truth anyway.
+  /// loaded to remove from, and the refetch brings the server truth anyway.
   void removeVendor(int vendorId) {
     final CartModel? cart = state.valueOrNull;
 
@@ -75,15 +82,35 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
             .toList(),
       ),
     );
+
+    _refreshInBackground();
   }
 
   /// Drops every store from the loaded cart, after all of them have been
-  /// checked out together. Same no-op rule as [removeVendor].
+  /// checked out together. Same rules as [removeVendor].
   void clearVendors() {
     final CartModel? cart = state.valueOrNull;
 
     if (cart == null) return;
 
     state = AsyncValue.data(cart.copyWith(vendors: const <CartVendorModel>[]));
+
+    _refreshInBackground();
+  }
+
+  /// Refetches without going through the `loading` state, so the optimistic
+  /// edit above stays on screen instead of flashing the shimmer at a shopper
+  /// who is being pushed to the confirmation screen anyway.
+  Future<void> _refreshInBackground() async {
+    final result = await _repo.getCart();
+
+    if (!mounted) return;
+
+    // A failed refresh keeps the local edit: it is the better of the two
+    // answers available, and the next open refetches.
+    result.fold(
+      (Failure _) {},
+      (CartModel cart) => state = AsyncValue.data(cart),
+    );
   }
 }

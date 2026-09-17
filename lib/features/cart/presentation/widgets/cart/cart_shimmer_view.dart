@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
@@ -67,7 +69,7 @@ class CartShimmerView extends StatelessWidget {
                           ),
                         ],
                       ),
-      
+
                       // Collapsed products images preview.
                       Row(
                         spacing: 8,
@@ -83,7 +85,7 @@ class CartShimmerView extends StatelessWidget {
                             ),
                         ],
                       ),
-      
+
                       // Total + checkout pill.
                       Container(
                         width: double.infinity,
@@ -101,10 +103,8 @@ class CartShimmerView extends StatelessWidget {
               itemCount: 3,
             ),
           ),
-      
-          PrimaryAppButton(
-            title: 'Checkout',
-          ),
+
+          PrimaryAppButton(title: LangKeys.checkoutKey.tr()),
         ],
       ),
     );
