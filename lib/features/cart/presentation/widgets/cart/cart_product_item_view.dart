@@ -1,51 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
+/// One cart line inside an expanded store card: the product, its price and the
+/// quantity stepper.
 class CartProductItemView extends ConsumerStatefulWidget {
-  const CartProductItemView({
-    super.key,
-    this.product,
-    this.vendorName,
-    this.productName = 'Almarai Milk 2 Liters',
-    this.storeName = 'Panda Store',
-    this.imageUrl =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTruTN7TKhs6EbZtBGtXkJjLwrXau6sw1eyrA&s',
-    this.oldPrice = '10',
-    this.newPrice = '10',
-    this.initialQuantity = 1,
+  const CartProductItemView({super.key, required this.product});
 
-  });
-
-
-
-  final ProductModel? product;
-
-
-  final Map<String, dynamic>? vendorName;
-
-  final String productName;
-  final String storeName;
-  final String imageUrl;
-  final String oldPrice;
-  final String newPrice;
-  final int initialQuantity;
-
+  /// The cart line this row renders. Cart lines carry the product id in
+  /// `product_id`, which is what the update requests are keyed by.
+  final ProductModel product;
 
   @override
   ConsumerState<CartProductItemView> createState() =>
@@ -53,35 +35,64 @@ class CartProductItemView extends ConsumerStatefulWidget {
 }
 
 class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
-  late int _quantity = widget.product?.quantity ?? widget.initialQuantity;
+  /// The quantity the server last confirmed for this line.
+  ///
+  /// Read straight off the line rather than mirrored into local state: the
+  /// stepper never moves on its own — it only ever shows what the fresh cart
+  /// reports — so there is nothing local to keep in sync, and nothing to
+  /// revert when a request fails.
+  int get _quantity => widget.product.quantity ?? 1;
 
-  @override
-  void didUpdateWidget(covariant CartProductItemView oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  /// The smallest this line may go before removing it is the only way down —
+  /// the store's minimum order quantity, or a single unit when it has none.
+  int get _minQuantity => widget.product.minOrderQuantity ?? 1;
 
-
-
-    final int? newQuantity = widget.product?.quantity;
-    if (newQuantity != null && newQuantity != oldWidget.product?.quantity) {
-      _quantity = newQuantity;
-    }
+  /// Whether there is stock left to add. A `null` stock leaves it uncapped,
+  /// same rule as [AnimatedCartButton] on the listing cards — the cart used to
+  /// be the one place with no cap at all, so a line could be pushed past what
+  /// the shop actually has.
+  bool get _canIncrement {
+    final int? stock = widget.product.stock;
+    return stock == null || _quantity < stock;
   }
 
-
+  /// The id the update requests are keyed by.
+  ///
+  /// Cart lines carry it in `product_id`, but a line that came back without one
+  /// still has `id` — the same fallback [CartModel.lineOf] makes. Keying off
+  /// `product_id` alone left the whole stepper inert on such a line, with no
+  /// sign to the shopper that their taps were going nowhere.
+  int? get _productId => widget.product.productId ?? widget.product.id;
 
   void _updateQuantity(int newQuantity) {
-    final int? productId = widget.product?.productId;
+    final int? productId = _productId;
     if (productId == null) return;
-
-
-
 
     ref
         .read(updateCartProductProvider(productId).notifier)
-        .updateCartProductQuantity(newQuantity);
+        .updateCartProductQuantity(newQuantity, seededQuantity: _quantity);
   }
 
-
+  /// Asks before dropping the last unit — removing a line is as destructive as
+  /// emptying a whole store, which has always confirmed.
+  void _confirmRemove() {
+    AppCustomAlertDialog.show(
+      context,
+      (BuildContext dialogContext) => AppCustomAlertDialog(
+        title: LangKeys.removeProductKey.tr(),
+        message: LangKeys.removeProductConfirmationKey.tr(
+          namedArgs: <String, String>{
+            'name': context.getLocalizedApiText(widget.product.name),
+          },
+        ),
+        confirmLabel: LangKeys.deleteKey.tr(),
+        onConfirm: () {
+          dialogContext.pop();
+          _updateQuantity(0);
+        },
+      ),
+    );
+  }
 
   void _handleUpdateResult(AsyncValue<CartModel?> state) {
     state.whenOrNull(
@@ -89,17 +100,15 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         if (cart == null) return;
         // The VM already pushed the fresh cart into getCartProvider; all that is
         // left is telling the shopper the change landed.
-        final int? productId = widget.product?.productId;
+        final int? productId = _productId;
         if (productId == null || !mounted) return;
 
         showCartUpdateFeedback(context, ref, productId: productId, cart: cart);
       },
       error: (Object error, StackTrace _) {
         if (!mounted) return;
-        setState(
-          () => _quantity = widget.product?.quantity ?? widget.initialQuantity,
-        );
-
+        // Nothing to undo: the stepper only ever showed the confirmed
+        // quantity, which this failure left untouched.
         AppToast.showError(context, error.toString());
       },
     );
@@ -108,9 +117,9 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final ProductModel? product = widget.product;
+    final ProductModel product = widget.product;
 
-    final int? productId = product?.productId;
+    final int? productId = _productId;
     bool isUpdating = false;
     if (productId != null) {
       ref.listen<AsyncValue<CartModel?>>(
@@ -121,9 +130,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
       isUpdating = ref.watch(updateCartProductProvider(productId)).isLoading;
     }
 
-    final String productName = product != null
-        ? context.getLocalizedApiText(product.name)
-        : widget.productName;
+    final int quantity = _quantity;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +139,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         InkWell(
           onTap: () => context.pushNamed(
             AppRoutes.productDetailsScreen,
-            extra: product?.slug,
+            extra: product.slug,
           ),
           child: Container(
             width: 70,
@@ -146,7 +153,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
               width: 70,
               height: 70,
               fit: BoxFit.cover,
-              imageUrl: widget.product?.images?.firstOrNull ?? '',
+              imageUrl: product.images?.firstOrNull ?? '',
             ),
           ),
         ),
@@ -156,7 +163,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
             spacing: 8,
             children: [
               Text(
-                productName,
+                context.getLocalizedApiText(product.name),
                 maxLines: 1,
                 style: AppTextStyles.style16Medium.copyWith(
                   color: colors.tertiaryContainer,
@@ -173,15 +180,16 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price:
-                              '${formatDouble(widget.product?.discountPrice ?? widget.product?.price)}',
+                          price: formatMoney(
+                            product.discountPrice ?? product.price,
+                          ),
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if (widget.product?.discountPrice != null)
+                        if (product.discountPrice != null)
                           OldPriceWidget(
                             color: colors.neutral500,
-                            price: '${formatDouble(widget.product?.price)}',
+                            price: formatMoney(product.price),
                             size: 12,
                           ),
                       ],
@@ -194,7 +202,9 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       spacing: 4,
                       children: [
                         InkWell(
-                          onTap: () => _updateQuantity(_quantity + 1),
+                          onTap: _canIncrement
+                              ? () => _updateQuantity(quantity + 1)
+                              : null,
                           customBorder: const CircleBorder(),
                           child: Container(
                             width: 20,
@@ -206,7 +216,9 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                             child: Icon(
                               Icons.add_rounded,
                               size: 12,
-                              color: colors.black,
+                              color: colors.black.withValues(
+                                alpha: _canIncrement ? 1 : 0.3,
+                              ),
                             ),
                           ),
                         ),
@@ -224,7 +236,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                     ),
                                   )
                                 : Text(
-                                    _quantity.toString(),
+                                    quantity.toString(),
                                     textAlign: TextAlign.center,
                                     style: AppTextStyles.style12Medium.copyWith(
                                       color: colors.tertiaryContainer,
@@ -232,13 +244,15 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                   ),
                           ),
                         ),
-                        // On the last unit there is nothing left to decrement,
-                        // so the icon becomes the delete action — same rule as
-                        // [AnimatedCartCounterView], where `0` removes the line.
+                        // At the store's minimum there is nothing left to
+                        // decrement, so the icon becomes the delete action —
+                        // same rule as [AnimatedCartCounterView], where `0`
+                        // removes the line. Unlike there, dropping the last
+                        // unit asks first.
                         InkWell(
-                          onTap: () => _updateQuantity(
-                            _quantity > 1 ? _quantity - 1 : 0,
-                          ),
+                          onTap: quantity > _minQuantity
+                              ? () => _updateQuantity(quantity - 1)
+                              : _confirmRemove,
                           customBorder: const CircleBorder(),
                           child: Container(
                             width: 20,
@@ -248,7 +262,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                               color: colors.white,
                               shape: BoxShape.circle,
                             ),
-                            child: _quantity > 1
+                            child: quantity > _minQuantity
                                 ? Icon(
                                     Icons.remove_rounded,
                                     size: 12,

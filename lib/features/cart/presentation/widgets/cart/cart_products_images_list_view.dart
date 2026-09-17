@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
+/// The collapsed body of a store's cart card: its lines as thumbnails, plus a
+/// tile back into the store to add more.
 class CartProductsImagesListView extends StatelessWidget {
-  const CartProductsImagesListView({super.key, this.products, this.storeId});
+  const CartProductsImagesListView({
+    super.key,
+    required this.products,
+    this.storeId,
+  });
 
-  final List<ProductModel>? products;
+  final List<ProductModel> products;
+
+  /// `null` leaves the "+" tile inert — there is no store to open.
   final int? storeId;
 
   @override
@@ -20,27 +28,29 @@ class CartProductsImagesListView extends StatelessWidget {
       runSpacing: 8,
       spacing: 8,
       children: [
-        ...((products ?? [])
-            .map(
-              (product) => Container(
-                width: 56,
-                height: 56,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: AppBoxShadows.greyElevation3,
-                ),
-                child: AppCachedNetworkImage(
-                  width: 56,
-                  height: 56,
-                  fit: BoxFit.cover,
-                  imageUrl: product.images?.firstOrNull ?? '',
-                ),
-              ),
-            )
-            .toList()),
+        for (final ProductModel product in products)
+          Container(
+            width: 56,
+            height: 56,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              boxShadow: AppBoxShadows.greyElevation3,
+            ),
+            child: AppCachedNetworkImage(
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+              imageUrl: product.images?.firstOrNull ?? '',
+            ),
+          ),
         InkWell(
-          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen,extra: storeId),
+          onTap: storeId == null
+              ? null
+              : () => context.pushNamed(
+                  AppRoutes.storeDetailsScreen,
+                  extra: storeId,
+                ),
           child: Container(
             width: 56,
             height: 56,
