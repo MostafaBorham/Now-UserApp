@@ -1,15 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-
-
-
-
-
-String formatLocalizedDate(
-    BuildContext context,
-    String? dateString,
-    ) {
+String formatLocalizedDate(BuildContext context, String? dateString) {
   if (dateString == null || dateString.trim().isEmpty) {
     return '';
   }
@@ -26,14 +18,6 @@ String formatLocalizedDate(
   return DateFormat.yMMMMd(languageCode).format(utcDate);
 }
 
-
-
-
-
-
-
-
-
 String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
   if (dateString == null || dateString.trim().isEmpty) {
     return null;
@@ -48,19 +32,7 @@ String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
   return DateFormat.yMMMMd(context.locale.languageCode).format(parsedDate);
 }
 
-
-
-
-
-
-
-
-
-
-String formatLocalizedNumericDate(
-    BuildContext context,
-    String? dateString,
-    ) {
+String formatLocalizedNumericDate(BuildContext context, String? dateString) {
   if (dateString == null || dateString.trim().isEmpty) {
     return '';
   }
@@ -78,12 +50,18 @@ String formatLocalizedNumericDate(
   return languageCode == 'ar' ? _toArabicIndicDigits(formatted) : formatted;
 }
 
-
 const List<String> _arabicIndicDigits = [
-  '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩',
+  '٠',
+  '١',
+  '٢',
+  '٣',
+  '٤',
+  '٥',
+  '٦',
+  '٧',
+  '٨',
+  '٩',
 ];
-
-
 
 String _toArabicIndicDigits(String input) {
   final StringBuffer buffer = StringBuffer();

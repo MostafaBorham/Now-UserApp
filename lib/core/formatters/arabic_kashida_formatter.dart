@@ -13,7 +13,19 @@ String formatArabicKashida(String text, {int count = 6}) {
   // Letters that do NOT join to the following letter (right-joining only),
   // so a tatweel must never be placed after them.
   const Set<String> nonForwardJoining = {
-    'ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ة', 'ء', 'ى',
+    'ا',
+    'أ',
+    'إ',
+    'آ',
+    'د',
+    'ذ',
+    'ر',
+    'ز',
+    'و',
+    'ؤ',
+    'ة',
+    'ء',
+    'ى',
   };
 
   bool isArabicLetter(int code) =>
@@ -22,8 +34,7 @@ String formatArabicKashida(String text, {int count = 6}) {
   final List<String> chars = text.characters.toList();
 
   // Not Arabic -> return the text unchanged (any other language passes through).
-  final bool hasArabic =
-      chars.any((String c) => isArabicLetter(c.runes.first));
+  final bool hasArabic = chars.any((String c) => isArabicLetter(c.runes.first));
   if (!hasArabic) return text;
 
   // Find the last valid join (a forward-joining letter followed by a letter).

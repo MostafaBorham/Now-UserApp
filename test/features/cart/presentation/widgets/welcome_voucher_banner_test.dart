@@ -18,41 +18,40 @@ void main() {
 
   const CouponModel coupon = CouponModel(code: 'WELCOME10', discountValue: 10);
 
-  Finder codeText() =>
-      find.textContaining('WELCOME10', findRichText: true);
+  Finder codeText() => find.textContaining('WELCOME10', findRichText: true);
 
   Override session(SessionType type) => authSessionProvider.overrideWith(
-        (Ref ref) => _FakeAuthSessionVM(
-          ref,
-          AuthSessionState(
-            sessionType: type,
-            dependenciesStatus: AppDependenciesStatus.ready,
-          ),
-        ),
-      );
+    (Ref ref) => _FakeAuthSessionVM(
+      ref,
+      AuthSessionState(
+        sessionType: type,
+        dependenciesStatus: AppDependenciesStatus.ready,
+      ),
+    ),
+  );
 
   Override orders(int total) => getMyOrdersProvider.overrideWith(
-        (Ref ref) => _FakeMyOrdersVM(
-          AsyncValue<PaginationModel<OrderModel>>.data(
-            PaginationModel<OrderModel>(
-              currentPage: 1,
-              lastPage: 1,
-              perPage: 15,
-              total: total,
-              hasMore: false,
-              data: const <OrderModel>[],
-            ),
-          ),
+    (Ref ref) => _FakeMyOrdersVM(
+      AsyncValue<PaginationModel<OrderModel>>.data(
+        PaginationModel<OrderModel>(
+          currentPage: 1,
+          lastPage: 1,
+          perPage: 15,
+          total: total,
+          hasMore: false,
+          data: const <OrderModel>[],
         ),
-      );
+      ),
+    ),
+  );
 
   Override voucher(CouponModel? c) => welcomeVoucherProvider.overrideWith(
-        (Ref ref) => _FakeWelcomeVoucherVM(
-          c == null
-              ? const AsyncValue<CouponModel>.loading()
-              : AsyncValue<CouponModel>.data(c),
-        ),
-      );
+    (Ref ref) => _FakeWelcomeVoucherVM(
+      c == null
+          ? const AsyncValue<CouponModel>.loading()
+          : AsyncValue<CouponModel>.data(c),
+    ),
+  );
 
   testWidgets('guest with a loaded coupon sees the voucher', (
     WidgetTester tester,

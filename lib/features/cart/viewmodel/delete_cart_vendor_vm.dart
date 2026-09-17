@@ -21,12 +21,12 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 /// - `AsyncError`           → failed; carries the user-facing message.
 final deleteCartVendorProvider = StateNotifierProvider.autoDispose
     .family<DeleteCartVendorViewModel, AsyncValue<CartModel?>, int>(
-  (Ref ref, int vendorId) => DeleteCartVendorViewModel(ref, vendorId),
-);
+      (Ref ref, int vendorId) => DeleteCartVendorViewModel(ref, vendorId),
+    );
 
 class DeleteCartVendorViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   DeleteCartVendorViewModel(this._ref, this._vendorId)
-      : super(const AsyncValue<CartModel?>.data(null));
+    : super(const AsyncValue<CartModel?>.data(null));
 
   final Ref _ref;
   final int _vendorId;
@@ -41,8 +41,9 @@ class DeleteCartVendorViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   Future<void> deleteCartVendor() async {
     state = const AsyncValue<CartModel?>.loading();
 
-    final Either<Failure, CartModel> result =
-        await _repo.deleteCartVendorItem(_vendorId);
+    final Either<Failure, CartModel> result = await _repo.deleteCartVendorItem(
+      _vendorId,
+    );
 
     if (!mounted) return;
 

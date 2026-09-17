@@ -29,8 +29,9 @@ class CartEmptyView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 AspectRatio(
-                    aspectRatio: 2,
-                    child: Assets.media.images.svg.emptyCartImg.svg()),
+                  aspectRatio: 2,
+                  child: Assets.media.images.svg.emptyCartImg.svg(),
+                ),
                 const WelcomeVoucherBanner(),
                 Text(
                   LangKeys.cartEmptyTitleKey.tr(),
