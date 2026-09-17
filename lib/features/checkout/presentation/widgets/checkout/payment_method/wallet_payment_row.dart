@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -32,8 +32,10 @@ class WalletPaymentRow extends ConsumerWidget {
     // choice, and hiding it is what 05e26eb fixed — but the amount is left off
     // rather than guessed, matching how `WalletCardWidget` treats a null
     // balance.
-    final double? balance =
-        ref.watch(getWalletInfoProvider).valueOrNull?.balance;
+    final double? balance = ref
+        .watch(getWalletInfoProvider)
+        .valueOrNull
+        ?.balance;
 
     return Container(
       width: double.infinity,
@@ -100,7 +102,7 @@ class WalletPaymentRow extends ConsumerWidget {
                                     NewPriceWidget(
                                       color: colors.neutral1200,
                                       size: 15,
-                                      price: '${formatDouble(balance)}',
+                                      price: formatMoney(balance),
                                     ),
                                 ],
                               ),

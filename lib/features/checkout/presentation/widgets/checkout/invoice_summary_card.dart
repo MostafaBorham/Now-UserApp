@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
@@ -72,7 +72,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                   NewPriceWidget(
                     color: colors.black,
-                    price: '${formatDouble(orderGroup.subtotal)}',
+                    price: formatMoney(orderGroup.subtotal),
                     size: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -90,7 +90,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                   NewPriceWidget(
                     color: colors.black,
-                    price: '${formatDouble(orderGroup.tax)}',
+                    price: formatMoney(orderGroup.tax),
                     size: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -108,7 +108,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                   NewPriceWidget(
                     color: colors.black,
-                    price: '${formatDouble(orderGroup.deliveryFee)}',
+                    price: formatMoney(orderGroup.deliveryFee),
                     size: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -127,7 +127,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                     ),
                     NewPriceWidget(
                       color: colors.errorContainer,
-                      price: '${formatDouble(discount)}',
+                      price: formatMoney(discount),
                       size: 15,
                       fontWeight: FontWeight.w600,
                     ),
@@ -152,7 +152,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
               ),
               NewPriceWidget(
                 color: colors.primary500Main,
-                price: '${formatDouble(total)}',
+                price: formatMoney(total),
                 size: 20,
                 fontWeight: FontWeight.w700,
               ),

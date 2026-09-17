@@ -8,8 +8,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 
 class StoreInfoRow extends StatelessWidget {
   const StoreInfoRow({
-    super.key, required this.infoFontSize, required this.infoIconSize,
-    this.deliveryTime, this.distance, this.deliveryFee, this.color,
+    super.key,
+    required this.infoFontSize,
+    required this.infoIconSize,
+    this.deliveryTime,
+    this.distance,
+    this.deliveryFee,
+    this.color,
   });
   final double infoFontSize;
   final double infoIconSize;
@@ -23,55 +28,52 @@ class StoreInfoRow extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final Color iconColor = color ?? colors.neutral500;
     final Color textColor = color ?? colors.black;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 5,
-      children: [
-        Assets.media.images.svg.timeIcon.svg(
-          width: infoIconSize,
-          colorFilter: ColorFilter.mode(
-            iconColor,
-            BlendMode.srcIn,
-          ),
-        ),
-        Text(
-          '${deliveryTime ?? 0}',
-          style: AppTextStyles.style12Medium.copyWith(
-              color: textColor,
-              fontSize: infoFontSize
-          ),
-        ),
-        5.wSpace,
-        Assets.media.images.svg.locationIcon.svg(
-          width: infoIconSize,
-          colorFilter: ColorFilter.mode(
-            iconColor,
-            BlendMode.srcIn,
-          ),
-        ),
-        Text(
-          distance ?? '0',
-          style: AppTextStyles.style12Medium.copyWith(
-              color: textColor,
-              fontSize: infoFontSize
-          ),
-        ),
-        5.wSpace,
-        ReverseWidget(
-          child: Assets.media.images.svg.shippingIcon.svg(
+    // Every child is fixed-size, so the row had no give at all: a long delivery
+    // time, a three-digit distance or a wider fee overflowed it outright.
+    // Scaling down is what the app's buttons already do in the same situation.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 5,
+        children: [
+          Assets.media.images.svg.timeIcon.svg(
             width: infoIconSize,
-            colorFilter: ColorFilter.mode(
-              iconColor,
-              BlendMode.srcIn,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          ),
+          Text(
+            '${deliveryTime ?? 0}',
+            style: AppTextStyles.style12Medium.copyWith(
+              color: textColor,
+              fontSize: infoFontSize,
             ),
           ),
-        ),
-        NewPriceWidget(
-          color: textColor,
-          price: deliveryFee ?? '0',
-          size: infoFontSize,
-        ),
-      ],
+          5.wSpace,
+          Assets.media.images.svg.locationIcon.svg(
+            width: infoIconSize,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          ),
+          Text(
+            distance ?? '0',
+            style: AppTextStyles.style12Medium.copyWith(
+              color: textColor,
+              fontSize: infoFontSize,
+            ),
+          ),
+          5.wSpace,
+          ReverseWidget(
+            child: Assets.media.images.svg.shippingIcon.svg(
+              width: infoIconSize,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+            ),
+          ),
+          NewPriceWidget(
+            color: textColor,
+            price: deliveryFee ?? '0',
+            size: infoFontSize,
+          ),
+        ],
+      ),
     );
   }
 }

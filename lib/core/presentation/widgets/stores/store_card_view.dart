@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -59,181 +60,179 @@ class StoreCardView extends StatelessWidget {
         ? '${formatDouble(store!.distance)} ${LangKeys.kmKey.tr()}'
         : '40 - 50 ${LangKeys.kmKey.tr()}';
     final String deliveryFee = hasStore
-        ? '${formatDouble(store!.deliveryFee)}'
+        ? formatMoney(store!.deliveryFee)
         : '10';
 
     return InkWell(
       onTap:
           onTap ??
-          () => context.pushNamed(
-            AppRoutes.storeDetailsScreen,
-            extra: store?.id,
-          ),
+          () =>
+              context.pushNamed(AppRoutes.storeDetailsScreen, extra: store?.id),
       child: LayoutBuilder(
-      builder: (context, con) {
-        final double w = con.maxWidth;
-        final double logoRadius = w * 0.09;
-        return Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: colors.white,
-            borderRadius: AppBorderRadius.brCircular16,
-            boxShadow: [
-              BoxShadow(
-                color: colors.black.withValues(alpha: 0.25),
-                offset: Offset(0, 0),
-                blurRadius: 2,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context,storeBackgroundCon) {
-                    final stackHeight =storeBackgroundCon.maxHeight;
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned.fill(
-                          child: AppCachedNetworkImage(
-                            imageUrl: coverUrl,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                        ),
-                        PositionedDirectional(
-                          start: 0,
-                          top: 0,
-                          child: Container(
-                            width: stackHeight*0.6,
-                            height: stackHeight*0.3,
-                            decoration: BoxDecoration(
-                              color: colors.errorContainer,
-                              borderRadius: BorderRadiusDirectional.only(
-                                bottomEnd: Radius.circular(16),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '25%',
-                                style: AppTextStyles.style14Bold.copyWith(
-                                  color: colors.white,
-                                  fontSize: stackHeight*0.15
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        PositionedDirectional(
-                          end: 8,
-                          top: 8,
-                          child: CircularAppFavouriteIcon(
-                            size: w * 0.05,
-                            favouriteType: FavouriteType.store,
-                            itemId: store?.id,
-                            isFavourite: store?.isFavorite ?? false,
-                            onFavouriteChanged: onFavouriteChanged,
-                          ),
-                        ),
-                      ],
-                    );
-                  }
+        builder: (context, con) {
+          final double w = con.maxWidth;
+          final double logoRadius = w * 0.09;
+          return Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: colors.white,
+              borderRadius: AppBorderRadius.brCircular16,
+              boxShadow: [
+                BoxShadow(
+                  color: colors.black.withValues(alpha: 0.25),
+                  offset: Offset(0, 0),
+                  blurRadius: 2,
+                  spreadRadius: 0,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ).copyWith(top: 8, bottom: 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 6,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      spacing: 8,
-                      children: [
-                        // Logo reserves only its lower half in the row and
-                        // overflows upward to overlap the cover, so the name
-                        // is laid out beside it automatically (no manual padding).
-                        SizedBox(
-                          width: logoRadius * 2,
-                          height: logoRadius,
-                          child: OverflowBox(
-                            maxHeight: logoRadius * 2,
-                            alignment: Alignment.bottomCenter,
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, storeBackgroundCon) {
+                      final stackHeight = storeBackgroundCon.maxHeight;
+                      return Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned.fill(
+                            child: AppCachedNetworkImage(
+                              imageUrl: coverUrl,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
+                          ),
+                          PositionedDirectional(
+                            start: 0,
+                            top: 0,
                             child: Container(
+                              width: stackHeight * 0.6,
+                              height: stackHeight * 0.3,
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: colors.neutral200.withValues(
-                                    alpha: 0.5,
-                                  ),
+                                color: colors.errorContainer,
+                                borderRadius: BorderRadiusDirectional.only(
+                                  bottomEnd: Radius.circular(16),
                                 ),
                               ),
-                              child: CircularBrandLogo(
-                                radius: logoRadius,
-                                elevation: 0,
-                                backgroundColor: colors.white,
-                                logoUrl: logoUrl,
+                              child: Center(
+                                child: Text(
+                                  '25%',
+                                  style: AppTextStyles.style14Bold.copyWith(
+                                    color: colors.white,
+                                    fontSize: stackHeight * 0.15,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            spacing: 8,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  storeName,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.start,
-                                  style: AppTextStyles.style18Bold.copyWith(
-                                    color: colors.black,
+                          PositionedDirectional(
+                            end: 8,
+                            top: 8,
+                            child: CircularAppFavouriteIcon(
+                              size: w * 0.05,
+                              favouriteType: FavouriteType.store,
+                              itemId: store?.id,
+                              isFavourite: store?.isFavorite ?? false,
+                              onFavouriteChanged: onFavouriteChanged,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ).copyWith(top: 8, bottom: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 6,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        spacing: 8,
+                        children: [
+                          // Logo reserves only its lower half in the row and
+                          // overflows upward to overlap the cover, so the name
+                          // is laid out beside it automatically (no manual padding).
+                          SizedBox(
+                            width: logoRadius * 2,
+                            height: logoRadius,
+                            child: OverflowBox(
+                              maxHeight: logoRadius * 2,
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: colors.neutral200.withValues(
+                                      alpha: 0.5,
+                                    ),
                                   ),
                                 ),
+                                child: CircularBrandLogo(
+                                  radius: logoRadius,
+                                  elevation: 0,
+                                  backgroundColor: colors.white,
+                                  logoUrl: logoUrl,
+                                ),
                               ),
-                              AppRateWidget(
-                                starColor: colors.amber500,
-                                rateRatio: rating,
-                                rateCount: ratingCount,
-                                rateColor: colors.neutral500,
-                                size: w * 0.045,
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      storeDescription,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.start,
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.neutral500,
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              spacing: 8,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    storeName,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
+                                    style: AppTextStyles.style18Bold.copyWith(
+                                      color: colors.black,
+                                    ),
+                                  ),
+                                ),
+                                AppRateWidget(
+                                  starColor: colors.amber500,
+                                  rateRatio: rating,
+                                  rateCount: ratingCount,
+                                  rateColor: colors.neutral500,
+                                  size: w * 0.045,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    StoreInfoRow(
-                      deliveryTime: deliveryTime,
-                      distance: distance,
-                      deliveryFee: deliveryFee,
-                      infoIconSize: w * 0.045,
-                      infoFontSize: w * 0.04,
-                    ),
-                  ],
+                      Text(
+                        storeDescription,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.neutral500,
+                        ),
+                      ),
+                      StoreInfoRow(
+                        deliveryTime: deliveryTime,
+                        distance: distance,
+                        deliveryFee: deliveryFee,
+                        infoIconSize: w * 0.045,
+                        infoFontSize: w * 0.04,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
       ),
     );
   }

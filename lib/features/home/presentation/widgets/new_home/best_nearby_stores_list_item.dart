@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -165,7 +166,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ),
                             NewPriceWidget(
                               color: colors.black,
-                              price: '${formatDouble(store.deliveryFee)}',
+                              price: formatMoney(store.deliveryFee),
                               size: iconSize,
                             ),
                           ],

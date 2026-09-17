@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -20,10 +21,8 @@ class DiscountCard extends StatelessWidget {
   final bool dark;
   final VoidCallback? onCopy;
 
-
   @override
   Widget build(BuildContext context) {
-
     final String scope = coupon.type == 'Public'
         ? LangKeys.discountOnAllStores.tr()
         : (coupon.type ?? '');
@@ -33,7 +32,6 @@ class DiscountCard extends StatelessWidget {
     final Color valuePanel = dark
         ? context.colors.surfaceBright
         : context.colors.surface;
-
 
     final LinearGradient bodyGradient = LinearGradient(
       begin: Alignment.topLeft,
@@ -56,7 +54,7 @@ class DiscountCard extends StatelessWidget {
         : context.colors.tertiaryContainer;
 
     return LayoutBuilder(
-      builder: (context,constraints) {
+      builder: (context, constraints) {
         return PhysicalShape(
           clipper: TicketClipper(textDirection: Directionality.of(context)),
           clipBehavior: Clip.antiAlias,
@@ -132,7 +130,7 @@ class DiscountCard extends StatelessWidget {
                           Text(
                             LangKeys.discountTitle.tr(),
                             style: TextStyle(
-                              fontSize: constraints.maxWidth*0.05,
+                              fontSize: constraints.maxWidth * 0.05,
                               fontWeight: FontWeight.w500,
                               color: context.colors.primaryContainer,
                             ),
@@ -143,17 +141,17 @@ class DiscountCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: constraints.maxWidth*0.035,
+                              fontSize: constraints.maxWidth * 0.035,
                               color: context.colors.neutral500,
                             ),
                           ),
                           Text(
-                            '${LangKeys.discountMinPurchase.tr()} ${formatDouble(coupon.minOrderValue)}',
+                            '${LangKeys.discountMinPurchase.tr()} ${formatMoney(coupon.minOrderValue)}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: constraints.maxWidth*0.035,
+                              fontSize: constraints.maxWidth * 0.035,
                               color: context.colors.neutral500,
                             ),
                           ),
@@ -163,9 +161,14 @@ class DiscountCard extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 14, start: 4),
+                    padding: const EdgeInsetsDirectional.only(
+                      end: 14,
+                      start: 4,
+                    ),
                     child: Center(
-                      child: Assets.media.images.svg.logoVertical.svg(height: 90),
+                      child: Assets.media.images.svg.logoVertical.svg(
+                        height: 90,
+                      ),
                     ),
                   ),
                 ],
@@ -173,7 +176,7 @@ class DiscountCard extends StatelessWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 }
@@ -189,10 +192,10 @@ class _CodeChip extends StatelessWidget {
     return GestureDetector(
       onTap: onCopy,
       child: LayoutBuilder(
-        builder: (context,con) {
+        builder: (context, con) {
           return Container(
-            width: con.maxWidth*0.6,
-            height: con.maxWidth*0.2,
+            width: con.maxWidth * 0.6,
+            height: con.maxWidth * 0.2,
             decoration: BoxDecoration(
               color: context.colors.primary100,
               borderRadius: BorderRadius.circular(100),
@@ -202,15 +205,18 @@ class _CodeChip extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 3,
                 children: [
-                  Assets.media.images.svg.copy.svg(width: con.maxWidth*0.1, height: con.maxWidth*0.1),
+                  Assets.media.images.svg.copy.svg(
+                    width: con.maxWidth * 0.1,
+                    height: con.maxWidth * 0.1,
+                  ),
                   SizedBox(
-                    width: con.maxWidth*0.37,
+                    width: con.maxWidth * 0.37,
                     child: Text(
                       code,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: con.maxWidth*0.08,
+                        fontSize: con.maxWidth * 0.08,
                         fontWeight: FontWeight.w400,
                         color: context.colors.primaryContainer,
                       ),
@@ -220,7 +226,7 @@ class _CodeChip extends StatelessWidget {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

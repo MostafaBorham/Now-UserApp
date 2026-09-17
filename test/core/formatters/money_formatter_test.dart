@@ -26,7 +26,16 @@ void main() {
 
     test('rejects anything the endpoint would refuse', () {
       for (final String input in <String>[
-        '', '   ', 'abc', '-5', '+5', '10.555', '1,000', '1e3', '10.', '.5',
+        '',
+        '   ',
+        'abc',
+        '-5',
+        '+5',
+        '10.555',
+        '1,000',
+        '1e3',
+        '10.',
+        '.5',
         '١٠',
       ]) {
         expect(parseSarToHalalas(input), isNull, reason: 'input: "$input"');
@@ -59,5 +68,30 @@ void main() {
       expect(halalas, isNotNull, reason: 'input: "$typed"');
       expect(parseSarToHalalas(formatHalalasAsSar(halalas!)), halalas);
     }
+  });
+
+  group('formatMoney', () {
+    test('always shows two decimals', () {
+      expect(formatMoney(12), '12.00');
+      expect(formatMoney(12.5), '12.50');
+      expect(formatMoney(0), '0.00');
+    });
+
+    test('does not round a cent away', () {
+      // The bug this guards: prices went through `formatDouble`, which rounds
+      // to one decimal, so a 12.45 item was displayed as 12.5.
+      expect(formatMoney(12.45), '12.45');
+      expect(formatMoney(99.99), '99.99');
+    });
+
+    test('rounds beyond two decimals rather than printing them', () {
+      // Cart totals used to reach the screen as raw doubles: `12.456`, `0.0`.
+      expect(formatMoney(12.456), '12.46');
+      expect(formatMoney(12.454), '12.45');
+    });
+
+    test('treats a missing amount as zero', () {
+      expect(formatMoney(null), '0.00');
+    });
   });
 }

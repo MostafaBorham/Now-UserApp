@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
@@ -11,7 +11,6 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 
 class CheckoutProductItemView extends StatelessWidget {
   const CheckoutProductItemView({super.key, this.item});
-
 
   final ProductModel? item;
 
@@ -63,15 +62,16 @@ class CheckoutProductItemView extends StatelessWidget {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price:
-                              '${formatDouble(item?.discountPrice ?? item?.price)}',
+                          price: formatMoney(
+                            item?.discountPrice ?? item?.price,
+                          ),
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
                         if (item?.discountPrice != null)
                           OldPriceWidget(
                             color: colors.neutral500,
-                            price: '${formatDouble(item?.price)}',
+                            price: formatMoney(item?.price),
                             size: 12,
                           ),
                       ],

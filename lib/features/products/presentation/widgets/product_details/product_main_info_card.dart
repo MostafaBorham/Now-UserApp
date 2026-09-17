@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -44,15 +45,13 @@ class ProductMainInfoCard extends ConsumerWidget {
   final String? trustedBadgeLabel;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final product = ref.watch(productProvider);
     final productQuantityController = ref.read(
       productQuantityProvider.notifier,
     );
-    final productQuantity = ref.watch(
-      productQuantityProvider,
-    );
+    final productQuantity = ref.watch(productQuantityProvider);
     final int maxQuantity = product.stock ?? 1;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -61,9 +60,7 @@ class ProductMainInfoCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: colors.neutral500.withValues(
-              alpha: 0.3,
-            ),
+            color: colors.neutral500.withValues(alpha: 0.3),
             offset: const Offset(0, 2),
             blurRadius: 30,
           ),
@@ -111,79 +108,79 @@ class ProductMainInfoCard extends ConsumerWidget {
               if (maxQuantity < 1)
                 const OutOfStockLabel(fontSize: 15)
               else
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: colors.onPrimaryContainer,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 4,
-                  children: [
-                    InkWell(
-                      onTap: productQuantity < maxQuantity
-                          ? () {
-                              productQuantityController.state++;
-                            }
-                          : null,
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: productQuantity < maxQuantity
-                              ? colors.tertiaryContainer
-                              : colors.neutral200,
-                          shape: BoxShape.circle,
-                          boxShadow: AppBoxShadows.blackBottomShadow2,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.add,
-                            size: 14,
-                            color: colors.white,
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: colors.onPrimaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 4,
+                    children: [
+                      InkWell(
+                        onTap: productQuantity < maxQuantity
+                            ? () {
+                                productQuantityController.state++;
+                              }
+                            : null,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: productQuantity < maxQuantity
+                                ? colors.tertiaryContainer
+                                : colors.neutral200,
+                            shape: BoxShape.circle,
+                            boxShadow: AppBoxShadows.blackBottomShadow2,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 14,
+                              color: colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 28,
-                      child: Text(
-                        productQuantity.toString(),
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.style16Bold.copyWith(
-                          color: colors.black,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: productQuantity > 1
-                          ? () {
-                              productQuantityController.state--;
-                            }
-                          : null,
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: colors.neutral200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.remove,
-                            size: 14,
-                            color: colors.neutral500,
+                      SizedBox(
+                        width: 28,
+                        child: Text(
+                          productQuantity.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.style16Bold.copyWith(
+                            color: colors.black,
+                            fontSize: 15,
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      InkWell(
+                        onTap: productQuantity > 1
+                            ? () {
+                                productQuantityController.state--;
+                              }
+                            : null,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: colors.neutral200,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.remove,
+                              size: 14,
+                              color: colors.neutral500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
           Column(
@@ -225,22 +222,18 @@ class ProductMainInfoCard extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                         spacing: 4,
                         children: [
-
-
-
-
-
                           if (product.discountPrice != null)
                             OldPriceWidget(
                               color: colors.neutral500,
                               size: con.maxWidth * 0.05,
-                              price: '${formatDouble(product.price)}',
+                              price: formatMoney(product.price),
                             ),
                           NewPriceWidget(
                             size: con.maxWidth * 0.07,
                             color: colors.neutral1200,
-                            price:
-                                '${formatDouble(product.discountPrice ?? product.price)}',
+                            price: formatMoney(
+                              product.discountPrice ?? product.price,
+                            ),
                             fontWeight: FontWeight.bold,
                           ),
                         ],

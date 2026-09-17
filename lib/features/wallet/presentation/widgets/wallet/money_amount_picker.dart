@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -127,9 +126,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
         const SizedBox(width: double.infinity),
         Text(
           LangKeys.topUpAmountKey.tr(),
-          style: AppTextStyles.style14Medium.copyWith(
-            color: colors.black,
-          ),
+          style: AppTextStyles.style14Medium.copyWith(color: colors.black),
         ),
         10.hSpace,
         Wrap(
@@ -138,7 +135,8 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
           alignment: WrapAlignment.start,
           children: [
             ..._options.map((double item) {
-              final bool isSelected = !isOtherSelected &&
+              final bool isSelected =
+                  !isOtherSelected &&
                   selectedHalalas == sarDoubleToHalalas(item);
 
               return GestureDetector(
@@ -161,7 +159,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                   ),
                   child: NewPriceWidget(
                     color: isSelected ? colors.white : colors.black,
-                    price: formatDouble(item).toString(),
+                    price: formatMoney(item),
                     size: 14,
                     fontWeight: FontWeight.w400,
                   ),
@@ -190,9 +188,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                 child: Text(
                   LangKeys.otherKey.tr(),
                   style: AppTextStyles.style12Regular.copyWith(
-                    color: isOtherSelected
-                        ? colors.white
-                        : colors.black,
+                    color: isOtherSelected ? colors.white : colors.black,
                   ),
                 ),
               ),
@@ -204,10 +200,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
           duration: const Duration(milliseconds: 250),
           layoutBuilder: (currentChild, previousChildren) => Stack(
             alignment: AlignmentDirectional.topStart,
-            children: [
-              ...previousChildren,
-              ?currentChild,
-            ],
+            children: [...previousChildren, ?currentChild],
           ),
           child: isOtherSelected
               ? Column(
@@ -305,7 +298,7 @@ class _LimitHint extends StatelessWidget {
         ),
         NewPriceWidget(
           color: isBreached ? colors.error : colors.black,
-          price: formatDouble(amountHalalas / halalasPerSar).toString(),
+          price: formatMoney(amountHalalas / halalasPerSar),
           size: 18,
         ),
       ],

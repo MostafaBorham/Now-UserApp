@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -82,25 +82,23 @@ class WalletCardWidget extends StatelessWidget {
                                       fit: BoxFit.scaleDown,
                                       child: Assets.media.images.svg.retryIcon
                                           .svg(
-                                        colorFilter: ColorFilter.mode(
-                                          colors.red400,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
+                                            colorFilter: ColorFilter.mode(
+                                              colors.red400,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
                                     ),
                                   )
                                 : balance == null
-                                    ? null
-                                    : FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          '${formatDouble(balance)}',
-                                          style: AppTextStyles.style20SemiBold
-                                              .copyWith(
-                                            color: colors.primary700,
-                                          ),
-                                        ),
-                                      ),
+                                ? null
+                                : FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      formatMoney(balance),
+                                      style: AppTextStyles.style20SemiBold
+                                          .copyWith(color: colors.primary700),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -130,7 +128,7 @@ class WalletCardWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

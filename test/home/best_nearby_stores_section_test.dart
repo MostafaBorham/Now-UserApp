@@ -67,7 +67,7 @@ void main() {
     // Rating and its count share one pill: "5 (2)".
     expect(find.text('5 (2)'), findsOneWidget);
     // Delivery fee, beside the riyal glyph.
-    expect(find.text('12'), findsOneWidget);
+    expect(find.text('12.00'), findsOneWidget);
     expect(find.text('15-25 minutes'), findsOneWidget);
     expect(find.text('0.6 km'), findsOneWidget);
   });

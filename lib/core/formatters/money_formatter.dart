@@ -46,8 +46,19 @@ int sarDoubleToHalalas(double amount) => (amount * halalasPerSar).round();
 /// can occur on the way out.
 String formatHalalasAsSar(int halalas) {
   final int riyals = halalas ~/ halalasPerSar;
-  final String fraction =
-      (halalas % halalasPerSar).toString().padLeft(2, '0');
+  final String fraction = (halalas % halalasPerSar).toString().padLeft(2, '0');
 
   return '$riyals.$fraction';
 }
+
+/// An amount of money for display, always to two decimals: `12.5` → `"12.50"`,
+/// `12` → `"12.00"`, `null` → `"0.00"`.
+///
+/// Every price, fee, discount, balance and total the customer reads goes
+/// through this, so an amount is never shown at a different precision than it
+/// is charged at. Not for ratings or distances — those keep `formatDouble`,
+/// which rounds to one decimal and would turn a 12.45 price into 12.5.
+///
+/// This is the display counterpart to [formatHalalasAsSar]: use that one
+/// wherever the string is submitted back to the server.
+String formatMoney(double? value) => (value ?? 0).toStringAsFixed(2);

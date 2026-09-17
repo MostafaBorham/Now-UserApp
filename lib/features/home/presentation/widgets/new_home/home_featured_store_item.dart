@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -122,8 +123,7 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                                     distance: store.distance == null
                                         ? null
                                         : '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}',
-                                    deliveryFee:
-                                        '${formatDouble(store.deliveryFee)}',
+                                    deliveryFee: formatMoney(store.deliveryFee),
                                     color: colors.white,
                                   ),
                                 ),
@@ -149,11 +149,11 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                             itemCount: products.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: spacing,
-                              mainAxisSpacing: spacing,
-                              mainAxisExtent: itemHeight,
-                            ),
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: spacing,
+                                  mainAxisSpacing: spacing,
+                                  mainAxisExtent: itemHeight,
+                                ),
                             itemBuilder: (context, index) {
                               return GlassProductItemView(
                                 product: products[index],

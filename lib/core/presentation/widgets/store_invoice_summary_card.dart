@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -57,7 +58,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     NewPriceWidget(
                       fontWeight: FontWeight.w700,
                       color: colors.black,
-                      price: '${subtotal ?? 0}',
+                      price: formatMoney(subtotal),
                       size: 14,
                     ),
                   ],
@@ -77,7 +78,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     NewPriceWidget(
                       fontWeight: FontWeight.w700,
                       color: colors.black,
-                      price: '${tax ?? 0}',
+                      price: formatMoney(tax),
                       size: 14,
                     ),
                   ],
@@ -97,7 +98,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     NewPriceWidget(
                       fontWeight: FontWeight.w700,
                       color: colors.black,
-                      price: '${deliveryFee ?? 0}',
+                      price: formatMoney(deliveryFee),
                       size: 14,
                     ),
                   ],
@@ -117,7 +118,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                     NewPriceWidget(
                       fontWeight: FontWeight.w700,
                       color: colors.errorContainer,
-                      price: '${discount ?? 0}',
+                      price: formatMoney(discount),
                       size: 14,
                     ),
                   ],

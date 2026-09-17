@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -18,9 +19,11 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final store = ref.watch(storeProvider);
-    final String deliveryTime = '${store.deliveryTime ??0} ${LangKeys.minutesKey.tr()}';
-    final String deliveryDistance = '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}';
-    final String deliveryFee = '${formatDouble(store.deliveryFee)}';
+    final String deliveryTime =
+        '${store.deliveryTime ?? 0} ${LangKeys.minutesKey.tr()}';
+    final String deliveryDistance =
+        '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}';
+    final String deliveryFee = formatMoney(store.deliveryFee);
     return Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 5,
