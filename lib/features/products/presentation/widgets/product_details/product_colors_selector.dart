@@ -2,25 +2,28 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_color_model.dart';
 
 class ProductColorsSelector extends StatefulWidget {
   const ProductColorsSelector({
     super.key,
+    required this.colors,
     this.title,
     this.hint,
     this.isRequired = true,
-    this.colorOptions,
     this.initialSelectedIndex = 0,
     this.onColorSelected,
   });
 
+  final List<ProductColorModel> colors;
   final String? title;
   final String? hint;
   final bool isRequired;
-  final List<({Color color, String name})>? colorOptions;
   final int initialSelectedIndex;
-  final ValueChanged<int>? onColorSelected;
+
+  final ValueChanged<ProductColorModel>? onColorSelected;
 
   @override
   State<ProductColorsSelector> createState() => _ProductColorsSelectorState();
@@ -34,17 +37,6 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
     final AppColorScheme colors = context.colors;
     final String title = widget.title ?? LangKeys.chooseColorKey.tr();
     final String hint = widget.hint ?? LangKeys.selectRequiredKey.tr();
-    final List<({Color color, String name})> colorOptions =
-        widget.colorOptions ??
-        [
-          (color: const Color(0xff2C4A6E), name: LangKeys.colorBlueKey.tr()),
-          (color: const Color(0xffD9D9DE), name: LangKeys.colorSilverKey.tr()),
-          (color: const Color(0xffE8C9A0), name: LangKeys.colorGoldKey.tr()),
-          (
-            color: const Color(0xff5C5C60),
-            name: LangKeys.colorAstronautGrayKey.tr(),
-          ),
-        ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -64,7 +56,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
             if (widget.isRequired)
               Text.rich(
                 TextSpan(
-                  text: hint,
+                  text: '($hint) ',
                   style: AppTextStyles.style10Medium.copyWith(
                     color: colors.onPrimaryFixed,
                   ),
@@ -82,13 +74,15 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
           scrollDirection: Axis.horizontal,
           child: Row(
             spacing: 16,
-            children: List.generate(colorOptions.length, (index) {
-              final ({Color color, String name}) option = colorOptions[index];
+            children: List.generate(widget.colors.length, (index) {
+              final ProductColorModel option = widget.colors[index];
+              final Color swatch = option.color ?? colors.neutral200;
+              final String name = context.getLocalizedApiText(option.name);
               final bool isSelected = index == selectedIndex;
               return GestureDetector(
                 onTap: () {
                   setState(() => selectedIndex = index);
-                  widget.onColorSelected?.call(index);
+                  widget.onColorSelected?.call(option);
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Column(
@@ -110,7 +104,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: option.color,
+                              color: swatch,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -126,7 +120,7 @@ class _ProductColorsSelectorState extends State<ProductColorsSelector> {
                       ],
                     ),
                     Text(
-                      option.name,
+                      name,
                       style:
                           (isSelected
                                   ? AppTextStyles.style12SemiBold

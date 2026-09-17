@@ -13,40 +13,40 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_mo
 import 'package:nowdelivery_user_app/features/stores/data/datasources/local/database/featured_stores_database_service.dart';
 import 'package:nowdelivery_user_app/features/stores/data/datasources/remote/api/stores_api_service.dart';
 
-/// All data operations of the stores feature.
-///
-/// Every method returns `Either<Failure, T>`: `Left` carries a user-facing
-/// error message (a [LangKeys] key or a raw server message — callers apply
-/// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
+
+
+
+
+
 class StoresRepo {
   final StoresApiService _storesApiService = StoresApiService();
   final FeaturedStoresDatabaseService _featuredStoresDatabaseService =
       FeaturedStoresDatabaseService();
 
-  /// Cancels every in-flight request of this repo. The actual cancellation
-  /// mechanism (CancelToken) lives entirely inside the data source layer.
+
+
   void cancelRequests() => _storesApiService.cancelRequests();
 
-  /// The "Best brands" featured stores, one page at a time (the home carousel
-  /// takes the first few; the top-brands screen pages through the rest).
-  ///
-  /// Server-first with a local (Hive) fallback: a successful **first-page**
-  /// fetch refreshes the cache so the local copy tracks the server, and when the
-  /// server is unreachable the first page is served from the cache instead.
-  /// Later pages have no cached copy and simply surface the server failure.
+
+
+
+
+
+
+
   Future<Either<Failure, PaginationModel<StoreModel>>> getFeaturedStores({
     required int page,
   }) async {
-    // Fetch the raw server `data` object so it can be both cached verbatim and
-    // parsed — the cache round-trips through the same parsing the server uses.
+
+
     final Either<Failure, Map<String, dynamic>> serverResult =
         await _fetchFeaturedStores(page);
 
     return serverResult.fold(
-      // Server failed → fall back to the cached first page.
+
       (Failure serverFailure) =>
           _readFeaturedStoresFromCache(page, serverFailure),
-      // Server succeeded → refresh the cache (first page only), then parse.
+
       (Map<String, dynamic> data) async {
         if (page == PaginatedViewModel.firstPageNumber) {
           await _cacheFeaturedStores(data);
@@ -58,8 +58,8 @@ class StoresRepo {
     );
   }
 
-  /// Runs the guarded featured-stores request and returns the raw server `data`
-  /// object.
+
+
   Future<Either<Failure, Map<String, dynamic>>> _fetchFeaturedStores(
     int page,
   ) async {
@@ -90,19 +90,19 @@ class StoresRepo {
     }
   }
 
-  /// Persists the raw first-page [data] payload. Best-effort: a cache write
-  /// failure is a side effect, not part of the result, so it is swallowed.
+
+
   Future<void> _cacheFeaturedStores(Map<String, dynamic> data) async {
     try {
       await _featuredStoresDatabaseService.saveFeaturedStores(jsonEncode(data));
     } catch (_) {
-      // Intentionally ignored — caching must never break a successful fetch.
+
     }
   }
 
-  /// Serves the cached first page when the server is unreachable. Only the first
-  /// page is cached, so any other page (or a missing/corrupt cache) surfaces the
-  /// original [serverFailure].
+
+
+
   Future<Either<Failure, PaginationModel<StoreModel>>>
   _readFeaturedStoresFromCache(int page, Failure serverFailure) async {
     if (page != PaginatedViewModel.firstPageNumber) {
@@ -125,8 +125,8 @@ class StoresRepo {
     }
   }
 
-  /// Parses the raw server `data` object into a page of stores — the same
-  /// mapping for a live response and a cached one.
+
+
   PaginationModel<StoreModel> _parseFeaturedStores(Map<String, dynamic> data) {
     final Map<String, dynamic> paginationData =
         data['pagination'] as Map<String, dynamic>;
@@ -169,8 +169,7 @@ class StoresRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception,stackTrack) {
-      print(stackTrack);
+    } catch (exception) {
       return Left(Failure(exception.toString()));
     }
   }

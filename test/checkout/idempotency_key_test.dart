@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
 import 'package:nowdelivery_user_app/core/utils/uuid.dart';
 
-// Guards the reuse-vs-rotate rule that keeps order placement idempotent:
-// duplicate submits of the same order must share a key (server replays), while
-// edits and post-success repeats must get a fresh key.
+
+
+
 void main() {
   test('reuses the key for the same fingerprint', () {
     final key = IdempotencyKey();
@@ -15,7 +15,7 @@ void main() {
     final retry = key.forRequest('addr1|tip0|coupons', generate: gen);
 
     expect(first, 'k0');
-    expect(retry, 'k0'); // same submit → same key (a retry replays)
+    expect(retry, 'k0');
   });
 
   test('rotates the key when the fingerprint changes', () {
@@ -27,7 +27,7 @@ void main() {
     final afterEdit = key.forRequest('addr2|tip0', generate: gen);
 
     expect(before, 'k0');
-    expect(afterEdit, 'k1'); // order changed → new key (avoids mismatch)
+    expect(afterEdit, 'k1');
   });
 
   test('rotates after a placement even if the fingerprint matches', () {
@@ -40,7 +40,7 @@ void main() {
     final reorder = key.forRequest('same', generate: gen);
 
     expect(placed, 'k0');
-    expect(reorder, 'k1'); // genuine repeat → new order, not a replay
+    expect(reorder, 'k1');
   });
 
   test('generateUuidV4 is a well-formed v4 uuid', () {
@@ -51,6 +51,6 @@ void main() {
       ).hasMatch(id),
       isTrue,
     );
-    expect(generateUuidV4(), isNot(id)); // random each call
+    expect(generateUuidV4(), isNot(id));
   });
 }

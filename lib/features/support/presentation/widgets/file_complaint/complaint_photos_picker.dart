@@ -13,7 +13,7 @@ class ComplaintPhotosPicker extends StatefulWidget {
     required this.onChanged,
   });
 
-  /// returns current full list after any add/remove
+
   final ValueChanged<List<File>> onChanged;
 
   @override
@@ -81,10 +81,10 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
   Widget build(BuildContext context) {
     final canAddMore = _images.length < _maxImages;
     final AppColorScheme colors = context.colors;
-    // Small horizontal inset so the tiles' remove badges — which overflow each
-    // tile by 6px via negative positioning — never sit flush against the
-    // screen edge and get clipped (the first tile was losing its badge and a
-    // sliver of its rounded corner).
+
+
+
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Column(
@@ -196,10 +196,10 @@ class _PickedImageTile extends StatelessWidget {
                   height: _size,
                   fit: BoxFit.cover,
                 ),
-                // White glow: the image fades to white at its bottom edge so
-                // the tile blends into the surface below it, matching the
-                // category card. Transparent at the top so the photo stays
-                // fully visible.
+
+
+
+
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

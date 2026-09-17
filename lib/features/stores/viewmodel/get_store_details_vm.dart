@@ -4,12 +4,12 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/stores/data/repo/stores_repo.dart';
 
-/// Single task: fetch the details of one store for the store details screen.
-///
-/// The fetch starts as soon as the provider is first watched, so screens only
-/// need to `ref.watch(getStoreDetailsProvider(storeId))` and render the
-/// [AsyncValue].
-/// Retry with `ref.read(getStoreDetailsProvider(storeId).notifier).getStoreDetails()`.
+
+
+
+
+
+
 final getStoreDetailsProvider = StateNotifierProvider.autoDispose.family<
     GetStoreDetailsViewModel,
     AsyncValue<StoreModel>,
@@ -41,13 +41,13 @@ class GetStoreDetailsViewModel
     );
   }
 
-  /// Reloads the store in the background for pull-to-refresh.
-  ///
-  /// Unlike [getStoreDetails] it does *not* flip the state to loading, so the
-  /// store currently on screen (and the refresh indicator running over it) stays
-  /// put while the request is in flight — the header, banners and categories
-  /// just update in place when it returns. A failed refresh keeps the existing
-  /// store rather than replacing the whole screen with an error.
+
+
+
+
+
+
+
   Future<void> refresh() async {
     final result = await _repo.getStoreDetails(storeId: storeId);
 

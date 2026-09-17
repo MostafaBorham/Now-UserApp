@@ -17,8 +17,8 @@ void main() {
         {
           'title': 'B',
           'image_url': 'http://x/b.jpg',
-          // The shape older responses sent: a numeric product id, which
-          // product details (slug-only) can't open.
+
+
           'link': {'kind': 'product', 'store': null, 'product': 42},
         },
         {
@@ -44,17 +44,17 @@ void main() {
     expect(section.offers[0].imageUrl, 'http://x/a.jpg');
 
     expect(section.offers[1].kind, 'product');
-    expect(section.offers[1].productSlug, isNull); // numeric id → inert
+    expect(section.offers[1].productSlug, isNull);
 
-    expect(section.offers[2].productSlug, 'nice-slug'); // string slug → usable
+    expect(section.offers[2].productSlug, 'nice-slug');
 
     expect(section.offers[3].kind, 'category');
     expect(section.offers[3].categorySlug, 'main-electronics');
   });
 
   test('a section titled in one locale only still resolves', () {
-    // The feed sends `ar` alone on some sections; `getLocalizedApiText` falls
-    // back across locales, so the heading is never blank.
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 45,
       'type': 'top_banner',
@@ -67,9 +67,9 @@ void main() {
   });
 
   test('featured_stores parses each vendor with its inline products', () {
-    // Trimmed from a real /home-sections response: vendor items use the
-    // standard store keys, and their products are flattened (a bare `name`
-    // string and a single `image_url`, no `product_id` / `stock`).
+
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 26,
       'type': 'featured_stores',
@@ -85,9 +85,9 @@ void main() {
           'delivery_fee': 12.0,
           'delivery_time': '15-25',
           'distance': 2.5,
-          // Tints this store's carousel page.
+
           'store_color': '#b3f5b2',
-          // British spelling; the app's own key is `is_favorite`.
+
           'is_favourite': true,
           'products': <Map<String, dynamic>>[
             {
@@ -114,31 +114,31 @@ void main() {
     expect(store.deliveryFee, 12.0);
     expect(store.deliveryTime, '15-25');
     expect(store.distance, 2.5);
-    // Drives the card's tint; #RRGGBB gains a full-opacity alpha channel.
+
     expect(store.storeColor?.toARGB32(), 0xFFB3F5B2);
-    // The British key has to reach `isFavorite` or the heart stays unfilled.
+
     expect(store.isFavorite, isTrue);
 
     final product = store.products!.single;
-    // A bare name string is mirrored into both locales.
+
     expect(product.name?['en'], 'Medium Roast Ground Coffee');
     expect(product.name?['ar'], 'Medium Roast Ground Coffee');
-    // The flat `image_url` has to land in `images` or the tile renders blank.
+
     expect(product.images, <String>['http://x/coffee.png']);
-    // The price the tile shows is the deal-applied one, not the discount amount.
+
     expect(product.effectivePrice, 42.15);
     expect(product.discountPercentage, 32.02);
     expect(product.rating?.average, 2.0);
     expect(product.rating?.total, 2);
-    // No `product_id`, so the cart control falls back to `id`.
+
     expect(product.productId, isNull);
     expect(product.productId ?? product.id, 51);
     expect(product.slug, 'sf-tree-medium-roast-ground-coffee');
   });
 
   test('nearby_stores parses each vendor with its card details', () {
-    // The enriched vendor payload: same store keys as featured_stores, minus
-    // the inline products (a nearby card shows the store's own details only).
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 25,
       'type': 'nearby_stores',
@@ -173,14 +173,14 @@ void main() {
     expect(store.deliveryFee, 12.0);
     expect(store.deliveryTime, '15-25');
     expect(store.distance, 0.6);
-    // Decides whether the card's favourite heart starts filled.
+
     expect(store.isFavorite, isTrue);
   });
 
   test('all_stores parses its vendors the same way the other store sections do',
       () {
-    // Trimmed from a real /home-sections response: the section the home
-    // screen's "All" tab lists, with no inline products.
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 54,
       'type': 'all_stores',
@@ -204,7 +204,7 @@ void main() {
           'id': 54,
           'type': 'vendor',
           'name': {'ar': 'متجر دعم التاجر', 'en': 'Vendor Support Demo Store'},
-          // A store with no artwork still has to reach the card.
+
           'logo_url': null,
           'cover_url': null,
           'rating': 0.0,
@@ -225,17 +225,17 @@ void main() {
     expect(first.distance, 1.5);
     expect(first.isFavorite, isFalse);
     expect(section.stores.last.logoUrl, isNull);
-    // A store section carries nothing else.
+
     expect(section.products, isEmpty);
     expect(section.offers, isEmpty);
     expect(section.banners, isEmpty);
   });
 
   test('a thin vendor item parses instead of throwing mid-feed', () {
-    // The shape production still sends for nearby_stores: `name` as an
-    // already-localized string and none of the detail fields. Casting that
-    // string straight to a translations map threw, and because it threw while
-    // parsing the feed it blanked the entire home screen — not just this store.
+
+
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 192,
       'type': 'nearby_stores',
@@ -251,11 +251,11 @@ void main() {
 
     final store = section.stores.single;
     expect(store.id, 13389);
-    // Mirrored into both locales, so either language resolves a name.
+
     expect(store.name?['en'], 'opiljnlm');
     expect(store.name?['ar'], 'opiljnlm');
-    // Absent details stay null, so the card leaves those rows out entirely
-    // rather than rendering zeroes.
+
+
     expect(store.rating, isNull);
     expect(store.deliveryFee, isNull);
     expect(store.deliveryTime, isNull);
@@ -264,7 +264,7 @@ void main() {
   });
 
   test('a description sent as an empty array parses to null', () {
-    // How a store with no description serializes — also previously a throw.
+
     final store = StoreModel.fromJson(<String, dynamic>{
       'id': 1,
       'name': {'ar': 'بدون', 'en': 'Nameless'},
@@ -276,13 +276,13 @@ void main() {
   });
 
   test('flash_offers flattens every offer wrapper into one product list', () {
-    // Trimmed from a real /home-sections response: items are `home_page_offer`
-    // wrappers, each holding the products the section renders one card each for.
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 49,
       'type': 'flash_offers',
       'title': {'ar': 'عروض لا تفوتك', 'en': "Don't-Miss Offers"},
-      // The section's own theming: the background wash and the "See All" chip.
+
       'background_color': '#c800ff',
       'view_all_text_color': '#FFFFFF',
       'view_all_underline_color': '#475569',
@@ -302,10 +302,10 @@ void main() {
               'rating': {'average': 4.5, 'total': 2},
               'image_url': 'http://x/p52.png',
               'vendor_logo_url': 'http://x/vendor.png',
-              // Gallery entries are bare URL strings here, not attachment
-              // objects — subscripting one used to throw and blank the feed.
+
+
               'images': <String>['http://x/p52.png'],
-              // British spelling; the app's own key is `is_favorite`.
+
               'is_favourite': true,
             },
           ],
@@ -324,31 +324,31 @@ void main() {
     expect(section.backgroundColor?.toARGB32(), 0xFFC800FF);
     expect(section.viewAllTextColor?.toARGB32(), 0xFFFFFFFF);
     expect(section.viewAllUnderlineColor?.toARGB32(), 0xFF475569);
-    // Both wrappers' products, in feed order.
+
     expect(section.products.map((p) => p.id).toList(), <int>[52, 38]);
     expect(section.offers, isEmpty);
     expect(section.stores, isEmpty);
 
     final product = section.products.first;
-    // The price the card shows is the deal-applied one, with the list price
-    // struck through beside it.
+
+
     expect(product.effectivePrice, 13.6);
     expect(product.price, 20.0);
     expect(product.discountPercentage, 32.0);
     expect(product.rating?.average, 4.5);
-    // A string gallery has to land in `images` or the card renders blank.
+
     expect(product.images, <String>['http://x/p52.png']);
-    // Decides whether the card's favourite heart starts filled.
+
     expect(product.isFavorite, isTrue);
-    // No nested `vendor`, so the flat logo stands in as a logo-only store.
+
     expect(product.vendor?.logoUrl, 'http://x/vendor.png');
-    // No `product_id`, so the cart control falls back to `id`.
+
     expect(product.productId ?? product.id, 52);
   });
 
   test('promo_block_middle parses its banner item', () {
-    // Verbatim from a real /home-sections response: banner items send bare URL
-    // strings (not `{download_url: ...}`) and numeric ids for their link.
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 50,
       'type': 'promo_block_middle',
@@ -373,7 +373,7 @@ void main() {
     expect(banner.imageAr, 'http://x/335/download');
     expect(banner.imageEn, 'http://x/336/download');
     expect(banner.linkType, 'product');
-    // Numeric `product_id` isn't a slug → the tap stays inert.
+
     expect(banner.productSlug, isNull);
     expect(section.offers, isEmpty);
     expect(section.stores, isEmpty);
@@ -381,8 +381,8 @@ void main() {
   });
 
   test('promo_block_footer parses its banner item the same way', () {
-    // The footer slot is the same item shape as the middle one, so it goes
-    // through the same branch — a section type of its own is all that differs.
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 53,
       'type': 'promo_block_footer',
@@ -405,22 +405,22 @@ void main() {
     final banner = section.banners.single;
     expect(banner.id, 2);
     expect(banner.linkType, 'category');
-    // Images the admin hasn't uploaded leave the widget on its placeholder.
+
     expect(banner.imageAr, isNull);
     expect(banner.imageEn, isNull);
-    // Numeric `main_category_id` isn't a slug → the tap stays inert.
+
     expect(banner.categorySlug, isNull);
   });
 
   test('products_by_category parses its products, category and theming', () {
-    // Trimmed from a real /home-sections response. Items are the products
-    // themselves (no offer wrapper, unlike flash_offers), and the section
-    // carries its own header theming.
+
+
+
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 51,
       'type': 'products_by_category',
-      // The admin's generic label — the same on every section of this type,
-      // so the heading shown is `category_name` instead.
+
+
       'title': {'ar': 'منتجات حسب الفئة'},
       'show_view_all': true,
       'primary_color': '#027e54',
@@ -452,20 +452,20 @@ void main() {
     expect(section.products.map((p) => p.id).toList(), <int>[54, 52]);
     expect(section.category?.id, 1);
     expect(section.category?.name?['en'], 'Electronics');
-    // The heading is the category, never the section's own generic title.
+
     expect(section.category?.name?['ar'], 'إلكترونيات');
     expect(section.showViewAll, isTrue);
     expect(section.displayDesign, 'color_with_image');
-    // #RRGGBB gains a full-opacity alpha channel.
+
     expect(section.primaryColor?.toARGB32(), 0xFF027E54);
-    // Absent from this section → the widget falls back to a theme colour.
+
     expect(section.textColor, isNull);
     expect(section.media?['ar'], 'http://x/media_ar.png');
     expect(section.media?['en'], 'http://x/media_en.png');
-    // Flat product keys still have to reach the card.
+
     expect(section.products.first.images, <String>['http://x/p54.png']);
     expect(section.products.first.vendor?.logoUrl, 'http://x/vendor.png');
-    // Not a flash_offers wrapper, so nothing else is populated.
+
     expect(section.offers, isEmpty);
     expect(section.stores, isEmpty);
     expect(section.banners, isEmpty);
@@ -492,7 +492,7 @@ void main() {
     expect(section.displayDesign, 'color_only');
     expect(section.primaryColor?.toARGB32(), 0xFF8B5CF6);
     expect(section.textColor?.toARGB32(), 0xFF000000);
-    // Null media leaves the header title-only instead of a broken image slot.
+
     expect(section.media, isNull);
     expect(section.showViewAll, isFalse);
     expect(section.products.single.id, 53);
@@ -508,8 +508,8 @@ void main() {
     });
 
     expect(section.primaryColor, isNull);
-    // Three-digit shorthand isn't a shape the backend sends — rejected rather
-    // than parsed into the wrong colour.
+
+
     expect(section.textColor, isNull);
   });
 

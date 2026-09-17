@@ -26,14 +26,14 @@ class CartBrandItemDetailsView extends StatelessWidget {
     this.store,
   });
 
-  /// Cart lines rendered in the expanded card. Falls back to the static
-  /// 3-item placeholder list when null.
+
+
   final List<ProductModel>? products;
 
-  /// Vendor pricing breakdown for the invoice summary.
+
   final CartVendorPricingModel? pricing;
 
-  /// Localized vendor name (API translation map) shown under each product.
+
   final StoreModel? store;
 
   @override
@@ -47,17 +47,17 @@ class CartBrandItemDetailsView extends StatelessWidget {
         Align(
           alignment: AlignmentDirectional.centerEnd,
           child: InkWell(
-            // With no vendor id there is nothing to clear, so the action is
-            // left inert rather than firing a request that can't be built.
+
+
             onTap: vendorId == null
                 ? null
                 : () => AppCustomAlertDialog.show(
                     context,
-                    // The dialog owns the request via its own Consumer: it stays
-                    // mounted with the dialog route (unlike this card, which is
-                    // torn down the moment the store leaves the refreshed cart),
-                    // drives the spinner, pops itself on success and toasts on
-                    // failure.
+
+
+
+
+
                     (BuildContext dialogContext) => Consumer(
                       builder: (BuildContext consumerContext, WidgetRef ref, _) {
                         ref.listen<AsyncValue<CartModel?>>(
@@ -149,7 +149,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
           ),
         ),
 
-        // Store invoice summary
+
         StoreInvoiceSummaryCard(
           subtotal: pricing?.subtotal,
           tax: pricing?.tax,

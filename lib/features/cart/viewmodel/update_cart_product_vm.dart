@@ -5,16 +5,6 @@ import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
-/// One-shot action: change the quantity of a single cart line.
-///
-/// Keyed by `productId` so each product's update is tracked independently and
-/// resets automatically once the widget watching it disposes (autoDispose).
-///
-/// State semantics on `AsyncValue<CartModel?>`:
-/// - `AsyncData(null)`      → idle, nothing requested yet (initial),
-/// - `AsyncLoading`         → request in flight,
-/// - `AsyncData(CartModel)` → succeeded; carries the fresh cart,
-/// - `AsyncError`           → failed; carries the user-facing message.
 final updateCartProductProvider = StateNotifierProvider.autoDispose
     .family<UpdateCartProductViewModel, AsyncValue<CartModel?>, int>(
   (Ref ref, int productId) => UpdateCartProductViewModel(ref, productId),
@@ -68,9 +58,13 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   Future<void> updateCartProductQuantity(int productQuantity) =>
       _send(() => _repo.updateCartProductQuantity(_productId, productQuantity));
 
-  /// Puts [productQuantity] of this product in the cart.
-  Future<void> addToCart(int productQuantity) =>
-      _send(() => _repo.addToCart(_productId, productQuantity));
+  /// Puts [productQuantity] of this product in the cart, with the selected
+  /// product [options] when the product has any.
+  Future<void> addToCart(
+    int productQuantity, [
+    Map<String, dynamic>? options,
+  ]) =>
+      _send(() => _repo.addToCart(_productId, productQuantity, options));
 
   Future<void> _send(
     Future<Either<Failure, CartModel>> Function() request,

@@ -5,7 +5,6 @@ import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/ticket_clipper.dart';
 
@@ -24,21 +23,18 @@ class DiscountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final String percent = _formatAmount(coupon.discountValue);
+
     final String scope = coupon.type == 'Public'
         ? LangKeys.discountOnAllStores.tr()
         : (coupon.type ?? '');
-    /*    final String validity = _formatValidity(coupon.startsAt, coupon.expiresAt);
-    final String minPurchase = LangKeys.discountMinPurchase.tr(
-      namedArgs: {'amount': _formatAmount(coupon.minOrderValue)},
-    );*/
+
     final String code = coupon.code ?? '';
 
     final Color valuePanel = dark
         ? context.colors.surfaceBright
         : context.colors.surface;
-    // Body background is a linear gradient — two amber tints when [dark], two
-    // mint/green tints otherwise — sourced from the app palette.
+
+
     final LinearGradient bodyGradient = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,

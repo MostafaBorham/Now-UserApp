@@ -1,19 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import 'product_colors_selector.dart';
-import 'product_main_info_card.dart';
 
 class ProductDetailsShimmer extends StatelessWidget {
   const ProductDetailsShimmer({super.key});
@@ -21,29 +15,46 @@ class ProductDetailsShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          spacing: 16,
-          children: [
-            AppShimmer(
+      physics: const NeverScrollableScrollPhysics(),
+
+
+      padding: const EdgeInsets.only(top: 57),
+      child: Column(
+        spacing: 16,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              spacing: 16,
+              children: [
+                AppShimmer(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.red,
-                    ),
-                    child: Text(
-                      '20%',
-                      style: AppTextStyles.style14Bold.copyWith(
-                        color: Colors.white,
+
+
+
+
+
+
+                  SizedBox(
+                    width: 55,
+                    height: 65,
+                    child: Center(
+                      child: Transform.rotate(
+                        angle: -65 * math.pi / 180,
+                        child: Container(
+                          width: 55,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  CircularAppFavouriteIcon(onFavouriteChanged: (p0) {}),
+                  const CircleAvatar(radius: 20, backgroundColor: Colors.black),
                 ],
               ),
             ),
@@ -223,13 +234,18 @@ class ProductDetailsShimmer extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              color: Colors.grey,
-              width: double.infinity,
-              height: 1,
-              padding: EdgeInsets.symmetric(vertical: 15),
+              ],
             ),
-            AppShimmer(
+          ),
+
+          Container(
+            color: Colors.grey,
+            width: double.infinity,
+            height: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: AppShimmer(
               child: Row(
                 spacing: 10,
                 children: [
@@ -254,8 +270,8 @@ class ProductDetailsShimmer extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

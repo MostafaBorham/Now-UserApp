@@ -63,7 +63,7 @@ class ProductMainInfoCard extends ConsumerWidget {
           BoxShadow(
             color: colors.neutral500.withValues(
               alpha: 0.3,
-            ), // #0000000F (black 6%)
+            ),
             offset: const Offset(0, 2),
             blurRadius: 30,
           ),
@@ -225,15 +225,23 @@ class ProductMainInfoCard extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                         spacing: 4,
                         children: [
-                          OldPriceWidget(
-                            color: colors.neutral500,
-                            size: con.maxWidth * 0.04,
-                            price: '${product.comparePrice}',
-                          ),
+
+
+
+
+
+                          if (product.discountPrice != null)
+                            OldPriceWidget(
+                              color: colors.neutral500,
+                              size: con.maxWidth * 0.05,
+                              price: '${formatDouble(product.price)}',
+                            ),
                           NewPriceWidget(
                             size: con.maxWidth * 0.07,
                             color: colors.neutral1200,
-                            price: '${product.price}',
+                            price:
+                                '${formatDouble(product.discountPrice ?? product.price)}',
+                            fontWeight: FontWeight.bold,
                           ),
                         ],
                       ),

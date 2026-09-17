@@ -6,18 +6,16 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import '../../core/presentation/widgets/reverse_widget.dart';
-import '../settings/presentation/widgets/profile_header.dart';
 import 'components/chat_bubble.dart';
 import 'components/message_input_bar.dart';
 
-/// Support chat screen.
-///
-/// Sections (see `components/`):
-///   1. [CommonHeader]     – yellow header + wave + back button + title.
-///   2. [ChatBubble] × N   – the scrolling conversation (customer on the left,
-///                           "now" agent on the right).
-///   3. [MessageInputBar]  – pinned composer with the green send button.
+
+
+
+
+
+
+
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
@@ -26,8 +24,6 @@ class SupportScreen extends StatefulWidget {
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-  static const double _hPadding = 20;
-
   final List<ChatMessage> _messages = [
     const ChatMessage(
       text: 'How long will my order take?',

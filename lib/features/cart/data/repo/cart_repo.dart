@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -40,10 +39,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -77,10 +73,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -114,10 +107,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -155,10 +145,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -166,9 +153,10 @@ class CartRepo {
   Future<Either<Failure, CartModel>> addToCart(
     int productId,
     int quantity,
+    Map<String, dynamic>? options,
   ) async {
-    // Adding to the cart creates a new resource, so the API answers with
-    // `201 Created` (not `200`) on success — accept both.
+
+
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -177,6 +165,7 @@ class CartRepo {
       final Response response = await _cartApiService.addToCart(
         productId,
         quantity,
+        options,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
@@ -199,10 +188,7 @@ class CartRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }

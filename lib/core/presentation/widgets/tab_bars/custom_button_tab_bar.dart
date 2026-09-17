@@ -44,10 +44,6 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
     super.initState();
 
     _controller = TabController(length: widget.tabs.length, vsync: this);
-
-    _controller.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -83,56 +79,60 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
               spacing: 5,
               children: [
                 Flexible(
-                  child: TabBar(
-                    controller: _controller,
-                    onTap: widget.onTap,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    padding: EdgeInsets.zero,
-                    indicator: const BoxDecoration(),
-                    dividerHeight: 0,
-                    splashFactory: NoSplash.splashFactory,
-                    dividerColor: Colors.transparent,
-                    overlayColor: WidgetStateProperty.resolveWith(
-                      (states) => Colors.transparent,
-                    ),
-                    labelPadding: EdgeInsets.zero,
-                    tabs: List.generate(widget.tabs.length, (index) {
-                      final isSelected = _controller.index == index;
+                  child: AnimatedBuilder(
+                    animation: _controller.animation ?? _controller,
+                    builder: (context, _) => TabBar(
+                      controller: _controller,
+                      onTap: widget.onTap,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      padding: EdgeInsets.zero,
+                      indicator: const BoxDecoration(),
+                      dividerHeight: 0,
+                      splashFactory: NoSplash.splashFactory,
+                      dividerColor: Colors.transparent,
+                      overlayColor: WidgetStateProperty.resolveWith(
+                        (states) => Colors.transparent,
+                      ),
+                      labelPadding: EdgeInsets.zero,
+                      tabs: List.generate(widget.tabs.length, (index) {
+                        final isSelected = _controller.index == index;
 
-                      return Tab(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          margin: EdgeInsetsDirectional.only(
-                            start: index == 0 ? 0 : 12,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: AppBorderRadius.brCircular20,
-                            color: isSelected
-                                ? widget.selectedTabColor ??
-                                      colors.primary500Main
-                                : widget.unSelectedTabColor,
-                          ),
-                          child: Text(
-                            widget.tabs[index],
-                            maxLines: 1,
-                            style: AppTextStyles.style16Medium.copyWith(
-                              fontSize: con.maxWidth * 0.04,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
+                        return Tab(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            margin: EdgeInsetsDirectional.only(
+                              start: index == 0 ? 0 : 12,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: AppBorderRadius.brCircular20,
                               color: isSelected
-                                  ? widget.selectedLabelColor ?? colors.white
-                                  : widget.unSelectedLabelColor ?? colors.black,
+                                  ? widget.selectedTabColor ??
+                                        colors.primary500Main
+                                  : widget.unSelectedTabColor,
+                            ),
+                            child: Text(
+                              widget.tabs[index],
+                              maxLines: 1,
+                              style: AppTextStyles.style16Medium.copyWith(
+                                fontSize: con.maxWidth * 0.04,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? widget.selectedLabelColor ?? colors.white
+                                    : widget.unSelectedLabelColor ??
+                                          colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
                   ),
                 ),
                 widget.filterWidget ?? 0.wSpace,
@@ -143,11 +143,7 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
                 controller: _controller,
                 viewportFraction: 1,
                 physics: const NeverScrollableScrollPhysics(),
-                children: widget.views
-                    .map(
-                      (view) => view,
-                    )
-                    .toList(),
+                children: widget.views,
               ),
             ),
           ],

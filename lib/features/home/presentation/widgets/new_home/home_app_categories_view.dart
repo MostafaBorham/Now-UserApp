@@ -11,26 +11,26 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-/// A single item fed to the carousel: a display [label], its [imageUrl] and the
-/// [onTap] that opens it.
-/// [imageUrl] is nullable — a `null` (or unresolvable) image renders nothing in
-/// the image slot rather than falling back to a stand-in. [onTap] is null for
-/// the loading / error placeholders, so only real (data) items are tappable.
+
+
+
+
+
 typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
-/// Auto-sliding categories carousel wired to [getAppCategoriesProvider].
-///
-/// This widget only watches the provider and maps the async state into the
-/// carousel's item list, so it rebuilds solely on state transitions
-/// (loading → data / error) — never on the per-frame slide animation, which
-/// stays isolated inside [_CategoriesCarousel]. The carousel keeps the same
-/// shape in every state; the only difference in the data state is that each
-/// item carries the real category image and name.
-///
-/// The shared [getAppCategoriesProvider] is preloaded on the splash screen, so
-/// this usually renders cached data with no fetch. If it is opened while that
-/// shared state has no value (never loaded, or errored), `initState` refetches
-/// it — flipping it to loading so the shimmer circles show first.
+
+
+
+
+
+
+
+
+
+
+
+
+
 class HomeAppCategoriesView extends ConsumerStatefulWidget {
   const HomeAppCategoriesView({super.key});
 
@@ -40,18 +40,18 @@ class HomeAppCategoriesView extends ConsumerStatefulWidget {
 }
 
 class _HomeAppCategoriesViewState extends ConsumerState<HomeAppCategoriesView> {
-  // Placeholder count kept equal to the data cap so the modulo mapping — and
-  // therefore the centred item — doesn't jump when real data replaces it.
+
+
   static const int _maxItems = 5;
 
   @override
   void initState() {
     super.initState();
-    // The categories are normally preloaded on splash. Fetch here only if that
-    // never happened or failed (no value yet) — an already-loaded list is kept
-    // as-is (no refetch). So opening this while the shared provider is errored
-    // flips it to loading first, and the shimmer circles are the first thing
-    // shown rather than the error shape.
+
+
+
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || ref.read(getAppCategoriesProvider).hasValue) return;
       ref.read(getAppCategoriesProvider.notifier).loadFirstPage();
@@ -74,7 +74,7 @@ class _HomeAppCategoriesViewState extends ConsumerState<HomeAppCategoriesView> {
             .map(
               (CategoryModel category) => (
                 label: context.getLocalizedApiText(category.name),
-                // Null / broken image → empty image slot (see item builder).
+
                 imageUrl: category.image,
                 onTap: () => context.pushNamed(
                   AppRoutes.categoryDetailsScreen,
@@ -90,9 +90,9 @@ class _HomeAppCategoriesViewState extends ConsumerState<HomeAppCategoriesView> {
     return _CategoriesCarousel(items: items);
   }
 
-  // Loading / error shape: bare circles only — no image (null → empty slot)
-  // and no label (empty → the name is not built). The data state is the only
-  // one that fills the circle and shows a name.
+
+
+
   static final List<_CarouselItem> _placeholderItems =
       List<_CarouselItem>.generate(
         _maxItems,
@@ -100,11 +100,11 @@ class _HomeAppCategoriesViewState extends ConsumerState<HomeAppCategoriesView> {
       );
 }
 
-/// The auto-sliding carousel itself: the item nearest the viewport centre is
-/// scaled up while the rest shrink, and the list keeps sliding on its own.
-///
-/// Owns the [PageController] and slide [Timer], so it survives the parent's
-/// state-driven rebuilds and only picks up new [items] via [didUpdateWidget].
+
+
+
+
+
 class _CategoriesCarousel extends StatefulWidget {
   const _CategoriesCarousel({required this.items});
 
@@ -115,7 +115,7 @@ class _CategoriesCarousel extends StatefulWidget {
 }
 
 class _CategoriesCarouselState extends State<_CategoriesCarousel> {
-  // Start far from 0 so the list can slide in both directions endlessly.
+
   static const int _initialPage = 10000;
   static const Duration _slideInterval = Duration(seconds: 3);
   static const Duration _slideDuration = Duration(milliseconds: 900);
@@ -130,8 +130,8 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
       initialPage: _initialPage,
       viewportFraction: 0.26,
     );
-    // Dwell between slides: the controller stays idle and only animates for
-    // the short nextPage() hop, keeping the carousel cheap to run.
+
+
     _autoSlideTimer = Timer.periodic(_slideInterval, (_) {
       if (!_controller.hasClients) return;
       _controller.nextPage(duration: _slideDuration, curve: Curves.easeInOut);
@@ -157,9 +157,9 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
           child: PageView.builder(
             controller: _controller,
             physics: const BouncingScrollPhysics(),
-            // Slide right-to-left in Arabic, left-to-right in English — see
-            // the motion rule on `AppSlider`. The strip is an endless modulo
-            // loop, so mirroring the page order costs nothing here.
+
+
+
             reverse: true,
             itemBuilder: (context, index) {
               final _CarouselItem item = items[index % items.length];
@@ -216,12 +216,12 @@ class _CategoryCarouselItem extends StatelessWidget {
               ? controller.page!
               : controller.initialPage.toDouble();
           final double distance = (page - index).abs().clamp(0.0, 1.0);
-          final double proximity = 1.0 - distance; // 0 at side → 1 at centre
-          final double scale = 1.0 - distance * 0.32; // center 1.0 → side 0.68
+          final double proximity = 1.0 - distance;
+          final double scale = 1.0 - distance * 0.32;
           final double rawImageSize =
               minImageSize + (maxImageSize - minImageSize) * proximity;
-          // The centre item is free to overflow the circle; every other item
-          // is kept inside it with padding between the image and the edge.
+
+
           final bool isCentered = rawImageSize > diameter;
           final double padding = diameter * 0.14;
           final double imageSize = isCentered
@@ -229,8 +229,8 @@ class _CategoryCarouselItem extends StatelessWidget {
               : rawImageSize.clamp(minImageSize, diameter - padding * 2);
           return Transform.scale(
             scale: scale,
-            // Tappable only when there's a target (data items); the loading /
-            // error placeholders pass a null onTap and stay inert.
+
+
             child: GestureDetector(
               onTap: onTap,
               behavior: HitTestBehavior.opaque,
@@ -258,8 +258,8 @@ class _CategoryCarouselItem extends StatelessWidget {
                       maxWidth: double.infinity,
                       maxHeight: double.infinity,
                       alignment: Alignment.center,
-                      // Null / empty url → nothing in the image slot; a load
-                      // error collapses to the same empty slot via errorWidget.
+
+
                       child: (imageUrl == null || imageUrl!.isEmpty)
                           ? const SizedBox.shrink()
                           : CachedNetworkImage(
@@ -267,6 +267,14 @@ class _CategoryCarouselItem extends StatelessWidget {
                               width: imageSize,
                               height: imageSize,
                               fit: BoxFit.contain,
+                              memCacheWidth:
+                                  (imageSize *
+                                          MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
+                              memCacheHeight:
+                                  (imageSize *
+                                          MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
                               placeholder: (context, url) =>
                                   const SizedBox.shrink(),
                               errorWidget: (context, url, error) =>
@@ -274,8 +282,8 @@ class _CategoryCarouselItem extends StatelessWidget {
                             ),
                     ),
                   ),
-                  // Loading / error carry no label, so the name (and its gap)
-                  // are built only when there is one — leaving bare circles.
+
+
                   if (label.isNotEmpty) ...[
                     SizedBox(height: width * 0.02),
                     Text(

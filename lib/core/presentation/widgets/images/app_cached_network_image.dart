@@ -7,48 +7,7 @@ import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-/*class AppCachedNetworkImage extends StatelessWidget {
-  const AppCachedNetworkImage({
-    super.key,
-    required this.imageUrl,
-    this.width,
-    this.height,
-    this.fit = BoxFit.cover,
-    this.placeholderType = PlaceholderTypes.shimmer,
-  });
 
-  final String imageUrl;
-  final double? width;
-  final double? height;
-  final BoxFit fit;
-  final PlaceholderTypes? placeholderType;
-
-  @override
-  Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
-
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      width: width,
-      height: height,
-      fit: fit,
-      placeholder: (context, url) {
-        switch (placeholderType) {
-          case PlaceholderTypes.circular:
-            return Center(child: CircularProgressIndicator(color: colors.primary500Main));
-          case PlaceholderTypes.shimmer || null:
-            return Shimmer.fromColors(
-              baseColor: colors.neutral500.withValues(alpha: 0.6),
-              highlightColor: colors.neutral500.withValues(alpha: 0.3),
-              child: Container(width: double.infinity, color: colors.onPrimary),
-            );
-        }
-      },
-      errorWidget: (_, _, _) =>
-          Assets.media.images.svg.noImagePlaceholder.svg(fit: BoxFit.cover),
-    );
-  }
-}*/
 
 class AppCachedNetworkImage extends StatelessWidget {
   const AppCachedNetworkImage({
@@ -69,20 +28,29 @@ class AppCachedNetworkImage extends StatelessWidget {
   final BoxFit fit;
   final LoadingViewTypes? placeholderType;
 
-  /// Headers forwarded to the image request — needed for auth-protected
-  /// images (e.g. the private-disk profile avatar, which requires the bearer).
+
+
   final Map<String, String>? httpHeaders;
 
-  /// URLs that already failed to load once this session. cached_network_image
-  /// does not cache failures, so it re-hits the network on every rebuild — which
-  /// during fast scrolling flashes the shimmer placeholder back over the error
-  /// image before failing again. Remembering the failed URL lets us render the
-  /// error image straight away, with no retry and no shimmer flash.
+
+
+
+
+
   static final Set<String> _failedUrls = <String>{};
 
-  /// Guards the one-time subscription that clears [_failedUrls] on reconnect,
-  /// so a URL that failed only because the device was offline is retried once
-  /// connectivity is back instead of staying broken for the whole session.
+  static const int _maxFailedUrls = 200;
+
+  static void _rememberFailedUrl(String url) {
+    if (_failedUrls.length >= _maxFailedUrls) {
+      _failedUrls.remove(_failedUrls.first);
+    }
+    _failedUrls.add(url);
+  }
+
+
+
+
   static bool _watchingConnection = false;
 
   static void _clearFailedUrlsOnReconnect() {
@@ -93,9 +61,21 @@ class AppCachedNetworkImage extends StatelessWidget {
     });
   }
 
+  int? _cacheDimension(double? logicalSize, double devicePixelRatio) {
+    if (logicalSize == null ||
+        logicalSize.isInfinite ||
+        logicalSize <= 0) {
+      return null;
+    }
+    return (logicalSize * devicePixelRatio).round();
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final double devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final int? memCacheWidth = _cacheDimension(width, devicePixelRatio);
+    final int? memCacheHeight = _cacheDimension(height, devicePixelRatio);
 
     final Widget errorPlaceholder = Container(
       width: width ?? double.infinity,
@@ -112,8 +92,8 @@ class AppCachedNetworkImage extends StatelessWidget {
       ),
     );
 
-    // Skip CachedNetworkImage entirely for empty or known-bad URLs: no request
-    // is made, so no placeholder/shimmer can flash on rebuild.
+
+
     if (imageUrl.isEmpty || _failedUrls.contains(imageUrl)) {
       return errorPlaceholder;
     }
@@ -122,11 +102,20 @@ class AppCachedNetworkImage extends StatelessWidget {
       imageUrl: imageUrl,
       httpHeaders: httpHeaders,
       fit: fit,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
       imageBuilder: (context, imageProvider) => Center(
         child: SizedBox(
           width: width,
           height: height,
-          child: Image(image: imageProvider, fit: fit),
+          child: Image(
+            image: ResizeImage.resizeIfNeeded(
+              memCacheWidth,
+              memCacheHeight,
+              imageProvider,
+            ),
+            fit: fit,
+          ),
         ),
       ),
       placeholder: (context, url) {
@@ -150,10 +139,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         }
       },
       errorWidget: (_, url, _) {
-        _failedUrls.add(url);
-        // Installed on the first failure rather than on every build: with
-        // nothing in [_failedUrls] there is nothing for a reconnect to clear,
-        // so an app whose images all load never opens the subscription at all.
+        _rememberFailedUrl(url);
         _clearFailedUrlsOnReconnect();
         return errorPlaceholder;
       },

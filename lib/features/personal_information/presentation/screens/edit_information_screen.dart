@@ -24,18 +24,18 @@ import '../widgets/gender_selector.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/profile_avatar.dart';
 
-/// Editable "Edit Information" screen, reached from the Edit button on the
-/// Personal Information screen.
-///
-/// Prefilled from the already-loaded [getProfileProvider] data, which is also
-/// kept as the baseline: saving sends only the fields that actually differ from
-/// it (see [ProfileModel.changesFrom]), so a field the user never touched is
-/// never written back. Until that baseline exists the form is not shown at all
-/// — an empty form would otherwise save blanks over a good server record.
-///
-/// Saving goes through [updateProfileProvider] (PUT + JSON, or POST + multipart
-/// when the avatar changed); on success it pops and the read screen refreshes
-/// itself. Phone is read-only (it is the OTP identity).
+
+
+
+
+
+
+
+
+
+
+
+
 class EditInformationScreen extends ConsumerStatefulWidget {
   const EditInformationScreen({super.key});
 
@@ -49,35 +49,35 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _nationality = TextEditingController();
 
-  /// The profile as it was loaded. Every save is a diff against this, and its
-  /// absence is what the "not ready" state keys off — so it is set in exactly
-  /// one place, [_prefill].
+
+
+
   ProfileModel? _original;
 
-  String? _phone; // read-only display
-  String? _gender; // raw server value; only a tap replaces it
+  String? _phone;
+  String? _gender;
   DateTime? _dob;
 
-  String? _currentAvatarUrl; // existing remote avatar, shown until changed
-  File? _pickedAvatar; // newly picked file to upload
-  bool _removeAvatar = false; // user chose to clear the picture
+  String? _currentAvatarUrl;
+  File? _pickedAvatar;
+  bool _removeAvatar = false;
 
-  /// Shown under the email pill after a failed validation, cleared as soon as
-  /// the user edits the field again.
+
+
   String? _emailError;
 
-  /// Guards against a second picker opening while the first is still up.
+
   bool _isPicking = false;
 
-  // Drives the AppWavedView wave: it flattens while scrolled and springs back
-  // to the curved edge once the list settles at the top.
+
+
   final ScrollController _scrollController = ScrollController();
 
   static const double _fieldGap = 18;
 
-  /// Oldest and youngest birthday the picker will accept. The upper bound is
-  /// also what keeps a stored future date from being handed to `showDatePicker`
-  /// as an out-of-range `initialDate`.
+
+
+
   static final DateTime _earliestBirthday = DateTime(1900);
   static DateTime get _latestBirthday => DateTime.now();
 
@@ -101,12 +101,12 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     super.dispose();
   }
 
-  /// Seeds the form from [data] and records the baseline the save diffs against.
-  ///
-  /// [_gender] takes the server's value verbatim rather than mapping it onto one
-  /// of the two segments. A value the toggle cannot show (anything other than
-  /// male/female) then stays as it is and drops out of the diff, instead of
-  /// being silently rewritten by a user who only came to fix their name.
+
+
+
+
+
+
   void _prefill(PersonalInformationData data) {
     final ProfileModel p = data.profile;
     _original = p;
@@ -123,7 +123,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     if (_emailError != null) setState(() => _emailError = null);
   }
 
-  /// The form's current values as a model, for diffing and for saving.
+
   ProfileModel get _edited => ProfileModel(
     fullName: _clean(_fullName.text),
     email: _clean(_email.text),
@@ -137,17 +137,17 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       _removeAvatar ||
       _edited.changesFrom(_original).isNotEmpty;
 
-  /// Which segment the gender toggle should start on. `-1` selects none, which
-  /// is the honest rendering when the stored value is missing or is something
-  /// the two segments cannot express — better than highlighting "Male" for
-  /// someone who never chose it.
+
+
+
+
   int get _genderTabIndex => switch (_gender?.trim().toLowerCase()) {
     'male' => 0,
     'female' => 1,
     _ => -1,
   };
 
-  /// Localized birthday label (e.g. "September 7, 2026" / Arabic equivalent).
+
   String? _dobText(BuildContext context) =>
       _dob == null ? null : formatLocalizedDateOnly(context, _apiDate(_dob!));
 
@@ -159,8 +159,8 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       latest.month,
       latest.day,
     );
-    // A stored birthday can sit outside the pickable range (bad data, a future
-    // date). `showDatePicker` asserts on that, so clamp before handing it over.
+
+
     final DateTime initial = switch (_dob) {
       null => fallback,
       final DateTime d when d.isBefore(_earliestBirthday) => _earliestBirthday,
@@ -179,12 +179,12 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         return Theme(
           data: base.copyWith(
             colorScheme: base.colorScheme.copyWith(
-              primary: colors.primary500Main, // selected-day circle + actions
-              onPrimary: colors.white, // text on the selected day
-              surface: colors.white, // calendar background
-              onSurface: colors.black, // day numbers + header text
+              primary: colors.primary500Main,
+              onPrimary: colors.white,
+              surface: colors.white,
+              onSurface: colors.black,
             ),
-            dividerColor: colors.primary500Main, // divider under the header
+            dividerColor: colors.primary500Main,
             datePickerTheme: DatePickerThemeData(
               backgroundColor: colors.white,
               headerBackgroundColor: colors.white,
@@ -239,10 +239,10 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     }
   }
 
-  /// Opens the gallery. Mirrors `ComplaintPhotosPicker`: a re-entrancy guard, a
-  /// `catch` for the `PlatformException` a denied photo-library permission
-  /// throws, and a `mounted` check — the picker is a separate activity the OS
-  /// can destroy this screen behind.
+
+
+
+
   Future<void> _pickAvatar() async {
     if (_isPicking) return;
     _isPicking = true;
@@ -251,8 +251,8 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       final XFile? picked = await ImagePicker().pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
-        // An avatar is rendered at ~112pt. Capping here is what keeps a 12MP
-        // camera photo from being uploaded, and decoded, at full size.
+
+
         maxWidth: 1024,
         maxHeight: 1024,
       );
@@ -276,25 +276,25 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     return trimmed.isEmpty ? null : trimmed;
   }
 
-  /// Wraps the phone number in a Unicode LTR isolate (LRI … PDI) so its digits
-  /// and the leading country-code "+" always read left-to-right, while the
-  /// field itself keeps aligning to the start side (hugging the leading icon)
-  /// under both Arabic (RTL) and English (LTR).
+
+
+
+
   String? _ltrPhone(String? phone) {
     if (phone == null || phone.isEmpty) return null;
-    // U+2066 LEFT-TO-RIGHT ISOLATE … U+2069 POP DIRECTIONAL ISOLATE.
+
     return '\u{2066}${AppValidator.saudiPhoneDisplay(phone)}\u{2069}';
   }
 
-  /// DateTime → 'YYYY-MM-DD' for the API. Built by hand rather than through
-  /// `DateFormat` so the digits stay ASCII regardless of the app locale.
+
+
   String _apiDate(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-'
       '${d.month.toString().padLeft(2, '0')}-'
       '${d.day.toString().padLeft(2, '0')}';
 
-  /// Returns false and marks the field when the email is present but malformed.
-  /// An empty email is valid — it simply clears the value.
+
+
   bool _validate() {
     final String email = _email.text.trim();
     final bool ok = email.isEmpty || AppValidator.isValidEmail(email);
@@ -328,8 +328,8 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     }
   }
 
-  /// Confirms before throwing away edits. The shared dialog reports through a
-  /// callback rather than a pop result, so the answer comes back in a local.
+
+
   Future<bool> _confirmDiscard() async {
     bool discard = false;
     await AppCustomAlertDialog.show(
@@ -353,9 +353,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       getProfileProvider,
     );
 
-    // The screen can be reached before the profile has loaded (a failed session
-    // fetch is not retried automatically, and the route is addressable on its
-    // own). Re-prefill as soon as data arrives so a retry lands in the form.
+
+
+
     ref.listen<AsyncValue<PersonalInformationData>>(getProfileProvider, (
       AsyncValue<PersonalInformationData>? previous,
       AsyncValue<PersonalInformationData> next,
@@ -368,10 +368,10 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     final bool saving = ref.watch(updateProfileProvider).isLoading;
 
     return PopScope(
-      // Always false, never `!_hasUnsavedChanges`: `canPop` is read at build
-      // time, and typing in a field does not rebuild, so a computed value would
-      // answer with whatever was true when the form was last painted. Deciding
-      // inside the callback asks the question at the moment back is pressed.
+
+
+
+
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (didPop) return;
@@ -396,9 +396,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     );
   }
 
-  /// Shown until there is a profile to edit. Saving a form we could not prefill
-  /// would write blanks over the server record, so the form is withheld
-  /// entirely rather than shown empty.
+
+
+
   Widget _notReady(AsyncValue<PersonalInformationData> profile) {
     return profile.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -406,8 +406,8 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         message: error.toString(),
         onRetry: () => ref.read(getProfileProvider.notifier).getProfile(),
       ),
-      // Data has arrived but the listener has not folded it in yet; the next
-      // frame swaps this for the form.
+
+
       data: (_) => const Center(child: CircularProgressIndicator()),
     );
   }
@@ -418,9 +418,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         Expanded(
           child: SingleChildScrollView(
             controller: _scrollController,
-            // Owns the top spacing AppWavedView drops when a scroll
-            // controller is wired in, so it scrolls up with the content
-            // and flattens the wave.
+
+
+
             padding: const EdgeInsets.only(top: 57, bottom: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,8 +438,8 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                   ),
                 ),
                 const SizedBox(height: 28),
-                // Grey (neutral200) card sitting behind the whole form,
-                // matching the Figma design.
+
+
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -532,7 +532,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   }
 }
 
-/// Pinned bottom bar holding the green "Save" button.
+
 class _SaveBar extends StatelessWidget {
   const _SaveBar({required this.onSave, required this.isLoading});
 
@@ -558,5 +558,5 @@ class _SaveBar extends StatelessWidget {
   }
 }
 
-/// Result of the avatar action sheet.
+
 enum _AvatarAction { pick, remove }

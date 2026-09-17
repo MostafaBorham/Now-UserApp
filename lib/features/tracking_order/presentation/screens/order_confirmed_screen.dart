@@ -5,8 +5,6 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
@@ -15,19 +13,19 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 import '../components/confirmed_order_card.dart';
 import '../components/order_confirmed_header.dart';
 
-/// Order Confirmed screen: a success acknowledgement followed by the confirmed
-/// order(s), each offering a shortcut into live tracking.
-///
-/// [orders] are the just-confirmed orders passed from the checkout flow (the
-/// `order_group.orders` of the confirmed `CheckoutModel`); one
-/// [ConfirmedOrderCard] is rendered per order.
+
+
+
+
+
+
 class OrderConfirmedScreen extends ConsumerWidget {
   const OrderConfirmedScreen({super.key, this.orders = const <OrderModel>[]});
 
   final List<OrderModel> orders;
 
-  /// Clears the whole navigation stack and returns to [MainScreen] with the
-  /// bottom-nav parked on the Home tab.
+
+
   void _returnToHome(BuildContext context, WidgetRef ref) {
     ref.read(mainTabIndexProvider.notifier).state = 0;
     context.goNamed(AppRoutes.mainScreen);

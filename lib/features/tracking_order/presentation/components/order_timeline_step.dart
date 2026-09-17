@@ -4,15 +4,15 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 
-/// State of a single delivery-timeline step.
+
 enum OrderStepStatus { done, current, pending }
 
-/// One row of the delivery timeline: a left rail (connector line + status
-/// marker), the step's illustrated icon and its label.
-///
-/// [topLineColor] / [bottomLineColor] are supplied by the parent section so the
-/// connector reflects overall progress (green for reached segments, grey
-/// otherwise); [isFirst] / [isLast] hide the connector past the ends.
+
+
+
+
+
+
 class OrderTimelineStep extends StatelessWidget {
   const OrderTimelineStep({
     super.key,
@@ -57,15 +57,15 @@ class OrderTimelineStep extends StatelessWidget {
           12.wSpace,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
-            // The illustration only takes on its colour once the order reaches
-            // this step; steps still ahead are shown greyed out.
+
+
             child: status == OrderStepStatus.pending
                 ? ColorFiltered(
                     colorFilter: const ColorFilter.matrix(<double>[
-                      0.2126, 0.7152, 0.0722, 0, 0, //
-                      0.2126, 0.7152, 0.0722, 0, 0, //
-                      0.2126, 0.7152, 0.0722, 0, 0, //
-                      0, 0, 0, 1, 0, //
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0, 0, 0, 1, 0,
                     ]),
                     child: icon,
                   )
@@ -94,8 +94,8 @@ class OrderTimelineStep extends StatelessWidget {
     );
   }
 
-  // Placed inside an [Expanded], so the tight vertical constraint stretches the
-  // line to fill the gap; the parent column centres its 2px width on the rail.
+
+
   Widget _connector(Color color) => Container(width: 2, color: color);
 
   Widget _marker(BuildContext context) {

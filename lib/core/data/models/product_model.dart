@@ -2,48 +2,88 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_attribute_model.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_color_model.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_specification_model.dart';
 import 'package:nowdelivery_user_app/features/products/data/models/rating_model.dart';
 
 class ProductModel {
   final int? id;
   final int? productId;
   final int? categoryId;
+  final int? vendorId;
   final Map<String, dynamic>? name;
   final String? slug;
   final String? sku;
   final Map<String, dynamic>? shortDescription;
   final Map<String, dynamic>? description;
+
+
+
+
+
+  final List<Map<String, dynamic>>? mainFeatures;
   final double? price;
   final double? discountPrice;
   final double? effectivePrice;
   final double? dealDiscountAmount;
 
-  /// Discount off [price] as a percentage (e.g. `32.0`), already resolved by
-  /// the backend for this product. Preferred over `activeDeal.discountValue`
-  /// for a "-N%" badge: a fixed-amount deal's `discountValue` is an amount,
-  /// not a percentage.
+
+
+
+
   final double? discountPercentage;
   final double? comparePrice;
   final int? stock;
+
+
+
+  final int? minOrderQuantity;
+
+
+  final String? unit;
   final bool? inStock;
+
+
+  final bool? inCart;
   final String? status;
   final bool? isFeatured;
   final String? publishedAt;
   final String? metaTitle;
   final String? metaDescription;
   final String? searchKeywords;
-  // final String? primaryImage;
+
   final List<String>? images;
   final bool? hasVariants;
+
+
+
+
+  final List<dynamic>? variants;
+
+
+  final List<ProductSpecificationModel>? specifications;
+
+
+  final List<ProductAttributeModel>? attributes;
+
+
+  final List<ProductColorModel>? colors;
   final StoreModel? vendor;
   final String? createdAt;
   final String? updatedAt;
-  // final String? imageUrl;
+
   final ActiveDealModel? activeDeal;
   final int? quantity;
   final bool? isSelected;
   final int? cartQuantity;
   final bool? isFavorite;
+
+
+  final CategoryModel? category;
+
+
+
   final CategoryModel? subCategory;
   final RatingModel? rating;
 
@@ -51,11 +91,13 @@ class ProductModel {
     this.id,
     this.productId,
     this.categoryId,
+    this.vendorId,
     this.name,
     this.slug,
     this.sku,
     this.shortDescription,
     this.description,
+    this.mainFeatures,
     this.price,
     this.discountPrice,
     this.effectivePrice,
@@ -63,41 +105,51 @@ class ProductModel {
     this.discountPercentage,
     this.comparePrice,
     this.stock,
+    this.minOrderQuantity,
+    this.unit,
     this.inStock,
+    this.inCart,
     this.status,
     this.isFeatured,
     this.publishedAt,
     this.metaTitle,
     this.metaDescription,
     this.searchKeywords,
-    // this.primaryImage,
+
     this.images,
     this.hasVariants,
+    this.variants,
+    this.specifications,
+    this.attributes,
+    this.colors,
     this.vendor,
     this.createdAt,
     this.updatedAt,
     this.activeDeal,
     this.quantity,
     this.isSelected,
-    // this.imageUrl,
+
     this.cartQuantity,
     this.isFavorite,
+    this.category,
     this.subCategory,
     this.rating,
   });
 
-  /// Returns a copy with the given fields replaced. Used for in-place list
-  /// edits (e.g. flipping [isFavorite] on the single product whose favourite
-  /// status changed, without refetching the list).
+
+
+
   ProductModel copyWith({
     int? id,
     int? productId,
     int? categoryId,
+    int? vendorId,
     Map<String, dynamic>? name,
     String? slug,
     String? sku,
     Map<String, dynamic>? shortDescription,
     Map<String, dynamic>? description,
+    List<Map<String, dynamic>>? mainFeatures,
     double? price,
     double? discountPrice,
     double? effectivePrice,
@@ -105,7 +157,10 @@ class ProductModel {
     double? discountPercentage,
     double? comparePrice,
     int? stock,
+    int? minOrderQuantity,
+    String? unit,
     bool? inStock,
+    bool? inCart,
     String? status,
     bool? isFeatured,
     String? publishedAt,
@@ -114,6 +169,10 @@ class ProductModel {
     String? searchKeywords,
     List<String>? images,
     bool? hasVariants,
+    List<dynamic>? variants,
+    List<ProductSpecificationModel>? specifications,
+    List<ProductAttributeModel>? attributes,
+    List<ProductColorModel>? colors,
     StoreModel? vendor,
     String? createdAt,
     String? updatedAt,
@@ -122,6 +181,7 @@ class ProductModel {
     bool? isSelected,
     int? cartQuantity,
     bool? isFavorite,
+    CategoryModel? category,
     CategoryModel? subCategory,
     RatingModel? rating,
   }) {
@@ -129,11 +189,13 @@ class ProductModel {
       id: id ?? this.id,
       productId: productId ?? this.productId,
       categoryId: categoryId ?? this.categoryId,
+      vendorId: vendorId ?? this.vendorId,
       name: name ?? this.name,
       slug: slug ?? this.slug,
       sku: sku ?? this.sku,
       shortDescription: shortDescription ?? this.shortDescription,
       description: description ?? this.description,
+      mainFeatures: mainFeatures ?? this.mainFeatures,
       price: price ?? this.price,
       discountPrice: discountPrice ?? this.discountPrice,
       effectivePrice: effectivePrice ?? this.effectivePrice,
@@ -141,7 +203,10 @@ class ProductModel {
       discountPercentage: discountPercentage ?? this.discountPercentage,
       comparePrice: comparePrice ?? this.comparePrice,
       stock: stock ?? this.stock,
+      minOrderQuantity: minOrderQuantity ?? this.minOrderQuantity,
+      unit: unit ?? this.unit,
       inStock: inStock ?? this.inStock,
+      inCart: inCart ?? this.inCart,
       status: status ?? this.status,
       isFeatured: isFeatured ?? this.isFeatured,
       publishedAt: publishedAt ?? this.publishedAt,
@@ -150,6 +215,10 @@ class ProductModel {
       searchKeywords: searchKeywords ?? this.searchKeywords,
       images: images ?? this.images,
       hasVariants: hasVariants ?? this.hasVariants,
+      variants: variants ?? this.variants,
+      specifications: specifications ?? this.specifications,
+      attributes: attributes ?? this.attributes,
+      colors: colors ?? this.colors,
       vendor: vendor ?? this.vendor,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -158,6 +227,7 @@ class ProductModel {
       isSelected: isSelected ?? this.isSelected,
       cartQuantity: cartQuantity ?? this.cartQuantity,
       isFavorite: isFavorite ?? this.isFavorite,
+      category: category ?? this.category,
       subCategory: subCategory ?? this.subCategory,
       rating: rating ?? this.rating,
     );
@@ -168,14 +238,16 @@ class ProductModel {
       id: json['id'] as int?,
       productId: json['product_id'] as int?,
       categoryId: json['category_id'] as int?,
+      vendorId: (json['vendor_id'] as num?)?.toInt(),
       name: json.localized('name'),
       description: json.localized('description'),
+      mainFeatures: _mainFeaturesFrom(json),
       slug: json['slug'] as String?,
       sku: json['sku'] as String?,
       activeDeal: json['active_deal'] == null
           ? null
           : ActiveDealModel.fromJson(json['active_deal']),
-      // shortDescription: json['short_description'],
+
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
       discountPrice: (json['discount_price'] as num?)?.toDouble(),
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
@@ -184,37 +256,56 @@ class ProductModel {
       comparePrice:
           double.tryParse(json['compare_price']?.toString() ?? '') ?? 0.0,
       stock: (json['stock'] as num?)?.toInt(),
+      minOrderQuantity: (json['min_order_quantity'] as num?)?.toInt(),
+      unit: json['unit'] as String?,
       inStock: json['in_stock'] as bool?,
+      inCart: json['in_cart'] as bool?,
       status: json['status'] as String?,
       isFeatured: json['is_featured'] as bool?,
       publishedAt: json['published_at'] as String?,
-      // metaTitle: json['meta_title'] as String?,
-      // metaDescription: json['meta_description'] as String?,
+
+
       searchKeywords: json['search_keywords'] as String?,
-      // imageUrl: json['image_url'] as String?,
+
       images: _imagesFrom(json),
       hasVariants: json['has_variants'] as bool?,
-      /*      category: json['category'] == null
+      variants: json['variants'] as List<dynamic>?,
+      specifications: (json['specifications_translations'] as List<dynamic>?)
+          ?.map(
+            (e) => ProductSpecificationModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
+      attributes: (json['attributes'] as List<dynamic>?)
+          ?.map(
+            (e) => ProductAttributeModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
+      colors: (json['colors'] as List<dynamic>?)
+          ?.map((e) => ProductColorModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      category: json['category'] == null
           ? null
-          : CategoryModel.fromJson(json['category']),*/
+          : CategoryModel.fromJson(json['category'] as Map<String, dynamic>?),
       vendor: _vendorFrom(json),
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
       quantity: (json['quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
-      // Both spellings are in use across endpoints — the `/home-sections`
-      // feed's product items send the British `is_favourite`.
+
+
       isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
       subCategory: CategoryModel.fromJson(json['sub_category'] as Map<String, dynamic>?),
       rating: RatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
     );
   }
 
-  /// The store this product belongs to. Most endpoints nest the whole `vendor`
-  /// object; the `/home-sections` feed sends only `vendor_logo_url`, which is
-  /// all a product card renders — carried through as a logo-only store so the
-  /// card reads it from the same place either way.
+
+
+
+
   static StoreModel? _vendorFrom(Map<String, dynamic> json) {
     final Object? vendor = json['vendor'];
     if (vendor is Map<String, dynamic>) return StoreModel.fromJson(vendor);
@@ -225,15 +316,37 @@ class ProductModel {
         : StoreModel(logoUrl: logoUrl);
   }
 
-  /// Image URLs for the product. Prefers the `images` gallery (sent by the
-  /// product-details endpoint), then the single `primary_image` object (most
-  /// list endpoints send only that), then a bare `image_url` string (the
-  /// `/home-sections` feed's flattened product items) — so list cards always
-  /// have an image whichever shape the endpoint chose.
+
+
+
+
+
+  static List<Map<String, dynamic>>? _mainFeaturesFrom(
+    Map<String, dynamic> json,
+  ) {
+    final dynamic raw = json['main_features'];
+    if (raw == null) return null;
+    final List<dynamic> items = raw is List ? raw : <dynamic>[raw];
+    final List<Map<String, dynamic>> features = <Map<String, dynamic>>[];
+    for (final dynamic item in items) {
+      if (item is Map<String, dynamic>) {
+        features.add(item);
+      } else if (item is String) {
+        features.add(<String, dynamic>{'ar': item, 'en': item});
+      }
+    }
+    return features.isEmpty ? null : features;
+  }
+
+
+
+
+
+
   static List<String> _imagesFrom(Map<String, dynamic> json) {
-    // A gallery entry is an attachment object (`download_url`) on most
-    // endpoints, but the feed sends bare URL strings — subscripting one of
-    // those threw and took the whole parse down with it.
+
+
+
     final List<String> gallery = (json['images'] as List<dynamic>?)
             ?.map((e) => e is Map<String, dynamic> ? e['download_url'] : e)
             .whereType<String>()
@@ -255,11 +368,13 @@ class ProductModel {
       'id': id,
       'product_id': productId,
       'category_id': categoryId,
+      'vendor_id': vendorId,
       'name': name,
       'slug': slug,
       'sku': sku,
       'short_description': shortDescription,
       'description': description,
+      'main_features': mainFeatures,
       'price': price,
       'discount_price': discountPrice,
       'effective_price': effectivePrice,
@@ -267,7 +382,10 @@ class ProductModel {
       'discount_percentage': discountPercentage,
       'compare_price': comparePrice,
       'stock': stock,
+      'min_order_quantity': minOrderQuantity,
+      'unit': unit,
       'in_stock': inStock,
+      'in_cart': inCart,
       'status': status,
       'is_featured': isFeatured,
       'published_at': publishedAt,
@@ -275,11 +393,16 @@ class ProductModel {
       'meta_title': metaTitle,
       'meta_description': metaDescription,
       'search_keywords': searchKeywords,
-      // 'primary_image': primaryImage,
-      // 'image_url': imageUrl,
+
+
       'images': images,
       'has_variants': hasVariants,
-      // 'category': category?.toJson(),
+      'variants': variants,
+      'specifications_translations':
+          specifications?.map((e) => e.toJson()).toList(),
+      'attributes': attributes?.map((e) => e.toJson()).toList(),
+      'colors': colors?.map((e) => e.toJson()).toList(),
+      'category': category?.toJson(),
       'vendor': vendor?.toJson(),
       'created_at': createdAt,
       'updated_at': updatedAt,

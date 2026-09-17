@@ -10,11 +10,13 @@ class UnPrimaryAppButton extends StatelessWidget {
     this.onTap,
     this.buttonPadding = 12,
     this.titleStyle,
+    this.isLoading = false,
   });
 
   final String title;
   final GestureTapCallback? onTap;
   final double? buttonPadding;
+  final bool isLoading;
 
   /// Overrides the default 14/Medium label style.
   final TextStyle? titleStyle;
@@ -23,7 +25,7 @@ class UnPrimaryAppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(buttonPadding!),
@@ -32,14 +34,24 @@ class UnPrimaryAppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: colors.primary500Main, width: 1.5),
         ),
-        child: AutoSizeText(
-          title,
-          textAlign: TextAlign.center,
-          minFontSize: 10,
-          style: (titleStyle ?? AppTextStyles.style14Medium).copyWith(
-            color: colors.primary500Main,
-          ),
-        ),
+        child: isLoading
+            ? SizedBox(
+                height: 20,
+                child: FittedBox(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: colors.primary500Main,
+                  ),
+                ),
+              )
+            : AutoSizeText(
+                title,
+                textAlign: TextAlign.center,
+                minFontSize: 10,
+                style: (titleStyle ?? AppTextStyles.style14Medium).copyWith(
+                  color: colors.primary500Main,
+                ),
+              ),
       ),
     );
   }

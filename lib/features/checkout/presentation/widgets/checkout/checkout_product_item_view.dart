@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 class CheckoutProductItemView extends StatelessWidget {
   const CheckoutProductItemView({super.key, this.item});
 
-  /// Draft order line whose data drives this row.
+
   final ProductModel? item;
 
   @override
@@ -63,13 +63,12 @@ class CheckoutProductItemView extends StatelessWidget {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price: '${(item?.discountPrice ?? 0) < 0
-                              ? item?.price
-                              : item?.discountPrice}',
+                          price:
+                              '${formatDouble(item?.discountPrice ?? item?.price)}',
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if ((item?.discountPrice ?? 0) > 0)
+                        if (item?.discountPrice != null)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: '${formatDouble(item?.price)}',

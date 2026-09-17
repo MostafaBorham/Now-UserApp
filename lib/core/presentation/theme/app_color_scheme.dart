@@ -53,35 +53,35 @@ class AppColorScheme {
   Color get outlineVariant => _scheme.outlineVariant;
   Color get scrim => _scheme.scrim;
 
-  // Order-status palette. These Figma hexes have no matching Material
-  // ColorScheme slot — every slot already carries a placeholder color, and the
-  // only free ones (surfaceTint/shadow) feed M3 elevation overlays — so they
-  // are defined here as constants while still being reached through
-  // [BuildContext.colors] like every other color.
+
+
+
+
+
   Color get sky500 => const Color(0xff0EA5E9);
   Color get orange500 => const Color(0xffF59E0B);
   Color get orange100 => const Color(0xffFFEDD4);
   Color get deepOrange400 => const Color(0xffFF7043);
 
-  // Figma `Colors/Red/400`. Used for destructive actions (e.g. the logout
-  // button). Has no matching Material [ColorScheme] slot — the `error` slot is
-  // already shared by other widgets — so it lives here as a constant like the
-  // order-status palette above, still reached through [BuildContext.colors].
+
+
+
+
   Color get red400 => const Color(0xffB91828);
 
-  // Figma `Colors/Red/300 - Main`. The accent red of the app-wide toast
-  // ([AppToast]) — its side borders and the error icon container. Distinct from
-  // both the Material [error] slot and [red400] (the darker destructive red),
-  // and with no matching Material [ColorScheme] slot, so it lives here as a
-  // constant like the order-status palette, still reached through
-  // [BuildContext.colors] like every other color.
+
+
+
+
+
+
   Color get red300Main => const Color(0xffE32B3D);
 
-  // Wallet pending-transaction label color. The chip background and amount reuse
-  // the order-status [orange100]/[orange500] above; only this dark brown-orange
-  // has no close existing color, so it's the sole new constant — like the
-  // order-status palette it has no Material [ColorScheme] slot and is reached
-  // through [BuildContext.colors] like every other color.
+
+
+
+
+
   Color get orange900 => const Color(0xff923E0E);
 }
 

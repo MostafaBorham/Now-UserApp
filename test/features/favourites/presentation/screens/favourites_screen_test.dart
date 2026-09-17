@@ -25,7 +25,7 @@ void main() {
             pageOf<StoreModel>(<StoreModel>[sampleStore(en: 'Corner Shop')]),
           ),
         ),
-        // The category chip row inside each tab: empty, so only "All" shows.
+
         overrideAppCategories(
           AsyncValue<PaginationModel<CategoryModel>>.data(
             pageOf<CategoryModel>(const <CategoryModel>[]),
@@ -43,9 +43,9 @@ void main() {
 
     expect(find.text('products'), findsOneWidget);
     expect(find.text('stores'), findsOneWidget);
-    // The Scaffold is what gives the card InkWells a Material ancestor — its
-    // absence was the "No Material widget found" crash. If it were missing the
-    // build below would have thrown; assert there was no such exception.
+
+
+
     expect(find.byType(Scaffold), findsWidgets);
     expect(find.byType(ProductItem3View), findsWidgets);
     expect(tester.takeException(), isNull);
@@ -60,12 +60,12 @@ void main() {
     );
 
     await tester.tap(find.text('stores'));
-    await tester.pump(); // start the tab transition
-    await tester.pump(const Duration(milliseconds: 500)); // finish it
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
-    // StoreCardView overflows under the fixed-width test font (fits with the
-    // real font). Drain those, asserting each is genuinely an overflow so a real
-    // exception would still fail — same handling as the categories screen test.
+
+
+
     for (dynamic ex = tester.takeException();
         ex != null;
         ex = tester.takeException()) {

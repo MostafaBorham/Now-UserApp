@@ -29,14 +29,14 @@ class CartProductItemView extends ConsumerStatefulWidget {
     this.oldPrice = '10',
     this.newPrice = '10',
     this.initialQuantity = 1,
-    // this.onQuantityChanged,
+
   });
 
-  /// Cart line whose data drives this row. When null, the [productName]/
-  /// [storeName]/[imageUrl]/price placeholder values are shown instead.
+
+
   final ProductModel? product;
 
-  /// Localized vendor name (API translation map) for the store label.
+
   final Map<String, dynamic>? vendorName;
 
   final String productName;
@@ -45,7 +45,7 @@ class CartProductItemView extends ConsumerStatefulWidget {
   final String oldPrice;
   final String newPrice;
   final int initialQuantity;
-  // final ValueChanged<int>? onQuantityChanged;
+
 
   @override
   ConsumerState<CartProductItemView> createState() =>
@@ -58,31 +58,31 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   @override
   void didUpdateWidget(covariant CartProductItemView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // When the shared cart is refreshed (e.g. after a successful update) the
-    // parent passes a new product; keep the displayed quantity in sync with
-    // that server truth.
+
+
+
     final int? newQuantity = widget.product?.quantity;
     if (newQuantity != null && newQuantity != oldWidget.product?.quantity) {
       _quantity = newQuantity;
     }
   }
 
-  /// Pushes [newQuantity] to the server for this cart line. The optimistic
-  /// [_quantity] is already applied by the caller; a failure reverts it.
+
+
   void _updateQuantity(int newQuantity) {
     final int? productId = widget.product?.productId;
     if (productId == null) return;
 
-    // setState(() => _quantity = newQuantity);
-    // widget.onQuantityChanged?.call(newQuantity);
+
+
 
     ref
         .read(updateCartProductProvider(productId).notifier)
         .updateCartProductQuantity(newQuantity);
   }
 
-  /// Applies the server result of a quantity update: refresh the shared cart on
-  /// success, revert the optimistic quantity and surface the error otherwise.
+
+
   void _handleUpdateResult(AsyncValue<CartModel?> state) {
     state.whenOrNull(
       data: (CartModel? cart) {
@@ -173,13 +173,12 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       children: [
                         NewPriceWidget(
                           color: colors.black,
-                          price: '${(widget.product?.discountPrice ?? 0) < 0
-                              ? widget.product?.price
-                              : widget.product?.discountPrice}',
+                          price:
+                              '${formatDouble(widget.product?.discountPrice ?? widget.product?.price)}',
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if ((widget.product?.discountPrice ?? 0) > 0)
+                        if (widget.product?.discountPrice != null)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: '${formatDouble(widget.product?.price)}',

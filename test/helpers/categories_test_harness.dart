@@ -17,36 +17,36 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categ
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 
-/// Shared test harness for the categories widgets.
-///
-/// It reproduces exactly the ambient the widgets expect — `EasyLocalization`
-/// (real bundled translations, forced to English so assertions are stable),
-/// a Riverpod `ProviderScope` for provider overrides, and a themed
-/// `MaterialApp` — without any network or cache. The paginated view-models are
-/// faked so a screen can be driven straight into loading / data / empty / error
-/// without a real repo.
-///
-/// Never call `pumpAndSettle` on these: `AppCachedNetworkImage` and the
-/// shimmers animate forever and would time it out. Use fixed `pump`s.
 
-// ---------------------------------------------------------------------------
-// Setup
-// ---------------------------------------------------------------------------
 
-/// Call once from `setUpAll`. Prepares easy_localization's storage.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Future<void> initCategoriesTestLocalization() async {
   TestWidgetsFlutterBinding.ensureInitialized();
-  // easy_localization reads its saved locale through shared_preferences, whose
-  // platform channel isn't available in tests — install the in-memory mock.
+
+
   SharedPreferences.setMockInitialValues(<String, Object>{});
   await EasyLocalization.ensureInitialized();
 }
 
-/// Loads *no* translations, synchronously. `.tr(key)` then returns the key
-/// itself — deterministic and enough for these tests (which assert on widget
-/// types, not translated copy). Crucially it avoids the real asset-bundle read
-/// that never resolves under the fake test clock, so the child mounts on a
-/// plain `pump()`.
+
+
+
+
+
 class _EmptyAssetLoader extends AssetLoader {
   const _EmptyAssetLoader();
 
@@ -55,14 +55,14 @@ class _EmptyAssetLoader extends AssetLoader {
       <String, dynamic>{};
 }
 
-// ---------------------------------------------------------------------------
-// Pumping
-// ---------------------------------------------------------------------------
 
-/// The app's portrait design size (see `core/presentation/responsive`). Widget
-/// tests default to an 800×600 landscape surface, which doesn't match a phone
-/// layout and provokes spurious overflows — pin every pump to the real size and
-/// auto-reset afterwards.
+
+
+
+
+
+
+
 void _useDesignSurface(WidgetTester tester) {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
@@ -70,8 +70,8 @@ void _useDesignSurface(WidgetTester tester) {
   addTearDown(tester.view.resetDevicePixelRatio);
 }
 
-/// Pumps [child] inside localization + a provider scope + a themed app.
-/// Full screens bring their own Scaffold, so pass `useScaffold: false` for them.
+
+
 Future<void> pumpCategoriesWidget(
   WidgetTester tester,
   Widget child, {
@@ -88,10 +88,10 @@ Future<void> pumpCategoriesWidget(
   await _settleLocalization(tester);
 }
 
-/// Pumps a full [screen] as the home route of a real `go_router`, so the
-/// go_router context extensions the screens use (`context.canPop()`,
-/// `context.pushNamed`) resolve. A stub `category-details` route is registered
-/// so a card tap navigates instead of throwing.
+
+
+
+
 Future<void> pumpCategoriesScreen(
   WidgetTester tester,
   Widget screen, {
@@ -118,10 +118,10 @@ Future<void> pumpCategoriesScreen(
   await _settleLocalization(tester);
 }
 
-/// Pumps [sheet] behind a `go_router` on a *pushed* route (so `context.pop()`
-/// inside the sheet has somewhere to go), then navigates to it. After this
-/// returns, [sheet] is on screen and popping it lands back on the `__home__`
-/// marker.
+
+
+
+
 Future<void> pumpSheetViaRouter(
   WidgetTester tester,
   Widget sheet, {
@@ -156,9 +156,9 @@ Future<void> pumpSheetViaRouter(
   await _settleLocalization(tester);
 }
 
-/// Flushes the (synchronously-resolved) translation load so EasyLocalization
-/// mounts its child. A few plain `pump`s are enough — no real async, and
-/// `pumpAndSettle` is unusable here because the shimmers animate forever.
+
+
+
 Future<void> _settleLocalization(WidgetTester tester) async {
   await tester.pump();
   await tester.pump();
@@ -205,9 +205,9 @@ Widget _localizedApp({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Provider overrides (faked view-models — no repo, no network)
-// ---------------------------------------------------------------------------
+
+
+
 
 Override overrideAppCategories(
   AsyncValue<PaginationModel<CategoryModel>> state,
@@ -219,8 +219,8 @@ Override overrideAppCategories(
 Override overrideCategoryProducts(
   AsyncValue<PaginationModel<ProductModel>> state,
 ) =>
-    // getCategoryProductsProvider is a family: override every instance (whatever
-    // its CategoryProductsArgs) with a fake seeded to [state].
+
+
     getCategoryProductsProvider.overrideWith(
       (Ref ref, CategoryProductsArgs args) =>
           _FakeCategoryProductsVM(state, args),
@@ -229,8 +229,8 @@ Override overrideCategoryProducts(
 Override overrideCategoryStores(
   AsyncValue<PaginationModel<StoreModel>> state,
 ) =>
-    // getCategoryStoresProvider is a family: override every instance (whatever
-    // its CategoryStoresArgs) with a fake seeded to [state].
+
+
     getCategoryStoresProvider.overrideWith(
       (Ref ref, CategoryStoresArgs args) => _FakeCategoryStoresVM(state, args),
     );
@@ -256,10 +256,8 @@ class _FakeCategoryProductsVM extends GetCategoryProductsViewModel {
     state = initial;
   }
 
-  @override
   Future<void> loadFirstPage() async {}
 
-  @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) =>
       throw UnimplementedError('fake view-model must not fetch');
 }
@@ -280,9 +278,9 @@ class _FakeCategoryStoresVM extends GetCategoryStoresViewModel {
       throw UnimplementedError('fake view-model must not fetch');
 }
 
-// ---------------------------------------------------------------------------
-// Fixtures
-// ---------------------------------------------------------------------------
+
+
+
 
 CategoryModel sampleCategory({
   int id = 1,
@@ -309,7 +307,7 @@ StoreModel sampleStore({int id = 1, String en = 'Store'}) => StoreModel(
       name: <String, dynamic>{'en': en, 'ar': en},
     );
 
-/// A single loaded page carrying [items] (no further pages by default).
+
 PaginationModel<T> pageOf<T>(List<T> items, {bool hasMore = false}) =>
     PaginationModel<T>(
       currentPage: 1,

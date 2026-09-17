@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-/// A round − / + step button: a 16px glyph on a neutral chip.
+
 class _StepButton extends StatelessWidget {
   const _StepButton({required this.icon, required this.onTap});
 
@@ -45,7 +45,7 @@ class _FullWidthCounterViewState extends State<FullWidthCounterView> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     currentValue = widget.initialValue;
   }

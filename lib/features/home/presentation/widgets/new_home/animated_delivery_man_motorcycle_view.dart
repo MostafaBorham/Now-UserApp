@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';

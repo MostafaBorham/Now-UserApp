@@ -23,14 +23,16 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product
 /// Every screen that changes a cart line routes its success here, so the two
 /// cases cannot drift apart again. The product's name and image are read off
 /// the fresh [cart] line, so callers need nothing but the id.
-/// [onContinueShopping] is forwarded to the sheet — only screens that need to
-/// step back out of the way pass it.
+/// [onContinueShopping] and [onViewCart] are forwarded to the sheet — only
+/// screens that need to step back out of the way, or to land the shopper
+/// somewhere other than a pushed cart screen, pass them.
 void showCartUpdateFeedback(
   BuildContext context,
   WidgetRef ref, {
   required int productId,
   required CartModel cart,
   VoidCallback? onContinueShopping,
+  VoidCallback? onViewCart,
 }) {
   final UpdateCartProductViewModel vm = ref.read(
     updateCartProductProvider(productId).notifier,
@@ -57,6 +59,7 @@ void showCartUpdateFeedback(
     productName: line == null ? '' : context.getLocalizedApiText(line.name),
     productImageUrl: line?.images?.firstOrNull ?? '',
     onContinueShopping: onContinueShopping,
+    onViewCart: onViewCart,
   );
 }
 
@@ -81,11 +84,16 @@ String cartUpdateMessageKey({
 /// one place. [onContinueShopping] runs after the sheet closes; the default —
 /// staying put — suits any screen the shopper can keep browsing from, so only
 /// screens that need to step back (product details) pass their own.
+///
+/// [onViewCart] likewise overrides where "view cart" lands. The default pushes
+/// the cart screen, which is right from a list; a screen that would rather
+/// unwind to the cart tab of the main shell passes its own.
 Future<void> showSuccessAddToCartSheet(
   BuildContext context, {
   required String productName,
   required String productImageUrl,
   VoidCallback? onContinueShopping,
+  VoidCallback? onViewCart,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -100,6 +108,10 @@ Future<void> showSuccessAddToCartSheet(
       productImageUrl: productImageUrl,
       onViewCart: () {
         Navigator.of(sheetContext).pop();
+        if (onViewCart != null) {
+          onViewCart();
+          return;
+        }
         context.pushNamed(AppRoutes.cartScreen);
       },
       onContinueShopping: () {

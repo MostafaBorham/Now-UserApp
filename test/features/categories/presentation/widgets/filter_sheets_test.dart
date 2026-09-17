@@ -41,11 +41,11 @@ void main() {
       );
 
       await tester.tap(find.byType(PrimaryAppButton));
-      await tester.pump(); // start the pop
-      await tester.pump(const Duration(milliseconds: 500)); // finish the route transition
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(applied, isTrue);
-      // Popped back to the launcher route; the sheet's slot is gone.
+
       expect(find.text('__home__'), findsOneWidget);
       expect(find.text('__filter_slot__'), findsNothing);
     });
@@ -66,7 +66,7 @@ void main() {
       await tester.pump();
 
       expect(reset, isTrue);
-      // Still on the sheet.
+
       expect(find.text('__filter_slot__'), findsOneWidget);
     });
   });
