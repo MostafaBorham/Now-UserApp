@@ -474,4 +474,9 @@ abstract class LangKeys {
   static const String discardChangesKey = 'discardChanges';
   static const String discardChangesMessageKey = 'discardChangesMessage';
   static const String discardKey = 'discard';
+
+  // Home - live orders section
+  static const String liveOrdersKey = 'liveOrders';
+  static const String preparingKey = 'preparing';
+  static const String onTheWayKey = 'onTheWay';
 }

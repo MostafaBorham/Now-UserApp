@@ -402,6 +402,11 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get language =>
       const SvgGenImage('assets/media/images/svg/language.svg');
 
+  /// File path: assets/media/images/svg/live-order-card-background.svg
+  SvgGenImage get liveOrderCardBackground => const SvgGenImage(
+    'assets/media/images/svg/live-order-card-background.svg',
+  );
+
   /// File path: assets/media/images/svg/live_chat.svg
   SvgGenImage get liveChat =>
       const SvgGenImage('assets/media/images/svg/live_chat.svg');
@@ -716,6 +721,7 @@ class $AssetsMediaImagesSvgGen {
     infoBlue,
     infoRed,
     language,
+    liveOrderCardBackground,
     liveChat,
     locationIcon,
     logoHorizontal,

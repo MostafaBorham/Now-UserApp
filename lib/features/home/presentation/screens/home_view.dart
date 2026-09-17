@@ -23,6 +23,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_banner_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_featured_stores_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_live_orders_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
@@ -254,6 +255,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         searchFieldKey: _searchFieldKey,
         showCategories: showCategories,
       ),
+      const HomeLiveOrdersSectionView(),
       if (offersSection != null && offersSection.offers.isNotEmpty)
         HomeOffersSectionView(
           title: offersSection.title,
