@@ -6,25 +6,34 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
 
-/// The `featured_offers` section: an auto-scrolling carousel of admin-curated
-/// offers. Each card shows the offer image and, on tap, navigates by its `kind`
-/// (see [_onOfferTap]).
-class HomeOffersSectionView extends StatelessWidget {
-  const HomeOffersSectionView({super.key, this.title, required this.offers});
+/// The `special offers` section: the admin-curated auto-scrolling offers
+/// carousel and the header banner carousel stacked over the shared
+/// [Assets.media.images.svg.homeOffersBackground] starburst, which stretches to
+/// the full height of their column.
+class HomeSpecialOffersSectionView extends StatelessWidget {
+  const HomeSpecialOffersSectionView({
+    super.key,
+    this.title,
+    this.offers = const <HomeOfferModel>[],
+    this.showTopBanner = false,
+  });
 
   /// Section title as the feed's `{ar, en}` map; falls back to a generic
   /// "Special offers" label when the admin left it empty.
   final Map<String, dynamic>? title;
   final List<HomeOfferModel> offers;
+  final bool showTopBanner;
 
   @override
   Widget build(BuildContext context) {
-    if (offers.isEmpty) return const SizedBox.shrink();
+    if (offers.isEmpty && !showTopBanner) return const SizedBox.shrink();
 
     final AppColorScheme colors = context.colors;
     final String localizedTitle = context.getLocalizedApiText(title);
@@ -32,17 +41,16 @@ class HomeOffersSectionView extends StatelessWidget {
         ? localizedTitle
         : LangKeys.specialOffersKey.tr();
 
-    // The decorative starburst background now lives behind the top banner
-    // ([HomeTopBannerSectionView]), not here.
     return LayoutBuilder(
       builder: (context, con) {
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(start: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 12,
-            children: [
-              Text(
+        final double offerCardHeight = con.maxWidth * 0.4;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 12,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 10.0),
+              child: Text(
                 heading,
                 style: TextStyle(
                   fontSize: con.maxWidth * 0.05,
@@ -50,12 +58,41 @@ class HomeOffersSectionView extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              SizedBox(
-                height: con.maxWidth * 0.4,
-                child: _AutoScrollOffersList(offers: offers),
-              ),
-            ],
-          ),
+            ),
+            Stack(
+              children: [
+                Positioned(
+                  top: offerCardHeight * 2 / 3,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Assets.media.images.svg.homeOffersBackground.svg(
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 20,
+                    children: [
+                      if (offers.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            start: 10.0,
+                          ),
+                          child: SizedBox(
+                            height: offerCardHeight,
+                            child: _AutoScrollOffersList(offers: offers),
+                          ),
+                        ),
+                      if (showTopBanner) const HomeTopBannerSectionView(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );

@@ -26,28 +26,10 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_live_orders_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_pinned_search_bar.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -62,13 +44,8 @@ class _HomeViewState extends ConsumerState<HomeView>
   final GlobalKey _searchFieldKey = GlobalKey();
   final ValueNotifier<bool> _pinned = ValueNotifier<bool>(false);
 
-
-
-
   final GlobalKey _pinnedBarKey = GlobalKey();
   final ValueNotifier<double> _searchBarHeight = ValueNotifier<double>(0);
-
-
 
   late final AnimationController _dropController = AnimationController(
     vsync: this,
@@ -80,16 +57,12 @@ class _HomeViewState extends ConsumerState<HomeView>
     reverseCurve: Curves.easeIn,
   );
 
-
-
   double? _pinThreshold;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -98,12 +71,6 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
   void _loadFeed() {
-
-
-
-
-
-
     final bool isGuest =
         ref.read(authSessionProvider).sessionType == SessionType.guest;
     final AddressModel? location = isGuest
@@ -119,9 +86,6 @@ class _HomeViewState extends ConsumerState<HomeView>
           lng: double.tryParse(location?.longitude ?? ''),
         );
   }
-
-
-
 
   void _refreshHome() {
     _loadFeed();
@@ -148,10 +112,6 @@ class _HomeViewState extends ConsumerState<HomeView>
     if (shouldPin != _pinned.value) {
       _pinned.value = shouldPin;
 
-
-
-
-
       if (shouldPin) {
         _dropController.forward();
       } else {
@@ -166,7 +126,6 @@ class _HomeViewState extends ConsumerState<HomeView>
         ?.findRenderObject();
     if (box == null || !box.attached) return null;
 
-
     final double reveal = RenderAbstractViewport.of(
       box,
     ).getOffsetToReveal(box, 0.0).offset;
@@ -174,7 +133,6 @@ class _HomeViewState extends ConsumerState<HomeView>
     _pinThreshold = (reveal - topInset).clamp(0.0, double.infinity);
     return _pinThreshold;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,20 +144,12 @@ class _HomeViewState extends ConsumerState<HomeView>
       orElse: () => const <HomeSectionModel>[],
     );
 
-
-
-
-
     final bool isConnected = ref.watch(isConnectedProvider).valueOrNull ?? true;
-
 
     ref.listen<AsyncValue<bool>>(isConnectedProvider, (
       AsyncValue<bool>? previous,
       AsyncValue<bool> next,
     ) {
-
-
-
       if (previous?.valueOrNull == false && next.valueOrNull == true) {
         _refreshHome();
       }
@@ -224,9 +174,6 @@ class _HomeViewState extends ConsumerState<HomeView>
     // Only cue when there is content to show (cached or live); with no cache the
     // feed errors and the existing _FeedErrorRetry covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;
-
-
-
 
     final Map<String, HomeSectionModel> byType = <String, HomeSectionModel>{};
     final List<HomeSectionModel> categorySections = <HomeSectionModel>[];
@@ -256,12 +203,13 @@ class _HomeViewState extends ConsumerState<HomeView>
         showCategories: showCategories,
       ),
       const HomeLiveOrdersSectionView(),
-      if (offersSection != null && offersSection.offers.isNotEmpty)
-        HomeOffersSectionView(
-          title: offersSection.title,
-          offers: offersSection.offers,
+      if ((offersSection != null && offersSection.offers.isNotEmpty) ||
+          showTopBanner)
+        HomeSpecialOffersSectionView(
+          title: offersSection?.title,
+          offers: offersSection?.offers ?? const <HomeOfferModel>[],
+          showTopBanner: showTopBanner,
         ),
-      if (showTopBanner) const HomeTopBannerSectionView(),
       const HomeMostPopularBrandsView(),
       if (featuredStoresSection != null &&
           featuredStoresSection.stores.isNotEmpty)
@@ -353,9 +301,6 @@ class _HomeViewState extends ConsumerState<HomeView>
           ),
         ),
 
-
-
-
         if (showSavedContentCue)
           Positioned(
             left: 0,
@@ -368,9 +313,6 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 }
 
-
-
-
 class _ProductsByCategorySection extends StatelessWidget {
   const _ProductsByCategorySection({required this.section});
 
@@ -381,7 +323,6 @@ class _ProductsByCategorySection extends StatelessWidget {
     final CategoryModel category = section.category ?? const CategoryModel();
 
     if (section.displayDesign == 'color_with_image') {
-
       return HomeAppCategoryWithLogoSectionView(
         categoryModel: category,
         productModels: section.products,
@@ -401,10 +342,6 @@ class _ProductsByCategorySection extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 class _OfflineSavedContentCue extends StatelessWidget {
   const _OfflineSavedContentCue({required this.onRetry});
@@ -447,8 +384,6 @@ class _OfflineSavedContentCue extends StatelessWidget {
     );
   }
 }
-
-
 
 class _FeedErrorRetry extends StatelessWidget {
   const _FeedErrorRetry({required this.onRetry});
