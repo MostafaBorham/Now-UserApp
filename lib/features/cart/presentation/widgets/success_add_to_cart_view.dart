@@ -107,15 +107,19 @@ Future<void> showSuccessAddToCartSheet(
       productName: productName,
       productImageUrl: productImageUrl,
       onViewCart: () {
-        Navigator.of(sheetContext).pop();
+        sheetContext.pop();
         if (onViewCart != null) {
           onViewCart();
           return;
         }
+        // `context` belongs to whoever opened the sheet — a product card that
+        // may well have scrolled out of its list while the sheet was up, so it
+        // cannot be navigated from without checking.
+        if (!context.mounted) return;
         context.pushNamed(AppRoutes.cartScreen);
       },
       onContinueShopping: () {
-        Navigator.of(sheetContext).pop();
+        sheetContext.pop();
         onContinueShopping?.call();
       },
     ),
@@ -216,7 +220,9 @@ class _SuccessAddToCartViewState extends State<SuccessAddToCartView>
                 Text(
                   LangKeys.inTheShoppingCartKey.tr(),
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.style20Bold.copyWith(color: colors.black),
+                  style: AppTextStyles.style20Bold.copyWith(
+                    color: colors.black,
+                  ),
                 ),
               ],
             ),

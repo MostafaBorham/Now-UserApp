@@ -5,12 +5,6 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-
-
-
-
-
-
 class AnimatedCartCounterView extends StatelessWidget {
   const AnimatedCartCounterView({
     super.key,
@@ -25,8 +19,6 @@ class AnimatedCartCounterView extends StatelessWidget {
   final int counter;
   final bool isLoading;
 
-
-
   final bool canIncrement;
   final VoidCallback? onInc;
   final VoidCallback? onDec;
@@ -36,9 +28,9 @@ class AnimatedCartCounterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-
-
-
+    // Swallows taps that miss the three icons. The counter sits on top of a
+    // product card whose own onTap opens product details, so without this a
+    // near-miss navigates away mid-edit.
     return GestureDetector(
       onTap: () {},
       behavior: HitTestBehavior.opaque,
@@ -60,9 +52,6 @@ class AnimatedCartCounterView extends StatelessWidget {
                 color: colors.white.withValues(alpha: canIncrement ? 1 : 0.4),
               ),
             ),
-
-
-
 
             Stack(
               alignment: Alignment.center,

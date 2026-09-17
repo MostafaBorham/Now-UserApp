@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
@@ -46,7 +50,6 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
     this.productQuantity = 0,
     this.stock,
   });
-
 
   /// Product this control manages in the cart. `null` disables backend
   /// integration.
@@ -138,7 +141,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
             canIncrement: canIncrement,
             onInc: canIncrement ? () => _updateQuantity(counter + 1) : null,
             onDec: () => _decrement(counter),
-            onDelete: () => _updateQuantity(0),
+            onDelete: _confirmRemove,
           )
         : InkWell(
             onTap: () => setState(() => _isRotate = !_isRotate),
@@ -153,13 +156,21 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
                 // the product is not in the cart yet — a single tap is then
                 // already an add. With units already in the cart it only
                 // reveals the counter, and the request is left to the
-                // counter's own icons. With no stock left there is nothing to
-                // add, so the counter just collapses back to the button.
-                if (counter < 1) {
-                  canIncrement ? _updateQuantity(1) : _collapse();
-                } else {
+                // counter's own icons.
+                if (counter >= 1) {
                   _startCollapseTimer();
+                  return;
                 }
+
+                if (canIncrement) {
+                  _updateQuantity(1);
+                  return;
+                }
+
+                // Nothing left to add. This used to rotate open and collapse
+                // again in silence, which reads as a dead button — say why.
+                AppToast.showError(context, LangKeys.outOfStockKey.tr());
+                _collapse();
               },
             ),
           );
@@ -168,7 +179,40 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   /// One unit less than [counter], floored at 1 — dropping the last unit is the
   /// delete icon's job. The counter view only offers this icon from 2 upwards
   /// anyway, so the floor is just a safety net.
-  void _decrement(int counter) => _updateQuantity(counter > 1 ? counter - 1 : 1);
+  void _decrement(int counter) =>
+      _updateQuantity(counter > 1 ? counter - 1 : 1);
+
+  /// Asks before dropping the last unit, matching the cart screen's own
+  /// stepper — a removal is not something to do on a mistaken tap.
+  ///
+  /// Local-only cards ([_isIntegrated] false) have nothing on the server to
+  /// remove, so they just reset.
+  void _confirmRemove() {
+    if (!_isIntegrated) {
+      _updateQuantity(0);
+      return;
+    }
+
+    // The counter must stay open behind the dialog, or confirming would leave
+    // nothing to report back to.
+    _collapseTimer?.cancel();
+
+    AppCustomAlertDialog.show(
+      context,
+      (BuildContext dialogContext) => AppCustomAlertDialog(
+        title: LangKeys.removeItemFromCartKey.tr(),
+        message: LangKeys.removeItemFromCartConfirmationKey.tr(),
+        confirmLabel: LangKeys.deleteKey.tr(),
+        onConfirm: () {
+          dialogContext.pop();
+          _updateQuantity(0);
+        },
+      ),
+    ).then((_) {
+      // Dismissed without confirming: let the counter go back to idling shut.
+      if (mounted) _startCollapseTimer();
+    });
+  }
 
   /// Asks the server to set this product's cart line to [newQuantity] (`0`
   /// removes it). The counter is deliberately left untouched — it only moves
@@ -185,7 +229,10 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
     ref
         .read(updateCartProductProvider(widget.productId!).notifier)
-        .updateCartProductQuantity(newQuantity);
+        .updateCartProductQuantity(
+          newQuantity,
+          seededQuantity: widget.productQuantity,
+        );
   }
 
   /// Applies a settled update: a success collapses the counter (or keeps it open
@@ -223,7 +270,9 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         // confirmed quantity. Same rule as a success: with no quantity left to
         // show there is no point keeping the counter open — e.g. a failed first
         // add, where the quantity is still 0.
-        final int current = _quantityFrom(ref.read(getCartProvider).valueOrNull);
+        final int current = _quantityFrom(
+          ref.read(getCartProvider).valueOrNull,
+        );
         current < 1 ? _collapse() : _startCollapseTimer();
       },
     );
