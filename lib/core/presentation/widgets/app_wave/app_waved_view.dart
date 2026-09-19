@@ -24,6 +24,7 @@ class AppWavedView extends StatefulWidget {
     this.bodyPadding,
     this.onCartTap,
     this.scrollController, this.leading,
+    this.actions,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -34,6 +35,7 @@ class AppWavedView extends StatefulWidget {
   final bool? canPop;
   final Widget body;
   final Widget? leading;
+  final List<Widget>? actions;
   final EdgeInsets? bodyPadding;
   final ScrollController? scrollController;
 
@@ -159,11 +161,14 @@ class _AppWavedViewState extends State<AppWavedView> {
                             ),
                     ),
                   ),
-                  widget.hasCartIcon || widget.hasSupportIcon
+                  widget.hasCartIcon ||
+                          widget.hasSupportIcon ||
+                          (widget.actions?.isNotEmpty ?? false)
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
                           children: [
+                            ...?widget.actions,
                             if (widget.hasSupportIcon)
                               CircularSupportIcon(
                                 size: screenSize.width * 0.05,

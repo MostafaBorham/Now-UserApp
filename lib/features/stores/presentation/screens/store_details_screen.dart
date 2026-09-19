@@ -5,11 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
@@ -24,8 +26,12 @@ import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_details_vm.dart';
 
 class StoreDetailsScreen extends ConsumerStatefulWidget {
-  const StoreDetailsScreen({super.key, required this.storeId});
+  const StoreDetailsScreen({super.key, required this.storeId, this.storeName});
   final int storeId;
+
+  /// Localized name passed from the tapped store, shown in the app bar while
+  /// the details are loading and replaced by the fetched name on response.
+  final Map<String, dynamic>? storeName;
 
   @override
   ConsumerState<StoreDetailsScreen> createState() => _StoreDetailsScreenState();
@@ -170,6 +176,16 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
         loadAppBarTitle: storeDetailsState.isLoading,
         hasCartIcon: true,
+        actions: storeDetailsState.valueOrNull == null
+            ? null
+            : [
+                CircularAppFavouriteIcon(
+                  size: MediaQuery.sizeOf(context).width * 0.05,
+                  favouriteType: FavouriteType.store,
+                  itemId: storeDetailsState.valueOrNull!.id,
+                  isFavourite: storeDetailsState.valueOrNull!.isFavorite ?? false,
+                ),
+              ],
         // Tapping the cart drops every route pushed on top of the main screen
         // (store details and anything in between) and switches the main screen's
         // bottom nav to the cart tab (index 2) instead of pushing a new cart
