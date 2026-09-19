@@ -26,10 +26,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card
 /// store list from `getAllStoresProvider` (`/api/v1/stores`); **every category
 /// tab** pages that category's stores from `getCategoryStoresProvider`.
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
-  const HomeAllStoresSectionView({
-    super.key,
-    this.pinTop,
-  });
+  const HomeAllStoresSectionView({super.key, this.pinTop});
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
@@ -172,10 +169,7 @@ class _HomeAllStoresSectionViewState
 /// One tab's store list, fetched on demand: [category]'s stores, or — with no
 /// category, i.e. the "All" tab — the unfiltered store list.
 class HomeStoresListView extends ConsumerWidget {
-  const HomeStoresListView({
-    super.key,
-    this.category,
-  });
+  const HomeStoresListView({super.key, this.category});
 
   final CategoryModel? category;
 
