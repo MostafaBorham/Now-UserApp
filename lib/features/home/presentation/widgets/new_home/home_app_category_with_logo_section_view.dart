@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/arabic_kashida_formatter.dart';
@@ -9,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// A `products_by_category` section in its `color_with_image` design: the
 /// category name and the section's own artwork over a wave washed in
@@ -17,7 +19,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 /// Positions/sizes come from the Figma frame (390pt wide, node 7137:26670) and
 /// are scaled by the available width so the section keeps the design's
 /// proportions on any device.
-class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
+class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
   const HomeAppCategoryWithLogoSectionView({
     super.key,
     required this.categoryModel,
@@ -45,7 +47,7 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
   static const double _designWidth = 390;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color accent = primaryColor ?? colors.error;
     final String image = imageUrl ?? '';
@@ -145,8 +147,15 @@ class HomeAppCategoryWithLogoSectionView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: productModels.length,
                   separatorBuilder: (context, index) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) =>
-                      ProductItem3View(product: productModels[index]),
+                  itemBuilder: (context, index) => ProductItem3View(
+                    product: productModels[index],
+                    onFavouriteChanged: (bool isFavourite) => ref
+                        .read(getHomeSectionsProvider.notifier)
+                        .updateProductFavourite(
+                          productModels[index].id,
+                          isFavourite,
+                        ),
+                  ),
                 ),
               ),
             ],

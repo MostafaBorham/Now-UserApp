@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -10,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_list_item.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// The `nearby_stores` section: a horizontal list of the stores closest to the
 /// customer, each card tappable through to its store details.
@@ -18,7 +20,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 /// device coordinates the Home tab sends, and for a logged-in user from the
 /// address on their profile (see `HomeView._loadFeed`). This widget only
 /// renders whatever order it is handed.
-class BestNearbyStoresSection extends StatelessWidget {
+class BestNearbyStoresSection extends ConsumerWidget {
   const BestNearbyStoresSection({super.key, this.title, required this.stores});
 
   /// Section title as the feed's `{ar, en}` map — the backend owns section
@@ -29,7 +31,7 @@ class BestNearbyStoresSection extends StatelessWidget {
   final List<StoreModel> stores;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final String localizedTitle = context.getLocalizedApiText(title);
     final String heading = localizedTitle.isNotEmpty
@@ -64,7 +66,12 @@ class BestNearbyStoresSection extends StatelessWidget {
                           AppRoutes.storeDetailsScreen,
                           extra: store.id,
                         ),
-                  child: BestNearbyStoresListItem(store: store),
+                  child: BestNearbyStoresListItem(
+                    store: store,
+                    onFavouriteChanged: (bool isFavourite) => ref
+                        .read(getHomeSectionsProvider.notifier)
+                        .updateStoreFavourite(store.id, isFavourite),
+                  ),
                 );
               },
             ),

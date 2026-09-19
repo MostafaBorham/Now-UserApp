@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/featured_stores_controller.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_featured_store_item.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// The `featured_stores` section: a full-width carousel with one page per
 /// store, each page showing that store's header and a 2×2 grid of its products
@@ -37,6 +38,9 @@ class HomeFeaturedStoresView extends ConsumerWidget {
         child: HomeFeaturedStoreItem(
           store: visible[index],
           storesCount: visible.length,
+          onProductFavouriteChanged: (int? productId, bool isFavourite) => ref
+              .read(getHomeSectionsProvider.notifier)
+              .updateProductFavourite(productId, isFavourite),
         ),
       ),
       options: CarouselOptions(
