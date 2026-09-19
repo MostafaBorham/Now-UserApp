@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 
 class AllStoresScreen extends ConsumerStatefulWidget {
   const AllStoresScreen({super.key});
@@ -111,14 +112,18 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                 onTap: (index) {
                   final CategoryModel? category =
                       _categoryAt(index, categories);
+                  final String? searchKey =
+                      filter.search.isEmpty ? null : filter.search;
                   // Drop the tab's previously loaded stores so opening it
                   // always refetches instead of showing a cached list.
-                  if (category != null) {
+                  if (category == null) {
+                    ref.invalidate(getAllStoresProvider(searchKey));
+                  } else {
                     ref.invalidate(
                       getCategoryStoresProvider((
                         categorySlug: category.slug ?? '',
                         categoryId: null,
-                        searchKey: filter.search.isEmpty ? null : filter.search,
+                        searchKey: searchKey,
                       )),
                     );
                   }

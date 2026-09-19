@@ -6,13 +6,18 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/stores/data/repo/stores_repo.dart';
 
-final getAllStoresProvider = StateNotifierProvider.autoDispose<
-    GetAllStoresViewModel, AsyncValue<PaginationModel<StoreModel>>>(
-  (Ref ref) => GetAllStoresViewModel()..loadFirstPage(),
+final getAllStoresProvider = StateNotifierProvider.autoDispose.family<
+    GetAllStoresViewModel, AsyncValue<PaginationModel<StoreModel>>, String?>(
+  (Ref ref, String? searchKey) =>
+      GetAllStoresViewModel(searchKey: searchKey)..loadFirstPage(),
 );
 
 class GetAllStoresViewModel extends PaginatedViewModel<StoreModel> {
+  GetAllStoresViewModel({this.searchKey});
+
   final StoresRepo _repo = StoresRepo();
+
+  final String? searchKey;
 
   void updateStoreFavourite(int? storeId, bool isFavourite) {
     if (storeId == null) return;
@@ -24,7 +29,7 @@ class GetAllStoresViewModel extends PaginatedViewModel<StoreModel> {
 
   @override
   Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) {
-    return _repo.getStores(page: page);
+    return _repo.getStores(page: page, search: searchKey);
   }
 
   @override

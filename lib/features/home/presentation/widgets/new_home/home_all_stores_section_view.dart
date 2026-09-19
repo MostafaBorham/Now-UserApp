@@ -87,7 +87,7 @@ class _HomeAllStoresSectionViewState
           // Drop the tab's previously loaded stores so opening it always
           // refetches from the server instead of showing a cached list.
           if (index == 0) {
-            ref.invalidate(getAllStoresProvider);
+            ref.invalidate(getAllStoresProvider(null));
           } else {
             final CategoryModel category = categories[index - 1];
             ref.invalidate(
@@ -197,7 +197,7 @@ class HomeStoresListView extends ConsumerWidget {
 
     if (category == null) {
       final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
-        getAllStoresProvider,
+        getAllStoresProvider(null),
       );
       return state.when(
         loading: () => _StoresList(
@@ -207,7 +207,7 @@ class HomeStoresListView extends ConsumerWidget {
         error: (Object error, _) => ServerConnectionErrorWidget(
           message: error is String ? error : null,
           onRetry: () =>
-              ref.read(getAllStoresProvider.notifier).loadFirstPage(),
+              ref.read(getAllStoresProvider(null).notifier).loadFirstPage(),
         ),
         data: (PaginationModel<StoreModel> page) {
           final List<StoreModel> stores = page.data.take(itemCount).toList();
@@ -217,7 +217,7 @@ class HomeStoresListView extends ConsumerWidget {
             itemBuilder: (context, index) => StoreCardView(
               store: stores[index],
               onFavouriteChanged: (bool isFavourite) => ref
-                  .read(getAllStoresProvider.notifier)
+                  .read(getAllStoresProvider(null).notifier)
                   .updateStoreFavourite(stores[index].id, isFavourite),
             ),
           );
