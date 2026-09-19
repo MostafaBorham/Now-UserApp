@@ -42,8 +42,9 @@ The **Settings/Profile** tab is also open — it's the entry point to the gated 
 |---|---|
 | Switch to Favourites / Orders bottom-nav tab | `lib/features/main/presentation/screens/main_screen.dart` (`_loginRequiredTabs = {1, 3}`) |
 | Add / remove favourite (heart icon) | `lib/core/presentation/widgets/favourites/circular_app_favourite_icon.dart` |
+| Checkout (bottom button and per-store pill) | `lib/features/cart/presentation/widgets/cart/cart_view.dart` (`_checkout`) |
 
-Adding to cart and opening the cart are **not** gated (see Policy). Login is enforced when the user leaves the cart for `checkout` (that route is gated).
+Adding to cart and opening the cart are **not** gated (see Policy). Login is enforced when the user leaves the cart for `checkout`. The `checkout` **route** is gated too, but that redirect alone is not enough: `_checkout` drafts the order first and pushes only on success, so a guest would fail the draft and never reach the route — hence the action-level gate.
 
 ## 5. Gaps found and closed (this audit)
 

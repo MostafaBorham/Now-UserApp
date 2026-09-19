@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_empty_view.dart';
@@ -70,6 +71,11 @@ class _CartViewState extends ConsumerState<CartView> {
   /// that single store via the dedicated `checkout/vendor/{id}/preview` endpoint
   /// (its own pill). On failure the reason is shown in a toast.
   Future<void> _checkout({int? vendorId}) async {
+    // Guests are bounced before the draft is drafted. The `checkout` route is
+    // login-gated, but drafting first and pushing only on success means a guest
+    // never reaches that redirect — the request just fails with a toast.
+    if (redirectGuestToLogin(context)) return;
+
     final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
 
     final String? error = vendorId == null
