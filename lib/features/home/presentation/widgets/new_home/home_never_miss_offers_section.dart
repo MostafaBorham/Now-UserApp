@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -6,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/lists/infinite_auto_scroll_list.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 /// The `flash_offers` section: an endlessly scrolling strip of the most deeply
 /// discounted products, each card owning its own favourite and cart actions.
@@ -15,7 +17,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 /// section though: [backgroundColor] washes the top of the strip and
 /// [viewAllTextColor] / [viewAllUnderlineColor] paint the "See All" chip. Each
 /// falls back to the theme colour the design shipped with.
-class HomeNeverMissOffersSection extends StatelessWidget {
+class HomeNeverMissOffersSection extends ConsumerWidget {
   const HomeNeverMissOffersSection({
     super.key,
     required this.products,
@@ -30,7 +32,7 @@ class HomeNeverMissOffersSection extends StatelessWidget {
   final Color? viewAllUnderlineColor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color background = backgroundColor ?? colors.inverseSurface;
     final Color viewAllUnderline = viewAllUnderlineColor ?? colors.inverseSurface;
@@ -99,6 +101,12 @@ class HomeNeverMissOffersSection extends StatelessWidget {
                           itemBuilder: (context, index) =>
                               HomeNeverMissOffersItem(
                                 product: products[index],
+                                onFavouriteChanged: (bool isFavourite) => ref
+                                    .read(getHomeSectionsProvider.notifier)
+                                    .updateProductFavourite(
+                                      products[index].id,
+                                      isFavourite,
+                                    ),
                               ),
                         );
                       },

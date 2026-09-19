@@ -13,16 +13,29 @@ import 'package:nowdelivery_user_app/core/utils/di/service_locator.dart';
 import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 
 class AppMap extends StatefulWidget {
-  const AppMap({super.key, this.currentLocation, this.onLocationChanged});
+  const AppMap({
+    super.key,
+    this.currentLocation,
+    this.onLocationChanged,
+    this.resolveDeviceLocationWhenEmpty = true,
+  });
 
   final LatLng? currentLocation;
   final ValueChanged<LatLng>? onLocationChanged;
+
+  /// Whether the map resolves (and so prompts for) the device location on its
+  /// own when [currentLocation] is null. `true` for the add-address flow, which
+  /// should open on the device's position. `false` where a prompt on open is
+  /// unwanted (the home delivery-address sheet): the map then opens on its
+  /// fallback target and only reaches for the device when the current-location
+  /// button is tapped.
+  final bool resolveDeviceLocationWhenEmpty;
 
   @override
   State<AppMap> createState() => _AppMapState();
 }
 
-class _AppMapState extends State<AppMap> {
+class _AppMapState extends State<AppMap> with WidgetsBindingObserver {
   static const LatLng _fallbackTarget = LatLng(30.115508, 31.403403);
   static const double _targetZoom = 16;
   // Fraction of the map's shortest visible side used as the pin width, so the
@@ -46,23 +59,47 @@ class _AppMapState extends State<AppMap> {
   // the (already-building) map.
   bool _mapCreated = false;
   bool _locationResolved = false;
+  bool _awaitingPermissionFromSettings = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _target.value = widget.currentLocation;
     if (_target.value != null) {
       _locationResolved = true;
-    } else {
+    } else if (widget.resolveDeviceLocationWhenEmpty) {
       _resolveDeviceLocation();
+    } else {
+      // No location to open on and device resolution is opted out: reveal the
+      // map on its fallback target with no permission/service prompt.
+      _locationResolved = true;
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _target.dispose();
     _mapController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed ||
+        !_awaitingPermissionFromSettings) {
+      return;
+    }
+    _awaitingPermissionFromSettings = false;
+    _resolveAfterSettingsReturn();
+  }
+
+  Future<void> _resolveAfterSettingsReturn() async {
+    final LocationPermissionStatus status =
+        await LocationManager.currentPermissionStatus();
+    if (!mounted || status != LocationPermissionStatus.granted) return;
+    await _moveToDeviceLocation();
   }
 
   Future<void> _resolveDeviceLocation() async {
@@ -89,10 +126,32 @@ class _AppMapState extends State<AppMap> {
     controller.animateCamera(CameraUpdate.newLatLngZoom(target, _targetZoom));
   }
 
-  // Recenter on the device. Always resolves a fresh, exact fix and animates the
-  // camera to it — the camera can be panned without touching [_target], so we
-  // never short-circuit on a stale comparison.
+  // Recenter on the device. This is the one entry point that may surface the OS
+  // location dialogs: it first asks to switch the location service on in place
+  // (native prompt), then resolves a fresh fix — which requests the permission —
+  // and animates the camera to it. The camera can be panned without touching
+  // [_target], so we never short-circuit on a stale comparison.
   Future<void> _onCurrentLocationTapped() async {
+    final bool serviceEnabled = await LocationManager.requestService();
+    if (!mounted || !serviceEnabled) return;
+
+    final LocationPermissionStatus status =
+        await LocationManager.requestPermissionStatus();
+    if (!mounted) return;
+
+    if (status == LocationPermissionStatus.deniedForever) {
+      final bool opened = await LocationManager.openAppSettings();
+      if (!mounted) return;
+      _awaitingPermissionFromSettings = opened;
+      return;
+    }
+
+    if (status != LocationPermissionStatus.granted) return;
+
+    await _moveToDeviceLocation();
+  }
+
+  Future<void> _moveToDeviceLocation() async {
     final device = await LocationManager.getCurrentLatLng();
     if (!mounted || device == null) return;
 

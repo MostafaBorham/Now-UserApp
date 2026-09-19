@@ -456,5 +456,8 @@
   "profileUpdated": "Your information has been updated",
   "discardChanges": "Discard changes?",
   "discardChangesMessage": "Your edits have not been saved. Leaving now will discard them.",
-  "discard": "Discard"
+  "discard": "Discard",
+  "liveOrders": "Live orders",
+  "preparing": "Preparing",
+  "onTheWay": "On the way"
 }

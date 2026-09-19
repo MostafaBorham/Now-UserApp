@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -8,11 +9,12 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
 
 
 
-class HomeAppCategorySectionView extends StatelessWidget {
+class HomeAppCategorySectionView extends ConsumerWidget {
   const HomeAppCategorySectionView({
     super.key,
     required this.categoryModel,
@@ -32,7 +34,7 @@ class HomeAppCategorySectionView extends StatelessWidget {
   final bool showViewAll;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color accent = primaryColor ?? colors.onInverseSurface;
     return LayoutBuilder(
@@ -106,7 +108,15 @@ class HomeAppCategorySectionView extends StatelessWidget {
                     ),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return ProductItem3View(product: productModels[index]);
+                      return ProductItem3View(
+                        product: productModels[index],
+                        onFavouriteChanged: (bool isFavourite) => ref
+                            .read(getHomeSectionsProvider.notifier)
+                            .updateProductFavourite(
+                              productModels[index].id,
+                              isFavourite,
+                            ),
+                      );
                     },
                     separatorBuilder: (context, index) => 4.wSpace,
                     itemCount: productModels.length,

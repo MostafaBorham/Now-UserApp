@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -14,7 +13,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slide
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 
-/// The top banner carousel shown under `HomeOffersSectionView`.
+/// The top banner carousel of the special offers section, shown under the
+/// auto-scrolling offers list.
 ///
 /// Only mounted when the `/api/v1/home-sections` feed carries a `top_banner`
 /// section; its content is a separate fetch of
@@ -52,9 +52,6 @@ class HomeTopBannerSectionView extends ConsumerWidget {
       error: (_, _) => const SizedBox.shrink(),
       data: (List<BannerModel> items) {
         if (items.isEmpty) return const SizedBox.shrink();
-        // The decorative starburst (moved here from HomeOffersSectionView)
-        // keeps its natural box — full device width, `width * 0.6` tall — and
-        // the banner is centered on top of it, so it bleeds above and below.
         return LayoutBuilder(
           builder: (context, con) {
             final double bannerWidth = con.maxWidth - (_sideMargin * 2);
@@ -64,35 +61,22 @@ class HomeTopBannerSectionView extends ConsumerWidget {
                 viewportWidth /
                 (bannerWidth / _bannerAspectRatio + (_sliderSpace * 2));
 
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: con.maxWidth,
-                  height: con.maxWidth * 0.6,
-                  child: Assets.media.images.svg.homeOffersBackground.svg(
-                    fit: BoxFit.fill,
-                  ),
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: _sideMargin - _sliderSpace,
+              ),
+              child: _SlideInOnOpen(
+                child: AppSlider(
+                  itemAspectRatio: viewportAspectRatio,
+                  sliderSpace: _sliderSpace,
+                  showIndicator: false,
+                  sliderItems: items
+                      .map(
+                        (BannerModel banner) => _TopBannerItem(banner: banner),
+                      )
+                      .toList(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: _sideMargin - _sliderSpace,
-                  ),
-                  child: _SlideInOnOpen(
-                    child: AppSlider(
-                      itemAspectRatio: viewportAspectRatio,
-                      sliderSpace: _sliderSpace,
-                      showIndicator: false,
-                      sliderItems: items
-                          .map(
-                            (BannerModel banner) =>
-                                _TopBannerItem(banner: banner),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             );
           },
         );

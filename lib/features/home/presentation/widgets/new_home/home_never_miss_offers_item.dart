@@ -24,9 +24,17 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated
 
 
 class HomeNeverMissOffersItem extends StatelessWidget {
-  const HomeNeverMissOffersItem({super.key, required this.product});
+  const HomeNeverMissOffersItem({
+    super.key,
+    required this.product,
+    this.onFavouriteChanged,
+  });
 
   final ProductModel product;
+
+  /// Called with the new favourite status whenever it settles for this card, so
+  /// the owner of the list can persist the change onto its product model.
+  final ValueChanged<bool>? onFavouriteChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +133,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                       favouriteType: FavouriteType.product,
                                       itemId: product.id,
                                       isFavourite: product.isFavorite ?? false,
+                                      onFavouriteChanged: onFavouriteChanged,
                                     ),
                                   ),
                                 ],

@@ -16,29 +16,21 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_b
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/sticky_on_scroll.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
 /// The `all_stores` section: a category filter over a list of stores.
 ///
-/// The two tab families have different sources. **All** shows [stores] — the
-/// feed's own `all_stores` items, already in hand, so switching back to it
-/// costs no request. **Every category tab** fetches that category's stores from
-/// `getCategoryStoresProvider`, because the feed carries one flat store list
-/// with no category dimension to filter on.
+/// Every tab fetches from the server on demand. **All** pages the unfiltered
+/// store list from `getAllStoresProvider` (`/api/v1/stores`); **every category
+/// tab** pages that category's stores from `getCategoryStoresProvider`.
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
-  const HomeAllStoresSectionView({
-    super.key,
-    this.pinTop,
-    this.stores = const <StoreModel>[],
-  });
+  const HomeAllStoresSectionView({super.key, this.pinTop});
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
   final ValueListenable<double>? pinTop;
-
-  /// The feed's `all_stores` items, shown under the "All" tab.
-  final List<StoreModel> stores;
 
   @override
   ConsumerState<HomeAllStoresSectionView> createState() =>
@@ -46,7 +38,8 @@ class HomeAllStoresSectionView extends ConsumerStatefulWidget {
 }
 
 class _HomeAllStoresSectionViewState
-    extends ConsumerState<HomeAllStoresSectionView> {
+    extends ConsumerState<HomeAllStoresSectionView>
+    with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
 
   // Height reserved for the pills row. The store list is offset below it and
@@ -54,7 +47,11 @@ class _HomeAllStoresSectionViewState
   static const double _pillsBarHeight = HomeStoresListView.tabRowHeight;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final AppColorScheme colors = context.colors;
     final AsyncValue<PaginationModel<CategoryModel>> categoriesState = ref
         .watch(getAppCategoriesProvider);
@@ -69,7 +66,7 @@ class _HomeAllStoresSectionViewState
     ];
 
     final List<Widget> views = <Widget>[
-      HomeStoresListView(stores: widget.stores),
+      const HomeStoresListView(),
       ...categories.map(
         (CategoryModel category) => HomeStoresListView(category: category),
       ),
@@ -86,9 +83,10 @@ class _HomeAllStoresSectionViewState
           if (index == _selectedIndex) return;
           // Drop the tab's previously loaded stores so opening it always
           // refetches from the server instead of showing a cached list.
-          final CategoryModel? category =
-              index == 0 ? null : categories[index - 1];
-          if (category != null) {
+          if (index == 0) {
+            ref.invalidate(getAllStoresProvider(null));
+          } else {
+            final CategoryModel category = categories[index - 1];
             ref.invalidate(
               getCategoryStoresProvider((
                 categorySlug: category.slug ?? '',
@@ -168,17 +166,12 @@ class _HomeAllStoresSectionViewState
   }
 }
 
-/// One tab's store list: [category]'s stores fetched on demand, or — with no
-/// category, i.e. the "All" tab — the [stores] the feed already sent.
+/// One tab's store list, fetched on demand: [category]'s stores, or — with no
+/// category, i.e. the "All" tab — the unfiltered store list.
 class HomeStoresListView extends ConsumerWidget {
-  const HomeStoresListView({
-    super.key,
-    this.category,
-    this.stores = const <StoreModel>[],
-  });
+  const HomeStoresListView({super.key, this.category});
 
   final CategoryModel? category;
-  final List<StoreModel> stores;
 
   static const int itemCount = 7;
   static const double separator = 15;
@@ -195,14 +188,34 @@ class HomeStoresListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel? category = this.category;
+
     if (category == null) {
-      // The "All" tab: the feed's own items, capped to the same handful the
-      // category tabs show. The rest are behind "See All".
-      final List<StoreModel> all = stores.take(itemCount).toList();
-      if (all.isEmpty) return const NoResultsWidget();
-      return _StoresList(
-        itemCount: all.length,
-        itemBuilder: (context, index) => StoreCardView(store: all[index]),
+      final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
+        getAllStoresProvider(null),
+      );
+      return state.when(
+        loading: () => _StoresList(
+          itemCount: itemCount,
+          itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
+        ),
+        error: (Object error, _) => ServerConnectionErrorWidget(
+          message: error is String ? error : null,
+          onRetry: () =>
+              ref.read(getAllStoresProvider(null).notifier).loadFirstPage(),
+        ),
+        data: (PaginationModel<StoreModel> page) {
+          final List<StoreModel> stores = page.data.take(itemCount).toList();
+          if (stores.isEmpty) return const NoResultsWidget();
+          return _StoresList(
+            itemCount: stores.length,
+            itemBuilder: (context, index) => StoreCardView(
+              store: stores[index],
+              onFavouriteChanged: (bool isFavourite) => ref
+                  .read(getAllStoresProvider(null).notifier)
+                  .updateStoreFavourite(stores[index].id, isFavourite),
+            ),
+          );
+        },
       );
     }
 

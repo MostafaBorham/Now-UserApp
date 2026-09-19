@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 
 
 
@@ -235,6 +236,13 @@ Override overrideCategoryStores(
       (Ref ref, CategoryStoresArgs args) => _FakeCategoryStoresVM(state, args),
     );
 
+Override overrideAllStores(
+  AsyncValue<PaginationModel<StoreModel>> state,
+) =>
+    getAllStoresProvider.overrideWith(
+      (Ref ref, String? searchKey) => _FakeAllStoresVM(state, searchKey),
+    );
+
 class _FakeAppCategoriesVM extends GetAppCategoriesViewModel {
   _FakeAppCategoriesVM(AsyncValue<PaginationModel<CategoryModel>> initial) {
     state = initial;
@@ -267,6 +275,22 @@ class _FakeCategoryStoresVM extends GetCategoryStoresViewModel {
     AsyncValue<PaginationModel<StoreModel>> initial,
     CategoryStoresArgs args,
   ) : super(args: args) {
+    state = initial;
+  }
+
+  @override
+  Future<void> loadFirstPage() async {}
+
+  @override
+  Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) =>
+      throw UnimplementedError('fake view-model must not fetch');
+}
+
+class _FakeAllStoresVM extends GetAllStoresViewModel {
+  _FakeAllStoresVM(
+    AsyncValue<PaginationModel<StoreModel>> initial,
+    String? searchKey,
+  ) : super(searchKey: searchKey) {
     state = initial;
   }
 

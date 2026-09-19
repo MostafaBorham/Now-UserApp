@@ -115,6 +115,45 @@ class HomeSectionModel extends Equatable {
     this.showViewAll = false,
   });
 
+  HomeSectionModel copyWith({
+    int? id,
+    String? type,
+    Map<String, dynamic>? title,
+    List<HomeOfferModel>? offers,
+    List<StoreModel>? stores,
+    List<ProductModel>? products,
+    List<BannerModel>? banners,
+    CategoryModel? category,
+    Color? primaryColor,
+    Color? textColor,
+    Color? backgroundColor,
+    Color? viewAllTextColor,
+    Color? viewAllUnderlineColor,
+    String? displayDesign,
+    Map<String, dynamic>? media,
+    bool? showViewAll,
+  }) {
+    return HomeSectionModel(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      offers: offers ?? this.offers,
+      stores: stores ?? this.stores,
+      products: products ?? this.products,
+      banners: banners ?? this.banners,
+      category: category ?? this.category,
+      primaryColor: primaryColor ?? this.primaryColor,
+      textColor: textColor ?? this.textColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      viewAllTextColor: viewAllTextColor ?? this.viewAllTextColor,
+      viewAllUnderlineColor:
+          viewAllUnderlineColor ?? this.viewAllUnderlineColor,
+      displayDesign: displayDesign ?? this.displayDesign,
+      media: media ?? this.media,
+      showViewAll: showViewAll ?? this.showViewAll,
+    );
+  }
+
   factory HomeSectionModel.fromJson(Map<String, dynamic> json) {
     final String type = json['type']?.toString() ?? '';
     final List<dynamic> rawItems =

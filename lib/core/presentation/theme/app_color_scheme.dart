@@ -78,6 +78,9 @@ class AppColorScheme {
   Color get red300Main => const Color(0xffE32B3D);
 
 
+  Color get green500 => const Color(0xff117456);
+
+
 
 
 

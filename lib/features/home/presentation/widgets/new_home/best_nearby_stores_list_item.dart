@@ -52,9 +52,17 @@ class _ScaledRow extends StatelessWidget {
 /// thin vendor item (id/name/image_url only) leaves them null, and each row is
 /// simply left out rather than rendered as a zero.
 class BestNearbyStoresListItem extends StatelessWidget {
-  const BestNearbyStoresListItem({super.key, required this.store});
+  const BestNearbyStoresListItem({
+    super.key,
+    required this.store,
+    this.onFavouriteChanged,
+  });
 
   final StoreModel store;
+
+  /// Called with the new favourite status whenever it settles for this card, so
+  /// the owner of the list can persist the change onto its store model.
+  final ValueChanged<bool>? onFavouriteChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +134,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             isFavourite: store.isFavorite ?? false,
                             favouriteType: FavouriteType.store,
                             itemId: store.id,
+                            onFavouriteChanged: onFavouriteChanged,
                           ),
                         ),
                       ),

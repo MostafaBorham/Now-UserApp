@@ -27,12 +27,19 @@ class HomeFeaturedStoreItem extends StatelessWidget {
     super.key,
     required this.store,
     required this.storesCount,
+    this.onProductFavouriteChanged,
   });
 
   final StoreModel store;
 
   /// How many stores the carousel holds — the number of indicator dots.
   final int storesCount;
+
+  /// Called with a product's id and its new favourite status whenever a tile in
+  /// this store's grid settles, so the feed can persist the change onto the
+  /// nested product model.
+  final void Function(int? productId, bool isFavourite)?
+      onProductFavouriteChanged;
 
   /// The design's 2×2 grid; a store sending more products than that keeps only
   /// the first four.
@@ -157,6 +164,11 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return GlassProductItemView(
                                 product: products[index],
+                                onFavouriteChanged: (bool isFavourite) =>
+                                    onProductFavouriteChanged?.call(
+                                      products[index].id,
+                                      isFavourite,
+                                    ),
                               );
                             },
                           );

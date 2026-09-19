@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
@@ -9,63 +10,41 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_address_provider.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 
-class HomeHeaderView extends ConsumerStatefulWidget {
+class HomeHeaderView extends ConsumerWidget {
   const HomeHeaderView({
     super.key,
     this.searchFieldKey,
+    this.searchBarHeight,
     this.showCategories = true,
   });
 
   final Key? searchFieldKey;
+
+  final ValueListenable<double>? searchBarHeight;
 
   /// Whether the categories carousel (and its "see all") render. The header
   /// chrome — greeting, address, search, logo, motorcycle — is always shown; a
   /// missing `categories` section only hides the carousel, not the header.
   final bool showCategories;
 
-  @override
-  ConsumerState<HomeHeaderView> createState() => _HomeHeaderViewState();
-}
-
-class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
-  String? _displayedAddress;
-
-  @override
-  void initState() {
-    super.initState();
-    // The default delivery address is the device's current location, cached by
-    // the splash before the app is ever entered (guaranteed non-null there) —
-    // not the first saved address. Seeded in a post-frame callback so the
-    // localized name resolution has a context. The user can still override it by
-    // picking another address from the sheet (see [_openDeliveryAddressSheet]).
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final AddressModel? current =
-          CurrentLocationCacheService().getCurrentLocation();
-      if (current == null) return;
-      setState(() => _displayedAddress = _addressName(current));
-    });
-  }
-
-  Future<void> _openDeliveryAddressSheet() async {
-    final AddressModel? picked = await showModalBottomSheet<AddressModel>(
+  Future<void> _openDeliveryAddressSheet(BuildContext context) {
+    // The sheet writes the confirmed address into [homeAddressProvider] itself,
+    // which this header watches — so there is nothing to read back on close.
+    return showModalBottomSheet<void>(
       context: context,
-      isDismissible: false,
+      isDismissible: true,
       isScrollControlled: true,
       builder: (_) => const HomeDeliveryAddressView(),
     );
-    if (picked == null || !mounted) return;
-    setState(() => _displayedAddress = _addressName(picked));
   }
 
-  String _addressName(AddressModel address) {
+  String _addressName(BuildContext context, AddressModel address) {
     final String full = address.fullAddress ?? '';
     if (full.isNotEmpty) return full;
 
@@ -80,10 +59,14 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    final bool hasAddress =
-        _displayedAddress != null && _displayedAddress!.isNotEmpty;
+    // The delivery address the home page shows: the current location (or the
+    // default) by default, or whatever the user last confirmed in the sheet.
+    final AddressModel? current = ref.watch(homeAddressProvider);
+    final String displayedAddress =
+        current == null ? '' : _addressName(context, current);
+    final bool hasAddress = displayedAddress.isNotEmpty;
     return LayoutBuilder(
       builder: (context, con) {
         return Stack(
@@ -137,7 +120,7 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                         Flexible(
                                           child: Text(
                                             hasAddress
-                                                ? _displayedAddress!
+                                                ? displayedAddress
                                                 : LangKeys.noAddressSelectedKey
                                                       .tr(),
                                             textDirection: TextDirection.ltr,
@@ -153,7 +136,8 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                           ),
                                         ),
                                         InkWell(
-                                          onTap: _openDeliveryAddressSheet,
+                                          onTap: () =>
+                                              _openDeliveryAddressSheet(context),
                                           child: RotatedBox(
                                             quarterTurns: 1,
                                             child: Assets
@@ -178,10 +162,16 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                                   ),
                             ],
                           ),
-                          PrimarySearchField(
-                            key: widget.searchFieldKey,
-                            onTap: () =>
-                                context.pushNamed(AppRoutes.searchScreen),
+                          ValueListenableBuilder<double>(
+                            valueListenable:
+                                searchBarHeight ?? ValueNotifier<double>(0),
+                            builder: (context, height, _) => SizedBox(
+                              key: searchFieldKey,
+                              width: double.infinity,
+                              height: height > 0
+                                  ? height
+                                  : 30 + con.maxWidth * 0.04,
+                            ),
                           ),
                         ],
                       ),
@@ -192,7 +182,7 @@ class _HomeHeaderViewState extends ConsumerState<HomeHeaderView> {
                     ),
                     // The categories carousel + its "see all" are driven by the
                     // `categories` home section; hidden when it is absent.
-                    if (widget.showCategories) ...<Widget>[
+                    if (showCategories) ...<Widget>[
                       Expanded(flex: 4, child: HomeAppCategoriesView()),
                       Expanded(
                         flex: 1,

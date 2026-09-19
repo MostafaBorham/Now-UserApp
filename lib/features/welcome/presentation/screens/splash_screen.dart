@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -37,10 +36,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   // Latches once we navigate away, so a second listener firing (both the
   // session and the location gates settle independently) can never push twice.
   bool _navigated = false;
-
-  // Latches once we decide to close the app on a refused location, so the exit
-  // is requested only once.
-  bool _closing = false;
 
   @override
   void initState() {
@@ -114,15 +109,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
     ref.listen(
       currentLocationProvider,
-      (CurrentLocationStatus? previous, CurrentLocationStatus next) {
-        // A refused location means there is nothing to enter the app with:
-        // close it. Otherwise, re-check whether both gates are ready.
-        if (next == CurrentLocationStatus.declined) {
-          _closeApp();
-        } else {
-          _maybeLeaveSplash();
-        }
-      },
+      (CurrentLocationStatus? previous, CurrentLocationStatus next) =>
+          _maybeLeaveSplash(),
     );
 
     return Scaffold(
@@ -196,7 +184,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void _maybeLeaveSplash() {
-    if (_navigated || _closing || !mounted) return;
+    if (_navigated || !mounted) return;
 
     final bool dependenciesReady =
         ref.read(authSessionProvider).dependenciesStatus ==
@@ -208,11 +196,5 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       _navigated = true;
       context.goNamed(AppRoutes.onBoardingScreen);
     }
-  }
-
-  void _closeApp() {
-    if (_closing) return;
-    _closing = true;
-    SystemNavigator.pop();
   }
 }

@@ -455,5 +455,8 @@
   "profileUpdated": "تم تحديث معلوماتك",
   "discardChanges": "تجاهل التعديلات؟",
   "discardChangesMessage": "لم يتم حفظ تعديلاتك. الخروج الآن سيؤدي إلى تجاهلها.",
-  "discard": "تجاهل"
+  "discard": "تجاهل",
+  "liveOrders": "الطلبات الجارية",
+  "preparing": "جاري التجهيز",
+  "onTheWay": "في الطريق"
 }
