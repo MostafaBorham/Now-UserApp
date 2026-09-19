@@ -14,12 +14,16 @@ class CartProductsImagesListView extends StatelessWidget {
     super.key,
     required this.products,
     this.storeId,
+    this.storeName,
   });
 
   final List<ProductModel> products;
 
   /// `null` leaves the "+" tile inert — there is no store to open.
   final int? storeId;
+
+  /// Localized store name forwarded to store details for the loading app bar.
+  final Map<String, dynamic>? storeName;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +53,7 @@ class CartProductsImagesListView extends StatelessWidget {
               ? null
               : () => context.pushNamed(
                   AppRoutes.storeDetailsScreen,
-                  extra: storeId,
+                  extra: (id: storeId, name: storeName),
                 ),
           child: Container(
             width: 56,

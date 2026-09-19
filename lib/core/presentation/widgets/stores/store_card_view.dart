@@ -66,8 +66,10 @@ class StoreCardView extends StatelessWidget {
     return InkWell(
       onTap:
           onTap ??
-          () =>
-              context.pushNamed(AppRoutes.storeDetailsScreen, extra: store?.id),
+          () => context.pushNamed(
+            AppRoutes.storeDetailsScreen,
+            extra: (id: store?.id, name: store?.name),
+          ),
       child: LayoutBuilder(
         builder: (context, con) {
           final double w = con.maxWidth;

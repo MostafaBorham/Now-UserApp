@@ -195,9 +195,13 @@ abstract class AppRouter {
         name: AppRoutes.storeDetailsScreen,
         path: '/${AppRoutes.storeDetailsScreen}',
         builder: (context, state) {
-          final storeId = state.extra as int?;
+          final args =
+              state.extra as ({int? id, Map<String, dynamic>? name})?;
 
-          return StoreDetailsScreen(storeId: storeId ?? 0);
+          return StoreDetailsScreen(
+            storeId: args?.id ?? 0,
+            storeName: args?.name,
+          );
         },
       ),
       GoRoute(

@@ -90,7 +90,7 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                           ? null
                           : () => context.pushNamed(
                               AppRoutes.storeDetailsScreen,
-                              extra: store.id,
+                              extra: (id: store.id, name: store.name),
                             ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

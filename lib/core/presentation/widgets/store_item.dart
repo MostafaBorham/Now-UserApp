@@ -44,7 +44,7 @@ class _StoreItemState extends State<StoreItem> {
           widget.onTap ??
           () => context.pushNamed(
             AppRoutes.storeDetailsScreen,
-            extra: widget.storeModel?.id,
+            extra: (id: widget.storeModel?.id, name: widget.storeModel?.name),
           ),
       child: Container(
         clipBehavior: Clip.antiAliasWithSaveLayer,

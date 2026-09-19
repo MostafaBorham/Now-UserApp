@@ -106,7 +106,10 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
   switch (offer.kind) {
     case 'store':
       if (offer.storeId != null) {
-        context.pushNamed(AppRoutes.storeDetailsScreen, extra: offer.storeId);
+        context.pushNamed(
+          AppRoutes.storeDetailsScreen,
+          extra: (id: offer.storeId, name: null),
+        );
       }
       break;
     case 'product':

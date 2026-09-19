@@ -105,7 +105,7 @@ class HomeMostPopularBrandsView extends ConsumerWidget {
                 ? null
                 : () => context.pushNamed(
                     AppRoutes.storeDetailsScreen,
-                    extra: store.id,
+                    extra: (id: store.id, name: store.name),
                   ),
             child: _BrandCard(
               width: cardWidth,

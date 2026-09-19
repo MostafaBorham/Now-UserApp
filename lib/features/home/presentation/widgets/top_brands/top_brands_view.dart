@@ -37,7 +37,7 @@ class TopBrandsView extends ConsumerWidget {
             ? null
             : () => context.pushNamed(
                   AppRoutes.storeDetailsScreen,
-                  extra: store.id,
+                  extra: (id: store.id, name: store.name),
                 ),
         child: TopBrandsItem(store: store),
       ),

@@ -32,9 +32,17 @@ class CircularAppFavouriteIcon extends ConsumerStatefulWidget {
     this.favouriteType,
     this.itemId,
     this.onFavouriteChanged,
+    this.elevation = 1,
+    this.backgroundColor,
   });
 
   final double? size;
+
+  /// Material elevation of the circular button.
+  final double elevation;
+
+  /// Background of the circular button; defaults to translucent white.
+  final Color? backgroundColor;
 
   /// Initial favourite status, and the seed of the viewmodel's state.
   final bool? isFavourite;
@@ -77,6 +85,8 @@ class _CircularAppFavouriteIconState
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color backgroundColor =
+        widget.backgroundColor ?? colors.white.withValues(alpha: 0.6);
 
     AsyncValue<bool> state = AsyncValue<bool>.data(_isFavourite);
 
@@ -103,12 +113,12 @@ class _CircularAppFavouriteIconState
         if (!state.isLoading) _onTap(isFavourite);
       },
       child: Material(
-        elevation: 1,
-        color: colors.white.withValues(alpha: 0.6),
+        elevation: widget.elevation,
+        color: backgroundColor,
         shape: const CircleBorder(),
         child: CircleAvatar(
           radius: widget.size,
-          backgroundColor: colors.white.withValues(alpha: 0.6),
+          backgroundColor: backgroundColor,
           child: state.isLoading
               ? SizedBox.square(
                   dimension: widget.size,

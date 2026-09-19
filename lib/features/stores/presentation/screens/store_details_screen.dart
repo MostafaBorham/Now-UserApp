@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
@@ -55,6 +56,8 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
     final AsyncValue<StoreModel> storeDetailsState = ref.watch(
       getStoreDetailsProvider(widget.storeId),
     );
+    final Map<String, dynamic>? displayName =
+        storeDetailsState.valueOrNull?.name ?? widget.storeName;
     return Scaffold(
       body: AppWavedView(
         scrollController: _scrollController,
@@ -171,21 +174,30 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             );
           },
         ),
-        appBarTitle: storeDetailsState.valueOrNull?.name == null
+        appBarTitle: displayName == null
             ? LangKeys.storeKey.tr()
-            : context.getLocalizedApiText(storeDetailsState.valueOrNull?.name),
-        loadAppBarTitle: storeDetailsState.isLoading,
+            : context.getLocalizedApiText(displayName),
         hasCartIcon: true,
-        actions: storeDetailsState.valueOrNull == null
-            ? null
-            : [
-                CircularAppFavouriteIcon(
-                  size: MediaQuery.sizeOf(context).width * 0.05,
-                  favouriteType: FavouriteType.store,
-                  itemId: storeDetailsState.valueOrNull!.id,
-                  isFavourite: storeDetailsState.valueOrNull!.isFavorite ?? false,
-                ),
-              ],
+        actions: [
+          storeDetailsState.when(
+            loading: () => AppShimmer(
+              child: CircleAvatar(
+                radius: MediaQuery.sizeOf(context).width * 0.05,
+                backgroundColor: colors.white,
+              ),
+            ),
+            error: (Object error, StackTrace stackTrace) =>
+                const SizedBox.shrink(),
+            data: (StoreModel store) => CircularAppFavouriteIcon(
+              size: MediaQuery.sizeOf(context).width * 0.05,
+              elevation: 0,
+              backgroundColor: colors.white,
+              favouriteType: FavouriteType.store,
+              itemId: store.id,
+              isFavourite: store.isFavorite ?? false,
+            ),
+          ),
+        ],
         // Tapping the cart drops every route pushed on top of the main screen
         // (store details and anything in between) and switches the main screen's
         // bottom nav to the cart tab (index 2) instead of pushing a new cart

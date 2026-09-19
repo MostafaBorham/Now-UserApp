@@ -69,7 +69,7 @@ class CartBrandItemDetailsView extends StatelessWidget {
               ? null
               : () => context.pushNamed(
                   AppRoutes.storeDetailsScreen,
-                  extra: vendorId,
+                  extra: (id: vendorId, name: store.name),
                 ),
           borderRadius: BorderRadius.circular(8),
           child: Container(
