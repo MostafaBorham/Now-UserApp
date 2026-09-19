@@ -14,6 +14,15 @@ class ProfileModel extends Equatable {
   final String? birthday;
   final String? nationality;
 
+  /// The server's own verdict on whether onboarding is finished — the gate for
+  /// `CompleteProfileScreen`. Server-owned and read-only: it is never part of
+  /// [changesFrom].
+  ///
+  /// `null` means the payload did not carry the flag at all, which is treated
+  /// as "done" everywhere it is read. A missing field must not trap an existing
+  /// user on the completion screen.
+  final bool? profileCompleted;
+
   const ProfileModel({
     this.id,
     this.fullName,
@@ -22,6 +31,7 @@ class ProfileModel extends Equatable {
     this.gender,
     this.birthday,
     this.nationality,
+    this.profileCompleted,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic>? json) {
@@ -35,6 +45,7 @@ class ProfileModel extends Equatable {
       gender: json['gender']?.toString(),
       birthday: json['birthday']?.toString(),
       nationality: json['nationality']?.toString(),
+      profileCompleted: json['profile_completed'] as bool?,
     );
   }
 
@@ -65,6 +76,14 @@ class ProfileModel extends Equatable {
   };
 
   @override
-  List<Object?> get props =>
-      [id, fullName, email, phone, gender, birthday, nationality];
+  List<Object?> get props => [
+    id,
+    fullName,
+    email,
+    phone,
+    gender,
+    birthday,
+    nationality,
+    profileCompleted,
+  ];
 }

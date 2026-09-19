@@ -183,6 +183,7 @@
   "myWallet": "محفظتي",
   "name": "الاسم",
   "nameHint": "الاسم ...",
+  "nameRequired": "يرجى إدخال اسمك",
   "newArrival": "وصل جديد",
   "noAddress": "لا يوجد عنوان",
   "noAddressSelected": "لم يتم اختيار عنوان",

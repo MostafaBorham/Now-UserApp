@@ -216,6 +216,7 @@ abstract class LangKeys {
   static const String nameKey = 'name';
   static const String firstNameHintKey = 'firstNameHint';
   static const String lastNameHintKey = 'lastNameHint';
+  static const String nameRequiredKey = 'nameRequired';
   static const String emailOptionalKey = 'emailOptional';
   static const String enterYourEmailKey = 'enterYourEmail';
   static const String skipKey = 'skip';

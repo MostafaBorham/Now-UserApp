@@ -183,6 +183,7 @@
   "myWallet": "My Wallet",
   "name": "Name",
   "nameHint": "Name ...",
+  "nameRequired": "Please enter your name",
   "newArrival": "New Arrival",
   "noAddress": "No Address",
   "noAddressSelected": "No address selected",

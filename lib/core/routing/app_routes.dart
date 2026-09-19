@@ -30,6 +30,7 @@ abstract class AppRoutes {
   static const String phoneVerificationScreen = 'phone-verification';
   static const String otpVerificationScreen = 'otp-verification';
   static const String personalInformationScreen = 'personal-information';
+  static const String completeProfileScreen = 'complete-profile';
   static const String orderConfirmedScreen = 'order-confirmed';
   static const String trackOrderScreen = 'track-order';
   static const String paymentFailedScreen = 'payment-failed';

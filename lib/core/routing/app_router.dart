@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/features/address/presentation/screens/addre
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/map_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/my_address_screen.dart';
+import 'package:nowdelivery_user_app/features/auth/presentation/screens/complete_profile_screen.dart';
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/phone_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
@@ -246,6 +247,15 @@ abstract class AppRouter {
         path: '/${AppRoutes.personalInformationScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) => const PersonalInformationScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.completeProfileScreen,
+        path: '/${AppRoutes.completeProfileScreen}',
+        // Login-gated like any user screen, but deliberately *not*
+        // `_redirectLoggedInUserToMain`: having a token is exactly the state
+        // this screen is for.
+        redirect: _redirectToLogin,
+        builder: (context, state) => const CompleteProfileScreen(),
       ),
       GoRoute(
         name: AppRoutes.orderConfirmedScreen,

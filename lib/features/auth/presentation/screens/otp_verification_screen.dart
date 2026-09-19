@@ -78,9 +78,18 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     ) {
       next.whenOrNull(
         data: (UserModel? user) {
-          if (user != null) {
-            _leaveVerificationFlow();
+          if (user == null) return;
+
+          // A user the server says has not finished onboarding goes to the
+          // completion screen instead of back into the app — including the
+          // guest who was sent here mid-flow. `goNamed` resets the stack on
+          // purpose: that screen must not be escapable backwards.
+          if (!user.profileCompleted) {
+            context.goNamed(AppRoutes.completeProfileScreen);
+            return;
           }
+
+          _leaveVerificationFlow();
         },
         error: (Object error, StackTrace stackTrace) =>
             AppToast.showError(context, error.toString()),

@@ -5,11 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
+import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/current_location_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_welcome_voucher_vm.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/app_info_model.dart';
 import 'package:nowdelivery_user_app/features/settings/viewmodel/get_app_info_vm.dart';
@@ -194,7 +196,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (dependenciesReady && locationReady) {
       _navigated = true;
-      context.goNamed(AppRoutes.onBoardingScreen);
+      context.goNamed(
+        _needsProfileCompletion
+            ? AppRoutes.completeProfileScreen
+            : AppRoutes.onBoardingScreen,
+      );
     }
+  }
+
+  /// Whether this boot has to divert to the profile-completion screen.
+  ///
+  /// The OTP hop alone would leave a hole: the completion screen is mandatory,
+  /// but force-quitting on it and relaunching would otherwise go
+  /// splash → onboarding → main, straight past the step. The profile is already
+  /// loaded by then — `_loadUserDependencies` fetches it and the splash waits
+  /// for it — so this costs no extra request.
+  ///
+  /// Every unknown is read as "no gate": a guest, a profile that failed to
+  /// load, or a payload without the flag. A missing flag must never strand a
+  /// user who has nothing left to complete; the next login still gates them.
+  bool get _needsProfileCompletion {
+    if (ref.read(authSessionProvider).sessionType != SessionType.user) {
+      return false;
+    }
+    return ref.read(getProfileProvider).valueOrNull?.profile.profileCompleted ==
+        false;
   }
 }
