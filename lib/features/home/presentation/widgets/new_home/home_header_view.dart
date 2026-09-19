@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
@@ -14,16 +15,18 @@ import 'package:nowdelivery_user_app/features/home/presentation/controllers/home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 
 class HomeHeaderView extends ConsumerWidget {
   const HomeHeaderView({
     super.key,
     this.searchFieldKey,
+    this.searchBarHeight,
     this.showCategories = true,
   });
 
   final Key? searchFieldKey;
+
+  final ValueListenable<double>? searchBarHeight;
 
   /// Whether the categories carousel (and its "see all") render. The header
   /// chrome — greeting, address, search, logo, motorcycle — is always shown; a
@@ -159,10 +162,16 @@ class HomeHeaderView extends ConsumerWidget {
                                   ),
                             ],
                           ),
-                          PrimarySearchField(
-                            key: searchFieldKey,
-                            onTap: () =>
-                                context.pushNamed(AppRoutes.searchScreen),
+                          ValueListenableBuilder<double>(
+                            valueListenable:
+                                searchBarHeight ?? ValueNotifier<double>(0),
+                            builder: (context, height, _) => SizedBox(
+                              key: searchFieldKey,
+                              width: double.infinity,
+                              height: height > 0
+                                  ? height
+                                  : 30 + con.maxWidth * 0.04,
+                            ),
                           ),
                         ],
                       ),
