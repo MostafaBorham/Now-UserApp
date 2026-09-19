@@ -263,7 +263,6 @@ class _HomeViewState extends ConsumerState<HomeView>
       if (allStoresSection != null)
         HomeAllStoresSectionView(
           pinTop: _searchBarHeight,
-          stores: allStoresSection.stores,
         ),
       if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
     ];

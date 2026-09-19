@@ -27,6 +27,50 @@ class StoresRepo {
 
   void cancelRequests() => _storesApiService.cancelRequests();
 
+  Future<Either<Failure, PaginationModel<StoreModel>>> getStores({
+    required int page,
+    String? search,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _storesApiService.getStores(
+        page: page,
+        search: search,
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      final Map<String, dynamic> data =
+          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+      final Map<String, dynamic> meta =
+          (data['meta'] ?? data['pagination']) as Map<String, dynamic>? ??
+              <String, dynamic>{};
+      final List<dynamic> rawItems =
+          (data['items'] ?? data['stores']) as List<dynamic>? ?? <dynamic>[];
+      final List<StoreModel> stores = rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(StoreModel.fromJson)
+          .toList();
+
+      return Right(PaginationModel<StoreModel>.fromJson(meta, stores));
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
 
 
 
