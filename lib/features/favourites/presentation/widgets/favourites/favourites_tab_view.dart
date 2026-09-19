@@ -1,23 +1,26 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
+import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 
-/// The chrome shared by both favourites tabs: a search field over an app-category
+/// The chrome shared by both favourites tabs: a search field over a category
 /// [CustomButtonTabBar], with one paginated list per category tab below. It owns
 /// no filter state itself — the search text and selected category live in
 /// [favouritesFilterProvider] keyed by [type], so every category view reacts to
 /// a single change. [listBuilder] builds the paginated list for a given category
-/// (`null` = the "All" tab), keeping this widget type-agnostic across products
+/// id (`null` = the "All" tab), keeping this widget type-agnostic across products
 /// and stores.
+///
+/// The category chips come from [favouriteCategoriesProvider] — only the
+/// categories the caller actually has favourites in — so a tab never opens onto
+/// an "empty favourites" state for a category the user never favourited in.
 class FavouritesTabView extends ConsumerWidget {
   const FavouritesTabView({
     super.key,
@@ -26,32 +29,39 @@ class FavouritesTabView extends ConsumerWidget {
   });
 
   /// API discriminator of the tab — `product` / `vendor`. Also the
-  /// [favouritesFilterProvider] family key.
+  /// [favouritesFilterProvider] and [favouriteCategoriesProvider] family key.
   final String type;
 
   /// Builds the paginated list for a tab. `null` is the "All" tab.
-  final Widget Function(CategoryModel? category) listBuilder;
+  final Widget Function(int? categoryId) listBuilder;
 
-  /// The [CategoryModel] behind a tab index over `[All, ...categories]`
+  /// The category id behind a tab index over `[All, ...categories]`
   /// (index 0 = All = null).
-  CategoryModel? _categoryAt(int index, List<CategoryModel> categories) =>
-      index > 0 && index - 1 < categories.length ? categories[index - 1] : null;
+  int? _categoryIdAt(int index, List<FavouriteCategoryModel> categories) =>
+      index > 0 && index - 1 < categories.length
+          ? categories[index - 1].id
+          : null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    final AsyncValue<PaginationModel<CategoryModel>> categoriesState =
-        ref.watch(getAppCategoriesProvider);
+    final AsyncValue<List<FavouriteCategoryModel>> categoriesState =
+        ref.watch(favouriteCategoriesProvider(type));
     final FavouritesFilter filter = ref.watch(favouritesFilterProvider(type));
 
-    final List<CategoryModel> categories =
-        categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
+    final List<FavouriteCategoryModel> categories =
+        categoriesState.valueOrNull ?? const <FavouriteCategoryModel>[];
 
-    // The tab index behind the currently selected category (0 = "All"). `-1`
-    // (not found) falls back to "All".
-    final int selectedIndex = filter.category == null
+    // The tab index behind the currently selected category (0 = "All"). A
+    // category that is no longer in the list (`indexWhere` → -1) falls back to
+    // "All".
+    final int selectedIndex = filter.categoryId == null
         ? 0
-        : categories.indexOf(filter.category!) + 1;
+        : categories.indexWhere(
+              (FavouriteCategoryModel category) =>
+                  category.id == filter.categoryId,
+            ) +
+            1;
 
     // Tabs and views are always the same length: index 0 = "All", then one
     // entry per loaded category. While categories load, only "All" exists; the
@@ -60,7 +70,8 @@ class FavouritesTabView extends ConsumerWidget {
     final List<String> tabs = <String>[
       LangKeys.allKey.tr(),
       ...categories.map(
-        (CategoryModel category) => context.getLocalizedApiText(category.name),
+        (FavouriteCategoryModel category) =>
+            context.getLocalizedApiText(category.name),
       ),
     ];
 
@@ -83,12 +94,12 @@ class FavouritesTabView extends ConsumerWidget {
             views: <Widget>[
               listBuilder(null),
               ...categories.map(
-                (CategoryModel category) => listBuilder(category),
+                (FavouriteCategoryModel category) => listBuilder(category.id),
               ),
             ],
             onTap: (int index) => ref
                 .read(favouritesFilterProvider(type).notifier)
-                .setCategory(_categoryAt(index, categories)),
+                .setCategory(_categoryIdAt(index, categories)),
             unSelectedTabColor: colors.neutral500.withValues(alpha: 0.1),
           ),
         ),

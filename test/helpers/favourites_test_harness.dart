@@ -4,13 +4,15 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
+import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/get_favourite_products_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/get_favourite_stores_vm.dart';
 
-// Reuse the categories harness for localization, pumping helpers and the
-// shared product/store/page/category fixtures — the favourites widgets live in
-// the same ambient (EasyLocalization + ProviderScope + themed MaterialApp), and
-// their chip row is the app-category list, so `overrideAppCategories` fills it.
+// Reuse the categories harness for localization, pumping helpers and the shared
+// product/store/page fixtures — the favourites widgets live in the same ambient
+// (EasyLocalization + ProviderScope + themed MaterialApp). Their chip row is the
+// favourites-only category list, so `overrideFavouriteCategories` fills it.
 export 'categories_test_harness.dart';
 
 /// Records the query one favourites list view asked for — the family key it
@@ -52,6 +54,25 @@ Override overrideFavouriteStores(
       },
     );
 
+/// Fills a favourites tab's chip row with [categories] (the favourites-only
+/// category list) for every `type`, without a repo or network. Pass `const []`
+/// for a tab that has only the "All" chip.
+Override overrideFavouriteCategories(List<FavouriteCategoryModel> categories) =>
+    favouriteCategoriesProvider.overrideWith(
+      (Ref ref, String type) => _FakeFavouriteCategoriesVM(categories),
+    );
+
+/// A favourites-only category chip fixture (id + localized name).
+FavouriteCategoryModel favCategory({
+  required int id,
+  required String en,
+  String? ar,
+}) =>
+    FavouriteCategoryModel(
+      id: id,
+      name: <String, dynamic>{'en': en, 'ar': ar ?? en},
+    );
+
 class _FakeFavouriteProductsVM extends GetFavouriteProductsViewModel {
   _FakeFavouriteProductsVM(
     AsyncValue<PaginationModel<ProductModel>> initial,
@@ -88,4 +109,14 @@ class _FakeFavouriteStoresVM extends GetFavouriteStoresViewModel {
   @override
   Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) =>
       throw UnimplementedError('fake view-model must not fetch');
+}
+
+class _FakeFavouriteCategoriesVM extends FavouriteCategoriesViewModel {
+  _FakeFavouriteCategoriesVM(List<FavouriteCategoryModel> categories)
+      : super('product') {
+    state = AsyncValue<List<FavouriteCategoryModel>>.data(categories);
+  }
+
+  @override
+  Future<void> load() async {}
 }

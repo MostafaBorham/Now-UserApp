@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/empty_favourites_widget.dart';
@@ -11,18 +10,18 @@ import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/get_f
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
 /// One category tab of the favourites Products tab. The "All" tab passes no
-/// [category] and lists every favourited product; every other tab is bound to
-/// its own [category].
+/// [categoryId] and lists every favourited product; every other tab is bound to
+/// its own [categoryId].
 ///
 /// It listens to [favouritesFilterProvider] for `product` and, whenever it
-/// changes, checks whether the selected category is this view's [category].
+/// changes, checks whether the selected category is this view's [categoryId].
 /// Only then does it query [getFavouriteProductsProvider] — forwarding the
 /// search key and its own category id — and render the products. Otherwise it
 /// stays a shimmer placeholder, so only the visible tab paginates.
 class FavouriteProductsListView extends ConsumerWidget {
-  const FavouriteProductsListView({super.key, this.category});
+  const FavouriteProductsListView({super.key, this.categoryId});
 
-  final CategoryModel? category;
+  final int? categoryId;
 
   static const SliverGridDelegate _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
@@ -37,7 +36,7 @@ class FavouriteProductsListView extends ConsumerWidget {
     final FavouritesFilter filter =
         ref.watch(favouritesFilterProvider('product'));
 
-    final bool isSelected = filter.category == category;
+    final bool isSelected = filter.categoryId == categoryId;
     if (!isSelected) {
       return GridView.builder(
         padding: const EdgeInsets.all(4),
@@ -49,7 +48,7 @@ class FavouriteProductsListView extends ConsumerWidget {
     }
 
     final FavouriteProductsArgs args = (
-      categoryId: category?.id,
+      categoryId: categoryId,
       searchKey: filter.search.isEmpty ? null : filter.search,
     );
     final GetFavouriteProductsViewModel viewModel =
@@ -70,11 +69,16 @@ class FavouriteProductsListView extends ConsumerWidget {
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
           ProductItem3View(
         product: product,
-        // Unfavouriting reloads this — the currently selected — category tab
-        // from the server, so the list reflects the server's favourites state
-        // rather than only dropping the card locally.
+        // Unfavouriting drops just this card in place — scroll position and the
+        // already-loaded pages are kept. removeItemsWhere reloads the first page
+        // itself only if the visible page empties out with more still on the
+        // server.
         onFavouriteChanged: (bool isFavourite) {
-          if (!isFavourite) viewModel.loadFirstPage();
+          if (!isFavourite) {
+            viewModel.removeItemsWhere(
+              (ProductModel item) => item.id == product.id,
+            );
+          }
         },
       ),
     );

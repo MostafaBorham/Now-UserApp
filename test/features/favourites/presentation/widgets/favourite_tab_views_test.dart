@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
@@ -22,11 +21,7 @@ void main() {
 
 
 
-  final Override noChips = overrideAppCategories(
-    AsyncValue<PaginationModel<CategoryModel>>.data(
-      pageOf<CategoryModel>(const <CategoryModel>[]),
-    ),
-  );
+  final Override noChips = overrideFavouriteCategories(const []);
 
   group('FavouriteProductTabView states', () {
     testWidgets('first-page loading shows shimmer, no product data',
@@ -184,13 +179,7 @@ void main() {
             onQuery: (int? categoryId, String? searchKey) =>
                 queries.add(<Object?>[categoryId, searchKey]),
           ),
-          overrideAppCategories(
-            AsyncValue<PaginationModel<CategoryModel>>.data(
-              pageOf<CategoryModel>(<CategoryModel>[
-                sampleCategory(id: 7, en: 'Food'),
-              ]),
-            ),
-          ),
+          overrideFavouriteCategories([favCategory(id: 7, en: 'Food')]),
         ],
       );
 
