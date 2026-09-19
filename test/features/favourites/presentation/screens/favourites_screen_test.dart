@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
@@ -26,11 +25,7 @@ void main() {
           ),
         ),
 
-        overrideAppCategories(
-          AsyncValue<PaginationModel<CategoryModel>>.data(
-            pageOf<CategoryModel>(const <CategoryModel>[]),
-          ),
-        ),
+        overrideFavouriteCategories(const []),
       ];
 
   testWidgets('renders both tabs inside a Scaffold and shows product cards',

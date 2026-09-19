@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -12,25 +11,25 @@ import 'package:nowdelivery_user_app/features/favourites/presentation/providers/
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/get_favourite_stores_vm.dart';
 
 /// One category tab of the favourites Stores tab. The "All" tab passes no
-/// [category] and lists every favourited store; every other tab is bound to its
-/// own [category].
+/// [categoryId] and lists every favourited store; every other tab is bound to
+/// its own [categoryId].
 ///
 /// It listens to [favouritesFilterProvider] for `vendor` and, whenever it
-/// changes, checks whether the selected category is this view's [category].
+/// changes, checks whether the selected category is this view's [categoryId].
 /// Only then does it query [getFavouriteStoresProvider] — forwarding the search
 /// key and its own category id — and render the stores. Otherwise it stays a
 /// shimmer placeholder, so only the visible tab paginates.
 class FavouriteStoresListView extends ConsumerWidget {
-  const FavouriteStoresListView({super.key, this.category});
+  const FavouriteStoresListView({super.key, this.categoryId});
 
-  final CategoryModel? category;
+  final int? categoryId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final FavouritesFilter filter =
         ref.watch(favouritesFilterProvider('vendor'));
 
-    final bool isSelected = filter.category == category;
+    final bool isSelected = filter.categoryId == categoryId;
     if (!isSelected) {
       return ListView.separated(
         padding: const EdgeInsets.all(4),
@@ -44,7 +43,7 @@ class FavouriteStoresListView extends ConsumerWidget {
     }
 
     final FavouriteStoresArgs args = (
-      categoryId: category?.id,
+      categoryId: categoryId,
       searchKey: filter.search.isEmpty ? null : filter.search,
     );
     final GetFavouriteStoresViewModel viewModel =
@@ -69,11 +68,16 @@ class FavouriteStoresListView extends ConsumerWidget {
         aspectRatio: 1.75,
         child: StoreCardView(
           store: store,
-          // Unfavouriting reloads this — the currently selected — category tab
-          // from the server, so the list reflects the server's favourites state
-          // rather than only dropping the card locally.
+          // Unfavouriting drops just this card in place — scroll position and
+          // the already-loaded pages are kept. removeItemsWhere reloads the
+          // first page itself only if the visible page empties out with more
+          // still on the server.
           onFavouriteChanged: (bool isFavourite) {
-            if (!isFavourite) viewModel.loadFirstPage();
+            if (!isFavourite) {
+              viewModel.removeItemsWhere(
+                (StoreModel item) => item.id == store.id,
+              );
+            }
           },
         ),
       ),

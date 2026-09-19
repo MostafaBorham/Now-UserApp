@@ -37,17 +37,6 @@ class GetFavouriteProductsViewModel extends PaginatedViewModel<ProductModel> {
   /// refreshing or retrying asks for the same products.
   final FavouriteProductsArgs args;
 
-  /// Flips [ProductModel.isFavorite] on the single loaded product with
-  /// [productId] in place, leaving the rest of the list (and its scroll
-  /// position) untouched.
-  void updateProductFavourite(int? productId, bool isFavourite) {
-    if (productId == null) return;
-    updateItemsWhere(
-      (ProductModel product) => product.id == productId,
-      (ProductModel product) => product.copyWith(isFavorite: isFavourite),
-    );
-  }
-
   @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) {
     return _repo.getFavouriteProducts(

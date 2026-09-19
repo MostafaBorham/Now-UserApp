@@ -9,7 +9,6 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/favourites/data/datasources/remote/api/favourites_api_service.dart';
 import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_category_model.dart';
-import 'package:nowdelivery_user_app/features/favourites/data/models/favourite_model.dart';
 
 /// All data operations of the favourites feature.
 ///
@@ -129,131 +128,70 @@ class FavouritesRepo {
     }
   }
 
-  Future<Either<Failure, FavouriteModel>> addProductToFavourites({
+  Future<Either<Failure, void>> addProductToFavourites({
     required int productId,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
+  }) =>
+      _mutation(
+        () => _favouritesApiService.addProductToFavourites(productId: productId),
+      );
 
-    try {
-      final Response response = await _favouritesApiService
-          .addProductToFavourites(productId: productId);
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final Map<String, dynamic>? rawFavourite =
-          data['favorite'] as Map<String, dynamic>?;
-
-      final FavouriteModel favourite = FavouriteModel.fromJson(rawFavourite);
-
-      return Right(favourite);
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
-  }
-
-  Future<Either<Failure, FavouriteModel>> addStoreToFavourites({
-    required int storeId,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response = await _favouritesApiService
-          .addStoreToFavourites(storeId: storeId);
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final Map<String, dynamic>? rawFavourite =
-          data['favorite'] as Map<String, dynamic>?;
-
-      final FavouriteModel favourite = FavouriteModel.fromJson(rawFavourite);
-
-      return Right(favourite);
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
-  }
+  Future<Either<Failure, void>> addStoreToFavourites({required int storeId}) =>
+      _mutation(
+        () => _favouritesApiService.addStoreToFavourites(storeId: storeId),
+      );
 
   Future<Either<Failure, void>> removeProductFromFavourites({
     required int productId,
-  }) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response = await _favouritesApiService
-          .removeProductFromFavourites(productId: productId);
-
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return const Right(null);
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
-    }
-  }
+  }) =>
+      _mutation(
+        () => _favouritesApiService.removeProductFromFavourites(
+          productId: productId,
+        ),
+      );
 
   Future<Either<Failure, void>> removeStoreFromFavourites({
     required int storeId,
-  }) async {
+  }) =>
+      _mutation(
+        () => _favouritesApiService.removeStoreFromFavourites(storeId: storeId),
+      );
+
+  /// Shared envelope for the add/remove mutations. Success is any 2xx — the
+  /// body is not required, so a `204 No Content` (or any empty/non-map body) is
+  /// still a success rather than a cast failure. Only failures need a body, and
+  /// a missing or non-map one degrades to a localized default message; the
+  /// unexpected-error path returns a localized key rather than a raw Dart error.
+  Future<Either<Failure, void>> _mutation(
+    Future<Response> Function() request,
+  ) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _favouritesApiService
-          .removeStoreFromFavourites(storeId: storeId);
+      final Response response = await request();
+      final int status = response.statusCode ?? 0;
+      if (status >= 200 && status < 300) return const Right(null);
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return const Right(null);
+      final dynamic body = response.data;
+      return Left(
+        Failure(
+          ApiErrorHandler.extractErrorMessage(
+            body is Map<String, dynamic> ? body : null,
+          ),
+        ),
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+      return Left(
+        Failure(
+          ApiErrorHandler.extractErrorMessage(
+            data is Map<String, dynamic> ? data : null,
+          ),
+        ),
+      );
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 }
