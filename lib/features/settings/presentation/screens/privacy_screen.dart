@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:html/parser.dart' as html_parser;
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -31,6 +32,9 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
     _scrollController.dispose();
     super.dispose();
   }
+
+  String _parseHtml(String text) =>
+      html_parser.parse(text).body?.text.trim() ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +73,11 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
           ),
           data: (AppInfoModel appInfo) {
             final PrivacyModel? content = appInfo.content;
-            final String terms = context.getLocalizedApiText(content?.terms);
-            final String privacy = context.getLocalizedApiText(
-              content?.privacy,
+            final String terms = _parseHtml(
+              context.getLocalizedApiText(content?.terms),
+            );
+            final String privacy = _parseHtml(
+              context.getLocalizedApiText(content?.privacy),
             );
             final String about = context.getLocalizedApiText(content?.about);
 
