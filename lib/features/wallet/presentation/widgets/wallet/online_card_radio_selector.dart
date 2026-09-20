@@ -19,6 +19,7 @@ class OnlineCardRadioSelector extends StatelessWidget {
     required this.cards,
     this.onCardSelected,
     this.onDeleteCard,
+    this.onEditCard,
   });
 
   final List<OnlineCardParams> cards;
@@ -31,6 +32,10 @@ class OnlineCardRadioSelector extends StatelessWidget {
   /// springs back into place and is removed only once the VM refetches the list
   /// on a confirmed server delete (see [_confirmDelete]).
   final ValueChanged<OnlineCardParams>? onDeleteCard;
+
+  /// Fired when a card's "Edit" button is tapped. Wire this to open the edit
+  /// sheet for that card.
+  final ValueChanged<OnlineCardParams>? onEditCard;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +64,7 @@ class OnlineCardRadioSelector extends StatelessWidget {
             child: OnlineCardRadioSelectorItem(
               cardItem: card,
               isSelected: card.isDefault,
+              onEdit: onEditCard == null ? null : () => onEditCard!(card),
             ),
           ),
         );

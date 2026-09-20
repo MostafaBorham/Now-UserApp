@@ -14,10 +14,14 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
     super.key,
     required this.cardItem,
     required this.isSelected,
+    this.onEdit,
   });
 
   final OnlineCardParams cardItem;
   final bool isSelected;
+
+  /// Fired when the row's "Edit" button is tapped. Null hides the button.
+  final VoidCallback? onEdit;
 
   /// How far an unusable (expired / non-card) row is faded. It stays legible —
   /// the customer still needs to recognise the card in order to replace it — but
@@ -112,17 +116,44 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: switch (cardItem.cardType) {
-                    OnlineCardTypes.visa => Assets.media.images.svg.visaLogo.svg(
-                        width: 25,
+                Column(
+                  mainAxisAlignment: onEdit == null
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    switch (cardItem.cardType) {
+                      OnlineCardTypes.visa =>
+                        Assets.media.images.svg.visaLogo.svg(width: 25),
+                      OnlineCardTypes.master =>
+                        Assets.media.images.svg.masterLogo.svg(width: 25),
+                    },
+                    if (onEdit != null)
+                      InkWell(
+                        onTap: onEdit,
+                        borderRadius: AppBorderRadius.brCircular8,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 4,
+                            children: [
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 16,
+                                color: colors.primary500Main,
+                              ),
+                              Text(
+                                LangKeys.editKey.tr(),
+                                style: AppTextStyles.style12Medium.copyWith(
+                                  color: colors.primary500Main,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    OnlineCardTypes.master =>
-                      Assets.media.images.svg.masterLogo.svg(
-                        width: 25,
-                      ),
-                  },
+                  ],
                 ),
               ],
             ),
