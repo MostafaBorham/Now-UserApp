@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
@@ -46,6 +47,9 @@ final List<ProviderOrFamily> sessionScopedProviders = <ProviderOrFamily>[
   // The draft order group: the previous user's items, delivery address and
   // totals.
   checkoutProvider,
+  // Coupons the previous user picked on a store screen, waiting to be applied
+  // to their checkout.
+  selectedStoreCouponsProvider,
   // The feed and the "Best brands" carousel are not pure catalogue: every
   // product and store in their payloads carries `cart_quantity` and
   // `is_favourite` for the user who fetched it.
