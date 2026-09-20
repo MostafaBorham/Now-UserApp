@@ -46,6 +46,7 @@ class CategoryCard extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.contain,
+                    errorBackgroundColor: colors.secondary600,
                   ),
                   // White glow: the image fades to white at its bottom edge so
                   // the card blends into the surface below it, matching the

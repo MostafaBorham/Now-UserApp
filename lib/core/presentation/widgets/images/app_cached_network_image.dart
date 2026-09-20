@@ -19,6 +19,7 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.placeholderType = LoadingViewTypes.shimmer,
     this.circularProgressSize,
     this.httpHeaders,
+    this.errorBackgroundColor,
   });
 
   final String imageUrl;
@@ -27,6 +28,7 @@ class AppCachedNetworkImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final LoadingViewTypes? placeholderType;
+  final Color? errorBackgroundColor;
 
 
 
@@ -83,7 +85,7 @@ class AppCachedNetworkImage extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       height: height ?? double.infinity,
       decoration: BoxDecoration(
-        color: colors.onPrimaryContainer,
+        color: errorBackgroundColor ?? colors.onPrimaryContainer,
       ),
       child: Assets.media.images.png.noImageAvail.image(
         fit: BoxFit.contain,
