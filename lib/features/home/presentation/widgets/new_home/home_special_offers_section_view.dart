@@ -108,7 +108,7 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
       if (offer.storeId != null) {
         context.pushNamed(
           AppRoutes.storeDetailsScreen,
-          extra: (id: offer.storeId, name: null),
+          pathParameters: <String, String>{'id': '${offer.storeId}'},
         );
       }
       break;

@@ -64,7 +64,10 @@ class BestNearbyStoresSection extends ConsumerWidget {
                       ? null
                       : () => context.pushNamed(
                           AppRoutes.storeDetailsScreen,
-                          extra: (id: store.id, name: store.name),
+                          pathParameters: <String, String>{
+                            'id': '${store.id}',
+                          },
+                          extra: store.name,
                         ),
                   child: BestNearbyStoresListItem(
                     store: store,

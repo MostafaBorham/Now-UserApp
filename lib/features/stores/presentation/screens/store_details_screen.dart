@@ -28,7 +28,10 @@ import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_details
 
 class StoreDetailsScreen extends ConsumerStatefulWidget {
   const StoreDetailsScreen({super.key, required this.storeId, this.storeName});
-  final int storeId;
+
+  /// `null` when the caller had no store to open — the screen then shows its
+  /// "store unavailable" state instead of fetching.
+  final int? storeId;
 
   /// Localized name passed from the tapped store, shown in the app bar while
   /// the details are loading and replaced by the fetched name on response.
@@ -52,9 +55,33 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final int? storeId = widget.storeId;
+    // Reached without a store id — a store whose payload carried none, or a
+    // caller that pushed the route with no `extra`. There is nothing to fetch
+    // and nothing to retry, so the screen says so instead of asking the API
+    // for a store it cannot name.
+    if (storeId == null) {
+      return Scaffold(
+        body: AppWavedView(
+          body: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ServerConnectionErrorWidget(
+              message: LangKeys.storeUnavailableKey,
+            ),
+          ),
+          appBarTitle: widget.storeName == null
+              ? LangKeys.storeKey.tr()
+              : context.getLocalizedApiText(widget.storeName),
+        ),
+      );
+    }
+    return _buildStore(context, storeId);
+  }
+
+  Widget _buildStore(BuildContext context, int storeId) {
     final AppColorScheme colors = context.colors;
     final AsyncValue<StoreModel> storeDetailsState = ref.watch(
-      getStoreDetailsProvider(widget.storeId),
+      getStoreDetailsProvider(storeId),
     );
     final Map<String, dynamic>? displayName =
         storeDetailsState.valueOrNull?.name ?? widget.storeName;
@@ -68,7 +95,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             child: ServerConnectionErrorWidget(
               message: error.toString(),
               onRetry: () => ref
-                  .read(getStoreDetailsProvider(widget.storeId).notifier)
+                  .read(getStoreDetailsProvider(storeId).notifier)
                   .getStoreDetails(),
             ),
           ),
@@ -152,7 +179,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                         .map(
                                           (ProductFilters filter) =>
                                               StoreDetailsProductsView(
-                                                storeId: widget.storeId,
+                                                storeId: storeId,
                                                 filter: filter,
                                               ),
                                         )

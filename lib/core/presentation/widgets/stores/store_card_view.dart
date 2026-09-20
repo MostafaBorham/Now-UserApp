@@ -43,6 +43,7 @@ class StoreCardView extends StatelessWidget {
     final AppColorScheme colors = context.colors;
 
     final bool hasStore = store != null;
+    final int? storeId = store?.id;
     final String coverUrl = hasStore ? (store!.coverUrl ?? '') : _demoCoverUrl;
     final String logoUrl = hasStore ? (store!.logoUrl ?? '') : _demoLogoUrl;
     final String storeName = hasStore
@@ -64,12 +65,19 @@ class StoreCardView extends StatelessWidget {
         : '10';
 
     return InkWell(
+      // A store that arrived without an id can't be opened; the card still
+      // renders, it just doesn't navigate — same guard every other store tap
+      // in the app applies. Without it the router used to fall back to id 0
+      // and the details screen requested `/stores/0`.
       onTap:
           onTap ??
-          () => context.pushNamed(
-            AppRoutes.storeDetailsScreen,
-            extra: (id: store?.id, name: store?.name),
-          ),
+          (storeId == null
+              ? null
+              : () => context.pushNamed(
+                  AppRoutes.storeDetailsScreen,
+                  pathParameters: <String, String>{'id': '$storeId'},
+                  extra: store?.name,
+                )),
       child: LayoutBuilder(
         builder: (context, con) {
           final double w = con.maxWidth;

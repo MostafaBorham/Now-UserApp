@@ -328,6 +328,7 @@
   "specWeightValue": "1.24 kg",
   "stcPay": "STC Pay",
   "store": "Store",
+  "storeUnavailable": "This store is no longer available.",
   "storeInvoiceSummary": "Store Invoice Summary",
   "storeType": "Store Type",
   "stores": "Stores",

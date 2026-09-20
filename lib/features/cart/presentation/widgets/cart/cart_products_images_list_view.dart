@@ -53,7 +53,8 @@ class CartProductsImagesListView extends StatelessWidget {
               ? null
               : () => context.pushNamed(
                   AppRoutes.storeDetailsScreen,
-                  extra: (id: storeId, name: storeName),
+                  pathParameters: <String, String>{'id': '$storeId'},
+                  extra: storeName,
                 ),
           child: Container(
             width: 56,

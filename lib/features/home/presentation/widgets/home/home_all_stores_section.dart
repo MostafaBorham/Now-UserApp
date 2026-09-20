@@ -54,9 +54,9 @@ class HomeAllStoresSection extends StatelessWidget {
                   return ListView.separated(
                     itemBuilder: (context, index) => SizedBox(
                       height: con.maxHeight * 0.6,
-                      child: InkWell(
-                          onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-                          child: StoreItem()),
+                      // A mock item with no store behind it — there is no id
+                      // to open store details with, so it doesn't navigate.
+                      child: StoreItem(),
                     ),
                     separatorBuilder: (context, index) => 20.hSpace,
                     itemCount: 3,

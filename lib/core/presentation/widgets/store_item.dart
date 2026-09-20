@@ -39,13 +39,19 @@ class _StoreItemState extends State<StoreItem> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final int? storeId = widget.storeModel?.id;
     return InkWell(
+      // A store that arrived without an id can't be opened; the item still
+      // renders, it just doesn't navigate — same guard as [StoreCardView].
       onTap:
           widget.onTap ??
-          () => context.pushNamed(
-            AppRoutes.storeDetailsScreen,
-            extra: (id: widget.storeModel?.id, name: widget.storeModel?.name),
-          ),
+          (storeId == null
+              ? null
+              : () => context.pushNamed(
+                  AppRoutes.storeDetailsScreen,
+                  pathParameters: <String, String>{'id': '$storeId'},
+                  extra: widget.storeModel?.name,
+                )),
       child: Container(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(

@@ -254,6 +254,7 @@ abstract class LangKeys {
   static const String addressKey = 'address';
   static const String contactKey = 'contact';
   static const String storeKey = 'store';
+  static const String storeUnavailableKey = 'storeUnavailable';
   static const String storeTypeKey = 'storeType';
   static const String numberOfItemsKey = 'numberOfItems';
   static const String paymentKey = 'payment';

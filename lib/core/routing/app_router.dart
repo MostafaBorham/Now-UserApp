@@ -194,14 +194,20 @@ abstract class AppRouter {
       ),
       GoRoute(
         name: AppRoutes.storeDetailsScreen,
-        path: '/${AppRoutes.storeDetailsScreen}',
+        // The id is identity, so it lives in the path, not in `extra`.
+        // go_router serializes `extra` through JSON whenever it re-parses the
+        // route — a rebuilt Router (hot reload, DevTools "Select Widget Mode",
+        // state restoration) — and silently drops anything JSON cannot encode,
+        // which a record is. The id then arrived null and the screen requested
+        // `/stores/0`. A path parameter is part of the URL and survives all of
+        // it. `extra` now carries only the name, a plain map JSON can encode.
+        path: '/${AppRoutes.storeDetailsScreen}/:id',
         builder: (context, state) {
-          final args =
-              state.extra as ({int? id, Map<String, dynamic>? name})?;
-
+          // No `?? 0` fallback: 0 is a well-formed id the API answers with a
+          // 404, so an unparseable segment must not become a real request.
           return StoreDetailsScreen(
-            storeId: args?.id ?? 0,
-            storeName: args?.name,
+            storeId: int.tryParse(state.pathParameters['id'] ?? ''),
+            storeName: state.extra as Map<String, dynamic>?,
           );
         },
       ),

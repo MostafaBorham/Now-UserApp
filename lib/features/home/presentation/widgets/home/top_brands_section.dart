@@ -20,9 +20,9 @@ class TopBrandsSection extends StatelessWidget {
           height: 150,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => InkWell(
-                onTap: () => context.pushNamed(AppRoutes.storeDetailsScreen),
-                child: CircularBrandItem()),
+            // A mock item with no store behind it — there is no id to open
+            // store details with, so it doesn't navigate.
+            itemBuilder: (context, index) => CircularBrandItem(),
             separatorBuilder: (context, index) => 12.wSpace,
             itemCount: 6,
           ),

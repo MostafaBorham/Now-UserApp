@@ -328,6 +328,7 @@
   "specWeightValue": "1.24 كجم",
   "stcPay": "STC Pay",
   "store": "المتجر",
+  "storeUnavailable": "هذا المتجر لم يعد متاحاً.",
   "storeInvoiceSummary": "ملخص فاتورة المتجر",
   "storeType": "نوع المتجر",
   "stores": "المتاجر",
