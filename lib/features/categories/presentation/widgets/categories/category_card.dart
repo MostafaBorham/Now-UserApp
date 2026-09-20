@@ -35,6 +35,7 @@ class CategoryCard extends StatelessWidget {
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
+                color: colors.secondary600,
                 borderRadius: AppBorderRadius.brCircular10,
               ),
               child: Stack(
@@ -44,7 +45,7 @@ class CategoryCard extends StatelessWidget {
                     imageUrl: category.image??'',
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                   // White glow: the image fades to white at its bottom edge so
                   // the card blends into the surface below it, matching the
