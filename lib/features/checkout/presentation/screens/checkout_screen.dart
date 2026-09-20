@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/applied_disco
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/confirm_order_button.dart';
@@ -80,13 +81,30 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     }
 
     final String? orderGroupUuid = checkout.orderGroup.uuid;
-    // The wallet wins while its checkbox is ticked (the default); untick it and
-    // the draft's own method pays. ponytail: there is no split-payment field on
-    // the confirm request yet, so the shortfall the note promises is settled
-    // server-side — the app only says which method leads.
-    final String? paymentMethod = ref.read(walletPaymentProvider)
-        ? 'wallet'
-        : checkout.orderGroup.paymentMethod;
+
+    // The wallet wins while its checkbox is ticked (the default). Untick it and
+    // the picked saved card pays: the backend requires a `payment_method_id` for
+    // the `card` method and prohibits one for wallet/cod, so the id rides along
+    // only in the card case. Selection defaults to the preview's default card.
+    // ponytail: there is still no split-payment field, so a wallet shortfall is
+    // settled server-side — the app only says which single method leads.
+    final bool walletSelected = ref.read(walletPaymentProvider);
+    final String paymentMethod;
+    final int? paymentMethodId;
+    if (walletSelected) {
+      paymentMethod = 'wallet';
+      paymentMethodId = null;
+    } else {
+      final int? selectedCardId = ref.read(selectedPaymentCardProvider) ??
+          CheckoutModel.resolveDefaultCard(checkout.paymentCards)?.id;
+      if (selectedCardId == null) {
+        AppToast.showError(context, LangKeys.selectPaymentMethodFirstKey.tr());
+        return;
+      }
+      paymentMethod = 'card';
+      paymentMethodId = selectedCardId;
+    }
+
     final List<AppliedDiscountModel> coupons = ref.read(
       appliedDiscountsProvider,
     );
@@ -98,6 +116,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         driverTip: _driverTip,
         deliveryInstructions: deliveryInstructions,
         paymentMethod: paymentMethod,
+        paymentMethodId: paymentMethodId,
         coupons: coupons,
       ),
     );
@@ -109,6 +128,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           idempotencyKey: idempotencyKey,
           addressId: _addressId!,
           paymentMethod: paymentMethod,
+          paymentMethodId: paymentMethodId,
           driverTip: _driverTip,
           deliveryInstructions: deliveryInstructions,
           coupons: coupons,
@@ -124,6 +144,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     double? driverTip,
     String? deliveryInstructions,
     String? paymentMethod,
+    int? paymentMethodId,
     List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
   }) {
     final Map<int, String> couponMap = <int, String>{
@@ -142,6 +163,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       '$driverTip',
       deliveryInstructions ?? '',
       paymentMethod ?? 'wallet',
+      '${paymentMethodId ?? ''}',
       sortedCoupons,
     ].join('|');
   }

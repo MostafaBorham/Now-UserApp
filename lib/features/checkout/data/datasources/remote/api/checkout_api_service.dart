@@ -73,6 +73,7 @@ class CheckoutApiService {
     required String idempotencyKey,
     int? addressId,
     String? paymentMethod,
+    int? paymentMethodId,
     double? driverTip,
     String? notes,
     String? deliveryInstructions,
@@ -83,6 +84,7 @@ class CheckoutApiService {
       data: CheckoutEndpoints.confirmOrderBody(
         addressId: addressId,
         paymentMethod: paymentMethod,
+        paymentMethodId: paymentMethodId,
         driverTip: driverTip,
         notes: notes,
         deliveryInstructions: deliveryInstructions,
