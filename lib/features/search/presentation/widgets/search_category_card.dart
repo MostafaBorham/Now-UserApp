@@ -24,7 +24,7 @@ class SearchCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
-      builder: (context,cardConstraints) {
+      builder: (context, cardConstraints) {
         return GestureDetector(
           onTap: onTap,
           behavior: HitTestBehavior.opaque,
@@ -33,13 +33,15 @@ class SearchCategoryCard extends StatelessWidget {
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: colors.white,
-                borderRadius: AppBorderRadius.brCircular12,
-                boxShadow: [BoxShadow(
-                    color: colors.black.withValues(alpha: 0.25),
-                    blurRadius: 1.35,
-                    spreadRadius: 0,
-                    offset: Offset(0, 0)
-                )]
+              borderRadius: AppBorderRadius.brCircular12,
+              boxShadow: [
+                BoxShadow(
+                  color: colors.black.withValues(alpha: 0.25),
+                  blurRadius: 1.35,
+                  spreadRadius: 0,
+                  offset: Offset(0, 0),
+                )
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,7 +52,8 @@ class SearchCategoryCard extends StatelessWidget {
                   child: Container(
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadiusDirectional.horizontal(start: Radius.circular(12),end: Radius.circular(12)),
+                      color: colors.secondary600,
+                      borderRadius: AppBorderRadius.brCircular12,
                     ),
                     child: Stack(
                       alignment: Alignment.topCenter,
@@ -59,7 +62,8 @@ class SearchCategoryCard extends StatelessWidget {
                           imageUrl: category.image ?? '',
                           width: double.infinity,
                           height: double.infinity,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
+                          errorBackgroundColor: colors.secondary600,
                         ),
                         Positioned.fill(
                           child: DecoratedBox(
@@ -103,14 +107,14 @@ class SearchCategoryCard extends StatelessWidget {
                   style: AppTextStyles.style14SemiBold.copyWith(
                     color: colors.neutral1200,
                     height: 1,
-                    fontSize: cardConstraints.maxWidth*0.12
+                    fontSize: cardConstraints.maxWidth * 0.12,
                   ),
                 ),
               ],
             ),
           ),
         );
-      }
+      },
     );
   }
 }

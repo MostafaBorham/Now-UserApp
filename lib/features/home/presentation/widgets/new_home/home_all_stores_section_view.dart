@@ -82,8 +82,7 @@ class _HomeAllStoresSectionViewState
           if (index == _selectedIndex) return;
           // Drop the tab's previously loaded stores so opening it always
           // refetches from the server instead of showing a cached list.
-          final int? categoryId =
-              index == 0 ? null : categories[index - 1].id;
+          final int? categoryId = index == 0 ? null : categories[index - 1].id;
           ref.invalidate(
             getAllStoresProvider((
               categoryId: categoryId,

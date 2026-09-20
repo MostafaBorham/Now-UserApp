@@ -19,13 +19,13 @@ class ProductsRepo {
 
   void cancelRequests() => _productsApiService.cancelRequests();
 
-  Future<Either<Failure, List<ProductModel>>> getProducts({int? categoryId}) async {
+  Future<Either<Failure, List<ProductModel>>> getProducts({String? search}) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _productsApiService.getProducts(categoryId: categoryId);
+      final Response response = await _productsApiService.getProducts(search: search);
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 

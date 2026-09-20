@@ -18,9 +18,8 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// (never loaded, or errored) calls `loadFirstPage()` from its `initState` so
 /// it flips to loading and shows its shimmer first; a loaded list is kept.
 ///
-/// This is the unfiltered, app-wide list. The search screen narrows its own
-/// copy through `searchCategoriesProvider` (search feature), which seeds itself
-/// from here — this provider is never filtered by a search term.
+/// This is the unfiltered, app-wide list, shared by the home carousel, the
+/// categories screen and the search screen's top-categories strip.
 final getAppCategoriesProvider =
     StateNotifierProvider<GetAppCategoriesViewModel,
         AsyncValue<PaginationModel<CategoryModel>>>(
