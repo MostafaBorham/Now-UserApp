@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/data/datasources/remote/api/cart_api_service.dart';
+import 'package:nowdelivery_user_app/features/cart/data/datasources/remote/api/cart_endpoints.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 
@@ -110,6 +111,18 @@ void main() {
 
       expect(cart.quantityOf(7), 2);
     });
+
+    test('forwards cart_item_id to the api service', () async {
+      final _FakeCartApi api = replying(200, envelope(cartPayload));
+
+      await repoOn(api).updateCartProductQuantity(7, 3, cartItemId: 64);
+
+      expect(api.lastCartItemId, 64);
+      expect(CartEndpoints.cartItemQuery(64), <String, dynamic>{
+        'cart_item_id': 64,
+      });
+      expect(CartEndpoints.cartItemQuery(null), isEmpty);
+    });
   });
 
   group('failures', () {
@@ -199,9 +212,17 @@ class _FakeCartApi implements CartApiService {
   @override
   Future<Response> deleteCartVendorItem(int vendorId) => _answer();
 
+  int? lastCartItemId;
+
   @override
-  Future<Response> updateCartProductQuantity(int productId, int quantity) =>
-      _answer();
+  Future<Response> updateCartProductQuantity(
+    int productId,
+    int quantity, {
+    int? cartItemId,
+  }) {
+    lastCartItemId = cartItemId;
+    return _answer();
+  }
 
   @override
   Future<Response> addToCart(

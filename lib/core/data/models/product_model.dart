@@ -79,6 +79,16 @@ class ProductModel {
   final int? cartQuantity;
   final bool? isFavorite;
 
+  /// The cart line's row id (`cart_item_id`). One product can be in the cart as
+  /// several lines — one per selected color/attributes combination — so this,
+  /// not `productId`, is what identifies a single line. `null` off the cart.
+  final int? cartItemId;
+
+  /// The selected variant of a cart line, as the server sends it: a raw
+  /// `{color, attributes}` map. Kept untyped like [variants] so this core model
+  /// stays free of cart-feature types; the cart reads it for the variant pills.
+  final Map<String, dynamic>? options;
+
 
   final CategoryModel? category;
 
@@ -131,6 +141,8 @@ class ProductModel {
 
     this.cartQuantity,
     this.isFavorite,
+    this.cartItemId,
+    this.options,
     this.category,
     this.subCategory,
     this.rating,
@@ -181,6 +193,8 @@ class ProductModel {
     bool? isSelected,
     int? cartQuantity,
     bool? isFavorite,
+    int? cartItemId,
+    Map<String, dynamic>? options,
     CategoryModel? category,
     CategoryModel? subCategory,
     RatingModel? rating,
@@ -227,6 +241,8 @@ class ProductModel {
       isSelected: isSelected ?? this.isSelected,
       cartQuantity: cartQuantity ?? this.cartQuantity,
       isFavorite: isFavorite ?? this.isFavorite,
+      cartItemId: cartItemId ?? this.cartItemId,
+      options: options ?? this.options,
       category: category ?? this.category,
       subCategory: subCategory ?? this.subCategory,
       rating: rating ?? this.rating,
@@ -294,6 +310,8 @@ class ProductModel {
       quantity: (json['quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
+      cartItemId: (json['cart_item_id'] as num?)?.toInt(),
+      options: json['options'] as Map<String, dynamic>?,
 
 
       isFavorite: (json['is_favorite'] ?? json['is_favourite']) as bool?,
@@ -410,6 +428,8 @@ class ProductModel {
       'is_selected': isSelected,
       'cart_quantity': cartQuantity,
       'is_favorite': isFavorite,
+      'cart_item_id': cartItemId,
+      'options': options,
       'sub_category': subCategory?.toJson(),
       'rating': rating?.toJson(),
     };

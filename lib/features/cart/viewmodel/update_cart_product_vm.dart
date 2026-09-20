@@ -5,17 +5,21 @@ import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 
+/// Keyed by a *lane id*, not always a product id: an add-to-cart lane is keyed
+/// by the product id (there is no line yet), while a cart line is keyed by its
+/// `cart_item_id` so two variants of one product don't share a spinner or a
+/// feedback claim. The lane id doubles as the product id only for [addToCart].
 final updateCartProductProvider = StateNotifierProvider.autoDispose
     .family<UpdateCartProductViewModel, AsyncValue<CartModel?>, int>(
-      (Ref ref, int productId) => UpdateCartProductViewModel(ref, productId),
+      (Ref ref, int laneId) => UpdateCartProductViewModel(ref, laneId),
     );
 
 class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
-  UpdateCartProductViewModel(this._ref, this._productId)
+  UpdateCartProductViewModel(this._ref, this._laneId)
     : super(const AsyncValue<CartModel?>.data(null));
 
   final Ref _ref;
-  final int _productId;
+  final int _laneId;
   final CartRepo _repo = CartRepo();
 
   int _previousQuantity = 0;
@@ -54,26 +58,38 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     super.dispose();
   }
 
-  /// Sets this product's cart line to [productQuantity]; `0` removes it.
+  /// Sets a cart line to [productQuantity]; `0` removes it. [productId] is the
+  /// line's product (the request path) and [cartItemId] the line itself (the
+  /// query) — passed in rather than read off the lane id, which for a cart line
+  /// is the `cart_item_id`, not the product id.
   ///
   /// [seededQuantity]: what the caller can already see this line's quantity to
   /// be — see [_send].
   Future<void> updateCartProductQuantity(
     int productQuantity, {
+    required int productId,
+    int? cartItemId,
     int? seededQuantity,
   }) => _send(
-    () => _repo.updateCartProductQuantity(_productId, productQuantity),
+    () => _repo.updateCartProductQuantity(
+      productId,
+      productQuantity,
+      cartItemId: cartItemId,
+    ),
+    productId: productId,
     seededQuantity: seededQuantity,
   );
 
   /// Puts [productQuantity] of this product in the cart, with the selected
-  /// product [options] when the product has any.
+  /// product [options] when the product has any. The lane id is the product id
+  /// here — an add has no line yet.
   Future<void> addToCart(
     int productQuantity, {
     Map<String, dynamic>? options,
     int? seededQuantity,
   }) => _send(
-    () => _repo.addToCart(_productId, productQuantity, options),
+    () => _repo.addToCart(_laneId, productQuantity, options),
+    productId: _laneId,
     seededQuantity: seededQuantity,
   );
 
@@ -88,6 +104,7 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   /// instead of a quiet toast.
   Future<void> _send(
     Future<Either<Failure, CartModel>> Function() request, {
+    required int productId,
     int? seededQuantity,
   }) async {
     // Captured before the request, not after it: a sibling update of the same
@@ -95,7 +112,7 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     final int? cachedQuantity = _ref
         .read(getCartProvider)
         .valueOrNull
-        ?.quantityOf(_productId);
+        ?.quantityOf(productId);
 
     state = const AsyncValue<CartModel?>.loading();
 
