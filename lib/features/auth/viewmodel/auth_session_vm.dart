@@ -207,7 +207,10 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       _ref.read(getCouponsProvider.notifier).getCoupons(),
       _ref.read(getProfileProvider.notifier).getProfile(),
-      _ref.read(getMyCardsProvider.notifier).getMyCards(),
+      // Saved cards are no longer fetched at boot: they are loaded fresh when
+      // the wallet's "My Cards" / "Add Balance" buttons are tapped (see
+      // WalletScreen). getMyCardsProvider stays session-scoped below so the
+      // list still dies on logout.
       _ref.read(getWalletInfoProvider.notifier).getWalletInfo(),
       // Fetched here rather than left to the cart screen: on guest→login the
       // main shell (and with it CartView) can stay mounted, so its

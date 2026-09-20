@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_action_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_card_widget.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_transactions_view.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
@@ -89,20 +90,26 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                     child: WalletActionButton(
                       actionName: LangKeys.addBalanceKey.tr(),
                       isSelected: _selectedActionIndex == 0,
-                      onTap: () => _openActionSheet(
-                        index: 0,
-                        // No wallet snapshot passed in: the sheet watches the
-                        // provider itself, so limits and suggested amounts that
-                        // arrive while it is open still reach it.
-                        sheet: const AddBalanceView(),
-                        maxHeight: screenHeight * 0.9,
-                        backgroundColor: colors.white,
-                        isScrollControlled: true,
-                        // The sheet blocks dismissal while a top-up is in
-                        // flight via PopScope; drag-to-dismiss would bypass it,
-                        // so it's disabled — the X button / barrier remain.
-                        enableDrag: false,
-                      ),
+                      onTap: () {
+                        // Top-up charges the default card, which follows the
+                        // cards list — no longer loaded at boot, so fetch it
+                        // fresh here before the sheet needs a funding card.
+                        ref.read(getMyCardsProvider.notifier).getMyCards();
+                        _openActionSheet(
+                          index: 0,
+                          // No wallet snapshot passed in: the sheet watches the
+                          // provider itself, so limits and suggested amounts
+                          // that arrive while it is open still reach it.
+                          sheet: const AddBalanceView(),
+                          maxHeight: screenHeight * 0.9,
+                          backgroundColor: colors.white,
+                          isScrollControlled: true,
+                          // The sheet blocks dismissal while a top-up is in
+                          // flight via PopScope; drag-to-dismiss would bypass
+                          // it, so it's disabled — the X button / barrier remain.
+                          enableDrag: false,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -112,18 +119,25 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                     child: WalletActionButton(
                       actionName: LangKeys.myCardsKey.tr(),
                       isSelected: _selectedActionIndex == 1,
-                      onTap: () => _openActionSheet(
-                        index: 1,
-                        sheet: MyCardsView(),
-                        // The sheet sizes to its content and only grows to this
-                        // cap (80% of the screen), past which the cards list
-                        // scrolls inside it — so short lists leave no dead space
-                        // below them. isScrollControlled lets it exceed the
-                        // default half-screen ceiling to reach that cap.
-                        maxHeight: screenHeight * 0.8,
-                        backgroundColor: colors.white,
-                        isScrollControlled: true,
-                      ),
+                      onTap: () {
+                        // Fetch the cards fresh from the backend every time the
+                        // sheet is opened (they are no longer loaded at boot).
+                        // The sheet renders the provider's loading/error/data
+                        // states, so it shows the shimmer while this lands.
+                        ref.read(getMyCardsProvider.notifier).getMyCards();
+                        _openActionSheet(
+                          index: 1,
+                          sheet: MyCardsView(),
+                          // The sheet sizes to its content and only grows to
+                          // this cap (80% of the screen), past which the cards
+                          // list scrolls inside it — so short lists leave no
+                          // dead space below them. isScrollControlled lets it
+                          // exceed the default half-screen ceiling to reach it.
+                          maxHeight: screenHeight * 0.8,
+                          backgroundColor: colors.white,
+                          isScrollControlled: true,
+                        );
+                      },
                     ),
                   ),
                 ),
