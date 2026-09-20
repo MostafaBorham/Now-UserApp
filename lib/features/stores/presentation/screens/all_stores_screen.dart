@@ -12,7 +12,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/filters/app_filte
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
@@ -95,6 +94,10 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                     context: context,
                     isScrollControlled: true,
                     builder: (context) => StoresFilterView(
+                      // (1) Open the sheet reflecting the applied filters.
+                      initialCategoryIndex: selectedIndex,
+                      initialRating:
+                          filter.rating.isEmpty ? null : filter.rating,
                       // (2) Returned from the filter → update category + rating,
                       // and move the tab bar to the picked category.
                       onApply: (type, rating, categoryIndex) {
@@ -114,19 +117,17 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                       _categoryAt(index, categories);
                   final String? searchKey =
                       filter.search.isEmpty ? null : filter.search;
+                  final String? rating =
+                      filter.rating.isEmpty ? null : filter.rating;
                   // Drop the tab's previously loaded stores so opening it
                   // always refetches instead of showing a cached list.
-                  if (category == null) {
-                    ref.invalidate(getAllStoresProvider(searchKey));
-                  } else {
-                    ref.invalidate(
-                      getCategoryStoresProvider((
-                        categorySlug: category.slug ?? '',
-                        categoryId: null,
-                        searchKey: searchKey,
-                      )),
-                    );
-                  }
+                  ref.invalidate(
+                    getAllStoresProvider((
+                      categoryId: category?.id,
+                      rating: rating,
+                      searchKey: searchKey,
+                    )),
+                  );
                   ref
                       .read(storesSearchFilterProvider.notifier)
                       .setCategory(category);

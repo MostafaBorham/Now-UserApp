@@ -8,10 +8,17 @@ abstract class StoresEndpoints {
   static const String getFeaturedStores = '$getStores/featured';
   static int? storeId;
 
-  static Map<String, dynamic> storesQuery({required int page, String? search}) =>
+  static Map<String, dynamic> storesQuery({
+    required int page,
+    String? search,
+    int? categoryId,
+    String? rating,
+  }) =>
       <String, dynamic>{
         'per_page': _perPage,
         'page': page,
+        'category_id': ?categoryId,
+        if (rating != null && rating.isNotEmpty) 'rating': rating,
         if (search != null && search.isNotEmpty) 'search': search,
       };
 

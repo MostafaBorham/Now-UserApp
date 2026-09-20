@@ -240,7 +240,7 @@ Override overrideAllStores(
   AsyncValue<PaginationModel<StoreModel>> state,
 ) =>
     getAllStoresProvider.overrideWith(
-      (Ref ref, String? searchKey) => _FakeAllStoresVM(state, searchKey),
+      (Ref ref, AllStoresArgs args) => _FakeAllStoresVM(state, args),
     );
 
 class _FakeAppCategoriesVM extends GetAppCategoriesViewModel {
@@ -289,8 +289,8 @@ class _FakeCategoryStoresVM extends GetCategoryStoresViewModel {
 class _FakeAllStoresVM extends GetAllStoresViewModel {
   _FakeAllStoresVM(
     AsyncValue<PaginationModel<StoreModel>> initial,
-    String? searchKey,
-  ) : super(searchKey: searchKey) {
+    AllStoresArgs args,
+  ) : super(args: args) {
     state = initial;
   }
 

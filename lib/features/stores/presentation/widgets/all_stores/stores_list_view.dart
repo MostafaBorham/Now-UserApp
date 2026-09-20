@@ -7,18 +7,17 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
-import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 
-/// One store tab on [AllStoresScreen]. The "All" tab passes no [category] and
-/// pages the unfiltered store list from [getAllStoresProvider] — the same
-/// provider the home screen's "All" tab uses; every other tab is bound to its
-/// own [category] and pages [getCategoryStoresProvider].
+/// One store tab on [AllStoresScreen]. Every tab pages [getAllStoresProvider]
+/// (`/api/v1/stores`) — the same provider the home screen uses. The "All" tab
+/// passes no [category]; every other tab narrows the query by its [category]'s
+/// id, and the rating/search filters are forwarded alongside.
 ///
 /// It listens to [storesSearchFilterProvider] and only the tab whose [category]
-/// matches the selection queries its stores (forwarding the search key);
-/// unselected tabs stay skeleton placeholders.
+/// matches the selection queries its stores (forwarding the rating and search
+/// filters); unselected tabs stay skeleton placeholders.
 class StoresListView extends ConsumerWidget {
   const StoresListView({super.key, this.category});
 
@@ -43,44 +42,18 @@ class StoresListView extends ConsumerWidget {
     }
 
     final String? searchKey = filter.search.isEmpty ? null : filter.search;
+    final String? rating = filter.rating.isEmpty ? null : filter.rating;
 
-    if (category == null) {
-      final GetAllStoresViewModel viewModel =
-          ref.read(getAllStoresProvider(searchKey).notifier);
-
-      return PaginatedView<StoreModel>(
-        provider: getAllStoresProvider(searchKey),
-        onRefresh: viewModel.loadFirstPage,
-        onLoadNextPage: viewModel.loadNextPage,
-        layout: PaginatedListLayout(
-          padding: const EdgeInsets.all(2),
-          separatorBuilder: (context, index) => 15.hSpace,
-        ),
-        placeholderBuilder: (context) => const AspectRatio(
-          aspectRatio: 1.5,
-          child: AppShimmer(child: StoreCardView()),
-        ),
-        itemBuilder: (context, store, index) => AspectRatio(
-          aspectRatio: 1.5,
-          child: StoreCardView(
-            store: store,
-            onFavouriteChanged: (bool isFavourite) =>
-                viewModel.updateStoreFavourite(store.id, isFavourite),
-          ),
-        ),
-      );
-    }
-
-    final CategoryStoresArgs args = (
-      categorySlug: category.slug ?? '',
-      categoryId: null,
+    final AllStoresArgs args = (
+      categoryId: category?.id,
+      rating: rating,
       searchKey: searchKey,
     );
-    final GetCategoryStoresViewModel viewModel =
-        ref.read(getCategoryStoresProvider(args).notifier);
+    final GetAllStoresViewModel viewModel =
+        ref.read(getAllStoresProvider(args).notifier);
 
     return PaginatedView<StoreModel>(
-      provider: getCategoryStoresProvider(args),
+      provider: getAllStoresProvider(args),
       onRefresh: viewModel.loadFirstPage,
       onLoadNextPage: viewModel.loadNextPage,
       layout: PaginatedListLayout(

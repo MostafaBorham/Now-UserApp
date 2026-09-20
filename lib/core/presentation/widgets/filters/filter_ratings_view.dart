@@ -6,11 +6,15 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_rate_selector.dart';
 
 class FilterRatingsView extends StatelessWidget {
-  const FilterRatingsView({super.key, this.onChanged});
+  const FilterRatingsView({super.key, this.onChanged, this.initialIndex = 0});
 
   static const List<String> ratings = ['4.0', '4.5', '5'];
 
   final ValueChanged<String>? onChanged;
+
+  /// The rating chip highlighted on open (index into [ratings]). `null` leaves
+  /// nothing selected — used to reflect "no rating filter".
+  final int? initialIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class FilterRatingsView extends StatelessWidget {
         ),
         AppRateSelector(
           ratings: ratings,
-          initialIndex: 0,
+          initialIndex: initialIndex,
           onChanged: (index) => onChanged?.call(ratings[index]),
           labelColor: colors.black,
           starColor: colors.surface,

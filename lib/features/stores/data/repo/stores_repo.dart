@@ -30,6 +30,8 @@ class StoresRepo {
   Future<Either<Failure, PaginationModel<StoreModel>>> getStores({
     required int page,
     String? search,
+    int? categoryId,
+    String? rating,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -39,6 +41,8 @@ class StoresRepo {
       final Response response = await _storesApiService.getStores(
         page: page,
         search: search,
+        categoryId: categoryId,
+        rating: rating,
       );
 
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;

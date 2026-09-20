@@ -23,11 +23,16 @@ class FilterCategoriesView extends ConsumerWidget {
     this.onChanged,
     this.selectedColor,
     this.selectedLabelColor,
+    this.initialIndex = 0,
   });
 
   final ValueChanged<int>? onChanged;
   final Color? selectedColor;
   final Color? selectedLabelColor;
+
+  /// The chip highlighted on open, as an index over `[All, ...categories]`
+  /// (0 = All). Lets the sheet reflect the currently applied category.
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,7 +93,7 @@ class FilterCategoriesView extends ConsumerWidget {
         else
           AppSelector(
             items: items,
-            initialIndex: 0,
+            initialIndex: initialIndex,
             onChanged: onChanged,
             labelColor: colors.black,
             selectedColor: selectedColor ?? colors.surfaceContainerHigh,

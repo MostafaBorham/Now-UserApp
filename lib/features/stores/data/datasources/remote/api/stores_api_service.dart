@@ -18,10 +18,20 @@ class StoresApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getStores({required int page, String? search}) {
+  Future<Response> getStores({
+    required int page,
+    String? search,
+    int? categoryId,
+    String? rating,
+  }) {
     return _dio.get(
       StoresEndpoints.getStores,
-      queryParameters: StoresEndpoints.storesQuery(page: page, search: search),
+      queryParameters: StoresEndpoints.storesQuery(
+        page: page,
+        search: search,
+        categoryId: categoryId,
+        rating: rating,
+      ),
       cancelToken: _canceller.token,
     );
   }
