@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart' as html_parser;
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/typing_dots_indicator.dart';
@@ -12,10 +13,14 @@ class FaqAnswerChat extends StatefulWidget {
   const FaqAnswerChat({
     super.key,
     required this.answer,
+    this.animate = true,
+    this.onRevealed,
     this.replyDelay = const Duration(seconds: 5),
   });
 
   final String answer;
+  final bool animate;
+  final VoidCallback? onRevealed;
   final Duration replyDelay;
 
   @override
@@ -25,14 +30,32 @@ class FaqAnswerChat extends StatefulWidget {
 class _FaqAnswerChatState extends State<FaqAnswerChat> {
   bool _replied = false;
   Timer? _replyTimer;
+  late String _parsedAnswer = _parse(widget.answer);
 
   @override
   void initState() {
     super.initState();
+    if (!widget.animate) {
+      _replied = true;
+      return;
+    }
     _replyTimer = Timer(widget.replyDelay, () {
-      if (mounted) setState(() => _replied = true);
+      if (!mounted) return;
+      setState(() => _replied = true);
+      widget.onRevealed?.call();
     });
   }
+
+  @override
+  void didUpdateWidget(covariant FaqAnswerChat oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.answer != widget.answer) {
+      _parsedAnswer = _parse(widget.answer);
+    }
+  }
+
+  String _parse(String answer) =>
+      html_parser.parse(answer).body?.text.trim() ?? '';
 
   @override
   void dispose() {
@@ -86,7 +109,7 @@ class _FaqAnswerChatState extends State<FaqAnswerChat> {
                         ),
                       ),
                       child: Text(
-                        widget.answer,
+                        _parsedAnswer,
                         style: TextStyle(
                           fontSize: 14,
                           height: 1.45,
