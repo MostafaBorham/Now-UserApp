@@ -43,18 +43,12 @@ class PrimaryAppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.transparent, width: 2),
         ),
-        child: isLoading
-            ? Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: colors.white,
-                  ),
-                ),
-              )
-            : FittedBox(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Opacity(
+              opacity: isLoading ? 0.0 : 1.0,
+              child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
                   title,
@@ -64,6 +58,18 @@ class PrimaryAppButton extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            if (isLoading)
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: colors.white,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

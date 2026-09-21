@@ -9,7 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/external_url_launcher.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -680,9 +682,23 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ],
                             ),
                           ),
-                          PrimaryAppButton(
-                            title: LangKeys.printInvoiceKey.tr(),
-                          ),
+                          if (status.hasInvoice &&
+                              (order.invoicePdfUrl ?? '').isNotEmpty)
+                            PrimaryAppButton(
+                              title: LangKeys.printInvoiceKey.tr(),
+                              onTap: () async {
+                                final bool launched = await launchExternalUrl(
+                                  order.invoicePdfUrl,
+                                );
+                                if (!context.mounted) return;
+                                if (!launched) {
+                                  AppToast.showError(
+                                    context,
+                                    LangKeys.invoiceDownloadFailedKey,
+                                  );
+                                }
+                              },
+                            ),
                         ],
                       ),
                     ),

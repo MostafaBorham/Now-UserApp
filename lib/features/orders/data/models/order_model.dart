@@ -73,6 +73,12 @@ class OrderModel {
   final String? cancelReason;
   final String? notes;
 
+  /// Absolute URL of the server-rendered invoice PDF (`invoice_pdf_url`), used
+  /// by the order-details "print invoice" action to download the file. It is an
+  /// authenticated `/api/v1/my/orders/...` link, so it must be fetched through
+  /// the shared Dio (which attaches the session token), not opened externally.
+  final String? invoicePdfUrl;
+
   /// Lifecycle timestamps, kept as the raw ISO-8601 strings the API sends;
   /// parse/format them at the presentation layer.
   final String? estimatedDeliveryTime;
@@ -121,6 +127,7 @@ class OrderModel {
     this.region = const OrderRegionModel(),
     this.cancelReason,
     this.notes,
+    this.invoicePdfUrl,
     this.estimatedDeliveryTime,
     this.deliveredTime,
     this.respondByAt,
@@ -193,6 +200,7 @@ class OrderModel {
       region: OrderRegionModel.fromJson(json['region'] as Map<String, dynamic>?),
       cancelReason: json['cancel_reason']?.toString(),
       notes: json['notes']?.toString(),
+      invoicePdfUrl: json['invoice_pdf_url']?.toString(),
       estimatedDeliveryTime: json['estimated_delivery_time']?.toString(),
       deliveredTime: json['delivered_time']?.toString(),
       respondByAt: json['respond_by_at']?.toString(),

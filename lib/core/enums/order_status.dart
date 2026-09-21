@@ -30,6 +30,12 @@ sealed class OrderStatus {
   /// here so the rule is defined once instead of re-checked per screen.
   bool get isRateable => apiKey == 'delivered' || apiKey == 'closed';
 
+  /// Whether the order's invoice can be printed/downloaded — the terminal
+  /// `delivered` and `closed` states only. Keyed off [apiKey] so it also covers
+  /// `closed`, which the hierarchy doesn't model, and lives here so the rule is
+  /// defined once instead of re-checked per screen.
+  bool get hasInvoice => apiKey == 'delivered' || apiKey == 'closed';
+
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
   /// unrecognized key resolves to [UnknownStatus] carrying the raw value.
   static OrderStatus fromKey(String? key) => switch (key) {
