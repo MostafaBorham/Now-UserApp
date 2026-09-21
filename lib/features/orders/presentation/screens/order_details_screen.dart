@@ -293,6 +293,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ],
                             ),
                           ),
+                          if (status.isRateable) ...[
+                            12.hSpace,
+                            PrimaryAppButton(
+                              title: LangKeys.rateOrderKey.tr(),
+                              onTap: () => context.pushNamed(
+                                AppRoutes.orderRatingScreen,
+                                extra: order,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),

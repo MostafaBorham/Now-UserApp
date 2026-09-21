@@ -24,6 +24,12 @@ sealed class OrderStatus {
   /// cancel, so every other state stays `false`.
   bool get isCancellable => false;
 
+  /// Whether the order has reached a state the customer can rate — the terminal
+  /// `delivered` and `closed` states only. Keyed off [apiKey] so it also covers
+  /// `closed`, which the API sends but the hierarchy doesn't model, and lives
+  /// here so the rule is defined once instead of re-checked per screen.
+  bool get isRateable => apiKey == 'delivered' || apiKey == 'closed';
+
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
   /// unrecognized key resolves to [UnknownStatus] carrying the raw value.
   static OrderStatus fromKey(String? key) => switch (key) {

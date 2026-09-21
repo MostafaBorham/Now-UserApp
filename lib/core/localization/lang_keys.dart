@@ -323,6 +323,13 @@ abstract class LangKeys {
   static const String ratingFairKey = 'ratingFair';
   static const String ratingGoodKey = 'ratingGood';
   static const String ratingExcellentKey = 'ratingExcellent';
+  static const String orderRatingKey = 'orderRating';
+  static const String theRatingKey = 'theRating';
+  static const String shareExperienceToImproveKey = 'shareExperienceToImprove';
+  static const String rateProductsKey = 'rateProducts';
+  static const String deliveryAgentKey = 'deliveryAgent';
+  static const String writeYourCommentHereKey = 'writeYourCommentHere';
+  static const String submitRatingKey = 'submitRating';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';
