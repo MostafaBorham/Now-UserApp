@@ -114,8 +114,15 @@ Forced logout: when a token refresh fails, `TokenRefreshInterceptor` clears the 
 
 ## Tests
 
-There is a real suite: 46 files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
+There is a real suite: 61 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
 
-**`flutter test` is not green — the baseline is 207 passing / 10 failing.** Those 10 are pre-existing, not a regression: the six `test/auth/{login,register}/**` files are empty or stub scaffolding, and a few widget tests reference widgets that have since been removed (e.g. `test/features/stores/presentation/widgets/store_discount_coupon_item_test.dart`, which `flutter analyze` also flags). `flutter analyze` likewise has a standing baseline of **69 issues**, mostly unused imports.
+**`flutter analyze` is clean — 0 issues.** The old "69 issues, mostly unused imports" baseline is gone; treat any new issue as yours.
 
-Compare against those two baselines rather than expecting a clean run, and don't claim a change is verified because the counts merely didn't get worse — check that the files you touched are absent from both outputs.
+**`flutter test` is not green — the baseline is 304 passing / 10 failing** (measured 2026-09-21). Those 10 are pre-existing, and it is the *file list* that matters, not the count:
+
+- the six `test/auth/{login,register}/**` files — empty or stub scaffolding;
+- `test/home/home_top_banner_section_view_test.dart` — "renders the banner on the design 355×118 box" (geometry);
+- `test/features/categories/presentation/screens/category_details_screen_test.dart` — two cases;
+- `test/home/home_all_stores_section_view_test.dart` — "a category tab lists that category's stores, not the feed's".
+
+Compare against that list rather than expecting a clean run, and don't claim a change is verified because the counts merely didn't get worse — check that the files you touched are absent from both outputs. Counts drift as tests are added, so when in doubt `git stash` and re-measure the baseline rather than trusting the numbers written here.
