@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/orders/data/datasources/remote/api/orders_api_service.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/rate_order_request_model.dart';
 
 class OrdersRepo {
   final OrdersApiService _ordersApiService = OrdersApiService();
@@ -111,6 +112,41 @@ class OrdersRepo {
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
 
       if (response.statusCode != 200) {
+        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      }
+
+      return const Right(unit);
+    } on DioException catch (exception) {
+      final dynamic data = exception.response?.data;
+      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
+          ? data
+          : null;
+      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+    } catch (exception) {
+      return Left(Failure(exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, Unit>> rateOrder({
+    required RateOrderRequest request,
+  }) async {
+    if (!await ConnectionChecker.isConnected) {
+      return const Left(Failure(LangKeys.noInternetConnectionKey));
+    }
+
+    try {
+      final Response response = await _ordersApiService.rateOrder(
+        orderId: request.orderId,
+        body: request.toJson(),
+      );
+
+      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+
+      final bool success = body['success'] as bool? ?? false;
+      final int statusCode = response.statusCode ?? 0;
+      final bool ok = statusCode >= 200 && statusCode < 300;
+
+      if (!ok || !success) {
         return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
       }
 

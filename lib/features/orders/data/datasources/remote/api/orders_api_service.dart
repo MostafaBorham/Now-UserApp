@@ -40,4 +40,15 @@ class OrdersApiService {
       cancelToken: _canceller.token,
     );
   }
+
+  Future<Response> rateOrder({
+    required int orderId,
+    required Map<String, dynamic> body,
+  }) {
+    return _dio.post(
+      OrdersEndpoints.rateOrder(orderId),
+      data: body,
+      cancelToken: _canceller.token,
+    );
+  }
 }

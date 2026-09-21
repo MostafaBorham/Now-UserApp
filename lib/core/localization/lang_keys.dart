@@ -254,6 +254,7 @@ abstract class LangKeys {
   static const String discountLabelKey = 'discountLabel';
   static const String totalKey = 'total';
   static const String printInvoiceKey = 'printInvoice';
+  static const String invoiceDownloadFailedKey = 'invoiceDownloadFailed';
 
   // Order tracking (Order Confirmed / Track Order / Payment Failed)
   static const String orderConfirmedTitleKey = 'orderConfirmedTitle';
@@ -332,6 +333,7 @@ abstract class LangKeys {
   static const String submitRatingKey = 'submitRating';
   static const String thanksForRatingKey = 'thanksForRating';
   static const String ratingSampleCommentKey = 'ratingSampleComment';
+  static const String ratingRequiredKey = 'ratingRequired';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';

@@ -10,6 +10,10 @@ abstract class OrdersEndpoints {
   static String cancelOrder(String orderUuid) =>
       '$getMyOrders/$orderUuid/cancel';
 
+  /// Rate an order: `/api/v1/ratings/orders/{order_id}` (POST). Submits the
+  /// per-product, vendor and delivery scores in one request.
+  static String rateOrder(int orderId) => '/api/v1/ratings/orders/$orderId';
+
   static int perPage = 15;
   static int page = 1;
 

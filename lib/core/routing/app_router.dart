@@ -25,6 +25,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/screens/top_bran
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
 import 'package:nowdelivery_user_app/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/screens/invoice_viewer_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_details_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/screens/order_rating_screen.dart';
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_payment_card_screen.dart';
@@ -124,6 +125,13 @@ abstract class AppRouter {
         redirect: _redirectToLogin,
         builder: (context, state) =>
             OrderRatingScreen(order: state.extra as OrderModel),
+      ),
+      GoRoute(
+        name: AppRoutes.invoiceViewerScreen,
+        path: '/${AppRoutes.invoiceViewerScreen}',
+        redirect: _redirectToLogin,
+        builder: (context, state) =>
+            InvoiceViewerScreen(invoiceUrl: state.extra as String),
       ),
       GoRoute(
         name: AppRoutes.categoriesScreen,

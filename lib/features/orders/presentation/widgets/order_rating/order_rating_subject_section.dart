@@ -51,12 +51,13 @@ class OrderRatingSubjectSection extends StatelessWidget {
             ),
           ],
         ),
-        RatingCommentField(
-          hint: commentHint,
-          controller: commentController,
-          fillColor: colors.onPrimaryContainer,
-          readOnly: readOnly,
-        ),
+        if (!readOnly || (commentController?.text.isNotEmpty ?? false))
+          RatingCommentField(
+            hint: commentHint,
+            controller: commentController,
+            fillColor: colors.onPrimaryContainer,
+            readOnly: readOnly,
+          ),
       ],
     );
   }

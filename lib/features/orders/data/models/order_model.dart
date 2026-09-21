@@ -1,5 +1,6 @@
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/data/models/delivery_man_model.dart';
 
 /// A single store's order, with its own totals and [items]. Used both for the
@@ -50,11 +51,11 @@ class OrderModel {
   /// Whether this order currently exposes live driver tracking (`is_tracking`).
   final bool isTracking;
 
-  /// Whether the customer has already submitted a rating for this order
-  /// (`has_rated`). Drives the order-details screen's swap between the
-  /// rate-order button and the read-only [OrderRatingView]; defaults to `false`
-  /// until the API surfaces the flag.
-  final bool hasRated;
+  /// The order's rating payload (`rating`): whether it can still be rated
+  /// (`can_rate`) and, once rated, the per-product, vendor and delivery scores
+  /// and comments. Drives the order-details screen's swap between the rate-order
+  /// button and the read-only [OrderRatingView].
+  final OrderRatingModel rating;
 
   final String? paymentStatus;
   final double subtotal;
@@ -71,6 +72,12 @@ class OrderModel {
 
   final String? cancelReason;
   final String? notes;
+
+  /// Absolute URL of the server-rendered invoice PDF (`invoice_pdf_url`), used
+  /// by the order-details "print invoice" action to download the file. It is an
+  /// authenticated `/api/v1/my/orders/...` link, so it must be fetched through
+  /// the shared Dio (which attaches the session token), not opened externally.
+  final String? invoicePdfUrl;
 
   /// Lifecycle timestamps, kept as the raw ISO-8601 strings the API sends;
   /// parse/format them at the presentation layer.
@@ -107,7 +114,7 @@ class OrderModel {
     this.status,
     this.orderStatus,
     this.isTracking = false,
-    this.hasRated = false,
+    this.rating = const OrderRatingModel(),
     this.paymentStatus,
     this.subtotal = 0,
     this.tax = 0,
@@ -120,6 +127,7 @@ class OrderModel {
     this.region = const OrderRegionModel(),
     this.cancelReason,
     this.notes,
+    this.invoicePdfUrl,
     this.estimatedDeliveryTime,
     this.deliveredTime,
     this.respondByAt,
@@ -166,7 +174,7 @@ class OrderModel {
           ? {'ar': json['status'] as String, 'en': json['status'] as String}
           : null,
       isTracking: json['is_tracking'] as bool? ?? false,
-      hasRated: json['has_rated'] as bool? ?? true,
+      rating: OrderRatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:
@@ -192,6 +200,7 @@ class OrderModel {
       region: OrderRegionModel.fromJson(json['region'] as Map<String, dynamic>?),
       cancelReason: json['cancel_reason']?.toString(),
       notes: json['notes']?.toString(),
+      invoicePdfUrl: json['invoice_pdf_url']?.toString(),
       estimatedDeliveryTime: json['estimated_delivery_time']?.toString(),
       deliveredTime: json['delivered_time']?.toString(),
       respondByAt: json['respond_by_at']?.toString(),
