@@ -33,19 +33,19 @@ class StoreCardView extends StatelessWidget {
   /// screen for [store] (passing its id), matching [StoreItem].
   final VoidCallback? onTap;
 
-  static const String _demoCoverUrl =
-      'https://ccwetpprodstorage.blob.core.windows.net/prodpublicaccessblob/public-files/64d51e54708fb908287aca6f2d5091a2.jpeg?raw=1';
-  static const String _demoLogoUrl =
-      'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png';
-
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
     final bool hasStore = store != null;
     final int? storeId = store?.id;
-    final String coverUrl = hasStore ? (store!.coverUrl ?? '') : _demoCoverUrl;
-    final String logoUrl = hasStore ? (store!.logoUrl ?? '') : _demoLogoUrl;
+    // No store means this is a shimmer placeholder. The images stay empty so
+    // the skeleton never fetches anything: it used to point at two hardcoded
+    // third-party demo URLs, so every list's loading state fired real requests
+    // to hosts the app has no relationship with. The placeholder *text* stays,
+    // because the shimmer is masked to the shape its child paints.
+    final String coverUrl = hasStore ? (store!.coverUrl ?? '') : '';
+    final String logoUrl = hasStore ? (store!.logoUrl ?? '') : '';
     final String storeName = hasStore
         ? context.getLocalizedApiText(store!.name)
         : 'شركة دار الاميرات';
@@ -101,56 +101,28 @@ class StoreCardView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, storeBackgroundCon) {
-                      final stackHeight = storeBackgroundCon.maxHeight;
-                      return Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Positioned.fill(
-                            child: AppCachedNetworkImage(
-                              imageUrl: coverUrl,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
-                          ),
-                          PositionedDirectional(
-                            start: 0,
-                            top: 0,
-                            child: Container(
-                              width: stackHeight * 0.6,
-                              height: stackHeight * 0.3,
-                              decoration: BoxDecoration(
-                                color: colors.errorContainer,
-                                borderRadius: BorderRadiusDirectional.only(
-                                  bottomEnd: Radius.circular(16),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '25%',
-                                  style: AppTextStyles.style14Bold.copyWith(
-                                    color: colors.white,
-                                    fontSize: stackHeight * 0.15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          PositionedDirectional(
-                            end: 8,
-                            top: 8,
-                            child: CircularAppFavouriteIcon(
-                              size: w * 0.05,
-                              favouriteType: FavouriteType.store,
-                              itemId: store?.id,
-                              isFavourite: store?.isFavorite ?? false,
-                              onFavouriteChanged: onFavouriteChanged,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned.fill(
+                        child: AppCachedNetworkImage(
+                          imageUrl: coverUrl,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      ),
+                      PositionedDirectional(
+                        end: 8,
+                        top: 8,
+                        child: CircularAppFavouriteIcon(
+                          size: w * 0.05,
+                          favouriteType: FavouriteType.store,
+                          itemId: store?.id,
+                          isFavourite: store?.isFavorite ?? false,
+                          onFavouriteChanged: onFavouriteChanged,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(

@@ -67,6 +67,45 @@ void main() {
     expect(cardInkWell(tester).onTap, isNull);
   });
 
+  testWidgets('no discount badge is claimed on the card', (
+    WidgetTester tester,
+  ) async {
+    // The card used to paint a hardcoded "25%" flash over every store's cover,
+    // on the All Stores screen, the home feed, favourites and category stores
+    // alike. Nothing in the store payload backs a discount, so there is no
+    // badge until a real field exists.
+    await pumpCard(tester, cardStore(id: 7));
+
+    expect(find.text('25%'), findsNothing);
+    expect(find.textContaining('%'), findsNothing);
+  });
+
+  testWidgets('the delivery fee is shown to two decimals', (
+    WidgetTester tester,
+  ) async {
+    await pumpCard(tester, cardStore(id: 7));
+
+    expect(find.text('12.00'), findsOneWidget);
+  });
+
+  testWidgets('a placeholder card fetches no images', (
+    WidgetTester tester,
+  ) async {
+    // With no store this is a shimmer skeleton. It used to fall back to two
+    // hardcoded third-party demo URLs, so every list's loading state fired real
+    // requests at hosts the app has no relationship with.
+    await pumpCategoriesWidget(
+      tester,
+      const Center(
+        child: SizedBox(width: 340, height: 220, child: StoreCardView()),
+      ),
+    );
+
+    for (final Image image in tester.widgetList<Image>(find.byType(Image))) {
+      expect(image.image, isNot(isA<NetworkImage>()));
+    }
+  });
+
   testWidgets('an explicit onTap still wins over the id guard', (
     WidgetTester tester,
   ) async {
