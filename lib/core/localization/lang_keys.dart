@@ -309,6 +309,9 @@ abstract class LangKeys {
   static const String complaintSubmittedSuccessfullyKey =
       'complaintSubmittedSuccessfully';
   static const String tellUsMoreKey = 'tellUsMore';
+  static const String orderReadyToRateKey = 'orderReadyToRate';
+  static const String orderArrivedRatePromptKey = 'orderArrivedRatePrompt';
+  static const String rateOrderKey = 'rateOrder';
   static const String rateStoreQuestionKey = 'rateStoreQuestion';
   static const String rateDeliveryPersonQuestionKey =
       'rateDeliveryPersonQuestion';
