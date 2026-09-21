@@ -309,6 +309,9 @@ abstract class LangKeys {
   static const String complaintSubmittedSuccessfullyKey =
       'complaintSubmittedSuccessfully';
   static const String tellUsMoreKey = 'tellUsMore';
+  static const String orderReadyToRateKey = 'orderReadyToRate';
+  static const String orderArrivedRatePromptKey = 'orderArrivedRatePrompt';
+  static const String rateOrderKey = 'rateOrder';
   static const String rateStoreQuestionKey = 'rateStoreQuestion';
   static const String rateDeliveryPersonQuestionKey =
       'rateDeliveryPersonQuestion';
@@ -320,6 +323,15 @@ abstract class LangKeys {
   static const String ratingFairKey = 'ratingFair';
   static const String ratingGoodKey = 'ratingGood';
   static const String ratingExcellentKey = 'ratingExcellent';
+  static const String orderRatingKey = 'orderRating';
+  static const String theRatingKey = 'theRating';
+  static const String shareExperienceToImproveKey = 'shareExperienceToImprove';
+  static const String rateProductsKey = 'rateProducts';
+  static const String deliveryAgentKey = 'deliveryAgent';
+  static const String writeYourCommentHereKey = 'writeYourCommentHere';
+  static const String submitRatingKey = 'submitRating';
+  static const String thanksForRatingKey = 'thanksForRating';
+  static const String ratingSampleCommentKey = 'ratingSampleComment';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';

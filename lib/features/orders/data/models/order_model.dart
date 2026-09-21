@@ -50,6 +50,12 @@ class OrderModel {
   /// Whether this order currently exposes live driver tracking (`is_tracking`).
   final bool isTracking;
 
+  /// Whether the customer has already submitted a rating for this order
+  /// (`has_rated`). Drives the order-details screen's swap between the
+  /// rate-order button and the read-only [OrderRatingView]; defaults to `false`
+  /// until the API surfaces the flag.
+  final bool hasRated;
+
   final String? paymentStatus;
   final double subtotal;
   final double tax;
@@ -101,6 +107,7 @@ class OrderModel {
     this.status,
     this.orderStatus,
     this.isTracking = false,
+    this.hasRated = false,
     this.paymentStatus,
     this.subtotal = 0,
     this.tax = 0,
@@ -159,6 +166,7 @@ class OrderModel {
           ? {'ar': json['status'] as String, 'en': json['status'] as String}
           : null,
       isTracking: json['is_tracking'] as bool? ?? false,
+      hasRated: json['has_rated'] as bool? ?? true,
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:

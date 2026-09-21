@@ -36,6 +36,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       backgroundColor: context.colors.white,
       body: AppWavedView(
         appBarTitle: LangKeys.profileKey.tr(),
+        canPop: false,
         scrollController: _scrollController,
         body: SingleChildScrollView(
           controller: _scrollController,

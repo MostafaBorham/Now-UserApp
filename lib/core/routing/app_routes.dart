@@ -8,6 +8,7 @@ abstract class AppRoutes {
   static const String onBoardingScreen = 'onboarding';
   static const String mainScreen = 'main';
   static const String orderDetailsScreen = 'order-details';
+  static const String orderRatingScreen = 'order-rating';
   static const String cartScreen = 'cart';
   static const String categoriesScreen = 'categories';
   static const String categoryDetailsScreen = 'category-details';
