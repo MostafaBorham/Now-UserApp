@@ -296,16 +296,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           ),
                           if (status.isRateable) ...[
                             12.hSpace,
-                            if (order.hasRated)
-                              OrderRatingView(products: order.items)
-                            else
+                            if (order.rating.canRate)
                               PrimaryAppButton(
                                 title: LangKeys.rateOrderKey.tr(),
                                 onTap: () => context.pushNamed(
                                   AppRoutes.orderRatingScreen,
                                   extra: order,
                                 ),
-                              ),
+                              )
+                            else
+                              OrderRatingView(rating: order.rating),
                           ],
                         ],
                       ),

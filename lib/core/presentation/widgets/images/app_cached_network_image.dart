@@ -133,8 +133,8 @@ class AppCachedNetworkImage extends StatelessWidget {
           case LoadingViewTypes.shimmer || null:
             return AppShimmer(
               child: Container(
-                width: double.infinity,
-                height: height,
+                width: width ?? double.infinity,
+                height: height ?? double.infinity,
                 color: colors.white,
               ),
             );
