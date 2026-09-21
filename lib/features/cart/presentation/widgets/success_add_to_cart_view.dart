@@ -12,9 +12,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
+import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 
 /// The standard answer to a cart update that just succeeded: the confirmation
 /// sheet the first time a product joins the cart, and after that a toast that
@@ -66,8 +66,19 @@ void showCartUpdateFeedback(
     productName: line == null ? '' : context.getLocalizedApiText(line.name),
     productImageUrl: line?.images?.firstOrNull ?? '',
     onContinueShopping: onContinueShopping,
-    onViewCart: onViewCart,
+    onViewCart: onViewCart ?? () => openMainCartTab(context, ref),
   );
+}
+
+/// Lands the shopper on the main shell's cart tab rather than pushing a cart
+/// screen on top of wherever they were. Switches the tab first, then unwinds
+/// the router back to the shell so the freshly selected tab is what shows.
+void openMainCartTab(BuildContext context, WidgetRef ref) {
+  ref.read(mainTabIndexProvider.notifier).state = 2;
+  final GoRouter router = GoRouter.of(context);
+  while (router.canPop()) {
+    router.pop();
+  }
 }
 
 /// The message for a settled update of a line that was already in the cart,
@@ -92,9 +103,8 @@ String cartUpdateMessageKey({
 /// staying put — suits any screen the shopper can keep browsing from, so only
 /// screens that need to step back (product details) pass their own.
 ///
-/// [onViewCart] likewise overrides where "view cart" lands. The default pushes
-/// the cart screen, which is right from a list; a screen that would rather
-/// unwind to the cart tab of the main shell passes its own.
+/// [onViewCart] decides where "view cart" lands; callers routed through
+/// [showCartUpdateFeedback] default to the main shell's cart tab.
 Future<void> showSuccessAddToCartSheet(
   BuildContext context, {
   required String productName,
@@ -115,15 +125,7 @@ Future<void> showSuccessAddToCartSheet(
       productImageUrl: productImageUrl,
       onViewCart: () {
         sheetContext.pop();
-        if (onViewCart != null) {
-          onViewCart();
-          return;
-        }
-        // `context` belongs to whoever opened the sheet — a product card that
-        // may well have scrolled out of its list while the sheet was up, so it
-        // cannot be navigated from without checking.
-        if (!context.mounted) return;
-        context.pushNamed(AppRoutes.cartScreen);
+        onViewCart?.call();
       },
       onContinueShopping: () {
         sheetContext.pop();

@@ -69,15 +69,6 @@ class ProductActionButtons extends ConsumerWidget {
             onContinueShopping: () {
               if (context.canPop()) context.pop();
             },
-            // Unwind to the shell's cart tab rather than pushing the cart on
-            // top of the product that was just added.
-            onViewCart: () {
-              ref.read(mainTabIndexProvider.notifier).state = 2;
-              final GoRouter router = GoRouter.of(context);
-              while (router.canPop()) {
-                router.pop();
-              }
-            },
           );
         },
         error: (error, _) {

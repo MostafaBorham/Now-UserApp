@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_header_view.dart';
@@ -53,6 +54,7 @@ class FilterBottomSheet extends StatelessWidget {
                   Expanded(
                     child: PrimaryAppButton(
                       title: LangKeys.applyFiltersKey.tr(),
+                      titleStyle: AppTextStyles.style16Medium,
                       onTap: () {
                         onApply?.call();
                         context.pop();
@@ -63,6 +65,7 @@ class FilterBottomSheet extends StatelessWidget {
                   Expanded(
                     child: UnPrimaryAppButton(
                       title: LangKeys.resetFilterKey.tr(),
+                      titleStyle: AppTextStyles.style16Medium,
                       onTap: onReset,
                     ),
                   ),
