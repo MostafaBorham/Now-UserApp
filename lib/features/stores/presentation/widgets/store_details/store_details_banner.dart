@@ -7,10 +7,7 @@ import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 class StoreDetailsBanner extends StatelessWidget {
-  const StoreDetailsBanner({
-    super.key,
-    required this.banner,
-  });
+  const StoreDetailsBanner({super.key, required this.banner});
 
   final BannerModel banner;
 
@@ -20,16 +17,24 @@ class StoreDetailsBanner extends StatelessWidget {
     final String imageUrl =
         (isAr ? banner.imageAr : banner.imageEn) ?? banner.image ?? '';
 
+    // Only a banner that actually leads somewhere is a tap target. Before this
+    // the whole banner swallowed taps and answered nothing for any link type
+    // the app doesn't handle, or for one carrying no slug at all.
+    final VoidCallback? onTap = switch (banner.linkType) {
+      'product' when banner.productSlug != null => () => context.pushNamed(
+        AppRoutes.productDetailsScreen,
+        extra: banner.productSlug,
+      ),
+      'category' when banner.categorySlug != null => () => context.pushNamed(
+        AppRoutes.categoryDetailsScreen,
+        extra: CategoryModel(slug: banner.categorySlug),
+      ),
+      _ => null,
+    };
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        if(banner.linkType == 'product'){
-          context.pushNamed(AppRoutes.productDetailsScreen,extra: banner.productSlug);
-        }
-        else if (banner.linkType == 'category'){
-          context.pushNamed(AppRoutes.categoryDetailsScreen,extra: CategoryModel(slug: banner.categorySlug));
-        }
-      },
+      onTap: onTap,
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
