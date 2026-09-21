@@ -50,34 +50,38 @@ void main() {
       expect(model.banners!.first.image, 'b.png');
     });
 
-    test('offers list (with nested products) is parsed', () {
+    test('single leading offer (with nested products) is parsed', () {
+      // The storefront now returns one leading `offer` object (or null), not an
+      // `offers` list — see PublicStoreResource + StoreModel.offer.
       final model = StoreModel.fromJson({
-        'offers': [
-          {
-            'id': 303,
-            'name': 'Store Offer',
-            'discount_type': 'percentage',
-            'discount_value': 10.0,
-            'scope': 'products',
-            'products_count': 1,
-            'products': [
-              {
-                'id': 94,
-                'name': {'en': 'Perfume', 'ar': 'عطر'},
-              },
-            ],
-          },
-        ],
+        'offer': {
+          'id': 303,
+          'name': 'Store Offer',
+          'discount_type': 'percentage',
+          'discount_value': 10.0,
+          'scope': 'products',
+          'products_count': 1,
+          'products': [
+            {
+              'id': 94,
+              'name': {'en': 'Perfume', 'ar': 'عطر'},
+            },
+          ],
+        },
       });
-      expect(model.offers, hasLength(1));
-      final offer = model.offers!.first;
-      expect(offer.id, 303);
+      final offer = model.offer;
+      expect(offer, isNotNull);
+      expect(offer!.id, 303);
       expect(offer.name, 'Store Offer');
       expect(offer.discountType, 'percentage');
       expect(offer.discountValue, 10.0);
       expect(offer.productsCount, 1);
       expect(offer.products, hasLength(1));
       expect(offer.products!.first.id, 94);
+    });
+
+    test('offer is null when the storefront omits it', () {
+      expect(StoreModel.fromJson({'id': 1}).offer, isNull);
     });
   });
 

@@ -15,13 +15,11 @@ class UniqueStoreProductsSlider extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    // The first offer's products drive the slider; anything past that offer is
-    // ignored. Nothing to show when the store has no offers or an empty first
-    // offer, so the slider collapses out of the column.
-    final List<OfferModel>? offers = ref.watch(storeProvider).offers;
-    final List<ProductModel> products =
-        (offers != null && offers.isNotEmpty ? offers.first.products : null) ??
-        const [];
+    // The store's leading offer drives the slider. Nothing to show when the
+    // store has no offer or the offer has no products, so the slider collapses
+    // out of the column.
+    final OfferModel? offer = ref.watch(storeProvider).offer;
+    final List<ProductModel> products = offer?.products ?? const [];
     if (products.isEmpty) return const SizedBox.shrink();
 
     return AppArrowSlider(
