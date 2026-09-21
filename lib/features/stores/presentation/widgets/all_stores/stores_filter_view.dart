@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_bottom_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_categories_view.dart';
@@ -15,12 +14,7 @@ class StoresFilterView extends StatefulWidget {
 
   /// [categoryIndex] is the selected chip index over the `[All, ...categories]`
   /// list (0 = All), matching the tab order in [AllStoresScreen].
-  final void Function(
-    StoresSortType? type,
-    String? rating,
-    int? categoryIndex,
-  )?
-  onApply;
+  final void Function(String? rating, int? categoryIndex)? onApply;
 
   /// The category chip highlighted on open, over `[All, ...categories]`
   /// (0 = All), so the sheet reflects the currently applied category.
@@ -35,7 +29,6 @@ class StoresFilterView extends StatefulWidget {
 }
 
 class _StoresFilterViewState extends State<StoresFilterView> {
-  StoresSortType? selectedType;
   late String? selectedRating = widget.initialRating;
 
   /// Starts on the currently applied category (defaults to 0 = "All") so apply
@@ -45,7 +38,6 @@ class _StoresFilterViewState extends State<StoresFilterView> {
 
   void resetFilters() {
     setState(() {
-      selectedType = null;
       selectedRating = null;
       selectedCategoryIndex = 0;
       filtersKey++;
@@ -59,11 +51,8 @@ class _StoresFilterViewState extends State<StoresFilterView> {
         ? -1
         : FilterRatingsView.ratings.indexOf(selectedRating!);
     return FilterBottomSheet(
-      onApply: () => widget.onApply?.call(
-        selectedType,
-        selectedRating,
-        selectedCategoryIndex,
-      ),
+      onApply: () =>
+          widget.onApply?.call(selectedRating, selectedCategoryIndex),
       onReset: resetFilters,
       filters: [
         FilterCategoriesView(

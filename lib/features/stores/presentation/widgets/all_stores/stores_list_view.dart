@@ -25,10 +25,10 @@ class StoresListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final CategoryModel? category = this.category;
+    final int? categoryId = category?.id;
     final StoresSearchFilter filter = ref.watch(storesSearchFilterProvider);
 
-    final bool isSelected = filter.category == category;
+    final bool isSelected = filter.categoryId == categoryId;
     if (!isSelected) {
       return ListView.separated(
         padding: const EdgeInsets.all(2),
@@ -45,12 +45,13 @@ class StoresListView extends ConsumerWidget {
     final String? rating = filter.rating.isEmpty ? null : filter.rating;
 
     final AllStoresArgs args = (
-      categoryId: category?.id,
+      categoryId: categoryId,
       rating: rating,
       searchKey: searchKey,
     );
-    final GetAllStoresViewModel viewModel =
-        ref.read(getAllStoresProvider(args).notifier);
+    final GetAllStoresViewModel viewModel = ref.read(
+      getAllStoresProvider(args).notifier,
+    );
 
     return PaginatedView<StoreModel>(
       provider: getAllStoresProvider(args),

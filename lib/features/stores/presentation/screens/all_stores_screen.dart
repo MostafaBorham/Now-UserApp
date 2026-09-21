@@ -15,7 +15,6 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categ
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_filter_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/all_stores/stores_list_view.dart';
-import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 
 class AllStoresScreen extends ConsumerStatefulWidget {
   const AllStoresScreen({super.key});
@@ -37,10 +36,12 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
     });
   }
 
-  /// The [CategoryModel] behind a tab index over `[All, ...categories]`
+  /// The category id behind a tab index over `[All, ...categories]`
   /// (index 0 = All = null).
-  CategoryModel? _categoryAt(int index, List<CategoryModel> categories) =>
-      index > 0 && index - 1 < categories.length ? categories[index - 1] : null;
+  int? _categoryIdAt(int index, List<CategoryModel> categories) =>
+      index > 0 && index - 1 < categories.length
+      ? categories[index - 1].id
+      : null;
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +57,13 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
         categoriesState.valueOrNull?.data ?? const <CategoryModel>[];
 
     // The tab index behind the currently selected category (0 = "All"), so the
-    // tab bar follows a category picked in the filter sheet. `-1` (not found)
-    // falls back to "All".
-    final int selectedIndex = filter.category == null
+    // tab bar follows a category picked in the filter sheet. Matched on id, not
+    // on the whole model: an unrelated field changing in a refetched categories
+    // list used to make the selection match nothing and strand every tab on its
+    // shimmer. `-1` (not found) still falls back to "All".
+    final int selectedIndex = filter.categoryId == null
         ? 0
-        : categories.indexOf(filter.category!) + 1;
+        : categories.indexWhere((c) => c.id == filter.categoryId) + 1;
 
     // Tabs and views are always the same length: index 0 = "All", then one
     // entry per loaded category. While categories are still loading, only the
@@ -79,8 +82,9 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
           children: [
             PrimarySearchField(
               isAnimated: false,
-              onSearch: (query) =>
-                  ref.read(storesSearchFilterProvider.notifier).setSearch(query),
+              onSearch: (query) => ref
+                  .read(storesSearchFilterProvider.notifier)
+                  .setSearch(query),
             ),
             Expanded(
               child: CustomButtonTabBar(
@@ -96,42 +100,26 @@ class _AllStoresScreenState extends ConsumerState<AllStoresScreen> {
                     builder: (context) => StoresFilterView(
                       // (1) Open the sheet reflecting the applied filters.
                       initialCategoryIndex: selectedIndex,
-                      initialRating:
-                          filter.rating.isEmpty ? null : filter.rating,
+                      initialRating: filter.rating.isEmpty
+                          ? null
+                          : filter.rating,
                       // (2) Returned from the filter → update category + rating,
                       // and move the tab bar to the picked category.
-                      onApply: (type, rating, categoryIndex) {
+                      onApply: (rating, categoryIndex) {
                         final int index = categoryIndex ?? 0;
                         ref
                             .read(storesSearchFilterProvider.notifier)
                             .applyFilter(
-                              category: _categoryAt(index, categories),
+                              categoryId: _categoryIdAt(index, categories),
                               rating: rating ?? '',
                             );
                       },
                     ),
                   ),
                 ),
-                onTap: (index) {
-                  final CategoryModel? category =
-                      _categoryAt(index, categories);
-                  final String? searchKey =
-                      filter.search.isEmpty ? null : filter.search;
-                  final String? rating =
-                      filter.rating.isEmpty ? null : filter.rating;
-                  // Drop the tab's previously loaded stores so opening it
-                  // always refetches instead of showing a cached list.
-                  ref.invalidate(
-                    getAllStoresProvider((
-                      categoryId: category?.id,
-                      rating: rating,
-                      searchKey: searchKey,
-                    )),
-                  );
-                  ref
-                      .read(storesSearchFilterProvider.notifier)
-                      .setCategory(category);
-                },
+                onTap: (index) => ref
+                    .read(storesSearchFilterProvider.notifier)
+                    .setCategory(_categoryIdAt(index, categories)),
                 tabs: tabs,
                 views: [
                   const StoresListView(),
