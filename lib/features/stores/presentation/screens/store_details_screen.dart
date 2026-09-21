@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
@@ -100,100 +101,117 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
             ),
           ),
           data: (StoreModel store) {
+            final List<BannerModel> banners = store.banners ?? const [];
             return SafeArea(
               top: false,
               child: ProviderScope(
                 overrides: [storeProvider.overrideWithValue(store)],
-                child: NestedScrollView(
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  // Header + banners scroll away with the content; only the
-                  // CustomButtonTabBar (the NestedScrollView body) stays
-                  // pinned to the top while the product grid scrolls.
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 390 / 240,
-                            child: StoreDetailsInfoHeader(),
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            color: colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            width: double.infinity,
-                            child: Column(
-                              spacing: 20,
-                              children: [
-                                AppSlider(
-                                  sliderItems: (store.banners ?? const [])
-                                      .map(
-                                        (BannerModel banner) =>
-                                            StoreDetailsBanner(
-                                              banner: banner,
-                                            ),
-                                      )
-                                      .toList(),
-                                  itemAspectRatio: 3,
-                                ),
-                                UniqueStoreProductsSlider(),
-                                StoreDiscountCouponsList(),
-                                Align(
-                                  alignment: AlignmentDirectional.centerStart,
-                                  child: StoreCategoryCirclesList(),
-                                ),
-                              ],
+                child: AppRefreshIndicator(
+                  // A NestedScrollView's top overscroll reaches the indicator
+                  // deeper than level 0, so the default predicate would ignore
+                  // the gesture and the pull would do nothing.
+                  notificationPredicate: (_) => true,
+                  // refresh() deliberately does not flip the state back to
+                  // loading, so the page stays on screen instead of collapsing
+                  // into the shimmer under the spinner.
+                  onRefresh: () => ref
+                      .read(getStoreDetailsProvider(storeId).notifier)
+                      .refresh(),
+                  child: NestedScrollView(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    // Header + banners scroll away with the content; only the
+                    // CustomButtonTabBar (the NestedScrollView body) stays
+                    // pinned to the top while the product grid scrolls.
+                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 390 / 240,
+                              child: StoreDetailsInfoHeader(),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            Container(
+                              color: colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              width: double.infinity,
+                              child: Column(
+                                spacing: 20,
+                                children: [
+                                  // Built only when there are banners: an empty
+                                  // AppSlider collapses to nothing, but the
+                                  // column's 20px gap around it would remain.
+                                  if (banners.isNotEmpty)
+                                    AppSlider(
+                                      sliderItems: banners
+                                          .map(
+                                            (BannerModel banner) =>
+                                                StoreDetailsBanner(
+                                                  banner: banner,
+                                                ),
+                                          )
+                                          .toList(),
+                                      itemAspectRatio: 3,
+                                    ),
+                                  UniqueStoreProductsSlider(),
+                                  StoreDiscountCouponsList(),
+                                  Align(
+                                    alignment: AlignmentDirectional.centerStart,
+                                    child: StoreCategoryCirclesList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                  body: Container(
-                    color: colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
-                            const double minTabBarHeight = 70;
-                            return ClipRect(
-                              child: OverflowBox(
-                                alignment: AlignmentDirectional.topStart,
-                                minHeight: 0,
-                                maxHeight: double.infinity,
-                                child: SizedBox(
-                                  height:
-                                      constraints.maxHeight < minTabBarHeight
-                                      ? minTabBarHeight
-                                      : constraints.maxHeight,
-                                  width: constraints.maxWidth,
-                                  child: CustomButtonTabBar(
-                                    tabs: ProductFilters.values
-                                        .map(
-                                          (ProductFilters filter) =>
-                                              filter.label,
-                                        )
-                                        .toList(),
-                                    views: ProductFilters.values
-                                        .map(
-                                          (ProductFilters filter) =>
-                                              StoreDetailsProductsView(
-                                                storeId: storeId,
-                                                filter: filter,
-                                              ),
-                                        )
-                                        .toList(),
-                                    // selectedTabColor: colors.tertiaryContainer,
-                                    unSelectedTabColor: colors.neutral400
-                                        .withValues(alpha: 0.2),
-                                    selectedLabelColor: colors.white,
-                                    unSelectedLabelColor: colors.black,
+                    ],
+                    body: Container(
+                      color: colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: LayoutBuilder(
+                        builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                              const double minTabBarHeight = 70;
+                              return ClipRect(
+                                child: OverflowBox(
+                                  alignment: AlignmentDirectional.topStart,
+                                  minHeight: 0,
+                                  maxHeight: double.infinity,
+                                  child: SizedBox(
+                                    height:
+                                        constraints.maxHeight < minTabBarHeight
+                                        ? minTabBarHeight
+                                        : constraints.maxHeight,
+                                    width: constraints.maxWidth,
+                                    child: CustomButtonTabBar(
+                                      tabs: ProductFilters.values
+                                          .map(
+                                            (ProductFilters filter) =>
+                                                filter.label,
+                                          )
+                                          .toList(),
+                                      views: ProductFilters.values
+                                          .map(
+                                            (ProductFilters filter) =>
+                                                StoreDetailsProductsView(
+                                                  storeId: storeId,
+                                                  filter: filter,
+                                                ),
+                                          )
+                                          .toList(),
+                                      // selectedTabColor: colors.tertiaryContainer,
+                                      unSelectedTabColor: colors.neutral400
+                                          .withValues(alpha: 0.2),
+                                      selectedLabelColor: colors.white,
+                                      unSelectedLabelColor: colors.black,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                      ),
                     ),
                   ),
                 ),
