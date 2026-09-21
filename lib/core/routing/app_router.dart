@@ -183,12 +183,18 @@ abstract class AppRouter {
       ),
       GoRoute(
         name: AppRoutes.viewStoreCategoryProductsScreen,
-        path: '/${AppRoutes.viewStoreCategoryProductsScreen}',
+        // Both ids are identity, so they live in the path — the same reasoning
+        // spelled out on storeDetailsScreen below. This screen used to take the
+        // whole CategoryModel through `extra`, which a route re-parse drops,
+        // and it had no store id at all: it listed the category across every
+        // store instead of the one the shopper was looking at.
+        path:
+            '/${AppRoutes.viewStoreCategoryProductsScreen}/:storeId/:categoryId',
         builder: (context, state) {
-          final category = state.extra as CategoryModel?;
-
           return ViewStoreCategoryProductsScreen(
-            category: category ?? const CategoryModel(),
+            storeId: int.tryParse(state.pathParameters['storeId'] ?? ''),
+            categoryId: int.tryParse(state.pathParameters['categoryId'] ?? ''),
+            categoryName: state.extra as Map<String, dynamic>?,
           );
         },
       ),

@@ -18,6 +18,7 @@ class StoreCategoryCirclesList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final StoreModel store = ref.watch(storeProvider);
+    final int? storeId = store.id;
     final List<CategoryModel> categories = store.categories ?? const [];
 
     if (categories.isEmpty) return const SizedBox.shrink();
@@ -31,7 +32,9 @@ class StoreCategoryCirclesList extends ConsumerWidget {
         children: [
           Text(
             LangKeys.storeCategoriesKey.tr(),
-            style: AppTextStyles.style16Bold.copyWith(color: colors.tertiaryContainer),
+            style: AppTextStyles.style16Bold.copyWith(
+              color: colors.tertiaryContainer,
+            ),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -39,33 +42,43 @@ class StoreCategoryCirclesList extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               spacing: 12,
-              children: List.generate(
-                categories.length,
-                (int index) {
-                  final CategoryModel category = categories[index];
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(999),
-                    onTap: () => context.pushNamed(
-                      AppRoutes.viewStoreCategoryProductsScreen,
-                      extra: category,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: colors.onPrimaryContainer,
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: colors.neutral200),
-                      ),
-                      child: Text(
-                        context.getLocalizedApiText(category.name),
-                        style: AppTextStyles.style14Bold.copyWith(
-                          color: colors.tertiaryContainer,
+              children: List.generate(categories.length, (int index) {
+                final CategoryModel category = categories[index];
+                final int? categoryId = category.id;
+                return InkWell(
+                  borderRadius: BorderRadius.circular(999),
+                  // A category that arrived without an id can't be opened
+                  // scoped to this store, so the chip renders but doesn't
+                  // navigate — the same guard the store cards apply.
+                  onTap: (storeId == null || categoryId == null)
+                      ? null
+                      : () => context.pushNamed(
+                          AppRoutes.viewStoreCategoryProductsScreen,
+                          pathParameters: <String, String>{
+                            'storeId': '$storeId',
+                            'categoryId': '$categoryId',
+                          },
+                          extra: category.name,
                         ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.onPrimaryContainer,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: colors.neutral200),
+                    ),
+                    child: Text(
+                      context.getLocalizedApiText(category.name),
+                      style: AppTextStyles.style14Bold.copyWith(
+                        color: colors.tertiaryContainer,
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }),
             ),
           ),
         ],

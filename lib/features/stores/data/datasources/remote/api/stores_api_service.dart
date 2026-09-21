@@ -45,26 +45,27 @@ class StoresApiService {
   }
 
   Future<Response> getStoreDetails({required int storeId}) {
-    StoresEndpoints.storeId = storeId;
     return _dio.get(
-      StoresEndpoints.getStoreDetails,
+      StoresEndpoints.storeDetails(storeId),
       cancelToken: _canceller.token,
     );
   }
 
-  Future<Response> getStoreCategoryProducts({
+  Future<Response> getStoreProducts({
     required int storeId,
     required int? categoryId,
     required String filter,
     required int page,
+    String? search,
   }) {
-    StoresEndpoints.storeId = storeId;
-    StoresEndpoints.storeCategoryId = categoryId;
-    StoresEndpoints.productsFilter = filter;
-    StoresEndpoints.productsPage = page;
     return _dio.get(
-      StoresEndpoints.getStoreCategoryProducts,
-      queryParameters: StoresEndpoints.getStoreCategoryProductsQuery,
+      StoresEndpoints.storeProducts(storeId),
+      queryParameters: StoresEndpoints.storeProductsQuery(
+        page: page,
+        filter: filter,
+        categoryId: categoryId,
+        search: search,
+      ),
       cancelToken: _canceller.token,
     );
   }

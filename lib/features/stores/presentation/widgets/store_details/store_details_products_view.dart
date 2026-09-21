@@ -38,10 +38,14 @@ class StoreDetailsProductsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // No category and no search: this is the whole store under one filter tab.
+    // The category chips open their own screen, which reuses this provider with
+    // a categoryId set.
     final StoreCategoryProductsArgs args = (
       storeId: storeId,
       categoryId: null,
       filter: filter,
+      searchKey: null,
     );
     final GetStoreCategoryProductsViewModel viewModel = ref.read(
       getStoreCategoryProductsProvider(args).notifier,
