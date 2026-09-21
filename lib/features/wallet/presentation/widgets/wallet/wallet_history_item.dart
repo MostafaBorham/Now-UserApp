@@ -49,9 +49,15 @@ class WalletHistoryItem extends StatelessWidget {
     // The status drives the chip's colors and the amount color, mapped through
     // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
     final WalletTransactionStatus status = transaction.status;
-    // The human-readable chip label — the server's `display_status`, falling
-    // back to the raw status value the status carries.
-    final String statusLabel = transaction.displayStatus ?? status.name;
+    // The human-readable chip label — the server's localized
+    // `display_status_label` for the active locale, falling back to the raw
+    // `display_status` and then to the status value the status carries.
+    final String localizedStatusLabel = context.getLocalizedApiText(
+      transaction.displayStatusLabel,
+    );
+    final String statusLabel = localizedStatusLabel.isNotEmpty
+        ? localizedStatusLabel
+        : (transaction.displayStatus ?? status.name);
     final String price = transaction.amountLabel ?? '';
     // The transaction date, shown as a localized numeric `dd-MM-yyyy` (e.g.
     // 10-04-2026, Arabic-Indic digits under ar-EG) via the shared

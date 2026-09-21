@@ -23,6 +23,11 @@ class WalletTransactionModel extends Equatable {
   /// plain success, it is driven by the granular `display_status`.
   final WalletTransactionStatus status;
   final String? displayStatus;
+
+  /// The human-readable, localized status label — the `{ar, en}` translation
+  /// map from the API's `display_status_label` (a bare string is mirrored into
+  /// both locales by [JsonParsing.localized]).
+  final Map<String, dynamic>? displayStatusLabel;
   final double? amount;
   final double? signedAmount;
   final String? amountLabel;
@@ -42,6 +47,7 @@ class WalletTransactionModel extends Equatable {
     this.source,
     required this.status,
     this.displayStatus,
+    this.displayStatusLabel,
     this.amount,
     this.signedAmount,
     this.amountLabel,
@@ -70,6 +76,7 @@ class WalletTransactionModel extends Equatable {
         (json['display_status'] ?? json['status'])?.toString(),
       ),
       displayStatus: json['display_status']?.toString(),
+      displayStatusLabel: json.localized('display_status_label'),
       amount: (json['amount'] as num?)?.toDouble(),
       signedAmount: (json['signed_amount'] as num?)?.toDouble(),
       amountLabel: json['amount_label']?.toString(),
@@ -96,6 +103,7 @@ class WalletTransactionModel extends Equatable {
       'source': source,
       'status': status.name,
       'display_status': displayStatus,
+      'display_status_label': displayStatusLabel,
       'amount': amount,
       'signed_amount': signedAmount,
       'amount_label': amountLabel,
@@ -118,6 +126,7 @@ class WalletTransactionModel extends Equatable {
     source,
     status,
     displayStatus,
+    displayStatusLabel,
     amount,
     signedAmount,
     amountLabel,
