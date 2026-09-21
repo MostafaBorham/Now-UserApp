@@ -19,6 +19,7 @@ class OrderRatingProductRow extends StatelessWidget {
     required this.commentHint,
     this.onRatingSelected,
     this.commentController,
+    this.readOnly = false,
   });
 
   final String name;
@@ -27,6 +28,7 @@ class OrderRatingProductRow extends StatelessWidget {
   final String commentHint;
   final RatingSelectedCallback? onRatingSelected;
   final TextEditingController? commentController;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +78,7 @@ class OrderRatingProductRow extends StatelessWidget {
           hint: commentHint,
           controller: commentController,
           fillColor: colors.white,
+          readOnly: readOnly,
         ),
       ],
     );

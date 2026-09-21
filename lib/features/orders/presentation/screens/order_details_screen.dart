@@ -24,6 +24,7 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_invoice_row.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_view.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
 /// Full details of a single placed order, fetched by the [orderUuid] handed in
@@ -295,13 +296,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           ),
                           if (status.isRateable) ...[
                             12.hSpace,
-                            PrimaryAppButton(
-                              title: LangKeys.rateOrderKey.tr(),
-                              onTap: () => context.pushNamed(
-                                AppRoutes.orderRatingScreen,
-                                extra: order,
+                            if (order.hasRated)
+                              OrderRatingView(products: order.items)
+                            else
+                              PrimaryAppButton(
+                                title: LangKeys.rateOrderKey.tr(),
+                                onTap: () => context.pushNamed(
+                                  AppRoutes.orderRatingScreen,
+                                  extra: order,
+                                ),
                               ),
-                            ),
                           ],
                         ],
                       ),

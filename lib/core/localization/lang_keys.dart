@@ -330,6 +330,8 @@ abstract class LangKeys {
   static const String deliveryAgentKey = 'deliveryAgent';
   static const String writeYourCommentHereKey = 'writeYourCommentHere';
   static const String submitRatingKey = 'submitRating';
+  static const String thanksForRatingKey = 'thanksForRating';
+  static const String ratingSampleCommentKey = 'ratingSampleComment';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';

@@ -76,6 +76,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
 
     return AppWavedView(
       appBarTitle: LangKeys.myOrdersKey.tr(),
+      canPop: false,
       scrollController: _scrollController,
       body: ordersState.when(
         loading: () => OrderListViewShimmer(),

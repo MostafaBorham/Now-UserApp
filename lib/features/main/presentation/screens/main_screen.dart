@@ -20,7 +20,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   static const Set<int> _loginRequiredTabs = <int>{1, 3};
   static const List<Widget> mainPages = <Widget>[
     HomeView(),
-    FavouritesScreen(),
+    FavouritesScreen(canPop: false),
     CartView(canPop: false),
     MyOrderScreen(),
     SettingsScreen(),

@@ -13,11 +13,13 @@ class RatingCommentField extends StatelessWidget {
     required this.hint,
     this.controller,
     this.fillColor,
+    this.readOnly = false,
   });
 
   final String hint;
   final TextEditingController? controller;
   final Color? fillColor;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class RatingCommentField extends StatelessWidget {
 
     return TextField(
       controller: controller,
+      readOnly: readOnly,
       minLines: 1,
       maxLines: 4,
       textInputAction: TextInputAction.newline,
