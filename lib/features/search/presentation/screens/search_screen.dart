@@ -6,7 +6,6 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
-import 'package:nowdelivery_user_app/features/products/viewmodel/get_products_vm.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_categories_section.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_products_grid.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
@@ -20,6 +19,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   String _rawQuery = '';
+  String _searchedTerm = '';
 
   final GlobalKey _searchFieldKey = GlobalKey();
 
@@ -28,29 +28,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     ref.read(recentSearchProvider.notifier).addSearchKey(term);
   }
 
-  void _search(String term) {
-    if (term.isEmpty) return;
-    ref.read(getProductsProvider.notifier).getProducts(search: term);
+  void _onChanged(String value) {
+    setState(() {
+      _rawQuery = value;
+      if (value.trim().isEmpty) _searchedTerm = '';
+    });
   }
 
   void _onSearch(String value) {
     if (!mounted) return;
-    _search(value.trim());
+    final String term = value.trim();
+    if (term.isEmpty) return;
+    setState(() => _searchedTerm = term);
   }
 
   void _onSubmitted(String value) {
     final String term = value.trim();
     if (term.isEmpty) return;
-    setState(() => _rawQuery = term);
+    setState(() => _searchedTerm = term);
     _remember(term);
-    _search(term);
     FocusScope.of(context).unfocus();
   }
 
   void _onRecentSelect(String term) {
-    setState(() => _rawQuery = term);
+    setState(() => _searchedTerm = term);
     _remember(term);
-    _search(term);
     FocusScope.of(context).unfocus();
   }
 
@@ -61,13 +63,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final List<String> recentSearches =
         ref.watch(recentSearchProvider).valueOrNull ?? const <String>[];
 
-    final bool hasQuery = _rawQuery.trim().isNotEmpty;
+    final bool hasResults = _searchedTerm.trim().isNotEmpty;
 
     final Widget searchField = PrimarySearchField(
       key: _searchFieldKey,
-      enableRecentKeywords: !hasQuery,
+      enableRecentKeywords: !hasResults,
       recentKeywords: _rawQuery.isEmpty ? recentSearches : const <String>[],
-      onChanged: (String value) => setState(() => _rawQuery = value),
+      onChanged: _onChanged,
       onSearch: _onSearch,
       onSubmitted: _onSubmitted,
       onRecentSelect: _onRecentSelect,
@@ -84,12 +86,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 20,
           children: <Widget>[
-            if (hasQuery) searchField else Flexible(child: searchField),
-            if (hasQuery)
+            if (hasResults) searchField else Flexible(child: searchField),
+            if (hasResults)
               Expanded(
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: const SearchProductsGrid(),
+                  child: SearchProductsGrid(searchTerm: _searchedTerm),
                 ),
               )
             else

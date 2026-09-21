@@ -3,10 +3,11 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/features/products/data/repo/products_repo.dart';
 
-final getProductsProvider =
-    StateNotifierProvider.autoDispose<GetProductsViewModel,
-        AsyncValue<List<ProductModel>>>(
-  (Ref ref) => GetProductsViewModel(const AsyncValue.loading()),
+final getProductsProvider = StateNotifierProvider.autoDispose.family<
+    GetProductsViewModel, AsyncValue<List<ProductModel>>, String>(
+  (Ref ref, String search) =>
+      GetProductsViewModel(const AsyncValue.loading())
+        ..getProducts(search: search),
 );
 
 class GetProductsViewModel

@@ -8,12 +8,14 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_products_vm.dart';
 
 class SearchProductsGrid extends ConsumerWidget {
-  const SearchProductsGrid({super.key});
+  const SearchProductsGrid({super.key, required this.searchTerm});
+
+  final String searchTerm;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<ProductModel>> state =
-        ref.watch(getProductsProvider);
+        ref.watch(getProductsProvider(searchTerm));
     final double spacing = MediaQuery.sizeOf(context).width * 0.03;
     final double stateHeight = MediaQuery.sizeOf(context).height * 0.4;
 
@@ -51,7 +53,7 @@ class SearchProductsGrid extends ConsumerWidget {
                 return ProductItem3View(
                   product: product,
                   onFavouriteChanged: (bool isFavourite) => ref
-                      .read(getProductsProvider.notifier)
+                      .read(getProductsProvider(searchTerm).notifier)
                       .updateProductFavourite(product.id, isFavourite),
                 );
               },
