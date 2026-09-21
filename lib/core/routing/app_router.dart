@@ -126,9 +126,15 @@ abstract class AppRouter {
         name: AppRoutes.categoryDetailsScreen,
         path: '/${AppRoutes.categoryDetailsScreen}',
         builder: (context, state) {
-          final category = state.extra as CategoryModel;
+          // Nullable on purpose: `extra` is put through JSON on a route
+          // re-parse and a model object does not survive it, so an unchecked
+          // cast crashed instead of degrading. Moving the category into the
+          // path is the real fix — it belongs with the categories feature.
+          final category = state.extra as CategoryModel?;
 
-          return CategoryDetailsScreen(category: category);
+          return CategoryDetailsScreen(
+            category: category ?? const CategoryModel(),
+          );
         },
       ),
       GoRoute(
