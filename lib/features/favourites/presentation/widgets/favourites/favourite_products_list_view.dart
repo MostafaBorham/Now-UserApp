@@ -58,9 +58,11 @@ class FavouriteProductsListView extends ConsumerWidget {
       provider: getFavouriteProductsProvider(args),
       onRefresh: viewModel.loadFirstPage,
       onLoadNextPage: viewModel.loadNextPage,
-      layout: const PaginatedGridLayout(
+      layout: PaginatedGridLayout(
         gridDelegate: _gridDelegate,
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4).copyWith(
+          bottom: 4 + MediaQuery.paddingOf(context).bottom,
+        ),
       ),
       placeholderBuilder: (BuildContext context) =>
           const AppShimmer(child: ProductItem3View()),

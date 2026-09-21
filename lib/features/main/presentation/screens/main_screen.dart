@@ -32,7 +32,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      extendBody: false,
+      extendBody: true,
       body: Stack(
         children: [
 

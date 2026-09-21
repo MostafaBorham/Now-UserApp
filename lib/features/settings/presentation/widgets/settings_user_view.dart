@@ -145,7 +145,6 @@ class SettingsUserView extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(height: 32),
       ],
     );
   }

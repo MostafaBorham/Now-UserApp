@@ -54,7 +54,9 @@ class FavouriteStoresListView extends ConsumerWidget {
       onRefresh: viewModel.loadFirstPage,
       onLoadNextPage: viewModel.loadNextPage,
       layout: PaginatedListLayout(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4).copyWith(
+          bottom: 4 + MediaQuery.paddingOf(context).bottom,
+        ),
         separatorBuilder: (BuildContext context, int index) => 20.hSpace,
       ),
       placeholderBuilder: (BuildContext context) => const AspectRatio(

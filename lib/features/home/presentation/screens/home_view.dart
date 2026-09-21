@@ -273,7 +273,11 @@ class _HomeViewState extends ConsumerState<HomeView>
           controller: _scrollController,
           slivers: <Widget>[
             SliverPadding(
-              padding: EdgeInsets.only(bottom: showSavedContentCue ? 52 : 0),
+              padding: EdgeInsets.only(
+                bottom:
+                    (showSavedContentCue ? 52 : 0) +
+                    MediaQuery.paddingOf(context).bottom,
+              ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => index.isOdd

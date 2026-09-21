@@ -179,10 +179,15 @@ class _CartViewState extends ConsumerState<CartView> {
                             itemCount: vendors.length,
                           ),
                         ),
-                        PrimaryAppButton(
-                          title: LangKeys.checkoutKey.tr(),
-                          isDisabled: !canCheckoutAll,
-                          onTap: () => _checkout(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.paddingOf(context).bottom,
+                          ),
+                          child: PrimaryAppButton(
+                            title: LangKeys.checkoutKey.tr(),
+                            isDisabled: !canCheckoutAll,
+                            onTap: () => _checkout(),
+                          ),
                         ),
                       ],
                     ),

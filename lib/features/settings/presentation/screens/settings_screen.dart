@@ -39,6 +39,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         scrollController: _scrollController,
         body: SingleChildScrollView(
           controller: _scrollController,
+          padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
           child: isUser ? const SettingsUserView() : const SettingsGuestView(),
         ),
       ),

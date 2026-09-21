@@ -83,6 +83,7 @@ class HomeHeaderView extends ConsumerWidget {
             ),
             Positioned.fill(
               child: SafeArea(
+                bottom: false,
                 child: Column(
                   spacing: 10,
                   children: [

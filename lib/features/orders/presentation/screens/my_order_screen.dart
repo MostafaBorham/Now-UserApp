@@ -116,8 +116,15 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             // Owns the top spacing AppWavedView drops when a
                             // scroll controller is wired in, so it scrolls up
-                            // with the content and flattens the wave.
-                            padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
+                            // with the content and flattens the wave. The bottom
+                            // clears the bar the main screen draws behind the
+                            // body (extendBody), so the last order isn't hidden.
+                            padding: EdgeInsets.fromLTRB(
+                              3,
+                              57,
+                              3,
+                              3 + MediaQuery.paddingOf(context).bottom,
+                            ),
                             itemCount: items.length + loadingItemsCount,
                             separatorBuilder:
                                 (BuildContext context, int index) =>
