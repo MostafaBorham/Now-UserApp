@@ -344,11 +344,14 @@ class StoreDetailsShimmer extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(vertical: 5),
+                  // Same geometry as the real grid in
+                  // StoreDetailsProductsView, so the cards don't jump into
+                  // place when the products land.
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 18,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 170 / 280,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.6,
                   ),
                   itemCount: 4,
                   itemBuilder: (_, _) => AppShimmer(

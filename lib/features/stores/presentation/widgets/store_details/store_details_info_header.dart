@@ -25,41 +25,36 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
         '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}';
     final String deliveryFee = formatMoney(store.deliveryFee);
     return Column(
-      mainAxisSize: MainAxisSize.min,
       spacing: 5,
       children: [
         Expanded(
-          child: LayoutBuilder(
-            builder: (context, con) {
-              return Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  // The logo (64 across, 4px white ring) straddles the cover's
-                  // bottom edge, so the cover stops half a logo short.
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    child: AppCachedNetworkImage(
-                      imageUrl: store.coverUrl ?? '',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: colors.white,
-                    ),
-                    child: CircularBrandLogo(
-                      radius: 28,
-                      logoScale: 1.9,
-                      logoUrl: store.logoUrl ?? '',
-                    ),
-                  ),
-                ],
-              );
-            },
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              // The logo (64 across, 4px white ring) straddles the cover's
+              // bottom edge, so the cover stops half a logo short.
+              Padding(
+                padding: const EdgeInsets.only(bottom: 32),
+                child: AppCachedNetworkImage(
+                  imageUrl: store.coverUrl ?? '',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colors.white,
+                ),
+                child: CircularBrandLogo(
+                  radius: 28,
+                  logoScale: 1.9,
+                  logoUrl: store.logoUrl ?? '',
+                ),
+              ),
+            ],
           ),
         ),
         Text(
