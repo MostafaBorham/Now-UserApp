@@ -21,12 +21,18 @@ class CartApiService {
     );
   }
 
-  /// A `quantity` of `0` removes the line — there is no separate delete
-  /// endpoint for a single product.
-  Future<Response> updateCartProductQuantity(int productId, int quantity) {
+  /// Sets a cart line to [quantity]; a `quantity` of `0` removes it — there is
+  /// no separate delete endpoint for a single line. [cartItemId] picks which
+  /// line of the product to change when it is in the cart as several variants.
+  Future<Response> updateCartProductQuantity(
+    int productId,
+    int quantity, {
+    int? cartItemId,
+  }) {
     return _dio.patch(
       CartEndpoints.cartProduct(productId),
       data: CartEndpoints.quantityBody(quantity),
+      queryParameters: CartEndpoints.cartItemQuery(cartItemId),
       cancelToken: _canceller.token,
     );
   }

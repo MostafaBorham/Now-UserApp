@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 
 class ApplyDiscountCodeView extends ConsumerStatefulWidget {
@@ -32,13 +33,34 @@ class _ApplyDiscountCodeViewState
   bool _isApplying = false;
 
   @override
+  void initState() {
+    super.initState();
+    // A coupon picked on this store's details screen is the user's "apply",
+    // made earlier — so honour it as soon as this card exists, without them
+    // retyping the code here.
+    //
+    // Post-frame, not inline: the first build is what starts watching the
+    // `autoDispose` [appliedDiscountsProvider], and the result must land on a
+    // provider something keeps alive.
+    final String? picked = ref.read(
+      selectedStoreCouponsProvider,
+    )[widget.vendorId];
+    if (picked != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _apply(picked);
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  /// Applies the entered code to this vendor via `POST /api/v1/coupons/apply`.
-  /// A no-op unless the field holds a code and the vendor is known.
+  /// Applies [code] to this vendor via `POST /api/v1/coupons/apply` — either
+  /// the code typed in the field, or the one picked on the store's details
+  /// screen. A no-op unless there is a code and the vendor is known.
   ///
   /// The endpoint is a stateless calculator: it returns the discount for this
   /// vendor even when the code is rejected (`applied:false` + a reason), so the
@@ -50,8 +72,7 @@ class _ApplyDiscountCodeViewState
   /// Registering takes the vendor's single discount slot, so an accepted coupon
   /// cancels a purchase voucher applied to the same vendor — that cancellation
   /// is announced in a toast.
-  Future<void> _onApply() async {
-    final String code = _controller.text.trim();
+  Future<void> _apply(String code) async {
     final int? vendorId = widget.vendorId;
 
     if (_isApplying || code.isEmpty || vendorId == null) return;
@@ -70,6 +91,10 @@ class _ApplyDiscountCodeViewState
       (failure) => AppToast.showError(context, failure.message),
       (model) {
         if (!model.applied) {
+          // A pick the server won't honour (expired, under the minimum) must
+          // not nag on every checkout open, nor stay highlighted back on the
+          // store screen as if it were waiting to work.
+          _forgetPick(vendorId);
           AppToast.showError(context, model.reason ?? LangKeys.discount.tr());
           return;
         }
@@ -99,6 +124,15 @@ class _ApplyDiscountCodeViewState
     );
   }
 
+  /// Drops [vendorId]'s store-details coupon pick, so that screen's strip and
+  /// this card agree and a later checkout doesn't re-apply a code the user is
+  /// done with.
+  void _forgetPick(int vendorId) => ref
+      .read(selectedStoreCouponsProvider.notifier)
+      .update(
+        (Map<int, String> picks) => <int, String>{...picks}..remove(vendorId),
+      );
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -127,9 +161,12 @@ class _ApplyDiscountCodeViewState
         child: showChip
             ? _AppliedChip(
                 code: slot.code,
-                onRemove: () => ref
-                    .read(appliedDiscountsProvider.notifier)
-                    .remove(widget.vendorId!),
+                onRemove: () {
+                  ref
+                      .read(appliedDiscountsProvider.notifier)
+                      .remove(widget.vendorId!);
+                  _forgetPick(widget.vendorId!);
+                },
               )
             : _buildInputRow(colors),
       ),
@@ -171,7 +208,9 @@ class _ApplyDiscountCodeViewState
         ),
         Expanded(
           child: InkWell(
-            onTap: _isApplying ? null : _onApply,
+            onTap: _isApplying
+                ? null
+                : () => _apply(_controller.text.trim()),
             child: Container(
               decoration: BoxDecoration(
                 color: colors.onSecondaryFixedVariant,

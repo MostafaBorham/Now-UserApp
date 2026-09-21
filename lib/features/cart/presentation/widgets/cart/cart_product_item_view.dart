@@ -17,6 +17,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_variant_pills.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
@@ -64,13 +65,24 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   /// sign to the shopper that their taps were going nowhere.
   int? get _productId => widget.product.productId ?? widget.product.id;
 
+  /// The lane the update requests key on. A cart line uses its `cart_item_id`,
+  /// so two variants of one product get their own spinner and feedback instead
+  /// of sharing the product's; a line without one falls back to the product id.
+  int? get _laneId => widget.product.cartItemId ?? _productId;
+
   void _updateQuantity(int newQuantity) {
     final int? productId = _productId;
-    if (productId == null) return;
+    final int? laneId = _laneId;
+    if (productId == null || laneId == null) return;
 
     ref
-        .read(updateCartProductProvider(productId).notifier)
-        .updateCartProductQuantity(newQuantity, seededQuantity: _quantity);
+        .read(updateCartProductProvider(laneId).notifier)
+        .updateCartProductQuantity(
+          newQuantity,
+          productId: productId,
+          cartItemId: widget.product.cartItemId,
+          seededQuantity: _quantity,
+        );
   }
 
   /// Asks before dropping the last unit — removing a line is as destructive as
@@ -103,7 +115,13 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         final int? productId = _productId;
         if (productId == null || !mounted) return;
 
-        showCartUpdateFeedback(context, ref, productId: productId, cart: cart);
+        showCartUpdateFeedback(
+          context,
+          ref,
+          productId: productId,
+          laneId: _laneId,
+          cart: cart,
+        );
       },
       error: (Object error, StackTrace _) {
         if (!mounted) return;
@@ -119,15 +137,15 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     final AppColorScheme colors = context.colors;
     final ProductModel product = widget.product;
 
-    final int? productId = _productId;
+    final int? laneId = _laneId;
     bool isUpdating = false;
-    if (productId != null) {
+    if (laneId != null) {
       ref.listen<AsyncValue<CartModel?>>(
-        updateCartProductProvider(productId),
+        updateCartProductProvider(laneId),
         (AsyncValue<CartModel?>? previous, AsyncValue<CartModel?> next) =>
             _handleUpdateResult(next),
       );
-      isUpdating = ref.watch(updateCartProductProvider(productId)).isLoading;
+      isUpdating = ref.watch(updateCartProductProvider(laneId)).isLoading;
     }
 
     final int quantity = _quantity;
@@ -169,6 +187,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                   color: colors.tertiaryContainer,
                 ),
               ),
+              CartVariantPills(options: product.options),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

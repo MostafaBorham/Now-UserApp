@@ -51,4 +51,30 @@ void main() {
 
     expect(cart.quantityOf(2), 5);
   });
+
+  test('parses cart_item_id and the raw options off a cart line', () {
+    final ProductModel line = ProductModel.fromJson(<String, dynamic>{
+      'product_id': 7,
+      'cart_item_id': 64,
+      'quantity': 2,
+      'options': <String, dynamic>{
+        'color': '#9CA3AF',
+        'attributes': <dynamic>[
+          <String, dynamic>{
+            'attribute_name': <String, dynamic>{'ar': 'المقاس', 'en': 'Size'},
+            'values': <dynamic>[
+              <String, dynamic>{
+                'id': 64,
+                'name': <String, dynamic>{'ar': 'وسط', 'en': 'Medium'},
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    expect(line.cartItemId, 64);
+    expect(line.options?['color'], '#9CA3AF');
+    expect((line.options?['attributes'] as List).length, 1);
+  });
 }

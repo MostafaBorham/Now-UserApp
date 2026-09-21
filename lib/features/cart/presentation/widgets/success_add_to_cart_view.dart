@@ -30,18 +30,25 @@ void showCartUpdateFeedback(
   BuildContext context,
   WidgetRef ref, {
   required int productId,
+  int? laneId,
   required CartModel cart,
   VoidCallback? onContinueShopping,
   VoidCallback? onViewCart,
 }) {
+  // The lane is the notifier that ran the update — a cart line keys it by its
+  // `cart_item_id`, everything else by the product id ([laneId] omitted).
   final UpdateCartProductViewModel vm = ref.read(
-    updateCartProductProvider(productId).notifier,
+    updateCartProductProvider(laneId ?? productId).notifier,
   );
 
   // Another card showing this product has already answered this response.
   if (!vm.claimFeedback()) return;
 
   if (!vm.joinedCart) {
+    // ponytail: quantityOf/lineOf match the first line of a product, so when the
+    // same product is in the cart as two variant lines this toast's wording can
+    // read off the sibling line. The update/remove itself is correct (driven by
+    // cart_item_id). Upgrade: cart_item_id-aware quantityOfItem/lineOfItem.
     AppToast.showSuccess(
       context,
       cartUpdateMessageKey(

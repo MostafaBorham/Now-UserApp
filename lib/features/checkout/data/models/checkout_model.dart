@@ -1,4 +1,5 @@
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 
 /// Parsed representation of a checkout preview (`/api/v1/checkout/cart/preview`).
 ///
@@ -13,7 +14,34 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 class CheckoutModel {
   final OrderGroupModel orderGroup;
 
-  const CheckoutModel({this.orderGroup = const OrderGroupModel()});
+  /// The customer's saved payment cards, carried by the preview under
+  /// `checkout.payment_cards` (same shape as the wallet's cards). Empty when the
+  /// customer has none — the checkout payment section then shows the add-card
+  /// prompt instead of the card list.
+  final List<CardPaymentModel> paymentCards;
+
+  const CheckoutModel({
+    this.orderGroup = const OrderGroupModel(),
+    this.paymentCards = const <CardPaymentModel>[],
+  });
+
+  /// The card a card-payment should default to: the one the server marks
+  /// `is_default`, else the first card. Resolved from the flag, not list
+  /// position, so the app never charges whatever happens to sit first.
+  static CardPaymentModel? resolveDefaultCard(List<CardPaymentModel> cards) {
+    for (final CardPaymentModel card in cards) {
+      if (card.isDefault ?? false) return card;
+    }
+    return cards.isEmpty ? null : cards.first;
+  }
+
+  static List<CardPaymentModel> _parseCards(Map<String, dynamic> checkout) {
+    final List<dynamic> raw =
+        (checkout['payment_cards'] as List?) ?? const <dynamic>[];
+    return raw
+        .map((dynamic e) => CardPaymentModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
 
   factory CheckoutModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -51,6 +79,7 @@ class CheckoutModel {
         'coupons': checkout['coupons'],
         'orders': vendorGroups.map(_vendorGroupToOrderJson).toList(),
       }),
+      paymentCards: _parseCards(checkout),
     );
   }
 
@@ -90,6 +119,7 @@ class CheckoutModel {
         'coupons': checkout['coupons'],
         'orders': <dynamic>[_vendorGroupToOrderJson(checkout)],
       }),
+      paymentCards: _parseCards(checkout),
     );
   }
 

@@ -32,6 +32,47 @@ class WalletApiService {
     );
   }
 
+  Future<Response> addPaymentCard({
+    required String cardholderName,
+    required String cardNumber,
+    required int expiryMonth,
+    required int expiryYear,
+    required String cvc,
+  }) {
+    return _dio.post(
+      WalletEndpoints.addPaymentCard,
+      data: WalletEndpoints.addPaymentCardBody(
+        cardholderName: cardholderName,
+        cardNumber: cardNumber,
+        expiryMonth: expiryMonth,
+        expiryYear: expiryYear,
+        cvc: cvc,
+      ),
+      cancelToken: _canceller.token,
+    );
+  }
+
+  Future<Response> updatePaymentCard({
+    required int id,
+    required String cardholderName,
+    required int expiryMonth,
+    required int expiryYear,
+    String? cardNumber,
+    String? cvc,
+  }) {
+    return _dio.put(
+      WalletEndpoints.updatePaymentCard(id),
+      data: WalletEndpoints.updatePaymentCardBody(
+        cardholderName: cardholderName,
+        expiryMonth: expiryMonth,
+        expiryYear: expiryYear,
+        cardNumber: cardNumber,
+        cvc: cvc,
+      ),
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> deletePaymentCard(int id) {
     return _dio.delete(
       WalletEndpoints.deletePaymentCard(id),

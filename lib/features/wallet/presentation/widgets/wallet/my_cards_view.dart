@@ -14,6 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/delete_payment_card_vm.dart';
@@ -198,6 +199,16 @@ class MyCardsView extends ConsumerWidget {
                         ref
                             .read(deletePaymentCardProvider.notifier)
                             .deletePaymentCard(id);
+                      },
+                      onEditCard: (params) {
+                        // Reopen the add-card sheet in edit mode for the tapped
+                        // card, looked up from the loaded list by its id.
+                        final int? id = params.id;
+                        if (id == null) return;
+                        final CardPaymentModel model = cards.firstWhere(
+                          (CardPaymentModel c) => c.id == id,
+                        );
+                        AddCardView.show(context, card: model);
                       },
                     ),
               ),

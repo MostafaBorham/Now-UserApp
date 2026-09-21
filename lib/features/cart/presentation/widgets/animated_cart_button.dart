@@ -231,6 +231,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         .read(updateCartProductProvider(widget.productId!).notifier)
         .updateCartProductQuantity(
           newQuantity,
+          productId: widget.productId!,
           seededQuantity: widget.productQuantity,
         );
   }

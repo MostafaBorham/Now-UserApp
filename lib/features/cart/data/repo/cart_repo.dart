@@ -40,13 +40,19 @@ class CartRepo {
   Future<Either<Failure, CartModel>> deleteCartVendorItem(int vendorId) =>
       _fetch(() => _cartApiService.deleteCartVendorItem(vendorId));
 
-  /// Sets this product's cart line to [quantity]; `0` removes the line, which
-  /// is the only delete path a single product has.
+  /// Sets this cart line to [quantity]; `0` removes the line, which is the only
+  /// delete path a single line has. [cartItemId] picks which line of the product
+  /// to change when it is in the cart as several variants.
   Future<Either<Failure, CartModel>> updateCartProductQuantity(
     int productId,
-    int quantity,
-  ) => _fetch(
-    () => _cartApiService.updateCartProductQuantity(productId, quantity),
+    int quantity, {
+    int? cartItemId,
+  }) => _fetch(
+    () => _cartApiService.updateCartProductQuantity(
+      productId,
+      quantity,
+      cartItemId: cartItemId,
+    ),
   );
 
   Future<Either<Failure, CartModel>> addToCart(

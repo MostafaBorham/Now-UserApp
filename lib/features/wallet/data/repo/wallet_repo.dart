@@ -310,6 +310,60 @@ class WalletRepo {
     }
   }
 
+  /// Saves a new payment card from the entered details and returns the server's
+  /// stored copy, parsed from the `card` object inside the response `data`.
+  ///
+  /// The endpoint answers 201 on success (handled by [_guard]). The full card
+  /// number and [cvc] are used only by the server to derive the stored metadata
+  /// (brand, last four) — neither is persisted. [expiryYear] is the full year.
+  Future<Either<Failure, CardPaymentModel>> addPaymentCard({
+    required String cardholderName,
+    required String cardNumber,
+    required int expiryMonth,
+    required int expiryYear,
+    required String cvc,
+  }) {
+    return _guard(
+      () => _walletApiService.addPaymentCard(
+        cardholderName: cardholderName,
+        cardNumber: cardNumber,
+        expiryMonth: expiryMonth,
+        expiryYear: expiryYear,
+        cvc: cvc,
+      ),
+      (Map<String, dynamic> data) =>
+          CardPaymentModel.fromJson(data[_defaultCardKey] as Map<String, dynamic>),
+    );
+  }
+
+  /// Updates the saved card [id] and returns the server's stored copy, parsed
+  /// from the `card` object inside the response `data` (200, handled by [_guard]).
+  ///
+  /// A partial update: [cardNumber]/[cvc] are optional — sent only when the
+  /// customer re-entered them (a saved card never exposes the full number or CVC
+  /// to prefill). [expiryYear] is the full year.
+  Future<Either<Failure, CardPaymentModel>> updatePaymentCard({
+    required int id,
+    required String cardholderName,
+    required int expiryMonth,
+    required int expiryYear,
+    String? cardNumber,
+    String? cvc,
+  }) {
+    return _guard(
+      () => _walletApiService.updatePaymentCard(
+        id: id,
+        cardholderName: cardholderName,
+        expiryMonth: expiryMonth,
+        expiryYear: expiryYear,
+        cardNumber: cardNumber,
+        cvc: cvc,
+      ),
+      (Map<String, dynamic> data) =>
+          CardPaymentModel.fromJson(data[_defaultCardKey] as Map<String, dynamic>),
+    );
+  }
+
   /// Deletes the saved card [id]. Success-only response (no data payload).
   Future<Either<Failure, void>> deletePaymentCard(int id) {
     return _action(() => _walletApiService.deletePaymentCard(id));

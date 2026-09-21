@@ -49,6 +49,7 @@ abstract class CheckoutEndpoints {
   static Map<String, dynamic> confirmOrderBody({
     int? addressId,
     String? paymentMethod,
+    int? paymentMethodId,
     double? driverTip,
     String? notes,
     String? deliveryInstructions,
@@ -59,6 +60,9 @@ abstract class CheckoutEndpoints {
     'notes': ?notes,
     'delivery_instructions': deliveryInstructions ?? '',
     'payment_method': paymentMethod ?? 'wallet',
+    // Only ever sent with the `card` method: the backend prohibits it for
+    // wallet/cod, so callers pass it null unless a saved card was picked.
+    'payment_method_id': ?paymentMethodId,
     if (coupons != null && coupons.isNotEmpty)
       'coupons': coupons.map(
         (int vendorId, String couponCode) =>

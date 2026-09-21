@@ -169,6 +169,15 @@ abstract class LangKeys {
   static const String nameHintKey = 'nameHint';
   static const String cardNumberKey = 'cardNumber';
   static const String expirationDateKey = 'expirationDate';
+  static const String cardAddedSuccessfullyKey = 'cardAddedSuccessfully';
+  static const String cardUpdatedSuccessfullyKey = 'cardUpdatedSuccessfully';
+  static const String editCardKey = 'editCard';
+  static const String requiredFieldKey = 'requiredField';
+  static const String invalidCardNumberKey = 'invalidCardNumber';
+  static const String invalidExpiryDateKey = 'invalidExpiryDate';
+  static const String cardExpiredKey = 'cardExpired';
+  static const String invalidCvvKey = 'invalidCvv';
+  static const String setAsDefaultKey = 'setAsDefault';
 
   // Payment methods
   static const String paymentMethodsKey = 'paymentMethods';
