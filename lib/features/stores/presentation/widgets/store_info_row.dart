@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -42,7 +43,7 @@ class StoreInfoRow extends StatelessWidget {
             colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           ),
           Text(
-            '${deliveryTime ?? 0}',
+            deliveryTime ?? '-',
             style: AppTextStyles.style12Medium.copyWith(
               color: textColor,
               fontSize: infoFontSize,
@@ -54,7 +55,7 @@ class StoreInfoRow extends StatelessWidget {
             colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           ),
           Text(
-            distance ?? '0',
+            distance ?? '-',
             style: AppTextStyles.style12Medium.copyWith(
               color: textColor,
               fontSize: infoFontSize,
@@ -69,7 +70,10 @@ class StoreInfoRow extends StatelessWidget {
           ),
           NewPriceWidget(
             color: textColor,
-            price: deliveryFee ?? '0',
+            // Callers pass an already-formatted amount; the fallback keeps the
+            // same two-decimal shape so a missing fee doesn't read as a
+            // differently-precise price.
+            price: deliveryFee ?? formatMoney(null),
             size: infoFontSize,
           ),
         ],

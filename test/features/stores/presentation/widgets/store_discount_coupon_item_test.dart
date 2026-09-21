@@ -79,14 +79,16 @@ void main() {
     expect(find.byType(VoucherTicket), findsNWidgets(2));
   });
 
-  testWidgets('drops the percent sign for a fixed-amount coupon', (
+  testWidgets('a fixed-amount coupon reads as money, not a percentage', (
     WidgetTester tester,
   ) async {
     await pumpCoupons(tester, const [
       CouponModel(code: 'FLAT15', isPercentage: false, discountValue: 15),
     ]);
 
-    expect(find.text('15'), findsOneWidget);
+    // Two decimals, like every other amount the customer is charged: this used
+    // to go through `toInt()`, so a 15.50 coupon advertised itself as 15.
+    expect(find.text('15.00'), findsOneWidget);
     expect(find.text('15%'), findsNothing);
   });
 

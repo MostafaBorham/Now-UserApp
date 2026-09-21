@@ -119,20 +119,28 @@ class VoucherTicket extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 2,
                     children: [
-                      isPercentage
-                          ? Text(
-                              '$discountValue%',
-                              textDirection: TextDirection.ltr,
-                              style: AppTextStyles.style20SemiBold.copyWith(
+                      // The ticket is a fixed 121 wide and the discount line is
+                      // fixed-size, so it had no give at all: a two-decimal
+                      // fixed amount, or any three-digit value, overflowed the
+                      // head outright. Scaling down is what the app already
+                      // does in the same situation (see StoreInfoRow).
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: isPercentage
+                            ? Text(
+                                '$discountValue%',
+                                textDirection: TextDirection.ltr,
+                                style: AppTextStyles.style20SemiBold.copyWith(
+                                  color: discountColor,
+                                  height: 1,
+                                ),
+                              )
+                            : NewPriceWidget(
                                 color: discountColor,
-                                height: 1,
+                                price: discountValue,
+                                size: 20,
                               ),
-                            )
-                          : NewPriceWidget(
-                              color: discountColor,
-                              price: discountValue,
-                              size: 20,
-                            ),
+                      ),
                       if (couponName != null)
                         Text(
                           couponName,

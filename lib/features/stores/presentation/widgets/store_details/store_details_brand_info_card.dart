@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -116,7 +117,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                     children: [
                       OldPriceWidget(
                         color: colors.neutral400,
-                        price: product.comparePrice?.toStringAsFixed(0) ?? '0',
+                        price: formatMoney(product.comparePrice),
                         size: 14,
                       ),
                       if (discountValue > 0)
@@ -142,7 +143,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                   ),
                   NewPriceWidget(
                     color: colors.neutral1200,
-                    price: product.price?.toStringAsFixed(0) ?? '0',
+                    price: formatMoney(product.price),
                     size: 28,
                   ),
                 ],

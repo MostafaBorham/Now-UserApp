@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 
 class ProductItemCard1 extends StatefulWidget {
   const ProductItemCard1({super.key, this.product, this.onFavouriteChanged});
@@ -37,6 +38,14 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final double discountValue = widget.product?.activeDeal?.discountValue ?? 0;
+    final double? price = widget.product?.price;
+    final double? comparePrice = widget.product?.comparePrice;
+    // Only a compare price that is actually higher is a "was" price. It used to
+    // fall back to a literal '10', so every product without one advertised a
+    // discount off a number nobody had ever charged.
+    final bool hasOldPrice =
+        comparePrice != null && comparePrice > (price ?? 0);
     return InkWell(
       onTap: () => context.pushNamed(
         AppRoutes.productDetailsScreen,
@@ -59,89 +68,95 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12.0,
                     ).copyWith(top: 12),
-                        child: Stack(
+                    child: Stack(
+                      children: [
+                        Column(
+                          spacing: 4,
                           children: [
-                            Column(
-                              spacing: 4,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      con.maxWidth * 0.04,
-                                    ),
-                                    child: AppCachedNetworkImage(
-                                      imageUrl:
-                                          widget.product?.images?.firstOrNull ??
-                                          '',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    ),
-                                  ),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(
+                                  con.maxWidth * 0.04,
                                 ),
-                                AppRateWidget(
-                                  starColor: colors.amber500,
-                                  rateRatio:
-                                      '${formatDouble(widget.product?.rating?.average)}',
-                                  rateColor: colors.neutral500,
-                                  size: con.maxWidth * 0.08,
+                                child: AppCachedNetworkImage(
+                                  imageUrl:
+                                      widget.product?.images?.firstOrNull ?? '',
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 5,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: colors.errorContainer,
-                                        borderRadius:
-                                            BorderRadiusDirectional.only(
-                                              topEnd: Radius.circular(
-                                                con.maxWidth * 0.1,
-                                              ),
-                                              bottomEnd: Radius.circular(
-                                                con.maxWidth * 0.1,
-                                              ),
-                                            ),
-                                      ),
-                                      child: Text(
-                                        '${widget.product?.activeDeal?.discountValue??0}%',
-                                        style: TextStyle(
-                                          color: colors.white,
-                                          fontSize: con.maxWidth * 0.06,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ),
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.only(
-                                      end: 8.0,
-                                    ),
-                                    child: CircularAppFavouriteIcon(
-                                      size: con.maxWidth * 0.08,
-                                      favouriteType: FavouriteType.product,
-                                      itemId: widget.product?.id,
-                                      isFavourite:
-                                          widget.product?.isFavorite ?? false,
-                                      onFavouriteChanged:
-                                          widget.onFavouriteChanged,
-                                    ),
-                                  ),
-                                ],
                               ),
+                            ),
+                            AppRateWidget(
+                              starColor: colors.amber500,
+                              rateRatio:
+                                  '${formatDouble(widget.product?.rating?.average)}',
+                              rateColor: colors.neutral500,
+                              size: con.maxWidth * 0.08,
                             ),
                           ],
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // No deal means no badge. It used to render
+                              // unconditionally, so an undiscounted product
+                              // carried a red "0%" flash.
+                              if (discountValue > 0)
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colors.errorContainer,
+                                    borderRadius: BorderRadiusDirectional.only(
+                                      topEnd: Radius.circular(
+                                        con.maxWidth * 0.1,
+                                      ),
+                                      bottomEnd: Radius.circular(
+                                        con.maxWidth * 0.1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '${formatDouble(discountValue)}%',
+                                    textDirection: TextDirection.ltr,
+                                    style: TextStyle(
+                                      color: colors.white,
+                                      fontSize: con.maxWidth * 0.06,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                )
+                              else
+                                // Keeps the heart at the trailing edge:
+                                // spaceBetween with one child would pull it
+                                // back to the start.
+                                const SizedBox.shrink(),
+                              Padding(
+                                padding: const EdgeInsetsDirectional.only(
+                                  end: 8.0,
+                                ),
+                                child: CircularAppFavouriteIcon(
+                                  size: con.maxWidth * 0.08,
+                                  favouriteType: FavouriteType.product,
+                                  itemId: widget.product?.id,
+                                  isFavourite:
+                                      widget.product?.isFavorite ?? false,
+                                  onFavouriteChanged: widget.onFavouriteChanged,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(12.0).copyWith(top: 0),
                   child: Column(
@@ -172,18 +187,16 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               children: [
                                 NewPriceWidget(
                                   color: colors.black,
-                                  price: '${widget.product?.price}',
+                                  price: formatMoney(price),
                                   size: con.maxWidth * 0.1,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                OldPriceWidget(
-                                  color: colors.neutral400,
-                                  price:
-                                      widget.product?.comparePrice
-                                          ?.toStringAsFixed(0) ??
-                                      '10',
-                                  size: con.maxWidth * 0.07,
-                                ),
+                                if (hasOldPrice)
+                                  OldPriceWidget(
+                                    color: colors.neutral400,
+                                    price: formatMoney(comparePrice),
+                                    size: con.maxWidth * 0.07,
+                                  ),
                               ],
                             ),
                           ),

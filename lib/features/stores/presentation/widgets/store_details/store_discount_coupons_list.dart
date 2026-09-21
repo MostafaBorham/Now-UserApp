@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
@@ -58,9 +60,15 @@ class StoreDiscountCouponsList extends ConsumerWidget {
         // however full the cart is.
         final String? code = coupon.code;
         final bool tappable = inCart && storeId != null && code != null;
+        final bool isPercentage = coupon.isPercentage ?? true;
         return VoucherTicket(
-          discountValue: '${coupon.discountValue?.toInt() ?? 0}',
-          isPercentage: coupon.isPercentage ?? true,
+          // A fixed-amount coupon is money and gets the two-decimal rule; a
+          // percentage is a measurement and keeps one. `toInt()` truncated
+          // both, so a 12.50 SAR coupon advertised itself as 12.
+          discountValue: isPercentage
+              ? '${formatDouble(coupon.discountValue)}'
+              : formatMoney(coupon.discountValue),
+          isPercentage: isPercentage,
           name: coupon.name,
           validityText: _validity(context, coupon),
           darkHead: darkHead,
@@ -72,17 +80,17 @@ class StoreDiscountCouponsList extends ConsumerWidget {
   }
 
   void _pick(WidgetRef ref, int storeId, String code) {
-    ref
-        .read(selectedStoreCouponsProvider.notifier)
-        .update((Map<int, String> picks) {
-          final Map<int, String> next = <int, String>{...picks};
-          if (next[storeId] == code) {
-            next.remove(storeId);
-          } else {
-            next[storeId] = code;
-          }
-          return next;
-        });
+    ref.read(selectedStoreCouponsProvider.notifier).update((
+      Map<int, String> picks,
+    ) {
+      final Map<int, String> next = <int, String>{...picks};
+      if (next[storeId] == code) {
+        next.remove(storeId);
+      } else {
+        next[storeId] = code;
+      }
+      return next;
+    });
   }
 
   String _validity(BuildContext context, CouponModel coupon) {
