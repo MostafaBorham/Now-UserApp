@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card2.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 
@@ -39,7 +39,7 @@ void main() {
     expect(find.text('products'), findsOneWidget);
     expect(find.text('stores'), findsOneWidget);
 
-    expect(find.byType(ProductItemCard2), findsWidgets);
+    expect(find.byType(ProductItem3View), findsWidgets);
   });
 
   testWidgets('switching to the Stores tab shows store items',

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/active_deal_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -16,8 +17,11 @@ class ProductDiscountTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final bool isPercentage = deal.discountType == 'percentage';
-    final String value = '${formatDouble(deal.discountValue?.toDouble())}';
+    final bool isPercentage = deal.isPercentage;
+    // Percentages read best trimmed (20%, not 20.00%); a fixed amount is money.
+    final String value = isPercentage
+        ? '${formatDouble(deal.discountValue?.toDouble())}'
+        : formatMoney(deal.discountValue?.toDouble());
     const double ticketWidth = 70;
     const double ticketHeight = 35;
     const double fontSize = ticketWidth * 0.17;

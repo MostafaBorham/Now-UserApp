@@ -148,8 +148,12 @@ class ProductModel {
     this.rating,
   });
 
-
-
+  /// True only when [discountPrice] is a genuine markdown below [price]. The
+  /// API sends `discountPrice == price` when there is no active deal, so a plain
+  /// null-check would strike a "was" price on every product. Callers show the
+  /// struck-through original price only when this is true.
+  bool get hasDeal =>
+      price != null && discountPrice != null && discountPrice! < price!;
 
   ProductModel copyWith({
     int? id,
@@ -265,12 +269,16 @@ class ProductModel {
           : ActiveDealModel.fromJson(json['active_deal']),
 
       price: double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
-      discountPrice: (json['discount_price'] as num?)?.toDouble(),
+      // Backend key is camelCase `discountPrice` (deal-adjusted unit price,
+      // always present, equals `price` when there is no deal). The detail
+      // endpoint drops `effective_price`; the list endpoint still sends it as a
+      // duplicate, kept here as a fallback.
+      discountPrice: (json['discountPrice'] as num?)?.toDouble() ??
+          (json['effective_price'] as num?)?.toDouble(),
       effectivePrice: (json['effective_price'] as num?)?.toDouble(),
       dealDiscountAmount: (json['deal_discount_amount'] as num?)?.toDouble(),
       discountPercentage: (json['discount_percentage'] as num?)?.toDouble(),
-      comparePrice:
-          double.tryParse(json['compare_price']?.toString() ?? '') ?? 0.0,
+      comparePrice: (json['compare_price'] as num?)?.toDouble(),
       stock: (json['stock'] as num?)?.toInt(),
       minOrderQuantity: (json['min_order_quantity'] as num?)?.toInt(),
       unit: json['unit'] as String?,

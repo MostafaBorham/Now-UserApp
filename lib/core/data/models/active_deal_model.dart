@@ -25,6 +25,11 @@ class ActiveDealModel extends Equatable {
     this.endsAt,
   });
 
+  /// Whether [discountValue] is a percentage. When false it is a fixed money
+  /// amount (SAR). Backend `discount_type` is `percentage` or a fixed type, so
+  /// magnitude badges must render `20%` vs a `20` currency amount accordingly.
+  bool get isPercentage => discountType == 'percentage';
+
   factory ActiveDealModel.fromJson(Map<String, dynamic> json) {
     return ActiveDealModel(
       id: json['id'] as int?,

@@ -27,9 +27,8 @@ class ProductsApiService {
   }
 
   Future<Response> getProductDetails({required String productSlug}) {
-    ProductsEndpoints.productSlug = productSlug;
     return _dio.get(
-      ProductsEndpoints.getProductDetails,
+      ProductsEndpoints.productDetails(productSlug),
       cancelToken: _canceller.token,
     );
   }

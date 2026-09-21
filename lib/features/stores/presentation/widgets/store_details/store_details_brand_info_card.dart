@@ -26,6 +26,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final double discountValue = product.activeDeal?.discountValue ?? 0;
+    final bool dealIsPercentage = product.activeDeal?.isPercentage ?? true;
     final int productId = product.id ?? -1;
     final cartState = ref.watch(updateCartProductProvider(productId));
     final bool isAddingToCart = cartState.isLoading;
@@ -130,14 +131,21 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                             color: colors.errorContainer,
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Text(
-                            '-${discountValue.toStringAsFixed(0)}%',
-                            textDirection: TextDirection.ltr,
-                            style: AppTextStyles.style12SemiBold.copyWith(
-                              fontSize: 11,
-                              color: colors.white,
-                            ),
-                          ),
+                          child: dealIsPercentage
+                              ? Text(
+                                  '-${discountValue.toStringAsFixed(0)}%',
+                                  textDirection: TextDirection.ltr,
+                                  style: AppTextStyles.style12SemiBold.copyWith(
+                                    fontSize: 11,
+                                    color: colors.white,
+                                  ),
+                                )
+                              : NewPriceWidget(
+                                  color: colors.white,
+                                  price: formatMoney(discountValue),
+                                  size: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
                         ),
                     ],
                   ),

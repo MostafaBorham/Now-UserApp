@@ -1,3 +1,8 @@
+// ProductItemCard2 is disabled for now: it is unused (nothing imports it) and
+// has display bugs that must not ship — raw unformatted prices ('${price}'),
+// an always-on "0.0" strikethrough, a hardcoded '4.7' rating, and no deal
+// handling. Re-enable only after those are fixed and it has a real caller.
+/*
 // ponytail: lives in core but still imports features/cart for the cart button;
 // decoupling means relocating the cart viewmodel too — do that when cart is
 // refactored, not before.
@@ -299,3 +304,4 @@ class _ProductItemCard2State extends State<ProductItemCard2> {
     );
   }
 }
+*/

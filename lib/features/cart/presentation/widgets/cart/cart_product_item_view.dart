@@ -205,7 +205,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if (product.discountPrice != null)
+                        if (product.hasDeal)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: formatMoney(product.price),

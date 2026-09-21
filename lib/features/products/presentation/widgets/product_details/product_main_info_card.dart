@@ -21,26 +21,10 @@ import 'package:nowdelivery_user_app/features/products/presentation/providers/pr
 class ProductMainInfoCard extends ConsumerWidget {
   const ProductMainInfoCard({
     super.key,
-    this.productName = 'MacBook Air 3',
-    this.storeName = 'Bandeh Store',
-    this.storeLogoUrl =
-        'https://salogos.b-cdn.net/logos/png/1774894927785-pfguz6z7.png',
-    this.oldPrice = '10',
-    this.newPrice = '10',
-    this.description =
-        'Almarai Milk 2 Liters: Fresh, high-quality milk with a creamy taste '
-        'and smooth texture. Provides essential nutrients like calcium and '
-        'vitamin D for strong bones and a healthy body',
     this.isTrusted = true,
     this.trustedBadgeLabel,
   });
 
-  final String productName;
-  final String storeName;
-  final String storeLogoUrl;
-  final String oldPrice;
-  final String newPrice;
-  final String description;
   final bool isTrusted;
   final String? trustedBadgeLabel;
 
@@ -53,6 +37,7 @@ class ProductMainInfoCard extends ConsumerWidget {
     );
     final productQuantity = ref.watch(productQuantityProvider);
     final int maxQuantity = product.stock ?? 1;
+    final int minQuantity = product.minOrderQuantity ?? 1;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -156,7 +141,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                         ),
                       ),
                       InkWell(
-                        onTap: productQuantity > 1
+                        onTap: productQuantity > minQuantity
                             ? () {
                                 productQuantityController.state--;
                               }
@@ -222,7 +207,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                         spacing: 4,
                         children: [
-                          if (product.discountPrice != null)
+                          if (product.hasDeal)
                             OldPriceWidget(
                               color: colors.neutral500,
                               size: con.maxWidth * 0.05,

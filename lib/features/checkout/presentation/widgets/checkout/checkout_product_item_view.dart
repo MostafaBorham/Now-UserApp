@@ -68,7 +68,7 @@ class CheckoutProductItemView extends StatelessWidget {
                           size: 14,
                           fontWeight: FontWeight.bold,
                         ),
-                        if (item?.discountPrice != null)
+                        if (item?.hasDeal ?? false)
                           OldPriceWidget(
                             color: colors.neutral500,
                             price: formatMoney(item?.price),

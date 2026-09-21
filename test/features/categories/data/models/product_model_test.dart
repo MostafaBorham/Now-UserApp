@@ -52,6 +52,44 @@ void main() {
       expect(ProductModel.fromJson({'id': 1}).price, 0.0);
     });
 
+    test('discountPrice reads camelCase, falls back to effective_price', () {
+      // Detail endpoint sends only camelCase `discountPrice`.
+      expect(
+        ProductModel.fromJson({'price': 100, 'discountPrice': 80}).discountPrice,
+        80.0,
+      );
+      // List endpoint also sends effective_price (a duplicate) — the fallback.
+      expect(
+        ProductModel.fromJson({'price': 100, 'effective_price': 90})
+            .discountPrice,
+        90.0,
+      );
+      // Legacy snake_case `discount_price` is not the contract key.
+      expect(
+        ProductModel.fromJson({'price': 100, 'discount_price': 70})
+            .discountPrice,
+        isNull,
+      );
+    });
+
+    test('hasDeal is true only when discountPrice is below price', () {
+      expect(
+        ProductModel.fromJson({'price': 100, 'discountPrice': 80}).hasDeal,
+        isTrue,
+      );
+      // discountPrice == price means no deal (the API sends them equal then).
+      expect(
+        ProductModel.fromJson({'price': 100, 'discountPrice': 100}).hasDeal,
+        isFalse,
+      );
+      expect(ProductModel.fromJson({'price': 100}).hasDeal, isFalse);
+    });
+
+    test('compare_price is null when absent, parsed when present', () {
+      expect(ProductModel.fromJson({'id': 1}).comparePrice, isNull);
+      expect(ProductModel.fromJson({'compare_price': 120}).comparePrice, 120.0);
+    });
+
     test('nested active_deal is parsed when present, null when absent', () {
       final withDeal = ProductModel.fromJson({
         'active_deal': {'id': 9, 'discount_value': 15},

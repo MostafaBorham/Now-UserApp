@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circul
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_options_provider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_action_buttons.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_basic_specifications_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_shimmer.dart';
@@ -72,14 +73,20 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 ),
             data: (product) {
               final int? productId = product.id;
-              if (productId != null) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (!mounted) return;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                if (productId != null) {
                   ref
                       .read(productOptionsProvider(productId).notifier)
                       .seedDefaults(product);
-                });
-              }
+                }
+                // Start the stepper at the product's minimum orderable quantity.
+                // Idempotent so pull-to-refresh never drops the shopper's count.
+                final int minQuantity = product.minOrderQuantity ?? 1;
+                if (ref.read(productQuantityProvider) < minQuantity) {
+                  ref.read(productQuantityProvider.notifier).state = minQuantity;
+                }
+              });
               final List<String> keyFeatures = (product.mainFeatures ?? [])
                   .map((feature) => context.getLocalizedApiText(feature))
                   .where((text) => text.isNotEmpty)
@@ -148,15 +155,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                       .toList(),
                                   itemAspectRatio: 1.5,
                                 ),
-                                ProductMainInfoCard(
-                                  description: context.getLocalizedApiText(
-                                    product.description,
-                                  ),
-                                  storeName: context.getLocalizedApiText(
-                                    product.vendor?.name,
-                                  ),
-                                  isTrusted: false,
-                                ),
+                                const ProductMainInfoCard(isTrusted: false),
                                 if (product.colors?.isNotEmpty ?? false)
                                   Align(
                                     alignment: AlignmentDirectional.centerStart,

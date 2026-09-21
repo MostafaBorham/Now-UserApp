@@ -39,13 +39,15 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final double discountValue = widget.product?.activeDeal?.discountValue ?? 0;
+    // A deal is a percentage or a fixed money amount — the badge must match.
+    final bool dealIsPercentage =
+        widget.product?.activeDeal?.isPercentage ?? true;
     final double? price = widget.product?.price;
-    final double? comparePrice = widget.product?.comparePrice;
-    // Only a compare price that is actually higher is a "was" price. It used to
-    // fall back to a literal '10', so every product without one advertised a
-    // discount off a number nobody had ever charged.
-    final bool hasOldPrice =
-        comparePrice != null && comparePrice > (price ?? 0);
+    // The live price is the deal-adjusted discountPrice; the base price is only
+    // struck through when a deal actually lowers it (see ProductModel.hasDeal).
+    final bool hasDeal = widget.product?.hasDeal ?? false;
+    final double? sellingPrice =
+        hasDeal ? widget.product?.discountPrice : price;
     return InkWell(
       onTap: () => context.pushNamed(
         AppRoutes.productDetailsScreen,
@@ -122,15 +124,22 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                       ),
                                     ),
                                   ),
-                                  child: Text(
-                                    '${formatDouble(discountValue)}%',
-                                    textDirection: TextDirection.ltr,
-                                    style: TextStyle(
-                                      color: colors.white,
-                                      fontSize: con.maxWidth * 0.06,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
+                                  child: dealIsPercentage
+                                      ? Text(
+                                          '${formatDouble(discountValue)}%',
+                                          textDirection: TextDirection.ltr,
+                                          style: TextStyle(
+                                            color: colors.white,
+                                            fontSize: con.maxWidth * 0.06,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        )
+                                      : NewPriceWidget(
+                                          color: colors.white,
+                                          price: formatMoney(discountValue),
+                                          size: con.maxWidth * 0.06,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                 )
                               else
                                 // Keeps the heart at the trailing edge:
@@ -187,14 +196,14 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                               children: [
                                 NewPriceWidget(
                                   color: colors.black,
-                                  price: formatMoney(price),
+                                  price: formatMoney(sellingPrice),
                                   size: con.maxWidth * 0.1,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                if (hasOldPrice)
+                                if (hasDeal)
                                   OldPriceWidget(
                                     color: colors.neutral400,
-                                    price: formatMoney(comparePrice),
+                                    price: formatMoney(price),
                                     size: con.maxWidth * 0.07,
                                   ),
                               ],

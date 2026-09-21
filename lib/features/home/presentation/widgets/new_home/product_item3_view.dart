@@ -43,10 +43,10 @@ class ProductItem3View extends StatelessWidget {
       'ar': 'عصير برتقال طازج ١ لتر',
     },
     // Old price ([price]) shown struck-through next to the new discounted price
-    // ([dealDiscountAmount]); [activeDeal] drives the red discount badge.
+    // ([discountPrice]); [activeDeal] drives the red discount badge.
     price: 99.99,
-    dealDiscountAmount: 74.99,
-    activeDeal: ActiveDealModel(discountValue: 25),
+    discountPrice: 74.99,
+    activeDeal: ActiveDealModel(discountValue: 25, discountType: 'percentage'),
     // Temporary internet images for the product photo and the brand logo.
     images: <String>[
       'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600',
@@ -176,11 +176,18 @@ class ProductItem3View extends StatelessWidget {
                                       textDirection: TextDirection.ltr,
                                       spacing: 3,
                                       children: [
-                                        Text('${product.activeDeal?.discountValue?.toStringAsFixed(0) ?? 0}%',style: TextStyle(
-                                            color: colors.white,
-                                            fontSize: con.maxWidth*0.07,
-                                            fontWeight: FontWeight.w700
-                                        ),),
+                                        (product.activeDeal?.isPercentage ?? true)
+                                            ? Text('${product.activeDeal?.discountValue?.toStringAsFixed(0) ?? 0}%',style: TextStyle(
+                                                color: colors.white,
+                                                fontSize: con.maxWidth*0.07,
+                                                fontWeight: FontWeight.w700
+                                            ),)
+                                            : NewPriceWidget(
+                                                color: colors.white,
+                                                price: (product.activeDeal?.discountValue ?? 0).toStringAsFixed(2),
+                                                size: con.maxWidth*0.07,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                         Assets.media.images.svg.zigzagArrowIcon.svg(
                                           colorFilter: ColorFilter.mode(colors.white,BlendMode.srcIn),
                                           width: con.maxWidth*0.04
@@ -201,17 +208,18 @@ class ProductItem3View extends StatelessWidget {
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             alignment: AlignmentDirectional.centerStart,
-                            child: product.dealDiscountAmount != null &&
-                                    product.dealDiscountAmount! > 0
+                            child: product.hasDeal
                                 ? Row(
                                     // Sizes to its content — required under the
                                     // FittedBox's unbounded width.
                                     mainAxisSize: MainAxisSize.min,
                                     spacing: 4,
                                     children: [
+                                      // The price the customer pays (deal-adjusted),
+                                      // NOT dealDiscountAmount (the savings).
                                       NewPriceWidget(
                                         color: colors.primary700,
-                                        price: product.dealDiscountAmount
+                                        price: product.discountPrice
                                                 ?.toStringAsFixed(2) ??
                                             '0.00',
                                         size: con.maxWidth*0.12,
