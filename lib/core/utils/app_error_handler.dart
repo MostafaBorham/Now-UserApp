@@ -35,6 +35,13 @@ abstract final class AppErrorHandler {
     );
   }
 
+  /// Reports an error caught by hand, through the same throttled log as the
+  /// uncaught ones. For failures a caller has to swallow to keep going — the
+  /// bootstrap in `main()` being the one that matters, since anything thrown
+  /// there happens before there is a UI to show it on.
+  static void report(Object error, StackTrace? stack, {String? context}) =>
+      _log(error, stack, context: context);
+
   static final Map<String, DateTime> _recentErrors = {};
   static const Duration _throttleWindow = Duration(seconds: 30);
 

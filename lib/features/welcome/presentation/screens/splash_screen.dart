@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,11 +41,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   // session and the location gates settle independently) can never push twice.
   bool _navigated = false;
 
+  // Latches on the first warm-up, since two things can now trigger it.
+  bool _warmedUp = false;
+
+  // The warm-up normally starts when the logo animation ends, so the branding
+  // is never cut short. But the controller's duration is only set inside
+  // Lottie's `onLoaded`, so if the asset never decodes the animation never
+  // starts, never completes, and the boot would never begin — the app would sit
+  // on the splash forever. This starts it anyway.
+  Timer? _warmUpFallback;
+  static const Duration _warmUpFallbackDelay = Duration(seconds: 3);
+
   @override
   void initState() {
     super.initState();
     _logoController = AnimationController(vsync: this);
     _logoController.addStatusListener(_logoAnimationListener);
+    _warmUpFallback = Timer(_warmUpFallbackDelay, _warmUp);
 
     // Always warm up the (kept-alive) application-information provider here so
     // the FAQ/privacy screens reuse the data instead of refetching. If the
@@ -162,6 +176,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
+    _warmUpFallback?.cancel();
     _appInfoSub?.close();
     _appCategoriesSub?.close();
     _welcomeVoucherSub?.close();
@@ -178,6 +193,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void _warmUp() {
+    // Reached from the animation finishing *or* from [_warmUpFallback],
+    // whichever comes first, so it has to be idempotent.
+    if (_warmedUp || !mounted) return;
+    _warmedUp = true;
+    _warmUpFallback?.cancel();
+
     // Both bootstraps run in parallel; the splash leaves only once both settle
     // (see [_maybeLeaveSplash]). Location resolution requests its own service
     // prompt and permission as part of fetching the current fix.
