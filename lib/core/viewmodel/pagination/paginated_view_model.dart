@@ -104,9 +104,20 @@ abstract class PaginatedViewModel<T>
             failure.message,
             StackTrace.current,
           ).copyWithPrevious(state),
-      (PaginationModel<T> nextPage) => AsyncValue<PaginationModel<T>>.data(
-            currentPage.appendPage(nextPage, isSameItem: isSameItem),
-          ),
+      (PaginationModel<T> nextPage) {
+        // Append onto the *current* state, not the `currentPage` snapshot taken
+        // before the await: an in-place edit ([updateItemsWhere] /
+        // [removeItemsWhere]) may have landed while the page was in flight, and
+        // appending onto the stale copy would silently undo it — unfavouriting a
+        // row while the next page loaded used to bring the row back.
+        final PaginationModel<T>? latest = state.valueOrNull;
+
+        return AsyncValue<PaginationModel<T>>.data(
+          latest == null
+              ? nextPage
+              : latest.appendPage(nextPage, isSameItem: isSameItem),
+        );
+      },
     );
   }
 
