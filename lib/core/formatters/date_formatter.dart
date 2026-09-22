@@ -12,10 +12,14 @@ String formatLocalizedDate(BuildContext context, String? dateString) {
     return '';
   }
 
-  final utcDate = parsedDate.toUtc();
+  // `.toLocal()`, never `.toUtc()`: an ISO string carrying a timezone (`Z` or
+  // an offset) is parsed into a UTC DateTime, and formatting that prints the
+  // UTC wall clock — which in UTC+3 shows the previous day for anything between
+  // local midnight and 03:00, and shows a date-only value a day early always.
+  final localDate = parsedDate.toLocal();
   final languageCode = context.locale.languageCode;
 
-  return DateFormat.yMMMMd(languageCode).format(utcDate);
+  return DateFormat.yMMMMd(languageCode).format(localDate);
 }
 
 String? formatLocalizedDateOnly(BuildContext context, String? dateString) {
@@ -43,9 +47,10 @@ String formatLocalizedNumericDate(BuildContext context, String? dateString) {
     return '';
   }
 
-  final utcDate = parsedDate.toUtc();
+  // See [formatLocalizedDate] for why this is `.toLocal()`.
+  final localDate = parsedDate.toLocal();
   final languageCode = context.locale.languageCode;
-  final formatted = DateFormat('dd-MM-yyyy', languageCode).format(utcDate);
+  final formatted = DateFormat('dd-MM-yyyy', languageCode).format(localDate);
 
   return languageCode == 'ar' ? _toArabicIndicDigits(formatted) : formatted;
 }
