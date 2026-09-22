@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/datasources/remote/api/checkout_api_service.dart';
@@ -25,29 +25,17 @@ class CheckoutRepo {
         vendorId: vendorId,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final CheckoutModel checkout = CheckoutModel.fromJson(
-        body['data'] as Map<String, dynamic>?,
+      return readApiResponse(response, requireSuccessFlag: true).map(
+        (Map<String, dynamic> body) =>
+            CheckoutModel.fromJson(body['data'] as Map<String, dynamic>?),
       );
-
-      return Right(checkout);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      debugPrint('$e');
-      debugPrint('$stackTrace');
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -67,29 +55,18 @@ class CheckoutRepo {
         vendorId: vendorId,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      final CheckoutModel checkout = CheckoutModel.fromSingleStoreJson(
-        body['data'] as Map<String, dynamic>?,
+      return readApiResponse(response, requireSuccessFlag: true).map(
+        (Map<String, dynamic> body) => CheckoutModel.fromSingleStoreJson(
+          body['data'] as Map<String, dynamic>?,
+        ),
       );
-
-      return Right(checkout);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      debugPrint('$e');
-      debugPrint('$stackTrace');
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -131,16 +108,8 @@ class CheckoutRepo {
     try {
       final Response response = await request();
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(
-        VendorDiscountApplicationModel.fromJson(
+      return readApiResponse(response, requireSuccessFlag: true).map(
+        (Map<String, dynamic> body) => VendorDiscountApplicationModel.fromJson(
           body['data'] as Map<String, dynamic>?,
         ),
       );
@@ -150,10 +119,7 @@ class CheckoutRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      debugPrint('$e');
-      debugPrint('$stackTrace');
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
@@ -189,38 +155,29 @@ class CheckoutRepo {
         coupons: coupons,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      return readApiResponse(response, requireSuccessFlag: true).map((
+        Map<String, dynamic> body,
+      ) {
+        // The created orders sit on the confirmed order group. Different builds
+        // nest the group under `order_group`; fall back to `data` itself.
+        final Map<String, dynamic>? data =
+            body['data'] as Map<String, dynamic>?;
+        final Map<String, dynamic> group =
+            (data?['order_group'] as Map<String, dynamic>?) ??
+            data ??
+            const <String, dynamic>{};
 
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      // The created orders sit on the confirmed order group. Different builds
-      // nest the group under `order_group`; fall back to `data` itself.
-      final Map<String, dynamic>? data =
-          body['data'] as Map<String, dynamic>?;
-      final Map<String, dynamic> group =
-          (data?['order_group'] as Map<String, dynamic>?) ??
-          data ??
-          const <String, dynamic>{};
-      final List<OrderModel> orders =
-          ((group['orders'] as List?) ?? const <dynamic>[])
-              .map((e) => OrderModel.fromJson(e as Map<String, dynamic>?))
-              .toList();
-
-      return Right(orders);
+        return ((group['orders'] as List?) ?? const <dynamic>[])
+            .map((e) => OrderModel.fromJson(e as Map<String, dynamic>?))
+            .toList();
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e, stackTrace) {
-      debugPrint('$e');
-      debugPrint('$stackTrace');
-
+    } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
