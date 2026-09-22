@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_route_observer.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_search_screen.dart';
@@ -52,6 +56,45 @@ import 'package:nowdelivery_user_app/features/welcome/presentation/screens/splas
 
 import 'app_routes.dart';
 
+/// Shown when a route cannot be built.
+///
+/// Two ways to get here. An unresolved URL (`errorBuilder`), and — the common
+/// one — a route whose `extra` argument is gone: go_router re-serializes `extra`
+/// through JSON whenever it re-parses a route (hot reload, DevTools "Select
+/// Widget Mode", Android state restoration after process death) and silently
+/// drops anything JSON cannot encode, which every model object is. The screens
+/// that take a model or an id through `extra` used to cast it non-null and crash
+/// on a red screen; now they land here with a way out.
+class RouteErrorScreen extends StatelessWidget {
+  const RouteErrorScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                LangKeys.errorTitleKey.tr(),
+                textAlign: TextAlign.center,
+                style: AppTextStyles.style24Bold,
+              ),
+              const SizedBox(height: 24),
+              PrimaryAppButton(
+                title: LangKeys.homeKey.tr(),
+                onTap: () => context.goNamed(AppRoutes.mainScreen),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 abstract class AppRouter {
   /// Shared redirect of the verification flow (phone + OTP screens).
   ///
@@ -80,7 +123,10 @@ abstract class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     observers: <NavigatorObserver>[AppToastRouteObserver()],
-    errorBuilder: (context, state) => const SizedBox.shrink(),
+    // A route that does not resolve used to render `SizedBox.shrink()` — a blank
+    // white screen with nothing on it and no way back.
+    errorBuilder: (BuildContext context, GoRouterState state) =>
+        const RouteErrorScreen(),
     routes: <RouteBase>[
       GoRoute(
         name: AppRoutes.splashScreen,
@@ -116,22 +162,35 @@ abstract class AppRouter {
         name: AppRoutes.orderDetailsScreen,
         path: '/${AppRoutes.orderDetailsScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            OrderDetailsScreen(orderUuid: state.extra as String),
+        builder: (context, state) {
+          final orderUuid = state.extra as String?;
+          if (orderUuid == null || orderUuid.isEmpty) {
+            return const RouteErrorScreen();
+          }
+          return OrderDetailsScreen(orderUuid: orderUuid);
+        },
       ),
       GoRoute(
         name: AppRoutes.orderRatingScreen,
         path: '/${AppRoutes.orderRatingScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            OrderRatingScreen(order: state.extra as OrderModel),
+        builder: (context, state) {
+          final order = state.extra as OrderModel?;
+          if (order == null) return const RouteErrorScreen();
+          return OrderRatingScreen(order: order);
+        },
       ),
       GoRoute(
         name: AppRoutes.invoiceViewerScreen,
         path: '/${AppRoutes.invoiceViewerScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            InvoiceViewerScreen(invoiceUrl: state.extra as String),
+        builder: (context, state) {
+          final invoiceUrl = state.extra as String?;
+          if (invoiceUrl == null || invoiceUrl.isEmpty) {
+            return const RouteErrorScreen();
+          }
+          return InvoiceViewerScreen(invoiceUrl: invoiceUrl);
+        },
       ),
       GoRoute(
         name: AppRoutes.categoriesScreen,
@@ -169,8 +228,11 @@ abstract class AppRouter {
         name: AppRoutes.fileComplaintScreen,
         path: '/${AppRoutes.fileComplaintScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            FileComplaintScreen(order: state.extra as OrderModel),
+        builder: (context, state) {
+          final order = state.extra as OrderModel?;
+          if (order == null) return const RouteErrorScreen();
+          return FileComplaintScreen(order: order);
+        },
       ),
       GoRoute(
         name: AppRoutes.topBrandsScreen,
@@ -347,10 +409,10 @@ abstract class AppRouter {
               isEditScreen: extra.isEdit,
             );
           }
-          return AddressDetailsScreen(
-            address: extra as AddressModel,
-            isEditScreen: true,
-          );
+          // Anything else means the record (or the model) did not survive a
+          // route re-parse, so there is no address to edit.
+          if (extra is! AddressModel) return const RouteErrorScreen();
+          return AddressDetailsScreen(address: extra, isEditScreen: true);
         },
       ),
       GoRoute(
