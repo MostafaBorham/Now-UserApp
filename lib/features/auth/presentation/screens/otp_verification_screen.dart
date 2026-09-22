@@ -134,6 +134,11 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
 
 
+              // Resend runs on its *own* instance of the provider. The phone
+              // screen underneath is still mounted and still listening to the
+              // shared one, and it pushes this screen whenever that provider
+              // reports a sent code — so sharing it would stack a second OTP
+              // screen on every resend. Overriding it here keeps the two apart.
               ProviderScope(
                 overrides: [
                   requestOtpProvider.overrideWith(
@@ -141,12 +146,32 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   ),
                 ],
                 child: Consumer(
-                  builder: (context, WidgetRef ref, _) => OtpActionsRow(
-                    onResend: () => ref
-                        .read(requestOtpProvider.notifier)
-                        .requestOtp(widget.phoneNumber),
-                    onPaste: _pasteCode,
-                  ),
+                  builder: (context, WidgetRef ref, _) {
+                    // Nothing else watches this scoped instance, so without
+                    // this the resend was completely silent: a rate-limited or
+                    // offline attempt looked exactly like a successful one.
+                    ref.listen<AsyncValue<String?>>(requestOtpProvider, (
+                      AsyncValue<String?>? previous,
+                      AsyncValue<String?> next,
+                    ) {
+                      next.whenOrNull(
+                        error: (Object error, StackTrace stackTrace) =>
+                            AppToast.showError(context, error.toString()),
+                      );
+                    });
+
+                    return OtpActionsRow(
+                      onResend: () async {
+                        await ref
+                            .read(requestOtpProvider.notifier)
+                            .requestOtp(widget.phoneNumber);
+
+                        if (!context.mounted) return false;
+                        return ref.read(requestOtpProvider).valueOrNull != null;
+                      },
+                      onPaste: _pasteCode,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 28),

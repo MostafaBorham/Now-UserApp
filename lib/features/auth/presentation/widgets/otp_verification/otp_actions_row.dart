@@ -21,7 +21,10 @@ class OtpActionsRow extends StatefulWidget {
     this.countdown = const Duration(seconds: 60),
   });
 
-  final VoidCallback onResend;
+  /// Sends a new code. Resolves `true` only when one actually went out — a
+  /// failed resend must not restart the wait, or the user is locked out of
+  /// retrying for a minute by a request that never happened.
+  final Future<bool> Function() onResend;
 
   /// Fires with the digits extracted from the clipboard when "Paste Code" is
   /// tapped. Empty if the clipboard holds no digits.
@@ -35,6 +38,7 @@ class OtpActionsRow extends StatefulWidget {
 class _OtpActionsRowState extends State<OtpActionsRow> {
   Timer? _timer;
   int _secondsLeft = 0;
+  bool _isResending = false;
   late final TapGestureRecognizer _resendRecognizer =
       TapGestureRecognizer()..onTap = _onResendTap;
 
@@ -62,10 +66,22 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
     _startTimer();
   }
 
-  void _onResendTap() {
-    if (_secondsLeft > 0) return;
-    widget.onResend();
-    _restartCountdown();
+  Future<void> _onResendTap() async {
+    if (_secondsLeft > 0 || _isResending) return;
+
+    setState(() => _isResending = true);
+
+    bool sent = false;
+    try {
+      sent = await widget.onResend();
+    } finally {
+      if (mounted) setState(() => _isResending = false);
+    }
+
+    // Only restart the wait when a code really was sent. The countdown used to
+    // restart regardless, so an offline or rate-limited resend left the user
+    // watching a timer for a message that was never on its way.
+    if (sent && mounted) _restartCountdown();
   }
 
   Future<void> _onPasteTap() async {
@@ -89,7 +105,7 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
 
   @override
   Widget build(BuildContext context) {
-    final bool canResend = _secondsLeft == 0;
+    final bool canResend = _secondsLeft == 0 && !_isResending;
     return Row(
       children: [
         Expanded(
