@@ -306,8 +306,10 @@ abstract class AppRouter {
         path: '/${AppRoutes.productDetailsScreen}',
         builder: (context, state) {
           final productSlug = state.extra as String?;
-
-          return ProductDetailsScreen(productSlug: productSlug ?? '');
+          if (productSlug == null || productSlug.isEmpty) {
+            return const RouteErrorScreen();
+          }
+          return ProductDetailsScreen(productSlug: productSlug);
         },
       ),
       GoRoute(
@@ -333,9 +335,13 @@ abstract class AppRouter {
         path: '/${AppRoutes.otpVerificationScreen}',
         redirect: _redirectLoggedInUserToMain,
         builder: (context, state) {
+          // Without a number there is nothing to verify against: resend and
+          // confirm would both fail on an empty phone.
           final phoneNumber = state.extra as String?;
-
-          return OtpVerificationScreen(phoneNumber: phoneNumber ?? '');
+          if (phoneNumber == null || phoneNumber.isEmpty) {
+            return const RouteErrorScreen();
+          }
+          return OtpVerificationScreen(phoneNumber: phoneNumber);
         },
       ),
       GoRoute(
@@ -365,8 +371,13 @@ abstract class AppRouter {
         name: AppRoutes.trackOrderScreen,
         path: '/${AppRoutes.trackOrderScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) =>
-            TrackOrderScreen(orderUuid: state.extra as String? ?? ''),
+        builder: (context, state) {
+          final orderUuid = state.extra as String?;
+          if (orderUuid == null || orderUuid.isEmpty) {
+            return const RouteErrorScreen();
+          }
+          return TrackOrderScreen(orderUuid: orderUuid);
+        },
       ),
       GoRoute(
         name: AppRoutes.paymentFailedScreen,
