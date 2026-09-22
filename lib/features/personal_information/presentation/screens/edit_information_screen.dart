@@ -79,7 +79,12 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
 
   static final DateTime _earliestBirthday = DateTime(1900);
-  static DateTime get _latestBirthday => DateTime.now();
+
+  /// Yesterday, not today: the API validates `birthday` with `before:today`
+  /// (`User/UpdateProfileRequest`), so offering today would let the user pick a
+  /// date the save then rejects with a 422. There is no minimum age rule.
+  static DateTime get _latestBirthday =>
+      DateTime.now().subtract(const Duration(days: 1));
 
   @override
   void initState() {
