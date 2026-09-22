@@ -16,11 +16,9 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 /// former also brings its [backgroundColor] and "See All" chip colours, the
 /// latter the [category] it lists plus its own [primaryColor] / [textColor] /
 /// [displayDesign] theming); `promo_block_middle` and
-/// `promo_block_footer` carry their [banners]; `categories` is a presence-only
-/// marker (its carousel content still comes from `getAppCategoriesProvider`,
-/// because feed category items lack the `slug` the category-details screen
-/// navigates by). Every other type is kept as a bare [type] and rendered by
-/// nothing yet.
+/// `promo_block_footer` carry their [banners]; `categories` carries the
+/// carousel's [categories]. Every other type is kept as a bare [type] and
+/// rendered by nothing yet.
 class HomeSectionModel extends Equatable {
   final int? id;
   final String type;
@@ -46,6 +44,11 @@ class HomeSectionModel extends Equatable {
   /// Their `image_ar` / `image_en` arrive as bare URL strings, which
   /// [BannerModel] reads as-is.
   final List<BannerModel> banners;
+
+  /// Items of a `categories` section, in the order the admin arranged them —
+  /// what the home carousel renders. They carry no `slug`, which category
+  /// details queries by, so the carousel fills it in on tap.
+  final List<CategoryModel> categories;
 
   /// The category a `products_by_category` section lists, titled by
   /// `category_name` (falling back to the section's own `title`). It carries no
@@ -104,6 +107,7 @@ class HomeSectionModel extends Equatable {
     this.stores = const <StoreModel>[],
     this.products = const <ProductModel>[],
     this.banners = const <BannerModel>[],
+    this.categories = const <CategoryModel>[],
     this.category,
     this.primaryColor,
     this.textColor,
@@ -123,6 +127,7 @@ class HomeSectionModel extends Equatable {
     List<StoreModel>? stores,
     List<ProductModel>? products,
     List<BannerModel>? banners,
+    List<CategoryModel>? categories,
     CategoryModel? category,
     Color? primaryColor,
     Color? textColor,
@@ -141,6 +146,7 @@ class HomeSectionModel extends Equatable {
       stores: stores ?? this.stores,
       products: products ?? this.products,
       banners: banners ?? this.banners,
+      categories: categories ?? this.categories,
       category: category ?? this.category,
       primaryColor: primaryColor ?? this.primaryColor,
       textColor: textColor ?? this.textColor,
@@ -204,6 +210,19 @@ class HomeSectionModel extends Equatable {
               .map(BannerModel.fromJson)
               .toList()
           : const <BannerModel>[],
+      // A category item's artwork arrives as a bare `image_url`; every other
+      // field parses as-is, so a `slug` would flow through the day the feed
+      // starts sending one.
+      categories: type == 'categories'
+          ? rawItems
+              .whereType<Map<String, dynamic>>()
+              .map(
+                (Map<String, dynamic> item) => CategoryModel.fromJson(
+                  <String, dynamic>{...item, 'image': item['image_url']},
+                ),
+              )
+              .toList()
+          : const <CategoryModel>[],
       // `title` is the admin's own label for the section ("products by
       // category"), identical on every section of this type, so the heading
       // shown is the category's name; the title is only a last resort.
@@ -244,6 +263,7 @@ class HomeSectionModel extends Equatable {
         stores,
         products,
         banners,
+        categories,
         category,
         primaryColor,
         textColor,

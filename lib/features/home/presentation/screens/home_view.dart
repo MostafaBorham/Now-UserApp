@@ -206,8 +206,8 @@ class _HomeViewState extends ConsumerState<HomeView>
       }
     }
 
-    final bool showCategories =
-        !feed.hasValue || byType.containsKey('categories');
+    final HomeSectionModel? categoriesSection = byType['categories'];
+    final bool showCategories = !feed.hasValue || categoriesSection != null;
     final HomeSectionModel? offersSection = byType['featured_offers'];
     final bool showTopBanner = byType.containsKey('top_banner');
     final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
@@ -222,6 +222,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         searchFieldKey: _searchFieldKey,
         searchBarHeight: _fieldHeight,
         showCategories: showCategories,
+        categories: categoriesSection?.categories ?? const <CategoryModel>[],
       ),
       const HomeLiveOrdersSectionView(),
       if ((offersSection != null && offersSection.offers.isNotEmpty) ||

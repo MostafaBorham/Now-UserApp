@@ -527,4 +527,36 @@ void main() {
     expect(section.offers, isEmpty);
     expect(section.stores, isEmpty);
   });
+
+  test('categories parses its items in feed order, artwork included', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 363,
+      'type': 'categories',
+      'title': {'ar': 'الفئات', 'en': 'Categories'},
+      'items': <Map<String, dynamic>>[
+        {
+          'id': 13,
+          'type': 'category',
+          'name': {'ar': 'كتب وقرطاسية', 'en': 'Books & Stationery'},
+          'image_url': 'http://x/books.png',
+        },
+        {
+          'id': 1,
+          'type': 'category',
+          'name': {'ar': 'الإلكترونيات', 'en': 'Electronics'},
+          'image_url': null,
+        },
+      ],
+    });
+
+    expect(section.categories.length, 2);
+    // Feed order, not id order — the admin arranged it.
+    expect(section.categories[0].id, 13);
+    expect(section.categories[0].name?['en'], 'Books & Stationery');
+    expect(section.categories[0].image, 'http://x/books.png');
+    expect(section.categories[1].id, 1);
+    expect(section.categories[1].image, isNull);
+    // No slug today; the carousel fills it in from the app-wide list.
+    expect(section.categories[1].slug, isNull);
+  });
 }

@@ -12,10 +12,6 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
 
-
-
-
-
 typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
 
@@ -31,67 +27,53 @@ typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
 
 
-class HomeAppCategoriesView extends ConsumerStatefulWidget {
-  const HomeAppCategoriesView({super.key});
+/// The home categories carousel, rendered from the `categories` section of the
+/// `/api/v1/home-sections` feed — its items, in the order the admin arranged
+/// them. Empty (still loading, or a feed without the section) shows blank
+/// placeholders so the header keeps its layout.
+class HomeAppCategoriesView extends ConsumerWidget {
+  const HomeAppCategoriesView({super.key, required this.categories});
 
-  @override
-  ConsumerState<HomeAppCategoriesView> createState() =>
-      _HomeAppCategoriesViewState();
-}
-
-class _HomeAppCategoriesViewState extends ConsumerState<HomeAppCategoriesView> {
-
+  final List<CategoryModel> categories;
 
   static const int _maxItems = 5;
 
-  @override
-  void initState() {
-    super.initState();
-
-
-
-
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || ref.read(getAppCategoriesProvider).hasValue) return;
-      ref.read(getAppCategoriesProvider.notifier).loadFirstPage();
-    });
+  /// Category details queries its products and stores by `slug`, which the feed
+  /// items do not carry — so it is taken from the app-wide categories list,
+  /// matched by id. That list is preloaded on the splash and kept alive, so
+  /// this is a lookup in memory, not another request.
+  // ponytail: id → slug lookup; delete once `/home-sections` sends `slug`.
+  CategoryModel _withSlug(WidgetRef ref, CategoryModel category) {
+    if (category.slug != null) return category;
+    final PaginationModel<CategoryModel>? page = ref
+        .read(getAppCategoriesProvider)
+        .valueOrNull;
+    for (final CategoryModel known in page?.data ?? const <CategoryModel>[]) {
+      if (known.id != null && known.id == category.id) return known;
+    }
+    return category;
   }
 
   @override
-  Widget build(BuildContext context) {
-    final AsyncValue<PaginationModel<CategoryModel>> state = ref.watch(
-      getAppCategoriesProvider,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<_CarouselItem> items = categories
+        .take(_maxItems)
+        .map(
+          (CategoryModel category) => (
+            label: context.getLocalizedApiText(category.name),
+            imageUrl: category.image,
+            onTap: () => context.pushNamed(
+              AppRoutes.categoryDetailsScreen,
+              extra: _withSlug(ref, category),
+            ),
+          ),
+        )
+        .toList();
+
+    return _CategoriesCarousel(
+      items: items.isEmpty ? _placeholderItems : items,
     );
-
-    final List<_CarouselItem> items = state.maybeWhen(
-      data: (PaginationModel<CategoryModel> page) {
-        final List<CategoryModel> categories = page.data
-            .take(_maxItems)
-            .toList();
-        if (categories.isEmpty) return _placeholderItems;
-        return categories
-            .map(
-              (CategoryModel category) => (
-                label: context.getLocalizedApiText(category.name),
-
-                imageUrl: category.image,
-                onTap: () => context.pushNamed(
-                  AppRoutes.categoryDetailsScreen,
-                  extra: category,
-                ),
-              ),
-            )
-            .toList();
-      },
-      orElse: () => _placeholderItems,
-    );
-
-    return _CategoriesCarousel(items: items);
   }
-
-
-
 
   static final List<_CarouselItem> _placeholderItems =
       List<_CarouselItem>.generate(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -22,6 +23,7 @@ class HomeHeaderView extends ConsumerWidget {
     this.searchFieldKey,
     this.searchBarHeight,
     this.showCategories = true,
+    this.categories = const <CategoryModel>[],
   });
 
   final Key? searchFieldKey;
@@ -32,6 +34,9 @@ class HomeHeaderView extends ConsumerWidget {
   /// chrome — greeting, address, search, logo, motorcycle — is always shown; a
   /// missing `categories` section only hides the carousel, not the header.
   final bool showCategories;
+
+  /// Items of the feed's `categories` section, rendered by the carousel.
+  final List<CategoryModel> categories;
 
   Future<void> _openDeliveryAddressSheet(BuildContext context) {
     // The sheet writes the confirmed address into [homeAddressProvider] itself,
@@ -184,7 +189,10 @@ class HomeHeaderView extends ConsumerWidget {
                     // The categories carousel + its "see all" are driven by the
                     // `categories` home section; hidden when it is absent.
                     if (showCategories) ...<Widget>[
-                      Expanded(flex: 4, child: HomeAppCategoriesView()),
+                      Expanded(
+                        flex: 4,
+                        child: HomeAppCategoriesView(categories: categories),
+                      ),
                       Expanded(
                         flex: 1,
                         child: GestureDetector(
