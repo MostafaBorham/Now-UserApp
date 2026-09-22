@@ -5,6 +5,24 @@ import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 
+/// How a refresh attempt ended.
+///
+/// The distinction between the last two is the whole point: only one of them
+/// means the user's session is over.
+enum _RefreshOutcome {
+  /// A new access + refresh pair is cached. Replay the original request.
+  refreshed,
+
+  /// The endpoint refused the refresh token itself (`401`/`403`), or answered
+  /// cleanly without issuing a pair. The session cannot be recovered.
+  rejected,
+
+  /// The attempt never produced an answer — rate limited, server error,
+  /// timeout, connection dropped. The refresh token may well still be valid, so
+  /// the session must survive and the caller simply sees its original `401`.
+  unavailable,
+}
+
 /// Transparently refreshes an expired access token on a `401` and replays the
 /// request that failed, so no feature layer ever has to think about it.
 ///
@@ -30,8 +48,16 @@ import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 /// This is a plain (non-queued) [Interceptor]: replaying through the shared Dio
 /// re-runs `onRequest`, so a [QueuedInterceptor] would deadlock waiting on its
 /// own queue. Single-flight is handled explicitly with [_refreshGate] instead.
+///
+/// One distinction matters more than it looks: a refresh that *fails* is not the
+/// same as a refresh token that is *rejected*. See [_RefreshOutcome].
 class TokenRefreshInterceptor extends Interceptor {
-  TokenRefreshInterceptor(this._dio);
+  /// [refreshDio] exists so a test can decide what the refresh endpoint answers
+  /// — the difference between a `401` and a `429` there decides whether the
+  /// user keeps their session, which is not something to leave unpinned.
+  /// Production always takes the default.
+  TokenRefreshInterceptor(this._dio, {Dio? refreshDio})
+      : _refreshDio = refreshDio ?? _buildRefreshDio();
 
   /// Runs once when a refresh fails and the user session is gone for good, so
   /// the app can drop the previous user's data and return to onboarding.
@@ -60,20 +86,22 @@ class TokenRefreshInterceptor extends Interceptor {
   /// Bare Dio dedicated to the refresh call: no auth interceptor (it must carry
   /// the refresh token, not the access token) and no refresh interceptor (it
   /// must never recurse into itself). Keeps the logger for debug visibility.
-  late final Dio _refreshDio = Dio(
-    BaseOptions(
-      baseUrl: DioConstants.baseUrl,
-      connectTimeout: DioConstants.timeout,
-      receiveTimeout: DioConstants.timeout,
-      sendTimeout: DioConstants.timeout,
-      responseType: ResponseType.json,
-      headers: DioConstants.defaultHeaders,
-    ),
-  )..interceptors.add(DioLogger.logger);
+  final Dio _refreshDio;
+
+  static Dio _buildRefreshDio() => Dio(
+        BaseOptions(
+          baseUrl: DioConstants.baseUrl,
+          connectTimeout: DioConstants.timeout,
+          receiveTimeout: DioConstants.timeout,
+          sendTimeout: DioConstants.timeout,
+          responseType: ResponseType.json,
+          headers: DioConstants.defaultHeaders,
+        ),
+      )..interceptors.add(DioLogger.logger);
 
   /// The single in-flight refresh shared by every `401` that arrives while it
-  /// runs. `null` when idle; completes `true` on a successful refresh.
-  Future<bool>? _refreshGate;
+  /// runs. `null` when idle.
+  Future<_RefreshOutcome>? _refreshGate;
 
   /// The twin of [_refreshGate], for the expiry itself. Every `401` in a burst
   /// resumes from the *same* failed refresh, so each one would otherwise run
@@ -121,18 +149,29 @@ class TokenRefreshInterceptor extends Interceptor {
     }
 
     // One refresh attempt, shared across concurrent `401`s.
-    final bool refreshed = await (_refreshGate ??= _refreshTokens());
+    final _RefreshOutcome outcome = await (_refreshGate ??= _refreshTokens());
 
-    // Refresh failed → the session cannot be recovered. End it, then surface
-    // the original `401`. Awaiting first is deliberate: the purge invalidates
-    // the calling view model, so its own `!mounted` guard swallows the error
-    // instead of flashing it on a screen that is already being torn down.
-    if (!refreshed) {
-      await _expireSession();
-      return handler.next(err);
+    switch (outcome) {
+      case _RefreshOutcome.refreshed:
+        return _replay(request, handler, err);
+
+      // The refresh token itself was refused, so the session really is over.
+      // Awaiting the purge first is deliberate: it invalidates the calling view
+      // model, so its own `!mounted` guard swallows the error instead of
+      // flashing it on a screen that is already being torn down.
+      case _RefreshOutcome.rejected:
+        await _expireSession();
+        return handler.next(err);
+
+      // The refresh never got an answer — rate limited, server error, timeout,
+      // connection dropped. None of that says the token is dead, so the session
+      // is left alone and the original `401` is surfaced for the caller to
+      // retry. Signing the user out here used to throw people off shared
+      // networks at random: the refresh endpoint is rate limited per IP, so on
+      // carrier-grade NAT one customer's refresh could 429 because of another's.
+      case _RefreshOutcome.unavailable:
+        return handler.next(err);
     }
-
-    return _replay(request, handler, err);
   }
 
   /// Clears the dead tokens and runs [onSessionExpired] exactly once per expiry.
@@ -157,11 +196,12 @@ class TokenRefreshInterceptor extends Interceptor {
 
   /// Performs the one refresh request and persists the new tokens. Always
   /// clears [_refreshGate] when done so a later expiry can refresh again.
-  /// Returns whether the refresh succeeded; never throws.
-  Future<bool> _refreshTokens() async {
+  /// Never throws.
+  Future<_RefreshOutcome> _refreshTokens() async {
     try {
       final String refreshToken = _tokenCache.getRefreshToken() ?? '';
-      if (refreshToken.isEmpty) return false;
+      // Nothing to refresh with: there is no session left to save.
+      if (refreshToken.isEmpty) return _RefreshOutcome.rejected;
 
       final Response response = await _refreshDio.post(
         _refreshPath,
@@ -177,15 +217,32 @@ class TokenRefreshInterceptor extends Interceptor {
 
       final String newAccess = data?['access_token'] as String? ?? '';
       final String newRefresh = data?['refresh_token'] as String? ?? '';
-      if (newAccess.isEmpty || newRefresh.isEmpty) return false;
+
+      // A clean answer that carries no usable pair is the server declining to
+      // reissue, not a transport problem — treat it as a refusal.
+      if (newAccess.isEmpty || newRefresh.isEmpty) {
+        return _RefreshOutcome.rejected;
+      }
 
       await _tokenCache.saveUserTokens(
         accessToken: newAccess,
         refreshToken: newRefresh,
       );
-      return true;
+      return _RefreshOutcome.refreshed;
+    } on DioException catch (error) {
+      // Only the endpoint saying "no" means the refresh token is dead —
+      // `auth:sanctum` answers 401 for an unknown or revoked token, and the
+      // action answers 403 when the token is not a refresh token. A 429 (the
+      // endpoint is rate limited per IP), a 5xx, a timeout or a dropped
+      // connection all leave the token perfectly valid.
+      final int? statusCode = error.response?.statusCode;
+      return statusCode == 401 || statusCode == 403
+          ? _RefreshOutcome.rejected
+          : _RefreshOutcome.unavailable;
     } catch (_) {
-      return false;
+      // Could not even complete the attempt (e.g. the token cache refused the
+      // write). Says nothing about the token, so keep the session.
+      return _RefreshOutcome.unavailable;
     } finally {
       _refreshGate = null;
     }
