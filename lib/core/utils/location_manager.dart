@@ -6,12 +6,25 @@ import 'package:location/location.dart' as loc;
 enum LocationPermissionStatus { granted, denied, deniedForever }
 
 abstract class LocationManager {
+  /// How long to wait for a device fix before giving up on it.
+  ///
+  /// Without a limit `getCurrentPosition` waits indefinitely for a satellite
+  /// fix, and the splash blocks on it — so a phone indoors or underground could
+  /// sit on the loading screen forever with no way past. Giving up hands
+  /// control back to the caller, which falls back to the last known position
+  /// and then to a default location.
+  static const Duration _fixTimeout = Duration(seconds: 10);
+
+  /// Reverse geocoding needs the network, so it gets its own ceiling for the
+  /// same reason.
+  static const Duration _geocodeTimeout = Duration(seconds: 8);
+
   static Future<Placemark?> getAddressFromLocation(LatLng location) async {
     try {
       final addresses = await placemarkFromCoordinates(
         location.latitude,
         location.longitude,
-      );
+      ).timeout(_geocodeTimeout);
       return addresses.firstOrNull;
     } catch (_) {
       // No placemark for this point (no coverage, no connectivity, plugin
@@ -99,14 +112,19 @@ abstract class LocationManager {
     if (!granted) return null;
 
     try {
-      final Position current = await Geolocator.getCurrentPosition();
+      final Position current = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(timeLimit: _fixTimeout),
+      );
       return LatLng(current.latitude, current.longitude);
     } catch (_) {
-      // Service off, timeout, etc. — fall back to the last known fix.
+      // Service off, no fix within [_fixTimeout], etc. — fall back to the last
+      // known fix.
     }
 
     try {
-      final Position? last = await Geolocator.getLastKnownPosition();
+      final Position? last = await Geolocator.getLastKnownPosition().timeout(
+        _fixTimeout,
+      );
       if (last != null) return LatLng(last.latitude, last.longitude);
     } catch (_) {}
 
