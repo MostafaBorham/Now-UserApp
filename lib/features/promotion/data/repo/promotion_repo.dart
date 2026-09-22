@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
@@ -31,27 +32,22 @@ class PromotionRepo {
     try {
       final Response response = await _promotionApiService.getCoupons(page: page);
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      return readApiResponse(response).map((Map<String, dynamic> body) {
+        final Map<String, dynamic> data =
+            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
 
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
+        final Map<String, dynamic> paginationData =
+            data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final List<dynamic> rawCoupons =
+            data['coupons'] as List<dynamic>? ?? <dynamic>[];
 
-      final Map<String, dynamic> data =
-          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final List<CouponModel> coupons = rawCoupons
+            .whereType<Map<String, dynamic>>()
+            .map(CouponModel.fromJson)
+            .toList();
 
-      final Map<String, dynamic> paginationData =
-          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
-      final List<dynamic> rawCoupons =
-          data['coupons'] as List<dynamic>? ?? <dynamic>[];
-
-      final List<CouponModel> coupons = rawCoupons
-          .map((dynamic e) => CouponModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-
-      return Right(
-        PaginationModel<CouponModel>.fromJson(paginationData, coupons),
-      );
+        return PaginationModel<CouponModel>.fromJson(paginationData, coupons);
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
@@ -76,22 +72,20 @@ class PromotionRepo {
     try {
       final Response response = await _promotionApiService.getCoupon(code);
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      return readApiResponse(response).flatMap((Map<String, dynamic> body) {
+        final Map<String, dynamic> data =
+            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic>? couponJson =
+            data['coupon'] as Map<String, dynamic>?;
 
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
+        if (couponJson == null) {
+          return Left<Failure, CouponModel>(
+            Failure(ApiErrorHandler.extractErrorMessage(body)),
+          );
+        }
 
-      final Map<String, dynamic> data =
-          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
-      final Map<String, dynamic>? couponJson =
-          data['coupon'] as Map<String, dynamic>?;
-
-      if (couponJson == null) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(CouponModel.fromJson(couponJson));
+        return Right<Failure, CouponModel>(CouponModel.fromJson(couponJson));
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =

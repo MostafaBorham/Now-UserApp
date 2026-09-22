@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/utils/uuid.dart';
@@ -412,13 +413,9 @@ class WalletRepo {
 
     try {
       final Response response = await request();
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (body['success'] as bool? ?? false) {
-        return const Right(null);
-      }
-
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
+      return readApiResponse(response, requireSuccessFlag: true).map<void>(
+        (_) {},
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
@@ -446,14 +443,10 @@ class WalletRepo {
 
     try {
       final Response response = await request();
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final int statusCode = response.statusCode ?? 0;
-      if (statusCode != 200 && statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(parse(body['data'] as Map<String, dynamic>));
+      return readApiResponse(response).map(
+        (Map<String, dynamic> body) =>
+            parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =

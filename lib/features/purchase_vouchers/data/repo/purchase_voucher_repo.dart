@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/datasources/remote/api/purchase_voucher_api_service.dart';
@@ -29,33 +30,25 @@ class PurchaseVoucherRepo {
         page: page,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      return readApiResponse(response).map((Map<String, dynamic> body) {
+        final Map<String, dynamic> data =
+            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
 
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
+        final Map<String, dynamic> paginationData =
+            data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final List<dynamic> rawVouchers =
+            data['purchase_vouchers'] as List<dynamic>? ?? <dynamic>[];
 
-      final Map<String, dynamic> data =
-          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final List<PurchaseVoucherModel> vouchers = rawVouchers
+            .whereType<Map<String, dynamic>>()
+            .map(PurchaseVoucherModel.fromJson)
+            .toList();
 
-      final Map<String, dynamic> paginationData =
-          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
-      final List<dynamic> rawVouchers =
-          data['purchase_vouchers'] as List<dynamic>? ?? <dynamic>[];
-
-      final List<PurchaseVoucherModel> vouchers = rawVouchers
-          .map(
-            (dynamic e) =>
-                PurchaseVoucherModel.fromJson(e as Map<String, dynamic>),
-          )
-          .toList();
-
-      return Right(
-        PaginationModel<PurchaseVoucherModel>.fromJson(
+        return PaginationModel<PurchaseVoucherModel>.fromJson(
           paginationData,
           vouchers,
-        ),
-      );
+        );
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

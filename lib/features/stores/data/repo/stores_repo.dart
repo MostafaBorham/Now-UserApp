@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
@@ -171,20 +172,19 @@ class StoresRepo {
 
     try {
       final Response response = await request();
-      final Map<String, dynamic>? body = response.data is Map<String, dynamic>
-          ? response.data as Map<String, dynamic>
-          : null;
+      return readApiResponse(response).flatMap((Map<String, dynamic> body) {
+        // An empty map here means a 2xx whose body was not a JSON object at
+        // all, which is not something the parser can make a store out of.
+        if (body.isEmpty) {
+          return Left<Failure, T>(
+            const Failure(LangKeys.serverConnectionFailedKey),
+          );
+        }
 
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-      if (body == null) {
-        return const Left(Failure(LangKeys.serverConnectionFailedKey));
-      }
-
-      return Right(
-        parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
-      );
+        return Right<Failure, T>(
+          parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+        );
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

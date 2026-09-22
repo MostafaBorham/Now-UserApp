@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/support/data/datasources/remote/api/support_api_service.dart';
@@ -87,14 +88,10 @@ class SupportRepo {
 
     try {
       final Response response = await request();
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final int statusCode = response.statusCode ?? 0;
-      if (statusCode != 200 && statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(parse(body['data'] as Map<String, dynamic>));
+      return readApiResponse(response).map(
+        (Map<String, dynamic> body) =>
+            parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>

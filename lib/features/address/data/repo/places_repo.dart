@@ -37,9 +37,12 @@ class PlacesRepo {
         locationBias: locationBias,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      final dynamic raw = response.data;
+      final Map<String, dynamic> body =
+          raw is Map<String, dynamic> ? raw : const <String, dynamic>{};
 
-      if (response.statusCode != 200) {
+      final int statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
         return Left(Failure(_extractPlacesError(body)));
       }
 
@@ -85,9 +88,12 @@ class PlacesRepo {
         sessionToken: sessionToken,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      final dynamic raw = response.data;
+      final Map<String, dynamic> body =
+          raw is Map<String, dynamic> ? raw : const <String, dynamic>{};
 
-      if (response.statusCode != 200) {
+      final int statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
         return Left(Failure(_extractPlacesError(body)));
       }
 

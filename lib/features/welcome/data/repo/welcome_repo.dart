@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/welcome/data/datasources/remote/api/welcome_api_service.dart';
@@ -33,22 +34,28 @@ class WelcomeRepo {
     try {
       final Response response = await _welcomeApiService.getGuestToken();
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      // `await`: saveGuestToken throws CacheException, and an unawaited future
+      // would escape the try block before the `on CacheException` arm could see
+      // it. The status is no longer pinned to exactly 201 — any 2xx is a
+      // success, so a backend that answers 200 does not break guest onboarding.
+      return await readApiResponse(response, requireSuccessFlag: true).fold(
+        (Failure failure) async => Left<Failure, String>(failure),
+        (Map<String, dynamic> body) async {
+          final Map<String, dynamic> data =
+              body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+          final String guestToken = data['guest_token'] as String? ?? '';
 
-      if (response.statusCode != 201) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
+          if (guestToken.isEmpty) {
+            return Left<Failure, String>(
+              Failure(ApiErrorHandler.extractErrorMessage(body)),
+            );
+          }
 
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final String guestToken = data['guest_token'] as String? ?? '';
+          await _tokenCache.saveGuestToken(guestToken);
 
-      if (guestToken.isEmpty) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      await _tokenCache.saveGuestToken(guestToken);
-
-      return Right(guestToken);
+          return Right<Failure, String>(guestToken);
+        },
+      );
     } on CacheException catch (exception) {
       return Left(Failure(exception.message));
     } on DioException catch (exception) {

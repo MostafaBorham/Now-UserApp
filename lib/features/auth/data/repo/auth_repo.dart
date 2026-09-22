@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/caching/cache_exceptions.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -24,15 +25,9 @@ class AuthRepo {
     try {
       final Response response = await _authApiService.requestOtp(phone: phone);
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      final bool success = body['success'] as bool? ?? false;
-
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(phone);
+      return readApiResponse(response, requireSuccessFlag: true).map(
+        (_) => phone,
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
@@ -58,35 +53,39 @@ class AuthRepo {
         code: code,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+      // `await` matters: the token writes below throw CacheException, and
+      // returning the future unawaited would leave the try block before they
+      // run, so the `on CacheException` arm would never see it.
+      return await readApiResponse(response, requireSuccessFlag: true).fold(
+        (Failure failure) async => Left<Failure, UserModel>(failure),
+        (Map<String, dynamic> body) async {
+          final Map<String, dynamic> data =
+              body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+          final String accessToken = data['access_token'] as String? ?? '';
+          final String refreshToken = data['refresh_token'] as String? ?? '';
 
-      final bool success = body['success'] as bool? ?? false;
+          if (accessToken.isEmpty) {
+            return Left<Failure, UserModel>(
+              Failure(ApiErrorHandler.extractErrorMessage(body)),
+            );
+          }
 
-      if (!success) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
+          // Logging in as a user overrides any guest session: save the access +
+          // refresh pair and drop the guest token so the interceptor stops
+          // sending `X-Guest-Token`.
+          await _tokenCache.saveUserTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          );
+          await _tokenCache.clearGuestToken();
 
-      final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
-      final String accessToken = data['access_token'] as String? ?? '';
-      final String refreshToken = data['refresh_token'] as String? ?? '';
-
-      if (accessToken.isEmpty) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      // Logging in as a user overrides any guest session: save the access +
-      // refresh pair and drop the guest token so the interceptor stops sending
-      // `X-Guest-Token`.
-      await _tokenCache.saveUserTokens(
-        accessToken: accessToken,
-        refreshToken: refreshToken,
+          return Right<Failure, UserModel>(
+            UserModel.fromMap(
+              data['user'] as Map<String, dynamic>? ?? <String, dynamic>{},
+            ),
+          );
+        },
       );
-      await _tokenCache.clearGuestToken();
-
-      final UserModel user = UserModel.fromMap(
-        data['user'] as Map<String, dynamic>,
-      );
-      return Right(user);
     } on CacheException catch (exception) {
       return Left(Failure(exception.message));
     } on DioException catch (exception) {

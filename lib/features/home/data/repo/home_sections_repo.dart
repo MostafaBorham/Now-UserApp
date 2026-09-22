@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/utils/isolate/isolate_runner.dart';
@@ -75,13 +76,10 @@ class HomeSectionsRepo {
         lng: lng,
       );
 
-      final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-
-      if (response.statusCode != 200) {
-        return Left(Failure(ApiErrorHandler.extractErrorMessage(body)));
-      }
-
-      return Right(body['data'] as Map<String, dynamic>);
+      return readApiResponse(response).map(
+        (Map<String, dynamic> body) =>
+            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{},
+      );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
