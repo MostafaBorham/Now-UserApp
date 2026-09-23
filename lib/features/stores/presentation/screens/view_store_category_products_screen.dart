@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_categor
 /// One category of **one store**, reached from the category chips on that
 /// store's details screen.
 ///
-/// It pages `/api/v1/stores/{storeId}/products?category_id=…` through
+/// It pages `/api/v1/stores/{storeId}/products?category_ids[]=…` through
 /// [getStoreCategoryProductsProvider] — the same provider and the same card as
 /// the store details product grid, so a product looks and behaves identically
 /// wherever it is listed. It used to reuse the *categories* feature's product

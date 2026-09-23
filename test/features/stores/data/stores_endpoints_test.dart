@@ -5,6 +5,8 @@ import 'package:nowdelivery_user_app/features/stores/data/datasources/remote/api
 /// shopper is looking at. It used to build itself from static fields that the
 /// API service assigned — and `category_id` was assigned but never emitted, so
 /// the chip silently listed the category across every store on the platform.
+/// Then it was emitted as `category_id`, which `/stores/{id}/products` does not
+/// validate and drops: the chip listed the whole store. It takes `category_ids`.
 void main() {
   group('StoresEndpoints paths', () {
     test('store paths interpolate the id from the argument', () {
@@ -34,7 +36,12 @@ void main() {
           filter: 'all',
           categoryId: 42,
         ),
-        {'per_page': 15, 'page': 2, 'filter': 'all', 'category_id': 42},
+        {
+          'per_page': 15,
+          'page': 2,
+          'filter': 'all',
+          'category_ids': [42],
+        },
       );
     });
 

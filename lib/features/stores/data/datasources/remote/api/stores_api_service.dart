@@ -66,6 +66,9 @@ class StoresApiService {
         categoryId: categoryId,
         search: search,
       ),
+      // Serialize `category_ids` as `category_ids[]=1` — the bracketed form
+      // Laravel parses into an array.
+      options: Options(listFormat: ListFormat.multiCompatible),
       cancelToken: _canceller.token,
     );
   }

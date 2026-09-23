@@ -28,9 +28,12 @@ abstract class StoresEndpoints {
 
   /// Query parameters for [storeProducts].
   ///
-  /// [categoryId] narrows the store's products to one of its categories — the
-  /// store-details category chips. It is omitted entirely when null, which is
-  /// what the filter tabs (all / offers / top rated / …) send.
+  /// [categoryId] narrows the store's products to one of its categories (and
+  /// its sub-categories) — the store-details category chips. It goes out as the
+  /// `category_ids` array: this endpoint validates only that key and silently
+  /// drops a scalar `category_id`, which used to list the whole store under the
+  /// chip's name. Omitted entirely when null, which is what the filter tabs
+  /// (all / offers / top rated / …) send.
   static Map<String, dynamic> storeProductsQuery({
     required int page,
     required String filter,
@@ -40,7 +43,7 @@ abstract class StoresEndpoints {
     'per_page': _perPage,
     'page': page,
     'filter': filter,
-    'category_id': ?categoryId,
+    if (categoryId != null) 'category_ids': <int>[categoryId],
     if (search != null && search.isNotEmpty) 'search': search,
   };
 }
