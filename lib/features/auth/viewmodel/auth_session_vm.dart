@@ -11,7 +11,6 @@ import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dar
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
-import 'package:nowdelivery_user_app/features/promotion/viewmodel/get_coupons_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
@@ -33,7 +32,6 @@ final List<ProviderOrFamily> sessionScopedProviders = <ProviderOrFamily>[
   getMyOrdersProvider,
   getMyAddressesProvider,
   defaultAddressProvider,
-  getCouponsProvider,
   getProfileProvider,
   getMyCardsProvider,
   getWalletInfoProvider,
@@ -209,7 +207,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       _ref.read(getMyOrdersProvider.notifier).getOrders(),
       _ref.read(getMyAddressesProvider.notifier).loadFirstPage(),
       _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
-      _ref.read(getCouponsProvider.notifier).getCoupons(),
       _ref.read(getProfileProvider.notifier).getProfile(),
       // Saved cards are no longer fetched at boot: they are loaded fresh when
       // the wallet's "My Cards" / "Add Balance" buttons are tapped (see
@@ -224,13 +221,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     ]);
 
     if (!mounted) return;
-
-    // A failed background coupons load must not stick to this kept-alive
-    // provider: drop it from the outside so the next open (DiscountCodeScreen)
-    // gets a fresh VM in the `loading` state and fetches again.
-    if (_ref.read(getCouponsProvider).hasError) {
-      _ref.invalidate(getCouponsProvider);
-    }
 
     state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
   }

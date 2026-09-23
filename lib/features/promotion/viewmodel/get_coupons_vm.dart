@@ -1,103 +1,38 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
-import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/promotion/data/repo/promotion_repo.dart';
 
-/// Single task: fetch the available coupons, one page at a time.
+/// Single task: page through the available coupons.
 ///
-/// [getCoupons] is never tied to this provider's creation — callers fire it when
-/// they actually need the data (the auth orchestrator once a user session is
-/// confirmed, and [DiscountCodeScreen] when it opens). The starting state is
-/// therefore [AsyncValue.loading] until someone kicks the first page off.
-///
-/// The provider is kept alive (not `autoDispose`). It never invalidates itself:
-/// dropping a failed instance is the caller's job (see the auth orchestrator and
-/// [DiscountCodeScreen]), so this VM only reports the error through its state and
-/// lets whoever fired the fetch decide to invalidate. Later pages are pulled in
-/// with [loadMore], whose progress is exposed separately through
-/// [GetCouponsViewModel.loadMoreState] so the already-visible list is never
-/// replaced by a full-screen loading/error state.
+/// `autoDispose` and self-fetching: the Discount Codes screen is the only
+/// consumer, so every open starts from a fresh first page — a coupon that
+/// expired since the last visit is gone rather than listed until relaunch.
+/// `loadNextPage()` and `loadFirstPage()` (refresh / retry) come from
+/// [PaginatedViewModel].
 final getCouponsProvider =
-    StateNotifierProvider<
+    StateNotifierProvider.autoDispose<
       GetCouponsViewModel,
       AsyncValue<PaginationModel<CouponModel>>
-    >((Ref ref) => GetCouponsViewModel(const AsyncValue.loading()));
+    >((Ref ref) => GetCouponsViewModel()..loadFirstPage());
 
-class GetCouponsViewModel
-    extends StateNotifier<AsyncValue<PaginationModel<CouponModel>>> {
-  GetCouponsViewModel(super.initialState);
-
+class GetCouponsViewModel extends PaginatedViewModel<CouponModel> {
   final PromotionRepo _repo = PromotionRepo();
 
-  final ValueNotifier<AsyncValue<bool>> loadMoreState =
-      ValueNotifier<AsyncValue<bool>>(const AsyncValue<bool>.data(true));
+  @override
+  Future<Either<Failure, PaginationModel<CouponModel>>> fetchPage(int page) =>
+      _repo.getCoupons(page: page);
+
+  @override
+  bool Function(CouponModel, CouponModel)? get isSameItem =>
+      (CouponModel a, CouponModel b) => a.id != null && a.id == b.id;
 
   @override
   void dispose() {
     _repo.cancelRequests();
-    loadMoreState.dispose();
     super.dispose();
-  }
-
-  Future<void> getCoupons() async {
-    state = const AsyncValue<PaginationModel<CouponModel>>.loading();
-
-    final Either<Failure, PaginationModel<CouponModel>> result =
-        await _fetchPage(1);
-
-    if (!mounted) return;
-
-    result.fold(
-      (Failure failure) {
-        state = AsyncValue<PaginationModel<CouponModel>>.error(
-          failure.message,
-          StackTrace.current,
-        );
-      },
-      (PaginationModel<CouponModel> firstPage) {
-        state = AsyncValue<PaginationModel<CouponModel>>.data(firstPage);
-        loadMoreState.value = AsyncValue<bool>.data(firstPage.hasMore);
-      },
-    );
-  }
-
-  Future<void> loadMore() async {
-    final PaginationModel<CouponModel>? currentPage = state.valueOrNull;
-
-    if (currentPage == null ||
-        !currentPage.hasMore ||
-        loadMoreState.value.isLoading) {
-      return;
-    }
-
-    loadMoreState.value = const AsyncValue<bool>.loading();
-
-    final Either<Failure, PaginationModel<CouponModel>> result =
-        await _fetchPage(currentPage.currentPage + 1);
-
-    if (!mounted) return;
-
-    result.fold(
-      (Failure failure) {
-        loadMoreState.value = AsyncValue<bool>.error(
-          failure.message,
-          StackTrace.current,
-        );
-      },
-      (PaginationModel<CouponModel> newPage) {
-        // Append the freshly fetched page to the visible list.
-        state = AsyncValue<PaginationModel<CouponModel>>.data(
-          currentPage.appendPage(newPage),
-        );
-        loadMoreState.value = AsyncValue<bool>.data(newPage.hasMore);
-      },
-    );
-  }
-
-  Future<Either<Failure, PaginationModel<CouponModel>>> _fetchPage(int page) {
-    return _repo.getCoupons(page: page);
   }
 }
