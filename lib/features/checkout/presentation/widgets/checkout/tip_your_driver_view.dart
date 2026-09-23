@@ -5,19 +5,13 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/counters/full_width_counter_view.dart';
 
+/// The tip picker. Nothing is preselected — there is no tip until the customer
+/// picks one — and tapping the selected pill again takes the tip back.
 class TipYourDriverView extends StatefulWidget {
-  const TipYourDriverView({super.key, this.initialTip, this.onTipChanged});
+  const TipYourDriverView({super.key, this.onTipChanged});
 
-  /// The tip to preselect. When it matches one of the preset amounts the
-  /// matching pill is highlighted; any other non-null value is treated as a
-  /// custom amount and lights up "Other" with the counter opened on it.
-  /// `null` (or `0`) preselects nothing, matching the "no tip" default.
-  final double? initialTip;
-
-  /// Reports the tip the user picked — a preset amount, or the counter value
-  /// while "Other" is selected. Also fired once after the first frame with
-  /// [initialTip] when it's non-null, so the parent's stored value stays in
-  /// sync with the visually preselected pill.
+  /// Reports the tip the user picked — a preset amount, the counter value
+  /// while "Other" is selected, or `0` when the selection is taken back.
   final ValueChanged<double>? onTipChanged;
 
   @override
@@ -25,8 +19,7 @@ class TipYourDriverView extends StatefulWidget {
 }
 
 class _TipYourDriverViewState extends State<TipYourDriverView> {
-  /// The amount the counter starts at when "Other" is selected without an
-  /// initial value being carried in.
+  /// The amount the counter starts at when "Other" is selected.
   static const int _otherTipInitialValue = 15;
 
   static const List<String> _presetTips = <String>['2', '5', '7', '10'];
@@ -36,61 +29,21 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
     LangKeys.otherKey.tr(),
   ];
 
-  /// Which pill is highlighted, resolved from [TipYourDriverView.initialTip].
-  /// `null` = nothing selected (no tip).
-  late int? _selectedIndex = _indexForInitialTip(widget.initialTip);
+  /// Which pill is highlighted; `null` = no tip.
+  int? _selectedIndex;
 
-  /// The counter's starting value when "Other" is preselected — either the
-  /// carried-in custom amount or the built-in default.
-  late final int _otherCounterInitial = _isCustomInitial(widget.initialTip)
-      ? widget.initialTip!.round()
-      : _otherTipInitialValue;
-
-  late bool showTipOtherCounterView = _selectedIndex == _tips.length - 1;
-
-  static int _presetIndex(double? tip) {
-    if (tip == null) return -1;
-    return _presetTips.indexWhere(
-      (String preset) => double.parse(preset) == tip,
-    );
-  }
-
-  static bool _isCustomInitial(double? tip) =>
-      tip != null && tip > 0 && _presetIndex(tip) < 0;
-
-  int? _indexForInitialTip(double? tip) {
-    if (tip == null || tip <= 0) return null;
-    final int preset = _presetIndex(tip);
-    if (preset >= 0) return preset;
-    // Any other non-null amount is a custom tip → the "Other" pill.
-    return _tips.length - 1;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final double? initial = widget.initialTip;
-    if (initial == null || initial <= 0) return;
-    // Fire after the first frame so the parent's setState (if any) doesn't
-    // race with this widget's first build.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      widget.onTipChanged?.call(initial);
-    });
-  }
+  bool get _isOtherSelected => _selectedIndex == _tips.length - 1;
 
   void _onTipSelected(int index) {
-    final bool isOtherSelected = index == _tips.length - 1;
+    setState(() => _selectedIndex = index == _selectedIndex ? null : index);
 
-    setState(() {
-      _selectedIndex = index;
-      showTipOtherCounterView = isOtherSelected;
-    });
-
+    final int? selected = _selectedIndex;
     widget.onTipChanged?.call(
-      isOtherSelected
-          ? _otherCounterInitial.toDouble()
-          : double.tryParse(_tips[index]) ?? 0,
+      selected == null
+          ? 0
+          : _isOtherSelected
+          ? _otherTipInitialValue.toDouble()
+          : double.parse(_tips[selected]),
     );
   }
 
@@ -136,9 +89,9 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
               ),
             ],
           ),
-          if (showTipOtherCounterView)
+          if (_isOtherSelected)
             FullWidthCounterView(
-              initialValue: _otherCounterInitial,
+              initialValue: _otherTipInitialValue,
               onValueChanged: (int value) =>
                   widget.onTipChanged?.call(value.toDouble()),
             ),

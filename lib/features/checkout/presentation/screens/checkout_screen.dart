@@ -216,7 +216,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     controller: _instructionsController,
                   ),
                   TipYourDriverView(
-                    initialTip: 2,
                     onTipChanged: (double tip) {
                       _driverTip = tip;
                       _reprice();
