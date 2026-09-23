@@ -45,11 +45,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     super.dispose();
   }
 
-  void _fetchProductDetails() {
-    ref
-        .read(getProductDetailsProvider(widget.productSlug).notifier)
-        .getProductDetails();
-  }
+  Future<void> _fetchProductDetails() => ref
+      .read(getProductDetailsProvider(widget.productSlug).notifier)
+      .getProductDetails();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +99,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
                 child: AppRefreshIndicator(
-                  onRefresh: () async => _fetchProductDetails(),
+                  onRefresh: _fetchProductDetails,
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),

@@ -31,8 +31,14 @@ class GetProductDetailsViewModel
     super.dispose();
   }
 
+  /// Loads the product, or reloads it for pull-to-refresh. A reload keeps the
+  /// loaded product on screen: flipping back to a bare loading state swapped
+  /// the page for its shimmer, which unmounted the stepper and the option
+  /// pickers and so threw away the shopper's quantity, colour and size.
   Future<void> getProductDetails() async {
-    state = const AsyncValue.loading();
+    state = state.hasValue
+        ? const AsyncValue<ProductModel>.loading().copyWithPrevious(state)
+        : const AsyncValue<ProductModel>.loading();
 
     final result = await _repo.getProductDetails(productSlug: productSlug);
 
