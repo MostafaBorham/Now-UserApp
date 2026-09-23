@@ -26,15 +26,16 @@ class ProductItem3View extends StatelessWidget {
     this.onTap,
   });
 
-  /// The product to render. When `null` (e.g. the home view has no data wired
-  /// up yet, or a card is built without a model) the card falls back to
-  /// [_placeholderProduct] so it still looks populated instead of showing empty
-  /// texts and blank slots.
+  /// The product to render. `null` only for the loading skeleton: every list
+  /// builds the card without a model inside an `AppShimmer`, and it falls back
+  /// to [_placeholderProduct] so the shimmer has text and badges to mask.
   final ProductModel? product;
 
-  /// Dummy stand-in used whenever no [product] is passed, so the card renders
-  /// with plausible-looking data. Temporary until the home view is integrated
-  /// with the backend.
+  /// Stand-in for the loading skeleton. It is only ever painted under a
+  /// shimmer, so its texts are never read — but it carries **no image URLs**:
+  /// it used to point at unsplash, so every shimmer cell in search, favourites
+  /// and categories fired two requests to a host the app has no relationship
+  /// with. Same fix as the store card's skeleton.
   static const ProductModel _placeholderProduct = ProductModel(
     id: 0,
     productId: 0,
@@ -47,14 +48,8 @@ class ProductItem3View extends StatelessWidget {
     price: 99.99,
     discountPrice: 74.99,
     activeDeal: ActiveDealModel(discountValue: 25, discountType: 'percentage'),
-    // Temporary internet images for the product photo and the brand logo.
-    images: <String>[
-      'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600',
-    ],
-    vendor: StoreModel(
-      logoUrl:
-          'https://images.unsplash.com/photo-1613145997970-db84a7975fbb?w=200',
-    ),
+    // No images: the photo and brand-logo slots render empty under the shimmer.
+    vendor: StoreModel(),
     stock: 10,
     isFavorite: false,
   );
