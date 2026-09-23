@@ -45,8 +45,10 @@ class ProductsRepo {
       final Map<String, dynamic>? responseBody =
           data is Map<String, dynamic> ? data : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      // A parse error's text is a Dart type error, not a message for the
+      // customer.
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
@@ -69,8 +71,10 @@ class ProductsRepo {
       final Map<String, dynamic>? responseBody =
       data is Map<String, dynamic> ? data : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      // A parse error's text is a Dart type error, not a message for the
+      // customer.
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 }
