@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
@@ -114,9 +115,14 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                   // refresh() deliberately does not flip the state back to
                   // loading, so the page stays on screen instead of collapsing
                   // into the shimmer under the spinner.
-                  onRefresh: () => ref
-                      .read(getStoreDetailsProvider(storeId).notifier)
-                      .refresh(),
+                  onRefresh: () async {
+                    final String? error = await ref
+                        .read(getStoreDetailsProvider(storeId).notifier)
+                        .refresh();
+                    if (error != null && context.mounted) {
+                      AppToast.showError(context, error);
+                    }
+                  },
                   child: NestedScrollView(
                     controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
