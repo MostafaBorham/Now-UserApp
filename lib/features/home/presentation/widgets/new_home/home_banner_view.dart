@@ -8,25 +8,29 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
 /// A single full-width promo banner between two home sections.
 ///
-/// [banner] is a feed banner item (`promo_block_middle` / `promo_block_footer`);
-/// the hardcoded placeholder artwork stands in when it is null, or when the
-/// admin published the slot without an image for the current locale.
+/// [banner] is a feed banner item (`promo_block_middle` / `promo_block_footer`).
+/// Only build it when [imageUrlFor] has an image: a slot published without
+/// artwork for the current locale is simply left out. It used to fall back to a
+/// watermarked Adobe Stock preview, which would have gone in front of every
+/// user of the other language.
 class HomeBannerView extends StatelessWidget {
-  const HomeBannerView({super.key, this.banner});
+  const HomeBannerView({super.key, required this.banner});
 
-  final BannerModel? banner;
+  final BannerModel banner;
 
-  static const String _placeholderImage =
-      'https://as1.ftcdn.net/jpg/02/29/54/06/1000_F_229540688_nriN1k76uBt2lHMU9dMV2DbbXWGYPUj2.jpg';
+  /// The artwork to show for the current locale, or `null` when there is none.
+  static String? imageUrlFor(BuildContext context, BannerModel banner) {
+    final bool isAr = context.locale.languageCode == 'ar';
+    final String? url =
+        (isAr ? banner.imageAr : banner.imageEn) ?? banner.image;
+    return (url == null || url.isEmpty) ? null : url;
+  }
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    final bool isAr = context.locale.languageCode == 'ar';
-    final String imageUrl =
-        (isAr ? banner?.imageAr : banner?.imageEn) ??
-        banner?.image ??
-        _placeholderImage;
+    final String? imageUrl = imageUrlFor(context, banner);
+    if (imageUrl == null) return const SizedBox.shrink();
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -60,11 +64,9 @@ class HomeBannerView extends StatelessWidget {
     // feed sends numeric `product_id` / `main_category_id` only, so taps are
     // inert until it emits slugs — at which point BannerModel picks them up and
     // this starts working with no change here.
-    if (banner?.productSlug != null) {
-      context.pushNamed(
-        AppRoutes.productDetailsScreen,
-        extra: banner!.productSlug,
-      );
+    final String? productSlug = banner.productSlug;
+    if (productSlug != null) {
+      context.pushNamed(AppRoutes.productDetailsScreen, extra: productSlug);
     }
   }
 }

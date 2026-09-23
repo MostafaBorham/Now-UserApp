@@ -121,16 +121,21 @@ class GetHomeSectionsViewModel
     );
   }
 
-  /// [lat] / [lng] are the guest's coordinates for the `nearby_stores` section;
-  /// left null for a logged-in user, whose nearby stores the backend resolves
-  /// from their profile address (see [HomeView]).
+  /// [lat] / [lng] are the device's cached coordinates for the `nearby_stores`
+  /// section. The backend prefers a signed-in user's default address and only
+  /// falls back to these (see [HomeView]).
+  ///
+  /// A refresh keeps the already-loaded sections as the previous value, so the
+  /// feed stays on screen instead of flashing back to its shimmer; a failure
+  /// keeps them too, with the error alongside.
   Future<void> getHomeSections({
     required String platform,
     required String lang,
     double? lat,
     double? lng,
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncValue<List<HomeSectionModel>>.loading()
+        .copyWithPrevious(state);
 
     final result = await _repo.getHomeSections(
       platform: platform,
@@ -142,8 +147,10 @@ class GetHomeSectionsViewModel
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
+      (Failure failure) => AsyncValue<List<HomeSectionModel>>.error(
+        failure.message,
+        StackTrace.current,
+      ).copyWithPrevious(state),
       (List<HomeSectionModel> sections) => AsyncValue.data(sections),
     );
   }

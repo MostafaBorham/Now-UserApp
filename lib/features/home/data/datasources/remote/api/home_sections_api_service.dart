@@ -16,11 +16,11 @@ class HomeSectionsApiService {
   /// [platform] is `ios` / `android` (the backend falls back to `all` for any
   /// other value); [lang] (`ar` / `en`) makes the feed return localized titles.
   ///
-  /// [lat] / [lng] are the point the `nearby_stores` section is measured from,
-  /// and are sent only for a guest session — a logged-in user's nearby stores
-  /// are resolved server-side from the address on their profile. Both are sent
-  /// together or not at all; omitting them for a guest comes back with an empty
-  /// `nearby_stores` section.
+  /// [lat] / [lng] are the point the `nearby_stores` section is measured from.
+  /// The backend uses a signed-in user's default address first and falls back
+  /// to this pair only when there is none, so it is sent for every session.
+  /// Both are sent together or not at all; with neither (and no saved address)
+  /// `nearby_stores` comes back empty.
   Future<Response> getHomeSections({
     required String platform,
     required String lang,

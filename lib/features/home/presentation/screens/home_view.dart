@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
@@ -81,14 +82,16 @@ class _HomeViewState extends ConsumerState<HomeView>
     });
   }
 
-  void _loadFeed() {
-    final bool isGuest =
-        ref.read(authSessionProvider).sessionType == SessionType.guest;
-    final AddressModel? location = isGuest
-        ? CurrentLocationCacheService().getCurrentLocation()
-        : null;
+  Future<void> _loadFeed() {
+    // Sent for everyone, not just guests. The backend measures nearby stores
+    // from a signed-in user's default address when they have one with
+    // coordinates, and only otherwise falls back to this pair — which used to
+    // be withheld for users, so one without a usable saved address got a feed
+    // with no location at all.
+    final AddressModel? location = CurrentLocationCacheService()
+        .getCurrentLocation();
 
-    ref
+    return ref
         .read(getHomeSectionsProvider.notifier)
         .getHomeSections(
           platform: Platform.isIOS ? 'ios' : 'android',
@@ -98,10 +101,10 @@ class _HomeViewState extends ConsumerState<HomeView>
         );
   }
 
-  void _refreshHome() {
-    _loadFeed();
-    ref.read(getHeaderBannersProvider.notifier).getHeaderBanners();
-  }
+  Future<void> _refreshHome() => Future.wait(<Future<void>>[
+    _loadFeed(),
+    ref.read(getHeaderBannersProvider.notifier).getHeaderBanners(),
+  ]);
 
   @override
   void dispose() {
@@ -159,10 +162,11 @@ class _HomeViewState extends ConsumerState<HomeView>
     final AsyncValue<List<HomeSectionModel>> feed = ref.watch(
       getHomeSectionsProvider,
     );
-    final List<HomeSectionModel> sections = feed.maybeWhen(
-      data: (List<HomeSectionModel> data) => data,
-      orElse: () => const <HomeSectionModel>[],
-    );
+    // Whatever is loaded stays on screen while a refresh runs (the view model
+    // keeps the previous value), instead of the whole feed flashing back to
+    // its shimmer.
+    final List<HomeSectionModel> sections =
+        feed.valueOrNull ?? const <HomeSectionModel>[];
 
     final bool isConnected = ref.watch(isConnectedProvider).valueOrNull ?? true;
 
@@ -254,7 +258,13 @@ class _HomeViewState extends ConsumerState<HomeView>
             viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
           ),
         ),
-      if (middlePromoSection != null && middlePromoSection.banners.isNotEmpty)
+      if (middlePromoSection != null &&
+          middlePromoSection.banners.isNotEmpty &&
+          HomeBannerView.imageUrlFor(
+                context,
+                middlePromoSection.banners.first,
+              ) !=
+              null)
         AspectRatio(
           aspectRatio: 3.5,
           child: HomeBannerView(banner: middlePromoSection.banners.first),
@@ -262,7 +272,13 @@ class _HomeViewState extends ConsumerState<HomeView>
       for (final HomeSectionModel section in categorySections)
         if (section.products.isNotEmpty)
           _ProductsByCategorySection(section: section),
-      if (footerPromoSection != null && footerPromoSection.banners.isNotEmpty)
+      if (footerPromoSection != null &&
+          footerPromoSection.banners.isNotEmpty &&
+          HomeBannerView.imageUrlFor(
+                context,
+                footerPromoSection.banners.first,
+              ) !=
+              null)
         AspectRatio(
           aspectRatio: 3.5,
           child: HomeBannerView(banner: footerPromoSection.banners.first),
@@ -276,8 +292,14 @@ class _HomeViewState extends ConsumerState<HomeView>
 
     return Stack(
       children: <Widget>[
-        CustomScrollView(
+        // Pull-to-refresh: the feed is kept alive and cached, so without this
+        // the only ways to refresh it were the offline cue and the error retry.
+        AppRefreshIndicator(
+          onRefresh: _refreshHome,
+          child: CustomScrollView(
           controller: _scrollController,
+          // Always scrollable, so a short or empty feed can still be pulled.
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: <Widget>[
             SliverPadding(
               padding: EdgeInsets.only(
@@ -297,6 +319,7 @@ class _HomeViewState extends ConsumerState<HomeView>
               ),
             ),
           ],
+          ),
         ),
         Positioned(
           top: 0,
