@@ -18,10 +18,13 @@ class ProductsApiService {
 
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getProducts({String? search}) {
+  Future<Response> getProducts({required int page, String? search}) {
     return _dio.get(
       ProductsEndpoints.getProducts,
-      queryParameters: ProductsEndpoints.getProductsQuery(search: search),
+      queryParameters: ProductsEndpoints.getProductsQuery(
+        page: page,
+        search: search,
+      ),
       cancelToken: _canceller.token,
     );
   }

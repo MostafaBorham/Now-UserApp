@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -20,13 +21,19 @@ class ProductsRepo {
 
   void cancelRequests() => _productsApiService.cancelRequests();
 
-  Future<Either<Failure, List<ProductModel>>> getProducts({String? search}) async {
+  Future<Either<Failure, PaginationModel<ProductModel>>> getProducts({
+    required int page,
+    String? search,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _productsApiService.getProducts(search: search);
+      final Response response = await _productsApiService.getProducts(
+        page: page,
+        search: search,
+      );
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
         final Map<String, dynamic> data =
@@ -38,7 +45,10 @@ class ProductsRepo {
                 .map(ProductModel.fromJson)
                 .toList();
 
-        return products;
+        return PaginationModel<ProductModel>.fromJson(
+          data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{},
+          products,
+        );
       });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;

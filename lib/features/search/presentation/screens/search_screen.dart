@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_categories_section.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_products_grid.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
@@ -18,10 +19,28 @@ class SearchScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
+  /// `/api/v1/products` answers every term shorter than this with an empty
+  /// page, so shorter terms are not searched at all.
+  static const int _minSearchLength = 3;
+
   String _rawQuery = '';
   String _searchedTerm = '';
 
   final GlobalKey _searchFieldKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // The top-categories strip reads the kept-alive categories list, which
+    // nothing retries once it has failed: re-kick it, as All Stores does.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final state = ref.read(getAppCategoriesProvider);
+      if (state.hasError && !state.hasValue) {
+        ref.invalidate(getAppCategoriesProvider);
+      }
+    });
+  }
 
   void _remember(String term) {
     if (term.isEmpty) return;
@@ -35,24 +54,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
+  /// Shows the results for [value], or none when it is too short to search.
+  void _search(String value, {bool remember = false}) {
+    final String term = value.trim();
+    final bool searchable = term.length >= _minSearchLength;
+    setState(() => _searchedTerm = searchable ? term : '');
+    if (searchable && remember) _remember(term);
+  }
+
   void _onSearch(String value) {
     if (!mounted) return;
-    final String term = value.trim();
-    if (term.isEmpty) return;
-    setState(() => _searchedTerm = term);
+    _search(value);
   }
 
   void _onSubmitted(String value) {
-    final String term = value.trim();
-    if (term.isEmpty) return;
-    setState(() => _searchedTerm = term);
-    _remember(term);
+    _search(value, remember: true);
     FocusScope.of(context).unfocus();
   }
 
   void _onRecentSelect(String term) {
-    setState(() => _searchedTerm = term);
-    _remember(term);
+    _search(term, remember: true);
     FocusScope.of(context).unfocus();
   }
 
@@ -89,9 +110,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             if (hasResults) searchField else Flexible(child: searchField),
             if (hasResults)
               Expanded(
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SearchProductsGrid(searchTerm: _searchedTerm),
+                // Keyed by the term so a new search starts at the top.
+                child: SearchProductsGrid(
+                  key: ValueKey<String>(_searchedTerm),
+                  searchTerm: _searchedTerm,
                 ),
               )
             else

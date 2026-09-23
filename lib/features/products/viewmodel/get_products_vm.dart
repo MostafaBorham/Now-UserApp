@@ -1,22 +1,25 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/products/data/repo/products_repo.dart';
 
+/// The product search results for one term, paged. A `family` keyed by the
+/// search term, so every term keeps its own pagination state.
 final getProductsProvider = StateNotifierProvider.autoDispose.family<
-    GetProductsViewModel, AsyncValue<List<ProductModel>>, String>(
+    GetProductsViewModel, AsyncValue<PaginationModel<ProductModel>>, String>(
   (Ref ref, String search) =>
-      GetProductsViewModel(const AsyncValue.loading())
-        ..getProducts(search: search),
+      GetProductsViewModel(search: search)..loadFirstPage(),
 );
 
-class GetProductsViewModel
-    extends StateNotifier<AsyncValue<List<ProductModel>>> {
-  GetProductsViewModel(super.initialState);
+class GetProductsViewModel extends PaginatedViewModel<ProductModel> {
+  GetProductsViewModel({required this.search});
 
   final ProductsRepo _repo = ProductsRepo();
 
-  int _requestId = 0;
+  final String search;
 
   @override
   void dispose() {
@@ -24,32 +27,16 @@ class GetProductsViewModel
     super.dispose();
   }
 
-  Future<void> getProducts({String? search}) async {
-    _repo.cancelRequests();
-    final int requestId = ++_requestId;
-
-    state = const AsyncValue.loading();
-
-    final result = await _repo.getProducts(search: search);
-
-    if (!mounted || requestId != _requestId) return;
-
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      (List<ProductModel> products) => AsyncValue.data(products),
+  void updateProductFavourite(int? productId, bool isFavourite) {
+    if (productId == null) return;
+    updateItemsWhere(
+      (ProductModel product) => product.id == productId,
+      (ProductModel product) => product.copyWith(isFavorite: isFavourite),
     );
   }
 
-  void updateProductFavourite(int? productId, bool isFavourite) {
-    final List<ProductModel>? products = state.valueOrNull;
-    if (products == null) return;
-
-    state = AsyncValue<List<ProductModel>>.data(<ProductModel>[
-      for (final ProductModel product in products)
-        product.id == productId
-            ? product.copyWith(isFavorite: isFavourite)
-            : product,
-    ]);
+  @override
+  Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) {
+    return _repo.getProducts(page: page, search: search);
   }
 }

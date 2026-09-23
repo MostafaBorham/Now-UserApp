@@ -5,10 +5,16 @@ abstract class ProductsEndpoints {
   static String productDetails(String slug) =>
       '$getProducts/${Uri.encodeComponent(slug)}';
 
-  static Map<String, dynamic> getProductsQuery({String? search}) =>
-      <String, dynamic>{
-        'sort': 'price',
-        'direction': 'asc',
-        if (search != null && search.isNotEmpty) 'search': search,
-      };
+  static const int _perPage = 15;
+
+  static Map<String, dynamic> getProductsQuery({
+    required int page,
+    String? search,
+  }) => <String, dynamic>{
+    'per_page': _perPage,
+    'page': page,
+    'sort': 'price',
+    'direction': 'asc',
+    if (search != null && search.isNotEmpty) 'search': search,
+  };
 }
