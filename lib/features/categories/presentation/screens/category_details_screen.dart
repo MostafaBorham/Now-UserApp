@@ -13,6 +13,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
 import '../providers/category_details/category_model_provider.dart';
+import '../providers/category_details/category_products_search_provider.dart';
+import '../providers/category_details/category_stores_search_provider.dart';
 
 class CategoryDetailsScreen extends ConsumerWidget {
   const CategoryDetailsScreen({super.key, required this.category});
@@ -42,7 +44,15 @@ class CategoryDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     return ProviderScope(
-      overrides: [categoryProvider.overrideWithValue(category)],
+      overrides: [
+        categoryProvider.overrideWithValue(category),
+        // The search terms belong to this screen: left in the root container
+        // they were shared with any category screen pushed on top (category ->
+        // store -> a banner linking another category), which then opened
+        // filtered by a term its empty field didn't show.
+        categoryProductsSearchProvider.overrideWith((ref) => ''),
+        categoryStoresSearchProvider.overrideWith((ref) => ''),
+      ],
       child: Scaffold(
         body: AppWavedView(
           bodyPadding: EdgeInsets.symmetric(horizontal: 12,vertical: 40).copyWith(bottom: 0),

@@ -8,6 +8,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
+import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_products_search_provider.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
+
 import '../../../../helpers/categories_test_harness.dart';
 
 void main() {
@@ -63,6 +66,35 @@ void main() {
     expect(find.text('Food'), findsOneWidget);
   });
 
+  testWidgets('its search terms are its own, not an outer screen\'s',
+      (WidgetTester tester) async {
+    // A category screen pushed over another (category -> store -> a banner
+    // linking a category) used to open filtered by the one beneath.
+    final List<CategoryProductsArgs> queried = <CategoryProductsArgs>[];
+    await pumpCategoriesScreen(
+      tester,
+      CategoryDetailsScreen(category: sampleCategory(en: 'Food')),
+      overrides: <Override>[
+        overrideCategoryStores(
+          AsyncValue<PaginationModel<StoreModel>>.data(
+            pageOf<StoreModel>(<StoreModel>[]),
+          ),
+        ),
+        categoryProductsSearchProvider.overrideWith((Ref ref) => 'leaked'),
+        getCategoryProductsProvider.overrideWith(
+          (Ref ref, CategoryProductsArgs args) {
+            queried.add(args);
+            return _IdleCategoryProductsVM(args);
+          },
+        ),
+      ],
+    );
+
+    expect(queried.map((CategoryProductsArgs a) => a.searchKey), <String?>[
+      null,
+    ]);
+  });
+
   testWidgets('switching to the Stores tab shows store items',
       (WidgetTester tester) async {
     await pumpCategoriesScreen(
@@ -89,4 +121,15 @@ void main() {
 
     expect(find.byType(StoreItem), findsWidgets);
   });
+}
+
+class _IdleCategoryProductsVM extends GetCategoryProductsViewModel {
+  _IdleCategoryProductsVM(CategoryProductsArgs args) : super(args: args) {
+    state = AsyncValue<PaginationModel<ProductModel>>.data(
+      pageOf<ProductModel>(<ProductModel>[sampleProduct()]),
+    );
+  }
+
+  @override
+  Future<void> loadFirstPage() async {}
 }
