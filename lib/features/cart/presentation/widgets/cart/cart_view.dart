@@ -85,9 +85,7 @@ class _CartViewState extends ConsumerState<CartView> {
 
     final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
 
-    final String? error = vendorId == null
-        ? await checkoutVm.checkout()
-        : await checkoutVm.checkoutForSingleStore(vendorId: vendorId);
+    final String? error = await checkoutVm.checkout(vendorId: vendorId);
 
     if (!mounted) return;
 

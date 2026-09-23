@@ -7,7 +7,8 @@ import 'package:nowdelivery_user_app/features/checkout/data/datasources/remote/a
 ///
 /// Each method only performs the request and returns the Dio [Response].
 /// Error handling and response parsing are intentionally left to the caller
-/// (the repository layer).
+/// (the repository layer). Authentication is applied by `AuthTokenInterceptor`
+/// from the cached session.
 ///
 /// Cancellation is fully encapsulated here: every request carries the token
 /// of [_canceller], and callers only see the plain [cancelRequests] method.
@@ -18,31 +19,21 @@ class CheckoutApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  /// Drafts an order group. A `null` [vendorId] drafts every store in the cart;
-  /// a concrete [vendorId] drafts only that single store. Authentication is
-  /// applied by `AuthTokenInterceptor` from the cached session.
-  Future<Response> checkout({int? vendorId}) {
+  /// Prices the checkout of [vendorId] (`null` = the whole cart) with the
+  /// choices in [body] (see [CheckoutEndpoints.pricingBody]).
+  Future<Response> preview({
+    int? vendorId,
+    Map<String, dynamic> body = const <String, dynamic>{},
+  }) {
     return _dio.post(
-      CheckoutEndpoints.checkout,
-      data: CheckoutEndpoints.checkoutBody(vendorId: vendorId),
-      cancelToken: _canceller.token,
-    );
-  }
-
-  /// Drafts a single-store checkout preview scoped to [vendorId] via the
-  /// `POST /api/v1/checkout/vendor/{vendorId}/preview` endpoint. Authentication
-  /// is applied by `AuthTokenInterceptor` from the cached session.
-  Future<Response> checkoutForSingleStore({required int vendorId}) {
-    return _dio.post(
-      CheckoutEndpoints.checkoutForSingleStore(vendorId),
+      CheckoutEndpoints.preview(vendorId),
+      data: body,
       cancelToken: _canceller.token,
     );
   }
 
   /// Applies coupon [code] for [vendorId] and returns the per-vendor discount
   /// calculation. Stateless — the server reads the user's own cart.
-  /// Authentication is applied by `AuthTokenInterceptor` from the cached
-  /// session.
   Future<Response> applyCoupon({required int vendorId, required String code}) {
     return _dio.post(
       CheckoutEndpoints.couponsApply,
@@ -64,36 +55,20 @@ class CheckoutApiService {
     );
   }
 
-  /// Confirms the draft order group identified by [orderGroupUuid] — the final
-  /// checkout step, submitting the delivery address, driver tip, notes, payment
-  /// method and coupons together. Authentication is applied by
-  /// `AuthTokenInterceptor` from the cached session.
-  Future<Response> confirmOrder({
-    required String orderGroupUuid,
+  /// Places the order for [vendorId] (`null` = the whole cart) with [body]
+  /// (see [CheckoutEndpoints.placeBody]).
+  Future<Response> placeOrder({
+    int? vendorId,
     required String idempotencyKey,
-    int? addressId,
-    String? paymentMethod,
-    int? paymentMethodId,
-    double? driverTip,
-    String? notes,
-    String? deliveryInstructions,
-    Map<int, String>? coupons,
+    required Map<String, dynamic> body,
   }) {
     return _dio.post(
-      CheckoutEndpoints.confirmOrder(orderGroupUuid),
-      data: CheckoutEndpoints.confirmOrderBody(
-        addressId: addressId,
-        paymentMethod: paymentMethod,
-        paymentMethodId: paymentMethodId,
-        driverTip: driverTip,
-        notes: notes,
-        deliveryInstructions: deliveryInstructions,
-        coupons: coupons,
-      ),
+      CheckoutEndpoints.place(vendorId),
+      data: body,
       // Placing is the one non-idempotent step: the server dedupes retries by
       // this per-request key (same key + same body → replays the placed order),
       // so it must be reused across retries of the same submit and rotated when
-      // the order changes. See the checkout screen for that lifecycle.
+      // the order changes. See `ConfirmOrderViewModel` for that lifecycle.
       options: Options(headers: <String, dynamic>{
         'Idempotency-Key': idempotencyKey,
       }),

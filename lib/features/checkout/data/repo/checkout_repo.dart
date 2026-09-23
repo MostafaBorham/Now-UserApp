@@ -15,51 +15,33 @@ class CheckoutRepo {
 
   void cancelRequests() => _checkoutApiService.cancelRequests();
 
-  Future<Either<Failure, CheckoutModel>> checkout({int? vendorId}) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response response = await _checkoutApiService.checkout(
-        vendorId: vendorId,
-      );
-
-      return readApiResponse(response, requireSuccessFlag: true).map(
-        (Map<String, dynamic> body) =>
-            CheckoutModel.fromJson(body['data'] as Map<String, dynamic>?),
-      );
-    } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
-  }
-
-  /// Fetches the single-store checkout preview for [vendorId] via
-  /// `POST /api/v1/checkout/vendor/{vendorId}/preview`, parsing the single-store
-  /// payload onto the shared [CheckoutModel].
-  Future<Either<Failure, CheckoutModel>> checkoutForSingleStore({
-    required int vendorId,
+  /// Prices the checkout of [vendorId] (`null` = the whole cart) with the
+  /// choices in [body]. The two flavours answer in different shapes — the cart
+  /// one groups by vendor, the vendor one is a single store — so each has its
+  /// own parser onto the shared [CheckoutModel].
+  Future<Either<Failure, CheckoutModel>> preview({
+    int? vendorId,
+    Map<String, dynamic> body = const <String, dynamic>{},
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _checkoutApiService.checkoutForSingleStore(
+      final Response response = await _checkoutApiService.preview(
         vendorId: vendorId,
+        body: body,
       );
 
-      return readApiResponse(response, requireSuccessFlag: true).map(
-        (Map<String, dynamic> body) => CheckoutModel.fromSingleStoreJson(
-          body['data'] as Map<String, dynamic>?,
-        ),
-      );
+      return readApiResponse(response, requireSuccessFlag: true).map((
+        Map<String, dynamic> body,
+      ) {
+        final Map<String, dynamic>? data =
+            body['data'] as Map<String, dynamic>?;
+        return vendorId == null
+            ? CheckoutModel.fromJson(data)
+            : CheckoutModel.fromSingleStoreJson(data);
+      });
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
@@ -124,47 +106,31 @@ class CheckoutRepo {
     }
   }
 
-  /// Confirms the draft group and returns the orders the server actually
-  /// created (each carrying its real `order_number`, status, etc.) so the
-  /// confirmation screen renders placed orders rather than the preview draft.
-  Future<Either<Failure, List<OrderModel>>> confirmOrder({
-    required String orderGroupUuid,
+  /// Places the order for [vendorId] (`null` = the whole cart) and returns the
+  /// orders the server created (each carrying its real `order_number`, status,
+  /// etc.), so the confirmation screen renders placed orders, not the preview.
+  Future<Either<Failure, List<OrderModel>>> placeOrder({
+    int? vendorId,
     required String idempotencyKey,
-    int? addressId,
-    String? paymentMethod,
-    int? paymentMethodId,
-    double? driverTip,
-    String? notes,
-    String? deliveryInstructions,
-    Map<int, String>? coupons,
+    required Map<String, dynamic> body,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _checkoutApiService.confirmOrder(
-        orderGroupUuid: orderGroupUuid,
+      final Response response = await _checkoutApiService.placeOrder(
+        vendorId: vendorId,
         idempotencyKey: idempotencyKey,
-        addressId: addressId,
-        paymentMethod: paymentMethod,
-        paymentMethodId: paymentMethodId,
-        driverTip: driverTip,
-        notes: notes,
-        deliveryInstructions: deliveryInstructions,
-        coupons: coupons,
+        body: body,
       );
 
       return readApiResponse(response, requireSuccessFlag: true).map((
         Map<String, dynamic> body,
       ) {
-        // The created orders sit on the confirmed order group. Different builds
-        // nest the group under `order_group`; fall back to `data` itself.
-        final Map<String, dynamic>? data =
-            body['data'] as Map<String, dynamic>?;
         final Map<String, dynamic> group =
-            (data?['order_group'] as Map<String, dynamic>?) ??
-            data ??
+            ((body['data'] as Map<String, dynamic>?)?['order_group']
+                as Map<String, dynamic>?) ??
             const <String, dynamic>{};
 
         return ((group['orders'] as List?) ?? const <dynamic>[])

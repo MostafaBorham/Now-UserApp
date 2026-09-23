@@ -45,32 +45,11 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
     super.dispose();
   }
 
+  /// Prices the checkout of [vendorId] — `null` for every store in the cart.
   Future<String?> checkout({int? vendorId}) async {
     state = const AsyncValue<CheckoutModel?>.loading();
 
-    final result = await _repo.checkout(vendorId: vendorId);
-
-    if (!mounted) return null;
-
-    return result.fold(
-      (Failure failure) {
-        state = AsyncValue<CheckoutModel?>.error(
-          failure.message,
-          StackTrace.current,
-        );
-        return failure.message;
-      },
-      (CheckoutModel draft) {
-        state = AsyncValue<CheckoutModel?>.data(draft);
-        return null;
-      },
-    );
-  }
-
-  Future<String?> checkoutForSingleStore({required int vendorId}) async {
-    state = const AsyncValue<CheckoutModel?>.loading();
-
-    final result = await _repo.checkoutForSingleStore(vendorId: vendorId);
+    final result = await _repo.preview(vendorId: vendorId);
 
     if (!mounted) return null;
 

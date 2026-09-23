@@ -53,6 +53,21 @@ void main() {
     expect(applied().single.discount, 25);
   });
 
+  test('a second voucher displaces the first, whichever vendor holds it', () {
+    notifier().add(voucher);
+    notifier().add(
+      const AppliedDiscountModel(vendorId: 2, code: 'SAVE5'),
+    );
+
+    notifier().add(
+      const AppliedDiscountModel(vendorId: 2, code: 'V2', isVoucher: true),
+    );
+
+    // The place request takes one `voucher`, so vendor 1's is gone — and the
+    // new one took vendor 2's slot from its coupon.
+    expect(applied().single.code, 'V2');
+  });
+
   test('another vendor keeps its own discount', () {
     notifier().add(coupon);
     notifier().add(

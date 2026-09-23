@@ -25,13 +25,16 @@ class AppliedDiscountsNotifier
   /// rather than stacked — that replacement is what cancels a voucher when a
   /// coupon is applied and vice versa, and the returned slot is what lets the
   /// caller tell the user which code it just cancelled.
+  ///
+  /// A voucher also displaces any voucher on another vendor: the place request
+  /// carries a single `voucher`, so a checkout holds one at most.
   AppliedDiscountModel? add(AppliedDiscountModel discount) {
     AppliedDiscountModel? replaced;
     final List<AppliedDiscountModel> others = <AppliedDiscountModel>[];
     for (final AppliedDiscountModel applied in state) {
       if (applied.vendorId == discount.vendorId) {
         replaced = applied;
-      } else {
+      } else if (!(discount.isVoucher && applied.isVoucher)) {
         others.add(applied);
       }
     }

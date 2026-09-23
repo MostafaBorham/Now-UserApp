@@ -7,9 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
-import 'package:nowdelivery_user_app/core/utils/idempotency_key.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
@@ -54,10 +52,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   // off the top the header wave straightens out.
   final ScrollController _scrollController = ScrollController();
 
-  // Idempotency key for the place request: reused across retries of an
-  // unchanged order, rotated when the order changes or after one is placed.
-  final IdempotencyKey _idempotencyKey = IdempotencyKey();
-
   @override
   void dispose() {
     _instructionsController.dispose();
@@ -79,8 +73,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       AppToast.showError(context, LangKeys.pleaseSelectAddressKey.tr());
       return;
     }
-
-    final String? orderGroupUuid = checkout.orderGroup.uuid;
 
     // The wallet wins while its checkbox is ticked (the default). Untick it and
     // the picked saved card pays: the backend requires a `payment_method_id` for
@@ -105,67 +97,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       paymentMethodId = selectedCardId;
     }
 
-    final List<AppliedDiscountModel> coupons = ref.read(
-      appliedDiscountsProvider,
-    );
-    final String deliveryInstructions = _instructionsController.text.trim();
-
-    final String idempotencyKey = _idempotencyKey.forRequest(
-      _placeFingerprint(
-        addressId: _addressId,
-        driverTip: _driverTip,
-        deliveryInstructions: deliveryInstructions,
-        paymentMethod: paymentMethod,
-        paymentMethodId: paymentMethodId,
-        coupons: coupons,
-      ),
-    );
-
     ref
         .read(confirmOrderProvider.notifier)
         .confirmOrder(
-          orderGroupUuid: orderGroupUuid ?? '',
-          idempotencyKey: idempotencyKey,
+          vendorId: widget.storeId,
           addressId: _addressId!,
           paymentMethod: paymentMethod,
           paymentMethodId: paymentMethodId,
           driverTip: _driverTip,
-          deliveryInstructions: deliveryInstructions,
-          coupons: coupons,
+          deliveryInstructions: _instructionsController.text.trim(),
+          discounts: ref.read(appliedDiscountsProvider),
         );
-  }
-
-  /// A fingerprint of exactly the fields the place request carries (and the
-  /// server hashes): address, tip, delivery instructions, payment method and
-  /// the *coupon* codes (vouchers aren't sent). Two submits with the same
-  /// fingerprint are the same order and may share an idempotency key.
-  String _placeFingerprint({
-    int? addressId,
-    double? driverTip,
-    String? deliveryInstructions,
-    String? paymentMethod,
-    int? paymentMethodId,
-    List<AppliedDiscountModel> coupons = const <AppliedDiscountModel>[],
-  }) {
-    final Map<int, String> couponMap = <int, String>{
-      for (final AppliedDiscountModel d in coupons)
-        if (!d.isVoucher) d.vendorId: d.code,
-    };
-    final String sortedCoupons =
-        (couponMap.entries.toList()..sort(
-              (MapEntry<int, String> a, MapEntry<int, String> b) =>
-                  a.key.compareTo(b.key),
-            ))
-            .map((MapEntry<int, String> e) => '${e.key}:${e.value}')
-            .join(',');
-    return <String>[
-      '${addressId ?? ''}',
-      '$driverTip',
-      deliveryInstructions ?? '',
-      paymentMethod ?? 'wallet',
-      '${paymentMethodId ?? ''}',
-      sortedCoupons,
-    ].join('|');
   }
 
   @override
@@ -185,9 +127,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         // `listen` fires only on transitions, so reaching `data` here means the
         // confirm request just succeeded (never the initial idle state).
         data: (List<OrderModel> placedOrders) {
-          // A confirmed placement: consume the key so any later order is
-          // treated as new rather than replaying this one.
-          _idempotencyKey.markConsumed();
           // Refresh the orders list so its `total` reflects the just-placed
           // order — this is what makes the first-order welcome voucher stop
           // showing on the (now empty) cart.
@@ -277,17 +216,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   // Retry through the same endpoint the draft came from: the
                   // single-store preview when a store id is set, the all-stores
                   // preview otherwise.
-                  onRetry: () {
-                    final CheckoutViewModel checkoutVm = ref.read(
-                      checkoutProvider.notifier,
-                    );
-                    final int? storeId = widget.storeId;
-                    if (storeId == null) {
-                      checkoutVm.checkout();
-                    } else {
-                      checkoutVm.checkoutForSingleStore(vendorId: storeId);
-                    }
-                  },
+                  onRetry: () => ref
+                      .read(checkoutProvider.notifier)
+                      .checkout(vendorId: widget.storeId),
                 );
               }
 

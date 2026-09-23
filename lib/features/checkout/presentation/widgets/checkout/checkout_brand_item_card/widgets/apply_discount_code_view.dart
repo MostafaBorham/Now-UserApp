@@ -65,8 +65,8 @@ class _ApplyDiscountCodeViewState
   /// The endpoint is a stateless calculator: it returns the discount for this
   /// vendor even when the code is rejected (`applied:false` + a reason), so the
   /// result is inspected rather than the HTTP status. On acceptance the code is
-  /// registered in [appliedDiscountsProvider] (feeding the invoice summary and,
-  /// for coupons, the confirm-order request); a rejection or transport error is
+  /// registered in [appliedDiscountsProvider] (feeding the invoice summary and
+  /// the place request); a rejection or transport error is
   /// shown in a snackbar.
   ///
   /// Registering takes the vendor's single discount slot, so an accepted coupon

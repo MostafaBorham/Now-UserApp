@@ -4,9 +4,9 @@
 /// Held as a flat, one-slot-per-vendor list while the user shops the checkout
 /// screen (see `appliedDiscountsProvider`). The single slot per vendor is what
 /// enforces coupon/voucher mutual exclusivity: applying either replaces the
-/// vendor's slot. The confirm-order request folds the **coupon** entries into
-/// the `vendor id → code` map it expects (vouchers are excluded — the backend
-/// tracks only coupons at placement).
+/// vendor's slot. The preview and place requests fold the list into the
+/// coupon(s) and the single voucher they take (see
+/// `CheckoutEndpoints.pricingBody`).
 class AppliedDiscountModel {
   /// The vendor (store) the [code] was applied to.
   final int vendorId;
