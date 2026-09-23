@@ -62,10 +62,16 @@ class HomeAppCategoriesView extends ConsumerWidget {
           (CategoryModel category) => (
             label: context.getLocalizedApiText(category.name),
             imageUrl: category.image,
-            onTap: () => context.pushNamed(
-              AppRoutes.categoryDetailsScreen,
-              extra: _withSlug(ref, category),
-            ),
+            onTap: () {
+              final CategoryModel target = _withSlug(ref, category);
+              final String? slug = target.slug;
+              if (slug == null) return;
+              context.pushNamed(
+                AppRoutes.categoryDetailsScreen,
+                pathParameters: <String, String>{'slug': slug},
+                extra: target.name,
+              );
+            },
           ),
         )
         .toList();

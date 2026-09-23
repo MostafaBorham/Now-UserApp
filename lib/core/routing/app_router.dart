@@ -199,16 +199,22 @@ abstract class AppRouter {
       ),
       GoRoute(
         name: AppRoutes.categoryDetailsScreen,
-        path: '/${AppRoutes.categoryDetailsScreen}',
+        // The slug is identity, so it lives in the path — the reasoning spelled
+        // out on storeDetailsScreen below. This route used to take the whole
+        // CategoryModel through `extra`; a re-parse dropped it and both tabs
+        // then asked for `/categories//products`. `extra` now carries only the
+        // localized name, and callers that know just the slug (banners,
+        // offers) pass none — the screen finds the name itself.
+        path: '/${AppRoutes.categoryDetailsScreen}/:slug',
         builder: (context, state) {
-          // Nullable on purpose: `extra` is put through JSON on a route
-          // re-parse and a model object does not survive it, so an unchecked
-          // cast crashed instead of degrading. Moving the category into the
-          // path is the real fix — it belongs with the categories feature.
-          final category = state.extra as CategoryModel?;
+          final String slug = state.pathParameters['slug'] ?? '';
+          if (slug.isEmpty) return const RouteErrorScreen();
 
           return CategoryDetailsScreen(
-            category: category ?? const CategoryModel(),
+            category: CategoryModel(
+              slug: slug,
+              name: state.extra as Map<String, dynamic>?,
+            ),
           );
         },
       ),

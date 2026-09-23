@@ -72,10 +72,15 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                 (BuildContext context, CategoryModel category, int index) =>
                     CategoryCard(
                       category: category,
-                      onTap: () => context.pushNamed(
-                        AppRoutes.categoryDetailsScreen,
-                        extra: category,
-                      ),
+                      onTap: category.slug == null
+                          ? null
+                          : () => context.pushNamed(
+                              AppRoutes.categoryDetailsScreen,
+                              pathParameters: <String, String>{
+                                'slug': category.slug!,
+                              },
+                              extra: category.name,
+                            ),
                     ),
           ),
         ),

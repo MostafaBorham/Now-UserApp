@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -125,7 +124,7 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
       if (categorySlug != null && categorySlug.isNotEmpty) {
         context.pushNamed(
           AppRoutes.categoryDetailsScreen,
-          extra: CategoryModel(slug: categorySlug),
+          pathParameters: <String, String>{'slug': categorySlug},
         );
       }
       break;

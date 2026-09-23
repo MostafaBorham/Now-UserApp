@@ -108,7 +108,7 @@ Future<void> pumpCategoriesScreen(
       ),
       GoRoute(
         name: AppRoutes.categoryDetailsScreen,
-        path: '/category-details',
+        path: '/category-details/:slug',
         builder: (BuildContext context, GoRouterState state) =>
             const Scaffold(body: Center(child: Text('__details__'))),
       ),

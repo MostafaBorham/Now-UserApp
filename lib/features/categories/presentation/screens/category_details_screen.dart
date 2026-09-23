@@ -10,14 +10,36 @@ import 'package:nowdelivery_user_app/features/categories/presentation/widgets/ca
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/categories_store_tab_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/app_tab_bar.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
 import '../providers/category_details/category_model_provider.dart';
 
-class CategoryDetailsScreen extends StatelessWidget {
+class CategoryDetailsScreen extends ConsumerWidget {
   const CategoryDetailsScreen({super.key, required this.category});
+
+  /// Only the `slug` is guaranteed: a banner or an offer that links a category
+  /// knows nothing else, so [_title] fills in a missing name.
   final CategoryModel category;
+
+  /// The name the category was opened with, else the app-wide categories
+  /// list's entry for this slug, else the generic title — never blank.
+  String _title(BuildContext context, WidgetRef ref) {
+    final Map<String, dynamic>? name =
+        category.name ??
+        ref.watch(
+          getAppCategoriesProvider.select(
+            (state) => state.valueOrNull?.data
+                .where((CategoryModel known) => known.slug == category.slug)
+                .firstOrNull
+                ?.name,
+          ),
+        );
+    final String title = context.getLocalizedApiText(name);
+    return title.isEmpty ? LangKeys.categoriesTitleKey.tr() : title;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     return ProviderScope(
       overrides: [categoryProvider.overrideWithValue(category)],
@@ -29,7 +51,7 @@ class CategoryDetailsScreen extends StatelessWidget {
             views: [CategoriesProductTabView(), CategoriesStoreTabView()],
             selectedTabColor: colors.primary500Main,
           ),
-          appBarTitle: context.getLocalizedApiText(category.name),
+          appBarTitle: _title(context, ref),
           canPop: context.canPop(),
         ),
       ),

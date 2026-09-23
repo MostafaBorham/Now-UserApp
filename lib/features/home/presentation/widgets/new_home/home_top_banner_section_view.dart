@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
-import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -183,10 +182,11 @@ class _TopBannerItem extends StatelessWidget {
         AppRoutes.productDetailsScreen,
         extra: banner.productSlug,
       );
-    } else if (banner.linkType == 'category' && banner.categorySlug != null) {
+    } else if (banner.linkType == 'category' &&
+        (banner.categorySlug?.isNotEmpty ?? false)) {
       context.pushNamed(
         AppRoutes.categoryDetailsScreen,
-        extra: CategoryModel(slug: banner.categorySlug),
+        pathParameters: <String, String>{'slug': banner.categorySlug!},
       );
     }
   }

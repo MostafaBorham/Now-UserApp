@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
@@ -40,6 +41,26 @@ void main() {
     expect(find.text('stores'), findsOneWidget);
 
     expect(find.byType(ProductItem3View), findsWidgets);
+  });
+
+  testWidgets('opened with only a slug, it takes the name from the categories',
+      (WidgetTester tester) async {
+    // What a banner or an offer linking a category opens: they carry no name,
+    // and the app bar used to render blank.
+    await pumpCategoriesScreen(
+      tester,
+      const CategoryDetailsScreen(category: CategoryModel(slug: 'food')),
+      overrides: <Override>[
+        ...detailsOverrides(),
+        overrideAppCategories(
+          AsyncValue<PaginationModel<CategoryModel>>.data(
+            pageOf<CategoryModel>(<CategoryModel>[sampleCategory(en: 'Food')]),
+          ),
+        ),
+      ],
+    );
+
+    expect(find.text('Food'), findsOneWidget);
   });
 
   testWidgets('switching to the Stores tab shows store items',

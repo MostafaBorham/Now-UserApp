@@ -47,10 +47,13 @@ class SearchTopCategoriesList extends ConsumerWidget {
           final CategoryModel category = categories[index];
           return SearchCategoryCard(
             category: category,
-            onTap: () => context.pushNamed(
-              AppRoutes.categoryDetailsScreen,
-              extra: category,
-            ),
+            onTap: category.slug == null
+                ? null
+                : () => context.pushNamed(
+                    AppRoutes.categoryDetailsScreen,
+                    pathParameters: <String, String>{'slug': category.slug!},
+                    extra: category.name,
+                  ),
           );
         },
       );
