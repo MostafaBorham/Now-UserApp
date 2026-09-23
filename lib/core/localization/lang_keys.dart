@@ -25,6 +25,10 @@ abstract class LangKeys {
   static const String discountValidity = 'discountValidity';
   static const String discountMinPurchase = 'discountMinPurchase';
   static const String discountOnAllStores = 'discountOnAllStores';
+  static const String discountOnSelectedCategoriesKey =
+      'discountOnSelectedCategories';
+  static const String discountOnSelectedProductsKey =
+      'discountOnSelectedProducts';
   static const String rankKey = 'rank';
   static const String newArrivalKey = 'newArrival';
   static const String exclusiveKey = 'exclusive';

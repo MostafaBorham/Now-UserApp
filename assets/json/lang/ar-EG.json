@@ -108,6 +108,8 @@
   "discountLabel": "الخصم",
   "discountMinPurchase": "الحد الأدنى للشراء",
   "discountOnAllStores": "بجميع المتاجر",
+  "discountOnSelectedCategories": "على فئات مختارة",
+  "discountOnSelectedProducts": "على منتجات مختارة",
   "discountScreenTitle": "كود خصم",
   "discountUpTo": "خصم يصل إلى",
   "discountValidity": "من {start} إلى {end}",

@@ -108,6 +108,8 @@
   "discountLabel": "Discount",
   "discountMinPurchase": "Minimum purchase",
   "discountOnAllStores": "On all stores",
+  "discountOnSelectedCategories": "On selected categories",
+  "discountOnSelectedProducts": "On selected products",
   "discountScreenTitle": "Discount Code",
   "discountUpTo": "Discount up to",
   "discountValidity": "From {start} to {end}",

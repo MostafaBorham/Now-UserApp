@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/ticket_clipper.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 class DiscountCard extends StatelessWidget {
   const DiscountCard({
@@ -23,9 +24,13 @@ class DiscountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String scope = coupon.type == 'Public'
-        ? LangKeys.discountOnAllStores.tr()
-        : (coupon.type ?? '');
+    // `type` is the backend's enum value, spaces and all.
+    final String scope = switch (coupon.type) {
+      'Public' => LangKeys.discountOnAllStores.tr(),
+      'Specific Category' => LangKeys.discountOnSelectedCategoriesKey.tr(),
+      'Specific Products' => LangKeys.discountOnSelectedProductsKey.tr(),
+      _ => '',
+    };
 
     final String code = coupon.code ?? '';
 
@@ -80,27 +85,37 @@ class DiscountCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            RichText(
-                              text: TextSpan(
-                                text: '${formatDouble(coupon.discountValue)}',
-                                style: TextStyle(
-                                  fontSize: 40,
-                                  height: 1,
-                                  fontWeight: FontWeight.w800,
-                                  color: percentColor,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: '%',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: percentColor,
-                                    ),
+                            // A fixed-amount coupon is money, not a percent:
+                            // it read "20%" for 20 SAR off.
+                            if (coupon.isPercentage ?? true)
+                              RichText(
+                                text: TextSpan(
+                                  text: '${formatDouble(coupon.discountValue)}',
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    height: 1,
+                                    fontWeight: FontWeight.w800,
+                                    color: percentColor,
                                   ),
-                                ],
+                                  children: [
+                                    TextSpan(
+                                      text: '%',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: percentColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              NewPriceWidget(
+                                color: percentColor,
+                                price: formatMoney(coupon.discountValue),
+                                size: 32,
+                                fontWeight: FontWeight.w800,
                               ),
-                            ),
                             const SizedBox(height: 6),
                             Text(
                               scope,
