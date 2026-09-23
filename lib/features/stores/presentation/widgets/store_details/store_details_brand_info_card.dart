@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -27,6 +28,11 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
     final AppColorScheme colors = context.colors;
     final double discountValue = product.activeDeal?.discountValue ?? 0;
     final bool dealIsPercentage = product.activeDeal?.isPercentage ?? true;
+    // Same rule as every product card: the deal-adjusted discountPrice is what
+    // the cart charges, and the base price is struck through only when a deal
+    // really lowers it. This used to print the pre-deal price as the price and
+    // strike through the nullable compare_price — `0.00` on most offers.
+    final bool hasDeal = product.hasDeal;
     final int productId = product.id ?? -1;
     final cartState = ref.watch(updateCartProductProvider(productId));
     final bool isAddingToCart = cartState.isLoading;
@@ -93,7 +99,7 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
               spacing: 6,
               children: [
                 Text(
-                  '${product.rating?.average ?? 0} (${product.rating?.total ?? 0})',
+                  '${formatDouble(product.rating?.average)} (${product.rating?.total ?? 0})',
                   style: AppTextStyles.style12Regular.copyWith(
                     color: colors.neutral400,
                   ),
@@ -116,11 +122,12 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     spacing: 8,
                     children: [
-                      OldPriceWidget(
-                        color: colors.neutral400,
-                        price: formatMoney(product.comparePrice),
-                        size: 14,
-                      ),
+                      if (hasDeal)
+                        OldPriceWidget(
+                          color: colors.neutral400,
+                          price: formatMoney(product.price),
+                          size: 14,
+                        ),
                       if (discountValue > 0)
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -151,7 +158,9 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                   ),
                   NewPriceWidget(
                     color: colors.neutral1200,
-                    price: formatMoney(product.price),
+                    price: formatMoney(
+                      hasDeal ? product.discountPrice : product.price,
+                    ),
                     size: 28,
                   ),
                 ],
