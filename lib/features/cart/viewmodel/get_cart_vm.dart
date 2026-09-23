@@ -17,18 +17,24 @@ import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
 /// (`features/auth/viewmodel/auth_session_vm.dart`), which is what invalidates
 /// it whenever the signed-in user changes.
 ///
-/// That listing is load-bearing, not documentation. Screens here only fetch
-/// when the provider is empty, so a cart left behind by the previous user is
-/// never refetched — it is simply shown to the next one.
+/// That listing is load-bearing, not documentation. Only the cart tab refetches
+/// a loaded cart, and only when it is opened — every product card just reads
+/// it — so a cart left behind by the previous user would be shown to the next.
 final getCartProvider =
     StateNotifierProvider<GetCartViewModel, AsyncValue<CartModel>>(
       (Ref ref) => GetCartViewModel(const AsyncValue.loading()),
     );
 
 class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
-  GetCartViewModel(super.initialState);
+  /// [repo] is injectable for tests, like [CartRepo]'s own collaborators.
+  GetCartViewModel(super.initialState, {CartRepo? repo})
+    : _repo = repo ?? CartRepo();
 
-  final CartRepo _repo = CartRepo();
+  final CartRepo _repo;
+
+  /// Bumped by every cart a mutation hands back, so a [refresh] that was
+  /// already in flight can tell its answer is older than what is on screen.
+  int _mutations = 0;
 
   @override
   void dispose() {
@@ -54,6 +60,7 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
   /// update/delete request, so the screen reflects the server truth without a
   /// refetch.
   void updateCartState(CartModel newCart) {
+    _mutations++;
     state = AsyncValue.data(newCart);
   }
 
@@ -61,12 +68,10 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
   /// has been checked out — its products now belong to a draft order group, so
   /// the cart must stop offering them.
   ///
-  /// The local edit is only what the shopper sees on the way back; [getCart] is
+  /// The local edit is only what the shopper sees on the way back; [refresh] is
   /// then fired to replace it. Leaving the edit to stand would keep every
   /// remaining store on its pre-checkout pricing, which is wrong the moment a
-  /// coupon or a delivery-fee threshold spanned more than one of them — and the
-  /// cart screen fetches only when it has no value, so nothing else would ever
-  /// correct it.
+  /// coupon or a delivery-fee threshold spanned more than one of them.
   ///
   /// A no-op while the cart itself is loading or in error: there is nothing
   /// loaded to remove from, and the refetch brings the server truth anyway.
@@ -83,7 +88,7 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
       ),
     );
 
-    _refreshInBackground();
+    refresh();
   }
 
   /// Drops every store from the loaded cart, after all of them have been
@@ -95,22 +100,26 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
 
     state = AsyncValue.data(cart.copyWith(vendors: const <CartVendorModel>[]));
 
-    _refreshInBackground();
+    refresh();
   }
 
-  /// Refetches without going through the `loading` state, so the optimistic
-  /// edit above stays on screen instead of flashing the shimmer at a shopper
-  /// who is being pushed to the confirmation screen anyway.
-  Future<void> _refreshInBackground() async {
+  /// Refetches without going through the `loading` state, so whatever is on
+  /// screen stays there: the cart tab on open and on pull, and the optimistic
+  /// edits above. Going through `loading` swapped the cart for its shimmer and,
+  /// while it reloaded, left every product card in the app without its count.
+  ///
+  /// A failure keeps what is loaded and is returned (null on success) for the
+  /// caller to report. An answer that lost a race to a mutation is dropped: the
+  /// mutation's cart is newer than the one this request fetched.
+  Future<String?> refresh() async {
+    final int mutationsBefore = _mutations;
     final result = await _repo.getCart();
 
-    if (!mounted) return;
+    if (!mounted) return null;
 
-    // A failed refresh keeps the local edit: it is the better of the two
-    // answers available, and the next open refetches.
-    result.fold(
-      (Failure _) {},
-      (CartModel cart) => state = AsyncValue.data(cart),
-    );
+    return result.fold((Failure failure) => failure.message, (CartModel cart) {
+      if (_mutations == mutationsBefore) state = AsyncValue.data(cart);
+      return null;
+    });
   }
 }

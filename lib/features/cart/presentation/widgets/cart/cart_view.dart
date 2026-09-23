@@ -54,13 +54,20 @@ class _CartViewState extends ConsumerState<CartView> {
   @override
   void initState() {
     super.initState();
-    // Load the cart the first time it's opened, or retry if a previous open
-    // failed; an already-loaded cart is kept as-is (no refetch).
+    // Load the cart the first time it's opened (or retry a failed load);
+    // otherwise refresh it quietly, so a deal that ended, a store that closed or
+    // an edit from another device shows up without a manual pull.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.read(getCartProvider).hasValue) {
-        ref.read(getCartProvider.notifier).getCart();
-      }
+      if (!mounted) return;
+      final GetCartViewModel cartVm = ref.read(getCartProvider.notifier);
+      ref.read(getCartProvider).hasValue ? cartVm.refresh() : cartVm.getCart();
     });
+  }
+
+  /// Pull-to-refresh: the loaded cart stays on screen, and a failure says so.
+  Future<void> _onRefresh() async {
+    final String? error = await ref.read(getCartProvider.notifier).refresh();
+    if (error != null && mounted) AppToast.showError(context, error);
   }
 
   /// Drafts an order group and, only if the server accepted it, opens the
@@ -139,8 +146,7 @@ class _CartViewState extends ConsumerState<CartView> {
             );
 
             return AppRefreshIndicator(
-              onRefresh: () async =>
-                  ref.read(getCartProvider.notifier).getCart(),
+              onRefresh: _onRefresh,
               child: vendors.isEmpty
                   ? const CartEmptyView()
                   : Column(
