@@ -264,8 +264,10 @@ class _FakeCategoryProductsVM extends GetCategoryProductsViewModel {
     state = initial;
   }
 
+  @override
   Future<void> loadFirstPage() async {}
 
+  @override
   Future<Either<Failure, PaginationModel<ProductModel>>> fetchPage(int page) =>
       throw UnimplementedError('fake view-model must not fetch');
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,10 +28,30 @@ class _TestViewModel extends PaginatedViewModel<int> {
       throw UnimplementedError('the test view-model must not fetch');
 }
 
-PaginationModel<int> _page(List<int> data, {bool hasMore = false}) =>
+/// Answers [fetchPage] with whatever the test completes [nextPage] with, so an
+/// edit can be made while a page is still in flight.
+class _PendingPageViewModel extends PaginatedViewModel<int> {
+  final Completer<Either<Failure, PaginationModel<int>>> nextPage =
+      Completer<Either<Failure, PaginationModel<int>>>();
+
+  AsyncValue<PaginationModel<int>> get currentState => state;
+
+  void seed(PaginationModel<int> page) =>
+      state = AsyncValue<PaginationModel<int>>.data(page);
+
+  @override
+  Future<Either<Failure, PaginationModel<int>>> fetchPage(int page) =>
+      nextPage.future;
+}
+
+PaginationModel<int> _page(
+  List<int> data, {
+  bool hasMore = false,
+  int currentPage = 1,
+}) =>
     PaginationModel<int>(
-      currentPage: 1,
-      lastPage: hasMore ? 2 : 1,
+      currentPage: currentPage,
+      lastPage: hasMore ? currentPage + 1 : currentPage,
       perPage: 15,
       total: data.length,
       hasMore: hasMore,
@@ -87,6 +109,23 @@ void main() {
 
       expect(vm.currentState.hasValue, isFalse);
       expect(vm.loadFirstPageCalls, 0);
+      vm.dispose();
+    });
+  });
+
+  group('PaginatedViewModel.loadNextPage', () {
+    test('keeps an edit made while the next page was in flight', () async {
+      // Unfavouriting a row while the next page loaded used to bring it back:
+      // the page was appended onto the list as it stood before the request.
+      final _PendingPageViewModel vm = _PendingPageViewModel()
+        ..seed(_page(<int>[1, 2], hasMore: true));
+
+      final Future<void> loading = vm.loadNextPage();
+      vm.updateItemsWhere((int i) => i == 2, (int i) => 20);
+      vm.nextPage.complete(Right(_page(<int>[3], currentPage: 2)));
+      await loading;
+
+      expect(vm.currentState.valueOrNull!.data, <int>[1, 20, 3]);
       vm.dispose();
     });
   });

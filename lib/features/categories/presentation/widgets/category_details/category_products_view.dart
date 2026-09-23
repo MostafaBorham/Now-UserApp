@@ -8,12 +8,19 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indic
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_model_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_products_search_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
+/// The products of the opened category as an infinite-scrolling grid.
+///
+/// Same shape as [CategoryStoresView] in the tab next to it: a manual
+/// [ScrollController] drives next-page loading, and the coarse view shape
+/// (first-load shimmer, empty, error, trailing next-page shimmer) is read off
+/// the view model's paginated state via [PaginationStatus].
 class CategoryProductsView extends ConsumerStatefulWidget {
   const CategoryProductsView({super.key, required this.sortType});
   final StoresSortType sortType;
@@ -26,10 +33,9 @@ class CategoryProductsView extends ConsumerStatefulWidget {
 class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
   final ScrollController _scrollController = ScrollController();
 
-
-
-
-  GetCategoryProductsViewModel? _viewModel;
+  /// The query currently on screen. Recomputed in [build] from the debounced
+  /// search term, so [_onScroll] always pages the family member being shown.
+  late CategoryProductsArgs _args;
 
   @override
   void initState() {
@@ -39,119 +45,110 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
 
   @override
   void dispose() {
-    _viewModel?.loadMoreState.removeListener(_onLoadMoreStateChanged);
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
   }
 
-  void _onLoadMoreStateChanged() {
-    final AsyncValue<bool>? loadMoreState = _viewModel?.loadMoreState.value;
-    if (loadMoreState != null && loadMoreState.hasError && mounted) {
-      AppToast.showError(context, loadMoreState.error.toString());
-    }
-  }
-
   void _onScroll() {
-
-
-
-
-
+    // `loadNextPage` is a no-op unless another page may be requested, so
+    // calling it on every frame the end of the grid is visible is safe.
     if (_scrollController.position.extentAfter <= 0) {
-      _viewModel?.loadMore();
+      ref.read(getCategoryProductsProvider(_args).notifier).loadNextPage();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     final String search = ref.watch(categoryProductsSearchProvider);
-    final CategoryProductsArgs args = (
+    _args = (
       categorySlug: ref.read(categoryProvider).slug ?? '',
       categoryId: null,
       searchKey: search.isEmpty ? null : search,
     );
 
+    final GetCategoryProductsViewModel viewModel =
+        ref.read(getCategoryProductsProvider(_args).notifier);
 
-
-    final GetCategoryProductsViewModel viewModel = ref.read(
-      getCategoryProductsProvider(args).notifier,
+    // Surface a failed next-page load without disturbing the grid.
+    ref.listen<String?>(
+      getCategoryProductsProvider(_args).select(
+        (AsyncValue<PaginationModel<ProductModel>> state) =>
+            PaginationStatus<ProductModel>.from(state).nextPageError,
+      ),
+      (String? previous, String? next) {
+        if (next != null && mounted) AppToast.showError(context, next);
+      },
     );
-    if (!identical(viewModel, _viewModel)) {
-      _viewModel?.loadMoreState.removeListener(_onLoadMoreStateChanged);
-      _viewModel = viewModel
-        ..loadMoreState.addListener(_onLoadMoreStateChanged);
-    }
 
-    final ({bool isLoading, String? error, int length}) view = ref.watch(
-      getCategoryProductsProvider(args).select(
-        (AsyncValue<PaginationModel<ProductModel>> state) => (
-          isLoading: state.isLoading,
-          error: state.hasError ? state.error.toString() : null,
-          length: state.valueOrNull?.data.length ?? 0,
-        ),
+    // Watch only the coarse view shape, not the products themselves, so
+    // appending a page rebuilds only the new cells.
+    final ({
+      bool isFirstPageLoading,
+      String? firstPageError,
+      bool isNextPageLoading,
+      int length,
+    }) view = ref.watch(
+      getCategoryProductsProvider(_args).select(
+        (AsyncValue<PaginationModel<ProductModel>> state) {
+          final PaginationStatus<ProductModel> status =
+              PaginationStatus<ProductModel>.from(state);
+          return (
+            isFirstPageLoading: status.isFirstPageLoading,
+            firstPageError: status.firstPageError,
+            isNextPageLoading: status.isNextPageLoading,
+            length: status.items.length,
+          );
+        },
       ),
     );
 
-    return LayoutBuilder(
-      builder: (context, con) {
-        if (view.isLoading) return const CategoryProductsViewShimmer();
-        if (view.error != null) {
-          return ServerConnectionErrorWidget(
-            message: view.error!,
-            onRetry: viewModel.getProducts,
-          );
-        }
+    if (view.isFirstPageLoading) return const CategoryProductsViewShimmer();
+    if (view.firstPageError != null) {
+      return ServerConnectionErrorWidget(
+        message: view.firstPageError!,
+        onRetry: viewModel.loadFirstPage,
+      );
+    }
 
-        return AppRefreshIndicator(
-          onRefresh: viewModel.getProducts,
-          child: view.length == 0
-              ? const NoResultsWidget(isScrollable: true)
-              : ValueListenableBuilder<AsyncValue<bool>>(
-                  valueListenable: viewModel.loadMoreState,
-                  builder:
-                      (
-                        BuildContext context,
-                        AsyncValue<bool> value,
-                        Widget? child,
-                      ) {
-                        final int loadingItemsCount = value.isLoading ? 2 : 0;
-                        return GridView.builder(
-                          controller: _scrollController,
-                          addRepaintBoundaries: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: EdgeInsets.all(2),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: con.maxWidth * 0.03,
-                                mainAxisSpacing: con.maxWidth * 0.03,
-                                childAspectRatio: 0.7,
-                              ),
-                          itemCount: view.length + loadingItemsCount,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index >= view.length) {
-                              return const AppShimmer(
-                                child: ProductItem3View(),
-                              );
-                            }
-                            return _CategoryProductGridItem(
-                              args: args,
-                              index: index,
-                            );
-                          },
-                        );
-                      },
-                ),
-        );
-      },
+    final int loadingItemsCount = view.isNextPageLoading ? 2 : 0;
+
+    return AppRefreshIndicator(
+      onRefresh: viewModel.loadFirstPage,
+      child: view.length == 0
+          ? const NoResultsWidget(isScrollable: true)
+          : LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints con) =>
+                  GridView.builder(
+                    controller: _scrollController,
+                    addRepaintBoundaries: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(2),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: con.maxWidth * 0.03,
+                      mainAxisSpacing: con.maxWidth * 0.03,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: view.length + loadingItemsCount,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index >= view.length) {
+                        return const AppShimmer(child: ProductItem3View());
+                      }
+                      return _CategoryProductGridItem(
+                        args: _args,
+                        index: index,
+                      );
+                    },
+                  ),
+            ),
     );
   }
 }
 
+/// A single product cell that watches **only its own product** in the
+/// paginated state, so the next page arriving leaves it untouched.
 class _CategoryProductGridItem extends ConsumerWidget {
   const _CategoryProductGridItem({required this.args, required this.index});
 
