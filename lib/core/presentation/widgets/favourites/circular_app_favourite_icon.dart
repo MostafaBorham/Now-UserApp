@@ -154,9 +154,17 @@ class _CircularAppFavouriteIconState
         setState(() => _isFavourite = isFavourite);
         widget.onFavouriteChanged?.call(isFavourite);
       },
-      error: (Object error, _) => AppToast.showError(context, error.toString()),
+      error: (Object error, _) {
+        if (_claimError()) AppToast.showError(context, error.toString());
+      },
     );
   }
+
+  /// Whether this icon is the one to report the failure — see
+  /// `claimError` on the favourite view models.
+  bool _claimError() => widget.favouriteType == FavouriteType.product
+      ? ref.read(productFavouriteProvider(_productArgs).notifier).claimError()
+      : ref.read(storeFavouriteProvider(_storeArgs).notifier).claimError();
 
   void _onTap(bool isFavourite) {
     if (redirectGuestToLogin(context)) return;

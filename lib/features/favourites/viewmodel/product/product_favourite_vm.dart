@@ -38,6 +38,19 @@ class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
     super.dispose();
   }
 
+  bool _errorPending = false;
+
+  /// Claims the right to report the failure that just landed: true for the
+  /// first caller, false for everyone after. One item can be on screen in
+  /// several cards at once, all listening to this notifier; without this each
+  /// of them toasted the same failure.
+  bool claimError() {
+    if (!_errorPending) return false;
+
+    _errorPending = false;
+    return true;
+  }
+
   Future<void> addToFavourites() async {
     state = const AsyncValue.loading();
 
@@ -46,8 +59,10 @@ class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
+      (Failure failure) {
+        _errorPending = true;
+        return AsyncValue.error(failure.message, StackTrace.current);
+      },
       (_) => const AsyncValue.data(true),
     );
   }
@@ -61,8 +76,10 @@ class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
+      (Failure failure) {
+        _errorPending = true;
+        return AsyncValue.error(failure.message, StackTrace.current);
+      },
       (_) => const AsyncValue.data(false),
     );
   }
