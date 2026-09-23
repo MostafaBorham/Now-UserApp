@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_empty_view.dart';
@@ -85,7 +86,12 @@ class _CartViewState extends ConsumerState<CartView> {
 
     final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
 
-    final String? error = await checkoutVm.checkout(vendorId: vendorId);
+    // Priced for the address checkout opens on (the default one), so the
+    // delivery fee is the one the order will be charged.
+    final String? error = await checkoutVm.checkout(
+      vendorId: vendorId,
+      addressId: ref.read(defaultAddressProvider).valueOrNull?.id,
+    );
 
     if (!mounted) return;
 

@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
@@ -110,10 +111,35 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         );
   }
 
+  /// Prices the order again with what the customer has chosen so far, so the
+  /// invoice shows what placing it will charge.
+  void _reprice() => ref
+      .read(checkoutProvider.notifier)
+      .reprice(
+        addressId: _addressId,
+        driverTip: _driverTip,
+        discounts: ref.read(appliedDiscountsProvider),
+      );
+
   @override
   Widget build(BuildContext context) {
     // Nothing is `watch`ed here on purpose: this build must run once, or the
     // whole body would be rebuilt with it.
+
+    // An applied or removed code changes the price. Listening also keeps the
+    // `autoDispose` discounts alive for as long as the screen is.
+    ref.listen<List<AppliedDiscountModel>>(
+      appliedDiscountsProvider,
+      (_, _) => _reprice(),
+    );
+
+    // A failed re-price keeps the page (see the builder below), so say so:
+    // the totals on it may no longer match the choices above them.
+    ref.listen<AsyncValue<CheckoutModel?>>(checkoutProvider, (_, next) {
+      if (!next.isLoading && next.hasError && next.hasValue) {
+        AppToast.showError(context, next.error.toString());
+      }
+    });
 
     // React to the outcome of a confirm-order request: on success push the
     // confirmation screen, on failure surface the message via the shared
@@ -181,14 +207,20 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 children: [
                   const CheckoutBrandCardsSection(),
                   DeliveryAddressCard(
-                    onAddressIdChanged: (int? id) => _addressId = id,
+                    onAddressIdChanged: (int? id) {
+                      _addressId = id;
+                      _reprice();
+                    },
                   ),
                   DeliveryInstructionsCard(
                     controller: _instructionsController,
                   ),
                   TipYourDriverView(
                     initialTip: 2,
-                    onTipChanged: (double tip) => _driverTip = tip,
+                    onTipChanged: (double tip) {
+                      _driverTip = tip;
+                      _reprice();
+                    },
                   ),
                   const CheckoutPaymentSection(),
                   const WalletPaymentRow(),
@@ -201,24 +233,27 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              // A failed draft still replaces the whole page — the sections
-              // below it would have nothing to show. Watching the error alone
-              // means the loading → data transition doesn't even run this.
+              // A checkout that never loaded replaces the whole page — the
+              // sections below it would have nothing to show. A failed
+              // re-price does not: it keeps the checkout it had. Watching the
+              // error alone means the loading → data transition doesn't even
+              // run this.
               final Object? error = ref.watch(
                 checkoutProvider.select(
-                  (AsyncValue<CheckoutModel?> state) => state.error,
+                  (AsyncValue<CheckoutModel?> state) =>
+                      state.hasValue ? null : state.error,
                 ),
               );
 
               if (error != null) {
                 return ServerConnectionErrorWidget(
                   message: error.toString(),
-                  // Retry through the same endpoint the draft came from: the
-                  // single-store preview when a store id is set, the all-stores
-                  // preview otherwise.
+                  // Retry through the same endpoint the checkout came from:
+                  // the single-store preview when a store id is set, the
+                  // all-stores preview otherwise.
                   onRetry: () => ref
                       .read(checkoutProvider.notifier)
-                      .checkout(vendorId: widget.storeId),
+                      .checkout(vendorId: widget.storeId, addressId: _addressId),
                 );
               }
 

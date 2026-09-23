@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/choose_payment_method.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/payment_methods_card.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 
 /// Picks the payment widget that matches the preview: the saved-cards list once
@@ -12,10 +13,16 @@ import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_mo
 /// to the add-card screen.
 ///
 /// The cards come straight from the checkout preview
-/// (`checkout.payment_cards`) — re-previewing (which the screen already does)
-/// brings a fresh list, so there is no separate cards provider to keep in sync.
+/// (`checkout.payment_cards`), so coming back from the add-card screen
+/// re-previews to bring the new card in — there is no separate cards provider
+/// to keep in sync.
 class CheckoutPaymentSection extends ConsumerWidget {
   const CheckoutPaymentSection({super.key});
+
+  Future<void> _addCard(BuildContext context, WidgetRef ref) async {
+    await context.pushNamed(AppRoutes.addPaymentCard);
+    if (context.mounted) ref.read(checkoutProvider.notifier).refresh();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,9 +33,10 @@ class CheckoutPaymentSection extends ConsumerWidget {
     );
 
     return cards.isEmpty
-        ? ChoosePaymentMethod(
-            onTap: () => context.pushNamed(AppRoutes.addPaymentCard),
-          )
-        : PaymentMethodsCard(cards: cards);
+        ? ChoosePaymentMethod(onTap: () => _addCard(context, ref))
+        : PaymentMethodsCard(
+            cards: cards,
+            onAddCard: () => _addCard(context, ref),
+          );
   }
 }

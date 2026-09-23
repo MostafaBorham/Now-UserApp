@@ -1,14 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/payment_methods_radio_group.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
@@ -24,9 +22,16 @@ import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_mo
 /// step reads it and sends `payment_method: card` + `payment_method_id` when the
 /// wallet toggle is off. Selection defaults to the server-marked default card.
 class PaymentMethodsCard extends ConsumerWidget {
-  const PaymentMethodsCard({super.key, required this.cards});
+  const PaymentMethodsCard({
+    super.key,
+    required this.cards,
+    required this.onAddCard,
+  });
 
   final List<CardPaymentModel> cards;
+
+  /// Opens the add-card screen (and brings the new card in on return).
+  final VoidCallback onAddCard;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -79,7 +84,7 @@ class PaymentMethodsCard extends ConsumerWidget {
                 .state = cards[index].id,
           ),
           InkWell(
-            onTap: () => context.pushNamed(AppRoutes.addPaymentCard),
+            onTap: onAddCard,
             borderRadius: AppBorderRadius.brCircular8,
             child: Container(
               width: double.infinity,

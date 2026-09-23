@@ -103,7 +103,6 @@ class _ApplyDiscountCodeViewState
                   AppliedDiscountModel(
                     vendorId: vendorId,
                     code: code,
-                    discount: model.discount,
                     isVoucher: false,
                   ),
                 );

@@ -180,7 +180,6 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
               AppliedDiscountModel(
                 vendorId: vendorId,
                 code: voucher.code,
-                discount: model.discount,
                 isVoucher: true,
               ),
             );

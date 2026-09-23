@@ -14,17 +14,12 @@ class AppliedDiscountModel {
   /// The coupon/voucher code accepted by the server for [vendorId].
   final String code;
 
-  /// The discount amount the server calculated for this code, shown in the
-  /// invoice summary.
-  final double discount;
-
   /// `true` for a purchase voucher, `false` for a coupon.
   final bool isVoucher;
 
   const AppliedDiscountModel({
     required this.vendorId,
     required this.code,
-    this.discount = 0,
     this.isVoucher = false,
   });
 }

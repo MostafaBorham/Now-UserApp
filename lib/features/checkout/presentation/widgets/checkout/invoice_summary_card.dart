@@ -6,9 +6,7 @@ import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 
 class InvoiceSummaryCard extends ConsumerWidget {
@@ -28,17 +26,11 @@ class InvoiceSummaryCard extends ConsumerWidget {
         ) ??
         const OrderGroupModel();
 
-    // Coupon/voucher apply is a stateless per-vendor calculator that returns
-    // only the discount, so the applied discounts are summed here and reflected
-    // locally: added to the discount line and subtracted from the total.
-    final double appliedDiscount = ref
-        .watch(appliedDiscountsProvider)
-        .fold<double>(
-          0,
-          (double sum, AppliedDiscountModel d) => sum + d.discount,
-        );
-    final double discount = orderGroup.discount + appliedDiscount;
-    final double total = orderGroup.total - appliedDiscount;
+    // Every figure is the server's: the checkout is re-priced with the address,
+    // tip and applied codes whenever they change, so nothing is patched in here
+    // — a local subtraction can't know the tax the discount also removes.
+    final double discount = orderGroup.discount;
+    final double total = orderGroup.total;
 
     return Container(
       width: double.infinity,
@@ -114,6 +106,25 @@ class InvoiceSummaryCard extends ConsumerWidget {
                   ),
                 ],
               ),
+              if (orderGroup.driverTip > 0)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LangKeys.driverTipKey.tr(),
+                        style: AppTextStyles.style14SemiBold.copyWith(
+                          color: colors.black,
+                        ),
+                      ),
+                    ),
+                    NewPriceWidget(
+                      color: colors.black,
+                      price: formatMoney(orderGroup.driverTip),
+                      size: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
               if (discount > 0)
                 Row(
                   children: [

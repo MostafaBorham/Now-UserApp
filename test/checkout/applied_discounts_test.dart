@@ -22,12 +22,10 @@ void main() {
   const AppliedDiscountModel coupon = AppliedDiscountModel(
     vendorId: 1,
     code: 'SAVE10',
-    discount: 10,
   );
   const AppliedDiscountModel voucher = AppliedDiscountModel(
     vendorId: 1,
     code: 'VCHR',
-    discount: 25,
     isVoucher: true,
   );
 
@@ -39,7 +37,6 @@ void main() {
     expect(replaced?.code, 'VCHR');
     expect(replaced?.isVoucher, isTrue);
     expect(applied().single.code, 'SAVE10');
-    expect(applied().single.discount, 10);
   });
 
   test('a voucher cancels the same vendor\'s coupon and reports it', () {
@@ -50,7 +47,6 @@ void main() {
     expect(replaced?.code, 'SAVE10');
     expect(replaced?.isVoucher, isFalse);
     expect(applied().single.code, 'VCHR');
-    expect(applied().single.discount, 25);
   });
 
   test('a second voucher displaces the first, whichever vendor holds it', () {
@@ -71,7 +67,7 @@ void main() {
   test('another vendor keeps its own discount', () {
     notifier().add(coupon);
     notifier().add(
-      const AppliedDiscountModel(vendorId: 2, code: 'OTHER', discount: 5),
+      const AppliedDiscountModel(vendorId: 2, code: 'OTHER'),
     );
 
     expect(notifier().add(voucher), isNotNull);
