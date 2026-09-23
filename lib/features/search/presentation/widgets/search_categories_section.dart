@@ -31,8 +31,7 @@ class SearchCategoriesSection extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () =>
-                  context.pushReplacementNamed(AppRoutes.categoriesScreen),
+              onTap: () => context.pushNamed(AppRoutes.categoriesScreen),
               child: Text(
                 LangKeys.seeAllCategoriesKey.tr(),
                 style: AppTextStyles.style14Medium.copyWith(
