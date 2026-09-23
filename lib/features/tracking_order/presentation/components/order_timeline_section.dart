@@ -105,26 +105,28 @@ class OrderTimelineSection extends StatelessWidget {
                 color: colors.black,
               ),
             ),
-            Wrap(
-              alignment: WrapAlignment.end,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              runSpacing: 2,
-              children: [
-                Text(
-                  LangKeys.estimatedDeliveryTimeKey.tr(),
-                  style: AppTextStyles.style10Regular.copyWith(
-                    color: colors.neutral1200,
+            // Customer checkout never sets an ETA, so there usually isn't one.
+            if (estimatedTime.isNotEmpty)
+              Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 4,
+                runSpacing: 2,
+                children: [
+                  Text(
+                    LangKeys.estimatedDeliveryTimeKey.tr(),
+                    style: AppTextStyles.style10Regular.copyWith(
+                      color: colors.neutral1200,
+                    ),
                   ),
-                ),
-                Text(
-                  estimatedTime,
-                  style: AppTextStyles.style10SemiBold.copyWith(
-                    color: colors.black,
+                  Text(
+                    estimatedTime,
+                    style: AppTextStyles.style10SemiBold.copyWith(
+                      color: colors.black,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
         16.hSpace,

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -61,7 +62,7 @@ class ItemInformationSection extends StatelessWidget {
                               color: colors.black,
                               size: 14,
                               fontWeight: FontWeight.w400,
-                              price: (item.price ?? 0).toStringAsFixed(2),
+                              price: formatMoney(item.price),
                             ),
                           ],
                         ),

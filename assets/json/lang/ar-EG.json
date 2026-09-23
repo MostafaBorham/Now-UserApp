@@ -380,7 +380,7 @@
   "tryAnotherPaymentMethod": "جرّب طريقة دفع أخرى",
   "unableToReachServers": "تعذّر الوصول إلى الخوادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
   "upTo": "حتى",
-  "vatFivePercent": "ضريبة القيمة المضافة (5%)",
+  "vat": "ضريبة القيمة المضافة",
   "verificationCode": "رمز التحقق",
   "verifyGuestViaPhone": "التحقق من الضيف عبر الهاتف",
   "viewCart": "عرض السلة",

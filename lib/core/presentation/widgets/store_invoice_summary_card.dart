@@ -69,7 +69,7 @@ class StoreInvoiceSummaryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        LangKeys.vatFivePercentKey.tr(),
+                        LangKeys.vatKey.tr(),
                         style: AppTextStyles.style14Regular.copyWith(
                           color: colors.black,
                         ),

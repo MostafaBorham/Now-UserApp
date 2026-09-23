@@ -38,8 +38,11 @@ class CheckoutModel {
   static List<CardPaymentModel> _parseCards(Map<String, dynamic> checkout) {
     final List<dynamic> raw =
         (checkout['payment_cards'] as List?) ?? const <dynamic>[];
+    // An expired card can't pay (the server never checks expiry, so it fails
+    // at the gateway): offer only the usable ones, as the wallet does.
     return raw
         .map((dynamic e) => CardPaymentModel.fromJson(e as Map<String, dynamic>))
+        .where((CardPaymentModel card) => card.isUsable)
         .toList();
   }
 

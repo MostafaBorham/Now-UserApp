@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -109,7 +110,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     store: store,
                     itemsCount: order.items.length,
                     paymentMethod: order.paymentMethod ?? '',
-                    amount: order.total.toStringAsFixed(2),
+                    amount: formatMoney(order.total),
                   ),
                   // The card shows once a courier is assigned — which can be
                   // well before the order leaves the store — for as long as
@@ -143,7 +144,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                         orderUuid: widget.orderUuid,
                         orderNumber: order.orderNumber ?? '',
                         itemsCount: order.items.length,
-                        amount: order.total.toStringAsFixed(2),
+                        amount: formatMoney(order.total),
                       ),
                     ),
                     8.hSpace,

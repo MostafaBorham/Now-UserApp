@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/features/orders/presentation/extensions/ord
 class TrackOrderNumberHeader extends StatelessWidget {
   const TrackOrderNumberHeader({
     super.key,
-    this.orderNumber = 'ORD #458741',
+    required this.orderNumber,
     required this.status,
     this.statusLabel,
   });

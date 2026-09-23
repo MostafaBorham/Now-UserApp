@@ -12,13 +12,13 @@ import 'tracking_section_card.dart';
 class DeliveryDetailsSection extends StatelessWidget {
   const DeliveryDetailsSection({
     super.key,
-    this.receiver = 'Yaseer Ahmed',
-    this.address = '7468 Olaya, Riyadh',
-    this.contact = '+966 5 1234 5678',
-    this.store = 'Panda Store',
-    this.itemsCount = 1,
-    this.paymentMethod = 'Visa ****0442',
-    this.amount = '20.00',
+    required this.receiver,
+    required this.address,
+    required this.contact,
+    required this.store,
+    required this.itemsCount,
+    required this.paymentMethod,
+    required this.amount,
   });
 
   final String receiver;

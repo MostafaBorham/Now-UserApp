@@ -653,7 +653,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   valueColor: colors.black,
                                 ),
                                 OrderInvoiceRow(
-                                  label: LangKeys.vatFivePercentKey.tr(),
+                                  label: LangKeys.vatKey.tr(),
                                   value: order.tax,
                                   valueColor: colors.black,
                                 ),

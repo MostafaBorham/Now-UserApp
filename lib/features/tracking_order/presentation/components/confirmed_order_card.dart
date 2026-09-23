@@ -19,16 +19,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 class ConfirmedOrderCard extends StatelessWidget {
   const ConfirmedOrderCard({
     super.key,
-    this.orderNumber = '#ORD-458921',
-    this.price = '20.00',
-    this.itemsCount = 5,
-    this.imageUrl = fallbackImageUrl,
+    required this.orderNumber,
+    required this.price,
+    required this.itemsCount,
+    required this.imageUrl,
     this.onTrack,
   });
-
-  /// Placeholder thumbnail used when an order carries no vendor logo.
-  static const String fallbackImageUrl =
-      'https://www.shutterstock.com/image-photo/various-kinds-fresh-colorful-fruits-260nw-2698161807.jpg';
 
   final String orderNumber;
   final String price;

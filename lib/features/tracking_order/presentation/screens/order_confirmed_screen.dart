@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
@@ -59,11 +60,10 @@ class OrderConfirmedScreen extends ConsumerWidget {
                         for (final OrderModel order in orders) ...[
                           ConfirmedOrderCard(
                             orderNumber: order.orderNumber ?? '',
-                            price: order.total.toStringAsFixed(2),
+                            price: formatMoney(order.total),
                             itemsCount: order.items.length,
-                            imageUrl:
-                                order.vendor.logoUrl ??
-                                ConfirmedOrderCard.fallbackImageUrl,
+                            // No logo → the image widget's own placeholder.
+                            imageUrl: order.vendor.logoUrl ?? '',
                             onTrack: () => context.pushNamed(
                               AppRoutes.trackOrderScreen,
                               extra: order.uuid,

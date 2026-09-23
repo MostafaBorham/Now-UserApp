@@ -380,7 +380,7 @@
   "tryAnotherPaymentMethod": "Try another payment method",
   "unableToReachServers": "Unable to reach the servers. Please check your internet connection and try again.",
   "upTo": "Upto",
-  "vatFivePercent": "VAT (5%)",
+  "vat": "VAT",
   "verificationCode": "Verification Code",
   "verifyGuestViaPhone": "Verify guest via phone",
   "viewCart": "View cart",

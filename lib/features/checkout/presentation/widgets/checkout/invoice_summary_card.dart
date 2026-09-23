@@ -74,7 +74,7 @@ class InvoiceSummaryCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      LangKeys.vatFivePercentKey.tr(),
+                      LangKeys.vatKey.tr(),
                       style: AppTextStyles.style14SemiBold.copyWith(
                         color: colors.black,
                       ),

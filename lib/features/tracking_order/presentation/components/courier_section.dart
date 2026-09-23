@@ -14,7 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 class CourierSection extends StatelessWidget {
   const CourierSection({
     super.key,
-    this.courierName = 'Panda Store',
+    required this.courierName,
     this.logoUrl = '',
     this.onChat,
     this.onCall,

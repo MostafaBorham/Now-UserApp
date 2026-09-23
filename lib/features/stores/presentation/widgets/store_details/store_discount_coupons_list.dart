@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
@@ -93,17 +94,18 @@ class StoreDiscountCouponsList extends ConsumerWidget {
     });
   }
 
+  /// Through the shared formatter, which converts to local time — formatting
+  /// the parsed UTC value showed a timestamp's UTC date.
   String _validity(BuildContext context, CouponModel coupon) {
-    final DateTime? startsAt = DateTime.tryParse(coupon.startsAt ?? '');
-    final DateTime? expiresAt = DateTime.tryParse(coupon.expiresAt ?? '');
-    final loc.DateFormat dateFormat = loc.DateFormat.yMMMMd(
-      context.locale.toString(),
+    final String start = context.getLocalizedApiDate(
+      apiDateTimeStamp: coupon.startsAt,
+    );
+    final String end = context.getLocalizedApiDate(
+      apiDateTimeStamp: coupon.expiresAt,
     );
     return [
-      if (startsAt != null)
-        '${LangKeys.fromKey.tr()} ${dateFormat.format(startsAt)}',
-      if (expiresAt != null)
-        '${LangKeys.toKey.tr()} ${dateFormat.format(expiresAt)}',
+      if (start.isNotEmpty) '${LangKeys.fromKey.tr()} $start',
+      if (end.isNotEmpty) '${LangKeys.toKey.tr()} $end',
     ].join(' ');
   }
 }

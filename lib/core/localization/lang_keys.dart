@@ -253,7 +253,7 @@ abstract class LangKeys {
   static const String invoiceSummaryKey = 'invoiceSummary';
   static const String storeInvoiceSummaryKey = 'storeInvoiceSummary';
   static const String subtotalKey = 'subtotal';
-  static const String vatFivePercentKey = 'vatFivePercent';
+  static const String vatKey = 'vat';
   static const String deliveryFeesKey = 'deliveryFees';
   static const String discountLabelKey = 'discountLabel';
   static const String totalKey = 'total';
