@@ -138,6 +138,14 @@ class CheckoutRepo {
             .toList();
       });
     } on DioException catch (exception) {
+      // The cart endpoint sends these two as translation keys it never
+      // defined (`checkout.errors.*`), so the customer read the raw key.
+      switch (exception.response?.statusCode) {
+        case 402:
+          return const Left(Failure(LangKeys.cardDeclinedTitleKey));
+        case 409:
+          return const Left(Failure(LangKeys.orderItemOutOfStockKey));
+      }
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data

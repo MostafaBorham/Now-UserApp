@@ -47,6 +47,7 @@
   "cancelOrderWarning": "Your order will be canceled. If you have already paid for it, our support team will follow up with you about the payment.",
   "cardDeclinedBody": "Error code: 51 — Insufficient funds. Contact your bank or try another payment method.",
   "cardDeclinedTitle": "The card was declined by the bank",
+  "orderItemOutOfStock": "An item in your order is no longer in stock. Update your cart and try again.",
   "cardNumber": "Card Number",
   "cardholderName": "Cardholder Name",
   "cardAddedSuccessfully": "Card added successfully",

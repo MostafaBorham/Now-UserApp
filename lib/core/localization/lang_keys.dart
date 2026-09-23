@@ -291,6 +291,7 @@ abstract class LangKeys {
   static const String paymentFailedSubtitleKey = 'paymentFailedSubtitle';
   static const String cardDeclinedTitleKey = 'cardDeclinedTitle';
   static const String cardDeclinedBodyKey = 'cardDeclinedBody';
+  static const String orderItemOutOfStockKey = 'orderItemOutOfStock';
   static const String amountDueKey = 'amountDue';
   static const String tryAnotherPaymentMethodKey = 'tryAnotherPaymentMethod';
   static const String paymentCardKey = 'paymentCard';
