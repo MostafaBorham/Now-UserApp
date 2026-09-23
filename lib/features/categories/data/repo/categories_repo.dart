@@ -53,24 +53,26 @@ class CategoriesRepo {
 
 
 
-    final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
+    // Parsed inside the guard, so a malformed 2xx is a failure (and falls back
+    // to the cache) instead of an exception escaping the repo — and only a
+    // payload that parsed is ever cached.
+    final serverResult = await _guard(
       () => _categoriesApiService.getAppCategories(page: page, search: search),
-      (Map<String, dynamic> data) => data,
+      (Map<String, dynamic> data) => (
+        raw: data,
+        page: _paginated(data, _categoriesListKey, CategoryModel.fromJson),
+      ),
     );
 
     return serverResult.fold(
-
       (Failure serverFailure) => isSearching
           ? Left<Failure, PaginationModel<CategoryModel>>(serverFailure)
           : _readCategoriesFromCache(page, serverFailure),
-
-      (Map<String, dynamic> data) async {
+      (parsed) async {
         if (!isSearching && page == PaginatedViewModel.firstPageNumber) {
-          await _cacheAppCategories(data);
+          await _cacheAppCategories(parsed.raw);
         }
-        return Right<Failure, PaginationModel<CategoryModel>>(
-          _paginated(data, _categoriesListKey, CategoryModel.fromJson),
-        );
+        return Right<Failure, PaginationModel<CategoryModel>>(parsed.page);
       },
     );
   }
