@@ -24,28 +24,33 @@ sealed class OrderStatus {
   /// cancel, so every other state stays `false`.
   bool get isCancellable => false;
 
-  /// Whether the order has reached a state the customer can rate — the terminal
-  /// `delivered` and `closed` states only. Keyed off [apiKey] so it also covers
-  /// `closed`, which the API sends but the hierarchy doesn't model, and lives
-  /// here so the rule is defined once instead of re-checked per screen.
-  bool get isRateable => apiKey == 'delivered' || apiKey == 'closed';
+  /// Whether the order has reached a state the customer can rate — delivered
+  /// (which `closed` maps onto) only. Lives here so the rule is defined once
+  /// instead of re-checked per screen.
+  bool get isRateable => this is DeliveredStatus;
 
-  /// Whether the order's invoice can be printed/downloaded — the terminal
-  /// `delivered` and `closed` states only. Keyed off [apiKey] so it also covers
-  /// `closed`, which the hierarchy doesn't model, and lives here so the rule is
-  /// defined once instead of re-checked per screen.
-  bool get hasInvoice => apiKey == 'delivered' || apiKey == 'closed';
+  /// Whether the order's invoice can be printed/downloaded — delivered (which
+  /// `closed` maps onto) only.
+  bool get hasInvoice => this is DeliveredStatus;
 
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
   /// unrecognized key resolves to [UnknownStatus] carrying the raw value.
+  ///
+  /// The backend has more states than the customer needs told apart, so four
+  /// map onto the one they behave as: the courier waiting at the store is
+  /// still `ready`, a picked-up order is `on_the_way`, a settled one
+  /// (`closed`) is `delivered`, a vendor-refused one (`rejected`) is
+  /// `cancelled`. Left unmodelled they became [UnknownStatus], and tracking
+  /// went blank between pickup and the road. The chip still shows the
+  /// server's own label (`order_status`), so nothing is misnamed.
   static OrderStatus fromKey(String? key) => switch (key) {
     'pending' => const PendingStatus(),
     'accepted' => const AcceptedStatus(),
     'preparing' => const PreparingStatus(),
-    'ready' => const ReadyStatus(),
-    'on_the_way' => const OnTheWayStatus(),
-    'delivered' => const DeliveredStatus(),
-    'cancelled' => const CancelledStatus(),
+    'ready' || 'arrived_store' => const ReadyStatus(),
+    'on_the_way' || 'picked_up' => const OnTheWayStatus(),
+    'delivered' || 'closed' => const DeliveredStatus(),
+    'cancelled' || 'rejected' => const CancelledStatus(),
     'refunded' => const RefundedStatus(),
     _ => UnknownStatus(key ?? ''),
   };

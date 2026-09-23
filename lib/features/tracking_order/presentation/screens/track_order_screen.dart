@@ -111,10 +111,10 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     paymentMethod: order.paymentMethod ?? '',
                     amount: order.total.toStringAsFixed(2),
                   ),
-                  // The courier is only assigned once the order is out for
-                  // delivery, so the card only shows when the payload actually
-                  // carries a driver.
-                  if (orderStatus is OnTheWayStatus && order.driver != null)
+                  // The card shows once a courier is assigned — which can be
+                  // well before the order leaves the store — for as long as
+                  // the order is on its way.
+                  if (orderStatus.isTrackable && order.driver != null)
                     CourierSection(
                       courierName: order.driver?.name ?? '',
                       logoUrl: order.driver?.profileImg ?? '',
