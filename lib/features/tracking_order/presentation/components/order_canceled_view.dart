@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
 /// Success state shown inside the Cancel Order bottom sheet once the order is
-/// canceled: confirms the refund and offers to keep shopping or review orders.
+/// canceled: confirms it and offers to keep shopping or review orders.
 /// It renders only the sheet's body — the hosting [CancelSheetScaffold]
 /// supplies the drag handle, title and close button — so the flow swaps this in
 /// place of the confirmation view without opening a second sheet.
