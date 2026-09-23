@@ -56,6 +56,12 @@ class _HomeDeliveryAddressViewState
   // True while a hand-picked point is being reverse-geocoded into an address.
   bool _resolvingPick = false;
 
+  // The point being resolved, held so the map keeps its pin there while the
+  // lookup runs. Cleared when it settles: on success the point becomes the
+  // selection, on failure the map is handed the previous selection back — so
+  // the pin can never be left on a spot that is not the highlighted address.
+  LatLng? _pendingPick;
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +119,10 @@ class _HomeDeliveryAddressViewState
   // then let the map settle on it. The marker itself already moved to the tapped
   // point inside [AppMap]; only the name resolves in the background here.
   Future<void> _onMapLocationChanged(LatLng location) async {
-    setState(() => _resolvingPick = true);
+    setState(() {
+      _resolvingPick = true;
+      _pendingPick = location;
+    });
 
     final Placemark? placemark = await LocationManager.getAddressFromLocation(
       location,
@@ -122,13 +131,21 @@ class _HomeDeliveryAddressViewState
     if (!mounted) return;
 
     if (placemark == null) {
-      setState(() => _resolvingPick = false);
+      // The selection did not change, so the pin goes back to it. It used to
+      // stay on the tapped point while the list still highlighted the old
+      // address — and picking that address again did nothing, because the map
+      // only moves when the location it is handed changes.
+      setState(() {
+        _resolvingPick = false;
+        _pendingPick = null;
+      });
       AppToast.showError(context, LangKeys.failedToGetAddress);
       return;
     }
 
     setState(() {
       _resolvingPick = false;
+      _pendingPick = null;
       _pickedOnMap = true;
       _mapPickedAddress = AddressModel.fromPlacemark(placemark, location);
       _selectedAddressId = null;
@@ -167,9 +184,9 @@ class _HomeDeliveryAddressViewState
 
     // Resolve the current selection. Unless the user picked a point on the map
     // or tapped a saved address, the sheet opens on the address currently shown
-    // on the home page ([homeAddressProvider]) — the default location when the
-    // user never picked one — so the map mirrors the header from the first
-    // frame instead of resolving the device location.
+    // on the home page ([homeAddressProvider]) — the user's default saved
+    // address until they confirm another, else the current location — so it is
+    // highlighted in the list with the map pin on it from the first frame.
     final AddressModel? homeAddress = ref.watch(homeAddressProvider);
     final List<AddressModel> addresses =
         addressesState.valueOrNull?.data ?? const <AddressModel>[];
@@ -261,7 +278,7 @@ class _HomeDeliveryAddressViewState
                     children: [
                       Positioned.fill(
                         child: AppMap(
-                          currentLocation: selectedLocation,
+                          currentLocation: _pendingPick ?? selectedLocation,
                           onLocationChanged: _onMapLocationChanged,
                           // Opening the sheet must never prompt for the location:
                           // it shows the home address (or the fallback), and only

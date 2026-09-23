@@ -1,13 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 
 /// The delivery address currently shown on the home page — the one the header
-/// displays and the delivery-address sheet opens on.
+/// displays and the delivery-address sheet opens on, highlighted in its list
+/// with the map pin on it.
 ///
-/// Seeded from the guaranteed current location the splash caches (the default
-/// location when the user never picked one), so it is non-null from the first
-/// read. The sheet overwrites it when the user confirms another address.
-final homeAddressProvider = StateProvider.autoDispose<AddressModel?>(
-  (ref) => CurrentLocationCacheService().getCurrentLocation(),
-);
+/// Until the user confirms something in the sheet this is the signed-in user's
+/// **default saved address**; with none (a guest, or a user with no saved
+/// address) it falls back to the guaranteed current location the splash caches.
+/// The sheet overwrites it when the user confirms another address.
+///
+/// It watches [defaultAddressProvider], so it re-seeds whenever the default
+/// changes: after a login from a still-mounted shell (which is why it cannot be
+/// read once at creation), after logout, and when the user sets a different
+/// default elsewhere. Nothing is persisted — each launch starts from the
+/// default again, by product decision.
+final homeAddressProvider = StateProvider.autoDispose<AddressModel?>((ref) {
+  final AddressModel? defaultAddress = ref
+      .watch(defaultAddressProvider)
+      .valueOrNull;
+
+  return defaultAddress ?? CurrentLocationCacheService().getCurrentLocation();
+});

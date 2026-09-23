@@ -66,8 +66,9 @@ class HomeHeaderView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    // The delivery address the home page shows: the current location (or the
-    // default) by default, or whatever the user last confirmed in the sheet.
+    // The delivery address the home page shows: the user's default saved
+    // address (else the current location), or whatever they last confirmed in
+    // the sheet.
     final AddressModel? current = ref.watch(homeAddressProvider);
     final String displayedAddress =
         current == null ? '' : _addressName(context, current);
