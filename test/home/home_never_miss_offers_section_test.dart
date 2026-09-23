@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
@@ -88,6 +89,34 @@ void main() {
     expect(find.text('13.60'), findsWidgets);
     expect(find.text('20.00'), findsWidgets);
     expect(find.text('32%'), findsWidgets);
+  });
+
+  testWidgets('a compare-price markdown strikes the compare price', (
+    WidgetTester tester,
+  ) async {
+    // No deal: the home payload's discount is the compare-price markdown and
+    // the price charged is the list price. Striking `price` read
+    // "20.00 ~~20.00~~" here.
+    await pumpSection(tester, <ProductModel>[
+      offerProduct(effectivePrice: 20.0, discountPercentage: 20.0).copyWith(
+        comparePrice: 25.0,
+      ),
+    ]);
+
+    expect(
+      find.descendant(
+        of: find.byType(OldPriceWidget),
+        matching: find.text('25.00'),
+      ),
+      findsWidgets,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(OldPriceWidget),
+        matching: find.text('20.00'),
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('wires the favourite heart to this product', (

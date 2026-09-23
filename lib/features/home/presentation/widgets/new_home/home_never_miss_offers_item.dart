@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -44,6 +45,13 @@ class HomeNeverMissOffersItem extends StatelessWidget {
     final double? price = product.effectivePrice ?? product.price;
     final double? discount = product.discountPercentage;
     final bool isDiscounted = discount != null && discount > 0;
+    // The home payload's discount is a running deal's cut when there is one,
+    // and otherwise the compare-price markdown — so strike the price it was
+    // taken off. Always striking `price` read "100.00 ~~100.00~~" on a
+    // compare-price markdown, where the price charged *is* `price`.
+    final bool isDealPrice =
+        price != null && product.price != null && price < product.price!;
+    final double? oldPrice = isDealPrice ? product.price : product.comparePrice;
     final String imageUrl = product.images?.firstOrNull ?? '';
     final String vendorLogoUrl = product.vendor?.logoUrl ?? '';
 
@@ -206,17 +214,15 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                 children: [
                                   NewPriceWidget(
                                     color: colors.black,
-                                    price: price?.toStringAsFixed(2) ?? '0.00',
+                                    price: formatMoney(price),
                                     size: con.maxWidth * 0.1,
                                   ),
 
 
-                                  if (isDiscounted)
+                                  if (isDiscounted && oldPrice != null)
                                     OldPriceWidget(
                                       color: colors.neutral500,
-                                      price:
-                                          product.price?.toStringAsFixed(2) ??
-                                          '0.00',
+                                      price: formatMoney(oldPrice),
                                       size: con.maxWidth * 0.08,
                                     ),
                                 ],

@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -179,7 +180,7 @@ class ProductItem3View extends StatelessWidget {
                                             ),)
                                             : NewPriceWidget(
                                                 color: colors.white,
-                                                price: (product.activeDeal?.discountValue ?? 0).toStringAsFixed(2),
+                                                price: formatMoney(product.activeDeal?.discountValue),
                                                 size: con.maxWidth*0.07,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -214,14 +215,12 @@ class ProductItem3View extends StatelessWidget {
                                       // NOT dealDiscountAmount (the savings).
                                       NewPriceWidget(
                                         color: colors.primary700,
-                                        price: product.discountPrice
-                                                ?.toStringAsFixed(2) ??
-                                            '0.00',
+                                        price: formatMoney(product.discountPrice),
                                         size: con.maxWidth*0.12,
                                         fontWeight: FontWeight.bold,
                                       ),
                                       Text(
-                                        product.price?.toStringAsFixed(2) ?? '0.00',
+                                        formatMoney(product.price),
                                         style: TextStyle(
                                           color: colors.neutral500,
                                           fontSize: con.maxWidth*0.09,
@@ -237,7 +236,7 @@ class ProductItem3View extends StatelessWidget {
                                   )
                                 : NewPriceWidget(
                                     color: colors.black,
-                                    price: product.price?.toStringAsFixed(2) ?? '0.00',
+                                    price: formatMoney(product.price),
                                     size: con.maxWidth*0.13,
                                   ),
                           ),
