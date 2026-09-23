@@ -27,6 +27,7 @@ import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dar
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
+import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
@@ -75,16 +76,23 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       return;
     }
 
-    // The wallet wins while its checkbox is ticked (the default). Untick it and
+    // The wallet pays while its checkbox is ticked (the default). Untick it and
     // the picked saved card pays: the backend requires a `payment_method_id` for
     // the `card` method and prohibits one for wallet/cod, so the id rides along
     // only in the card case. Selection defaults to the preview's default card.
-    // ponytail: there is still no split-payment field, so a wallet shortfall is
-    // settled server-side — the app only says which single method leads.
+    // There is no split payment: a wallet that can't cover the total is refused
+    // outright, so that is said here rather than after a failed request.
     final bool walletSelected = ref.read(walletPaymentProvider);
     final String paymentMethod;
     final int? paymentMethodId;
     if (walletSelected) {
+      if (walletFallsShort(
+        ref.read(getWalletInfoProvider).valueOrNull,
+        checkout.orderGroup.total,
+      )) {
+        AppToast.showError(context, LangKeys.walletShortfallHintKey.tr());
+        return;
+      }
       paymentMethod = 'wallet';
       paymentMethodId = null;
     } else {

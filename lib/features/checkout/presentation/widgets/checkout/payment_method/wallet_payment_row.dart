@@ -8,16 +8,28 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
+
+/// Whether [wallet] can't pay [total] on its own. There is no split payment —
+/// a short wallet makes the server refuse the whole order — so checkout says
+/// so up front instead. `false` while either is unknown: the server decides.
+bool walletFallsShort(WalletModel? wallet, double? total) {
+  final double? balance = wallet?.balance;
+  final int? halalas =
+      wallet?.balanceHalalas ??
+      (balance == null ? null : sarDoubleToHalalas(balance));
+  return halalas != null &&
+      total != null &&
+      halalas < sarDoubleToHalalas(total);
+}
 
 /// The wallet payment option, shown under the payment methods section: the
 /// balance with a checkbox that is ticked by default, and — while it is ticked
-/// — a note explaining that the method picked above only covers the shortfall.
-///
-/// The note hangs off the checkbox rather than off a balance-vs-total
-/// comparison: it is guidance about how the wallet is charged, which stops
-/// being true the moment the wallet is switched off.
+/// and the balance can't cover the total — a note saying to pay by card.
 class WalletPaymentRow extends ConsumerWidget {
   const WalletPaymentRow({super.key});
 
@@ -32,10 +44,13 @@ class WalletPaymentRow extends ConsumerWidget {
     // choice, and hiding it is what 05e26eb fixed — but the amount is left off
     // rather than guessed, matching how `WalletCardWidget` treats a null
     // balance.
-    final double? balance = ref
-        .watch(getWalletInfoProvider)
-        .valueOrNull
-        ?.balance;
+    final WalletModel? wallet = ref.watch(getWalletInfoProvider).valueOrNull;
+    final double? balance = wallet?.balance;
+    final double? total = ref.watch(
+      checkoutModelProvider.select(
+        (CheckoutModel? checkout) => checkout?.orderGroup.total,
+      ),
+    );
 
     return Container(
       width: double.infinity,
@@ -117,7 +132,8 @@ class WalletPaymentRow extends ConsumerWidget {
               ),
             ),
           ),
-          if (selected) const _ShortfallNote(),
+          if (selected && walletFallsShort(wallet, total))
+            const _ShortfallNote(),
         ],
       ),
     );
@@ -152,8 +168,8 @@ class _WalletCheckbox extends StatelessWidget {
   }
 }
 
-/// The hint under the wallet row: a second payment method takes over whatever
-/// the balance cannot cover.
+/// The hint under the wallet row: the balance can't cover this order, so the
+/// wallet has to be unticked for a card to pay.
 class _ShortfallNote extends StatelessWidget {
   const _ShortfallNote();
 

@@ -461,7 +461,7 @@
   "welcomeVoucherDiscount": "خصم",
   "welcomeVoucherSuffix": " لأول طلب",
   "balance": "الرصيد: ",
-  "walletShortfallHint": "اختر وسيلة دفع احتياطية لخصم المبلغ المتبقي إذا كان رصيد المحفظة غير كافٍ",
+  "walletShortfallHint": "رصيد محفظتك لا يغطي هذا الطلب. ألغِ تحديد المحفظة للدفع بالبطاقة.",
   "fullName": "الاسم الكامل",
   "phone": "الهاتف",
   "email": "البريد الإلكتروني",
