@@ -79,19 +79,18 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
             final String privacy = _parseHtml(
               context.getLocalizedApiText(content?.privacy),
             );
-            final String about = context.getLocalizedApiText(content?.about);
+            // The same rich-text editor authors all three blocks.
+            final String about = _parseHtml(
+              context.getLocalizedApiText(content?.about),
+            );
 
             final bool isEmpty =
                 terms.isEmpty && privacy.isEmpty && about.isEmpty;
             final TextStyle titleStyle = AppTextStyles.style18Medium;
 
-            final DateTime? updatedAt = DateTime.tryParse(
-              content?.privacyUpdatedAt ?? '',
+            final String updatedAt = context.getLocalizedApiDate(
+              apiDateTimeStamp: content?.privacyUpdatedAt,
             );
-            final String effectiveDate = updatedAt == null
-                ? LangKeys.privacyEffectiveDate.tr()
-                : '${LangKeys.privacyEffectiveDate.tr()}: '
-                      '${DateFormat.yMMMMd(context.locale.toString()).format(updatedAt)}';
 
             return isEmpty
                 ? NoResultsWidget(
@@ -112,16 +111,19 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              effectiveDate,
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.style18Medium.copyWith(
-                                color: context.colors.tertiaryContainer,
-                                height: 1.55,
-                                overflow: TextOverflow.visible,
+                            if (updatedAt.isNotEmpty) ...[
+                              Text(
+                                '${LangKeys.privacyEffectiveDate.tr()}: '
+                                '$updatedAt',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.style18Medium.copyWith(
+                                  color: context.colors.tertiaryContainer,
+                                  height: 1.55,
+                                  overflow: TextOverflow.visible,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 2),
+                              const SizedBox(height: 2),
+                            ],
                             Text(
                               LangKeys.privacyIntro.tr(),
                               textAlign: TextAlign.center,
