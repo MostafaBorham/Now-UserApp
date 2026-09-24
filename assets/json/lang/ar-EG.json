@@ -15,6 +15,7 @@
   "addWallet": "+ إضافة محفظة",
   "address": "العنوان",
   "addressDeletedSuccessfully": "تم حذف العنوان بنجاح",
+  "deleteAddressConfirmation": "هل أنت متأكد من حذف هذا العنوان؟",
   "addressDetails": "تفاصيل العنوان",
   "all": "الكل",
   "amountDue": "المبلغ المستحق",

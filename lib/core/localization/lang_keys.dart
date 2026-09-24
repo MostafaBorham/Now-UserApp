@@ -112,6 +112,7 @@ abstract class LangKeys {
   static const String defaultAddress = 'defaultAddress';
   static const String noSavedAddresses = 'noSavedAddresses';
   static const String addressDeletedSuccessfully = 'addressDeletedSuccessfully';
+  static const String deleteAddressConfirmationKey = 'deleteAddressConfirmation';
 
   // Bottom navigation
   static const String homeKey = 'home';

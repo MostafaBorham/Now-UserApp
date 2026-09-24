@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/lists/delete_swipe_background.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
@@ -83,10 +84,8 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
     ) {
       if (previous?.isLoading != true) return;
       next.whenOrNull(
-        data: (_) => AppToast.showSuccess(
-          context,
-          LangKeys.addressDeletedSuccessfully,
-        ),
+        data: (_) =>
+            AppToast.showSuccess(context, LangKeys.addressDeletedSuccessfully),
         error: (Object error, StackTrace stackTrace) =>
             AppToast.showError(context, error.toString()),
       );
@@ -173,11 +172,26 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
         .setDefaultAddress(addressId: addressId);
   }
 
-  /// Swiping a card fires the delete but never dismisses the card itself:
-  /// returning `false` springs it back into place, and the view model removes it
-  /// (by refetching the list) only once the server confirms the delete. So the
-  /// address stays on screen — under the blocking overlay — until success.
+  /// Swiping a card asks first, then fires the delete but never dismisses the
+  /// card itself: returning `false` springs it back into place, and the view
+  /// model removes it (by refetching the list) only once the server confirms
+  /// the delete. So the address stays on screen — under the blocking overlay —
+  /// until success.
   Future<bool> _onDelete(AddressModel address) async {
+    bool confirmed = false;
+    await AppCustomAlertDialog.show(
+      context,
+      (BuildContext dialogContext) => AppCustomAlertDialog(
+        title: LangKeys.deleteKey.tr(),
+        message: LangKeys.deleteAddressConfirmationKey.tr(),
+        confirmLabel: LangKeys.deleteKey.tr(),
+        onConfirm: () {
+          confirmed = true;
+          Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+    if (!mounted || !confirmed) return false;
     ref.read(deleteAddressProvider.notifier).deleteAddress(address: address);
     return false;
   }

@@ -68,6 +68,15 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   /// number is fixed and the field holds just the 8 digits that follow it.
   static const String _phonePrefix = '05';
 
+  /// The backend's own caps (`max:50` on floor / apartment / building_number,
+  /// `max:1000` on notes). Past them a save is a bare "Validation failed.".
+  static final List<TextInputFormatter> _columnLimit = <TextInputFormatter>[
+    LengthLimitingTextInputFormatter(50),
+  ];
+  static final List<TextInputFormatter> _notesLimit = <TextInputFormatter>[
+    LengthLimitingTextInputFormatter(1000),
+  ];
+
   int _selectedLabelIndex = 0;
 
   /// The form exactly as [initState] prefilled it, so back can tell an
@@ -343,18 +352,22 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 AddressField(
                   hintText: hints[0].tr(),
                   controller: _floorNumberController,
+                  inputFormatters: _columnLimit,
                 ),
                 AddressField(
                   hintText: hints[1].tr(),
                   controller: _apartmentController,
+                  inputFormatters: _columnLimit,
                 ),
                 AddressField(
                   hintText: LangKeys.building.tr(),
                   controller: _buildingNameController,
+                  inputFormatters: _columnLimit,
                 ),
                 AddressField(
                   hintText: LangKeys.instructions.tr(),
                   controller: _instructionsController,
+                  inputFormatters: _notesLimit,
                 ),
                 AddressField(
                   hintText: LangKeys.phoneNumberOptional.tr(),
