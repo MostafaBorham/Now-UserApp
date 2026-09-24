@@ -106,28 +106,6 @@ class _AddPaymentCardScreenState extends ConsumerState<AddPaymentCardScreen> {
                       ? null
                       : (bool v) => setState(() => _setAsDefault = v),
                 ),
-                Text(
-                  LangKeys.anotherPaymentMethodKey.tr(),
-                  style: AppTextStyles.style16Medium.copyWith(
-                    color: colors.tertiaryContainer,
-                  ),
-                ),
-                MultiRadioTile(
-                  colors: colors,
-                  items: [
-                    PaymentMethodItem(
-                      title: LangKeys.applePayKey.tr(),
-                      icon: Assets.media.images.svg.applePay.svg(),
-                      value: "apple_pay",
-                    ),
-                    PaymentMethodItem(
-                      title: LangKeys.stcPayKey.tr(),
-                      icon: Assets.media.images.svg.stc.svg(),
-                      value: "stc_pay",
-                    ),
-                  ],
-                  onSelected: (value) {},
-                ),
                 PrimaryAppPrefixIconButton(
                   title: LangKeys.addKey.tr(),
                   prefixIcon: Assets.media.images.svg.addCircle.svg(),
