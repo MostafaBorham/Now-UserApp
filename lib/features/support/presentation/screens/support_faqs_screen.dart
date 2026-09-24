@@ -27,7 +27,6 @@ class SupportFaqsScreen extends ConsumerStatefulWidget {
 class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _expanded = {};
-  final Set<int> _revealed = {};
 
   @override
   void dispose() {
@@ -118,8 +117,6 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
                           question: context.getLocalizedApiText(faq.question),
                           answer: context.getLocalizedApiText(faq.answer),
                           expanded: _expanded.contains(index),
-                          answerRevealed: _revealed.contains(index),
-                          onAnswerRevealed: () => _revealed.add(index),
                           onTap: () => _toggle(index),
                         );
                       },

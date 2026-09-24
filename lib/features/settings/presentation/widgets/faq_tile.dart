@@ -11,16 +11,12 @@ class FaqTile extends StatelessWidget {
     required this.question,
     required this.answer,
     required this.expanded,
-    this.answerRevealed = false,
-    this.onAnswerRevealed,
     this.onTap,
   });
 
   final String question;
   final String answer;
   final bool expanded;
-  final bool answerRevealed;
-  final VoidCallback? onAnswerRevealed;
   final VoidCallback? onTap;
 
   @override
@@ -55,11 +51,7 @@ class FaqTile extends StatelessWidget {
           ),
           if (expanded) ...[
             const SizedBox(height: 12),
-            FaqAnswerChat(
-              answer: answer,
-              animate: !answerRevealed,
-              onRevealed: onAnswerRevealed,
-            ),
+            FaqAnswerChat(answer: answer),
           ],
         ],
       ),

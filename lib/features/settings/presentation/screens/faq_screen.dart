@@ -26,7 +26,6 @@ class FaqScreen extends ConsumerStatefulWidget {
 class _FaqScreenState extends ConsumerState<FaqScreen> {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _expanded = {0};
-  final Set<int> _revealed = {};
 
   @override
   void dispose() {
@@ -93,8 +92,6 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                           question: context.getLocalizedApiText(faq.question),
                           answer: context.getLocalizedApiText(faq.answer),
                           expanded: _expanded.contains(index),
-                          answerRevealed: _revealed.contains(index),
-                          onAnswerRevealed: () => _revealed.add(index),
                           onTap: () => _toggle(index),
                         );
                       },
