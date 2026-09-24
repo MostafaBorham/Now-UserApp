@@ -23,13 +23,15 @@ final defaultAddressProvider =
     );
 
 class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
-  DefaultAddressViewModel(this._ref)
-    : super(const AsyncValue<AddressModel?>.data(null)) {
+  /// [repo] is injectable for tests only, like [AddressRepo]'s own seams.
+  DefaultAddressViewModel(this._ref, {AddressRepo? repo})
+    : _repo = repo ?? AddressRepo(),
+      super(const AsyncValue<AddressModel?>.data(null)) {
     _listenToMyAddresses();
   }
 
   final Ref _ref;
-  final AddressRepo _repo = AddressRepo();
+  final AddressRepo _repo;
 
   /// Keeps the default in step with the loaded address list: every time the
   /// list resolves to data (add, edit, delete, refetch), the default is
@@ -81,18 +83,30 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   /// Deliberately not derived from the loaded address list: the list is
   /// paginated, so a default sitting on page 2 would never be found.
   Future<void> getDefaultAddress() async {
-    state = const AsyncValue<AddressModel?>.loading();
+    state = _loadingOverCurrent();
 
     final result = await _repo.getDefaultAddress();
 
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue<AddressModel?>.error(failure.message, StackTrace.current),
+      _errorOverCurrent,
       (AddressModel address) => AsyncValue<AddressModel?>.data(address),
     );
   }
+
+  /// Loading and error keep the address already held. Every reader goes
+  /// through `valueOrNull` — the home header, cart pricing — and a bare
+  /// loading/error state has none, so one failed tap used to drop the user's
+  /// default everywhere until the address list next changed.
+  AsyncValue<AddressModel?> _loadingOverCurrent() =>
+      const AsyncValue<AddressModel?>.loading().copyWithPrevious(state);
+
+  AsyncValue<AddressModel?> _errorOverCurrent(Failure failure) =>
+      AsyncValue<AddressModel?>.error(
+        failure.message,
+        StackTrace.current,
+      ).copyWithPrevious(state);
 
   /// Adopts [address] when it *is* the loaded default, so an edit to it shows
   /// up wherever the default is read — the checkout delivery card — instead of
@@ -104,21 +118,17 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   }
 
   Future<void> setDefaultAddress({required int addressId}) async {
-    state = const AsyncValue<AddressModel?>.loading();
+    state = _loadingOverCurrent();
 
     final result = await _repo.setDefaultAddress(addressId: addressId);
 
     if (!mounted) return;
 
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue<AddressModel?>.error(failure.message, StackTrace.current),
-      (AddressModel address) {
-        _ref
-            .read(getMyAddressesProvider.notifier)
-            .updateDefaultInMyAddress(address: address);
-        return AsyncValue<AddressModel?>.data(address);
-      },
-    );
+    state = result.fold(_errorOverCurrent, (AddressModel address) {
+      _ref
+          .read(getMyAddressesProvider.notifier)
+          .updateDefaultInMyAddress(address: address);
+      return AsyncValue<AddressModel?>.data(address);
+    });
   }
 }
