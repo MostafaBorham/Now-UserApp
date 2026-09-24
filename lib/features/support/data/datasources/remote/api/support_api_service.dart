@@ -3,7 +3,6 @@ import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
 import 'package:nowdelivery_user_app/features/support/data/datasources/remote/api/support_endpoints.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_request_model.dart';
-import 'package:nowdelivery_user_app/features/support/data/models/rate_request_model.dart';
 
 /// Raw API calls for the support feature.
 ///
@@ -35,26 +34,6 @@ class SupportApiService {
     return _dio.post(
       SupportEndpoints.supportTickets,
       data: complaint.toJson(),
-      cancelToken: _canceller.token,
-    );
-  }
-
-  /// Rates a store (vendor) against an order. The [rate] body must carry a
-  /// `vendor` rateable type — build it with [RateRequestModel.store].
-  Future<Response> rateStore({required RateRequestModel rate}) {
-    return _dio.post(
-      SupportEndpoints.ratings,
-      data: rate.toJson(),
-      cancelToken: _canceller.token,
-    );
-  }
-
-  /// Rates a delivery man against an order. The [rate] body must carry a
-  /// `delivery_man` rateable type — build it with [RateRequestModel.deliveryMan].
-  Future<Response> rateDeliveryMan({required RateRequestModel rate}) {
-    return _dio.post(
-      SupportEndpoints.ratings,
-      data: rate.toJson(),
       cancelToken: _canceller.token,
     );
   }

@@ -82,7 +82,6 @@ class OrderModel {
   /// Lifecycle timestamps, kept as the raw ISO-8601 strings the API sends;
   /// parse/format them at the presentation layer.
   final String? estimatedDeliveryTime;
-  final String? deliveredTime;
   final String? respondByAt;
   final String? acceptedAt;
   final String? preparedAt;
@@ -141,7 +140,6 @@ class OrderModel {
     this.notes,
     this.invoicePdfUrl,
     this.estimatedDeliveryTime,
-    this.deliveredTime,
     this.respondByAt,
     this.acceptedAt,
     this.preparedAt,
@@ -221,7 +219,6 @@ class OrderModel {
       notes: json['notes']?.toString(),
       invoicePdfUrl: json['invoice_pdf_url']?.toString(),
       estimatedDeliveryTime: json['estimated_delivery_time']?.toString(),
-      deliveredTime: json['delivered_time']?.toString(),
       respondByAt: json['respond_by_at']?.toString(),
       acceptedAt: json['accepted_at']?.toString(),
       preparedAt: json['prepared_at']?.toString(),
