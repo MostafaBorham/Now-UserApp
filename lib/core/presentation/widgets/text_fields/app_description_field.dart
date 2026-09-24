@@ -4,17 +4,27 @@ import 'package:nowdelivery_user_app/core/presentation/components/field_input_bo
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class AppDescriptionField extends StatelessWidget {
-  const AppDescriptionField({super.key, required this.hintTxt, this.controller});
+  const AppDescriptionField({
+    super.key,
+    required this.hintTxt,
+    this.controller,
+    this.maxLength,
+  });
   final String hintTxt;
   final TextEditingController? controller;
+
+  /// Stops typing at this many characters, without showing a counter.
+  final int? maxLength;
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return TextFormField(
       controller: controller,
       maxLines: 4,
+      maxLength: maxLength,
       style: AppTextStyles.style14Regular.copyWith(color: colors.black),
       decoration: InputDecoration(
+        counterText: '',
         filled: true,
         fillColor: colors.onPrimaryContainer,
         hintText: hintTxt,

@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 class ComplaintRequestModel extends Equatable {
-  /// Short one-line summary of the complaint. Fixed for now.
+  /// The order number the complaint is about. A customer's ticket stores no
+  /// order id (the backend takes none), so the title is what tells support
+  /// which order it is.
   final String title;
 
   /// Free-text detail the user typed ("tell us more").
@@ -28,10 +30,12 @@ class ComplaintRequestModel extends Equatable {
   static const String _defaultCategory = 'orders_and_banners';
 
   /// Builds the request from the raw inputs the File-a-Complaint screen gathers:
-  /// the free-text [description] and the picked [images], each read and base64
-  /// encoded into a [ComplaintAttachment]. An empty [images] list yields an
-  /// empty [attachments] list. [title] and [category] keep their static values.
+  /// the order's [orderNumber] as the title, the free-text [description] and
+  /// the picked [images], each read and base64 encoded into a
+  /// [ComplaintAttachment]. An empty [images] list yields an empty
+  /// [attachments] list; [category] keeps its static value.
   static Future<ComplaintRequestModel> fromComplaintInputs({
+    required String? orderNumber,
     required String description,
     required List<File> images,
   }) async {
@@ -41,6 +45,9 @@ class ComplaintRequestModel extends Equatable {
     }
 
     return ComplaintRequestModel(
+      title: (orderNumber == null || orderNumber.isEmpty)
+          ? _defaultTitle
+          : orderNumber,
       description: description,
       attachments: attachments,
     );

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
@@ -39,9 +40,14 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
     });
 
     try {
+      // Resized on the device: the photos travel base64-encoded (+33 %) in one
+      // JSON body, and the API's proxy takes 8 MB — two full-size camera
+      // photos already exceed it.
       final XFile? picked = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
       );
 
       if (picked != null) {
@@ -56,8 +62,9 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
           widget.onChanged(List<File>.unmodifiable(_images));
         }
       }
-    } catch (e) {
-      debugPrint('${LangKeys.imagePickingErrorKey.tr()}: $e');
+    } catch (_) {
+      // E.g. photo access denied — say so rather than doing nothing.
+      if (mounted) AppToast.showError(context, LangKeys.imagePickingErrorKey);
     } finally {
       if (mounted) {
         setState(() {

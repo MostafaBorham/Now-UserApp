@@ -17,8 +17,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_d
 class FileComplaintScreen extends ConsumerStatefulWidget {
   const FileComplaintScreen({super.key, required this.order});
 
-  /// The order this complaint / rating is about — supplies the ids sent to the
-  /// rating endpoints (order id as the source, store/driver id as the rateable).
+  /// The order this complaint is about — its number becomes the ticket title.
   final OrderModel order;
 
   @override
@@ -34,6 +33,9 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
   final ScrollController _scrollController = ScrollController();
 
   List<File> _images = const [];
+
+  /// True while the photos are read and encoded, before the request starts.
+  bool _isPreparing = false;
 
   @override
   void dispose() {
@@ -57,28 +59,41 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     });
   }
 
-  /// Validates the form, then builds the request model (description + the picked
-  /// photos mapped to base64 attachments — an empty list when none were picked)
-  /// and hands it to the submit-complaint viewmodel. The button's loading and
-  /// the success/error feedback are driven by the provider in [build].
+  /// Validates the form, then builds the request model (the order number,
+  /// description + the picked photos mapped to base64 attachments — an empty
+  /// list when none were picked) and hands it to the submit-complaint
+  /// viewmodel. The success/error feedback is driven by the provider in
+  /// [build].
+  ///
+  /// Reading and encoding the photos takes a moment before the request — and
+  /// with it the provider's loading — starts, so [_isPreparing] holds the
+  /// button meanwhile; each tap in that window used to file another ticket.
   Future<void> _onSubmit() async {
+    if (_isPreparing) return;
+
     final String description = _descriptionController.text.trim();
     if (description.isEmpty) {
       AppToast.showError(context, LangKeys.complaintDescriptionRequiredKey.tr());
       return;
     }
 
-    final ComplaintRequestModel complaint =
-        await ComplaintRequestModel.fromComplaintInputs(
-      description: description,
-      images: _images,
-    );
+    setState(() => _isPreparing = true);
+    try {
+      final ComplaintRequestModel complaint =
+          await ComplaintRequestModel.fromComplaintInputs(
+        orderNumber: widget.order.orderNumber,
+        description: description,
+        images: _images,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    ref
-        .read(submitComplaintProvider.notifier)
-        .submitComplaint(complaint: complaint);
+      ref
+          .read(submitComplaintProvider.notifier)
+          .submitComplaint(complaint: complaint);
+    } finally {
+      if (mounted) setState(() => _isPreparing = false);
+    }
   }
 
   @override
@@ -103,7 +118,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
       },
     );
 
-    final bool isSubmitting = ref.watch(submitComplaintProvider).isLoading;
+    final bool isSubmitting =
+        _isPreparing || ref.watch(submitComplaintProvider).isLoading;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -131,6 +147,8 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
                       AppDescriptionField(
                         hintTxt: LangKeys.tellUsMoreKey.tr(),
                         controller: _descriptionController,
+                        // The backend's limit for a ticket's description.
+                        maxLength: 10000,
                       ),
                     ],
                   ),
