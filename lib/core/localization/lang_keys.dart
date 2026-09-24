@@ -345,6 +345,7 @@ abstract class LangKeys {
   static const String noItemsYetKey = 'noItemsYet';
   static const String noFaqsYetKey = 'noFaqsYet';
   static const String serverConnectionFailedKey = 'serverConnectionFailed';
+  static const String somethingWentWrongKey = 'somethingWentWrong';
   static const String unableToReachServersKey = 'unableToReachServers';
   static const String retryKey = 'retry';
   static const String showingSavedContentKey = 'showingSavedContent';

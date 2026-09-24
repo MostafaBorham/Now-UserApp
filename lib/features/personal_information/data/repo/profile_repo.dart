@@ -122,8 +122,7 @@ class ProfileRepo {
       // No response at all means we never reached the server (DNS, timeout,
       // connection dropped, request cancelled). That is a different failure from
       // one the server answered with, and only this kind may fall back to cache
-      // — so it gets its own key rather than `ApiErrorHandler`'s untranslated
-      // English default.
+      // — so it gets its own key rather than `ApiErrorHandler`'s generic one.
       if (response == null) {
         return const Left(Failure(LangKeys.serverConnectionFailedKey));
       }

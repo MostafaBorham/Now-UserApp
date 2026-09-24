@@ -145,8 +145,7 @@ class AddressRepo {
       // No response at all means we never reached the server (DNS, timeout,
       // connection dropped, request cancelled). That is a different failure
       // from one the server answered with, so it gets its own key rather than
-      // `ApiErrorHandler`'s untranslated English default — which an Arabic user
-      // would otherwise be shown verbatim.
+      // `ApiErrorHandler`'s generic one.
       if (response == null) {
         return Left<Failure, T>(
           const Failure(LangKeys.serverConnectionFailedKey),

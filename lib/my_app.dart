@@ -2,6 +2,7 @@ import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interceptor.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
@@ -30,6 +31,11 @@ class NowUserApp extends ConsumerWidget {
       await ref.read(authSessionProvider.notifier).resolveSession();
       AppRouter.router.goNamed(AppRoutes.onBoardingScreen);
     };
+
+    // The backend translates every error and validation message from this
+    // header (`SetLocaleFromHeader`) and answers in English without it. This
+    // build re-runs on every locale change, so the header follows the picker.
+    DioFactory.getDio().options.headers['lang'] = context.locale.languageCode;
 
     return MaterialApp.router(
       title: LangKeys.appNameKey.tr(),

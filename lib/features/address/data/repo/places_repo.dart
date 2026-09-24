@@ -119,8 +119,8 @@ class PlacesRepo {
   ///
   /// No response at all means we never reached Google (DNS, timeout, connection
   /// dropped, request cancelled) — a different failure from one it answered
-  /// with, and one [ApiErrorHandler] would otherwise report using its
-  /// untranslated English default.
+  /// with, and one [ApiErrorHandler] would otherwise report as its generic
+  /// "something went wrong".
   static String _dioError(DioException exception) {
     final Response<dynamic>? response = exception.response;
     if (response == null) return LangKeys.serverConnectionFailedKey;

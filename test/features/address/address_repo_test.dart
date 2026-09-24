@@ -190,8 +190,8 @@ void main() {
       final Either<Failure, PaginationModel<AddressModel>> result =
           await repo.getMyAddresses(page: 1);
 
-      // Not ApiErrorHandler's untranslated English default, which an Arabic
-      // user would be shown verbatim.
+      // Not ApiErrorHandler's generic fallback: never reaching the server is
+      // its own failure.
       expect(failureMessage(result), LangKeys.serverConnectionFailedKey);
     });
 

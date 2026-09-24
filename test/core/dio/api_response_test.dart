@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 
 Response<dynamic> _response(dynamic data, int statusCode) {
   return Response<dynamic>(
@@ -95,5 +99,18 @@ void main() {
 
       expect(_bodyOf(result), isEmpty);
     });
+  });
+
+  test('a failure with no server message falls back to a translated key', () {
+    // It used to be an English sentence, shown verbatim to Arabic users.
+    final String? message = _messageOf(readApiResponse(_response(null, 500)));
+
+    expect(message, LangKeys.somethingWentWrongKey);
+    for (final String locale in <String>['ar-EG', 'en-US']) {
+      final Map<String, dynamic> strings =
+          jsonDecode(File('assets/json/lang/$locale.json').readAsStringSync())
+              as Map<String, dynamic>;
+      expect(strings[message], isA<String>(), reason: 'missing in $locale');
+    }
   });
 }
