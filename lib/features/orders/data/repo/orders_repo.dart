@@ -16,9 +16,7 @@ import 'package:path_provider/path_provider.dart';
 class OrdersRepo {
   final OrdersApiService _ordersApiService = OrdersApiService();
 
-
   void cancelRequests() => _ordersApiService.cancelRequests();
-
 
   Future<Either<Failure, PaginationModel<OrderModel>>> getMyOrders({
     required int page,
@@ -52,8 +50,8 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
@@ -81,13 +79,10 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
-
-
-
 
   Future<Either<Failure, Unit>> cancelOrder({
     required String orderUuid,
@@ -108,8 +103,8 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
@@ -161,8 +156,8 @@ class OrdersRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 }
