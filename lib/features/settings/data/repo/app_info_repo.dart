@@ -50,8 +50,9 @@ class AppInfoRepo {
           ? data
           : null;
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
-    } catch (exception) {
-      return Left(Failure(exception.toString()));
+    } catch (_) {
+      // An exception's text is a Dart error, not a message for the customer.
+      return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
