@@ -29,7 +29,10 @@ class GetAppInfoViewModel extends StateNotifier<AsyncValue<AppInfoModel>> {
   }
 
   Future<void> getAppInfo() async {
-    state = const AsyncValue.loading();
+    // A pull-to-refresh keeps the content on screen (the indicator shows the
+    // progress); only a first load, or a retry after an error, shows the
+    // shimmer.
+    if (!state.hasValue) state = const AsyncValue.loading();
 
     final result = await _repo.getAppInfo();
 
