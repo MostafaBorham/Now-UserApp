@@ -103,7 +103,7 @@ class ConfirmedOrderCard extends StatelessWidget {
                     Row(
                       children: [
                         _Chip(
-                          label: '$itemsCount ${LangKeys.itemsKey.tr()}',
+                          label: LangKeys.itemsCountKey.plural(itemsCount),
                           background: colors.neutral500.withValues(alpha: 0.1),
                           textColor: colors.black,
                         ),

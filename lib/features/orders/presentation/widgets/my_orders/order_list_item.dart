@@ -151,7 +151,9 @@ class OrderListItem extends ConsumerWidget {
                             borderRadius: AppBorderRadius.brCircular20,
                           ),
                           child: AutoSizeText(
-                            '${orderModel.items.length} ${LangKeys.itemsKey.tr()}',
+                            LangKeys.itemsCountKey.plural(
+                              orderModel.itemsQuantity,
+                            ),
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.black,
                             ),

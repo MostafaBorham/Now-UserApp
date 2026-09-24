@@ -61,7 +61,7 @@ class OrderConfirmedScreen extends ConsumerWidget {
                           ConfirmedOrderCard(
                             orderNumber: order.orderNumber ?? '',
                             price: formatMoney(order.total),
-                            itemsCount: order.items.length,
+                            itemsCount: order.itemsQuantity,
                             // No logo → the image widget's own placeholder.
                             imageUrl: order.vendor.logoUrl ?? '',
                             onTrack: () => context.pushNamed(

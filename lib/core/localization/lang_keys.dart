@@ -121,7 +121,8 @@ abstract class LangKeys {
   static const String orderKey = 'order';
   static const String profileKey = 'profile';
   static const String deliveredOnKey = 'deliveredOnKey';
-  static const String itemsKey = 'itemsKey';
+  /// Plural (`'…'.plural(n)`): "3 items" / "٣ منتجات", with Arabic's forms.
+  static const String itemsCountKey = 'itemsCount';
   static const String imagePickingErrorKey = 'imagePickingErrorKey';
   static const String searchForBrandKey = 'searchForBrandKey';
 

@@ -166,7 +166,14 @@
   "instructions": "إرشادات للوصول لعنوانك (اختياري)",
   "invoiceSummary": "ملخص الفاتورة",
   "itemInformation": "معلومات العنصر",
-  "itemsKey": "منتجات",
+  "itemsCount": {
+    "zero": "لا منتجات",
+    "one": "منتج واحد",
+    "two": "منتجان",
+    "few": "{} منتجات",
+    "many": "{} منتجًا",
+    "other": "{} منتج"
+  },
   "justNow": "الآن",
   "keepOrder": "الاحتفاظ بالطلب",
   "keyFeatures": "المميزات الأساسية",

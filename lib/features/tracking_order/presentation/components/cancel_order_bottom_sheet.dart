@@ -220,7 +220,7 @@ class _OrderSummaryCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '$itemsCount ${LangKeys.itemsKey.tr()}',
+                      LangKeys.itemsCountKey.plural(itemsCount),
                       style: AppTextStyles.style14Regular.copyWith(
                         color: muted,
                       ),

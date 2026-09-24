@@ -166,7 +166,11 @@
   "instructions": "Directions to your address (optional)",
   "invoiceSummary": "Invoice Summary",
   "itemInformation": "Item Information",
-  "itemsKey": "items",
+  "itemsCount": {
+    "zero": "{} items",
+    "one": "{} item",
+    "other": "{} items"
+  },
   "justNow": "Just now",
   "keepOrder": "Keep Order",
   "keyFeatures": "Key Features",

@@ -11,9 +11,9 @@ import 'package:nowdelivery_user_app/features/tracking_order/data/models/deliver
 /// `tax_amount` / `discount_amount` / `total_amount` — so [fromJson] reads the
 /// plain key first and falls back to the `*_amount` one.
 ///
-/// Line items are parsed as [ProductModel] — the order-item payload is a strict
-/// subset of the product payload, so we remap the `product_*` / `unit_price`
-/// keys onto the product schema instead of maintaining a parallel model.
+/// Line items are parsed as [ProductModel] (see [_line]) rather than a parallel
+/// model, with the line's quantity and paid `unit_price` laid over the product;
+/// lines the vendor refused are split out into [unavailableItems].
 class OrderModel {
   final int? id;
   final String? uuid;
@@ -99,7 +99,19 @@ class OrderModel {
   /// layer reads it through [BuildContext.getLocalizedApiText].
   final Map<String, dynamic>? deliveredAt;
 
+  /// The lines that were sold. Each carries the line's `unit_price` — what was
+  /// paid — as its [ProductModel.price], not the product's price today.
   final List<ProductModel> items;
+
+  /// Lines the vendor accepted the order without (`is_unavailable`): kept on
+  /// the order for history, excluded from every total, never delivered.
+  final List<ProductModel> unavailableItems;
+
+  /// How many units were sold, across [items].
+  int get itemsQuantity => items.fold(
+    0,
+    (int sum, ProductModel item) => sum + (item.quantity ?? 0),
+  );
 
   const OrderModel({
     this.id,
@@ -141,6 +153,7 @@ class OrderModel {
     this.createdAt,
     this.updatedAt,
     this.items = const <ProductModel>[],
+    this.unavailableItems = const <ProductModel>[],
   });
 
   factory OrderModel.fromJson(Map<String, dynamic>? json) {
@@ -150,6 +163,12 @@ class OrderModel {
 
     final Map<String, dynamic>? vendor =
         json['vendor'] as Map<String, dynamic>?;
+    final List<Map<String, dynamic>> lines =
+        ((json['items'] as List?) ?? const <dynamic>[])
+            .whereType<Map<String, dynamic>>()
+            .toList();
+    bool isUnavailable(Map<String, dynamic> line) =>
+        line['is_unavailable'] == true;
 
     return OrderModel(
       id: (json['id'] as num?)?.toInt(),
@@ -218,33 +237,35 @@ class OrderModel {
       cancelledAt: json['cancelled_at']?.toString(),
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
-      items:
-          (json['items'] as List?)?.map((e) {
-            final Map<String, dynamic> item =
-                (e as Map<String, dynamic>?) ?? <String, dynamic>{};
-            final Map<String, dynamic>? product =
-                item['product'] as Map<String, dynamic>?;
-            // Prefer the nested `product` object (localized name, images,
-            // rating, deal) when present, overlaying the ordered [quantity]
-            // from the line item. Fall back to remapping the flat order-item
-            // keys onto the product schema for payloads (e.g. the checkout
-            // draft) that don't nest a full product.
-            if (product != null) {
-              return ProductModel.fromJson(<String, dynamic>{
-                ...product,
-                'quantity': item['quantity'],
-              });
-            }
-            return ProductModel.fromJson(<String, dynamic>{
-              ...item,
-              'product_id': item['product_id'],
-              'name': item['product_name'],
-              'sku': item['product_sku'],
-              'price': item['unit_price'],
-            });
-          }).toList() ??
-          const <ProductModel>[],
+      items: lines
+          .where((Map<String, dynamic> line) => !isUnavailable(line))
+          .map(_line)
+          .toList(),
+      unavailableItems: lines.where(isUnavailable).map(_line).toList(),
     );
+  }
+
+  /// One order line as a [ProductModel]. The nested `product` (localized
+  /// name, images) when there is one, else the flat line keys remapped onto
+  /// the product schema (the checkout preview, a deleted product) — and either
+  /// way the line's own quantity and `unit_price`. The nested product's
+  /// `price` is what it costs *today*; after a price change it no longer adds
+  /// up to the order's subtotal.
+  static ProductModel _line(Map<String, dynamic> item) {
+    final Map<String, dynamic>? product =
+        item['product'] as Map<String, dynamic>?;
+
+    return ProductModel.fromJson(<String, dynamic>{
+      if (product != null)
+        ...product
+      else ...<String, dynamic>{
+        ...item,
+        'name': item['product_name'],
+        'sku': item['product_sku'],
+      },
+      'quantity': item['quantity'],
+      'price': item['unit_price'] ?? product?['price'],
+    });
   }
 }
 
