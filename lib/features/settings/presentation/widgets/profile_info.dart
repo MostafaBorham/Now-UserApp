@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/features/personal_information/presentation/
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({
     super.key,
-    this.name = 'Guest 123',
+    required this.name,
     this.avatarUrl,
   });
 

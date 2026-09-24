@@ -110,7 +110,7 @@ Forced logout: when a token refresh fails, `TokenRefreshInterceptor` clears the 
 - `DevicePreview` wraps the app but is hard-coded `enabled: false`; flip it by hand to use it.
 - `initialLocation` in `AppRouter.router` (`core/routing/app_router.dart`) is sometimes pointed at whatever screen is under active development as a dev shortcut; it must be `'/'` (splash) for release (currently it is).
 - `ThemeManager.appThemeMode` is hard-coded to `ThemeMode.light`; no persisted theme toggle yet.
-- Locale is persisted by `easy_localization` (`saveLocale: true`); the commented-out block at the top of `core/localization/local_controller.dart` is a leftover from a manual approach and references a `SharedPrefManager.saveString` that does not exist — don't reintroduce it without removing `easy_localization`'s own persistence.
+- Locale is persisted by `easy_localization` (`saveLocale: true`) and read through `context.locale`; there is no locale provider. Don't add a second, manual persistence alongside it. The current language reaches the backend as the `lang` header, set in `NowUserApp.build`.
 
 ## Tests
 

@@ -11,7 +11,6 @@ import 'package:flutter_test/flutter_test.dart';
 /// from this check; it drops nothing at runtime.
 const Set<String> _appScoped = <String>{
   'authSessionProvider', // the orchestrator itself
-  'localeProvider', // device preference, not the user's
   'currentLocationProvider', // where the device is, not who is signed in
   'getAppInfoProvider', // the app's own text blocks and FAQs
   'getAppCategoriesProvider', // CategoryModel carries no per-user field
