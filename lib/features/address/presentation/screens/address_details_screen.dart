@@ -55,8 +55,8 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
 
   /// Placeholders for the first two fields, per selected label. A work address
   /// asks for a company name and a floor number where home and "other" ask for
-  /// a floor/villa and an apartment — the values they collect stay the same,
-  /// only the wording changes. Home and "other" read identically.
+  /// a floor/villa and an apartment — see [_isWork] for where each is saved.
+  /// Home and "other" read identically.
   static const List<List<String>> _fieldHints = <List<String>>[
     <String>[LangKeys.floor, LangKeys.apartment],
     <String>[LangKeys.floorWork, LangKeys.floorNumberOptional],
@@ -82,44 +82,47 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   /// must still be well-formed once something is typed into it.
   bool _isFormValid = false;
 
+  /// Work asks for its first two fields the other way round: the company
+  /// (saved as the unit, `apartment`) and then the floor, where home and
+  /// "other" ask for the floor and then the apartment. Every field is saved to
+  /// the column it names — the server builds `full_address`, and the courier's
+  /// copy of the address, from those columns.
+  bool get _isWork => _selectedLabelIndex == 1;
+
   @override
   void initState() {
     super.initState();
-    // Prefill from the existing address when editing. The floor field maps to
-    // building_number and the building field maps to floor — the same swap the
-    // save payload applies, mirrored here so a round-trip stays consistent.
-    // The phone field holds only the digits after [_phonePrefix], so a stored
-    // number is reduced to that tail — whichever format it was saved in. One
-    // that isn't a Saudi mobile leaves the field empty rather than prefilling a
-    // value the form would reject, which used to freeze the Save button.
-    _phoneController = TextEditingController(
-      text: widget.isEditScreen
-          ? AppValidator.saudiLocalPhoneTail(widget.address.phone)
-          : null,
-    );
-    _floorNumberController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.buildingNumber : null,
-    );
-    _apartmentController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.apartment : null,
-    );
-    _buildingNameController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.floor : null,
-    );
-    _instructionsController = TextEditingController(
-      text: widget.isEditScreen ? widget.address.notes : null,
-    );
-
     if (widget.isEditScreen) {
       // Restore the selected label by matching the stored English value against
       // our segment maps; fall back to the first segment (home) when the stored
-      // label is missing or unrecognized.
+      // label is missing or unrecognized. First, because [_isWork] decides
+      // which column the first two fields prefill from.
       final String? storedLabel = widget.address.label?['en']?.toString();
       final int labelIndex = AddressModel.labelOptions.indexWhere(
         (Map<String, String> label) => label['en'] == storedLabel,
       );
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
     }
+
+    // Prefill from the existing address when editing. The phone field holds
+    // only the digits after [_phonePrefix], so a stored number is reduced to
+    // that tail — whichever format it was saved in. One that isn't a Saudi
+    // mobile leaves the field empty rather than prefilling a value the form
+    // would reject, which used to freeze the Save button.
+    final AddressModel? stored = widget.isEditScreen ? widget.address : null;
+    _phoneController = TextEditingController(
+      text: AppValidator.saudiLocalPhoneTail(stored?.phone),
+    );
+    _floorNumberController = TextEditingController(
+      text: _isWork ? stored?.apartment : stored?.floor,
+    );
+    _apartmentController = TextEditingController(
+      text: _isWork ? stored?.floor : stored?.apartment,
+    );
+    _buildingNameController = TextEditingController(
+      text: stored?.buildingNumber,
+    );
+    _instructionsController = TextEditingController(text: stored?.notes);
 
     // Run the same check the listeners run, over whatever the prefill put in
     // the fields: an existing address usually enables Save straight away, but
@@ -207,16 +210,16 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     // The button is only active once [_isFormValid] is true, so no validation
     // is repeated here — just build the payload and submit.
     //
-    // The floor field maps to building_number and the building field maps to
-    // floor by product intent — keep that swap here at the boundary.
-    // A null phone (field left empty) falls back to the stored one, which keeps
-    // an edit from sending a blank the backend rejects — `addresses.phone` is
-    // NOT NULL, so a phone can never be cleared from here.
+    // A null phone (field left empty) keeps the stored one: `copyWith` ignores
+    // null, and the update endpoint drops nulls anyway, so a phone cannot be
+    // cleared from here.
     final AddressModel address = widget.address.copyWith(
       phone: _composedPhone(),
-      buildingNumber: _floorNumberController.text.trim(),
-      apartment: _apartmentController.text.trim(),
-      floor: _buildingNameController.text.trim(),
+      floor: (_isWork ? _apartmentController : _floorNumberController).text
+          .trim(),
+      apartment: (_isWork ? _floorNumberController : _apartmentController).text
+          .trim(),
+      buildingNumber: _buildingNameController.text.trim(),
       notes: _instructionsController.text.trim(),
       label: AddressModel.labelOptions[_selectedLabelIndex],
     );
