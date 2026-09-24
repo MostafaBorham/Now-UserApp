@@ -294,19 +294,23 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ],
                             ),
                           ),
-                          if (status.isRateable) ...[
-                            12.hSpace,
-                            if (order.rating.canRate)
+                          // `can_rate` also turns false when the order is
+                          // closed (six hours after delivery) with nothing
+                          // rated — thank the shopper only for a real rating.
+                          if (status.isRateable)
+                            if (order.rating.canRate) ...[
+                              12.hSpace,
                               PrimaryAppButton(
                                 title: LangKeys.rateOrderKey.tr(),
                                 onTap: () => context.pushNamed(
                                   AppRoutes.orderRatingScreen,
                                   extra: order,
                                 ),
-                              )
-                            else
+                              ),
+                            ] else if (order.rating.isRated) ...[
+                              12.hSpace,
                               OrderRatingView(rating: order.rating),
-                          ],
+                            ],
                         ],
                       ),
                     ),

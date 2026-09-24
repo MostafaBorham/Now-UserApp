@@ -1,23 +1,50 @@
-/// The `rating` object on an order payload: the gate on whether the order can
-/// still be rated ([canRate]) plus, once rated, the submitted scores and
-/// comments for each product, the store ([vendor]) and the courier
-/// ([delivery]).
+/// The `rating` object on an order payload — the server's rating sheet: the
+/// gate on whether the order can still be rated ([canRate]), and every target
+/// on it with whether it was rated and the submitted score and comment — each
+/// product, the store ([vendor]) and the courier ([delivery]).
+///
+/// It is the only source for the rating screen. [products] is already one row
+/// per distinct delivered product (a line the vendor refused is left out, and
+/// two sizes of one product are one row), which is exactly what the submit
+/// accepts; the order's own `items` are not.
 class OrderRatingModel {
+  /// Absent sheet → nothing to offer: the block is only sent on the
+  /// customer's own order details.
   final bool canRate;
   final String? reasonCode;
+
+  /// Whether anything on the order has been rated — so whether there is a
+  /// rating to show once [canRate] is false. `can_rate` also turns false when
+  /// the order stops being `delivered` (it is closed six hours later), with
+  /// nothing rated.
+  final bool isRated;
   final bool isFullyRated;
   final List<RatedProductModel> products;
   final RatedSubjectModel vendor;
+
+  /// Empty (null [RatedSubjectModel.id]) when no courier was ever assigned.
   final RatedSubjectModel delivery;
 
   const OrderRatingModel({
-    this.canRate = true,
+    this.canRate = false,
     this.reasonCode,
+    this.isRated = false,
     this.isFullyRated = false,
     this.products = const <RatedProductModel>[],
     this.vendor = const RatedSubjectModel(),
     this.delivery = const RatedSubjectModel(),
   });
+
+  /// The products still waiting for a rating.
+  List<RatedProductModel> get openProducts => products
+      .where((RatedProductModel p) => p.productId != null && !p.isRated)
+      .toList();
+
+  /// Whether the store can still be rated on this order.
+  bool get isVendorOpen => vendor.id != null && !vendor.isRated;
+
+  /// Whether the courier can still be rated — false when there was none.
+  bool get isDeliveryOpen => delivery.id != null && !delivery.isRated;
 
   factory OrderRatingModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -25,8 +52,9 @@ class OrderRatingModel {
     }
 
     return OrderRatingModel(
-      canRate: json['can_rate'] as bool? ?? true,
+      canRate: json['can_rate'] as bool? ?? false,
       reasonCode: json['reason_code']?.toString(),
+      isRated: json['is_rated'] as bool? ?? false,
       isFullyRated: json['is_fully_rated'] as bool? ?? false,
       products:
           (json['products'] as List?)

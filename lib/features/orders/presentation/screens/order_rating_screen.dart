@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -10,14 +9,22 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/rate_order_request_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_section.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/rate_order_vm.dart';
 
 /// Lets the shopper rate a delivered [order]: a star rating plus an optional
-/// comment for every line item, the courier and the store. The committed
-/// ratings and the comment controllers are held here; the star rows and comment
-/// boxes are stateless and report back through callbacks.
+/// comment for every target still open on it — each product, the store, and
+/// the courier when there was one.
+///
+/// The targets come from the order's `rating` sheet, not its `items`: the
+/// submit is all-or-nothing and takes one entry per distinct delivered product
+/// that isn't rated yet, so a line the vendor refused, a second size of the
+/// same product, or anything already rated would reject the whole rating.
+///
+/// The committed ratings and the comment controllers are held here; the star
+/// rows and comment boxes are stateless and report back through callbacks.
 class OrderRatingScreen extends ConsumerStatefulWidget {
   const OrderRatingScreen({super.key, required this.order});
 
@@ -30,7 +37,8 @@ class OrderRatingScreen extends ConsumerStatefulWidget {
 class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  late final List<ProductModel> _products = widget.order.items;
+  late final OrderRatingModel _rating = widget.order.rating;
+  late final List<RatedProductModel> _products = _rating.openProducts;
   late final List<int> _productRatings = List<int>.filled(
     _products.length,
     0,
@@ -59,12 +67,12 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
 
   Future<void> _onSubmit() async {
     final int? orderId = widget.order.id;
-    final bool allProductsRated =
-        _productRatings.every((int rating) => rating >= 1);
-    final bool storeRated = _storeRating >= 1;
-    final bool courierRated = _courierRating >= 1;
+    final bool allRated =
+        _productRatings.every((int rating) => rating >= 1) &&
+        (!_rating.isVendorOpen || _storeRating >= 1) &&
+        (!_rating.isDeliveryOpen || _courierRating >= 1);
 
-    if (orderId == null || !allProductsRated || !storeRated || !courierRated) {
+    if (orderId == null || !allRated) {
       AppToast.showError(context, LangKeys.ratingRequiredKey.tr());
       return;
     }
@@ -72,16 +80,16 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
     final RateOrderRequest request = RateOrderRequest.build(
       orderId: orderId,
       productIds: _products
-          .map((ProductModel product) => product.productId ?? product.id)
+          .map((RatedProductModel product) => product.productId)
           .toList(),
       productRatings: _productRatings,
       productComments: _productComments
           .map((TextEditingController controller) => controller.text)
           .toList(),
-      vendorId: widget.order.vendorId ?? widget.order.vendor.id,
+      vendorId: _rating.isVendorOpen ? _rating.vendor.id : null,
       vendorRating: _storeRating,
       vendorComment: _storeComment.text,
-      deliveryId: widget.order.driver?.id,
+      deliveryId: _rating.isDeliveryOpen ? _rating.delivery.id : null,
       deliveryRating: _courierRating,
       deliveryComment: _courierComment.text,
     );
@@ -150,6 +158,8 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
                       OrderRatingSection(
                         products: _products,
                         productRatings: _productRatings,
+                        showCourier: _rating.isDeliveryOpen,
+                        showStore: _rating.isVendorOpen,
                         productComments: _productComments,
                         courierRating: _courierRating,
                         storeRating: _storeRating,

@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
@@ -10,10 +9,12 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_mo
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_section.dart';
 
 /// The read-only "already rated" state shown in place of the rate-order button
-/// when [OrderRatingModel.canRate] is false: a "thanks for rating" banner over a
-/// dimmed [OrderRatingSection] filled with the scores and comments the shopper
-/// submitted for every product, the store (`vendor`) and the courier
-/// (`delivery`). Unrated subjects fall back to zero stars and an empty comment.
+/// when [OrderRatingModel.canRate] is false **and** something was rated
+/// ([OrderRatingModel.isRated]) — never on an order that simply stopped being
+/// rateable. A "thanks for rating" banner over a dimmed [OrderRatingSection]
+/// filled with the scores and comments the shopper submitted for every
+/// product, the store (`vendor`) and the courier (`delivery`, only when there
+/// was one). Unrated targets fall back to zero stars and an empty comment.
 class OrderRatingView extends StatefulWidget {
   const OrderRatingView({super.key, required this.rating});
 
@@ -25,15 +26,6 @@ class OrderRatingView extends StatefulWidget {
 
 class _OrderRatingViewState extends State<OrderRatingView> {
   static const double _dimmedOpacity = 0.5;
-
-  late final List<ProductModel> _products = widget.rating.products
-      .map(
-        (RatedProductModel product) => ProductModel(
-          name: product.name,
-          images: product.imageUrl == null ? null : <String>[product.imageUrl!],
-        ),
-      )
-      .toList();
 
   late final List<int> _productRatings = widget.rating.products
       .map((RatedProductModel product) => product.rating?.rate ?? 0)
@@ -101,8 +93,10 @@ class _OrderRatingViewState extends State<OrderRatingView> {
           child: Opacity(
             opacity: _dimmedOpacity,
             child: OrderRatingSection(
-              products: _products,
+              products: widget.rating.products,
               productRatings: _productRatings,
+              showCourier: widget.rating.delivery.id != null,
+              showStore: widget.rating.vendor.id != null,
               productComments: _productComments,
               courierRating: widget.rating.delivery.rating?.rate ?? 0,
               storeRating: widget.rating.vendor.rating?.rate ?? 0,

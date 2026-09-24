@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/selectable_rating_stars.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating/order_rating_product_row.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating/order_rating_subject_section.dart';
 
@@ -14,7 +14,8 @@ import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_
 typedef ProductRatingSelectedCallback = void Function(int index, int rating);
 
 /// The rateable body shared by [OrderRatingScreen] and [OrderRatingView]: the
-/// products card followed by the courier and store subject sections. It owns no
+/// products card followed by the courier and store subject sections, each only
+/// when there is one to show ([showCourier], [showStore]). It owns no
 /// state — the committed ratings and comment controllers live on the caller,
 /// which passes them back in and receives taps through the callbacks. Pass
 /// [readOnly] (and null callbacks) for the dimmed, display-only variant.
@@ -26,6 +27,8 @@ class OrderRatingSection extends StatelessWidget {
     required this.courierRating,
     required this.storeRating,
     required this.commentHint,
+    required this.showCourier,
+    required this.showStore,
     this.productComments,
     this.courierComment,
     this.storeComment,
@@ -35,11 +38,13 @@ class OrderRatingSection extends StatelessWidget {
     this.readOnly = false,
   });
 
-  final List<ProductModel> products;
+  final List<RatedProductModel> products;
   final List<int> productRatings;
   final int courierRating;
   final int storeRating;
   final String commentHint;
+  final bool showCourier;
+  final bool showStore;
   final List<TextEditingController>? productComments;
   final TextEditingController? courierComment;
   final TextEditingController? storeComment;
@@ -84,7 +89,7 @@ class OrderRatingSection extends StatelessWidget {
                     ),
                   OrderRatingProductRow(
                     name: context.getLocalizedApiText(products[i].name),
-                    imageUrl: products[i].images?.firstOrNull ?? '',
+                    imageUrl: products[i].imageUrl ?? '',
                     rating: productRatings[i],
                     commentHint: commentHint,
                     commentController: productComments?[i],
@@ -97,22 +102,24 @@ class OrderRatingSection extends StatelessWidget {
               ],
             ),
           ),
-        OrderRatingSubjectSection(
-          title: LangKeys.deliveryAgentKey.tr(),
-          rating: courierRating,
-          commentHint: commentHint,
-          commentController: courierComment,
-          readOnly: readOnly,
-          onRatingSelected: onCourierRatingSelected,
-        ),
-        OrderRatingSubjectSection(
-          title: LangKeys.storeKey.tr(),
-          rating: storeRating,
-          commentHint: commentHint,
-          commentController: storeComment,
-          readOnly: readOnly,
-          onRatingSelected: onStoreRatingSelected,
-        ),
+        if (showCourier)
+          OrderRatingSubjectSection(
+            title: LangKeys.deliveryAgentKey.tr(),
+            rating: courierRating,
+            commentHint: commentHint,
+            commentController: courierComment,
+            readOnly: readOnly,
+            onRatingSelected: onCourierRatingSelected,
+          ),
+        if (showStore)
+          OrderRatingSubjectSection(
+            title: LangKeys.storeKey.tr(),
+            rating: storeRating,
+            commentHint: commentHint,
+            commentController: storeComment,
+            readOnly: readOnly,
+            onRatingSelected: onStoreRatingSelected,
+          ),
       ],
     );
   }
