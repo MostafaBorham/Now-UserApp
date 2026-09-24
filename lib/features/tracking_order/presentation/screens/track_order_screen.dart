@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/phone_launcher.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
@@ -109,7 +110,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     contact: order.user.phone ?? '',
                     store: store,
                     itemsCount: order.itemsQuantity,
-                    paymentMethod: order.paymentMethod ?? '',
+                    paymentMethod: order.paymentMethodLabel,
                     amount: formatMoney(order.total),
                   ),
                   // The card shows once a courier is assigned — which can be

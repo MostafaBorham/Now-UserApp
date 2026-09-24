@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_invoice_row.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_view.dart';
@@ -95,9 +96,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             final String orderDate = context.getLocalizedApiDate(
               apiDateTimeStamp: order.createdAt,
             );
-            // Show the payment method exactly as the model returns it (`cod`,
-            // ...) — no relabeling.
-            final String paymentMethodLabel = order.paymentMethod ?? '';
+            final String paymentMethodLabel = order.paymentMethodLabel;
 
             return AppRefreshIndicator(
               onRefresh: ref
@@ -619,6 +618,18 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   value: order.deliveryFee,
                                   valueColor: colors.black,
                                 ),
+                                // The tip is charged but untaxed, so it is no
+                                // part of the rows above. The backend doesn't
+                                // yet record it the same way on every order
+                                // (cart checkout folds it into each store's
+                                // total, single-store checkout doesn't), so
+                                // Total stays the server's own figure.
+                                if (order.driverTip > 0)
+                                  OrderInvoiceRow(
+                                    label: LangKeys.driverTipKey.tr(),
+                                    value: order.driverTip,
+                                    valueColor: colors.black,
+                                  ),
                                 // Only surfaced when there is an actual discount.
                                 if (order.discount != 0)
                                   OrderInvoiceRow(
