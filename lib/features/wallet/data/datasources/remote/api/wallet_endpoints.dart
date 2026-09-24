@@ -30,20 +30,23 @@ abstract class WalletEndpoints {
   /// This is the backend's **test-card** contract (raw fields, top level): the
   /// server derives brand/last-four from [cardNumber] and never persists the
   /// full number or [cvc]. A `token` must NOT be sent — the API prohibits it in
-  /// this mode. `set_default` is omitted, so the backend auto-defaults the
-  /// first card. [expiryYear] is the full year (e.g. 2035).
+  /// this mode. [setDefault] makes the card the default in the same request;
+  /// the backend defaults a customer's first card either way. [expiryYear] is
+  /// the full year (e.g. 2035).
   static Map<String, dynamic> addPaymentCardBody({
     required String cardholderName,
     required String cardNumber,
     required int expiryMonth,
     required int expiryYear,
     required String cvc,
+    required bool setDefault,
   }) => <String, dynamic>{
     'cardholder_name': cardholderName,
     'card_number': cardNumber,
     'expiry_month': expiryMonth,
     'expiry_year': expiryYear,
     'cvc': cvc,
+    'set_default': setDefault,
   };
 
   /// Updates the saved card identified by [id] (PUT, same collection path).

@@ -38,6 +38,7 @@ class WalletApiService {
     required int expiryMonth,
     required int expiryYear,
     required String cvc,
+    required bool setDefault,
   }) {
     return _dio.post(
       WalletEndpoints.addPaymentCard,
@@ -47,6 +48,7 @@ class WalletApiService {
         expiryMonth: expiryMonth,
         expiryYear: expiryYear,
         cvc: cvc,
+        setDefault: setDefault,
       ),
       cancelToken: _canceller.token,
     );

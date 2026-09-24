@@ -52,16 +52,19 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
 
     final ({int month, int year}) parsed = parseExpiry(expiry);
 
+    // The default travels with the card itself: one request, so there is no
+    // second call to fail after the "card added" toast.
     final Either<Failure, CardPaymentModel> result = await _repo.addPaymentCard(
       cardholderName: cardholderName,
       cardNumber: cardNumber.replaceAll(RegExp(r'\D'), ''),
       expiryMonth: parsed.month,
       expiryYear: parsed.year,
       cvc: cvc,
+      setDefault: setAsDefault,
     );
 
     if (!mounted) return null;
-    return _finish(result, setAsDefault: setAsDefault);
+    return _finish(result, setAsDefault: false);
   }
 
   /// Updates the existing card [cardId]. A partial update: [cardNumber]/[cvc]
@@ -97,7 +100,8 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     return _finish(result, setAsDefault: setAsDefault);
   }
 
-  /// Shared success/failure handling for add and update.
+  /// Shared success/failure handling for add and update. [setAsDefault] asks
+  /// for a follow-up promotion (the edit path; an add sends it in its body).
   String? _finish(
     Either<Failure, CardPaymentModel> result, {
     required bool setAsDefault,
@@ -110,6 +114,11 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
       (CardPaymentModel card) {
         state = const AsyncValue<void>.data(null);
         final int? id = card.id;
+        // The server made this card the default: the default provider keeps its
+        // held card across a refetch, so it has to be told.
+        if (card.isDefault == true) {
+          _ref.read(defaultPaymentCardProvider.notifier).adopt(card);
+        }
         if (setAsDefault && id != null && card.isDefault != true) {
           // Promote the saved card through the dedicated set-default endpoint
           // (the backend auto-defaults only the first card, so a later card the

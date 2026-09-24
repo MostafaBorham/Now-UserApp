@@ -323,6 +323,7 @@ class WalletRepo {
     required int expiryMonth,
     required int expiryYear,
     required String cvc,
+    required bool setDefault,
   }) {
     return _guard(
       () => _walletApiService.addPaymentCard(
@@ -331,6 +332,7 @@ class WalletRepo {
         expiryMonth: expiryMonth,
         expiryYear: expiryYear,
         cvc: cvc,
+        setDefault: setDefault,
       ),
       (Map<String, dynamic> data) =>
           CardPaymentModel.fromJson(data[_defaultCardKey] as Map<String, dynamic>),

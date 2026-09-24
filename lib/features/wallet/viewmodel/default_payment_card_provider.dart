@@ -20,8 +20,10 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.d
 /// is still present and usable it is left alone, so an ordinary refetch never
 /// moves the selection (see [DefaultPaymentCardViewModel._applyCards]).
 ///
-/// [DefaultPaymentCardViewModel.setPaymentCardDefault] is the only mutator: it
-/// talks to the repo directly, and only on a confirmed server success does it
+/// [DefaultPaymentCardViewModel.setPaymentCardDefault] is the only mutator that
+/// asks the server ([DefaultPaymentCardViewModel.adopt] only takes a card the
+/// server already made default): it talks to the repo directly, and only on a
+/// confirmed server success does it
 /// flip its own state to the new card and ask [getMyCardsProvider] to refetch
 /// from the repo — so the cards list re-syncs from the source of truth without
 /// ever modifying this provider.
@@ -109,6 +111,13 @@ class DefaultPaymentCardViewModel
     }
 
     return firstUsable;
+  }
+
+  /// Takes [card] as the default without a request — for a card the server
+  /// just made default itself (added with `set_default`). Only a usable card
+  /// is taken, the same rule [_applyCards] follows.
+  void adopt(CardPaymentModel card) {
+    if (card.isUsable) state = AsyncValue<CardPaymentModel?>.data(card);
   }
 
   /// Marks the card [id] as the default. Talks to the repo directly; only on a

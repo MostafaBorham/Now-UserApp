@@ -4,15 +4,16 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/add_payment_card_
 
 /// The add-card request now sends the raw test-card fields (top level). These
 /// lock the exact field names the backend expects — `cvc` (not cvv), a full
-/// `expiry_year`, and no `token`/`set_default`.
+/// `expiry_year`, `set_default` in the same request, and no `token`.
 void main() {
-  test('body carries the raw card fields and nothing else', () {
+  test('body carries the raw card fields and the default flag', () {
     final Map<String, dynamic> body = WalletEndpoints.addPaymentCardBody(
       cardholderName: 'Mohamed Yasser',
       cardNumber: '4111111111111111',
       expiryMonth: 12,
       expiryYear: 2035,
       cvc: '123',
+      setDefault: true,
     );
 
     expect(body, <String, dynamic>{
@@ -21,11 +22,12 @@ void main() {
       'expiry_month': 12,
       'expiry_year': 2035,
       'cvc': '123',
+      // Sent with the card, not as a second request after the success toast.
+      // A false still leaves a customer's first card default (AddCardAction).
+      'set_default': true,
     });
-    // token is prohibited by the test-card contract; set_default is left off so
-    // the backend auto-defaults the first card.
+    // token is prohibited by the test-card contract.
     expect(body.containsKey('token'), isFalse);
-    expect(body.containsKey('set_default'), isFalse);
   });
 
   group('updatePaymentCardBody (partial)', () {
