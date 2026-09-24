@@ -41,6 +41,17 @@ class OrdersApiService {
     );
   }
 
+  /// The order's invoice PDF at [url] (its `invoice_pdf_url`), as raw bytes.
+  /// An authenticated route, so it has to go through the shared Dio — handed to
+  /// a browser it arrives without the token and is refused.
+  Future<Response<List<int>>> downloadInvoice({required String url}) {
+    return _dio.get<List<int>>(
+      url,
+      options: Options(responseType: ResponseType.bytes),
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> rateOrder({
     required int orderId,
     required Map<String, dynamic> body,
