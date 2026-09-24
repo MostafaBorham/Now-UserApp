@@ -95,18 +95,42 @@ class AddressModel extends Equatable {
   /// [location]. Composes the area from the placemark's locality parts and
   /// carries the picked coordinates; the backend still owns `full_address`, so
   /// it is left unset here.
+  ///
+  /// The server requires country, city, area and street, and the form shows
+  /// the user none of them to type — so each falls back through the nearest
+  /// placemark parts. The platforms leave gaps: iOS takes `street` from the
+  /// postal address, empty on an unnamed road, and Android's `locality` is
+  /// often null outside a city. Without the fallbacks every save at such a pin
+  /// was a 422.
   factory AddressModel.fromPlacemark(Placemark placemark, LatLng location) {
+    String? firstFilled(List<String?> parts) => parts
+        .whereType<String>()
+        .where((String e) => e.trim().isNotEmpty)
+        .firstOrNull;
+
     final String area = <String?>[
       placemark.subLocality,
       placemark.locality,
       placemark.administrativeArea,
     ].whereType<String>().where((String e) => e.isNotEmpty).join(' - ');
 
+    final String? city = firstFilled(<String?>[
+      placemark.locality,
+      placemark.subAdministrativeArea,
+      placemark.administrativeArea,
+    ]);
+
     return AddressModel(
       country: placemark.country,
-      city: placemark.locality,
-      area: area.isEmpty ? placemark.name : area,
-      street: placemark.street,
+      city: city,
+      area: area.isEmpty ? firstFilled(<String?>[placemark.name, city]) : area,
+      street: firstFilled(<String?>[
+        placemark.street,
+        placemark.thoroughfare,
+        placemark.name,
+        placemark.subLocality,
+        city,
+      ]),
       latitude: location.latitude.toString(),
       longitude: location.longitude.toString(),
     );
@@ -211,24 +235,24 @@ class AddressModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        label,
-        phone,
-        country,
-        city,
-        area,
-        street,
-        buildingNumber,
-        floor,
-        apartment,
-        latitude,
-        longitude,
-        notes,
-        isDefault,
-        fullAddress,
-        createdAt,
-        updatedAt,
-        deletedAt,
-      ];
+    id,
+    userId,
+    label,
+    phone,
+    country,
+    city,
+    area,
+    street,
+    buildingNumber,
+    floor,
+    apartment,
+    latitude,
+    longitude,
+    notes,
+    isDefault,
+    fullAddress,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
 }

@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 
 /// Pins the two shapes [AddressModel] serializes into, which are deliberately
@@ -35,8 +37,9 @@ void main() {
 
   group('toRequestJson', () {
     test('the label is sent as its English value, not the whole map', () {
-      final Map<String, dynamic> body =
-          AddressModel.fromJson(serverJson).toRequestJson();
+      final Map<String, dynamic> body = AddressModel.fromJson(
+        serverJson,
+      ).toRequestJson();
 
       // The backend owns the translation; it stores what this sends. Changing
       // AddressModel.labelOptions therefore changes stored data, not just copy.
@@ -51,8 +54,9 @@ void main() {
     });
 
     test('coordinates are sent as numbers, not the strings we hold', () {
-      final Map<String, dynamic> body =
-          AddressModel.fromJson(serverJson).toRequestJson();
+      final Map<String, dynamic> body = AddressModel.fromJson(
+        serverJson,
+      ).toRequestJson();
 
       expect(body['latitude'], isA<double>());
       expect(body['longitude'], isA<double>());
@@ -73,8 +77,9 @@ void main() {
     });
 
     test('server-owned fields are never sent back', () {
-      final Map<String, dynamic> body =
-          AddressModel.fromJson(serverJson).toRequestJson();
+      final Map<String, dynamic> body = AddressModel.fromJson(
+        serverJson,
+      ).toRequestJson();
 
       for (final String key in <String>[
         'id',
@@ -116,6 +121,49 @@ void main() {
 
     test('a full payload round-trips through toJson unchanged', () {
       expect(AddressModel.fromJson(serverJson).toJson(), serverJson);
+    });
+  });
+
+  group('fromPlacemark', () {
+    const LatLng pin = LatLng(24.1, 47.3);
+
+    test('fills the fields the server requires when the platform leaves '
+        'street and city empty', () {
+      // An unnamed road outside a city: what iOS (no postal street) and
+      // Android (no locality) hand back. The form lets the user type neither.
+      final AddressModel address = AddressModel.fromPlacemark(
+        const Placemark(
+          country: 'Saudi Arabia',
+          street: '',
+          thoroughfare: '',
+          name: '8Q7X+2C',
+          subAdministrativeArea: 'Al Kharj',
+          administrativeArea: 'Riyadh Province',
+        ),
+        pin,
+      );
+
+      expect(address.country, 'Saudi Arabia');
+      expect(address.city, 'Al Kharj');
+      expect(address.area, 'Riyadh Province');
+      expect(address.street, '8Q7X+2C');
+    });
+
+    test('keeps the placemark\'s own street and city when it has them', () {
+      final AddressModel address = AddressModel.fromPlacemark(
+        const Placemark(
+          country: 'Saudi Arabia',
+          street: 'King Fahd Road',
+          locality: 'Riyadh',
+          subLocality: 'Al Olaya',
+          administrativeArea: 'Riyadh Province',
+        ),
+        pin,
+      );
+
+      expect(address.city, 'Riyadh');
+      expect(address.street, 'King Fahd Road');
+      expect(address.area, 'Al Olaya - Riyadh - Riyadh Province');
     });
   });
 }
