@@ -58,4 +58,15 @@ void main() {
 
     expect(body, isEmpty);
   });
+
+  test('applying a coupon sends the delivery address when there is one', () {
+    expect(
+      CheckoutEndpoints.discountApplyBody(vendorId: 3, code: 'C', addressId: 7),
+      <String, dynamic>{'vendor_id': 3, 'code': 'C', 'address_id': 7},
+    );
+    expect(
+      CheckoutEndpoints.discountApplyBody(vendorId: 3, code: 'C'),
+      <String, dynamic>{'vendor_id': 3, 'code': 'C'},
+    );
+  });
 }

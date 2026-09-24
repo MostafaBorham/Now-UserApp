@@ -29,11 +29,18 @@ abstract class CheckoutEndpoints {
   /// [couponsApply]; the voucher is identified by its code, not an id.
   static const String purchaseVouchersApply = '/api/v1/purchase-vouchers/apply';
 
-  /// Shared body for [couponsApply] / [purchaseVouchersApply].
+  /// Shared body for [couponsApply] / [purchaseVouchersApply]. [addressId] is
+  /// for coupons: one limited to a city is refused (`city_restricted`) when no
+  /// address is sent.
   static Map<String, dynamic> discountApplyBody({
     required int vendorId,
     required String code,
-  }) => <String, dynamic>{'vendor_id': vendorId, 'code': code};
+    int? addressId,
+  }) => <String, dynamic>{
+    'vendor_id': vendorId,
+    'code': code,
+    'address_id': ?addressId,
+  };
 
   /// The pricing choices [preview] and [place] both take, so what the invoice
   /// shows and what the order is charged are priced from the same input.

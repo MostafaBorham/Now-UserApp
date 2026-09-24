@@ -20,15 +20,16 @@ final checkoutDiscountProvider = Provider<CheckoutDiscountViewModel>(
 class CheckoutDiscountViewModel {
   final CheckoutRepo _repo = CheckoutRepo();
 
-  /// Applies coupon [code] for [vendorId] via the stateless calculator and
-  /// forwards the result. The draft is intentionally untouched — the applied
-  /// discount is owned by `appliedDiscountsProvider`, and the caller inspects
-  /// [VendorDiscountApplicationModel.applied] to tell an accepted code from a
-  /// rejected one.
+  /// Applies coupon [code] for [vendorId], delivered to [addressId], via the
+  /// stateless calculator and forwards the result. The draft is intentionally
+  /// untouched — the applied discount is owned by `appliedDiscountsProvider`,
+  /// and the caller inspects [VendorDiscountApplicationModel.applied] to tell
+  /// an accepted code from a rejected one.
   Future<Either<Failure, VendorDiscountApplicationModel>> applyCoupon({
     required int vendorId,
     required String code,
-  }) => _repo.applyCoupon(vendorId: vendorId, code: code);
+    int? addressId,
+  }) => _repo.applyCoupon(vendorId: vendorId, code: code, addressId: addressId);
 
   /// Applies purchase-voucher [code] for [vendorId]. Same semantics as
   /// [applyCoupon].

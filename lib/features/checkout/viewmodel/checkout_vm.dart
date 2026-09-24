@@ -43,6 +43,10 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
 
   static const Duration _debounceDelay = Duration(milliseconds: 400);
 
+  /// The delivery address the checkout is priced for. Applying a coupon needs
+  /// it too: without one, a coupon limited to a city is always refused.
+  int? get addressId => _body['address_id'] as int?;
+
   @override
   void dispose() {
     _debounce?.cancel();

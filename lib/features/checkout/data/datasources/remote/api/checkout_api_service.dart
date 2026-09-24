@@ -32,12 +32,21 @@ class CheckoutApiService {
     );
   }
 
-  /// Applies coupon [code] for [vendorId] and returns the per-vendor discount
-  /// calculation. Stateless — the server reads the user's own cart.
-  Future<Response> applyCoupon({required int vendorId, required String code}) {
+  /// Applies coupon [code] for [vendorId], delivered to [addressId], and
+  /// returns the per-vendor discount calculation. Stateless — the server reads
+  /// the user's own cart.
+  Future<Response> applyCoupon({
+    required int vendorId,
+    required String code,
+    int? addressId,
+  }) {
     return _dio.post(
       CheckoutEndpoints.couponsApply,
-      data: CheckoutEndpoints.discountApplyBody(vendorId: vendorId, code: code),
+      data: CheckoutEndpoints.discountApplyBody(
+        vendorId: vendorId,
+        code: code,
+        addressId: addressId,
+      ),
       cancelToken: _canceller.token,
     );
   }

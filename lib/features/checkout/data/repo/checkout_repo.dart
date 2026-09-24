@@ -65,8 +65,13 @@ class CheckoutRepo {
   Future<Either<Failure, VendorDiscountApplicationModel>> applyCoupon({
     required int vendorId,
     required String code,
+    int? addressId,
   }) => _applyDiscount(
-    () => _checkoutApiService.applyCoupon(vendorId: vendorId, code: code),
+    () => _checkoutApiService.applyCoupon(
+      vendorId: vendorId,
+      code: code,
+      addressId: addressId,
+    ),
   );
 
   /// Applies purchase-voucher [code] for [vendorId] via the stateless
