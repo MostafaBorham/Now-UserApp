@@ -1,118 +1,76 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/paginated_view_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/repo/orders_repo.dart';
 
+/// The signed-in user's orders, page by page.
+///
+/// Kept alive and listed in `sessionScopedProviders`: the session loads the
+/// first page at sign-in, the cart's welcome-voucher banner reads its `total`,
+/// and the My Orders tab [GetMyOrdersViewModel.refresh]es it on every open.
+/// `loadNextPage()` and `loadFirstPage()` (pull-to-refresh, retry) come from
+/// [PaginatedViewModel].
 final getMyOrdersProvider =
     StateNotifierProvider<
       GetMyOrdersViewModel,
       AsyncValue<PaginationModel<OrderModel>>
     >((Ref ref) => GetMyOrdersViewModel());
 
-class GetMyOrdersViewModel
-    extends StateNotifier<AsyncValue<PaginationModel<OrderModel>>> {
-  GetMyOrdersViewModel() : super(const AsyncValue.loading());
-
+class GetMyOrdersViewModel extends PaginatedViewModel<OrderModel> {
   final OrdersRepo _repo = OrdersRepo();
 
-  final ValueNotifier<AsyncValue<bool>> loadMoreState =
-      ValueNotifier<AsyncValue<bool>>(const AsyncValue<bool>.data(true));
+  @override
+  Future<Either<Failure, PaginationModel<OrderModel>>> fetchPage(int page) =>
+      _repo.getMyOrders(page: page);
 
-  Future<void> getOrders() async {
-    state = const AsyncValue<PaginationModel<OrderModel>>.loading();
+  @override
+  bool Function(OrderModel, OrderModel)? get isSameItem => _isSameOrder;
 
-    final Either<Failure, PaginationModel<OrderModel>> result =
-        await _fetchPage(1);
+  /// Same order: by [OrderModel.uuid], falling back to [OrderModel.id].
+  static bool _isSameOrder(OrderModel a, OrderModel b) => a.uuid != null
+      ? a.uuid == b.uuid
+      : a.id != null && a.id == b.id;
 
-    if (!mounted) return;
-
-    result.fold(
-      (Failure failure) {
-        state = AsyncValue<PaginationModel<OrderModel>>.error(
-          failure.message,
-          StackTrace.current,
-        );
-      },
-      (PaginationModel<OrderModel> firstPage) {
-        state = AsyncValue<PaginationModel<OrderModel>>.data(firstPage);
-        loadMoreState.value = AsyncValue<bool>.data(firstPage.hasMore);
-      },
-    );
-  }
-
-
-  Future<void> loadMore() async {
-    final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
-
-    if (currentPage == null ||
-        !currentPage.hasMore ||
-        loadMoreState.value.isLoading) {
+  /// Loads the first page again while the loaded list stays on screen, and
+  /// keeps that list if the request fails — for opening the tab, where
+  /// statuses have moved on (pending → delivered) since the list was loaded at
+  /// sign-in.
+  ///
+  /// Without a list yet it is a plain first load (the sign-in load failed, or
+  /// never ran); while that first load is still on its way it does nothing.
+  Future<void> refresh() async {
+    if (!state.hasValue) {
+      if (!state.isLoading) await loadFirstPage();
       return;
     }
 
-    loadMoreState.value = const AsyncValue<bool>.loading();
-
-    final Either<Failure, PaginationModel<OrderModel>> result =
-        await _fetchPage(currentPage.currentPage + 1);
+    final Either<Failure, PaginationModel<OrderModel>> result = await fetchPage(
+      PaginatedViewModel.firstPageNumber,
+    );
 
     if (!mounted) return;
 
     result.fold(
-      (Failure failure) {
-        loadMoreState.value = AsyncValue<bool>.error(
-          failure.message,
-          StackTrace.current,
-        );
-      },
-      (PaginationModel<OrderModel> newPage) {
-        // Append the freshly fetched page to the visible list.
-        state = AsyncValue<PaginationModel<OrderModel>>.data(
-          currentPage.appendPage(newPage),
-        );
-        loadMoreState.value = AsyncValue<bool>.data(newPage.hasMore);
-      },
+      (Failure _) {},
+      (PaginationModel<OrderModel> firstPage) =>
+          state = AsyncValue<PaginationModel<OrderModel>>.data(firstPage),
     );
   }
 
-
-  /// Replaces the matching order in the loaded list with [order], in place.
-  ///
-  /// A no-op unless the list is already loaded (`state` holds data) and it
-  /// contains an order with the same identity — [OrderModel.uuid], falling back
-  /// to [OrderModel.id]. Every page counter and the order's position are kept
-  /// (via [PaginationModel.copyWithData]), so a status change made on the
-  /// details or cancel flow shows here without a full refetch — keeping the
-  /// my-orders list consistent with the details screen for the same order.
-  void updateOrder(OrderModel order) {
-    final PaginationModel<OrderModel>? currentPage = state.valueOrNull;
-    if (currentPage == null) return;
-
-    bool sameOrder(OrderModel existing) => order.uuid != null
-        ? existing.uuid == order.uuid
-        : existing.id != null && existing.id == order.id;
-
-    final int index = currentPage.data.indexWhere(sameOrder);
-    if (index == -1) return;
-
-    final List<OrderModel> updated = List<OrderModel>.of(currentPage.data)
-      ..[index] = order;
-
-    state = AsyncValue<PaginationModel<OrderModel>>.data(
-      currentPage.copyWithData(updated),
-    );
-  }
-
-  Future<Either<Failure, PaginationModel<OrderModel>>> _fetchPage(int page) {
-    return _repo.getMyOrders(page: page);
-  }
+  /// Replaces the loaded copy of [order] in place — so a status change seen
+  /// on the details or cancel flow shows in the list without a refetch. A
+  /// no-op when the list isn't loaded or doesn't hold it.
+  void updateOrder(OrderModel order) => updateItemsWhere(
+    (OrderModel existing) => _isSameOrder(existing, order),
+    (_) => order,
+  );
 
   @override
   void dispose() {
     _repo.cancelRequests();
-    loadMoreState.dispose();
     super.dispose();
   }
 }

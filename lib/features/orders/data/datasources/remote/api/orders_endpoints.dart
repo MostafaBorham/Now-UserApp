@@ -14,11 +14,10 @@ abstract class OrdersEndpoints {
   /// per-product, vendor and delivery scores in one request.
   static String rateOrder(int orderId) => '/api/v1/ratings/orders/$orderId';
 
-  static int perPage = 15;
-  static int page = 1;
+  static const int perPage = 15;
 
-  /// Query parameters for getMyOrders
-  static Map<String, dynamic> get getMyOrdersQuery => {
+  /// Query parameters for [getMyOrders].
+  static Map<String, dynamic> getMyOrdersQuery(int page) => {
     'per_page': perPage,
     'page': page,
   };

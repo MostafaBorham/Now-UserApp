@@ -19,10 +19,9 @@ class OrdersApiService {
   void cancelRequests() => _canceller.cancel();
 
   Future<Response> getMyOrders({required int page}) {
-    OrdersEndpoints.page = page;
     return _dio.get(
       OrdersEndpoints.getMyOrders,
-      queryParameters: OrdersEndpoints.getMyOrdersQuery,
+      queryParameters: OrdersEndpoints.getMyOrdersQuery(page),
       cancelToken: _canceller.token,
     );
   }

@@ -123,22 +123,3 @@ class OrderListItemShimmer extends StatelessWidget {
     );
   }
 }
-
-class OrderListViewShimmer extends StatelessWidget {
-  const OrderListViewShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      // Matches the loaded list's top spacing so the loading and data states
-      // line up under the wave (AppWavedView drops the body's top padding once a
-      // scroll controller is wired in).
-      padding: const EdgeInsets.fromLTRB(3, 57, 3, 3),
-      itemCount: 4,
-      separatorBuilder: (BuildContext context, int index) =>
-      const SizedBox(height: 20),
-      itemBuilder: (BuildContext context, int index) =>
-      const AspectRatio(aspectRatio: 2, child: OrderListItemShimmer()),
-    );
-  }
-}

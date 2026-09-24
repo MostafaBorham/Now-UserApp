@@ -164,7 +164,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           // Refresh the orders list so its `total` reflects the just-placed
           // order — this is what makes the first-order welcome voucher stop
           // showing on the (now empty) cart.
-          ref.read(getMyOrdersProvider.notifier).getOrders();
+          ref.read(getMyOrdersProvider.notifier).refresh();
           // What was just placed no longer belongs to the cart, so drop it:
           // the whole cart for an all-stores checkout, that one store for a
           // single-store one.

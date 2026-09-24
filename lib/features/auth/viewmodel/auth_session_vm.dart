@@ -204,7 +204,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
 
   Future<void> _loadUserDependencies() async {
     await Future.wait(<Future<void>>[
-      _ref.read(getMyOrdersProvider.notifier).getOrders(),
+      _ref.read(getMyOrdersProvider.notifier).loadFirstPage(),
       _ref.read(getMyAddressesProvider.notifier).loadFirstPage(),
       _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
       _ref.read(getProfileProvider.notifier).getProfile(),

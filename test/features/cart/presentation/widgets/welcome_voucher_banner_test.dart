@@ -125,7 +125,7 @@ class _FakeMyOrdersVM extends GetMyOrdersViewModel {
   }
 
   @override
-  Future<void> getOrders() async {}
+  Future<void> loadFirstPage() async {}
 }
 
 class _FakeWelcomeVoucherVM extends GetWelcomeVoucherViewModel {
