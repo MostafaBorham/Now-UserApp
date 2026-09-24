@@ -1,15 +1,17 @@
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/data/models/delivery_man_model.dart';
 
-/// A single store's order, with its own totals and [items]. Used both for the
-/// draft group in checkout and for placed orders in the orders feature.
+/// A single store's order, with its own totals and [items]. Used both for a
+/// store's group in the checkout preview and for placed orders in the orders
+/// feature.
 ///
-/// The two endpoints name the money fields differently — checkout's draft
-/// returns `tax` / `discount` / `total`, `/api/v1/my/orders` returns
-/// `tax_amount` / `discount_amount` / `total_amount` — so [fromJson] reads the
-/// plain key first and falls back to the `*_amount` one.
+/// The two name the money fields differently — the checkout preview (as
+/// `CheckoutModel` reshapes it) has `tax` / `discount` / `total`,
+/// `/api/v1/my/orders` has `tax_amount` / `discount_amount` / `total_amount` —
+/// so [fromJson] reads the plain key first and falls back to the `*_amount` one.
 ///
 /// Line items are parsed as [ProductModel] (see [_line]) rather than a parallel
 /// model, with the line's quantity and paid `unit_price` laid over the product;
@@ -43,9 +45,9 @@ class OrderModel {
 
   /// The localized order status, read from `order_status`. The API sends it as
   /// a translation map (`{'ar': ..., 'en': ...}`); when only the machine
-  /// [status] string is present (e.g. the checkout draft payload) it is
-  /// normalized into a map with both languages set to it, so the presentation
-  /// layer always reads it through [BuildContext.getLocalizedApiText].
+  /// [status] string is present it is normalized into a map with both
+  /// languages set to it, so the presentation layer always reads it through
+  /// [BuildContext.getLocalizedApiText].
   final Map<String, dynamic>? orderStatus;
 
   /// Whether this order currently exposes live driver tracking (`is_tracking`).
@@ -106,11 +108,14 @@ class OrderModel {
   /// the order for history, excluded from every total, never delivered.
   final List<ProductModel> unavailableItems;
 
+  /// The lifecycle state behind [status], for logic — `closed` resolved by
+  /// whether the order was ever delivered (see [OrderStatus.fromKey]).
+  OrderStatus get lifecycleStatus =>
+      OrderStatus.fromKey(status, wasDelivered: deliveredAt != null);
+
   /// How many units were sold, across [items].
-  int get itemsQuantity => items.fold(
-    0,
-    (int sum, ProductModel item) => sum + (item.quantity ?? 0),
-  );
+  int get itemsQuantity =>
+      items.fold(0, (int sum, ProductModel item) => sum + (item.quantity ?? 0));
 
   const OrderModel({
     this.id,
@@ -191,7 +196,9 @@ class OrderModel {
           ? {'ar': json['status'] as String, 'en': json['status'] as String}
           : null,
       isTracking: json['is_tracking'] as bool? ?? false,
-      rating: OrderRatingModel.fromJson(json['rating'] as Map<String, dynamic>?),
+      rating: OrderRatingModel.fromJson(
+        json['rating'] as Map<String, dynamic>?,
+      ),
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:
@@ -214,7 +221,9 @@ class OrderModel {
           0.0,
       paymentMethod: json['payment_method']?.toString(),
       deliveryAddress: json['delivery_address']?.toString(),
-      region: OrderRegionModel.fromJson(json['region'] as Map<String, dynamic>?),
+      region: OrderRegionModel.fromJson(
+        json['region'] as Map<String, dynamic>?,
+      ),
       cancelReason: json['cancel_reason']?.toString(),
       notes: json['notes']?.toString(),
       invoicePdfUrl: json['invoice_pdf_url']?.toString(),

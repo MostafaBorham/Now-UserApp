@@ -42,7 +42,7 @@ class OrderListItem extends ConsumerWidget {
       apiDateTimeStamp: orderModel.createdAt,
     );
 
-    final OrderStatus status = OrderStatus.fromKey(orderModel.status);
+    final OrderStatus status = orderModel.lifecycleStatus;
 
     // Status-dependent description text. Branching over the sealed OrderStatus
     // keeps this exhaustive and type-safe; the embedded dates come from this

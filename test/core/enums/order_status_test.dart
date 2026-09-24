@@ -18,4 +18,14 @@ void main() {
     expect(OrderStatus.fromKey('closed').hasInvoice, isTrue);
     expect(OrderStatus.fromKey('rejected'), isA<CancelledStatus>());
   });
+
+  test('an order closed before it was delivered is not a delivered one', () {
+    final OrderStatus status = OrderStatus.fromKey(
+      'closed',
+      wasDelivered: false,
+    );
+
+    expect(status, isA<CancelledStatus>());
+    expect(status.isRateable, isFalse);
+  });
 }

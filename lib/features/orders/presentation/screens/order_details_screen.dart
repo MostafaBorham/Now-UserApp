@@ -87,7 +87,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             );
             // Same status chip as the my-orders list item: colors from the
             // shared palette and an empty label falls back to "pending".
-            final OrderStatus status = OrderStatus.fromKey(order.status);
+            final OrderStatus status = order.lifecycleStatus;
             final ({Color background, Color foreground}) statusPalette = status
                 .palette(colors);
             final String statusText = localizedStatus.isEmpty

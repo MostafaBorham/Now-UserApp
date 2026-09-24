@@ -25,12 +25,12 @@ sealed class OrderStatus {
   bool get isCancellable => false;
 
   /// Whether the order has reached a state the customer can rate — delivered
-  /// (which `closed` maps onto) only. Lives here so the rule is defined once
-  /// instead of re-checked per screen.
+  /// (which a delivered `closed` order maps onto) only. Lives here so the rule
+  /// is defined once instead of re-checked per screen.
   bool get isRateable => this is DeliveredStatus;
 
-  /// Whether the order's invoice can be printed/downloaded — delivered (which
-  /// `closed` maps onto) only.
+  /// Whether the order's invoice can be printed/downloaded — delivered (which a
+  /// delivered `closed` order maps onto) only.
   bool get hasInvoice => this is DeliveredStatus;
 
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
@@ -43,17 +43,25 @@ sealed class OrderStatus {
   /// `cancelled`. Left unmodelled they became [UnknownStatus], and tracking
   /// went blank between pickup and the road. The chip still shows the
   /// server's own label (`order_status`), so nothing is misnamed.
-  static OrderStatus fromKey(String? key) => switch (key) {
-    'pending' => const PendingStatus(),
-    'accepted' => const AcceptedStatus(),
-    'preparing' => const PreparingStatus(),
-    'ready' || 'arrived_store' => const ReadyStatus(),
-    'on_the_way' || 'picked_up' => const OnTheWayStatus(),
-    'delivered' || 'closed' => const DeliveredStatus(),
-    'cancelled' || 'rejected' => const CancelledStatus(),
-    'refunded' => const RefundedStatus(),
-    _ => UnknownStatus(key ?? ''),
-  };
+  ///
+  /// `closed` is usually a delivered order the backend settled six hours
+  /// later, but any state can move to it — an order closed before it ever
+  /// arrived. [wasDelivered] (the order has a `delivered_at`) tells them
+  /// apart; one that never arrived is treated as cancelled.
+  static OrderStatus fromKey(String? key, {bool wasDelivered = true}) =>
+      switch (key) {
+        'pending' => const PendingStatus(),
+        'accepted' => const AcceptedStatus(),
+        'preparing' => const PreparingStatus(),
+        'ready' || 'arrived_store' => const ReadyStatus(),
+        'on_the_way' || 'picked_up' => const OnTheWayStatus(),
+        'delivered' => const DeliveredStatus(),
+        'closed' =>
+          wasDelivered ? const DeliveredStatus() : const CancelledStatus(),
+        'cancelled' || 'rejected' => const CancelledStatus(),
+        'refunded' => const RefundedStatus(),
+        _ => UnknownStatus(key ?? ''),
+      };
 }
 
 /// Placed, awaiting the vendor's confirmation.

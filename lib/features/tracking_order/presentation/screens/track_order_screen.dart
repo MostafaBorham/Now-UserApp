@@ -76,7 +76,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     .getOrderDetails,
               ),
           data: (OrderModel order) {
-            final OrderStatus orderStatus = OrderStatus.fromKey(order.status);
+            final OrderStatus orderStatus = order.lifecycleStatus;
             final String localizedStatus = context.getLocalizedApiText(
               order.orderStatus,
             );
