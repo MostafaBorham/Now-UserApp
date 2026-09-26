@@ -34,6 +34,8 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         mainAxisExtent: 190,
       );
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,12 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final GetAppCategoriesViewModel categoriesViewModel = ref.read(
       getAppCategoriesProvider.notifier,
@@ -57,12 +65,17 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       body: AppWavedView(
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: context.canPop(),
+        scrollController: _scrollController,
         body: SafeArea(
           child: PaginatedView<CategoryModel>(
             provider: getAppCategoriesProvider,
             onRefresh: categoriesViewModel.loadFirstPage,
             onLoadNextPage: categoriesViewModel.loadNextPage,
-            layout: const PaginatedGridLayout(gridDelegate: _gridDelegate),
+            scrollController: _scrollController,
+            layout: const PaginatedGridLayout(
+              gridDelegate: _gridDelegate,
+              padding: EdgeInsets.only(top: 57),
+            ),
             firstPagePlaceholdersCount: 9,
             // Fills the grid while the first page loads and trails it while the
             // next one does, so the skeleton always matches the real cards.
