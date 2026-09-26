@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/fa
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
+import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/get_favourite_products_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
@@ -80,6 +81,12 @@ class FavouriteProductsListView extends ConsumerWidget {
             viewModel.removeItemsWhere(
               (ProductModel item) => item.id == product.id,
             );
+            // Refresh the category chips so one with no remaining favourites
+            // drops out (BUG-038). FavouritesTabView then falls the tab back to
+            // "All" when the selected category disappears.
+            ref
+                .read(favouriteCategoriesProvider('product').notifier)
+                .refresh();
           }
         },
       ),

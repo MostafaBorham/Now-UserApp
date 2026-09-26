@@ -33,6 +33,21 @@ class FavouriteCategoriesViewModel
     );
   }
 
+  /// Reloads the chips without a loading flash — used after unfavouriting an
+  /// item so a category with no remaining favourites drops out. Keeps the
+  /// current chips on error rather than blanking the row.
+  Future<void> refresh() async {
+    final result = await _repo.getFavouriteCategories(type: _type);
+
+    if (!mounted) return;
+
+    result.fold(
+      (Failure _) {},
+      (List<FavouriteCategoryModel> categories) =>
+          state = AsyncValue.data(categories),
+    );
+  }
+
   @override
   void dispose() {
     _repo.cancelRequests();

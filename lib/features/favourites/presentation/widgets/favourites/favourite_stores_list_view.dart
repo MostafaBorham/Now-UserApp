@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagina
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/providers/favourites_filter_provider.dart';
+import 'package:nowdelivery_user_app/features/favourites/viewmodel/favourite_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/get_favourite_stores_vm.dart';
 
 /// One category tab of the favourites Stores tab. The "All" tab passes no
@@ -79,6 +80,12 @@ class FavouriteStoresListView extends ConsumerWidget {
               viewModel.removeItemsWhere(
                 (StoreModel item) => item.id == store.id,
               );
+              // Refresh the category chips so one with no remaining favourites
+              // drops out (BUG-038). FavouritesTabView then falls the tab back
+              // to "All" when the selected category disappears.
+              ref
+                  .read(favouriteCategoriesProvider('vendor').notifier)
+                  .refresh();
             }
           },
         ),

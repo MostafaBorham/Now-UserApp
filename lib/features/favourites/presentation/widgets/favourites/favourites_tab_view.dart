@@ -49,6 +49,23 @@ class FavouritesTabView extends ConsumerWidget {
         ref.watch(favouriteCategoriesProvider(type));
     final FavouritesFilter filter = ref.watch(favouritesFilterProvider(type));
 
+    // When the chips refresh after an unfavourite and the currently-selected
+    // category is gone (its last favourite was removed), reset the filter to
+    // "All" so the fallen-back tab actually loads instead of showing a shimmer
+    // for a category id that no longer exists.
+    ref.listen<AsyncValue<List<FavouriteCategoryModel>>>(
+      favouriteCategoriesProvider(type),
+      (_, AsyncValue<List<FavouriteCategoryModel>> next) {
+        final List<FavouriteCategoryModel>? categories = next.valueOrNull;
+        if (categories == null) return;
+        final int? selected = ref.read(favouritesFilterProvider(type)).categoryId;
+        if (selected != null &&
+            !categories.any((FavouriteCategoryModel c) => c.id == selected)) {
+          ref.read(favouritesFilterProvider(type).notifier).setCategory(null);
+        }
+      },
+    );
+
     final List<FavouriteCategoryModel> categories =
         categoriesState.valueOrNull ?? const <FavouriteCategoryModel>[];
 
