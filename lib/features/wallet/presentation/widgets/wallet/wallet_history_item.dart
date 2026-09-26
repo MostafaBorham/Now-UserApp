@@ -59,16 +59,16 @@ class WalletHistoryItem extends StatelessWidget {
         ? localizedStatusLabel
         : (transaction.displayStatus ?? status.name);
     final String price = transaction.amountLabel ?? '';
-    // The transaction date, shown as a localized numeric `dd-MM-yyyy` (e.g.
-    // 10-04-2026, Arabic-Indic digits under ar-EG) via the shared
-    // [context.getLocalizedNumericApiDate]; it returns an empty string when the
-    // server omits or sends an unparseable timestamp, so the
-    // `if (date.isNotEmpty)` below hides the row with no extra guard here.
+    // The transaction date + time, shown as a localized numeric
+    // `dd-MM-yyyy · HH:mm` (e.g. 10-04-2026 · 14:30, Arabic-Indic digits under
+    // ar-EG) via the shared [context.getLocalizedNumericApiDateTime]; it returns
+    // an empty string when the server omits or sends an unparseable timestamp,
+    // so the `if (date.isNotEmpty)` below hides the row with no extra guard here.
     //
     // From `occurred_at` — when the transaction actually happened — falling back
     // to `created_at`. The two carry the same value today, so this is only
     // future-proofing against them diverging.
-    final String date = context.getLocalizedNumericApiDate(
+    final String date = context.getLocalizedNumericApiDateTime(
       apiDateTimeStamp: transaction.occurredAt ?? transaction.createdAt,
     );
 

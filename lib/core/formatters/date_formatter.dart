@@ -55,6 +55,28 @@ String formatLocalizedNumericDate(BuildContext context, String? dateString) {
   return languageCode == 'ar' ? _toArabicIndicDigits(formatted) : formatted;
 }
 
+/// Numeric date plus 24-hour time, e.g. `dd-MM-yyyy · HH:mm`. Used where a row
+/// needs the transaction hour (wallet history), not just the day.
+String formatLocalizedNumericDateTime(BuildContext context, String? dateString) {
+  if (dateString == null || dateString.trim().isEmpty) {
+    return '';
+  }
+
+  final parsedDate = DateTime.tryParse(dateString);
+
+  if (parsedDate == null) {
+    return '';
+  }
+
+  // See [formatLocalizedDate] for why this is `.toLocal()`.
+  final localDate = parsedDate.toLocal();
+  final languageCode = context.locale.languageCode;
+  final formatted =
+      DateFormat('dd-MM-yyyy · HH:mm', languageCode).format(localDate);
+
+  return languageCode == 'ar' ? _toArabicIndicDigits(formatted) : formatted;
+}
+
 const List<String> _arabicIndicDigits = [
   '٠',
   '١',

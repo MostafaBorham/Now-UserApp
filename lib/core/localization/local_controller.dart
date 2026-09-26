@@ -23,4 +23,8 @@ extension LocaleExt on BuildContext{
   String getLocalizedNumericApiDate({String? apiDateTimeStamp}){
     return formatLocalizedNumericDate(this, apiDateTimeStamp);
   }
+
+  String getLocalizedNumericApiDateTime({String? apiDateTimeStamp}){
+    return formatLocalizedNumericDateTime(this, apiDateTimeStamp);
+  }
 }
