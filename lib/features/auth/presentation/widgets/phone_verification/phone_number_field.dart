@@ -9,13 +9,30 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 
+/// The digits the user typed after the field's fixed `(05) ` head — the 8
+/// significant digits of a Saudi mobile once the number is complete.
+///
+/// The head's own `05` must not be counted, which is why the field does not ask
+/// [AppValidator.saudiPhoneToInternational] whether it is valid: that parser
+/// takes any shape a number is stored in, so it reads `(05) 1234567` (seven
+/// typed digits) as a complete `0` + `51234567` and the code went to someone
+/// else's number.
+String phoneFieldSignificantDigits(String text) {
+  final String digits = text.replaceAll(RegExp(r'\D'), '');
+  return text.startsWith(_saudiPhonePrefix) && digits.startsWith('05')
+      ? digits.substring(2)
+      : digits;
+}
+
+const String _saudiPhonePrefix = '(05) ';
+
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
 ///
-/// Validates the input against the Saudi mobile format (`+9665XXXXXXXX`,
-/// spaces and dashes ignored) and reports the result via [onValidChanged]
-/// whenever the validity flips. Parents don't need to know the rule — they
-/// only receive a `bool` to drive their button state.
+/// Valid once exactly 8 digits follow the `(05)` head
+/// ([phoneFieldSignificantDigits]); the result is reported via
+/// [onValidChanged] whenever the validity flips. Parents don't need to know the
+/// rule — they only receive a `bool` to drive their button state.
 class PhoneNumberField extends StatefulWidget {
   const PhoneNumberField({
     super.key,
@@ -58,7 +75,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
   void _onTextChanged() {
     final String raw = widget.controller?.text ?? '';
-    final bool isValid = AppValidator.saudiPhoneToInternational(raw) != null;
+    final bool isValid = phoneFieldSignificantDigits(raw).length == 8;
     if (isValid != _lastIsValid) {
       _lastIsValid = isValid;
       widget.onValidChanged?.call(isValid);
@@ -141,19 +158,14 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 class _SaudiPhonePrefixFormatter extends TextInputFormatter {
   const _SaudiPhonePrefixFormatter();
 
-  static const String _prefix = '(05) ';
-
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    String digits = newValue.text.replaceAll(RegExp(r'\D'), '');
     // The prefix already carries the leading "05" — drop it so only the
     // 8 significant digits remain.
-    if (newValue.text.startsWith(_prefix) && digits.startsWith('05')) {
-      digits = digits.substring(2);
-    }
+    final String digits = phoneFieldSignificantDigits(newValue.text);
     // A full local/international paste still carries its own 05/966 head.
     final String? tail = AppValidator.saudiLocalPhoneTail(digits);
     final String significant =
@@ -161,7 +173,7 @@ class _SaudiPhonePrefixFormatter extends TextInputFormatter {
 
     if (significant.isEmpty) return TextEditingValue.empty;
 
-    final String text = '$_prefix$significant';
+    final String text = '$_saudiPhonePrefix$significant';
     return TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
