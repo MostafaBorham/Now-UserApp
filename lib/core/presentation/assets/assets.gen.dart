@@ -185,10 +185,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get addressCuttedGrey =>
       const SvgGenImage('assets/media/images/svg/address_cutted_grey.svg');
 
-  /// File path: assets/media/images/svg/alert-error-icon.svg
-  SvgGenImage get alertErrorIcon =>
-      const SvgGenImage('assets/media/images/svg/alert-error-icon.svg');
-
   /// Directory path: assets/media/images/svg/app-logos
   $AssetsMediaImagesSvgAppLogosGen get appLogos =>
       const $AssetsMediaImagesSvgAppLogosGen();
@@ -196,10 +192,6 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/app-orange-logo.svg
   SvgGenImage get appOrangeLogo =>
       const SvgGenImage('assets/media/images/svg/app-orange-logo.svg');
-
-  /// File path: assets/media/images/svg/app-under-maintain-icon.svg
-  SvgGenImage get appUnderMaintainIcon =>
-      const SvgGenImage('assets/media/images/svg/app-under-maintain-icon.svg');
 
   /// File path: assets/media/images/svg/app_back_arrow.svg
   SvgGenImage get appBackArrow =>
@@ -642,16 +634,9 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get wallet =>
       const SvgGenImage('assets/media/images/svg/wallet.svg');
 
-  /// File path: assets/media/images/svg/wave.svg
-  SvgGenImage get wave => const SvgGenImage('assets/media/images/svg/wave.svg');
-
   /// File path: assets/media/images/svg/welcome-voucher-tag-icon.svg
   SvgGenImage get welcomeVoucherTagIcon =>
       const SvgGenImage('assets/media/images/svg/welcome-voucher-tag-icon.svg');
-
-  /// File path: assets/media/images/svg/white-app-logo.svg
-  SvgGenImage get whiteAppLogo =>
-      const SvgGenImage('assets/media/images/svg/white-app-logo.svg');
 
   /// File path: assets/media/images/svg/work_selected.svg
   SvgGenImage get workSelected =>
@@ -667,9 +652,7 @@ class $AssetsMediaImagesSvgGen {
     addCircle,
     addToCartIcon,
     addressCuttedGrey,
-    alertErrorIcon,
     appOrangeLogo,
-    appUnderMaintainIcon,
     appBackArrow,
     appLogo,
     applePay,
@@ -782,9 +765,7 @@ class $AssetsMediaImagesSvgGen {
     visa,
     wallet2,
     wallet,
-    wave,
     welcomeVoucherTagIcon,
-    whiteAppLogo,
     workSelected,
     zigzagArrowIcon,
   ];
