@@ -52,6 +52,30 @@ void main() {
     expect(cart.quantityOf(2), 5);
   });
 
+  test('itemCount sums quantities across every vendor line', () {
+    const CartModel cart = CartModel(
+      vendors: <CartVendorModel>[
+        CartVendorModel(
+          products: <ProductModel>[
+            ProductModel(productId: 1, quantity: 2),
+            ProductModel(productId: 2, quantity: 3),
+          ],
+        ),
+        CartVendorModel(
+          products: <ProductModel>[ProductModel(productId: 3, quantity: 5)],
+        ),
+      ],
+    );
+
+    expect(cart.itemCount, 10);
+    // A missing quantity counts as 0, and an empty cart is 0.
+    expect(
+      _cartOf(<ProductModel>[const ProductModel(productId: 9)]).itemCount,
+      0,
+    );
+    expect(const CartModel().itemCount, 0);
+  });
+
   test('parses cart_item_id and the raw options off a cart line', () {
     final ProductModel line = ProductModel.fromJson(<String, dynamic>{
       'product_id': 7,

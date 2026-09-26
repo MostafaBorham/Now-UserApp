@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_view.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_rate_order_view.dart';
@@ -68,6 +70,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     final int currentPageIndex = ref.watch(mainTabIndexProvider);
 
+    // Cart badge count — rebuilds only when the total changes. getCartProvider
+    // is session-scoped, so it clears with the signed-in user (no stale count).
+    final int cartItemCount = ref.watch(
+      getCartProvider.select(
+        (AsyncValue<CartModel> state) => state.valueOrNull?.itemCount ?? 0,
+      ),
+    );
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
@@ -87,6 +97,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       bottomNavigationBar: SafeArea(
         child: AppBottomNavBar(
           currentIndex: currentPageIndex,
+          cartItemCount: cartItemCount,
           onIndexChanged: (int value) {
             if (_loginRequiredTabs.contains(value) &&
                 redirectGuestToLogin(context)) {

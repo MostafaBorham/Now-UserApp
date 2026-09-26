@@ -43,6 +43,15 @@ class CartModel {
 
   /// Quantity this product has in the cart; `0` when it is not in it at all.
   int quantityOf(int productId) => lineOf(productId)?.quantity ?? 0;
+
+  /// Total units across every store line — the number shown on the cart badge.
+  int get itemCount => vendors.fold<int>(
+        0,
+        (int sum, CartVendorModel vendor) =>
+            sum +
+            vendor.products
+                .fold<int>(0, (int s, ProductModel p) => s + (p.quantity ?? 0)),
+      );
 }
 
 class CartVendorModel {

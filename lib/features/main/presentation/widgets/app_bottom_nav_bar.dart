@@ -15,11 +15,16 @@ class AppBottomNavBar extends StatelessWidget {
     this.currentIndex = 0,
     this.onIndexChanged,
     this.onCenterTap,
+    this.cartItemCount = 0,
   });
 
   final int currentIndex;
   final ValueChanged<int>? onIndexChanged;
   final VoidCallback? onCenterTap;
+
+  /// Number of units in the cart, shown as a badge on the center cart button.
+  /// `0` hides the badge.
+  final int cartItemCount;
 
   void _changeIndex(int index) {
     HapticFeedback.lightImpact();
@@ -132,32 +137,44 @@ class AppBottomNavBar extends StatelessWidget {
                     onTap: () => _changeIndex(2),
                     child: Column(
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: stackCon.maxWidth * 0.15,
-                          height: stackCon.maxWidth * 0.15,
-                          decoration: BoxDecoration(
-                            color: colors.primary500Main,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: colors.neutral500.withValues(alpha: 0.3),
-                                spreadRadius: 5,
-                                blurRadius: 6,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              width: stackCon.maxWidth * 0.15,
+                              height: stackCon.maxWidth * 0.15,
+                              decoration: BoxDecoration(
+                                color: colors.primary500Main,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        colors.neutral500.withValues(alpha: 0.3),
+                                    spreadRadius: 5,
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: currentIndex==2? Assets.media.images.svg.filledCartIcon.svg(
-                            colorFilter: ColorFilter.mode(
-                              colors.white,
-                              BlendMode.srcIn,
+                              child: currentIndex==2? Assets.media.images.svg.filledCartIcon.svg(
+                                colorFilter: ColorFilter.mode(
+                                  colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ) : Assets.media.images.svg.shoppingCartIcon.svg(
+                                colorFilter: ColorFilter.mode(
+                                  colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ),
-                          ) : Assets.media.images.svg.shoppingCartIcon.svg(
-                            colorFilter: ColorFilter.mode(
-                              colors.white,
-                              BlendMode.srcIn,
-                            ),
-                          ),
+                            if (cartItemCount > 0)
+                              Positioned(
+                                top: -2,
+                                right: -2,
+                                child: _CartBadge(count: cartItemCount),
+                              ),
+                          ],
                         ),
                       ],
                     ),
@@ -246,6 +263,41 @@ class AppBottomNavBar extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// The item-count badge on the center cart button: a white pill with the count
+/// in the brand color, capped at `99+`.
+class _CartBadge extends StatelessWidget {
+  const _CartBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    final String label = count > 99 ? '99+' : '$count';
+    return Container(
+      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: colors.primary500Main, width: 1.5),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.style12Medium.copyWith(
+          color: colors.primary500Main,
+          fontSize: 10,
+          height: 1,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
