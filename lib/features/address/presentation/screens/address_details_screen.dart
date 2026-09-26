@@ -73,6 +73,23 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   static final List<TextInputFormatter> _columnLimit = <TextInputFormatter>[
     LengthLimitingTextInputFormatter(50),
   ];
+
+  /// Same 50-char cap, but digits only — for the fields whose label is a number
+  /// (floor / villa / apartment). Company name (work) and building keep
+  /// [_columnLimit] since they are free text.
+  static final List<TextInputFormatter> _numericColumnLimit =
+      <TextInputFormatter>[
+    FilteringTextInputFormatter.digitsOnly,
+    LengthLimitingTextInputFormatter(50),
+  ];
+
+  /// Hints that name a numeric field, so the field gets a number keyboard and
+  /// rejects letters. `floorWork` ("Company Name") and `building` are text.
+  static const Set<String> _numericHints = <String>{
+    LangKeys.floor,
+    LangKeys.floorNumberOptional,
+    LangKeys.apartment,
+  };
   static final List<TextInputFormatter> _notesLimit = <TextInputFormatter>[
     LengthLimitingTextInputFormatter(1000),
   ];
@@ -352,12 +369,22 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 AddressField(
                   hintText: hints[0].tr(),
                   controller: _floorNumberController,
-                  inputFormatters: _columnLimit,
+                  keyboardType: _numericHints.contains(hints[0])
+                      ? TextInputType.number
+                      : null,
+                  inputFormatters: _numericHints.contains(hints[0])
+                      ? _numericColumnLimit
+                      : _columnLimit,
                 ),
                 AddressField(
                   hintText: hints[1].tr(),
                   controller: _apartmentController,
-                  inputFormatters: _columnLimit,
+                  keyboardType: _numericHints.contains(hints[1])
+                      ? TextInputType.number
+                      : null,
+                  inputFormatters: _numericHints.contains(hints[1])
+                      ? _numericColumnLimit
+                      : _columnLimit,
                 ),
                 AddressField(
                   hintText: LangKeys.building.tr(),
