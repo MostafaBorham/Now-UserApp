@@ -302,6 +302,7 @@ abstract class LangKeys {
   static const String submitRatingKey = 'submitRating';
   static const String thanksForRatingKey = 'thanksForRating';
   static const String ratingRequiredKey = 'ratingRequired';
+  static const String ratingCommentNeedsStarsKey = 'ratingCommentNeedsStars';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';

@@ -173,8 +173,10 @@ class OrdersRepo {
       _ratePromptCache.markPrompted(orderId);
 
   /// The order in a `last-delivered` payload ([data] is its `data`), or null
-  /// when there is nothing left to rate: no delivered order at all, or
-  /// `has_pending_rating` false (everything rated, or not rateable).
+  /// when there is nothing to rate: no delivered order at all,
+  /// `has_pending_rating` false (everything rated, or not rateable), or
+  /// anything on it rated already — rating is one-shot in the app, even when
+  /// the backend would take the rest.
   ///
   /// The order block carries the rating sheet — `can_rate`, `is_rated`,
   /// `products`, `vendor`, `delivery` — at its top level rather than under
@@ -184,7 +186,11 @@ class OrdersRepo {
   static OrderModel? pendingRatingOrder(Map<String, dynamic>? data) {
     final Map<String, dynamic>? order =
         data?['last_delivered_order'] as Map<String, dynamic>?;
-    if (order == null || data?['has_pending_rating'] != true) return null;
+    if (order == null ||
+        data?['has_pending_rating'] != true ||
+        order['is_rated'] == true) {
+      return null;
+    }
     return OrderModel.fromJson(<String, dynamic>{...order, 'rating': order});
   }
 

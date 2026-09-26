@@ -97,6 +97,14 @@ void main() {
       );
     });
 
+    test('a partly rated order is not offered again: rating is one-shot', () {
+      // The backend still reports it pending — the rest could be rated.
+      final Map<String, dynamic> payload = _payload();
+      (payload['last_delivered_order'] as Map<String, dynamic>)['is_rated'] =
+          true;
+      expect(OrdersRepo.pendingRatingOrder(payload), isNull);
+    });
+
     test('a customer with no delivered order yet is not an error', () {
       expect(
         OrdersRepo.pendingRatingOrder(<String, dynamic>{

@@ -13,10 +13,9 @@ class OrderRatingModel {
   final bool canRate;
   final String? reasonCode;
 
-  /// Whether anything on the order has been rated — so whether there is a
-  /// rating to show once [canRate] is false. `can_rate` also turns false when
-  /// the order stops being `delivered` (it is closed six hours later), with
-  /// nothing rated.
+  /// Whether anything on the order has been rated. Rating is one-shot in the
+  /// app, so this is what closes it: the order then shows what was submitted,
+  /// even though [canRate] stays true while any target is left unrated.
   final bool isRated;
   final bool isFullyRated;
   final List<RatedProductModel> products;

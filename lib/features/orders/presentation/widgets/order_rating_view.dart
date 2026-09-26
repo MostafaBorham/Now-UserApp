@@ -9,12 +9,13 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_mo
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_section.dart';
 
 /// The read-only "already rated" state shown in place of the rate-order button
-/// when [OrderRatingModel.canRate] is false **and** something was rated
-/// ([OrderRatingModel.isRated]) — never on an order that simply stopped being
-/// rateable. A "thanks for rating" banner over a dimmed [OrderRatingSection]
-/// filled with the scores and comments the shopper submitted for every
-/// product, the store (`vendor`) and the courier (`delivery`, only when there
-/// was one). Unrated targets fall back to zero stars and an empty comment.
+/// once anything was rated ([OrderRatingModel.isRated]) — rating is one-shot,
+/// so this holds even with targets left open — and never on an order that
+/// simply stopped being rateable. A "thanks for rating" banner over a dimmed
+/// [OrderRatingSection] filled with the scores and comments the shopper
+/// submitted for every product, the store (`vendor`) and the courier
+/// (`delivery`, only when there was one). Unrated targets fall back to zero
+/// stars and an empty comment.
 class OrderRatingView extends StatefulWidget {
   const OrderRatingView({super.key, required this.rating});
 

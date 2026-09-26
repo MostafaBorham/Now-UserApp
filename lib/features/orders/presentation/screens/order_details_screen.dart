@@ -293,11 +293,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ],
                             ),
                           ),
-                          // `can_rate` also turns false when the order is
-                          // closed (six hours after delivery) with nothing
-                          // rated — thank the shopper only for a real rating.
+                          // Rating is one-shot in the app: once anything was
+                          // rated the order shows what was submitted, even with
+                          // targets left open. Thank the shopper only for a
+                          // real rating, and offer one only while it can still
+                          // be sent.
                           if (status.isRateable)
-                            if (order.rating.canRate) ...[
+                            if (order.rating.isRated) ...[
+                              12.hSpace,
+                              OrderRatingView(rating: order.rating),
+                            ] else if (order.rating.canRate) ...[
                               12.hSpace,
                               PrimaryAppButton(
                                 title: LangKeys.rateOrderKey.tr(),
@@ -306,9 +311,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   extra: order,
                                 ),
                               ),
-                            ] else if (order.rating.isRated) ...[
-                              12.hSpace,
-                              OrderRatingView(rating: order.rating),
                             ],
                         ],
                       ),

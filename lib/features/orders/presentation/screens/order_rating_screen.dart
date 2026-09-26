@@ -14,9 +14,25 @@ import 'package:nowdelivery_user_app/features/orders/data/models/rate_order_requ
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_section.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/rate_order_vm.dart';
 
+/// Why the rating can't be sent yet, as a [LangKeys] key — or null when it can.
+///
+/// Every target is optional, but at least one needs stars. A comment needs its
+/// own target's stars: the backend takes no comment without a `rate`, so one
+/// left on an unstarred target would be dropped without a word.
+///
+/// [targets] are the rows on screen, each with its stars and comment.
+String? ratingSubmitBlocker(List<({int rating, String comment})> targets) {
+  if (targets.any((t) => t.rating < 1 && t.comment.trim().isNotEmpty)) {
+    return LangKeys.ratingCommentNeedsStarsKey;
+  }
+  if (!targets.any((t) => t.rating >= 1)) return LangKeys.ratingRequiredKey;
+  return null;
+}
+
 /// Lets the shopper rate a delivered [order]: a star rating plus an optional
 /// comment for every target still open on it — each product, the store, and
-/// the courier when there was one.
+/// the courier when there was one. Each target is optional; at least one
+/// needs stars ([ratingSubmitBlocker]).
 ///
 /// The targets come from the order's `rating` sheet, not its `items`: the
 /// submit is all-or-nothing and takes one entry per distinct delivered product
@@ -67,15 +83,21 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
 
   Future<void> _onSubmit() async {
     final int? orderId = widget.order.id;
-    final bool allRated =
-        _productRatings.every((int rating) => rating >= 1) &&
-        (!_rating.isVendorOpen || _storeRating >= 1) &&
-        (!_rating.isDeliveryOpen || _courierRating >= 1);
+    final String? blocker =
+        ratingSubmitBlocker(<({int rating, String comment})>[
+          for (int i = 0; i < _products.length; i++)
+            (rating: _productRatings[i], comment: _productComments[i].text),
+          if (_rating.isVendorOpen)
+            (rating: _storeRating, comment: _storeComment.text),
+          if (_rating.isDeliveryOpen)
+            (rating: _courierRating, comment: _courierComment.text),
+        ]);
 
-    if (orderId == null || !allRated) {
-      AppToast.showError(context, LangKeys.ratingRequiredKey.tr());
+    if (blocker != null) {
+      AppToast.showError(context, blocker.tr());
       return;
     }
+    if (orderId == null) return;
 
     final RateOrderRequest request = RateOrderRequest.build(
       orderId: orderId,
