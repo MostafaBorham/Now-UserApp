@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
+import 'package:nowdelivery_user_app/features/home/data/datasources/remote/api/home_sections_endpoints.dart';
 
 /// Raw API calls for the home feed.
 ///
@@ -29,7 +30,7 @@ class HomeSectionsApiService {
   }) {
     final bool hasLocation = lat != null && lng != null;
     return _dio.get(
-      '/api/v1/home-sections',
+      HomeSectionsEndpoints.getHomeSections,
       queryParameters: <String, dynamic>{
         'platform': platform,
         'lang': lang,
