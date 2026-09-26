@@ -20,10 +20,6 @@ class DatabaseException implements Exception {
   static const String clearRecentSearchesFailedMessage =
       LangKeys.clearRecentSearchesFailedKey;
 
-  /// Message key used when the cached my-orders payload cannot be read.
-  static const String readCachedOrdersFailedMessage =
-      LangKeys.readCachedOrdersFailedKey;
-
   final String message;
 
   const DatabaseException(this.message);

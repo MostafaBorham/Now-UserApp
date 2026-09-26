@@ -25,7 +25,6 @@ class CachePurger {
   /// session. Keep in sync with [HiveBoxes] when a user-scoped box is added.
   static const List<String> _userScopedBoxes = <String>[
     HiveBoxes.userProfile,
-    HiveBoxes.myOrders,
     HiveBoxes.myCards,
     HiveBoxes.walletInfo,
     // Not a cache, but just as user-scoped: an unresolved top-up attempt names
