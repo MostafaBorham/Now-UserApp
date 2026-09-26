@@ -37,7 +37,11 @@ class LanguageBottomSheet extends StatelessWidget {
         top: 12,
         left: 16,
         right: 16,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+        // viewInsets covers the keyboard; viewPadding covers the home-indicator/
+        // gesture bar — without the latter the last option sat under the bar.
+        bottom: MediaQuery.viewInsetsOf(context).bottom +
+            MediaQuery.viewPaddingOf(context).bottom +
+            16,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
