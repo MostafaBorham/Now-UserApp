@@ -78,10 +78,18 @@ class _AppWavedViewState extends State<AppWavedView> {
           vertical: 57,
         ).copyWith(bottom: 20);
 
+    // The outer SafeArea uses bottom:false so the wave gradient bleeds to the
+    // screen edge — which left the last list item / docked button riding under
+    // the home-indicator/gesture bar on the pushed screens (My Address, Discount
+    // Codes, Wallet, cards). Reserve the device bottom inset in the white body
+    // padding instead, so content clears the bar without capping the gradient.
+    final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final EdgeInsets insetBodyPadding =
+        bodyPadding.copyWith(bottom: bodyPadding.bottom + bottomInset);
 
     final EdgeInsets effectiveBodyPadding = widget.scrollController != null
-        ? bodyPadding.copyWith(top: 0)
-        : bodyPadding;
+        ? insetBodyPadding.copyWith(top: 0)
+        : insetBodyPadding;
 
 
     final TopWaveClipper? waveClipper = _isFlattened
