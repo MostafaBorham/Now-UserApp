@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 
@@ -17,7 +20,43 @@ class ConnectionChecker {
     ],
   );
 
-  static Future<bool> get isConnected => _connectionChecker.hasConnection;
+  /// Answers as soon as the first address responds. The package's own
+  /// `hasConnection` waits for every address, so one host that hangs instead
+  /// of failing fast held every repo call for the full check timeout.
+  static Future<bool> get isConnected async {
+    final bool connected = await anyReachable(
+      _connectionChecker.addresses.map((AddressCheckOption address) =>
+          _connectionChecker
+              .isHostReachable(address)
+              .then((AddressCheckResult result) => result.isSuccess)),
+    );
+    // A success already emits `connected` from `isHostReachable`; the failure
+    // has to be emitted here, as `hasConnection` did, to keep the stream live.
+    if (!connected) {
+      _connectionChecker.emitStatus(InternetConnectionStatus.disconnected);
+    }
+    return connected;
+  }
+
+  /// `true` on the first check that succeeds; `false` only once every check
+  /// has failed. A check that throws counts as a failure.
+  @visibleForTesting
+  static Future<bool> anyReachable(Iterable<Future<bool>> checks) {
+    final List<Future<bool>> pending = checks.toList();
+    final Completer<bool> result = Completer<bool>();
+    int failed = 0;
+    for (final Future<bool> check in pending) {
+      check.catchError((Object _) => false).then((bool ok) {
+        if (result.isCompleted) return;
+        if (ok) {
+          result.complete(true);
+        } else if (++failed == pending.length) {
+          result.complete(false);
+        }
+      });
+    }
+    return result.future;
+  }
 
   static Stream<InternetConnectionStatus> connectionStream() {
     /// Take more time

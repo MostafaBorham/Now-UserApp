@@ -117,7 +117,7 @@ There is a real suite: 69 test files under `test/`, mirroring `lib/`'s structure
 
 **`flutter analyze` is clean — 0 issues.** The old "69 issues, mostly unused imports" baseline is gone; treat any new issue as yours.
 
-**`flutter test` is not green — the baseline is 362 passing / 2 failing** (measured 2026-09-26). Those 2 are pre-existing, and it is the *name list* that matters, not the count:
+**`flutter test` is not green — the baseline is 365 passing / 2 failing** (measured 2026-09-26). Those 2 are pre-existing, and it is the *name list* that matters, not the count:
 
 - `test/home/home_top_banner_section_view_test.dart` — "renders the banner on the design 355×118 box" (geometry);
 - `test/home/home_all_stores_section_view_test.dart` — "a category tab lists that category's stores, not the feed's".
