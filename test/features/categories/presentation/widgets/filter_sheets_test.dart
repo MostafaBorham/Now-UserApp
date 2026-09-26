@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/filters/filter_bottom_sheet.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_filter_view.dart';
-import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_filter_view.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 
@@ -68,42 +66,6 @@ void main() {
       expect(reset, isTrue);
 
       expect(find.text('__filter_slot__'), findsOneWidget);
-    });
-  });
-
-  group('CategoryProductsFilterView', () {
-    testWidgets('forwards the selection through onApply on Apply',
-        (WidgetTester tester) async {
-      bool applied = false;
-      await pumpSheetViaRouter(
-        tester,
-        CategoryProductsFilterView(
-          onApply: (_, _, _, _) => applied = true,
-        ),
-      );
-
-      expect(find.byType(PrimaryAppButton), findsOneWidget);
-      await tester.tap(find.byType(PrimaryAppButton));
-      await tester.pump();
-
-      expect(applied, isTrue);
-    });
-  });
-
-  group('CategoryStoresFilterView', () {
-    testWidgets('forwards the selection through onApply on Apply',
-        (WidgetTester tester) async {
-      bool applied = false;
-      await pumpSheetViaRouter(
-        tester,
-        CategoryStoresFilterView(onApply: (_, _) => applied = true),
-      );
-
-      expect(find.byType(PrimaryAppButton), findsOneWidget);
-      await tester.tap(find.byType(PrimaryAppButton));
-      await tester.pump();
-
-      expect(applied, isTrue);
     });
   });
 }

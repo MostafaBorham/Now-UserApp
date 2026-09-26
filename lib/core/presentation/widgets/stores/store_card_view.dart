@@ -30,7 +30,7 @@ class StoreCardView extends StatelessWidget {
   final ValueChanged<bool>? onFavouriteChanged;
 
   /// Tap handler for the whole card. Defaults to opening the store details
-  /// screen for [store] (passing its id), matching [StoreItem].
+  /// screen for [store] (passing its id).
   final VoidCallback? onTap;
 
   @override

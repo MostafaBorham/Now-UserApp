@@ -28,9 +28,9 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status
 ///   onRefresh: viewModel.loadFirstPage,
 ///   onLoadNextPage: viewModel.loadNextPage,
 ///   layout: const PaginatedGridLayout(gridDelegate: ...),
-///   placeholderBuilder: (_) => AppShimmer(child: ProductItemCard2()),
+///   placeholderBuilder: (_) => AppShimmer(child: ProductItemCard1()),
 ///   itemBuilder: (_, ProductModel product, __) =>
-///       ProductItemCard2(productModel: product),
+///       ProductItemCard1(product: product),
 /// )
 /// ```
 class PaginatedView<T> extends ConsumerWidget {

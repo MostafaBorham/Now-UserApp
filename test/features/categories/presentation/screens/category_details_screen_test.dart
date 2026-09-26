@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/store_item.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 
@@ -119,7 +119,7 @@ void main() {
     }
 
 
-    expect(find.byType(StoreItem), findsWidgets);
+    expect(find.byType(StoreCardView), findsWidgets);
   });
 }
 
