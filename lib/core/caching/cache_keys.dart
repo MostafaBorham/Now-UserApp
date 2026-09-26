@@ -27,4 +27,9 @@ abstract class CacheKeys {
   /// server on every splash and read back offline so the empty cart and guest
   /// settings can still show a promo code. Stored as the raw code string.
   static const String welcomeVoucherCode = 'welcome_voucher_code';
+
+  /// The id of the delivered order the "rate your order" prompt was last shown
+  /// for, so it is offered once per order. Not purged on logout: an order id
+  /// belongs to one customer, so another account's orders never match it.
+  static const String ratePromptedOrderId = 'rate_prompted_order_id';
 }

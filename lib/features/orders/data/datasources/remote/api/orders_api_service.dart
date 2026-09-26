@@ -51,6 +51,13 @@ class OrdersApiService {
     );
   }
 
+  Future<Response> getLastDeliveredOrder() {
+    return _dio.get(
+      OrdersEndpoints.lastDeliveredOrder,
+      cancelToken: _canceller.token,
+    );
+  }
+
   Future<Response> rateOrder({
     required int orderId,
     required Map<String, dynamic> body,

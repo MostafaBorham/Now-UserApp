@@ -27,7 +27,6 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_live_orders_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
-import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_rate_order_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
@@ -74,11 +73,6 @@ class _HomeViewState extends ConsumerState<HomeView>
       if (!mounted) return;
       if (!ref.read(getHomeSectionsProvider).hasValue) _loadFeed();
       _onScroll();
-      showRateOrderSheet(
-        context,
-        storeName: 'الشراء الذكي',
-        storeLogoUrl: '',
-      );
     });
   }
 
