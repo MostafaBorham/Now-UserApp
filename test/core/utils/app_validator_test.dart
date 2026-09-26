@@ -49,9 +49,16 @@ void main() {
 
 
 
-  test('isValidSaudiPhone still accepts +9665XXXXXXXX and only that', () {
-    expect(AppValidator.isValidSaudiPhone('+966512345678'), isTrue);
-    expect(AppValidator.isValidSaudiPhone('+966 51 234 5678'), isTrue);
-    expect(AppValidator.isValidSaudiPhone('0512345678'), isFalse);
+  test('saudiPhoneToInternational always yields the +9665XXXXXXXX login key',
+      () {
+    for (final String raw in <String>[
+      '0512345678',
+      '(05) 1234 5678',
+      '+966512345678',
+      '+966 51 234 5678',
+    ]) {
+      expect(AppValidator.saudiPhoneToInternational(raw), '+966512345678');
+    }
+    expect(AppValidator.saudiPhoneToInternational('1234'), isNull);
   });
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
@@ -23,11 +22,7 @@ import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_
 /// trailing next-page shimmer) is read off the view model's paginated state via
 /// [PaginationStatus] instead of the generic `PaginatedView`.
 class CategoryStoresView extends ConsumerStatefulWidget {
-  const CategoryStoresView({
-    super.key,
-    required this.sortType,
-  });
-  final StoresSortType sortType;
+  const CategoryStoresView({super.key});
 
   @override
   ConsumerState<CategoryStoresView> createState() => _CategoryStoresViewState();
@@ -38,7 +33,6 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
 
   /// The query currently on screen. Recomputed in [build] from the debounced
   /// search term, so [_onScroll] always pages the family member being shown.
-  // TODO: forward widget.sortType to the API once the stores sort param is wired.
   late CategoryStoresArgs _args;
 
   @override

@@ -52,22 +52,4 @@ class UserModel {
           .toList(),
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'full_name': fullName,
-      'email': email,
-      'phone': phone,
-      'gender': gender,
-      'birthday': birthday,
-      'nationality': nationality,
-      'status': status,
-      'is_admin': isAdmin,
-      'profile_completed': profileCompleted,
-      'roles': roles,
-      'permissions': permissions,
-    };
-  }
 }

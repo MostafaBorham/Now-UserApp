@@ -22,8 +22,4 @@ class AppCategoriesDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveAppCategories(String data) =>
       _box.put(HiveKeys.appCategoriesPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearAppCategories() =>
-      _box.delete(HiveKeys.appCategoriesPayload);
 }

@@ -20,7 +20,4 @@ class AppInfoDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveAppInfo(String data) =>
       _box.put(HiveKeys.appInfoPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearAppInfo() => _box.delete(HiveKeys.appInfoPayload);
 }

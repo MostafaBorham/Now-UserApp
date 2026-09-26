@@ -5,18 +5,7 @@
 class AppValidator {
   const AppValidator._();
 
-  static final RegExp _saudiPhoneRegExp = RegExp(r'^\+9665\d{8}$');
-
   static final RegExp _saudiLocalPhoneRegExp = RegExp(r'^(?:966|0)?5?(\d{8})$');
-
-  /// The international format the login flow uses. A user's phone *is* their
-  /// identity on the backend (`User::firstOrCreate(['phone' => $phone])`), so
-  /// this rule must keep producing `+9665XXXXXXXX` — a local-format login would
-  /// register a second account for every existing user.
-  static bool isValidSaudiPhone(String phone) {
-    final String normalized = phone.replaceAll(RegExp(r'[\s-]'), '');
-    return _saudiPhoneRegExp.hasMatch(normalized);
-  }
 
   /// The 8 digits that follow the `05` prefix of a Saudi mobile number, taken
   /// from [raw] in any form the platform stores or a user types (`12345678`,
@@ -35,6 +24,11 @@ class AppValidator {
   /// from a number in any local shape the field or platform produces
   /// (`(05) 1234 5678`, `0501234567`, `+966501234567`). Null when [raw] does
   /// not hold a complete Saudi mobile number.
+  ///
+  /// A user's phone *is* their identity on the backend
+  /// (`User::firstOrCreate(['phone' => $phone])`), so this must keep producing
+  /// `+9665XXXXXXXX` — a login in any other shape would register a second
+  /// account for every existing user.
   static String? saudiPhoneToInternational(String? raw) {
     final String? tail = saudiLocalPhoneTail(raw);
     return tail == null ? null : '+9665$tail';

@@ -1,7 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
@@ -12,12 +10,10 @@ class SearchCategoryCard extends StatelessWidget {
   const SearchCategoryCard({
     super.key,
     required this.category,
-    this.hasOffer = false,
     this.onTap,
   });
 
   final CategoryModel category;
-  final bool hasOffer;
   final VoidCallback? onTap;
 
   @override
@@ -80,21 +76,6 @@ class SearchCategoryCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (hasOffer)
-                          Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              color: colors.errorContainer,
-                              borderRadius: AppBorderRadius.brCircular7,
-                            ),
-                            child: Text(
-                              '${category.descendantsCount} % ${LangKeys.discountKey.tr()}',
-                              maxLines: 1,
-                              style: AppTextStyles.style18SemiBold.copyWith(
-                                color: colors.white,
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                   ),

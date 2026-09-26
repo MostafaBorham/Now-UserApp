@@ -22,8 +22,4 @@ class FeaturedStoresDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveFeaturedStores(String data) =>
       _box.put(HiveKeys.featuredStoresPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearFeaturedStores() =>
-      _box.delete(HiveKeys.featuredStoresPayload);
 }

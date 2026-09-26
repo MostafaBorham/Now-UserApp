@@ -21,8 +21,4 @@ class HomeSectionsDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveHomeSections(String data) =>
       _box.put(HiveKeys.homeSectionsPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearHomeSections() =>
-      _box.delete(HiveKeys.homeSectionsPayload);
 }

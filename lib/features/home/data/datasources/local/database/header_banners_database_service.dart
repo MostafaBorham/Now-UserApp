@@ -22,8 +22,4 @@ class HeaderBannersDatabaseService {
   /// Overwrites the cached payload with the JSON-encoded [data].
   Future<void> saveHeaderBanners(String data) =>
       _box.put(HiveKeys.headerBannersPayload, data);
-
-  /// Removes the cached payload entirely.
-  Future<void> clearHeaderBanners() =>
-      _box.delete(HiveKeys.headerBannersPayload);
 }

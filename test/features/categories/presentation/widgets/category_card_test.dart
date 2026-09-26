@@ -22,7 +22,7 @@ void main() {
       expect(find.text('Food'), findsOneWidget);
     });
 
-    testWidgets('hides the discount badge when hasOffer is false',
+    testWidgets('never shows descendantsCount as a discount badge',
         (WidgetTester tester) async {
       await pumpCategoriesWidget(
         tester,
@@ -38,26 +38,8 @@ void main() {
 
       // Card is mounted (guards against a false pass on an empty tree)...
       expect(find.text('Food'), findsOneWidget);
-      // ...and the badge text ("<n> % discount") is absent with the offer off.
+      // ...and no "<n> % discount" text: the category has no discount field.
       expect(find.textContaining('%'), findsNothing);
-    });
-
-    testWidgets('shows the discount badge when hasOffer is true',
-        (WidgetTester tester) async {
-      await pumpCategoriesWidget(
-        tester,
-        boxed(
-          CategoryCard(
-            hasOffer: true,
-            category: const CategoryModel(
-              name: <String, dynamic>{'en': 'Food'},
-              descendantsCount: 10,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.textContaining('%'), findsOneWidget);
     });
 
     testWidgets('invokes onTap when tapped', (WidgetTester tester) async {

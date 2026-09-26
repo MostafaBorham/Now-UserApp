@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-import 'package:nowdelivery_user_app/core/enums/stores_sort_type.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -22,8 +21,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 /// (first-load shimmer, empty, error, trailing next-page shimmer) is read off
 /// the view model's paginated state via [PaginationStatus].
 class CategoryProductsView extends ConsumerStatefulWidget {
-  const CategoryProductsView({super.key, required this.sortType});
-  final StoresSortType sortType;
+  const CategoryProductsView({super.key});
 
   @override
   ConsumerState<CategoryProductsView> createState() =>
