@@ -45,9 +45,10 @@ class OnBoardingContentView extends ConsumerWidget {
       stops: [0.2, 1],
     );
     final heightFactor = MediaQuery.of(context).size.height;
+    final double bottomInset = MediaQuery.of(context).viewPadding.bottom;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      padding: EdgeInsets.fromLTRB(10, 20, 10, 20 + bottomInset),
       decoration: BoxDecoration(
         color: colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
