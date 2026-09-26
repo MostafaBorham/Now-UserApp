@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/features/address/presentation/screens/my_ad
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/complete_profile_screen.dart';
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/otp_verification_screen.dart';
 import 'package:nowdelivery_user_app/features/auth/presentation/screens/phone_verification_screen.dart';
+import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/category_details_screen.dart';
@@ -343,11 +344,14 @@ abstract class AppRouter {
         builder: (context, state) {
           // Without a number there is nothing to verify against: resend and
           // confirm would both fail on an empty phone.
-          final phoneNumber = state.extra as String?;
-          if (phoneNumber == null || phoneNumber.isEmpty) {
+          final Object? extra = state.extra;
+          if (extra is! OtpSent || extra.phone.isEmpty) {
             return const RouteErrorScreen();
           }
-          return OtpVerificationScreen(phoneNumber: phoneNumber);
+          return OtpVerificationScreen(
+            phoneNumber: extra.phone,
+            retryAfterSeconds: extra.retryAfterSeconds,
+          );
         },
       ),
       GoRoute(

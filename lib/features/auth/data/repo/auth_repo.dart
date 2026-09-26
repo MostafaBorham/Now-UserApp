@@ -17,7 +17,14 @@ class AuthRepo {
 
   void cancelRequests() => _authApiService.cancelRequests();
 
-  Future<Either<Failure, String>> requestOtp({required String phone}) async {
+  /// The backend's resend window (`otp.resend_after`). A fresh send carries no
+  /// countdown of its own, so this is the wait before the next one.
+  static const int _resendAfterSeconds = 60;
+
+  /// Asks for a code for [phone]. Resolves the seconds to wait before the next
+  /// resend — a code is on its way either way: a fresh one, or one sent so
+  /// recently that the backend refused another (see [recentlySentRetryAfter]).
+  Future<Either<Failure, int>> requestOtp({required String phone}) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -25,19 +32,48 @@ class AuthRepo {
     try {
       final Response response = await _authApiService.requestOtp(phone: phone);
 
-      return readApiResponse(response, requireSuccessFlag: true).map(
-        (_) => phone,
-      );
+      return readApiResponse(
+        response,
+        requireSuccessFlag: true,
+      ).map((_) => _resendAfterSeconds);
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
           ? data
           : null;
+
+      final int? retryAfter = recentlySentRetryAfter(
+        statusCode: exception.response?.statusCode,
+        body: responseBody,
+      );
+      if (retryAfter != null) return Right(retryAfter);
+
       return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
+  }
+
+  /// The seconds left before another code may be requested, when a refused
+  /// request means "a code was already sent" — otherwise null.
+  ///
+  /// The backend answers 429 for two unrelated reasons, and only one of them is
+  /// good news:
+  /// * the resend cooldown (`OtpRecentlyIssuedException`): a code went out
+  ///   moments ago and is still valid, so the user belongs on the code screen.
+  ///   It is the only response carrying `retry_after`;
+  /// * the `throttle:auth.otp` limiter (5 per phone per 5 minutes, 10 per IP a
+  ///   minute), carrying `retry_after_seconds`: nothing was sent, and verify
+  ///   spends the same budget, so the user must see its message instead.
+  static int? recentlySentRetryAfter({
+    required int? statusCode,
+    required Map<String, dynamic>? body,
+  }) {
+    if (statusCode != 429) return null;
+    final num? retryAfter = num.tryParse('${body?['retry_after']}');
+    if (retryAfter == null) return null;
+    return retryAfter < 0 ? 0 : retryAfter.toInt();
   }
 
   Future<Either<Failure, UserModel>> verifyOtp({

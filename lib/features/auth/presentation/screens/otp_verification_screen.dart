@@ -20,9 +20,17 @@ import '../widgets/otp_verification/otp_code_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
-  const OtpVerificationScreen({super.key, required this.phoneNumber});
+  const OtpVerificationScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.retryAfterSeconds,
+  });
 
   final String phoneNumber;
+
+  /// How long until the first resend — the full window after a fresh code, or
+  /// what is left of it when the backend said one had just been sent.
+  final int retryAfterSeconds;
 
   @override
   ConsumerState<OtpVerificationScreen> createState() =>
@@ -139,9 +147,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       // Nothing else watches this scoped instance, so without
                       // this the resend was completely silent: a rate-limited or
                       // offline attempt looked exactly like a successful one.
-                      ref.listen<AsyncValue<String?>>(requestOtpProvider, (
-                        AsyncValue<String?>? previous,
-                        AsyncValue<String?> next,
+                      ref.listen<AsyncValue<OtpSent?>>(requestOtpProvider, (
+                        AsyncValue<OtpSent?>? previous,
+                        AsyncValue<OtpSent?> next,
                       ) {
                         next.whenOrNull(
                           error: (Object error, StackTrace stackTrace) =>
@@ -150,14 +158,17 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       });
 
                       return OtpActionsRow(
+                        countdown: Duration(seconds: widget.retryAfterSeconds),
                         onResend: () async {
                           await ref
                               .read(requestOtpProvider.notifier)
                               .requestOtp(widget.phoneNumber);
 
-                          if (!context.mounted) return false;
-                          return ref.read(requestOtpProvider).valueOrNull !=
-                              null;
+                          if (!context.mounted) return null;
+                          return ref
+                              .read(requestOtpProvider)
+                              .valueOrNull
+                              ?.retryAfterSeconds;
                         },
                         onPaste: _pasteCode,
                       );

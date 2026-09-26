@@ -37,14 +37,14 @@ class _PhoneVerificationScreenState
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<String?>>(requestOtpProvider, (
-      AsyncValue<String?>? previous,
-      AsyncValue<String?> next,
+    ref.listen<AsyncValue<OtpSent?>>(requestOtpProvider, (
+      AsyncValue<OtpSent?>? previous,
+      AsyncValue<OtpSent?> next,
     ) {
       next.whenOrNull(
-        data: (String? phone) {
-          if (phone != null) {
-            context.pushNamed(AppRoutes.otpVerificationScreen, extra: phone);
+        data: (OtpSent? sent) {
+          if (sent != null) {
+            context.pushNamed(AppRoutes.otpVerificationScreen, extra: sent);
           }
         },
         error: (Object error, StackTrace stackTrace) =>
@@ -83,12 +83,10 @@ class _PhoneVerificationScreenState
                       onTap: () {
                         final String? phone =
                             AppValidator.saudiPhoneToInternational(
-                          _phoneController.text,
-                        );
+                              _phoneController.text,
+                            );
                         if (phone == null) return;
-                        ref
-                            .read(requestOtpProvider.notifier)
-                            .requestOtp(phone);
+                        ref.read(requestOtpProvider.notifier).requestOtp(phone);
                       },
                     ),
             ],
