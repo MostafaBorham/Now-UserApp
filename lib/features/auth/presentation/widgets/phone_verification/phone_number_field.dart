@@ -110,6 +110,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                 TextFormField(
                   controller: widget.controller,
                   keyboardType: TextInputType.phone,
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   // The number always reads left-to-right so the "(05)" head
                   // stays on the correct side of the digits, but the field
                   // aligns to the locale's start edge: left in English, right
@@ -126,7 +127,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                     isDense: true,
                     counterText: "",
                     isCollapsed: true,
-                    hintText: widget.hint ?? '(05) 555-0108',
+                    hintText: widget.hint ?? '(05) 1111-2222',
                     // Keep the hint reading left-to-right so the "(05)" head
                     // stays on the left in Arabic too — matching the order of
                     // the digits the user will actually type.
@@ -151,9 +152,11 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
 /// Keeps the field showing a fixed `(05) ` head in front of whatever the user
 /// types: the prefix appears with the first digit and disappears again once
-/// every typed digit is deleted, so the placeholder can show through.
+/// every typed digit is deleted, so the placeholder can show through. The 8
+/// significant digits are grouped `XXXX-XXXX`, so a dash slides in after the
+/// fourth typed digit — matching the `(05) 1111-2222` hint.
 ///
-/// The stored text stays human-readable (`(05) 12345678`); callers turn it
+/// The stored text stays human-readable (`(05) 1234-5678`); callers turn it
 /// into the backend's `+9665XXXXXXXX` with [AppValidator.saudiPhoneToInternational].
 class _SaudiPhonePrefixFormatter extends TextInputFormatter {
   const _SaudiPhonePrefixFormatter();
@@ -173,7 +176,11 @@ class _SaudiPhonePrefixFormatter extends TextInputFormatter {
 
     if (significant.isEmpty) return TextEditingValue.empty;
 
-    final String text = '$_saudiPhonePrefix$significant';
+    final String grouped = significant.length > 4
+        ? '${significant.substring(0, 4)}-${significant.substring(4)}'
+        : significant;
+
+    final String text = '$_saudiPhonePrefix$grouped';
     return TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),

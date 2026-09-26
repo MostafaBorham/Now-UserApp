@@ -19,7 +19,6 @@ import '../widgets/otp_verification/otp_actions_row.dart';
 import '../widgets/otp_verification/otp_code_field.dart';
 import '../widgets/shared/verification_headline.dart';
 
-
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key, required this.phoneNumber});
 
@@ -44,15 +43,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   void _pasteCode(String digits) {
     _otpController.text = digits;
   }
-
-
-
-
-
-
-
-
-
 
   void _leaveVerificationFlow() {
     final GoRouter router = GoRouter.of(context);
@@ -97,103 +87,104 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     });
     final bool isVerifyOtpLoading = ref.watch(verifyOtpProvider).isLoading;
 
-    return Scaffold(
-      body: AppWavedView(
-        appBarTitle: LangKeys.verificationCodeKey.tr(),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              VerificationHeadline(
-                title: LangKeys.enterVerificationCodeKey.tr(),
-                subtitle: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: '${LangKeys.otpSentToKey.tr()} '),
-                      TextSpan(
-                        text:
-                            '${AppValidator.saudiPhoneDisplay(widget.phoneNumber)}.',
-                        style: AppTextStyles.style16SemiBold.copyWith(
-                          color: context.colors.primary500Main,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: AppWavedView(
+          appBarTitle: LangKeys.verificationCodeKey.tr(),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                VerificationHeadline(
+                  title: LangKeys.enterVerificationCodeKey.tr(),
+                  subtitle: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '${LangKeys.otpSentToKey.tr()} '),
+                        TextSpan(
+                          text:
+                              '${AppValidator.saudiPhoneNationalDigits(widget.phoneNumber)}.',
+                          style: AppTextStyles.style16SemiBold.copyWith(
+                            color: context.colors.primary500Main,
+                          ),
                         ),
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(text: LangKeys.enterCodeToContinueKey.tr()),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              OtpCodeField(
-                controller: _otpController,
-                onCompletionChanged: (isComplete) =>
-                    setState(() => _isCodeComplete = isComplete),
-              ),
-              const SizedBox(height: 16),
-
-
-
-
-              // Resend runs on its *own* instance of the provider. The phone
-              // screen underneath is still mounted and still listening to the
-              // shared one, and it pushes this screen whenever that provider
-              // reports a sent code — so sharing it would stack a second OTP
-              // screen on every resend. Overriding it here keeps the two apart.
-              ProviderScope(
-                overrides: [
-                  requestOtpProvider.overrideWith(
-                    (Ref ref) => RequestOtpViewModel(),
-                  ),
-                ],
-                child: Consumer(
-                  builder: (context, WidgetRef ref, _) {
-                    // Nothing else watches this scoped instance, so without
-                    // this the resend was completely silent: a rate-limited or
-                    // offline attempt looked exactly like a successful one.
-                    ref.listen<AsyncValue<String?>>(requestOtpProvider, (
-                      AsyncValue<String?>? previous,
-                      AsyncValue<String?> next,
-                    ) {
-                      next.whenOrNull(
-                        error: (Object error, StackTrace stackTrace) =>
-                            AppToast.showError(context, error.toString()),
-                      );
-                    });
-
-                    return OtpActionsRow(
-                      onResend: () async {
-                        await ref
-                            .read(requestOtpProvider.notifier)
-                            .requestOtp(widget.phoneNumber);
-
-                        if (!context.mounted) return false;
-                        return ref.read(requestOtpProvider).valueOrNull != null;
-                      },
-                      onPaste: _pasteCode,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 28),
-              !_isCodeComplete && !isVerifyOtpLoading
-                  ? PrimaryAppDisabledButton(
-                      title: LangKeys.continueKey.tr(),
-                      buttonPadding: 16,
-                    )
-                  : PrimaryAppButton(
-                      title: LangKeys.continueKey.tr(),
-                      buttonPadding: 16,
-                      isLoading: isVerifyOtpLoading,
-                      onTap: () {
-                        ref
-                            .read(verifyOtpProvider.notifier)
-                            .verifyOtp(
-                              phone: widget.phoneNumber,
-                              code: _otpController.text,
-                            );
-                      },
+                        const TextSpan(text: '\n'),
+                        TextSpan(text: LangKeys.enterCodeToContinueKey.tr()),
+                      ],
                     ),
-            ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                OtpCodeField(
+                  controller: _otpController,
+                  onCompletionChanged: (isComplete) =>
+                      setState(() => _isCodeComplete = isComplete),
+                ),
+                const SizedBox(height: 16),
+
+                // Resend runs on its *own* instance of the provider. The phone
+                // screen underneath is still mounted and still listening to the
+                // shared one, and it pushes this screen whenever that provider
+                // reports a sent code — so sharing it would stack a second OTP
+                // screen on every resend. Overriding it here keeps the two apart.
+                ProviderScope(
+                  overrides: [
+                    requestOtpProvider.overrideWith(
+                      (Ref ref) => RequestOtpViewModel(),
+                    ),
+                  ],
+                  child: Consumer(
+                    builder: (context, WidgetRef ref, _) {
+                      // Nothing else watches this scoped instance, so without
+                      // this the resend was completely silent: a rate-limited or
+                      // offline attempt looked exactly like a successful one.
+                      ref.listen<AsyncValue<String?>>(requestOtpProvider, (
+                        AsyncValue<String?>? previous,
+                        AsyncValue<String?> next,
+                      ) {
+                        next.whenOrNull(
+                          error: (Object error, StackTrace stackTrace) =>
+                              AppToast.showError(context, error.toString()),
+                        );
+                      });
+
+                      return OtpActionsRow(
+                        onResend: () async {
+                          await ref
+                              .read(requestOtpProvider.notifier)
+                              .requestOtp(widget.phoneNumber);
+
+                          if (!context.mounted) return false;
+                          return ref.read(requestOtpProvider).valueOrNull !=
+                              null;
+                        },
+                        onPaste: _pasteCode,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 28),
+                !_isCodeComplete && !isVerifyOtpLoading
+                    ? PrimaryAppDisabledButton(
+                        title: LangKeys.continueKey.tr(),
+                        buttonPadding: 16,
+                      )
+                    : PrimaryAppButton(
+                        title: LangKeys.continueKey.tr(),
+                        buttonPadding: 16,
+                        isLoading: isVerifyOtpLoading,
+                        onTap: () {
+                          ref
+                              .read(verifyOtpProvider.notifier)
+                              .verifyOtp(
+                                phone: widget.phoneNumber,
+                                code: _otpController.text,
+                              );
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),
