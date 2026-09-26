@@ -68,7 +68,9 @@ class _CartViewState extends ConsumerState<CartView> {
   /// Pull-to-refresh: the loaded cart stays on screen, and a failure says so.
   Future<void> _onRefresh() async {
     final String? error = await ref.read(getCartProvider.notifier).refresh();
-    if (error != null && mounted) AppToast.showError(context, error);
+    // failure.message is a LangKeys key or a raw server string; .tr() localizes
+    // the key case and passes a server string through unchanged.
+    if (error != null && mounted) AppToast.showError(context, error.tr());
   }
 
   /// Drafts an order group and, only if the server accepted it, opens the
@@ -96,7 +98,7 @@ class _CartViewState extends ConsumerState<CartView> {
     if (!mounted) return;
 
     if (error != null) {
-      AppToast.showError(context, error);
+      AppToast.showError(context, error.tr());
       return;
     }
 
@@ -130,7 +132,7 @@ class _CartViewState extends ConsumerState<CartView> {
           loading: () => CartShimmerView(),
           error: (Object error, StackTrace stackTrace) =>
               ServerConnectionErrorWidget(
-                message: error.toString(),
+                message: error.toString().tr(),
                 onRetry: () => ref.read(getCartProvider.notifier).getCart(),
               ),
           data: (CartModel cart) {

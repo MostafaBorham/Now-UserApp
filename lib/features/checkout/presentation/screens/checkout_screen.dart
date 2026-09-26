@@ -145,7 +145,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     // the totals on it may no longer match the choices above them.
     ref.listen<AsyncValue<CheckoutModel?>>(checkoutProvider, (_, next) {
       if (!next.isLoading && next.hasError && next.hasValue) {
-        AppToast.showError(context, next.error.toString());
+        // failure.message is a LangKeys key or a raw server string; .tr()
+        // localizes the key case and passes a server string through unchanged.
+        AppToast.showError(context, next.error.toString().tr());
       }
     });
 
@@ -184,7 +186,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           );
         },
         error: (Object error, StackTrace stackTrace) =>
-            AppToast.showError(context, error.toString()),
+            AppToast.showError(context, error.toString().tr()),
       );
     });
 
@@ -254,7 +256,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
               if (error != null) {
                 return ServerConnectionErrorWidget(
-                  message: error.toString(),
+                  message: error.toString().tr(),
                   // Retry through the same endpoint the checkout came from:
                   // the single-store preview when a store id is set, the
                   // all-stores preview otherwise.
