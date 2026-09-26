@@ -66,13 +66,12 @@ Screen → viewmodel → repo → API service → shared Dio singleton:
 - `errors/` — `failures/failure.dart` (the `Failure` type used in `Either`), `exceptions/` (network, cache). Shared error types live here; feature-specific ones stay in the feature.
 - `routing/` — navigation uses the **go_router** package (Navigator 1.0/2.0 named routes were fully removed). `app_routes.dart` holds route-name constants (kebab-case strings, also used as URL paths); `app_router.dart` exposes `AppRouter.router`, a `GoRouter` wired into `MaterialApp.router` via `routerConfig`. **New screens must be added in both files** (a name constant + a `GoRoute` with `name` and `path: '/<name>'`). Navigate only with go_router context extensions: `context.pushNamed(AppRoutes.x)` to push, `context.goNamed(...)` for stack resets (splash → onboarding → main), `context.pop()` / `context.canPop()` for back. Route arguments go through `extra:` and are read from `state.extra` in the route builder (see the `addressDetailsScreen` case). Never use `Navigator.push/pop/pushNamed` directly.
 - `localization/` — `easy_localization` config (`LocalizationInit` in `configs.dart`), `LangKeys` constants, JSON at `assets/json/lang/{ar-EG,en-US}.json`. Wrap keys with `.tr()`.
-- `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (uses `flutter_screenutil`, design size 390×844), `assets/` (flutter_gen output: `assets.gen.dart`, `fonts.gen.dart`), plus shared `components/` and `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
+- `presentation/` — the design system. `theme/` (light + dark), `styles/` (radii, borders, shadows, text styles), `responsive/` (only `spacing_extension.dart` — the `.hSpace` / `.wSpace` gaps; there is no scaling layer), `assets/` (flutter_gen output: `assets.gen.dart`, `fonts.gen.dart`), plus shared `components/` and `widgets/` (organized by kind: `buttons/`, `text_fields/`, `sliders/`, `tab_bars/`, etc.).
 - `caching/` — `SharedPrefManager` (static wrapper, `init()` in `main.dart`), `CacheKeys` (**every** prefs key is declared here), and `TokenCacheService`, the single source of truth for the three session tokens. Never call `SharedPrefManager` with a literal key.
 - `database/` — Hive. `HiveManager.init()` opens every box at startup; `HiveBoxes` / `HiveKeys` declare all names; `CachePurger` wipes the user-scoped boxes on logout. A new box must be declared in `HiveBoxes` **and** classified in `CachePurger` (see below).
 - `viewmodel/` — shared view-model bases, notably `pagination/paginated_view_model.dart`.
 - `data/` — shared models used by more than one feature (`ProductModel`, `StoreModel`, `CategoryModel`, `CouponModel`, `PaginationModel`, …) plus the recent-keywords repo. Check here before adding a model to a feature.
-- `constants/` — `app_keys.dart`.
-- `connection/`, `notifications/{local,remote}/`, `formatters/`, `pickers/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper. `utils/di/` holds the `get_it` service locator (`setupServiceLocator()`, called from `main.dart`); `utils/auth_guard.dart` has `redirectGuestToLogin` for taps no route guard covers. Both files under `notifications/` are currently **empty** — push is not wired yet.
+- `connection/`, `notifications/{local,remote}/`, `formatters/`, `enums/`, `params/`, `extensions/`, `utils/` — utility bins; check here before adding a new helper. `utils/di/` holds the `get_it` service locator (`setupServiceLocator()`, called from `main.dart`); `utils/auth_guard.dart` has `redirectGuestToLogin` for taps no route guard covers. Both files under `notifications/` are currently **empty** — push is not wired yet.
 - `readme` (file, no extension) documents the intent: "shared between more than one main layer (data, view model or view)".
 
 ### State management
@@ -114,15 +113,13 @@ Forced logout: when a token refresh fails, `TokenRefreshInterceptor` clears the 
 
 ## Tests
 
-There is a real suite: 61 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
+There is a real suite: 69 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
 
 **`flutter analyze` is clean — 0 issues.** The old "69 issues, mostly unused imports" baseline is gone; treat any new issue as yours.
 
-**`flutter test` is not green — the baseline is 304 passing / 10 failing** (measured 2026-09-21). Those 10 are pre-existing, and it is the *file list* that matters, not the count:
+**`flutter test` is not green — the baseline is 362 passing / 2 failing** (measured 2026-09-26). Those 2 are pre-existing, and it is the *name list* that matters, not the count:
 
-- the six `test/auth/{login,register}/**` files — empty or stub scaffolding;
 - `test/home/home_top_banner_section_view_test.dart` — "renders the banner on the design 355×118 box" (geometry);
-- `test/features/categories/presentation/screens/category_details_screen_test.dart` — two cases;
 - `test/home/home_all_stores_section_view_test.dart` — "a category tab lists that category's stores, not the feed's".
 
 Compare against that list rather than expecting a clean run, and don't claim a change is verified because the counts merely didn't get worse — check that the files you touched are absent from both outputs. Counts drift as tests are added, so when in doubt `git stash` and re-measure the baseline rather than trusting the numbers written here.
