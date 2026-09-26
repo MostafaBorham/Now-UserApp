@@ -189,6 +189,9 @@ class _HomeViewState extends ConsumerState<HomeView>
     ) {
       if (previous != null && previous != next) _loadFeed();
     });
+    final bool isUserSession =
+        ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
+        SessionType.user;
     // Only cue when there is content to show (cached or live); with no cache the
     // feed errors and the existing _FeedErrorRetry covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;
@@ -222,7 +225,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         showCategories: showCategories,
         categories: categoriesSection?.categories ?? const <CategoryModel>[],
       ),
-      const HomeLiveOrdersSectionView(),
+      if (isUserSession) const HomeLiveOrdersSectionView(),
       if ((offersSection != null && offersSection.offers.isNotEmpty) ||
           showTopBanner)
         HomeSpecialOffersSectionView(
