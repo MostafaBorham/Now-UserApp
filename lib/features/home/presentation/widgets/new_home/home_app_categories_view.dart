@@ -11,21 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-
 typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /// The home categories carousel, rendered from the `categories` section of the
 /// `/api/v1/home-sections` feed — its items, in the order the admin arranged
@@ -88,11 +74,6 @@ class HomeAppCategoriesView extends ConsumerWidget {
       );
 }
 
-
-
-
-
-
 class _CategoriesCarousel extends StatefulWidget {
   const _CategoriesCarousel({required this.items});
 
@@ -103,7 +84,6 @@ class _CategoriesCarousel extends StatefulWidget {
 }
 
 class _CategoriesCarouselState extends State<_CategoriesCarousel> {
-
   static const int _initialPage = 10000;
   static const Duration _slideInterval = Duration(seconds: 3);
   static const Duration _slideDuration = Duration(milliseconds: 900);
@@ -118,7 +98,6 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
       initialPage: _initialPage,
       viewportFraction: 0.26,
     );
-
 
     _autoSlideTimer = Timer.periodic(_slideInterval, (_) {
       if (!_controller.hasClients) return;
@@ -145,8 +124,6 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
           child: PageView.builder(
             controller: _controller,
             physics: const BouncingScrollPhysics(),
-
-
 
             reverse: true,
             itemBuilder: (context, index) {
@@ -193,6 +170,11 @@ class _CategoryCarouselItem extends StatelessWidget {
 
     final double minImageSize = diameter * 0.5;
     final double maxImageSize = diameter * 1.2;
+    // Decoded once, at the largest size the slide ever draws: keyed on the
+    // animated size, every frame of every slide was a new cache entry — a
+    // fresh decode of all five images, pushing real images out of the cache.
+    final int memCacheWidth =
+        (maxImageSize * MediaQuery.devicePixelRatioOf(context)).round();
 
     return RepaintBoundary(
       child: AnimatedBuilder(
@@ -209,7 +191,6 @@ class _CategoryCarouselItem extends StatelessWidget {
           final double rawImageSize =
               minImageSize + (maxImageSize - minImageSize) * proximity;
 
-
           final bool isCentered = rawImageSize > diameter;
           final double padding = diameter * 0.14;
           final double imageSize = isCentered
@@ -217,7 +198,6 @@ class _CategoryCarouselItem extends StatelessWidget {
               : rawImageSize.clamp(minImageSize, diameter - padding * 2);
           return Transform.scale(
             scale: scale,
-
 
             child: GestureDetector(
               onTap: onTap,
@@ -247,7 +227,6 @@ class _CategoryCarouselItem extends StatelessWidget {
                       maxHeight: double.infinity,
                       alignment: Alignment.center,
 
-
                       child: (imageUrl == null || imageUrl!.isEmpty)
                           ? const SizedBox.shrink()
                           : CachedNetworkImage(
@@ -255,14 +234,7 @@ class _CategoryCarouselItem extends StatelessWidget {
                               width: imageSize,
                               height: imageSize,
                               fit: BoxFit.contain,
-                              memCacheWidth:
-                                  (imageSize *
-                                          MediaQuery.devicePixelRatioOf(context))
-                                      .round(),
-                              memCacheHeight:
-                                  (imageSize *
-                                          MediaQuery.devicePixelRatioOf(context))
-                                      .round(),
+                              memCacheWidth: memCacheWidth,
                               placeholder: (context, url) =>
                                   const SizedBox.shrink(),
                               errorWidget: (context, url, error) =>
@@ -270,7 +242,6 @@ class _CategoryCarouselItem extends StatelessWidget {
                             ),
                     ),
                   ),
-
 
                   if (label.isNotEmpty) ...[
                     SizedBox(height: width * 0.02),
