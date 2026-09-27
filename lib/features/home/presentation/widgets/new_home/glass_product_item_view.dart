@@ -1,9 +1,9 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
@@ -92,80 +92,79 @@ class GlassProductItemView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    LiquidGlassLens(
-                      style: const LiquidGlassStyle(
-                        shape: LiquidGlassShape.roundedRectangle(
-                          cornerRadius: 0,
-                          borderWidth: 0,
-                          lightIntensity: 0,
-                        ),
-                        appearance: LiquidGlassAppearance(
-                          blur: LiquidGlassBlur(sigmaX: 5, sigmaY: 5),
-                        ),
-                        refraction: LiquidGlassRefraction(
-                          distortionWidth: 0,
-                          magnification: 1,
-                        ),
-                      ),
-                      // The lens hugs this Column exactly — same width and height.
-                      // A single white line on the top edge only; the other
-                      // edges stay borderless.
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(
-                              color: colors.white.withValues(alpha: 0.3),
+                    // Frosted glass: a plain σ5 backdrop blur clipped to the
+                    // panel, which is all the liquid-glass lens was configured
+                    // to draw (no tint, refraction, light or border) — at one
+                    // backdrop pass instead of two, without the lens repainting
+                    // on every scroll frame, and without its black edge under
+                    // Android's stretch overscroll. Not `.grouped`: a shared
+                    // backdrop is read once, at the first tile, so every later
+                    // tile would blur a copy that lacks its own card and image.
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        // A single white line on the top edge only; the other
+                        // edges stay borderless.
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: colors.white.withValues(alpha: 0.3),
+                              ),
                             ),
                           ),
-                        ),
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          spacing: 5,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    context.getLocalizedApiText(product.name),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: colors.black,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            spacing: 5,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      context.getLocalizedApiText(product.name),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: colors.black,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                AppRateWidget(
-                                  starColor: colors.amber500,
-                                  rateRatio:
-                                      '${formatDouble(product.rating?.average)}',
-                                  rateColor: colors.black,
-                                  rateCount: '${product.rating?.total ?? 0}',
-                                  size: 14,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                NewPriceWidget(
-                                  color: colors.black,
-                                  price: formatMoney(price),
-                                  size: 16,
-                                ),
-                                // Reserve the slot the cart control occupies so
-                                // the price keeps its place. The real control is a
-                                // Stack overlay below, so its counter can expand
-                                // over the price/name without shifting them.
-                                SizedBox.square(
-                                  dimension:
-                                      MediaQuery.sizeOf(context).width * 0.075,
-                                ),
-                              ],
-                            ),
-                          ],
+                                  AppRateWidget(
+                                    starColor: colors.amber500,
+                                    rateRatio:
+                                        '${formatDouble(product.rating?.average)}',
+                                    rateColor: colors.black,
+                                    rateCount: '${product.rating?.total ?? 0}',
+                                    size: 14,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  NewPriceWidget(
+                                    color: colors.black,
+                                    price: formatMoney(price),
+                                    size: 16,
+                                  ),
+                                  // Reserve the slot the cart control occupies so
+                                  // the price keeps its place. The real control is a
+                                  // Stack overlay below, so its counter can expand
+                                  // over the price/name without shifting them.
+                                  SizedBox.square(
+                                    dimension:
+                                        MediaQuery.sizeOf(context).width *
+                                        0.075,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -202,8 +201,9 @@ class GlassProductItemView extends StatelessWidget {
                           Positioned.fill(
                             child: ReverseWidget(
                               applyReverse: !context.isRTL,
-                              child: Assets.media.images.svg.discountBadge
-                                  .svg(fit: BoxFit.contain),
+                              child: Assets.media.images.svg.discountBadge.svg(
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                           PositionedDirectional(
