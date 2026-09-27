@@ -75,14 +75,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: colors.black.withValues(alpha: 0.15),
-                                offset: Offset(0, 0),
-                                blurRadius: 4,
-                                spreadRadius: 0,
-                              ),
-                            ],
                           ),
                           child: Stack(
                             children: [
