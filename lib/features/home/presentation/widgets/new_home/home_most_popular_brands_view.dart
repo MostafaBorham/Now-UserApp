@@ -195,7 +195,7 @@ class _BrandCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         spacing: 8,
         children: [
-          AspectRatio(aspectRatio: 1, child: _logo(colors, store)),
+          AspectRatio(aspectRatio: 1, child: _logo(context, colors, store)),
           Expanded(
             child: store == null
                 ? _placeholder(colors, height: 12)
@@ -215,13 +215,16 @@ class _BrandCard extends StatelessWidget {
     );
   }
 
-  Widget _logo(AppColorScheme colors, StoreModel? store) {
+  Widget _logo(BuildContext context, AppColorScheme colors, StoreModel? store) {
     if (store == null) return _placeholder(colors);
     final String? url = store.logoUrl;
     if (url == null) return const SizedBox.shrink();
     return CachedNetworkImage(
       imageUrl: url,
       fit: BoxFit.contain,
+      // The square logo slot: the card's height less its 12pt padding.
+      memCacheWidth: ((height - 24) * MediaQuery.devicePixelRatioOf(context))
+          .round(),
       placeholder: (context, url) => const SizedBox.shrink(),
       errorWidget: (context, url, error) => const SizedBox.shrink(),
     );

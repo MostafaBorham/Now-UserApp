@@ -95,9 +95,13 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                   child: CachedNetworkImage(
                     imageUrl: image,
                     fit: BoxFit.contain,
+                    memCacheWidth:
+                        (164 * s * MediaQuery.devicePixelRatioOf(context))
+                            .round(),
                     alignment: Alignment.bottomCenter,
                     placeholder: (context, url) => const SizedBox.shrink(),
-                    errorWidget: (context, url, error) => const SizedBox.shrink(),
+                    errorWidget: (context, url, error) =>
+                        const SizedBox.shrink(),
                   ),
                 ),
               // Category name: two white kashida-stretched lines on the leading
@@ -146,7 +150,8 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: productModels.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
                   itemBuilder: (context, index) => ProductItem3View(
                     product: productModels[index],
                     onFavouriteChanged: (bool isFavourite) => ref

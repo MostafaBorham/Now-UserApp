@@ -18,12 +18,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
-
-
-
-
-
-
 class HomeNeverMissOffersItem extends StatelessWidget {
   const HomeNeverMissOffersItem({
     super.key,
@@ -40,7 +34,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-
 
     final double? price = product.effectivePrice ?? product.price;
     final double? discount = product.discountPercentage;
@@ -93,10 +86,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                           ),
                           child: Stack(
                             children: [
-
-
-
-
                               Positioned.fill(
                                 child: AppCachedNetworkImage(
                                   imageUrl: imageUrl,
@@ -108,8 +97,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-
-
                                   if (isDiscounted)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -168,7 +155,10 @@ class HomeNeverMissOffersItem extends StatelessWidget {
           LayoutBuilder(
             builder: (context, con) {
               return Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 5,
+                ),
                 decoration: BoxDecoration(
                   color: colors.white,
                   borderRadius: BorderRadiusGeometry.circular(8),
@@ -199,10 +189,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-
-
-
-
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +203,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                     price: formatMoney(price),
                                     size: con.maxWidth * 0.1,
                                   ),
-
 
                                   if (isDiscounted && oldPrice != null)
                                     OldPriceWidget(
@@ -252,6 +237,13 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                               : CachedNetworkImage(
                                   imageUrl: vendorLogoUrl,
                                   fit: BoxFit.contain,
+                                  memCacheWidth:
+                                      (con.maxWidth *
+                                              0.25 *
+                                              MediaQuery.devicePixelRatioOf(
+                                                context,
+                                              ))
+                                          .round(),
                                   placeholder: (context, url) =>
                                       const SizedBox.shrink(),
                                   errorWidget: (context, url, error) =>

@@ -31,9 +31,7 @@ class CircularBrandLogo extends StatelessWidget {
     final Widget noImage = FractionallySizedBox(
       widthFactor: 2,
       heightFactor: 2,
-      child: Assets.media.images.png.noImageAvail.image(
-        fit: BoxFit.contain,
-      ),
+      child: Assets.media.images.png.noImageAvail.image(fit: BoxFit.contain),
     );
     return Material(
       elevation: elevation!,
@@ -49,6 +47,11 @@ class CircularBrandLogo extends StatelessWidget {
                   imageUrl: url!,
                   fit: BoxFit.contain,
                   width: radius * logoScale,
+                  memCacheWidth:
+                      (radius *
+                              logoScale *
+                              MediaQuery.devicePixelRatioOf(context))
+                          .round(),
                   placeholder: (context, url) => Center(
                     child: SizedBox(
                       width: radius * 0.7,

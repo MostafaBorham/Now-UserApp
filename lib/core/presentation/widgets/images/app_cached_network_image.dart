@@ -7,8 +7,6 @@ import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
-
-
 class AppCachedNetworkImage extends StatelessWidget {
   const AppCachedNetworkImage({
     super.key,
@@ -30,14 +28,7 @@ class AppCachedNetworkImage extends StatelessWidget {
   final LoadingViewTypes? placeholderType;
   final Color? errorBackgroundColor;
 
-
-
   final Map<String, String>? httpHeaders;
-
-
-
-
-
 
   static final Set<String> _failedUrls = <String>{};
 
@@ -50,9 +41,6 @@ class AppCachedNetworkImage extends StatelessWidget {
     _failedUrls.add(url);
   }
 
-
-
-
   static bool _watchingConnection = false;
 
   static void _clearFailedUrlsOnReconnect() {
@@ -63,21 +51,52 @@ class AppCachedNetworkImage extends StatelessWidget {
     });
   }
 
-  int? _cacheDimension(double? logicalSize, double devicePixelRatio) {
-    if (logicalSize == null ||
-        logicalSize.isInfinite ||
-        logicalSize <= 0) {
-      return null;
-    }
+  static bool _isFinite(double? size) => size != null && size.isFinite;
+
+  static int? _cacheDimension(double logicalSize, double devicePixelRatio) {
+    if (!logicalSize.isFinite || logicalSize <= 0) return null;
     return (logicalSize * devicePixelRatio).round();
+  }
+
+  /// Decode size for a [boxWidth]×[boxHeight] box: its longer side × DPR, the
+  /// other axis left to follow the image's own aspect ratio — passing both
+  /// would squash the image into the box's shape (`ResizeImage`'s exact
+  /// policy). Exact for any image no wider than its box (no taller, for a tall
+  /// box); a wider one cover-cropped into it comes out slightly soft.
+  static (int?, int?) _cacheSize(
+    double boxWidth,
+    double boxHeight,
+    double devicePixelRatio,
+  ) {
+    final int? w = _cacheDimension(boxWidth, devicePixelRatio);
+    final int? h = _cacheDimension(boxHeight, devicePixelRatio);
+    if (w == null || h == null) return (w, h);
+    return w >= h ? (w, null) : (null, h);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isFinite(width) && _isFinite(height)) {
+      return _buildForBox(context, width!, height!);
+    }
+    // Without a finite size, decode for the box the parent lays out — or every
+    // caller that fills its parent decodes at the uploaded resolution.
+    return LayoutBuilder(
+      builder: (context, constraints) => _buildForBox(
+        context,
+        _isFinite(width) ? width! : constraints.maxWidth,
+        _isFinite(height) ? height! : constraints.maxHeight,
+      ),
+    );
+  }
+
+  Widget _buildForBox(BuildContext context, double boxWidth, double boxHeight) {
     final AppColorScheme colors = context.colors;
-    final double devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
-    final int? memCacheWidth = _cacheDimension(width, devicePixelRatio);
-    final int? memCacheHeight = _cacheDimension(height, devicePixelRatio);
+    final (int? memCacheWidth, int? memCacheHeight) = _cacheSize(
+      boxWidth,
+      boxHeight,
+      MediaQuery.devicePixelRatioOf(context),
+    );
 
     final Widget errorPlaceholder = Container(
       width: width ?? double.infinity,
@@ -93,8 +112,6 @@ class AppCachedNetworkImage extends StatelessWidget {
         width: double.infinity,
       ),
     );
-
-
 
     if (imageUrl.isEmpty || _failedUrls.contains(imageUrl)) {
       return errorPlaceholder;
