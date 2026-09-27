@@ -77,13 +77,14 @@ class CategoryModel extends Equatable {
       childrenCount: (json['children_count'] as num?)?.toInt(),
       descendantsCount: (json['descendants_count'] as num?)?.toInt(),
       productsCount: (json['products_count'] as num?)?.toInt(),
-      image: json.downloadUrl('image'),
+      // `/categories` sends an `image` object; a home-feed item sends a bare
+      // `image_url` instead.
+      image: json.downloadUrl('image') ?? json['image_url']?.toString(),
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
       deletedAt: json['deleted_at']?.toString(),
     );
   }
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -103,18 +104,15 @@ class CategoryModel extends Equatable {
       'reviewed_at': reviewedAt,
       'rejection_reason': rejectionReason,
       'children_count': childrenCount,
-      'descendants_count': descendantsCount??0,
+      'descendants_count': descendantsCount ?? 0,
       'products_count': productsCount,
-      'image': image == null
-          ? null
-          : {
-        'download_url': image,
-      },
+      'image': image == null ? null : {'download_url': image},
       'created_at': createdAt,
       'updated_at': updatedAt,
       'deleted_at': deletedAt,
     };
   }
+
   @override
   List<Object?> get props => [
     id,

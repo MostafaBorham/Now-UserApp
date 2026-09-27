@@ -29,6 +29,25 @@ void main() {
       expect(model.image, 'https://cdn/x.png');
     });
 
+    test('a home-feed item\'s bare image_url is read as the image', () {
+      final model = CategoryModel.fromJson({
+        'id': 13,
+        'type': 'category',
+        'slug': 'books',
+        'image_url': 'https://cdn/books.png?v=1',
+        'primary_color': '#FF8800',
+      });
+      expect(model.image, 'https://cdn/books.png?v=1');
+    });
+
+    test('an image object wins over image_url', () {
+      final model = CategoryModel.fromJson({
+        'image': {'download_url': 'https://cdn/x.png'},
+        'image_url': 'https://cdn/other.png',
+      });
+      expect(model.image, 'https://cdn/x.png');
+    });
+
     test('missing image is null', () {
       expect(CategoryModel.fromJson({'slug': 'x'}).image, isNull);
     });

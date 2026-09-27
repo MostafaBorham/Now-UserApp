@@ -172,9 +172,9 @@ class HomeSectionModel extends Equatable {
       title: json.localized('title'),
       offers: type == 'featured_offers'
           ? rawItems
-              .whereType<Map<String, dynamic>>()
-              .map(HomeOfferModel.fromJson)
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .map(HomeOfferModel.fromJson)
+                .toList()
           : const <HomeOfferModel>[],
       // Vendor items use the same keys as every other store payload, so
       // StoreModel parses them as-is — nested `products` included. Sections
@@ -182,46 +182,39 @@ class HomeSectionModel extends Equatable {
       // the fields they omit stay null and their card leaves those rows out.
       stores: _storeTypes.contains(type)
           ? rawItems
-              .whereType<Map<String, dynamic>>()
-              .map(StoreModel.fromJson)
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .map(StoreModel.fromJson)
+                .toList()
           : const <StoreModel>[],
       products: type == 'flash_offers'
           ? rawItems
-              .whereType<Map<String, dynamic>>()
-              .expand(
-                (Map<String, dynamic> offer) =>
-                    (offer['products'] as List<dynamic>? ?? <dynamic>[])
-                        .whereType<Map<String, dynamic>>(),
-              )
-              .map(ProductModel.fromJson)
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .expand(
+                  (Map<String, dynamic> offer) =>
+                      (offer['products'] as List<dynamic>? ?? <dynamic>[])
+                          .whereType<Map<String, dynamic>>(),
+                )
+                .map(ProductModel.fromJson)
+                .toList()
           // A products_by_category item is the product itself — no offer
           // wrapper to flatten, unlike flash_offers above.
           : isProductsByCategory
-              ? rawItems
-                  .whereType<Map<String, dynamic>>()
-                  .map(ProductModel.fromJson)
-                  .toList()
-              : const <ProductModel>[],
+          ? rawItems
+                .whereType<Map<String, dynamic>>()
+                .map(ProductModel.fromJson)
+                .toList()
+          : const <ProductModel>[],
       banners: _bannerTypes.contains(type)
           ? rawItems
-              .whereType<Map<String, dynamic>>()
-              .map(BannerModel.fromJson)
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .map(BannerModel.fromJson)
+                .toList()
           : const <BannerModel>[],
-      // A category item's artwork arrives as a bare `image_url`; every other
-      // field parses as-is, so a `slug` would flow through the day the feed
-      // starts sending one.
       categories: type == 'categories'
           ? rawItems
-              .whereType<Map<String, dynamic>>()
-              .map(
-                (Map<String, dynamic> item) => CategoryModel.fromJson(
-                  <String, dynamic>{...item, 'image': item['image_url']},
-                ),
-              )
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .map(CategoryModel.fromJson)
+                .toList()
           : const <CategoryModel>[],
       // `title` is the admin's own label for the section ("products by
       // category"), identical on every section of this type, so the heading
@@ -256,24 +249,24 @@ class HomeSectionModel extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        type,
-        title,
-        offers,
-        stores,
-        products,
-        banners,
-        categories,
-        category,
-        primaryColor,
-        textColor,
-        backgroundColor,
-        viewAllTextColor,
-        viewAllUnderlineColor,
-        displayDesign,
-        media,
-        showViewAll,
-      ];
+    id,
+    type,
+    title,
+    offers,
+    stores,
+    products,
+    banners,
+    categories,
+    category,
+    primaryColor,
+    textColor,
+    backgroundColor,
+    viewAllTextColor,
+    viewAllUnderlineColor,
+    displayDesign,
+    media,
+    showViewAll,
+  ];
 }
 
 /// A single tappable offer inside a `featured_offers` section. [kind] routes the
@@ -311,14 +304,22 @@ class HomeOfferModel extends Equatable {
       // details screens navigate by. Older responses put a numeric *id* there;
       // one of those stays null, leaving the tap inert rather than opening the
       // wrong screen.
-      productSlug: link['product_slug']?.toString() ??
+      productSlug:
+          link['product_slug']?.toString() ??
           (product is String ? product : null),
-      categorySlug: link['category_slug']?.toString() ??
+      categorySlug:
+          link['category_slug']?.toString() ??
           (category is String ? category : null),
     );
   }
 
   @override
-  List<Object?> get props =>
-      <Object?>[title, imageUrl, kind, storeId, productSlug, categorySlug];
+  List<Object?> get props => <Object?>[
+    title,
+    imageUrl,
+    kind,
+    storeId,
+    productSlug,
+    categorySlug,
+  ];
 }
