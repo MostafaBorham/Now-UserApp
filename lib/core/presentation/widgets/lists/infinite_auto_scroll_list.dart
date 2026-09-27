@@ -65,6 +65,9 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
   // effectively unlimited room to drag either way.
   static const int _repeat = 1000;
 
+  // Seconds between two ticks beyond which the list does not move for it.
+  static const double _maxTickGap = 0.1;
+
   late final ScrollController _controller;
   late final Ticker _ticker;
   Duration _lastElapsed = Duration.zero;
@@ -113,8 +116,10 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
     final double dt = (elapsed - _lastElapsed).inMicroseconds / 1000000;
     _lastElapsed = elapsed;
     // While the user is in control, hold still and keep the clock in sync so we
-    // resume with a small delta instead of a jump.
-    if (_userScrolling || dt <= 0) return;
+    // resume with a small delta instead of a jump. A gap longer than any frame
+    // means the ticker was muted (scrolled off screen, another tab, a pushed
+    // route) — resync the same way, or the strip leaps ahead on its return.
+    if (_userScrolling || dt <= 0 || dt > _maxTickGap) return;
 
     double target = _controller.offset + widget.pixelsPerSecond * dt;
     // Wrap back by whole cycles; the content one cycle earlier is identical, so
