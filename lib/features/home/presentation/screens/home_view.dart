@@ -9,11 +9,12 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/connectivity_controller.dart';
@@ -28,7 +29,6 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 
@@ -281,9 +281,7 @@ class _HomeViewState extends ConsumerState<HomeView>
           child: HomeBannerView(banner: footerPromoSection.banners.first),
         ),
       if (allStoresSection != null)
-        HomeAllStoresSectionView(
-          pinTop: _searchBarHeight,
-        ),
+        HomeAllStoresSectionView(pinTop: _searchBarHeight),
       if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
     ];
 
@@ -294,28 +292,28 @@ class _HomeViewState extends ConsumerState<HomeView>
         AppRefreshIndicator(
           onRefresh: _refreshHome,
           child: CustomScrollView(
-          controller: _scrollController,
-          // Always scrollable, so a short or empty feed can still be pulled.
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: <Widget>[
-            SliverPadding(
-              padding: EdgeInsets.only(
-                bottom:
-                    (showSavedContentCue ? 52 : 0) +
-                    MediaQuery.paddingOf(context).bottom,
-              ),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => index.isOdd
-                      ? const SizedBox(height: 24)
-                      : feedChildren[index ~/ 2],
-                  childCount: feedChildren.isEmpty
-                      ? 0
-                      : feedChildren.length * 2 - 1,
+            controller: _scrollController,
+            // Always scrollable, so a short or empty feed can still be pulled.
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: <Widget>[
+              SliverPadding(
+                padding: EdgeInsets.only(
+                  bottom:
+                      (showSavedContentCue ? 52 : 0) +
+                      MediaQuery.paddingOf(context).bottom,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => index.isOdd
+                        ? const SizedBox(height: 24)
+                        : HomeFeedSection(child: feedChildren[index ~/ 2]),
+                    childCount: feedChildren.isEmpty
+                        ? 0
+                        : feedChildren.length * 2 - 1,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
           ),
         ),
         Positioned(
@@ -359,12 +357,7 @@ class _HomeViewState extends ConsumerState<HomeView>
               return Stack(
                 clipBehavior: Clip.none,
                 children: <Widget>[
-                  Positioned(
-                    top: fieldTop,
-                    left: 16,
-                    right: 16,
-                    child: child!,
-                  ),
+                  Positioned(top: fieldTop, left: 16, right: 16, child: child!),
                 ],
               );
             },
@@ -384,6 +377,95 @@ class _HomeViewState extends ConsumerState<HomeView>
           ),
       ],
     );
+  }
+}
+
+/// Wraps every feed section. It keeps the section alive once built, so
+/// scrolling back no longer rebuilds it — the header re-parsed its animated SVG
+/// and replayed it on every return to the top, and the horizontal lists lost
+/// their positions. And it mutes the section's tickers while it is outside the
+/// viewport: a kept-alive or merely cached section would otherwise keep
+/// animating (the flash-offer strip, carousel slides, shimmers), and on
+/// Impeller every such frame redraws the whole screen. Nests under the tab's
+/// own [TickerMode] in the main shell, which still wins.
+@visibleForTesting
+class HomeFeedSection extends StatefulWidget {
+  const HomeFeedSection({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<HomeFeedSection> createState() => _HomeFeedSectionState();
+}
+
+class _HomeFeedSectionState extends State<HomeFeedSection>
+    with AutomaticKeepAliveClientMixin {
+  ScrollPosition? _position;
+  bool _onScreen = true;
+  bool _measureScheduled = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final ScrollPosition? position = Scrollable.maybeOf(context)?.position;
+    if (position != _position) {
+      _position?.removeListener(_scheduleMeasure);
+      _position = position;
+      _position?.addListener(_scheduleMeasure);
+    }
+    _scheduleMeasure();
+  }
+
+  @override
+  void didUpdateWidget(HomeFeedSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _scheduleMeasure();
+  }
+
+  @override
+  void dispose() {
+    _position?.removeListener(_scheduleMeasure);
+    super.dispose();
+  }
+
+  /// Measured after layout, so a section the scroll just moved is judged by
+  /// where it is now rather than where it was last frame.
+  void _scheduleMeasure() {
+    if (_measureScheduled) return;
+    _measureScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measureScheduled = false;
+      if (mounted) _measure();
+    });
+  }
+
+  void _measure() {
+    final ScrollPosition? position = _position;
+    final RenderObject? box = context.findRenderObject();
+    if (position == null ||
+        !position.hasViewportDimension ||
+        box is! RenderBox ||
+        !box.attached ||
+        !box.hasSize) {
+      return;
+    }
+    // Same measurement `StickyOnScroll` pins by: the scroll offset that brings
+    // this section's top edge to the viewport's.
+    final double top =
+        RenderAbstractViewport.of(box).getOffsetToReveal(box, 0.0).offset -
+        position.pixels;
+    final bool onScreen =
+        top < position.viewportDimension && top + box.size.height > 0;
+    if (onScreen != _onScreen) setState(() => _onScreen = onScreen);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return TickerMode(enabled: _onScreen, child: widget.child);
   }
 }
 
