@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:full_svg_flutter/full_svg_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -14,6 +13,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_address_provider.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/animated_delivery_man_motorcycle_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/header_intro_animations.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
 
@@ -70,8 +70,9 @@ class HomeHeaderView extends ConsumerWidget {
     // address (else the current location), or whatever they last confirmed in
     // the sheet.
     final AddressModel? current = ref.watch(homeAddressProvider);
-    final String displayedAddress =
-        current == null ? '' : _addressName(context, current);
+    final String displayedAddress = current == null
+        ? ''
+        : _addressName(context, current);
     final bool hasAddress = displayedAddress.isNotEmpty;
     return LayoutBuilder(
       builder: (context, con) {
@@ -144,7 +145,9 @@ class HomeHeaderView extends ConsumerWidget {
                                         ),
                                         InkWell(
                                           onTap: () =>
-                                              _openDeliveryAddressSheet(context),
+                                              _openDeliveryAddressSheet(
+                                                context,
+                                              ),
                                           child: RotatedBox(
                                             quarterTurns: 1,
                                             child: Assets
@@ -200,24 +203,8 @@ class HomeHeaderView extends ConsumerWidget {
                           onTap: () =>
                               context.pushNamed(AppRoutes.categoriesScreen),
                           behavior: HitTestBehavior.opaque,
-                          child: IgnorePointer(
-                            child: RepaintBoundary(
-                              child: AnimatedSvgPicture.asset(
-                                context.isRTL
-                                    ? Assets.media.images.svg.viewAllArabic.path
-                                    : Assets
-                                          .media
-                                          .images
-                                          .svg
-                                          .englishAnimatedSeeAll
-                                          .path,
-                                fit: BoxFit.contain,
-                                playbackRate: 1,
-                                autoPlay: true,
-                                placeholderBuilder: (BuildContext context) =>
-                                    SizedBox.shrink(),
-                              ),
-                            ),
+                          child: const IgnorePointer(
+                            child: RepaintBoundary(child: SeeAllAnimation()),
                           ),
                         ),
                       ),

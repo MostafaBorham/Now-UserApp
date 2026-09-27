@@ -129,9 +129,41 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get onboardingImg =>
       const AssetGenImage('assets/media/images/png/onboarding_img.png');
 
+  /// File path: assets/media/images/png/quick-delivery-ar-1.png
+  AssetGenImage get quickDeliveryAr1 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-ar-1.png');
+
+  /// File path: assets/media/images/png/quick-delivery-ar-2.png
+  AssetGenImage get quickDeliveryAr2 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-ar-2.png');
+
+  /// File path: assets/media/images/png/quick-delivery-ar-3.png
+  AssetGenImage get quickDeliveryAr3 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-ar-3.png');
+
+  /// File path: assets/media/images/png/quick-delivery-en-1.png
+  AssetGenImage get quickDeliveryEn1 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-en-1.png');
+
+  /// File path: assets/media/images/png/quick-delivery-en-2.png
+  AssetGenImage get quickDeliveryEn2 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-en-2.png');
+
+  /// File path: assets/media/images/png/quick-delivery-en-3.png
+  AssetGenImage get quickDeliveryEn3 =>
+      const AssetGenImage('assets/media/images/png/quick-delivery-en-3.png');
+
   /// File path: assets/media/images/png/remove-icon.png
   AssetGenImage get removeIcon =>
       const AssetGenImage('assets/media/images/png/remove-icon.png');
+
+  /// File path: assets/media/images/png/see-all-ar.png
+  AssetGenImage get seeAllAr =>
+      const AssetGenImage('assets/media/images/png/see-all-ar.png');
+
+  /// File path: assets/media/images/png/see-all-en.png
+  AssetGenImage get seeAllEn =>
+      const AssetGenImage('assets/media/images/png/see-all-en.png');
 
   /// File path: assets/media/images/png/stars-background.png
   AssetGenImage get starsBackground =>
@@ -159,7 +191,15 @@ class $AssetsMediaImagesPngGen {
     logoAndroid12,
     noImageAvail,
     onboardingImg,
+    quickDeliveryAr1,
+    quickDeliveryAr2,
+    quickDeliveryAr3,
+    quickDeliveryEn1,
+    quickDeliveryEn2,
+    quickDeliveryEn3,
     removeIcon,
+    seeAllAr,
+    seeAllEn,
     starsBackground,
     userAvatarPlaceholderImg,
     whiteAppLogo,
@@ -311,15 +351,6 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/empty_favourite.svg
   SvgGenImage get emptyFavourite =>
       const SvgGenImage('assets/media/images/svg/empty_favourite.svg');
-
-  /// File path: assets/media/images/svg/english-animated-quick-delivery.svg
-  SvgGenImage get englishAnimatedQuickDelivery => const SvgGenImage(
-    'assets/media/images/svg/english-animated-quick-delivery.svg',
-  );
-
-  /// File path: assets/media/images/svg/english-animated-see-all.svg
-  SvgGenImage get englishAnimatedSeeAll =>
-      const SvgGenImage('assets/media/images/svg/english-animated-see-all.svg');
 
   /// File path: assets/media/images/svg/error-toast-icon.svg
   SvgGenImage get errorToastIcon =>
@@ -525,10 +556,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get privacy =>
       const SvgGenImage('assets/media/images/svg/privacy.svg');
 
-  /// File path: assets/media/images/svg/quick_deliver_arabic.svg
-  SvgGenImage get quickDeliverArabic =>
-      const SvgGenImage('assets/media/images/svg/quick_deliver_arabic.svg');
-
   /// File path: assets/media/images/svg/rank-icon.svg
   SvgGenImage get rankIcon =>
       const SvgGenImage('assets/media/images/svg/rank-icon.svg');
@@ -615,10 +642,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get twoWaveBackground =>
       const SvgGenImage('assets/media/images/svg/two-wave-background.svg');
 
-  /// File path: assets/media/images/svg/view_all_arabic.svg
-  SvgGenImage get viewAllArabic =>
-      const SvgGenImage('assets/media/images/svg/view_all_arabic.svg');
-
   /// File path: assets/media/images/svg/visa-logo.svg
   SvgGenImage get visaLogo =>
       const SvgGenImage('assets/media/images/svg/visa-logo.svg');
@@ -684,8 +707,6 @@ class $AssetsMediaImagesSvgGen {
     emptyAddToCart,
     emptyCartImg,
     emptyFavourite,
-    englishAnimatedQuickDelivery,
-    englishAnimatedSeeAll,
     errorToastIcon,
     faq,
     favouriteIcon,
@@ -737,7 +758,6 @@ class $AssetsMediaImagesSvgGen {
     personalInfo,
     pin,
     privacy,
-    quickDeliverArabic,
     rankIcon,
     realSaudiCurrency,
     retryIcon,
@@ -760,7 +780,6 @@ class $AssetsMediaImagesSvgGen {
     timeIcon,
     trustIcon,
     twoWaveBackground,
-    viewAllArabic,
     visaLogo,
     visa,
     wallet2,
