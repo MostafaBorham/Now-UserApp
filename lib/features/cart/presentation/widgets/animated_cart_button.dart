@@ -84,13 +84,12 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   /// Integrated cards read it from the shared cart ([getCartProvider]) — the
   /// single source of truth that survives the card scrolling out of the list
   /// and back, so a change made here is no longer lost on rebuild. Until the
-  /// cart is first loaded ([cart] is `null`) the listing seed
+  /// cart is first loaded ([cartQuantity] is `null`) the listing seed
   /// ([AnimatedCartButton.productQuantity]) stands in, which is itself the cart
   /// quantity at list-fetch time. Non-integrated cards count locally.
-  int _quantityFrom(CartModel? cart) {
+  int _quantityFrom(int? cartQuantity) {
     if (!_isIntegrated) return _counter;
-    if (cart == null) return widget.productQuantity ?? 0;
-    return cart.quantityOf(widget.productId!);
+    return cartQuantity ?? widget.productQuantity ?? 0;
   }
 
   @override
@@ -102,7 +101,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   @override
   Widget build(BuildContext context) {
     bool isUpdating = false;
-    CartModel? cart;
+    int? cartQuantity;
 
     if (_isIntegrated) {
       final AutoDisposeStateNotifierProvider<
@@ -119,11 +118,19 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       isUpdating = ref.watch(provider).isLoading;
 
       // The shared cart is the source of truth for this product's quantity, so
-      // a change survives the card scrolling out of the list and back.
-      cart = ref.watch(getCartProvider).valueOrNull;
+      // a change survives the card scrolling out of the list and back. Only
+      // this product's quantity is watched: Home mounts dozens of these, and
+      // watching the whole cart rebuilt every one of them on any cart change.
+      final int productId = widget.productId!;
+      cartQuantity = ref.watch(
+        getCartProvider.select(
+          (AsyncValue<CartModel> cart) =>
+              cart.valueOrNull?.quantityOf(productId),
+        ),
+      );
     }
 
-    final int counter = _quantityFrom(cart);
+    final int counter = _quantityFrom(cartQuantity);
 
     final bool showCounterView =
         _showCounterView && (isUpdating || counter > 0);
@@ -272,7 +279,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         // show there is no point keeping the counter open — e.g. a failed first
         // add, where the quantity is still 0.
         final int current = _quantityFrom(
-          ref.read(getCartProvider).valueOrNull,
+          ref.read(getCartProvider).valueOrNull?.quantityOf(widget.productId!),
         );
         current < 1 ? _collapse() : _startCollapseTimer();
       },
