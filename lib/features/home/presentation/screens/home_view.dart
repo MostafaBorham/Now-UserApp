@@ -231,42 +231,67 @@ class _HomeViewState extends ConsumerState<HomeView>
     final HomeSectionModel? footerPromoSection = byType['promo_block_footer'];
     final HomeSectionModel? allStoresSection = byType['all_stores'];
 
-    final List<Widget> feedChildren = <Widget>[
-      HomeHeaderView(
-        searchFieldKey: _searchFieldKey,
-        searchBarHeight: _fieldHeight,
-        showCategories: showCategories,
-        categories: categoriesSection?.categories ?? const <CategoryModel>[],
+    // Every section is keyed, so one appearing or disappearing — the
+    // live-orders strip collapsing, the feed landing — moves the others
+    // instead of tearing down and rebuilding everything after it.
+    final List<HomeFeedSection> feedChildren = <HomeFeedSection>[
+      HomeFeedSection(
+        key: const ValueKey<String>('header'),
+        child: HomeHeaderView(
+          searchFieldKey: _searchFieldKey,
+          searchBarHeight: _fieldHeight,
+          showCategories: showCategories,
+          categories: categoriesSection?.categories ?? const <CategoryModel>[],
+        ),
       ),
-      if (showLiveOrders) const HomeLiveOrdersSectionView(),
+      if (showLiveOrders)
+        const HomeFeedSection(
+          key: ValueKey<String>('live_orders'),
+          child: HomeLiveOrdersSectionView(),
+        ),
       if (feedFirstLoading ||
           (offersSection?.offers.isNotEmpty ?? false) ||
           topBanners.isNotEmpty)
-        HomeSpecialOffersSectionView(
-          offers: offersSection?.offers ?? const <HomeOfferModel>[],
-          topBanners: topBanners,
-          isLoading: feedFirstLoading,
+        HomeFeedSection(
+          key: const ValueKey<String>('special_offers'),
+          child: HomeSpecialOffersSectionView(
+            offers: offersSection?.offers ?? const <HomeOfferModel>[],
+            topBanners: topBanners,
+            isLoading: feedFirstLoading,
+          ),
         ),
-      const HomeMostPopularBrandsView(),
+      const HomeFeedSection(
+        key: ValueKey<String>('top_brands'),
+        child: HomeMostPopularBrandsView(),
+      ),
       if (featuredStoresSection != null &&
           featuredStoresSection.stores.isNotEmpty)
-        HomeFeaturedStoresView(stores: featuredStoresSection.stores),
+        HomeFeedSection(
+          key: _sectionKey(featuredStoresSection),
+          child: HomeFeaturedStoresView(stores: featuredStoresSection.stores),
+        ),
       if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
-        AspectRatio(
-          aspectRatio: 1.47,
-          child: BestNearbyStoresSection(
-            title: nearbyStoresSection.title,
-            stores: nearbyStoresSection.stores,
+        HomeFeedSection(
+          key: _sectionKey(nearbyStoresSection),
+          child: AspectRatio(
+            aspectRatio: 1.47,
+            child: BestNearbyStoresSection(
+              title: nearbyStoresSection.title,
+              stores: nearbyStoresSection.stores,
+            ),
           ),
         ),
       if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
-        AspectRatio(
-          aspectRatio: 1,
-          child: HomeNeverMissOffersSection(
-            products: flashOffersSection.products,
-            backgroundColor: flashOffersSection.backgroundColor,
-            viewAllTextColor: flashOffersSection.viewAllTextColor,
-            viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
+        HomeFeedSection(
+          key: _sectionKey(flashOffersSection),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: HomeNeverMissOffersSection(
+              products: flashOffersSection.products,
+              backgroundColor: flashOffersSection.backgroundColor,
+              viewAllTextColor: flashOffersSection.viewAllTextColor,
+              viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
+            ),
           ),
         ),
       if (middlePromoSection != null &&
@@ -276,13 +301,19 @@ class _HomeViewState extends ConsumerState<HomeView>
                 middlePromoSection.banners.first,
               ) !=
               null)
-        AspectRatio(
-          aspectRatio: 3.5,
-          child: HomeBannerView(banner: middlePromoSection.banners.first),
+        HomeFeedSection(
+          key: _sectionKey(middlePromoSection),
+          child: AspectRatio(
+            aspectRatio: 3.5,
+            child: HomeBannerView(banner: middlePromoSection.banners.first),
+          ),
         ),
       for (final HomeSectionModel section in categorySections)
         if (section.products.isNotEmpty)
-          _ProductsByCategorySection(section: section),
+          HomeFeedSection(
+            key: _sectionKey(section),
+            child: _ProductsByCategorySection(section: section),
+          ),
       if (footerPromoSection != null &&
           footerPromoSection.banners.isNotEmpty &&
           HomeBannerView.imageUrlFor(
@@ -290,16 +321,26 @@ class _HomeViewState extends ConsumerState<HomeView>
                 footerPromoSection.banners.first,
               ) !=
               null)
-        AspectRatio(
-          aspectRatio: 3.5,
-          child: HomeBannerView(banner: footerPromoSection.banners.first),
+        HomeFeedSection(
+          key: _sectionKey(footerPromoSection),
+          child: AspectRatio(
+            aspectRatio: 3.5,
+            child: HomeBannerView(banner: footerPromoSection.banners.first),
+          ),
         ),
       if (allStoresSection != null)
-        HomeAllStoresSectionView(
-          stores: allStoresSection.stores,
-          pinTop: _searchBarHeight,
+        HomeFeedSection(
+          key: _sectionKey(allStoresSection),
+          child: HomeAllStoresSectionView(
+            stores: allStoresSection.stores,
+            pinTop: _searchBarHeight,
+          ),
         ),
-      if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
+      if (feed.hasError)
+        HomeFeedSection(
+          key: const ValueKey<String>('feed_error'),
+          child: _FeedErrorRetry(onRetry: _loadFeed),
+        ),
     ];
 
     return Stack(
@@ -319,16 +360,7 @@ class _HomeViewState extends ConsumerState<HomeView>
                       (showSavedContentCue ? 52 : 0) +
                       MediaQuery.paddingOf(context).bottom,
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => index.isOdd
-                        ? const SizedBox(height: 24)
-                        : HomeFeedSection(child: feedChildren[index ~/ 2]),
-                    childCount: feedChildren.isEmpty
-                        ? 0
-                        : feedChildren.length * 2 - 1,
-                  ),
-                ),
+                sliver: HomeFeedList(sections: feedChildren),
               ),
             ],
           ),
@@ -393,6 +425,38 @@ class _HomeViewState extends ConsumerState<HomeView>
             child: _OfflineSavedContentCue(onRetry: _loadFeed),
           ),
       ],
+    );
+  }
+}
+
+/// A feed section's key: the backend's section id, unique per feed.
+ValueKey<Object> _sectionKey(HomeSectionModel section) =>
+    ValueKey<Object>(section.id ?? section.type);
+
+/// The feed's sections, 24 apart. Each is found again by its key when the
+/// list changes around it, so an insertion or removal moves the sections after
+/// it — with their kept-alive state — instead of rebuilding them at their new
+/// index.
+@visibleForTesting
+class HomeFeedList extends StatelessWidget {
+  const HomeFeedList({super.key, required this.sections});
+
+  final List<HomeFeedSection> sections;
+
+  @override
+  Widget build(BuildContext context) {
+    final Map<Key, int> indexOf = <Key, int>{
+      for (int i = 0; i < sections.length; i++) sections[i].key!: i,
+    };
+    assert(
+      indexOf.length == sections.length,
+      'Two Home feed sections share a key.',
+    );
+    return SliverList.separated(
+      itemCount: sections.length,
+      itemBuilder: (context, index) => sections[index],
+      separatorBuilder: (context, index) => const SizedBox(height: 24),
+      findItemIndexCallback: (Key key) => indexOf[key],
     );
   }
 }
