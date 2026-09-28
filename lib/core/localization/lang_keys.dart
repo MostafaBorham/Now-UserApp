@@ -193,6 +193,8 @@ abstract class LangKeys {
 
   // Personal information (read-only profile) screen
   static const String fullNameKey = 'fullName';
+  static const String firstNameKey = 'firstName';
+  static const String lastNameKey = 'lastName';
   static const String phoneKey = 'phone';
   static const String emailKey = 'email';
   static const String genderKey = 'gender';

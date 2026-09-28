@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nowdelivery_user_app/features/auth/presentation/screens/complete_profile_screen.dart';
+import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
 
 void main() {
@@ -26,6 +26,37 @@ void main() {
         joinFullName('محمد', 'عبد الله بن سالم'),
         'محمد عبد الله بن سالم',
       );
+    });
+  });
+
+  group('splitFullName', () {
+    test('first word is the first name, the rest is the last name', () {
+      final ({String first, String last}) name = splitFullName(
+        'محمد عبد الله بن سالم',
+      );
+      expect(name.first, 'محمد');
+      expect(name.last, 'عبد الله بن سالم');
+    });
+
+    test('a one-word name leaves the last name empty', () {
+      expect(splitFullName('ياسر'), (first: 'ياسر', last: ''));
+    });
+
+    test('null or blank splits into two empty parts', () {
+      expect(splitFullName(null), (first: '', last: ''));
+      expect(splitFullName('   '), (first: '', last: ''));
+    });
+
+    test('extra whitespace around the parts is dropped', () {
+      expect(splitFullName('  Basem   Elsawah  '), (
+        first: 'Basem',
+        last: 'Elsawah',
+      ));
+    });
+
+    test('joining a split name gives the name back', () {
+      final ({String first, String last}) name = splitFullName('Basem Elsawah');
+      expect(joinFullName(name.first, name.last), 'Basem Elsawah');
     });
   });
 

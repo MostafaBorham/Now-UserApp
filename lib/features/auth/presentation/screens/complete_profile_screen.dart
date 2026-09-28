@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
@@ -17,17 +18,6 @@ import 'package:nowdelivery_user_app/features/personal_information/viewmodel/upd
 
 import '../widgets/complete_profile/complete_profile_form.dart';
 
-/// Joins the design's two name boxes into the single `full_name` the API
-/// takes. Blank parts drop out, so a one-word name stays one word and never
-/// carries a stray separator.
-///
-/// Top-level and pure so it can be tested without pumping the screen; this is
-/// the only piece of the completion step that is not plumbing.
-String joinFullName(String first, String last) =>
-    <String>[first.trim(), last.trim()]
-        .where((String part) => part.isNotEmpty)
-        .join(' ');
-
 /// The step between OTP verification and the app: the user names themselves
 /// (and optionally adds a photo and an email) before reaching the home screen.
 ///
@@ -37,9 +27,9 @@ String joinFullName(String first, String last) =>
 /// the state the flag exists to prevent.
 ///
 /// The backend models the name as a single `full_name` (see [ProfileModel]);
-/// the two boxes here are the design's, and are joined on save. Nothing splits
-/// a name back apart — this screen only ever renders for a user who does not
-/// have one yet.
+/// the two boxes here are the design's, and are joined on save
+/// ([joinFullName]). Edit profile shows the same two boxes and splits a stored
+/// name back with `splitFullName`.
 class CompleteProfileScreen extends ConsumerStatefulWidget {
   const CompleteProfileScreen({super.key});
 

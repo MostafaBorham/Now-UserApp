@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/formatters/date_formatter.dart';
+import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
@@ -45,7 +46,8 @@ class EditInformationScreen extends ConsumerStatefulWidget {
 }
 
 class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
-  final TextEditingController _fullName = TextEditingController();
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _nationality = TextEditingController();
 
@@ -64,6 +66,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
 
 
+  String? _nameError;
   String? _emailError;
 
 
@@ -93,13 +96,20 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         .read(getProfileProvider)
         .valueOrNull;
     if (data != null) _prefill(data);
+    _firstName.addListener(_clearNameError);
+    _lastName.addListener(_clearNameError);
     _email.addListener(_clearEmailError);
   }
 
   @override
   void dispose() {
+    _firstName
+      ..removeListener(_clearNameError)
+      ..dispose();
+    _lastName
+      ..removeListener(_clearNameError)
+      ..dispose();
     _email.removeListener(_clearEmailError);
-    _fullName.dispose();
     _email.dispose();
     _nationality.dispose();
     _scrollController.dispose();
@@ -115,7 +125,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   void _prefill(PersonalInformationData data) {
     final ProfileModel p = data.profile;
     _original = p;
-    _fullName.text = p.fullName ?? '';
+    final ({String first, String last}) name = splitFullName(p.fullName);
+    _firstName.text = name.first;
+    _lastName.text = name.last;
     _email.text = p.email ?? '';
     _nationality.text = p.nationality ?? '';
     _phone = p.phone;
@@ -124,13 +136,31 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     _currentAvatarUrl = data.avatarUrl;
   }
 
+  void _clearNameError() {
+    if (_nameError != null) setState(() => _nameError = null);
+  }
+
   void _clearEmailError() {
     if (_emailError != null) setState(() => _emailError = null);
   }
 
+  /// The two boxes joined back into `full_name`. A name the user left as it
+  /// was keeps its stored spelling (spacing included), so opening and saving
+  /// the form never sends a name change nobody made.
+  String? get _editedFullName {
+    final String joined = joinFullName(_firstName.text, _lastName.text);
+    final ({String first, String last}) original = splitFullName(
+      _original?.fullName,
+    );
+    if (joined == joinFullName(original.first, original.last)) {
+      return _original?.fullName;
+    }
+    return _clean(joined);
+  }
+
 
   ProfileModel get _edited => ProfileModel(
-    fullName: _clean(_fullName.text),
+    fullName: _editedFullName,
     email: _clean(_email.text),
     gender: _gender,
     birthday: _dob == null ? null : _apiDate(_dob!),
@@ -302,9 +332,21 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
   bool _validate() {
     final String email = _email.text.trim();
-    final bool ok = email.isEmpty || AppValidator.isValidEmail(email);
-    setState(() => _emailError = ok ? null : LangKeys.invalidEmailKey.tr());
-    return ok;
+    // Same rule as the completion screen. An emptied name used to be saved as
+    // `full_name: null`, which the backend accepts — and a user with no name
+    // is sent straight back to the completion screen.
+    final String? nameError =
+        joinFullName(_firstName.text, _lastName.text).isEmpty
+        ? LangKeys.nameRequiredKey.tr()
+        : null;
+    final String? emailError = email.isEmpty || AppValidator.isValidEmail(email)
+        ? null
+        : LangKeys.invalidEmailKey.tr();
+    setState(() {
+      _nameError = nameError;
+      _emailError = emailError;
+    });
+    return nameError == null && emailError == null;
   }
 
   Future<void> _save() async {
@@ -458,12 +500,32 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      EditField(
-                        label: LangKeys.fullNameKey.tr(),
-                        controller: _fullName,
-                        leadingAsset: Assets.media.images.svg.pen.path,
-                        showCounter: true,
-                        maxLength: 40,
+                      // The completion screen's two boxes, with its 40-char cap
+                      // per box.
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 12,
+                        children: [
+                          Expanded(
+                            child: EditField(
+                              label: LangKeys.firstNameKey.tr(),
+                              controller: _firstName,
+                              leadingAsset: Assets.media.images.svg.pen.path,
+                              showCounter: true,
+                              maxLength: 40,
+                              errorText: _nameError,
+                            ),
+                          ),
+                          Expanded(
+                            child: EditField(
+                              label: LangKeys.lastNameKey.tr(),
+                              controller: _lastName,
+                              leadingAsset: Assets.media.images.svg.pen.path,
+                              showCounter: true,
+                              maxLength: 40,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: _fieldGap),
                       EditField(

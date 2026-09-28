@@ -342,6 +342,8 @@
   "balance": "Balance: ",
   "walletShortfallHint": "Your wallet balance doesn't cover this order. Untick the wallet to pay by card.",
   "fullName": "Full Name",
+  "firstName": "First Name",
+  "lastName": "Last Name",
   "phone": "Phone",
   "email": "Email",
   "gender": "Gender",
