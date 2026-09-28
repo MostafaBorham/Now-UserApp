@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/color_sharpener.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/featured_stores_controller.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/glass_product_item_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
@@ -53,6 +54,7 @@ class HomeFeaturedStoreItem extends StatelessWidget {
     // The vendor item's own `store_color`; the design's blue stands in for a
     // store the admin left uncoloured.
     final Color tint = store.storeColor ?? const Color(0xFF4968B7);
+    final Color sharpTint = sharpenColor(tint);
     return Stack(
       children: [
         Positioned.fill(
@@ -119,7 +121,7 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: con.maxWidth * 0.05,
                                     fontWeight: FontWeight.w700,
-                                    color: colors.white,
+                                    color: sharpTint,
                                   ),
                                 ),
                                 FittedBox(
@@ -134,7 +136,7 @@ class HomeFeaturedStoreItem extends StatelessWidget {
                                         ? null
                                         : '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}',
                                     deliveryFee: formatMoney(store.deliveryFee),
-                                    color: colors.white,
+                                    color: sharpTint,
                                   ),
                                 ),
                               ],
