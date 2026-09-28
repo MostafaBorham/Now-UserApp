@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nowdelivery_user_app/features/auth/presentation/widgets/phone_verification/phone_number_field.dart';
+import 'package:nowdelivery_user_app/core/formatters/saudi_phone_input_formatter.dart';
 
 void main() {
   group('phoneFieldSignificantDigits', () {

@@ -1,36 +1,18 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/formatters/saudi_phone_input_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
-
-/// The digits the user typed after the field's fixed `(05) ` head — the 8
-/// significant digits of a Saudi mobile once the number is complete.
-///
-/// The head's own `05` must not be counted, which is why the field does not ask
-/// [AppValidator.saudiPhoneToInternational] whether it is valid: that parser
-/// takes any shape a number is stored in, so it reads `(05) 1234567` (seven
-/// typed digits) as a complete `0` + `51234567` and the code went to someone
-/// else's number.
-String phoneFieldSignificantDigits(String text) {
-  final String digits = text.replaceAll(RegExp(r'\D'), '');
-  return text.startsWith(_saudiPhonePrefix) && digits.startsWith('05')
-      ? digits.substring(2)
-      : digits;
-}
-
-const String _saudiPhonePrefix = '(05) ';
 
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
 ///
 /// Valid once exactly 8 digits follow the `(05)` head
-/// ([phoneFieldSignificantDigits]); the result is reported via
+/// ([SaudiPhoneInputFormatter.isComplete]); the result is reported via
 /// [onValidChanged] whenever the validity flips. Parents don't need to know the
 /// rule — they only receive a `bool` to drive their button state.
 class PhoneNumberField extends StatefulWidget {
@@ -74,8 +56,9 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   }
 
   void _onTextChanged() {
-    final String raw = widget.controller?.text ?? '';
-    final bool isValid = phoneFieldSignificantDigits(raw).length == 8;
+    final bool isValid = SaudiPhoneInputFormatter.isComplete(
+      widget.controller?.text,
+    );
     if (isValid != _lastIsValid) {
       _lastIsValid = isValid;
       widget.onValidChanged?.call(isValid);
@@ -119,7 +102,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                   textAlign: Directionality.of(context) == TextDirection.rtl
                       ? TextAlign.right
                       : TextAlign.left,
-                  inputFormatters: const [_SaudiPhonePrefixFormatter()],
+                  inputFormatters: const [SaudiPhoneInputFormatter()],
                   style: AppTextStyles.style16Medium.copyWith(
                     color: context.colors.tertiaryContainer,
                   ),
@@ -146,44 +129,6 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// Keeps the field showing a fixed `(05) ` head in front of whatever the user
-/// types: the prefix appears with the first digit and disappears again once
-/// every typed digit is deleted, so the placeholder can show through. The 8
-/// significant digits are grouped `XXXX-XXXX`, so a dash slides in after the
-/// fourth typed digit — matching the `(05) 1111-2222` hint.
-///
-/// The stored text stays human-readable (`(05) 1234-5678`); callers turn it
-/// into the backend's `+9665XXXXXXXX` with [AppValidator.saudiPhoneToInternational].
-class _SaudiPhonePrefixFormatter extends TextInputFormatter {
-  const _SaudiPhonePrefixFormatter();
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    // The prefix already carries the leading "05" — drop it so only the
-    // 8 significant digits remain.
-    final String digits = phoneFieldSignificantDigits(newValue.text);
-    // A full local/international paste still carries its own 05/966 head.
-    final String? tail = AppValidator.saudiLocalPhoneTail(digits);
-    final String significant =
-        tail ?? (digits.length > 8 ? digits.substring(0, 8) : digits);
-
-    if (significant.isEmpty) return TextEditingValue.empty;
-
-    final String grouped = significant.length > 4
-        ? '${significant.substring(0, 4)}-${significant.substring(4)}'
-        : significant;
-
-    final String text = '$_saudiPhonePrefix$grouped';
-    return TextEditingValue(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

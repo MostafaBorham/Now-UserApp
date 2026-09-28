@@ -1,9 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/formatters/saudi_phone_input_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
@@ -62,11 +63,6 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     <String>[LangKeys.floorWork, LangKeys.floorNumberOptional],
     <String>[LangKeys.floor, LangKeys.apartment],
   ];
-
-  /// Shown before the phone input and prepended to whatever is typed. Saudi
-  /// mobile numbers are the only ones this form collects, so the head of every
-  /// number is fixed and the field holds just the 8 digits that follow it.
-  static const String _phonePrefix = '05';
 
   /// The backend's own caps (`max:50` on floor / apartment / building_number,
   /// `max:1000` on notes). Past them a save is a bare "Validation failed.".
@@ -130,14 +126,16 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
     }
 
-    // Prefill from the existing address when editing. The phone field holds
-    // only the digits after [_phonePrefix], so a stored number is reduced to
-    // that tail — whichever format it was saved in. One that isn't a Saudi
-    // mobile leaves the field empty rather than prefilling a value the form
-    // would reject, which used to freeze the Save button.
+    // Prefill from the existing address when editing. The phone field shows a
+    // number the way the login field does (`(05) 1234-5678`), so a stored
+    // number is reduced to its 8-digit tail — whichever format it was saved
+    // in. One that isn't a Saudi mobile leaves the field empty rather than
+    // prefilling a value the form would reject, which used to freeze Save.
     final AddressModel? stored = widget.isEditScreen ? widget.address : null;
     _phoneController = TextEditingController(
-      text: AppValidator.saudiLocalPhoneTail(stored?.phone),
+      text: SaudiPhoneInputFormatter.format(
+        AppValidator.saudiLocalPhoneTail(stored?.phone),
+      ),
     );
     _floorNumberController = TextEditingController(
       text: _isWork ? stored?.apartment : stored?.floor,
@@ -204,14 +202,16 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
         _buildingNameController.text.trim().isNotEmpty;
   }
 
-  /// The full number to submit, or null when the field is empty or holds
-  /// something that can't be a Saudi mobile. The Save button and the payload
-  /// both go through this, so what is validated is always what is sent.
+  /// The full number to submit, or null until all 8 digits after the field's
+  /// `(05)` head are there. The Save button and the payload both go through
+  /// this, so what is validated is always what is sent — and the field shows
+  /// exactly that number. The generic tail parser used to accept `05` plus 7
+  /// digits here and save a different number (`051234567` → `0551234567`).
   String? _composedPhone() {
-    final String? tail = AppValidator.saudiLocalPhoneTail(
-      _phoneController.text,
-    );
-    return tail == null ? null : '$_phonePrefix$tail';
+    final String text = _phoneController.text;
+    return SaudiPhoneInputFormatter.isComplete(text)
+        ? '05${phoneFieldSignificantDigits(text)}'
+        : null;
   }
 
   void _onRequiredFieldChanged() {
@@ -398,16 +398,10 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                 ),
                 AddressField(
                   hintText: LangKeys.phoneNumberOptional.tr(),
-                  prefixText: _phonePrefix,
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    // Room for a number pasted or typed in full (12 digits for
-                    // `+966…`); it is reduced to the 8-digit tail on save rather
-                    // than being truncated to something valid but wrong.
-                    LengthLimitingTextInputFormatter(12),
-                  ],
+                  textDirection: TextDirection.ltr,
+                  inputFormatters: const [SaudiPhoneInputFormatter()],
                 ),
                 !_isFormValid && !isSaving
                     // Tappable while disabled, so the button can say why instead
