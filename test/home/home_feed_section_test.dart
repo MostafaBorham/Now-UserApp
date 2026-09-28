@@ -6,7 +6,8 @@ import 'package:nowdelivery_user_app/features/home/presentation/screens/home_vie
 /// starts just below it (built, inside the cache extent, but off screen).
 ///
 /// Every feed section is kept alive and has its tickers muted while it is out
-/// of the viewport — so an off-screen carousel or strip schedules no frames.
+/// of the viewport — so an off-screen carousel or strip schedules no frames —
+/// and rebuilds only when the data it is built from changes.
 void main() {
   const Key first = Key('first');
   const Key second = Key('second');
@@ -67,4 +68,90 @@ void main() {
     expect(tickersOn(tester, first), isTrue);
     expect(tickersOn(tester, second), isFalse);
   });
+
+  group('content', () {
+    // A favourite tap replaces the whole feed; only the sections holding that
+    // product may rebuild.
+    int builds = 0;
+    setUp(() => builds = 0);
+
+    Future<void> pumpSection(
+      WidgetTester tester,
+      Object? content, {
+      Locale locale = const Locale('en', 'US'),
+    }) => tester.pumpWidget(
+      MaterialApp(
+        locale: locale,
+        supportedLocales: const <Locale>[
+          Locale('en', 'US'),
+          Locale('en', 'GB'),
+        ],
+        home: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(<Widget>[
+                HomeFeedSection(
+                  content: content,
+                  // A new instance every pump, as HomeView builds one.
+                  child: _CountingChild(onBuild: () => builds++),
+                ),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    testWidgets('unchanged content keeps the child it built', (
+      WidgetTester tester,
+    ) async {
+      final Object section = Object();
+      await pumpSection(tester, (section, true));
+      await pumpSection(tester, (section, true));
+
+      expect(builds, 1);
+    });
+
+    testWidgets('changed content rebuilds the child', (
+      WidgetTester tester,
+    ) async {
+      final Object section = Object();
+      await pumpSection(tester, (section, true));
+      await pumpSection(tester, (section, false));
+      await pumpSection(tester, (Object(), false));
+
+      expect(builds, 3);
+    });
+
+    testWidgets('a language switch rebuilds it whatever the content', (
+      WidgetTester tester,
+    ) async {
+      final Object section = Object();
+      await pumpSection(tester, section);
+      await pumpSection(tester, section, locale: const Locale('en', 'GB'));
+
+      expect(builds, 2);
+    });
+
+    testWidgets('no content always rebuilds the child', (
+      WidgetTester tester,
+    ) async {
+      await pumpSection(tester, null);
+      await pumpSection(tester, null);
+
+      expect(builds, 2);
+    });
+  });
+}
+
+class _CountingChild extends StatelessWidget {
+  const _CountingChild({required this.onBuild});
+
+  final VoidCallback onBuild;
+
+  @override
+  Widget build(BuildContext context) {
+    onBuild();
+    return const SizedBox(height: 100);
+  }
 }

@@ -234,9 +234,17 @@ class _HomeViewState extends ConsumerState<HomeView>
     // Every section is keyed, so one appearing or disappearing — the
     // live-orders strip collapsing, the feed landing — moves the others
     // instead of tearing down and rebuilding everything after it.
+    //
+    // Each also names its `content`: the models its child is built from. A
+    // section whose content is unchanged keeps the child it built last time,
+    // so replacing the feed (every favourite tap does) rebuilds only the
+    // sections that hold what changed. Anything a child's constructor reads
+    // must be in its content, apart from what never changes here — the keys,
+    // the notifiers and this state's own methods.
     final List<HomeFeedSection> feedChildren = <HomeFeedSection>[
       HomeFeedSection(
         key: const ValueKey<String>('header'),
+        content: (categoriesSection, showCategories),
         child: HomeHeaderView(
           searchFieldKey: _searchFieldKey,
           searchBarHeight: _fieldHeight,
@@ -254,6 +262,7 @@ class _HomeViewState extends ConsumerState<HomeView>
           topBanners.isNotEmpty)
         HomeFeedSection(
           key: const ValueKey<String>('special_offers'),
+          content: (offersSection, byType['top_banner'], feedFirstLoading),
           child: HomeSpecialOffersSectionView(
             offers: offersSection?.offers ?? const <HomeOfferModel>[],
             topBanners: topBanners,
@@ -268,11 +277,13 @@ class _HomeViewState extends ConsumerState<HomeView>
           featuredStoresSection.stores.isNotEmpty)
         HomeFeedSection(
           key: _sectionKey(featuredStoresSection),
+          content: featuredStoresSection,
           child: HomeFeaturedStoresView(stores: featuredStoresSection.stores),
         ),
       if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
         HomeFeedSection(
           key: _sectionKey(nearbyStoresSection),
+          content: nearbyStoresSection,
           child: AspectRatio(
             aspectRatio: 1.47,
             child: BestNearbyStoresSection(
@@ -284,6 +295,7 @@ class _HomeViewState extends ConsumerState<HomeView>
       if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
         HomeFeedSection(
           key: _sectionKey(flashOffersSection),
+          content: flashOffersSection,
           child: AspectRatio(
             aspectRatio: 1,
             child: HomeNeverMissOffersSection(
@@ -303,6 +315,7 @@ class _HomeViewState extends ConsumerState<HomeView>
               null)
         HomeFeedSection(
           key: _sectionKey(middlePromoSection),
+          content: middlePromoSection,
           child: AspectRatio(
             aspectRatio: 3.5,
             child: HomeBannerView(banner: middlePromoSection.banners.first),
@@ -312,6 +325,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         if (section.products.isNotEmpty)
           HomeFeedSection(
             key: _sectionKey(section),
+            content: section,
             child: _ProductsByCategorySection(section: section),
           ),
       if (footerPromoSection != null &&
@@ -323,6 +337,7 @@ class _HomeViewState extends ConsumerState<HomeView>
               null)
         HomeFeedSection(
           key: _sectionKey(footerPromoSection),
+          content: footerPromoSection,
           child: AspectRatio(
             aspectRatio: 3.5,
             child: HomeBannerView(banner: footerPromoSection.banners.first),
@@ -331,6 +346,7 @@ class _HomeViewState extends ConsumerState<HomeView>
       if (allStoresSection != null)
         HomeFeedSection(
           key: _sectionKey(allStoresSection),
+          content: allStoresSection,
           child: HomeAllStoresSectionView(
             stores: allStoresSection.stores,
             pinTop: _searchBarHeight,
@@ -471,7 +487,13 @@ class HomeFeedList extends StatelessWidget {
 /// own [TickerMode] in the main shell, which still wins.
 @visibleForTesting
 class HomeFeedSection extends StatefulWidget {
-  const HomeFeedSection({super.key, required this.child});
+  const HomeFeedSection({super.key, this.content, required this.child});
+
+  /// The data [child] is built from. While it compares equal to the previous
+  /// build's, the child built then is kept, so its subtree is not rebuilt;
+  /// null always takes the new child. Must hold everything the child's
+  /// constructor reads, or the section goes stale.
+  final Object? content;
 
   final Widget child;
 
@@ -481,6 +503,8 @@ class HomeFeedSection extends StatefulWidget {
 
 class _HomeFeedSectionState extends State<HomeFeedSection>
     with AutomaticKeepAliveClientMixin {
+  late Widget _child = widget.child;
+  Locale? _locale;
   ScrollPosition? _position;
   bool _onScreen = true;
   bool _measureScheduled = false;
@@ -491,6 +515,13 @@ class _HomeFeedSectionState extends State<HomeFeedSection>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // A language switch rebuilds every section whatever its content says:
+    // strings built with a context-free `.tr()` would keep the old language.
+    final Locale? locale = Localizations.maybeLocaleOf(context);
+    if (locale != _locale) {
+      _locale = locale;
+      _child = widget.child;
+    }
     final ScrollPosition? position = Scrollable.maybeOf(context)?.position;
     if (position != _position) {
       _position?.removeListener(_scheduleMeasure);
@@ -503,6 +534,9 @@ class _HomeFeedSectionState extends State<HomeFeedSection>
   @override
   void didUpdateWidget(HomeFeedSection oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.content == null || widget.content != oldWidget.content) {
+      _child = widget.child;
+    }
     _scheduleMeasure();
   }
 
@@ -546,7 +580,7 @@ class _HomeFeedSectionState extends State<HomeFeedSection>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return TickerMode(enabled: _onScreen, child: widget.child);
+    return TickerMode(enabled: _onScreen, child: _child);
   }
 }
 
