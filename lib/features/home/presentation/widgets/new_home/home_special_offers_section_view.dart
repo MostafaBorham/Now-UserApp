@@ -81,7 +81,9 @@ class HomeSpecialOffersSectionView extends StatelessWidget {
                             start: 10.0,
                           ),
                           child: SizedBox(
-                            height: offerCardHeight,
+                            height:
+                                offerCardHeight +
+                                _AutoScrollOffersList.shadowInset * 2,
                             child: _AutoScrollOffersList(offers: offers),
                           ),
                         ),
@@ -134,6 +136,10 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
 class _AutoScrollOffersList extends StatefulWidget {
   const _AutoScrollOffersList({required this.offers});
 
+  /// Room above and below the cards for their shadow, which the list would
+  /// otherwise clip.
+  static const double shadowInset = 4;
+
   final List<HomeOfferModel> offers;
 
   @override
@@ -169,7 +175,9 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
     // (its cross-axis extent) and the card's aspect ratio.
     final double listHeight = context.size?.height ?? 0;
     if (listHeight <= 0) return;
-    final double itemExtent = listHeight * _aspectRatio + _separator;
+    final double itemExtent =
+        (listHeight - _AutoScrollOffersList.shadowInset * 2) * _aspectRatio +
+        _separator;
 
     final double target = position.pixels >= max - 1.0
         ? 0.0
@@ -187,9 +195,14 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
 
   @override
   Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
     return ListView.separated(
       controller: _controller,
-      padding: const EdgeInsetsDirectional.only(end: 10),
+      padding: const EdgeInsetsDirectional.only(
+        end: 10,
+        top: _AutoScrollOffersList.shadowInset,
+        bottom: _AutoScrollOffersList.shadowInset,
+      ),
       scrollDirection: Axis.horizontal,
       // Scroll right-to-left in Arabic, left-to-right in English — see the
       // motion rule on `AppSlider`. This mirrors the card order (the first
@@ -205,13 +218,27 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
             onTap: () => _onOfferTap(context, offer),
             child: AspectRatio(
               aspectRatio: _aspectRatio,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
-                child: AppCachedNetworkImage(
-                  imageUrl: offer.imageUrl ?? '',
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
+              // The top banner's own shadow, so the two strips match. Each
+              // card is its own RepaintBoundary, so this is painted once and
+              // only moved while the strip steps.
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: colors.black.withValues(alpha: 0.25),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: AppCachedNetworkImage(
+                    imageUrl: offer.imageUrl ?? '',
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
