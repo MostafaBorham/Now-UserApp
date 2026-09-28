@@ -17,6 +17,12 @@ class BannerModel extends Equatable {
   final String? productSlug;
   final String? categorySlug;
 
+  /// The main category a `category` banner links to. Neither source sends its
+  /// slug, which category details needs, so a tap resolves the slug from the
+  /// categories already loaded (flat `main_category_id` in the home feed,
+  /// nested under `categories` on `/api/v1/banners`).
+  final int? mainCategoryId;
+
   /// Locale-agnostic fallback image (`image.download_url`).
   final String? image;
 
@@ -38,6 +44,7 @@ class BannerModel extends Equatable {
     this.isFeatured,
     this.productSlug,
     this.categorySlug,
+    this.mainCategoryId,
     this.image,
     this.imageAr,
     this.imageEn,
@@ -67,6 +74,12 @@ class BannerModel extends Equatable {
               ? (json['product'] as Map)['slug']?.toString()
               : null),
       categorySlug: json['category_slug']?.toString(),
+      mainCategoryId: ((json['main_category_id'] ??
+                  (json['categories'] is Map
+                      ? (json['categories'] as Map)['main_category_id']
+                      : null))
+              as num?)
+          ?.toInt(),
       image: json.downloadUrl('image'),
       imageAr: json.downloadUrl('image_ar'),
       imageEn: json.downloadUrl('image_en'),
@@ -88,6 +101,7 @@ class BannerModel extends Equatable {
       'is_featured': isFeatured,
       'product_slug': productSlug,
       'category_slug': categorySlug,
+      'main_category_id': mainCategoryId,
       'image': image == null ? null : {'download_url': image},
       'image_ar': imageAr == null ? null : {'download_url': imageAr},
       'image_en': imageEn == null ? null : {'download_url': imageEn},
@@ -108,6 +122,7 @@ class BannerModel extends Equatable {
     bool? isFeatured,
     String? productSlug,
     String? categorySlug,
+    int? mainCategoryId,
     String? image,
     String? imageAr,
     String? imageEn,
@@ -126,6 +141,7 @@ class BannerModel extends Equatable {
       isFeatured: isFeatured ?? this.isFeatured,
       productSlug: productSlug ?? this.productSlug,
       categorySlug: categorySlug ?? this.categorySlug,
+      mainCategoryId: mainCategoryId ?? this.mainCategoryId,
       image: image ?? this.image,
       imageAr: imageAr ?? this.imageAr,
       imageEn: imageEn ?? this.imageEn,
@@ -147,6 +163,7 @@ class BannerModel extends Equatable {
     isFeatured,
     productSlug,
     categorySlug,
+    mainCategoryId,
     image,
     imageAr,
     imageEn,

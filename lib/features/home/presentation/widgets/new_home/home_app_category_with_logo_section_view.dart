@@ -28,6 +28,7 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
     this.primaryColor,
     this.textColor,
     this.showViewAll = true,
+    this.onViewAllTap,
   });
 
   final CategoryModel categoryModel;
@@ -42,6 +43,9 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
   final Color? primaryColor;
   final Color? textColor;
   final bool showViewAll;
+
+  /// Opens the section's category; see `openHomeCategory`.
+  final VoidCallback? onViewAllTap;
 
   /// Design frame width the absolute positions below were measured against.
   static const double _designWidth = 390;
@@ -127,14 +131,12 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                 ),
               ),
               // See all, on the trailing side (left in Arabic).
-              // ponytail: the chip is inert — the feed sends the category's id
-              // and name but no slug, and category details fetches by slug. Wire
-              // the tap once the payload carries `category_slug`.
               if (showViewAll)
                 PositionedDirectional(
                   end: 16 * s,
                   top: 10 * s,
                   child: HomeViewAllWidget(
+                    onTap: onViewAllTap,
                     size: con.maxWidth * 0.04,
                     startBackgroundColor: accent.withValues(alpha: 0.3),
                     endBackgroundColor: accent.withValues(alpha: 0.1),

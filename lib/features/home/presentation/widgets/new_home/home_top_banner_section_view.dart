@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/utils/open_category.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 
 /// The top banner carousel of the special offers section, shown under the
@@ -132,13 +133,13 @@ class _SlideInOnOpen extends StatelessWidget {
 
 /// A single tappable header banner. Shows the locale-specific artwork (falling
 /// back to the generic image) and routes the tap by [BannerModel.linkType].
-class _TopBannerItem extends StatelessWidget {
+class _TopBannerItem extends ConsumerWidget {
   const _TopBannerItem({required this.banner});
 
   final BannerModel banner;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bool isAr = context.locale.languageCode == 'ar';
     final String imageUrl =
         (isAr ? banner.imageAr : banner.imageEn) ?? banner.image ?? '';
@@ -147,7 +148,7 @@ class _TopBannerItem extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => _onTap(context),
+      onTap: () => _onTap(context, ref),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -173,20 +174,20 @@ class _TopBannerItem extends StatelessWidget {
     );
   }
 
-  void _onTap(BuildContext context) {
-    // Product taps work; category taps need a slug the `/api/v1/banners`
-    // endpoint doesn't emit yet (it sends category ids only), so they stay
-    // inert. ponytail: wire category nav once the payload carries a slug.
+  void _onTap(BuildContext context, WidgetRef ref) {
+    // `/api/v1/banners` sends a category banner's main category id only, so
+    // `openHomeCategory` finds its slug among the categories already loaded.
     if (banner.linkType == 'product' && banner.productSlug != null) {
       context.pushNamed(
         AppRoutes.productDetailsScreen,
         extra: banner.productSlug,
       );
-    } else if (banner.linkType == 'category' &&
-        (banner.categorySlug?.isNotEmpty ?? false)) {
-      context.pushNamed(
-        AppRoutes.categoryDetailsScreen,
-        pathParameters: <String, String>{'slug': banner.categorySlug!},
+    } else if (banner.linkType == 'category') {
+      openHomeCategory(
+        context,
+        ref,
+        id: banner.mainCategoryId,
+        slug: banner.categorySlug,
       );
     }
   }

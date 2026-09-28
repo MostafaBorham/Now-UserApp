@@ -51,8 +51,9 @@ class HomeSectionModel extends Equatable {
   final List<CategoryModel> categories;
 
   /// The category a `products_by_category` section lists, titled by
-  /// `category_name` (falling back to the section's own `title`). It carries no
-  /// `slug`, so it cannot open category details — see [showViewAll].
+  /// `category_name` (falling back to the section's own `title`). Its `slug`
+  /// comes from `category_slug`, which the feed does not send yet, so "See
+  /// All" resolves it from the category's `id` (`openHomeCategory`).
   final CategoryModel? category;
 
   /// Accent colour of a `products_by_category` section: the background wash and
@@ -223,6 +224,7 @@ class HomeSectionModel extends Equatable {
           ? CategoryModel(
               id: (json['category_id'] as num?)?.toInt(),
               name: json.localized('category_name') ?? json.localized('title'),
+              slug: json['category_slug']?.toString(),
             )
           : null,
       primaryColor: json.colorHex('primary_color'),

@@ -22,6 +22,7 @@ class HomeAppCategorySectionView extends ConsumerWidget {
     this.primaryColor,
     this.textColor,
     this.showViewAll = true,
+    this.onViewAllTap,
   });
 
   final CategoryModel categoryModel;
@@ -32,6 +33,9 @@ class HomeAppCategorySectionView extends ConsumerWidget {
   final Color? primaryColor;
   final Color? textColor;
   final bool showViewAll;
+
+  /// Opens the section's category; see `openHomeCategory`.
+  final VoidCallback? onViewAllTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,6 +97,7 @@ class HomeAppCategorySectionView extends ConsumerWidget {
 
                       if (showViewAll)
                         HomeViewAllWidget(
+                          onTap: onViewAllTap,
                           size: 15,
                           startBackgroundColor: accent.withValues(alpha: 0.5),
                           endBackgroundColor: accent.withValues(alpha: 0.2),

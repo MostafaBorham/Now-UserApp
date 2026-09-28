@@ -26,4 +26,31 @@ void main() {
 
     expect(banner.productSlug, 'flat-slug');
   });
+
+  test('mainCategoryId reads the nested categories map from /api/v1/banners', () {
+    final BannerModel banner = BannerModel.fromJson(<String, dynamic>{
+      'id': 1817,
+      'link_type': 'category',
+      'categories': {
+        'main_category_id': 1,
+        'sub_category_1_id': 2,
+        'main_category': {'id': 1, 'name': 'Electronics'},
+      },
+    });
+
+    expect(banner.mainCategoryId, 1);
+  });
+
+  test('mainCategoryId reads the flat main_category_id from home-sections', () {
+    final BannerModel banner = BannerModel.fromJson(<String, dynamic>{
+      'slot': 'top',
+      'id': 1817,
+      'link_type': 'category',
+      'product_id': null,
+      'main_category_id': 1,
+    });
+
+    expect(banner.mainCategoryId, 1);
+    expect(BannerModel.fromJson(banner.toJson()).mainCategoryId, 1);
+  });
 }

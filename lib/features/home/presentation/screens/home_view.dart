@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/connectivity_controller.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/utils/open_category.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/best_nearby_stores_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_all_stores_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
@@ -483,14 +484,22 @@ class _HomeFeedSectionState extends State<HomeFeedSection>
   }
 }
 
-class _ProductsByCategorySection extends StatelessWidget {
+class _ProductsByCategorySection extends ConsumerWidget {
   const _ProductsByCategorySection({required this.section});
 
   final HomeSectionModel section;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final CategoryModel category = section.category ?? const CategoryModel();
+    // Read on tap only, so the section watches nothing new.
+    void openCategory() => openHomeCategory(
+      context,
+      ref,
+      id: category.id,
+      slug: category.slug,
+      name: category.name,
+    );
 
     if (section.displayDesign == 'color_with_image') {
       return HomeAppCategoryWithLogoSectionView(
@@ -500,6 +509,7 @@ class _ProductsByCategorySection extends StatelessWidget {
         primaryColor: section.primaryColor,
         textColor: section.textColor,
         showViewAll: section.showViewAll,
+        onViewAllTap: openCategory,
       );
     }
 
@@ -509,6 +519,7 @@ class _ProductsByCategorySection extends StatelessWidget {
       primaryColor: section.primaryColor,
       textColor: section.textColor,
       showViewAll: section.showViewAll,
+      onViewAllTap: openCategory,
     );
   }
 }
