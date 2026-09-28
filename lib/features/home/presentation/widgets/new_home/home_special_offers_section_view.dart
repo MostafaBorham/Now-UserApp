@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
@@ -19,26 +20,30 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 class HomeSpecialOffersSectionView extends StatelessWidget {
   const HomeSpecialOffersSectionView({
     super.key,
-    this.title,
     this.offers = const <HomeOfferModel>[],
-    this.showTopBanner = false,
+    this.topBanners = const <BannerModel>[],
+    this.isLoading = false,
   });
 
-  /// Section title as the feed's `{ar, en}` map; falls back to a generic
-  /// "Special offers" label when the admin left it empty.
-  final Map<String, dynamic>? title;
+  // The heading is always the app's own "Special offers", never the feed's
+  // `featured_offers` title, so it reads the same loading and loaded.
   final List<HomeOfferModel> offers;
-  final bool showTopBanner;
+
+  /// The feed's `top_banner` items.
+  final List<BannerModel> topBanners;
+
+  /// Draws the whole section as a skeleton in its real geometry while the
+  /// feed loads, so it holds its place instead of popping in above the
+  /// sections that render straight away.
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    if (offers.isEmpty && !showTopBanner) return const SizedBox.shrink();
+    if (!isLoading && offers.isEmpty && topBanners.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     final AppColorScheme colors = context.colors;
-    final String localizedTitle = context.getLocalizedApiText(title);
-    final String heading = localizedTitle.isNotEmpty
-        ? localizedTitle
-        : LangKeys.specialOffersKey.tr();
 
     return LayoutBuilder(
       builder: (context, con) {
@@ -49,12 +54,15 @@ class HomeSpecialOffersSectionView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 10.0),
-              child: Text(
-                heading,
-                style: TextStyle(
-                  fontSize: con.maxWidth * 0.05,
-                  color: colors.black,
-                  fontWeight: FontWeight.w700,
+              child: AppShimmer(
+                enabled: isLoading,
+                child: Text(
+                  LangKeys.specialOffersKey.tr(),
+                  style: TextStyle(
+                    fontSize: con.maxWidth * 0.05,
+                    color: colors.black,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -75,7 +83,7 @@ class HomeSpecialOffersSectionView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     spacing: 20,
                     children: [
-                      if (offers.isNotEmpty)
+                      if (isLoading || offers.isNotEmpty)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(
                             start: 10.0,
@@ -84,10 +92,16 @@ class HomeSpecialOffersSectionView extends StatelessWidget {
                             height:
                                 offerCardHeight +
                                 _AutoScrollOffersList.shadowInset * 2,
-                            child: _AutoScrollOffersList(offers: offers),
+                            child: isLoading
+                                ? const _OffersSkeleton()
+                                : _AutoScrollOffersList(offers: offers),
                           ),
                         ),
-                      if (showTopBanner) const HomeTopBannerSectionView(),
+                      if (isLoading || topBanners.isNotEmpty)
+                        HomeTopBannerSectionView(
+                          banners: topBanners,
+                          isLoading: isLoading,
+                        ),
                     ],
                   ),
                 ),
@@ -247,6 +261,40 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
       },
       separatorBuilder: (context, index) => const SizedBox(width: 12),
       itemCount: widget.offers.length,
+    );
+  }
+}
+
+/// The offers strip while the feed loads: blank cards laid out exactly as
+/// [_AutoScrollOffersList] lays out real ones, and enough of them to fill it.
+class _OffersSkeleton extends StatelessWidget {
+  const _OffersSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return AppShimmer(
+      child: ListView.separated(
+        padding: const EdgeInsetsDirectional.only(
+          end: 10,
+          top: _AutoScrollOffersList.shadowInset,
+          bottom: _AutoScrollOffersList.shadowInset,
+        ),
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        itemBuilder: (context, index) => AspectRatio(
+          aspectRatio: _AutoScrollOffersListState._aspectRatio,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.white,
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
+        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+      ),
     );
   }
 }

@@ -89,7 +89,7 @@ Riverpod (`flutter_riverpod`). Two flavors in use:
 **Two rules when adding anything user-scoped:**
 
 1. **A kept-alive (non-`autoDispose`) provider holding user data must be listed in `sessionScopedProviders`** in `auth_session_vm.dart`. That list is iterated to invalidate providers, so listing it is what makes it die — nothing else does. `test/core/session/session_scoped_providers_test.dart` scans `lib/` and fails when a non-`autoDispose` provider is in neither that list nor the test's own `_appScoped` exemption set, so you cannot forget silently. If the provider is genuinely app-wide (locale, catalogue, device state), add it to `_appScoped` with a reason instead.
-2. **A Hive box holding user data must be added to `CachePurger._userScopedBoxes`.** "Looks like catalogue" is not the test: the home feed and featured stores payloads embed the fetching user's `cart_quantity` and `is_favourite` per item and *are* purged, while app info, categories and banners are not.
+2. **A Hive box holding user data must be added to `CachePurger._userScopedBoxes`.** "Looks like catalogue" is not the test: the home feed and featured stores payloads embed the fetching user's `cart_quantity` and `is_favourite` per item and *are* purged, while app info and categories are not.
 
 Two traps that already caused bugs here:
 
@@ -113,12 +113,8 @@ Forced logout: when a token refresh fails, `TokenRefreshInterceptor` clears the 
 
 ## Tests
 
-There is a real suite: 81 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
+There is a real suite: 82 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
 
 **`flutter analyze` is clean — 0 issues.** The old "69 issues, mostly unused imports" baseline is gone; treat any new issue as yours.
 
-**`flutter test` is not green — the baseline is 413 passing / 1 failing** (measured 2026-09-28). That one is pre-existing, and it is the *name* that matters, not the count:
-
-- `test/home/home_top_banner_section_view_test.dart` — "renders the banner on the design 355×118 box" (geometry).
-
-Compare against that rather than expecting a clean run, and don't claim a change is verified because the counts merely didn't get worse — check that the files you touched are absent from the failures. Counts drift as tests are added, so when in doubt `git stash` and re-measure the baseline rather than trusting the numbers written here.
+**`flutter test` is green — 418 passing, 0 failing** (measured 2026-09-28). The last pre-existing failure, the top banner's geometry test, was measuring the banner mid-way through its 600 ms entrance slide. Treat any failure as yours. Counts drift as tests are added, so when in doubt `git stash` and re-measure rather than trusting the number written here.

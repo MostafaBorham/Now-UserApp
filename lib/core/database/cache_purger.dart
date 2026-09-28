@@ -11,7 +11,7 @@ import 'package:nowdelivery_user_app/core/database/hive_manager.dart';
 /// keeps that from happening.
 ///
 /// Only *user*-scoped boxes are cleared. Genuine catalogue content — the app
-/// info, the category list, the banner images — is identical for every user, so
+/// info, the category list — is identical for every user, so
 /// wiping it would just cost the next session a cold start with no privacy gain.
 ///
 /// "Looks like catalogue" is not the test, though: the home feed and the

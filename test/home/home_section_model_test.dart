@@ -380,6 +380,41 @@ void main() {
     expect(section.products, isEmpty);
   });
 
+  test('top_banner parses every header banner, in feed order', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'id': 49,
+      'type': 'top_banner',
+      'layout': 'banner',
+      'items': <Map<String, dynamic>>[
+        {
+          'slot': 'top',
+          'id': 7,
+          'image_ar': 'http://x/301/download',
+          'image_en': 'http://x/302/download',
+          'link_type': 'category',
+          'product_id': null,
+          'main_category_id': 3,
+          'default_url': null,
+        },
+        {
+          'slot': 'top',
+          'id': 8,
+          'image_ar': 'http://x/303/download',
+          'image_en': 'http://x/304/download',
+          'link_type': 'product',
+          'product_id': 12,
+          'main_category_id': null,
+          'default_url': null,
+        },
+      ],
+    });
+
+    expect(section.banners.map((b) => b.id), <int>[7, 8]);
+    expect(section.banners.first.imageEn, 'http://x/302/download');
+    expect(section.banners.first.mainCategoryId, 3);
+    expect(section.banners.last.linkType, 'product');
+  });
+
   test('promo_block_footer parses its banner item the same way', () {
 
 

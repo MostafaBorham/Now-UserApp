@@ -11,18 +11,27 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/utils/open_category.dart';
-import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 
 /// The top banner carousel of the special offers section, shown under the
 /// auto-scrolling offers list.
 ///
-/// Only mounted when the `/api/v1/home-sections` feed carries a `top_banner`
-/// section; its content is a separate fetch of
-/// `/api/v1/banners?type=header_main_page`. One banner renders as a static
-/// image, many as an auto-playing carousel with dots (both via [AppSlider]).
-/// Silent on empty/error — it is decorative, so it just takes no space.
-class HomeTopBannerSectionView extends ConsumerWidget {
-  const HomeTopBannerSectionView({super.key});
+/// [banners] are the items of the feed's `top_banner` section: every visible
+/// `header_main_page` banner, so there is no second request. One banner
+/// renders as a static image, many as an auto-playing carousel (both via
+/// [AppSlider]). Silent when empty — it is decorative, so it just takes no
+/// space.
+class HomeTopBannerSectionView extends StatelessWidget {
+  const HomeTopBannerSectionView({
+    super.key,
+    this.banners = const <BannerModel>[],
+    this.isLoading = false,
+  });
+
+  final List<BannerModel> banners;
+
+  /// Shows the banner's skeleton, in the carousel's own box, while the feed
+  /// loads.
+  final bool isLoading;
 
   /// Figma 7137:26468 — the banner is a 355×118 box inset 17.5px from each
   /// screen edge, 18px corners, drop shadow `0 0 4 rgba(0, 0, 0, 0.25)`.
@@ -36,49 +45,46 @@ class HomeTopBannerSectionView extends ConsumerWidget {
   static const double _sliderSpace = 8;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<BannerModel>> banners = ref.watch(
-      getHeaderBannersProvider,
-    );
-
-    return banners.when(
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: _sideMargin),
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      // The vertical padding is the slider's own, above and below the banner,
+      // so swapping the skeleton for the carousel moves nothing.
+      return const Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: _sideMargin,
+          vertical: _sliderSpace,
+        ),
         child: AspectRatio(
           aspectRatio: _bannerAspectRatio,
           child: _BannerSkeleton(),
         ),
-      ),
-      error: (_, _) => const SizedBox.shrink(),
-      data: (List<BannerModel> items) {
-        if (items.isEmpty) return const SizedBox.shrink();
-        return LayoutBuilder(
-          builder: (context, con) {
-            final double bannerWidth = con.maxWidth - (_sideMargin * 2);
-            final double viewportWidth =
-                con.maxWidth - ((_sideMargin - _sliderSpace) * 2);
-            final double viewportAspectRatio =
-                viewportWidth /
-                (bannerWidth / _bannerAspectRatio + (_sliderSpace * 2));
+      );
+    }
+    if (banners.isEmpty) return const SizedBox.shrink();
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: _sideMargin - _sliderSpace,
-              ),
-              child: _SlideInOnOpen(
-                child: AppSlider(
-                  itemAspectRatio: viewportAspectRatio,
-                  sliderSpace: _sliderSpace,
-                  showIndicator: false,
-                  sliderItems: items
-                      .map(
-                        (BannerModel banner) => _TopBannerItem(banner: banner),
-                      )
-                      .toList(),
-                ),
-              ),
-            );
-          },
+    return LayoutBuilder(
+      builder: (context, con) {
+        final double bannerWidth = con.maxWidth - (_sideMargin * 2);
+        final double viewportWidth =
+            con.maxWidth - ((_sideMargin - _sliderSpace) * 2);
+        final double viewportAspectRatio =
+            viewportWidth /
+            (bannerWidth / _bannerAspectRatio + (_sliderSpace * 2));
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: _sideMargin - _sliderSpace,
+          ),
+          child: _SlideInOnOpen(
+            child: AppSlider(
+              itemAspectRatio: viewportAspectRatio,
+              sliderSpace: _sliderSpace,
+              showIndicator: false,
+              sliderItems: banners
+                  .map((BannerModel banner) => _TopBannerItem(banner: banner))
+                  .toList(),
+            ),
+          ),
         );
       },
     );
@@ -175,8 +181,10 @@ class _TopBannerItem extends ConsumerWidget {
   }
 
   void _onTap(BuildContext context, WidgetRef ref) {
-    // `/api/v1/banners` sends a category banner's main category id only, so
-    // `openHomeCategory` finds its slug among the categories already loaded.
+    // The feed sends a banner's `product_id` / `main_category_id` only. A
+    // category's slug is found among the categories already loaded
+    // (`openHomeCategory`); a product tap stays inert until the feed emits
+    // `product_slug` (backend ticket T18), which BannerModel then picks up.
     if (banner.linkType == 'product' && banner.productSlug != null) {
       context.pushNamed(
         AppRoutes.productDetailsScreen,
@@ -193,7 +201,7 @@ class _TopBannerItem extends ConsumerWidget {
   }
 }
 
-/// Rounded shimmer placeholder shown while the banners request is in flight.
+/// Rounded shimmer placeholder shown while the feed loads.
 class _BannerSkeleton extends StatelessWidget {
   const _BannerSkeleton();
 

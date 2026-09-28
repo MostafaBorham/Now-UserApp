@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
-import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 
 import '../helpers/categories_test_harness.dart';
 
@@ -22,23 +20,24 @@ void main() {
 
   Future<void> pumpSection(
     WidgetTester tester,
-    AsyncValue<List<BannerModel>> state,
-  ) => pumpCategoriesWidget(
-    tester,
-    const HomeTopBannerSectionView(),
-    overrides: <Override>[
-      getHeaderBannersProvider.overrideWith(
-        (Ref ref) => _FakeHeaderBannersVM(state),
-      ),
-    ],
-  );
+    HomeTopBannerSectionView section,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      // Unbounded height, as in the feed's list, so the section sizes itself.
+      SingleChildScrollView(child: section),
+    );
+    // Let the 600 ms entrance slide finish, so the banner is measured where it
+    // comes to rest.
+    await tester.pump(const Duration(milliseconds: 700));
+  }
 
   testWidgets('renders the banner on the design 355×118 box', (
     WidgetTester tester,
   ) async {
     await pumpSection(
       tester,
-      const AsyncValue<List<BannerModel>>.data(<BannerModel>[bannerNoImage]),
+      const HomeTopBannerSectionView(banners: <BannerModel>[bannerNoImage]),
     );
 
     final Finder banner = find.byType(AppCachedNetworkImage);
@@ -55,7 +54,7 @@ void main() {
   ) async {
     await pumpSection(
       tester,
-      const AsyncValue<List<BannerModel>>.loading(),
+      const HomeTopBannerSectionView(isLoading: true),
     );
 
     final Finder skeleton = find.byType(AspectRatio);
@@ -66,21 +65,31 @@ void main() {
     );
   });
 
-  testWidgets('takes no space with no banners', (WidgetTester tester) async {
+  testWidgets('the skeleton is as tall as the carousel that replaces it', (
+    WidgetTester tester,
+  ) async {
     await pumpSection(
       tester,
-      const AsyncValue<List<BannerModel>>.data(<BannerModel>[]),
+      const HomeTopBannerSectionView(isLoading: true),
     );
+    final double skeletonHeight = tester
+        .getSize(find.byType(HomeTopBannerSectionView))
+        .height;
+
+    await pumpSection(
+      tester,
+      const HomeTopBannerSectionView(banners: <BannerModel>[bannerNoImage]),
+    );
+
+    expect(
+      tester.getSize(find.byType(HomeTopBannerSectionView)).height,
+      moreOrLessEquals(skeletonHeight, epsilon: 0.5),
+    );
+  });
+
+  testWidgets('takes no space with no banners', (WidgetTester tester) async {
+    await pumpSection(tester, const HomeTopBannerSectionView());
 
     expect(find.byType(AppCachedNetworkImage), findsNothing);
   });
-}
-
-class _FakeHeaderBannersVM extends GetHeaderBannersViewModel {
-  _FakeHeaderBannersVM(AsyncValue<List<BannerModel>> initial) {
-    state = initial;
-  }
-
-  @override
-  Future<void> getHeaderBanners() async {}
 }

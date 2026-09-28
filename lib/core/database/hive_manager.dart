@@ -28,8 +28,11 @@ class HiveManager {
     await Hive.openBox<dynamic>(HiveBoxes.walletInfo);
     await Hive.openBox<dynamic>(HiveBoxes.walletTopUpAttempt);
     await Hive.openBox<dynamic>(HiveBoxes.homeSections);
-    await Hive.openBox<dynamic>(HiveBoxes.headerBanners);
     await Hive.openBox<dynamic>(HiveBoxes.featuredStores);
+    // The retired `/api/v1/banners` cache; the top banner now comes from the
+    // home feed. A no-op once the file is gone.
+    // ponytail: drop once every install has launched a build from 2026-09-28 on.
+    await Hive.deleteBoxFromDisk('header_banners_box');
     _initialized = true;
   }
 

@@ -14,7 +14,6 @@ const Set<String> _appScoped = <String>{
   'currentLocationProvider', // where the device is, not who is signed in
   'getAppInfoProvider', // the app's own text blocks and FAQs
   'getAppCategoriesProvider', // CategoryModel carries no per-user field
-  'getHeaderBannersProvider', // banner images, identical for everyone
   'welcomeVoucherProvider', // one fixed public coupon, same for everyone
   'checkoutDiscountProvider', // stateless calculator, holds no state at all
 };

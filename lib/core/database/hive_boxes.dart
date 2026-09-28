@@ -54,12 +54,6 @@ abstract class HiveBoxes {
   /// every successful feed fetch.
   static const String homeSections = 'home_sections_box';
 
-  /// Box storing the cached home header banners payload (the `banners` list from
-  /// `GET /api/v1/banners`), so the home top-banner carousel can render from
-  /// local storage when the server is unreachable. It is refreshed from the
-  /// server on every successful banners fetch.
-  static const String headerBanners = 'header_banners_box';
-
   /// Box storing the cached first page of the featured stores list (from
   /// `GET /stores/featured`), so the home "Best brands" carousel can render from
   /// local storage when the server is unreachable. It is refreshed from the

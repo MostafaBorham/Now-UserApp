@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -30,7 +31,6 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
-import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
 
@@ -96,11 +96,6 @@ class _HomeViewState extends ConsumerState<HomeView>
           lng: double.tryParse(location?.longitude ?? ''),
         );
   }
-
-  Future<void> _refreshHome() => Future.wait(<Future<void>>[
-    _loadFeed(),
-    ref.read(getHeaderBannersProvider.notifier).getHeaderBanners(),
-  ]);
 
   @override
   void dispose() {
@@ -171,7 +166,7 @@ class _HomeViewState extends ConsumerState<HomeView>
       AsyncValue<bool> next,
     ) {
       if (previous?.valueOrNull == false && next.valueOrNull == true) {
-        _refreshHome();
+        _loadFeed();
       }
     });
     // Re-fetch when the signed-in user changes. The feed is session-scoped —
@@ -222,7 +217,13 @@ class _HomeViewState extends ConsumerState<HomeView>
     final HomeSectionModel? categoriesSection = byType['categories'];
     final bool showCategories = !feed.hasValue || categoriesSection != null;
     final HomeSectionModel? offersSection = byType['featured_offers'];
-    final bool showTopBanner = byType.containsKey('top_banner');
+    final List<BannerModel> topBanners =
+        byType['top_banner']?.banners ?? const <BannerModel>[];
+    // The header and top brands render before the feed lands, so special
+    // offers holds its slot as a skeleton rather than popping in between them.
+    // Only the first load: a refresh keeps the loaded feed, and a failed load
+    // shows the retry instead.
+    final bool feedFirstLoading = feed.isLoading && !feed.hasValue;
     final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
     final HomeSectionModel? nearbyStoresSection = byType['nearby_stores'];
     final HomeSectionModel? flashOffersSection = byType['flash_offers'];
@@ -238,12 +239,13 @@ class _HomeViewState extends ConsumerState<HomeView>
         categories: categoriesSection?.categories ?? const <CategoryModel>[],
       ),
       if (showLiveOrders) const HomeLiveOrdersSectionView(),
-      if ((offersSection != null && offersSection.offers.isNotEmpty) ||
-          showTopBanner)
+      if (feedFirstLoading ||
+          (offersSection?.offers.isNotEmpty ?? false) ||
+          topBanners.isNotEmpty)
         HomeSpecialOffersSectionView(
-          title: offersSection?.title,
           offers: offersSection?.offers ?? const <HomeOfferModel>[],
-          showTopBanner: showTopBanner,
+          topBanners: topBanners,
+          isLoading: feedFirstLoading,
         ),
       const HomeMostPopularBrandsView(),
       if (featuredStoresSection != null &&
@@ -305,7 +307,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         // Pull-to-refresh: the feed is kept alive and cached, so without this
         // the only ways to refresh it were the offline cue and the error retry.
         AppRefreshIndicator(
-          onRefresh: _refreshHome,
+          onRefresh: _loadFeed,
           child: CustomScrollView(
             controller: _scrollController,
             // Always scrollable, so a short or empty feed can still be pulled.
@@ -388,7 +390,7 @@ class _HomeViewState extends ConsumerState<HomeView>
             left: 0,
             right: 0,
             bottom: 0,
-            child: _OfflineSavedContentCue(onRetry: _refreshHome),
+            child: _OfflineSavedContentCue(onRetry: _loadFeed),
           ),
       ],
     );

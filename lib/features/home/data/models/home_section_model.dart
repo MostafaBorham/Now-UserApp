@@ -15,7 +15,7 @@ import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 /// `flash_offers` and `products_by_category` carry their [products] (the
 /// former also brings its [backgroundColor] and "See All" chip colours, the
 /// latter the [category] it lists plus its own [primaryColor] / [textColor] /
-/// [displayDesign] theming); `promo_block_middle` and
+/// [displayDesign] theming); `top_banner`, `promo_block_middle` and
 /// `promo_block_footer` carry their [banners]; `categories` carries the
 /// carousel's [categories]. Every other type is kept as a bare [type] and
 /// rendered by nothing yet.
@@ -40,9 +40,10 @@ class HomeSectionModel extends Equatable {
   /// so every wrapper's products are flattened into this single list.
   final List<ProductModel> products;
 
-  /// Banner items of a `promo_block_middle` / `promo_block_footer` section.
-  /// Their `image_ar` / `image_en` arrive as bare URL strings, which
-  /// [BannerModel] reads as-is.
+  /// Banner items of a `top_banner` / `promo_block_middle` /
+  /// `promo_block_footer` section. `top_banner` carries every visible header
+  /// banner, in carousel order. Their `image_ar` / `image_en` arrive as bare
+  /// URL strings, which [BannerModel] reads as-is.
   final List<BannerModel> banners;
 
   /// Items of a `categories` section, in the order the admin arranged them —
@@ -93,9 +94,10 @@ class HomeSectionModel extends Equatable {
     'all_stores',
   };
 
-  /// Section types whose `items` are banner slots, parsed into [banners]. Both
+  /// Section types whose `items` are banner slots, parsed into [banners]. All
   /// send the same item shape, differing only in their `slot`.
   static const Set<String> _bannerTypes = <String>{
+    'top_banner',
     'promo_block_middle',
     'promo_block_footer',
   };
