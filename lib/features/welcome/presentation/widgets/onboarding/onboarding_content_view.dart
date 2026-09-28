@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/features/welcome/viewmodel/guest_token_vm.d
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/welcome/presentation/widgets/onboarding/or_divider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_gradient_app_button.dart';
@@ -46,6 +47,12 @@ class OnBoardingContentView extends ConsumerWidget {
     );
     final heightFactor = MediaQuery.of(context).size.height;
     final double bottomInset = MediaQuery.of(context).viewPadding.bottom;
+    final TextStyle headlineStyle = AppTextStyles.style24Bold.copyWith(
+      fontFamily: FontFamily.cairo,
+      fontWeight: FontWeight.w800,
+      color: colors.tertiaryContainer,
+      overflow: TextOverflow.visible,
+    );
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(10, 20, 10, 20 + bottomInset),
@@ -65,81 +72,20 @@ class OnBoardingContentView extends ConsumerWidget {
         children: [
           AppLogo(size: heightFactor * 0.2),
           3.hSpace,
-          Text(
-            LangKeys.onBoardingTitleKey.tr(),
-            style: AppTextStyles.style24Bold.copyWith(
-              color: colors.black,
-              fontSize: heightFactor * 0.03,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            maxLines: 5,
-          ),
-          Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              textDirection: TextDirection.ltr,
-              spacing: 5,
-              children: [
-                IntrinsicWidth(
-                  child: Column(
-                    spacing: 2,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        LangKeys.thatSuitKey.tr(),
-                        style: AppTextStyles.style24SemiBold.copyWith(
-                          height: 1,
-                          fontSize: heightFactor * 0.03,
-                          foreground: Paint()
-                            ..shader = screenGradient.createShader(
-                              const Rect.fromLTWH(0, 0, 300, 70),
-                            ),
-                        ),
-                      ),
-                      Container(
-                        height: 5,
-                        decoration: BoxDecoration(gradient: screenGradient),
-                      ),
-                    ],
-                  ),
-                ),
-                IntrinsicWidth(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 2,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        LangKeys.youKey.tr(),
-                        style: AppTextStyles.style24SemiBold.copyWith(
-                          height: 1,
-                          fontSize: heightFactor * 0.03,
-                          color: colors.primary500Main,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: heightFactor * 0.015),
-                        height: 5,
-                        color: colors.primary500Main,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          2.hSpace,
-          Text(
-            LangKeys.onBoardingSubTitleKey.tr(),
-            style: AppTextStyles.style12Medium.copyWith(
-              color: colors.black.withValues(alpha: 0.8),
-              fontSize: heightFactor * 0.015,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            maxLines: 2,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                LangKeys.onBoardingTitleKey.tr(),
+                style: headlineStyle,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                LangKeys.onBoardingSubTitleKey.tr(),
+                style: headlineStyle,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
           4.hSpace,
           AspectRatio(

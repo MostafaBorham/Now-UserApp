@@ -127,8 +127,6 @@ abstract class LangKeys {
   static const String kmKey = 'km';
 
   // Onboarding
-  static const String thatSuitKey = 'thatSuit';
-  static const String youKey = 'you';
   static const String continueAsGuestKey = 'continueAsGuest';
 
   // Wallet
