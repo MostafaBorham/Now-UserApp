@@ -195,8 +195,8 @@ class _HomeViewState extends ConsumerState<HomeView>
         ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
         SessionType.user;
     // Only a bool is watched, so the strip's 10 s refresh rebuilds the strip
-    // alone; this flips at most on the first load and when the last live
-    // order ends. A guest never watches it, so the poll never starts for them.
+    // alone; this flips only when the strip appears or disappears. A guest
+    // never watches it, so the poll never starts for them.
     final bool showLiveOrders =
         isUserSession &&
         ref.watch(
