@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 class ProductItem3View extends StatelessWidget {
   const ProductItem3View({
@@ -185,7 +186,7 @@ class ProductItem3View extends StatelessWidget {
                                                 fontWeight: FontWeight.w700,
                                               ),
                                         Assets.media.images.svg.zigzagArrowIcon.svg(
-                                          colorFilter: ColorFilter.mode(colors.white,BlendMode.srcIn),
+                                          colorMapper: SvgTint(colors.white),
                                           width: con.maxWidth*0.04
                                         ),
                                       ],

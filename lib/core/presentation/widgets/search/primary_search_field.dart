@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 class PrimarySearchField extends StatefulWidget {
   const PrimarySearchField({
@@ -145,13 +146,13 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
       behavior: HitTestBehavior.opaque,
       onTap: _isEditable ? null : widget.onTap,
       child: LayoutBuilder(
-        builder: (context,con) {
+        builder: (context, con) {
           return Container(
             padding: EdgeInsetsDirectional.only(
               start: 16,
               end: 8,
-              top: con.maxWidth*0.02,
-              bottom: con.maxWidth*0.02,
+              top: con.maxWidth * 0.02,
+              bottom: con.maxWidth * 0.02,
             ),
             decoration: BoxDecoration(
               color: colors.white,
@@ -181,10 +182,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                           ),
                         )
                       : widget.isAnimated
-                      ? _AnimatedSearchHint(
-                          hints: hints,
-                          style: hintStyle,
-                        )
+                      ? _AnimatedSearchHint(hints: hints, style: hintStyle)
                       : Text(
                           hints.first.tr(),
                           maxLines: 1,
@@ -201,13 +199,13 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                   child: Assets.media.images.svg.searchNormalIcon.svg(
                     width: 16,
                     height: 16,
-                    colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+                    colorMapper: SvgTint(colors.white),
                   ),
                 ),
               ],
             ),
           );
-        }
+        },
       ),
     );
 
@@ -267,10 +265,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
 /// (a plain transform, no `saveLayer`) clipped by [ClipRect], and the whole
 /// thing sits behind a [RepaintBoundary] so it never repaints the page.
 class _AnimatedSearchHint extends StatefulWidget {
-  const _AnimatedSearchHint({
-    required this.hints,
-    required this.style,
-  });
+  const _AnimatedSearchHint({required this.hints, required this.style});
 
   final List<String> hints;
   final TextStyle style;
@@ -304,7 +299,10 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
     super.initState();
     if (_cycles) {
       _controller.addStatusListener(_onStatus);
-      _timer = Timer.periodic(_dwell, (Timer _) => _controller.forward(from: 0));
+      _timer = Timer.periodic(
+        _dwell,
+        (Timer _) => _controller.forward(from: 0),
+      );
     }
   }
 

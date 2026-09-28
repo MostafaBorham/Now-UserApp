@@ -18,6 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_br
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 /// A detail row of the store card, shrunk to fit rather than overflowing.
 ///
@@ -167,10 +168,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                             ReverseWidget(
                               child: Assets.media.images.svg.shippingIcon.svg(
                                 width: iconSize,
-                                colorFilter: ColorFilter.mode(
-                                  colors.neutral500,
-                                  BlendMode.srcIn,
-                                ),
+                                colorMapper: SvgTint(colors.neutral500),
                               ),
                             ),
                             NewPriceWidget(
@@ -204,10 +202,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                           if (store.deliveryTime != null) ...[
                             Assets.media.images.svg.timeIcon.svg(
                               width: iconSize,
-                              colorFilter: ColorFilter.mode(
-                                colors.neutral500,
-                                BlendMode.srcIn,
-                              ),
+                              colorMapper: SvgTint(colors.neutral500),
                             ),
                             Text(
                               '${store.deliveryTime} ${LangKeys.minutesKey.tr()}',
@@ -220,10 +215,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                           if (store.distance != null) ...[
                             Assets.media.images.svg.locationIcon.svg(
                               width: constrains.maxHeight * 0.07,
-                              colorFilter: ColorFilter.mode(
-                                colors.neutral500,
-                                BlendMode.srcIn,
-                              ),
+                              colorMapper: SvgTint(colors.neutral500),
                             ),
                             Text(
                               '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}',

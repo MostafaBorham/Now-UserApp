@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 /// A read-only 5-star row that reflects a rating [average] with half-star
 /// precision.
@@ -48,7 +49,7 @@ class AppRatingStars extends StatelessWidget {
     Widget star(Color color) => Assets.media.images.svg.starIcon.svg(
       width: size,
       height: size,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorMapper: SvgTint(color),
     );
 
     return Row(

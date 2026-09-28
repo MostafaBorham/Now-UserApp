@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/product/product_favourite_vm.dart';
 import 'package:nowdelivery_user_app/features/favourites/viewmodel/store/store_favourite_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 /// Circular favourite (heart) button.
 ///
@@ -132,11 +133,10 @@ class _CircularAppFavouriteIconState
                         : Assets.media.images.svg.favouriteIcon)
                     .svg(
                       width: widget.size,
-                      colorFilter: ColorFilter.mode(
+                      colorMapper: SvgTint(
                         isFavourite
                             ? colors.errorContainer
                             : colors.neutral1200,
-                        BlendMode.srcIn,
                       ),
                     ),
         ),

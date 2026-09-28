@@ -4,9 +4,15 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
 
 class OldPriceWidget extends StatelessWidget {
-  const OldPriceWidget({super.key, required this.color, this.size, required this.price});
+  const OldPriceWidget({
+    super.key,
+    required this.color,
+    this.size,
+    required this.price,
+  });
   final Color color;
   final String price;
   final double? size;
@@ -25,7 +31,7 @@ class OldPriceWidget extends StatelessWidget {
               width: size ?? 14,
               height: size ?? 14,
               fit: BoxFit.contain,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              colorMapper: SvgTint(color),
             ),
             AutoSizeText(
               price,
