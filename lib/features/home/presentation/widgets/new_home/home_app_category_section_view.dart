@@ -41,6 +41,7 @@ class HomeAppCategorySectionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color accent = primaryColor ?? colors.onInverseSurface;
+    final Color titleColor = textColor ?? colors.black;
     return LayoutBuilder(
       builder: (context, constraints) {
 
@@ -57,11 +58,7 @@ class HomeAppCategorySectionView extends ConsumerWidget {
                   shaderCallback: (Rect bounds) => LinearGradient(
                     begin: Alignment.centerRight,
                     end: Alignment.centerLeft,
-                    stops: [0, 0.5],
-                    colors: [
-                      accent.withValues(alpha: 0.2),
-                      accent.withValues(alpha: 0.02),
-                    ],
+                    colors: [accent, colors.white],
                   ).createShader(bounds),
                   child: Assets.media.images.svg.oneWaveBackground.svg(
                     fit: BoxFit.fill,
@@ -87,7 +84,7 @@ class HomeAppCategorySectionView extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: textColor ?? colors.black,
+                            color: titleColor,
                           ),
                         ),
                       ),
@@ -99,8 +96,9 @@ class HomeAppCategorySectionView extends ConsumerWidget {
                         HomeViewAllWidget(
                           onTap: onViewAllTap,
                           size: 15,
-                          startBackgroundColor: accent.withValues(alpha: 0.5),
-                          endBackgroundColor: accent.withValues(alpha: 0.2),
+                          textColor: titleColor,
+                          startBackgroundColor: colors.white,
+                          endBackgroundColor: accent.withValues(alpha: 0.5),
                         ),
                     ],
                   ),

@@ -54,119 +54,125 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color accent = primaryColor ?? colors.error;
+    final Color titleColor = textColor ?? colors.white;
     final String image = imageUrl ?? '';
     return LayoutBuilder(
       builder: (context, con) {
         final double s = con.maxWidth / _designWidth;
-        return SizedBox(
-          height: 317 * s,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Wave: bleeds the full width, solid accent at the top fading to
-              // white at 80.3% (matches the Figma fill exactly).
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                height: 316 * s,
-                child: ShaderMask(
-                  blendMode: BlendMode.srcIn,
-                  shaderCallback: (Rect bounds) => LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0, 0.803],
-                    colors: [accent, colors.white],
-                  ).createShader(bounds),
-                  child: ReverseWidget(
-                    applyReverse: !context.isRTL,
-                    child: Assets.media.images.svg.twoWaveBackground.svg(
-                      fit: BoxFit.fill,
+        final double waveTop = 24 * s;
+        return Stack(
+          children: [
+            Positioned(
+              left: 0,
+              right: 0,
+              top: waveTop,
+              bottom: 0,
+              child: ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (Rect bounds) => LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0, 0.803],
+                  colors: [accent, colors.white],
+                ).createShader(bounds),
+                child: ReverseWidget(
+                  applyReverse: !context.isRTL,
+                  child: Assets.media.images.svg.twoWaveBackground.svg(
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8 * s),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            top: waveTop + 20 * s,
+                          ),
+                          child: Text(
+                            formatArabicKashida(
+                              context.getLocalizedApiText(categoryModel.name),
+                              count: 20,
+                            ),
+                            textAlign: TextAlign.start,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontSize: 17.486 * s,
+                              fontWeight: FontWeight.w600,
+                              height: 1.35,
+                              color: titleColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (image.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          height: 96 * s,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (con.maxWidth - 32) / 2,
+                            ),
+                            child: FittedBox(
+                              child: CachedNetworkImage(
+                                imageUrl: image,
+                                memCacheWidth:
+                                    (164 * s * MediaQuery.devicePixelRatioOf(context))
+                                        .round(),
+                                placeholder: (context, url) =>
+                                    const SizedBox.shrink(),
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      if (showViewAll) ...[
+                        SizedBox(width: image.isNotEmpty ? 12 : 8),
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(top: waveTop),
+                          child: HomeViewAllWidget(
+                            onTap: onViewAllTap,
+                            size: con.maxWidth * 0.04,
+                            textColor: titleColor,
+                            startBackgroundColor: colors.white,
+                            endBackgroundColor: accent.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 245 * s,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: productModels.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 8),
+                    itemBuilder: (context, index) => ProductItem3View(
+                      product: productModels[index],
+                      onFavouriteChanged: (bool isFavourite) => ref
+                          .read(getHomeSectionsProvider.notifier)
+                          .updateProductFavourite(
+                            productModels[index].id,
+                            isFavourite,
+                          ),
                     ),
                   ),
                 ),
-              ),
-              // Category artwork, near the top and poking above the wave.
-              // Directional so it mirrors with the layout: the design's Arabic
-              // screen-x 51..215 maps to `start: 175` (390 − 215) from the
-              // trailing edge.
-              if (image.isNotEmpty)
-                PositionedDirectional(
-                  start: 175 * s,
-                  top: -28 * s,
-                  width: 164 * s,
-                  height: 100 * s,
-                  child: CachedNetworkImage(
-                    imageUrl: image,
-                    fit: BoxFit.contain,
-                    memCacheWidth:
-                        (164 * s * MediaQuery.devicePixelRatioOf(context))
-                            .round(),
-                    alignment: Alignment.bottomCenter,
-                    placeholder: (context, url) => const SizedBox.shrink(),
-                    errorWidget: (context, url, error) =>
-                        const SizedBox.shrink(),
-                  ),
-                ),
-              // Category name: two white kashida-stretched lines on the leading
-              // side (right in Arabic). Design box is 43pt in from that edge.
-              PositionedDirectional(
-                start: 43 * s,
-                top: 14 * s,
-                width: 157 * s,
-                child: Text(
-                  formatArabicKashida(
-                    context.getLocalizedApiText(categoryModel.name),
-                    count: 20,
-                  ),
-                  textAlign: TextAlign.start,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 17.486 * s,
-                    fontWeight: FontWeight.w600,
-                    height: 1.35,
-                    color: textColor ?? colors.white,
-                  ),
-                ),
-              ),
-              // See all, on the trailing side (left in Arabic).
-              if (showViewAll)
-                PositionedDirectional(
-                  end: 16 * s,
-                  top: 10 * s,
-                  child: HomeViewAllWidget(
-                    onTap: onViewAllTap,
-                    size: con.maxWidth * 0.04,
-                    startBackgroundColor: accent.withValues(alpha: 0.3),
-                    endBackgroundColor: accent.withValues(alpha: 0.1),
-                  ),
-                ),
-              // Product rail, sitting on the white lower part of the wave.
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 72 * s,
-                bottom: 0,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: productModels.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 8),
-                  itemBuilder: (context, index) => ProductItem3View(
-                    product: productModels[index],
-                    onFavouriteChanged: (bool isFavourite) => ref
-                        .read(getHomeSectionsProvider.notifier)
-                        .updateProductFavourite(
-                          productModels[index].id,
-                          isFavourite,
-                        ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         );
       },
     );
