@@ -20,7 +20,13 @@ dart run build_runner build --delete-conflicting-outputs
 
 # Regenerate the native splash after changing assets or config in pubspec.yaml:
 dart run flutter_native_splash:create
+
+# Home frame-time benchmark — real device, profile mode; writes build/perf/<label>/*.json:
+PERF_LABEL=<label> flutter drive --profile --no-dds --keep-app-running \
+  --driver=test_driver/perf_driver.dart --target=integration_test/home_perf_test.dart -d <device>
 ```
+
+The benchmark (`integration_test/home_perf_test.dart`) needs `--no-dds` (its timeline connection fails behind DDS) and `--keep-app-running` (otherwise `flutter drive` uninstalls the app, session and location grant included). Grant the location prompt by hand before the first run. Emulator raster numbers measure the host GPU; judge on a phone.
 
 Windows/PowerShell: same commands, no shell-specific tweaks needed.
 
@@ -113,8 +119,8 @@ Forced logout: when a token refresh fails, `TokenRefreshInterceptor` clears the 
 
 ## Tests
 
-There is a real suite: 82 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
+There is a real suite: 85 test files under `test/`, mirroring `lib/`'s structure, plus shared harnesses in `test/helpers/`. The convention is plain `flutter_test` — `ProviderContainer` for view models (see `test/features/address/edit_address_vm_test.dart`), `WidgetTester` for widgets. No mocking framework, no generated mocks.
 
 **`flutter analyze` is clean — 0 issues.** The old "69 issues, mostly unused imports" baseline is gone; treat any new issue as yours.
 
-**`flutter test` is green — 418 passing, 0 failing** (measured 2026-09-28). The last pre-existing failure, the top banner's geometry test, was measuring the banner mid-way through its 600 ms entrance slide. Treat any failure as yours. Counts drift as tests are added, so when in doubt `git stash` and re-measure rather than trusting the number written here.
+**`flutter test` is green — 430 passing, 0 failing** (measured 2026-09-28, after the Home Tier 2 performance work). The last pre-existing failure, the top banner's geometry test, was measuring the banner mid-way through its 600 ms entrance slide. Treat any failure as yours. Counts drift as tests are added, so when in doubt `git stash` and re-measure rather than trusting the number written here.
