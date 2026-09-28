@@ -494,10 +494,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get onboardingBackground =>
       const SvgGenImage('assets/media/images/svg/onboarding_background.svg');
 
-  /// File path: assets/media/images/svg/one-wave-background.svg
-  SvgGenImage get oneWaveBackground =>
-      const SvgGenImage('assets/media/images/svg/one-wave-background.svg');
-
   /// File path: assets/media/images/svg/order-icon.svg
   SvgGenImage get orderIcon =>
       const SvgGenImage('assets/media/images/svg/order-icon.svg');
@@ -638,10 +634,6 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get trustIcon =>
       const SvgGenImage('assets/media/images/svg/trust-icon.svg');
 
-  /// File path: assets/media/images/svg/two-wave-background.svg
-  SvgGenImage get twoWaveBackground =>
-      const SvgGenImage('assets/media/images/svg/two-wave-background.svg');
-
   /// File path: assets/media/images/svg/visa-logo.svg
   SvgGenImage get visaLogo =>
       const SvgGenImage('assets/media/images/svg/visa-logo.svg');
@@ -742,7 +734,6 @@ class $AssetsMediaImagesSvgGen {
     nowWalletCard,
     onTheWay,
     onboardingBackground,
-    oneWaveBackground,
     orderIcon,
     orderStarRate,
     order,
@@ -779,7 +770,6 @@ class $AssetsMediaImagesSvgGen {
     tickCircle,
     timeIcon,
     trustIcon,
-    twoWaveBackground,
     visaLogo,
     visa,
     wallet2,

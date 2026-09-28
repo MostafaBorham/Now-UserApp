@@ -5,9 +5,9 @@ import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/arabic_kashida_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_category_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_view_all_widget.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
@@ -67,18 +67,16 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
               right: 0,
               top: waveTop,
               bottom: 0,
-              child: ShaderMask(
-                blendMode: BlendMode.srcIn,
-                shaderCallback: (Rect bounds) => LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0, 0.803],
-                  colors: [accent, colors.white],
-                ).createShader(bounds),
-                child: ReverseWidget(
-                  applyReverse: !context.isRTL,
-                  child: Assets.media.images.svg.twoWaveBackground.svg(
-                    fit: BoxFit.fill,
+              child: ReverseWidget(
+                applyReverse: !context.isRTL,
+                child: HomeCategoryWave(
+                  wave: HomeCategoryWave.twoWave,
+                  viewBox: HomeCategoryWave.twoWaveViewBox,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0, 0.803],
+                    colors: [accent, colors.white],
                   ),
                 ),
               ),
@@ -124,7 +122,11 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                               child: CachedNetworkImage(
                                 imageUrl: image,
                                 memCacheWidth:
-                                    (164 * s * MediaQuery.devicePixelRatioOf(context))
+                                    (164 *
+                                            s *
+                                            MediaQuery.devicePixelRatioOf(
+                                              context,
+                                            ))
                                         .round(),
                                 placeholder: (context, url) =>
                                     const SizedBox.shrink(),
