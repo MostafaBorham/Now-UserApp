@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/dio/api_response.dart';
@@ -12,9 +13,6 @@ import 'package:nowdelivery_user_app/features/home/data/datasources/local/databa
 import 'package:nowdelivery_user_app/features/home/data/datasources/remote/api/home_sections_api_service.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 
-
-
-
 class HomeSectionsRepo {
   final HomeSectionsApiService _apiService = HomeSectionsApiService();
   final HomeSectionsDatabaseService _databaseService =
@@ -22,43 +20,47 @@ class HomeSectionsRepo {
 
   void cancelRequests() => _apiService.cancelRequests();
 
-
-
-
-
-
-
-
-
   Future<Either<Failure, List<HomeSectionModel>>> getHomeSections({
     required String platform,
     required String lang,
     double? lat,
     double? lng,
   }) async {
-
-
-    final Either<Failure, Map<String, dynamic>> serverResult =
-        await _fetchFromServer(
-          platform: platform,
-          lang: lang,
-          lat: lat,
-          lng: lng,
-        );
+    final Either<Failure, String> serverResult = await _fetchFromServer(
+      platform: platform,
+      lang: lang,
+      lat: lat,
+      lng: lng,
+    );
 
     return serverResult.fold(
-
       (Failure serverFailure) => _readFromCache(serverFailure),
 
-      (Map<String, dynamic> data) async {
-        await _cacheHomeSections(data);
-        return Right<Failure, List<HomeSectionModel>>(_parseSections(data));
+      (String body) async {
+        final List<HomeSectionModel> sections;
+        try {
+          // Decoded and mapped to models in one background isolate: the
+          // whole parse used to run on the UI thread.
+          sections = await IsolateRunner.parseJson<List<HomeSectionModel>>(
+            body,
+            decodeHomeSections,
+          );
+        } catch (_) {
+          // A 2xx that is not the feed's JSON — fall back as for any failure.
+          return _readFromCache(
+            const Failure(LangKeys.serverConnectionFailedKey),
+          );
+        }
+        // Cached as it came, so nothing is re-encoded on the UI thread either.
+        await _cacheHomeSections(body);
+        return Right<Failure, List<HomeSectionModel>>(sections);
       },
     );
   }
 
-
-  Future<Either<Failure, Map<String, dynamic>>> _fetchFromServer({
+  /// The raw response body, once [readApiResponse] has judged the request a
+  /// success.
+  Future<Either<Failure, String>> _fetchFromServer({
     required String platform,
     required String lang,
     double? lat,
@@ -76,37 +78,28 @@ class HomeSectionsRepo {
         lng: lng,
       );
 
-      return readApiResponse(response).map(
-        (Map<String, dynamic> body) =>
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{},
-      );
+      return readApiResponse(
+        response,
+      ).map((_) => response.data as String? ?? '');
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(
+        Failure(
+          ApiErrorHandler.extractErrorMessage(
+            _errorBody(exception.response?.data),
+          ),
+        ),
+      );
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
       return const Left(Failure(LangKeys.serverConnectionFailedKey));
     }
   }
 
-
-
-
-
-
-
-
-  Future<void> _cacheHomeSections(Map<String, dynamic> data) async {
+  Future<void> _cacheHomeSections(String body) async {
     try {
-      await _databaseService.saveHomeSections(jsonEncode(data));
-    } catch (_) {
-
-    }
+      await _databaseService.saveHomeSections(body);
+    } catch (_) {}
   }
-
-
 
   Future<Either<Failure, List<HomeSectionModel>>> _readFromCache(
     Failure serverFailure,
@@ -120,7 +113,7 @@ class HomeSectionsRepo {
       final List<HomeSectionModel> sections =
           await IsolateRunner.parseJson<List<HomeSectionModel>>(
             cached,
-            _decodeHomeSections,
+            decodeHomeSections,
           );
       return Right<Failure, List<HomeSectionModel>>(sections);
     } catch (_) {
@@ -128,16 +121,34 @@ class HomeSectionsRepo {
     }
   }
 
-
-
-  List<HomeSectionModel> _parseSections(Map<String, dynamic> data) =>
-      _decodeHomeSections(data);
+  /// The error body as the map [ApiErrorHandler] reads. The feed is fetched as
+  /// plain text, so an error response arrives as a string too.
+  static Map<String, dynamic>? _errorBody(Object? data) {
+    if (data is Map<String, dynamic>) return data;
+    if (data is! String) return null;
+    try {
+      final Object? decoded = jsonDecode(data);
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } on FormatException {
+      return null;
+    }
+  }
 }
 
-List<HomeSectionModel> _decodeHomeSections(Object? decoded) {
-  final Map<String, dynamic> data = decoded as Map<String, dynamic>;
+/// The feed's sections from a decoded body: the raw response envelope, or the
+/// bare `data` object that installs from before the raw-body cache still hold.
+/// Runs inside the parse isolate, so it must stay top-level.
+@visibleForTesting
+List<HomeSectionModel> decodeHomeSections(Object? decoded) {
+  final Map<String, dynamic> root = decoded is Map<String, dynamic>
+      ? decoded
+      : const <String, dynamic>{};
+  final Object? data = root['data'];
+  final Map<String, dynamic> payload = data is Map<String, dynamic>
+      ? data
+      : root;
   final List<dynamic> rawSections =
-      data['sections'] as List<dynamic>? ?? <dynamic>[];
+      payload['sections'] as List<dynamic>? ?? <dynamic>[];
   return rawSections
       .whereType<Map<String, dynamic>>()
       .map(HomeSectionModel.fromJson)

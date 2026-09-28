@@ -22,6 +22,10 @@ class HomeSectionsApiService {
   /// to this pair only when there is none, so it is sent for every session.
   /// Both are sent together or not at all; with neither (and no saved address)
   /// `nearby_stores` comes back empty.
+  ///
+  /// The body comes back as the raw JSON string, undecoded: the repository
+  /// decodes it and builds the models in one background isolate. At the
+  /// feed's size Dio would otherwise decode it on the UI thread.
   Future<Response> getHomeSections({
     required String platform,
     required String lang,
@@ -37,6 +41,7 @@ class HomeSectionsApiService {
         if (hasLocation) 'lat': lat,
         if (hasLocation) 'lng': lng,
       },
+      options: Options(responseType: ResponseType.plain),
       cancelToken: _canceller.token,
     );
   }
