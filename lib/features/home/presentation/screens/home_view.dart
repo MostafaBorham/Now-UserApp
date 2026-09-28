@@ -292,7 +292,10 @@ class _HomeViewState extends ConsumerState<HomeView>
           child: HomeBannerView(banner: footerPromoSection.banners.first),
         ),
       if (allStoresSection != null)
-        HomeAllStoresSectionView(pinTop: _searchBarHeight),
+        HomeAllStoresSectionView(
+          stores: allStoresSection.stores,
+          pinTop: _searchBarHeight,
+        ),
       if (feed.hasError) _FeedErrorRetry(onRetry: _loadFeed),
     ];
 

@@ -15,17 +15,25 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
-import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
+import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/sticky_on_scroll.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 
 /// The `all_stores` section: a category filter over a list of stores.
 ///
-/// Every tab fetches from the server on demand from `getAllStoresProvider`
-/// (`/api/v1/stores`): **All** pages the unfiltered store list, while **every
-/// category tab** pages the same endpoint narrowed by `category_id`.
+/// **All** shows the feed's own `all_stores` items ([stores]) — the admin's
+/// pick and order for this section, already carrying the user's
+/// `is_favourite` — with no request of its own. **Every category tab** fetches
+/// that category's stores on demand (`getCategoryStoresProvider`).
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
-  const HomeAllStoresSectionView({super.key, this.pinTop});
+  const HomeAllStoresSectionView({
+    super.key,
+    required this.stores,
+    this.pinTop,
+  });
+
+  final List<StoreModel> stores;
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
@@ -65,9 +73,15 @@ class _HomeAllStoresSectionViewState
     ];
 
     final List<Widget> views = <Widget>[
-      const HomeStoresListView(),
+      HomeStoresListView(
+        stores: widget.stores,
+        onFavouriteChanged: (int? storeId, bool isFavourite) => ref
+            .read(getHomeSectionsProvider.notifier)
+            .updateStoreFavourite(storeId, isFavourite),
+      ),
       ...categories.map(
-        (CategoryModel category) => HomeStoresListView(category: category),
+        (CategoryModel category) =>
+            _HomeCategoryStoresListView(category: category),
       ),
     ];
 
@@ -80,16 +94,13 @@ class _HomeAllStoresSectionViewState
         views: List<Widget>.filled(tabs.length, const SizedBox.shrink()),
         onTap: (int index) {
           if (index == _selectedIndex) return;
-          // Drop the tab's previously loaded stores so opening it always
-          // refetches from the server instead of showing a cached list.
-          final int? categoryId = index == 0 ? null : categories[index - 1].id;
-          ref.invalidate(
-            getAllStoresProvider((
-              categoryId: categoryId,
-              rating: null,
-              searchKey: null,
-            )),
-          );
+          if (index > 0) {
+            ref.invalidate(
+              getCategoryStoresProvider(
+                _HomeCategoryStoresListView.argsOf(categories[index - 1]),
+              ),
+            );
+          }
           setState(() => _selectedIndex = index);
         },
         unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
@@ -161,12 +172,53 @@ class _HomeAllStoresSectionViewState
   }
 }
 
-/// One tab's store list, fetched on demand: [category]'s stores, or — with no
-/// category, i.e. the "All" tab — the unfiltered store list.
-class HomeStoresListView extends ConsumerWidget {
-  const HomeStoresListView({super.key, this.category});
+class _HomeCategoryStoresListView extends ConsumerWidget {
+  const _HomeCategoryStoresListView({required this.category});
 
-  final CategoryModel? category;
+  final CategoryModel category;
+
+  static CategoryStoresArgs argsOf(CategoryModel category) => (
+    categorySlug: category.slug ?? '',
+    categoryId: null,
+    searchKey: null,
+  );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final CategoryStoresArgs args = argsOf(category);
+    final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
+      getCategoryStoresProvider(args),
+    );
+
+    return state.when(
+      loading: () => _StoresList(
+        itemCount: HomeStoresListView.itemCount,
+        itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
+      ),
+      error: (Object error, _) => ServerConnectionErrorWidget(
+        message: error is String ? error : null,
+        onRetry: () =>
+            ref.read(getCategoryStoresProvider(args).notifier).loadFirstPage(),
+      ),
+      data: (PaginationModel<StoreModel> page) => HomeStoresListView(
+        stores: page.data,
+        onFavouriteChanged: (int? storeId, bool isFavourite) => ref
+            .read(getCategoryStoresProvider(args).notifier)
+            .updateStoreFavourite(storeId, isFavourite),
+      ),
+    );
+  }
+}
+
+class HomeStoresListView extends StatelessWidget {
+  const HomeStoresListView({
+    super.key,
+    required this.stores,
+    required this.onFavouriteChanged,
+  });
+
+  final List<StoreModel> stores;
+  final void Function(int? storeId, bool isFavourite) onFavouriteChanged;
 
   static const int itemCount = 7;
   static const double separator = 15;
@@ -181,39 +233,16 @@ class HomeStoresListView extends ConsumerWidget {
   static double itemHeight(double width) => width * 0.32 + 110;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AllStoresArgs args = (
-      categoryId: category?.id,
-      rating: null,
-      searchKey: null,
-    );
-    final AsyncValue<PaginationModel<StoreModel>> state = ref.watch(
-      getAllStoresProvider(args),
-    );
-
-    return state.when(
-      loading: () => _StoresList(
-        itemCount: itemCount,
-        itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
+  Widget build(BuildContext context) {
+    final List<StoreModel> shown = stores.take(itemCount).toList();
+    if (shown.isEmpty) return const NoResultsWidget();
+    return _StoresList(
+      itemCount: shown.length,
+      itemBuilder: (context, index) => StoreCardView(
+        store: shown[index],
+        onFavouriteChanged: (bool isFavourite) =>
+            onFavouriteChanged(shown[index].id, isFavourite),
       ),
-      error: (Object error, _) => ServerConnectionErrorWidget(
-        message: error is String ? error : null,
-        onRetry: () =>
-            ref.read(getAllStoresProvider(args).notifier).loadFirstPage(),
-      ),
-      data: (PaginationModel<StoreModel> page) {
-        final List<StoreModel> stores = page.data.take(itemCount).toList();
-        if (stores.isEmpty) return const NoResultsWidget();
-        return _StoresList(
-          itemCount: stores.length,
-          itemBuilder: (context, index) => StoreCardView(
-            store: stores[index],
-            onFavouriteChanged: (bool isFavourite) => ref
-                .read(getAllStoresProvider(args).notifier)
-                .updateStoreFavourite(stores[index].id, isFavourite),
-          ),
-        );
-      },
     );
   }
 }

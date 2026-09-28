@@ -14,8 +14,8 @@ import '../helpers/categories_test_harness.dart';
 /// see the harness note (images and shimmers animate forever).
 ///
 /// The two tab families have different sources, which is what these pin down:
-/// "All" fetches the unfiltered store list, every category tab fetches that
-/// category's stores. Whether the section appears at all is `HomeView`'s call
+/// "All" renders the feed's own `all_stores` items without fetching, every
+/// category tab fetches that category's stores. Whether the section appears at all is `HomeView`'s call
 /// (it mounts this widget only when the feed publishes the section).
 void main() {
   setUpAll(initCategoriesTestLocalization);
@@ -43,13 +43,8 @@ void main() {
     tester,
     // The section is taller than the screen once its cards are real, so it
     // needs the scrolling parent `HomeView` gives it.
-    const SingleChildScrollView(child: HomeAllStoresSectionView()),
+    SingleChildScrollView(child: HomeAllStoresSectionView(stores: stores)),
     overrides: <Override>[
-      overrideAllStores(
-        AsyncValue<PaginationModel<StoreModel>>.data(
-          pageOf<StoreModel>(stores),
-        ),
-      ),
       overrideAppCategories(
         AsyncValue<PaginationModel<CategoryModel>>.data(
           pageOf<CategoryModel>(categories),
