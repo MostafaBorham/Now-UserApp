@@ -21,9 +21,29 @@ abstract class OrdersEndpoints {
 
   static const int perPage = 15;
 
-  /// Query parameters for [getMyOrders].
-  static Map<String, dynamic> getMyOrdersQuery(int page) => {
+  /// Every backend status of an order that is still on its way to the
+  /// customer, for the home live-orders strip. These are the server's own keys,
+  /// not `OrderStatus.apiKey`: the app folds `arrived_store` into `ready` and
+  /// `picked_up` into `on_the_way`, so filtering by the folded keys would drop
+  /// an order while the courier is at the store or just after pickup.
+  static const List<String> liveStatuses = <String>[
+    'pending',
+    'accepted',
+    'preparing',
+    'ready',
+    'arrived_store',
+    'picked_up',
+    'on_the_way',
+  ];
+
+  /// Query parameters for [getMyOrders]; [statuses] narrows the list to orders
+  /// in any of those backend states.
+  static Map<String, dynamic> getMyOrdersQuery(
+    int page, {
+    List<String>? statuses,
+  }) => {
     'per_page': perPage,
     'page': page,
+    'status': ?statuses,
   };
 }

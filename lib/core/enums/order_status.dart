@@ -1,3 +1,5 @@
+import 'package:nowdelivery_user_app/core/enums/order_step_status.dart';
+
 /// The lifecycle state of an order, modeled as a sealed hierarchy so callers
 /// branch over an exhaustive, type-safe set instead of loose raw strings.
 ///
@@ -32,6 +34,32 @@ sealed class OrderStatus {
   /// Whether the order's invoice can be printed/downloaded — delivered (which a
   /// delivered `closed` order maps onto) only.
   bool get hasInvoice => this is DeliveredStatus;
+
+  /// The milestone of the four-step delivery progress (accepted → preparing →
+  /// on the way → delivered) the order is currently working toward — the step
+  /// that shows the active marker; every step before it is already done.
+  /// `accepted` and `preparing` sit on the "being prepared" milestone, while
+  /// `ready` advances to "on the way" (prepared, waiting for pickup) and
+  /// `on_the_way` advances to the final "delivered" milestone. Terminal /
+  /// unknown states park at the first milestone (they aren't tracked).
+  int get _trackingMilestone => switch (this) {
+    PendingStatus() => 0,
+    AcceptedStatus() || PreparingStatus() => 1,
+    ReadyStatus() => 2,
+    OnTheWayStatus() || DeliveredStatus() => 3,
+    _ => 0,
+  };
+
+  /// How step [index] of that progress is drawn for this order: done before
+  /// the reached milestone, pending after it, current on it — unless the order
+  /// is delivered, whose final step is complete rather than in progress.
+  OrderStepStatus stepStatusAt(int index) {
+    if (index < _trackingMilestone) return OrderStepStatus.done;
+    if (index > _trackingMilestone) return OrderStepStatus.pending;
+    return this is DeliveredStatus
+        ? OrderStepStatus.done
+        : OrderStepStatus.current;
+  }
 
   /// Maps the API `status` key onto its [OrderStatus]. A `null`, empty, or
   /// unrecognized key resolves to [UnknownStatus] carrying the raw value.

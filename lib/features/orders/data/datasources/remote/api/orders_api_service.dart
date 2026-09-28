@@ -18,10 +18,16 @@ class OrdersApiService {
   /// Cancels every in-flight request issued by this service instance.
   void cancelRequests() => _canceller.cancel();
 
-  Future<Response> getMyOrders({required int page}) {
+  Future<Response> getMyOrders({required int page, List<String>? statuses}) {
     return _dio.get(
       OrdersEndpoints.getMyOrders,
-      queryParameters: OrdersEndpoints.getMyOrdersQuery(page),
+      queryParameters: OrdersEndpoints.getMyOrdersQuery(
+        page,
+        statuses: statuses,
+      ),
+      // `status[]=a&status[]=b`: Laravel reads a repeated plain `status=` as
+      // its last value only.
+      options: Options(listFormat: ListFormat.multiCompatible),
       cancelToken: _canceller.token,
     );
   }

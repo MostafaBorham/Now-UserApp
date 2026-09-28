@@ -2,16 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-
-
-enum OrderStepStatus { done, current, pending }
-
-
-
-
-
-
+import 'package:nowdelivery_user_app/core/enums/order_step_status.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/orders/order_step_marker.dart';
 
 class OrderTimelineStep extends StatelessWidget {
   const OrderTimelineStep({
@@ -47,7 +39,7 @@ class OrderTimelineStep extends StatelessWidget {
                 Expanded(
                   child: _connector(isFirst ? Colors.transparent : topLineColor),
                 ),
-                _marker(context),
+                OrderStepMarker(status: status),
                 Expanded(
                   child: _connector(isLast ? Colors.transparent : bottomLineColor),
                 ),
@@ -97,43 +89,4 @@ class OrderTimelineStep extends StatelessWidget {
 
 
   Widget _connector(Color color) => Container(width: 2, color: color);
-
-  Widget _marker(BuildContext context) {
-    final AppColorScheme colors = context.colors;
-    switch (status) {
-      case OrderStepStatus.done:
-        return Assets.media.images.svg.stepDone.svg(
-          width: 22,
-          height: 22,
-        );
-      case OrderStepStatus.current:
-        return Container(
-          width: 18,
-          height: 18,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.primary500Main.withValues(alpha: 0.18),
-          ),
-          child: Center(
-            child: Container(
-              width: 11,
-              height: 11,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colors.primary500Main,
-              ),
-            ),
-          ),
-        );
-      case OrderStepStatus.pending:
-        return Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.neutral200,
-          ),
-        );
-    }
-  }
 }

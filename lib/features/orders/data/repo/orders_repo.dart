@@ -22,13 +22,17 @@ class OrdersRepo {
 
   Future<Either<Failure, PaginationModel<OrderModel>>> getMyOrders({
     required int page,
+    List<String>? statuses,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
     try {
-      final Response response = await _ordersApiService.getMyOrders(page: page);
+      final Response response = await _ordersApiService.getMyOrders(
+        page: page,
+        statuses: statuses,
+      );
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
         final Map<String, dynamic> data =

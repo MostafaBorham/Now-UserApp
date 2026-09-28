@@ -31,6 +31,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_header_banners_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -192,6 +193,16 @@ class _HomeViewState extends ConsumerState<HomeView>
     final bool isUserSession =
         ref.watch(authSessionProvider.select((s) => s.sessionType)) ==
         SessionType.user;
+    // Only a bool is watched, so the strip's 10 s refresh rebuilds the strip
+    // alone; this flips at most on the first load and when the last live
+    // order ends. A guest never watches it, so the poll never starts for them.
+    final bool showLiveOrders =
+        isUserSession &&
+        ref.watch(
+          getLiveOrdersProvider.select(
+            (s) => s.isLoading || (s.valueOrNull?.isNotEmpty ?? false),
+          ),
+        );
     // Only cue when there is content to show (cached or live); with no cache the
     // feed errors and the existing _FeedErrorRetry covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;
@@ -225,7 +236,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         showCategories: showCategories,
         categories: categoriesSection?.categories ?? const <CategoryModel>[],
       ),
-      if (isUserSession) const HomeLiveOrdersSectionView(),
+      if (showLiveOrders) const HomeLiveOrdersSectionView(),
       if ((offersSection != null && offersSection.offers.isNotEmpty) ||
           showTopBanner)
         HomeSpecialOffersSectionView(

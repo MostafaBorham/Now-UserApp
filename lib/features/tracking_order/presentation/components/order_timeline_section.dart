@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
+import 'package:nowdelivery_user_app/core/enums/order_step_status.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -12,8 +13,8 @@ import 'order_timeline_step.dart';
 /// "Track Order" progress section: the estimated-time header followed by the
 /// four-step delivery timeline. The step illustrations already encode their
 /// active/inactive state, so this widget only drives the rail markers & the
-/// connector colours from each step's [OrderStepStatus], derived here from the
-/// order's live [status].
+/// connector colours from each step's [OrderStepStatus], which the order's live
+/// [status] reports through [OrderStatus.stepStatusAt].
 class OrderTimelineSection extends StatelessWidget {
   const OrderTimelineSection({
     super.key,
@@ -25,31 +26,6 @@ class OrderTimelineSection extends StatelessWidget {
   final OrderStatus status;
   final String estimatedTime;
 
-  /// The milestone the order is currently working toward — the step that shows
-  /// the active (green-circle) marker; every step before it is already done
-  /// (checkmark). `accepted` and `preparing` sit on the "confirmed & being
-  /// prepared" milestone, while `ready` advances to "on the way" (the order is
-  /// prepared and waiting for pickup) and `on_the_way` advances to the final
-  /// "delivered" milestone. Terminal / unknown states park at the first
-  /// milestone (they aren't tracked here — the section is hidden for them).
-  int get _reachedMilestone => switch (status) {
-    PendingStatus() => 0,
-    AcceptedStatus() || PreparingStatus() => 1,
-    ReadyStatus() => 2,
-    OnTheWayStatus() || DeliveredStatus() => 3,
-    _ => 0,
-  };
-
-  OrderStepStatus _stepStatus(int index) {
-    if (index < _reachedMilestone) return OrderStepStatus.done;
-    if (index > _reachedMilestone) return OrderStepStatus.pending;
-    // The reached milestone is the active one, unless the order is delivered:
-    // its final step is complete, not in-progress.
-    return status is DeliveredStatus
-        ? OrderStepStatus.done
-        : OrderStepStatus.current;
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -58,7 +34,7 @@ class OrderTimelineSection extends StatelessWidget {
 
     final List<_TimelineStepData> steps = [
       _TimelineStepData(
-        status: _stepStatus(0),
+        status: status.stepStatusAt(0),
         icon: Assets.media.images.svg.orderAccepted.svg(
           width: 34,
           height: 34,
@@ -66,7 +42,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.orderAcceptedKey.tr(),
       ),
       _TimelineStepData(
-        status: _stepStatus(1),
+        status: status.stepStatusAt(1),
         icon: Assets.media.images.svg.orderConfirmed.svg(
           width: 34,
           height: 34,
@@ -74,7 +50,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.orderConfirmedBeingPreparedKey.tr(),
       ),
       _TimelineStepData(
-        status: _stepStatus(2),
+        status: status.stepStatusAt(2),
         icon: Assets.media.images.svg.onTheWay.svg(
           width: 34,
           height: 34,
@@ -82,7 +58,7 @@ class OrderTimelineSection extends StatelessWidget {
         title: LangKeys.onTheWayToYouKey.tr(),
       ),
       _TimelineStepData(
-        status: _stepStatus(3),
+        status: status.stepStatusAt(3),
         icon: Assets.media.images.svg.delivered.svg(
           width: 34,
           height: 34,
