@@ -122,6 +122,17 @@ void main() {
     expect(number.text, '4000000000000000006');
   });
 
+  testWidgets('the name field keeps English letters and spaces only', (
+    tester,
+  ) async {
+    await pumpForm(tester);
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'José ياسر Ya55er_@Ahmed!',
+    );
+    expect(name.text, 'Jos  YaerAhmed');
+  });
+
   testWidgets('a past expiry is rejected as expired', (tester) async {
     await pumpForm(tester);
     name.text = 'Jane Doe';

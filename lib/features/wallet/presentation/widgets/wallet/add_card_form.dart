@@ -139,6 +139,11 @@ class AddCardForm extends StatelessWidget {
             hintText: LangKeys.nameHintKey.tr(),
             hintColor: hintColor,
             fieldColor: fieldColor,
+            keyboardType: TextInputType.name,
+            // The name as printed on the card: English letters and spaces.
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
+            ],
           ),
 
           const SizedBox(height: 18),
