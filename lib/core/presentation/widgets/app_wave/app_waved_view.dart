@@ -136,15 +136,13 @@ class _AppWavedViewState extends State<AppWavedView> {
                       },
                 ),
               if (widget.hasCartIcon)
-                ReverseWidget(
-                  child: CircularCartButton(
-                    size: screenSize.width * 0.05,
-                    onTap:
-                        widget.onCartTap ??
-                        () {
-                          context.pushNamed(AppRoutes.cartScreen);
-                        },
-                  ),
+                CircularCartButton(
+                  size: screenSize.width * 0.05,
+                  onTap:
+                      widget.onCartTap ??
+                      () {
+                        context.pushNamed(AppRoutes.cartScreen);
+                      },
                 ),
             ],
           )
