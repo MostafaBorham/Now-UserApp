@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -33,7 +34,8 @@ import 'package:nowdelivery_user_app/main.dart' as app;
 ///
 /// Each scenario's summary (average / p90 / p99 / worst build and raster
 /// times, missed-budget counts, frame count) lands in
-/// `build/perf/<label>/<scenario>.json`. The app launches as it does for a
+/// `build/perf/<label>/<scenario>.json`, next to `app_animation_frame_count`
+/// (see [_AnimationFrames]). The app launches as it does for a
 /// user: an existing session goes straight to Home, otherwise the test
 /// continues as a guest. Grant the location prompt by hand before the first
 /// run — a native dialog cannot be tapped from here.
@@ -47,6 +49,18 @@ void main() {
   // draws the frames a test pumps, so the app's own animations — every
   // carousel, every scroll below — would never advance.
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+  final _AnimationFrames animationFrames = _AnimationFrames(binding);
+
+  Future<void> watch(String reportKey, Future<void> Function() action) async {
+    await binding.watchPerformance(() async {
+      animationFrames.start();
+      await action();
+      animationFrames.stop();
+    }, reportKey: reportKey);
+    (binding.reportData![reportKey]
+            as Map<String, dynamic>)['app_animation_frame_count'] =
+        animationFrames.count;
+  }
 
   testWidgets('home performance', (WidgetTester tester) async {
     final FlutterExceptionHandler? reportToTest = FlutterError.onError;
@@ -80,20 +94,20 @@ void main() {
         .position;
 
     _step('idle_top');
-    await binding.watchPerformance(() async {
+    await watch('idle_top', () async {
       await _wait(const Duration(seconds: 10));
       await tester.pump();
-    }, reportKey: 'idle_top');
+    });
 
     _step('scroll');
-    await binding.watchPerformance(() async {
+    await watch('scroll', () async {
       await _scrollToBottom(feed);
       await _scrollToTop(feed);
       await tester.pump();
-    }, reportKey: 'scroll');
+    });
 
     _step('categories_swipe');
-    await binding.watchPerformance(() async {
+    await watch('categories_swipe', () async {
       final Finder carousel = find
           .descendant(of: home, matching: find.byType(PageView))
           .first;
@@ -102,7 +116,7 @@ void main() {
         await _wait(const Duration(seconds: 1));
       }
       await tester.pump();
-    }, reportKey: 'categories_swipe');
+    });
 
     // After the full scroll, so every section that stays alive is alive: the
     // worst case for a rebuild of the whole feed.
@@ -118,18 +132,18 @@ void main() {
     if (product != null) {
       final bool isFavourite = product.isFavorite ?? false;
       _step('favourite_rebuild');
-      await binding.watchPerformance(() async {
+      await watch('favourite_rebuild', () async {
         // The view model's own write-back, so no favourite reaches the server.
         viewModel.updateProductFavourite(product.id, !isFavourite);
         await _wait(const Duration(milliseconds: 500));
         viewModel.updateProductFavourite(product.id, isFavourite);
         await _wait(const Duration(milliseconds: 500));
         await tester.pump();
-      }, reportKey: 'favourite_rebuild');
+      });
     }
 
     _step('feed_reload');
-    await binding.watchPerformance(() async {
+    await watch('feed_reload', () async {
       // What pull-to-refresh runs, called directly so no gesture can miss.
       final AddressModel? location = CurrentLocationCacheService()
           .getCurrentLocation();
@@ -141,7 +155,7 @@ void main() {
       );
       await _wait(const Duration(seconds: 1));
       await tester.pump();
-    }, reportKey: 'feed_reload');
+    });
 
     final Finder featuredStores = find.byType(HomeFeaturedStoresView);
     for (int i = 0; i < 20 && !_found(featuredStores); i++) {
@@ -157,12 +171,47 @@ void main() {
         duration: const Duration(milliseconds: 300),
       );
       _step('idle_mid');
-      await binding.watchPerformance(() async {
+      await watch('idle_mid', () async {
         await _wait(const Duration(seconds: 10));
         await tester.pump();
-      }, reportKey: 'idle_mid');
+      });
     }
   });
+}
+
+/// Counts the frames in which an app ticker ran: an animation, a carousel
+/// slide, a scroll animation.
+///
+/// `frame_count` can't say that. Under
+/// [LiveTestWidgetsFlutterBindingFramePolicy.fullyLive] the binding asks for a
+/// new frame after every frame it draws, so it renders every vsync on its own:
+/// a static screen reads ~600 frames in 10 s at 60 Hz. A one-off rebuild with
+/// no ticker (the favourite flip's own frame) is not counted.
+class _AnimationFrames {
+  _AnimationFrames(SchedulerBinding binding) : _binding = binding {
+    binding.addPersistentFrameCallback(_onFrame);
+  }
+
+  final SchedulerBinding _binding;
+  bool _counting = false;
+  bool _bookedByLastFrame = false;
+  int count = 0;
+
+  void start() {
+    count = 0;
+    _counting = true;
+  }
+
+  void stop() => _counting = false;
+
+  // Runs inside frames that happen anyway, so it asks for none. A ticker ran
+  // in this frame if one was booked going into it, or one started since the
+  // last frame and is still booked coming out of it.
+  void _onFrame(Duration _) {
+    final bool booked = _binding.transientCallbackCount > 0;
+    if (_counting && (_bookedByLastFrame || booked)) count++;
+    _bookedByLastFrame = booked;
+  }
 }
 
 void _step(String scenario) => debugPrint('home_perf: $scenario');

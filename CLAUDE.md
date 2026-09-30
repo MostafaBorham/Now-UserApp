@@ -28,6 +28,8 @@ PERF_LABEL=<label> flutter drive --profile --no-dds --keep-app-running \
 
 The benchmark (`integration_test/home_perf_test.dart`) needs `--no-dds` (its timeline connection fails behind DDS) and `--keep-app-running` (otherwise `flutter drive` uninstalls the app, session and location grant included). Grant the location prompt by hand before the first run. Emulator raster numbers measure the host GPU; judge on a phone.
 
+**`frame_count` is not app demand.** The harness runs under the `fullyLive` frame policy (without it the app's animations never advance), and under that policy the test binding requests a new frame after every frame it draws, so it renders every vsync by itself: a static screen reads ~600 frames / 10 s at 60 Hz. `app_animation_frame_count`, next to it in each JSON, counts the frames in which an app ticker ran; read that one for idle work. It leaves out one-off rebuilds with no ticker. The near-empty frames also sit in every scenario's averages and missed-budget counts; the worst-frame numbers are mostly unaffected.
+
 Windows/PowerShell: same commands, no shell-specific tweaks needed.
 
 ## Architecture
