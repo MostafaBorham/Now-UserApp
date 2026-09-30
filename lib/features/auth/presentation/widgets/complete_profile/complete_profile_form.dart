@@ -34,7 +34,7 @@ class CompleteProfileForm extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.colors.onTertiaryContainer,
+        color: context.colors.onTertiaryContainer.withAlpha(210),
         borderRadius: AppBorderRadius.brCircular20,
       ),
       child: Column(
