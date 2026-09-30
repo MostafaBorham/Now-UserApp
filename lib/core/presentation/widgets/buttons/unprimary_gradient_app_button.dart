@@ -36,7 +36,10 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
         ),
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.all(buttonPadding!),
+          padding: EdgeInsets.symmetric(
+            horizontal: buttonPadding!,
+            vertical: 4,
+          ),
           decoration: BoxDecoration(
             color: backgroundColor ?? colors.white,
             borderRadius: BorderRadius.circular(8),
@@ -58,7 +61,8 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.style16Medium.copyWith(
+                    style: AppTextStyles.style20Bold.copyWith(
+                      height: 1.2,
                       foreground: Paint()
                         ..shader = buttonGradient.createShader(
                           const Rect.fromLTWH(0, 0, 300, 70),

@@ -23,7 +23,7 @@ class PrimaryGradientAppButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(buttonPadding!),
+        padding: EdgeInsets.symmetric(horizontal: buttonPadding!, vertical: 4),
         decoration: BoxDecoration(
           gradient: buttonGradient,
           borderRadius: BorderRadius.circular(8),
@@ -35,6 +35,8 @@ class PrimaryGradientAppButton extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: AppTextStyles.style24SemiBold.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.2,
               color: colors.white,
             ),
           ),

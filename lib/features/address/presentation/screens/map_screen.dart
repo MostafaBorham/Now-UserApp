@@ -14,7 +14,6 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/arrow_back_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -177,13 +176,14 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
             padding: const EdgeInsets.all(20.0),
             child: AspectRatio(
               aspectRatio: 7,
-              child: _selectedLocation != null
-                  ? PrimaryAppButton(
-                      title: confirmLabel,
-                      isLoading: isResolvingAddress,
-                      onTap: _onEnterAddressTapped,
-                    )
-                  : PrimaryAppDisabledButton(title: confirmLabel),
+              child: PrimaryAppButton(
+                title: confirmLabel,
+                buttonPadding: 8,
+                titleStyle: AppTextStyles.style20SemiBold,
+                isLoading: isResolvingAddress,
+                isDisabled: _selectedLocation == null,
+                onTap: _onEnterAddressTapped,
+              ),
             ),
           ),
         ],
