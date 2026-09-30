@@ -194,6 +194,9 @@ class PaginatedView<T> extends ConsumerWidget {
             // again asks for the same page again.
             child: CustomScrollView(
               controller: scrollController,
+              physics: enablePullToRefresh
+                  ? const AlwaysScrollableScrollPhysics()
+                  : null,
               slivers: <Widget>[
                 layout.buildSliver(
                   itemCount: status.items.length + trailingPlaceholders,
