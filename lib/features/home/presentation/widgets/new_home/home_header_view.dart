@@ -120,35 +120,41 @@ class HomeHeaderView extends ConsumerWidget {
                                         fontSize: con.maxWidth * 0.04,
                                       ),
                                     ),
-                                    Row(
-                                      spacing: 5,
-                                      children: [
-                                        Assets.media.images.svg.homeLocationIcon
-                                            .svg(width: con.maxWidth * 0.05),
-                                        Flexible(
-                                          child: Text(
-                                            hasAddress
-                                                ? displayedAddress
-                                                : LangKeys.noAddressSelectedKey
-                                                      .tr(),
-                                            textDirection: TextDirection.ltr,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: hasAddress
-                                                  ? colors.black
-                                                  : colors.error,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: con.maxWidth * 0.03,
+                                    // The whole row opens the sheet, not just
+                                    // the small arrow at its end.
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () =>
+                                          _openDeliveryAddressSheet(context),
+                                      child: Row(
+                                        spacing: 5,
+                                        children: [
+                                          Assets
+                                              .media
+                                              .images
+                                              .svg
+                                              .homeLocationIcon
+                                              .svg(width: con.maxWidth * 0.05),
+                                          Flexible(
+                                            child: Text(
+                                              hasAddress
+                                                  ? displayedAddress
+                                                  : LangKeys
+                                                        .noAddressSelectedKey
+                                                        .tr(),
+                                              textDirection: TextDirection.ltr,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: hasAddress
+                                                    ? colors.black
+                                                    : colors.error,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: con.maxWidth * 0.03,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        InkWell(
-                                          onTap: () =>
-                                              _openDeliveryAddressSheet(
-                                                context,
-                                              ),
-                                          child: RotatedBox(
+                                          RotatedBox(
                                             quarterTurns: 1,
                                             child: Assets
                                                 .media
@@ -159,8 +165,8 @@ class HomeHeaderView extends ConsumerWidget {
                                                   width: con.maxWidth * 0.04,
                                                 ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
