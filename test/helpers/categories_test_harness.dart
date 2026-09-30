@@ -93,10 +93,13 @@ Future<void> pumpCategoriesWidget(
 
 
 
+/// [destinationRoutes] replaces the stub category-details route, for tests
+/// that need to see where a tap went.
 Future<void> pumpCategoriesScreen(
   WidgetTester tester,
   Widget screen, {
   List<Override> overrides = const <Override>[],
+  List<RouteBase>? destinationRoutes,
 }) async {
   _useDesignSurface(tester);
   final GoRouter router = GoRouter(
@@ -106,12 +109,15 @@ Future<void> pumpCategoriesScreen(
         path: '/',
         builder: (BuildContext context, GoRouterState state) => screen,
       ),
-      GoRoute(
-        name: AppRoutes.categoryDetailsScreen,
-        path: '/category-details/:slug',
-        builder: (BuildContext context, GoRouterState state) =>
-            const Scaffold(body: Center(child: Text('__details__'))),
-      ),
+      ...(destinationRoutes ??
+          <RouteBase>[
+            GoRoute(
+              name: AppRoutes.categoryDetailsScreen,
+              path: '/category-details/:slug',
+              builder: (BuildContext context, GoRouterState state) =>
+                  const Scaffold(body: Center(child: Text('__details__'))),
+            ),
+          ]),
     ],
   );
 

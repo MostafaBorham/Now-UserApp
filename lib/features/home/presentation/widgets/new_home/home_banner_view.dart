@@ -62,10 +62,10 @@ class HomeBannerView extends ConsumerWidget {
   }
 
   void _onTap(BuildContext context, WidgetRef ref) {
-    // Both screens navigate by slug, and the feed sends numeric `product_id` /
-    // `main_category_id` only. A category's slug is found among the categories
-    // already loaded (`openHomeCategory`); a product tap stays inert until the
-    // feed emits `product_slug`, which BannerModel then picks up.
+    // Both screens navigate by slug, which the feed sends as `product_slug` /
+    // `category_slug`. A category banner without one falls back to finding its
+    // `main_category_id` among the categories already loaded
+    // (`openHomeCategory`).
     final String? productSlug = banner.productSlug;
     if (productSlug != null) {
       context.pushNamed(AppRoutes.productDetailsScreen, extra: productSlug);
