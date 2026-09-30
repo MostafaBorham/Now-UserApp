@@ -55,6 +55,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    // The balance decides whether the wallet can pay, and it changes outside
+    // the app (refunds, credits, the last order), so it is fetched fresh here.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(getWalletInfoProvider.notifier).getWalletInfo();
+    });
+  }
+
+  @override
   void dispose() {
     _instructionsController.dispose();
     _scrollController.dispose();

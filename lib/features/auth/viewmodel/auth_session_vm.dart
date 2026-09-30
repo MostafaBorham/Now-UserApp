@@ -215,8 +215,9 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       // Saved cards are no longer fetched at boot: they are loaded fresh when
       // the wallet's "My Cards" / "Add Balance" buttons are tapped (see
       // WalletScreen). getMyCardsProvider stays session-scoped below so the
-      // list still dies on logout.
-      _ref.read(getWalletInfoProvider.notifier).getWalletInfo(),
+      // list still dies on logout. The wallet balance likewise: checkout and
+      // the wallet screen fetch it each time they open.
+
       // Fetched here rather than left to the cart screen: on guest→login the
       // main shell (and with it CartView) can stay mounted, so its
       // "fetch only when empty" guard never runs again and the freshly

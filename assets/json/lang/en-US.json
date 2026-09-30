@@ -339,6 +339,7 @@
   "welcomeVoucherSuffix": " on your first order",
   "balance": "Balance: ",
   "walletShortfallHint": "Your wallet balance doesn't cover this order. Untick the wallet to pay by card.",
+  "walletBalanceNotUpdated": "Balance is not up to date",
   "fullName": "Full Name",
   "firstName": "First Name",
   "lastName": "Last Name",

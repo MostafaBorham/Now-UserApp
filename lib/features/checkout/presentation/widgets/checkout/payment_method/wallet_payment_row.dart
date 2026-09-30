@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
@@ -38,13 +39,16 @@ class WalletPaymentRow extends ConsumerWidget {
     final AppColorScheme colors = context.colors;
     final bool selected = ref.watch(walletPaymentProvider);
 
-    // The session already fetched this (see `AuthSessionViewModel`), so on a
-    // normal checkout the balance is in memory and renders on the first frame.
-    // Null covers both loading and error: the row stays — it is the payment
-    // choice, and hiding it is what 05e26eb fixed — but the amount is left off
-    // rather than guessed, matching how `WalletCardWidget` treats a null
-    // balance.
-    final WalletModel? wallet = ref.watch(getWalletInfoProvider).valueOrNull;
+    // Checkout refetches this on open, and the last balance stays while that
+    // loads. Whatever the state, the row stays — it is the payment choice, and
+    // hiding it is what 05e26eb fixed; with the wallet ticked by default, a
+    // hidden row would leave no way to pay by card. With no balance yet the
+    // amount shimmers, and after a failure (or a balance only the offline
+    // cache had) a line says it may be out of date, with a retry.
+    final AsyncValue<WalletModel> walletState = ref.watch(
+      getWalletInfoProvider,
+    );
+    final WalletModel? wallet = walletState.valueOrNull;
     final double? balance = wallet?.balance;
     final double? total = ref.watch(
       checkoutModelProvider.select(
@@ -118,9 +122,28 @@ class WalletPaymentRow extends ConsumerWidget {
                                       color: colors.neutral1200,
                                       size: 15,
                                       price: formatMoney(balance),
+                                    )
+                                  else if (walletState.isLoading)
+                                    AppShimmer(
+                                      child: Container(
+                                        width: 60,
+                                        height: 14,
+                                        decoration: BoxDecoration(
+                                          color: colors.black,
+                                          borderRadius:
+                                              AppBorderRadius.brCircular4,
+                                        ),
+                                      ),
                                     ),
                                 ],
                               ),
+                              if (walletState.hasError)
+                                _StaleBalance(
+                                  isRetrying: walletState.isLoading,
+                                  onRetry: () => ref
+                                      .read(getWalletInfoProvider.notifier)
+                                      .getWalletInfo(),
+                                ),
                             ],
                           ),
                         ),
@@ -164,6 +187,54 @@ class _WalletCheckbox extends StatelessWidget {
       child: selected
           ? Icon(Icons.check_rounded, size: 12, color: colors.white)
           : null,
+    );
+  }
+}
+
+/// "Balance is not up to date" with a retry icon, under the balance when the
+/// last fetch failed; a small spinner replaces the icon while retrying.
+class _StaleBalance extends StatelessWidget {
+  const _StaleBalance({required this.isRetrying, required this.onRetry});
+
+  final bool isRetrying;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return Row(
+      spacing: 4,
+      children: [
+        Flexible(
+          child: Text(
+            LangKeys.walletBalanceNotUpdatedKey.tr(),
+            style: AppTextStyles.style12Regular.copyWith(color: colors.red400),
+          ),
+        ),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: isRetrying ? null : onRetry,
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: isRetrying
+                ? SizedBox.square(
+                    dimension: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: colors.red400,
+                    ),
+                  )
+                : Assets.media.images.svg.retryIcon.svg(
+                    width: 14,
+                    height: 14,
+                    colorFilter: ColorFilter.mode(
+                      colors.red400,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+          ),
+        ),
+      ],
     );
   }
 }

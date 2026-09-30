@@ -342,6 +342,7 @@
   "welcomeVoucherSuffix": " لأول طلب",
   "balance": "الرصيد: ",
   "walletShortfallHint": "رصيد محفظتك لا يغطي هذا الطلب. ألغِ تحديد المحفظة للدفع بالبطاقة.",
+  "walletBalanceNotUpdated": "الرصيد غير محدّث",
   "fullName": "الاسم الكامل",
   "firstName": "الاسم الأول",
   "lastName": "اسم العائلة",

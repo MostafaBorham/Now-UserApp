@@ -374,6 +374,7 @@ abstract class LangKeys {
   static const String addWalletKey = 'addWallet';
   static const String balanceKey = 'balance';
   static const String walletShortfallHintKey = 'walletShortfallHint';
+  static const String walletBalanceNotUpdatedKey = 'walletBalanceNotUpdated';
   static const String tipYourDriverKey = 'tipYourDriver';
   static const String driverTipKey = 'driverTip';
 

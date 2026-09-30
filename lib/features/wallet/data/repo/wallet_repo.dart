@@ -60,7 +60,10 @@ class WalletRepo {
   /// the local copy tracks the server, and when the server is unreachable the
   /// last cached copy is served instead — the original failure only surfaces
   /// when nothing has been cached yet (or the cached copy can't be read).
-  Future<Either<Failure, WalletModel>> getWalletInfo() async {
+  /// `isFromCache` tells the caller which of the two it got, so a cached
+  /// balance is never shown as current.
+  Future<Either<Failure, ({WalletModel wallet, bool isFromCache})>>
+  getWalletInfo() async {
     // Fetch the raw server `data` object so it can be both cached verbatim and
     // parsed — the cache round-trips through the same parsing the server uses.
     final Either<Failure, Map<String, dynamic>> serverResult = await _guard(
@@ -72,7 +75,7 @@ class WalletRepo {
       (Failure serverFailure) => _readWalletInfoFromCache(serverFailure),
       (Map<String, dynamic> data) async {
         await _cacheWalletInfo(data);
-        return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+        return Right((wallet: WalletModel.fromJson(data), isFromCache: false));
       },
     );
   }
@@ -89,20 +92,17 @@ class WalletRepo {
 
   /// Falls back to the cached wallet, surfacing [serverFailure] only when there
   /// is nothing cached (or the cached copy can't be read).
-  Future<Either<Failure, WalletModel>> _readWalletInfoFromCache(
-    Failure serverFailure,
-  ) async {
+  Future<Either<Failure, ({WalletModel wallet, bool isFromCache})>>
+  _readWalletInfoFromCache(Failure serverFailure) async {
     try {
       final String? cached = _walletInfoDatabaseService.getWalletInfo();
-      if (cached == null) {
-        return Left<Failure, WalletModel>(serverFailure);
-      }
+      if (cached == null) return Left(serverFailure);
 
       final Map<String, dynamic> data =
           jsonDecode(cached) as Map<String, dynamic>;
-      return Right<Failure, WalletModel>(WalletModel.fromJson(data));
+      return Right((wallet: WalletModel.fromJson(data), isFromCache: true));
     } catch (_) {
-      return Left<Failure, WalletModel>(serverFailure);
+      return Left(serverFailure);
     }
   }
 
