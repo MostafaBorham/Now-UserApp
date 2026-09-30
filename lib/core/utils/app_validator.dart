@@ -34,22 +34,13 @@ class AppValidator {
     return tail == null ? null : '+9665$tail';
   }
 
-  /// The number as shown to the user (e.g. on the OTP screen): the country
+  /// The number as shown to the user (e.g. on the profile): the country
   /// code and the local `05` head in front of the 8 significant digits
   /// (`+9660512345678`). Returns [raw] unchanged when it is not a Saudi
   /// mobile, so callers can show whatever they were handed.
   static String saudiPhoneDisplay(String? raw) {
     final String? tail = saudiLocalPhoneTail(raw);
     return tail == null ? (raw ?? '') : '+96605$tail';
-  }
-
-  /// The bare national number as shown on the OTP screen: the `5` head in front
-  /// of the 8 significant digits (`512345678`), with no country code, no `(05)`
-  /// grouping and no dash. Returns [raw] unchanged when it is not a Saudi
-  /// mobile, so callers can show whatever they were handed.
-  static String saudiPhoneNationalDigits(String? raw) {
-    final String? tail = saudiLocalPhoneTail(raw);
-    return tail == null ? (raw ?? '') : '5$tail';
   }
 
   static final RegExp _emailRegExp = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');

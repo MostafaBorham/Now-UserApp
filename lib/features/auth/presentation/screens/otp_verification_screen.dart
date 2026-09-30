@@ -112,7 +112,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         TextSpan(text: '${LangKeys.otpSentToKey.tr()} '),
                         TextSpan(
                           text:
-                              '${AppValidator.saudiPhoneNationalDigits(widget.phoneNumber)}.',
+                              '\u{2066}${AppValidator.saudiPhoneToInternational(widget.phoneNumber) ?? widget.phoneNumber}\u{2069}.',
                           style: AppTextStyles.style16SemiBold.copyWith(
                             color: context.colors.primary500Main,
                           ),

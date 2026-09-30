@@ -126,16 +126,27 @@ class _OtpActionsRowState extends State<OtpActionsRow> {
                   text: '($_formatted) ',
                   style: TextStyle(color: context.colors.primary500Main),
                 ),
-                TextSpan(
-                  text: LangKeys.resendKey.tr(),
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: canResend
-                        ? context.colors.tertiaryContainer
-                        : context.colors.neutral500,
-                  ),
-                  recognizer: _resendRecognizer,
-                ),
+                _isResending
+                    ? WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: SizedBox.square(
+                          dimension: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.colors.primary500Main,
+                          ),
+                        ),
+                      )
+                    : TextSpan(
+                        text: LangKeys.resendKey.tr(),
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: canResend
+                              ? context.colors.tertiaryContainer
+                              : context.colors.neutral500,
+                        ),
+                        recognizer: _resendRecognizer,
+                      ),
               ],
             ),
           ),
