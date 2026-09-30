@@ -147,7 +147,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16),
           child: Form(
             key: _formKey,
@@ -176,15 +176,13 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                     ),
                   ],
                 ),
-                Flexible(
-                  child: AddCardForm(
-                    nameController: _nameController,
-                    numberController: _numberController,
-                    expiryController: _expiryController,
-                    cvvController: _cvvController,
-                    optionalSecrets: _isEditing,
-                    numberHint: _numberHint,
-                  ),
+                AddCardForm(
+                  nameController: _nameController,
+                  numberController: _numberController,
+                  expiryController: _expiryController,
+                  cvvController: _cvvController,
+                  optionalSecrets: _isEditing,
+                  numberHint: _numberHint,
                 ),
                 SetAsDefaultCheckbox(
                   value: _setAsDefault,
