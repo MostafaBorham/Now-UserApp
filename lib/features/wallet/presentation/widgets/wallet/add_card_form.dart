@@ -51,14 +51,22 @@ class AddCardForm extends StatelessWidget {
           ? LangKeys.requiredFieldKey.tr()
           : null;
 
-  /// Card number: 13–19 digits passing the Luhn checksum (catches typos). In
-  /// edit mode an empty value is allowed (keeps the stored number).
+  static const int _minCardNumberLength = 12;
+  static const int _maxCardNumberLength = 19;
+
+  /// Card number: 12–19 digits (the backend's range) passing the Luhn checksum
+  /// (catches typos), except UnionPay (`62…`), whose numbers need not pass it.
+  /// In edit mode an empty value is allowed (keeps the stored number).
   String? _cardNumber(String? value) {
     final String digits = (value ?? '').replaceAll(RegExp(r'\D'), '');
     if (digits.isEmpty) {
       return optionalSecrets ? null : LangKeys.requiredFieldKey.tr();
     }
-    if (digits.length < 13 || digits.length > 19 || !_passesLuhn(digits)) {
+    final bool validLength =
+        digits.length >= _minCardNumberLength &&
+        digits.length <= _maxCardNumberLength;
+    final bool exemptFromLuhn = digits.startsWith('62');
+    if (!validLength || (!exemptFromLuhn && !_passesLuhn(digits))) {
       return LangKeys.invalidCardNumberKey.tr();
     }
     return null;
@@ -146,7 +154,7 @@ class AddCardForm extends StatelessWidget {
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(19),
+              LengthLimitingTextInputFormatter(_maxCardNumberLength),
             ],
           ),
 

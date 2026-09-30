@@ -75,6 +75,53 @@ void main() {
     expect(find.text('invalidCardNumber'), findsOneWidget);
   });
 
+  Future<bool> numberIsValid(WidgetTester tester, String value) async {
+    name.text = 'Jane Doe';
+    number.text = value;
+    expiry.text = '12/40';
+    cvv.text = '123';
+    return formKey.currentState!.validate();
+  }
+
+  testWidgets('accepts every real-world card length and network', (
+    tester,
+  ) async {
+    await pumpForm(tester);
+    const Map<String, String> cards = <String, String>{
+      'Maestro 12': '500000000009',
+      'Visa 13': '4222222222222',
+      'Diners 14': '36227206271667',
+      'Amex 15': '378282246310005',
+      'Mastercard 16': '5555555555554444',
+      'Visa 16': '4242424242424242',
+      'Meeza 16': '5078030000000003',
+      'Discover 16': '6011111111111117',
+      'JCB 16': '3566002020360505',
+      'UnionPay 16 non-Luhn': '6200000000000047',
+      'UnionPay 19': '6205500000000000004',
+      'Visa 19': '4000000000000000006',
+    };
+    for (final MapEntry<String, String> card in cards.entries) {
+      expect(await numberIsValid(tester, card.value), isTrue, reason: card.key);
+    }
+  });
+
+  testWidgets('rejects numbers shorter than 12 digits', (tester) async {
+    await pumpForm(tester);
+    expect(await numberIsValid(tester, '42424242426'), isFalse);
+    await tester.pump();
+    expect(find.text('invalidCardNumber'), findsOneWidget);
+  });
+
+  testWidgets('the number field caps input at 19 digits', (tester) async {
+    await pumpForm(tester);
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      '4000 0000 0000 0000 0061 23',
+    );
+    expect(number.text, '4000000000000000006');
+  });
+
   testWidgets('a past expiry is rejected as expired', (tester) async {
     await pumpForm(tester);
     name.text = 'Jane Doe';
