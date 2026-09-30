@@ -95,6 +95,61 @@ class _AppWavedViewState extends State<AppWavedView> {
     final TopWaveClipper? waveClipper = _isFlattened
         ? null
         : const TopWaveClipper();
+
+    final Widget leading =
+        widget.leading ??
+        (widget.canPop ?? context.canPop()
+            ? InkWell(
+                onTap: () => Navigator.maybePop(context),
+                child: ReverseWidget(
+                  applyReverse: context.isRTL,
+                  child: CircleAvatar(
+                    backgroundColor: colors.white,
+                    radius: screenSize.width * 0.05,
+                    child: Center(
+                      child: Assets.media.images.svg.appBackArrow.svg(
+                        fit: BoxFit.contain,
+                        width: screenSize.width * 0.05,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox.shrink());
+
+    final Widget trailing =
+        widget.hasCartIcon ||
+            widget.hasSupportIcon ||
+            (widget.actions?.isNotEmpty ?? false)
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 8,
+            children: [
+              ...?widget.actions,
+              if (widget.hasSupportIcon)
+                CircularSupportIcon(
+                  size: screenSize.width * 0.05,
+                  onTap:
+                      widget.onSupportTap ??
+                      () {
+                        context.pushNamed(AppRoutes.supportScreen);
+                      },
+                ),
+              if (widget.hasCartIcon)
+                ReverseWidget(
+                  child: CircularCartButton(
+                    size: screenSize.width * 0.05,
+                    onTap:
+                        widget.onCartTap ??
+                        () {
+                          context.pushNamed(AppRoutes.cartScreen);
+                        },
+                  ),
+                ),
+            ],
+          )
+        : const SizedBox.shrink();
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 5),
@@ -119,29 +174,19 @@ class _AppWavedViewState extends State<AppWavedView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  widget.leading?? (widget.canPop ?? context.canPop()
-                      ? InkWell(
-
-
-
-
-
-                    onTap: () => Navigator.maybePop(context),
-                    child: ReverseWidget(
-                      applyReverse: context.isRTL,
-                      child: CircleAvatar(
-                        backgroundColor: colors.white,
-                        radius: screenSize.width * 0.05,
-                        child: Center(
-                          child: Assets.media.images.svg.appBackArrow.svg(
-                            fit: BoxFit.contain,
-                            width: screenSize.width * 0.05,
-                          ),
-                        ),
+                  Stack(
+                    alignment: AlignmentDirectional.centerStart,
+                    children: [
+                      Visibility(
+                        visible: false,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: trailing,
                       ),
-                    ),
-                  )
-                      : const SizedBox.shrink()),
+                      leading,
+                    ],
+                  ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -169,39 +214,19 @@ class _AppWavedViewState extends State<AppWavedView> {
                             ),
                     ),
                   ),
-                  widget.hasCartIcon ||
-                          widget.hasSupportIcon ||
-                          (widget.actions?.isNotEmpty ?? false)
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 8,
-                          children: [
-                            ...?widget.actions,
-                            if (widget.hasSupportIcon)
-                              CircularSupportIcon(
-                                size: screenSize.width * 0.05,
-                                onTap:
-                                    widget.onSupportTap ??
-                                    () {
-                                      context.pushNamed(
-                                        AppRoutes.supportScreen,
-                                      );
-                                    },
-                              ),
-                            if (widget.hasCartIcon)
-                              ReverseWidget(
-                                child: CircularCartButton(
-                                  size: screenSize.width * 0.05,
-                                  onTap:
-                                      widget.onCartTap ??
-                                      () {
-                                        context.pushNamed(AppRoutes.cartScreen);
-                                      },
-                                ),
-                              ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
+                  Stack(
+                    alignment: AlignmentDirectional.centerEnd,
+                    children: [
+                      Visibility(
+                        visible: false,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: leading,
+                      ),
+                      trailing,
+                    ],
+                  ),
                 ],
               ),
             ),
