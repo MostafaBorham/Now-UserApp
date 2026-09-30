@@ -123,10 +123,19 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
           // Promote the saved card through the dedicated set-default endpoint
           // (the backend auto-defaults only the first card, so a later card the
           // customer wants as default has to be promoted). That call updates the
-          // default provider and refetches the cards list itself.
+          // default provider and refetches the cards list itself — on success
+          // only, so a failed promotion refetches here, or the list would miss
+          // the edit that did save. The notifier is read up front because this
+          // view model may be gone by the time the promotion settles.
+          final GetMyCardsViewModel myCards = _ref.read(
+            getMyCardsProvider.notifier,
+          );
           _ref
               .read(defaultPaymentCardProvider.notifier)
-              .setPaymentCardDefault(id);
+              .setPaymentCardDefault(id)
+              .then((String? error) {
+                if (error != null) myCards.getMyCards();
+              });
         } else {
           // Confirmed by the server: refetch so the saved card lands in the list
           // (and the default provider following it), straight from the repo.
