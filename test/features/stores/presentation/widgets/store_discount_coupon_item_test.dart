@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/coupon_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
@@ -23,9 +24,7 @@ void main() {
     (Ref ref) => GetCartViewModel(
       AsyncValue<CartModel>.data(
         CartModel(
-          vendors: <CartVendorModel>[
-            CartVendorModel(vendor: sampleStore()),
-          ],
+          vendors: <CartVendorModel>[CartVendorModel(vendor: sampleStore())],
         ),
       ),
     ),
@@ -92,28 +91,24 @@ void main() {
     expect(find.text('15%'), findsNothing);
   });
 
-  testWidgets('a coupon is display-only while the cart holds nothing from '
-      'this store', (WidgetTester tester) async {
+  testWidgets('while the cart holds nothing from this store, tapping a coupon '
+      'explains why instead of picking it', (WidgetTester tester) async {
     await pumpCoupons(tester, const [coupon]);
-
-    expect(
-      tester.widget<VoucherTicket>(find.byType(VoucherTicket)).onTap,
-      isNull,
-    );
 
     await tester.tap(find.byType(VoucherTicket));
     await tester.pump();
 
+    expect(find.text(LangKeys.couponNeedsStoreInCartKey), findsOneWidget);
     expect(picks(tester), isEmpty);
+
+    // Let the toast time out so no timer outlives the test.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('with the store in the cart, tapping picks the coupon and '
       'tapping again clears it', (WidgetTester tester) async {
-    await pumpCoupons(
-      tester,
-      const [coupon],
-      overrides: [cartWithThisStore()],
-    );
+    await pumpCoupons(tester, const [coupon], overrides: [cartWithThisStore()]);
 
     await tester.tap(find.byType(VoucherTicket));
     await tester.pump();

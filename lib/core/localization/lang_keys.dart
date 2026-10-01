@@ -353,6 +353,7 @@ abstract class LangKeys {
   static const String applyKey = 'apply';
   static const String appliedKey = 'applied';
   static const String voucherApplyFailedKey = 'voucherApplyFailed';
+  static const String couponNeedsStoreInCartKey = 'couponNeedsStoreInCart';
 
   // A vendor carries one discount, so applying a coupon cancels that vendor's
   // voucher and vice versa; these announce the swap.

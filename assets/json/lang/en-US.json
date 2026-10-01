@@ -28,6 +28,7 @@
   "apply": "Apply",
   "applied": "Applied",
   "voucherApplyFailed": "This voucher can't be applied",
+  "couponNeedsStoreInCart": "Add a product from this store to your cart to use this coupon",
   "couponReplacedByVoucher": "Your discount coupon was cancelled and the purchase voucher applied instead",
   "voucherReplacedByCoupon": "Your purchase voucher was cancelled and the discount coupon applied instead",
   "applyFilters": "Apply Filters",

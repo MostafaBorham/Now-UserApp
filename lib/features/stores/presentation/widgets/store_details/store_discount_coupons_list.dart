@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
@@ -17,9 +18,9 @@ import 'package:nowdelivery_user_app/features/stores/presentation/providers/stor
 /// The store-details discount-coupons strip: the store's coupons rendered as the
 /// shared [VoucherTicket]s.
 ///
-/// A ticket is only tappable once this store has products in the cart — picking
-/// a coupon means "apply it when I check this store out", which is meaningless
-/// with nothing to check out. Until then the tickets are display-only.
+/// A ticket only picks once this store has products in the cart — picking a
+/// coupon means "apply it when I check this store out", which is meaningless
+/// with nothing to check out. Until then a tap explains that instead.
 ///
 /// Picking is radio behaviour per store: tapping a ticket records it as the
 /// store's pick (replacing any other), tapping the picked one again clears it.
@@ -60,7 +61,7 @@ class StoreDiscountCouponsList extends ConsumerWidget {
         // No code means nothing checkout could apply, so it stays display-only
         // however full the cart is.
         final String? code = coupon.code;
-        final bool tappable = inCart && storeId != null && code != null;
+        final bool tappable = storeId != null && code != null;
         final bool isPercentage = coupon.isPercentage ?? true;
         return VoucherTicket(
           // A fixed-amount coupon is money and gets the two-decimal rule; a
@@ -74,7 +75,14 @@ class StoreDiscountCouponsList extends ConsumerWidget {
           validityText: _validity(context, coupon),
           darkHead: darkHead,
           isSelected: code != null && code == pickedCode,
-          onTap: tappable ? () => _pick(ref, storeId, code) : null,
+          onTap: !tappable
+              ? null
+              : inCart
+              ? () => _pick(ref, storeId, code)
+              : () => AppToast.showError(
+                  context,
+                  LangKeys.couponNeedsStoreInCartKey,
+                ),
         );
       },
     );
