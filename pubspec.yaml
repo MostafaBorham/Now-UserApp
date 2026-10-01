@@ -49,6 +49,13 @@ dependencies:
   # Only for the native "turn on location" system prompt (requestService),
   # which geolocator does not expose. All other location work uses geolocator.
   location: ^8.0.0
+  # QA network inspector; only active in --dart-define=CHUCKER=true builds.
+  chucker_flutter: ^1.9.2
+
+dependency_overrides:
+  # chucker_flutter pins share_plus ^12 (win32 ^5), but geolocator_linux needs
+  # win32 ^6. 13.x has the same share API. Drop once chucker targets 13.
+  share_plus: ^13.3.0
 
 dev_dependencies:
   flutter_test:

@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   geolocator_windows
   quickjs_engine
+  share_plus
   url_launcher_windows
 )
 

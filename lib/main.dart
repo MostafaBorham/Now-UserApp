@@ -1,8 +1,10 @@
+import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
 import 'package:nowdelivery_user_app/core/utils/di/service_locator.dart';
 import 'package:nowdelivery_user_app/my_app.dart';
 
@@ -40,6 +42,8 @@ void main() {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    // Chucker otherwise records in debug mode only; QA builds are release.
+    ChuckerFlutter.showOnRelease = ChuckerInterceptor.enabled;
     runApp(
       DevicePreview(
         enabled: false,

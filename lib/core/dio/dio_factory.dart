@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interceptor.dart';
 
@@ -49,6 +50,9 @@ class DioFactory {
 
     dio.interceptors.add(AuthTokenInterceptor());
     dio.interceptors.add(DioLogger.logger);
+    // After the auth header so records show it; before the refresh so a 401 is
+    // recorded, then the refresh call and the replay record themselves.
+    if (ChuckerInterceptor.enabled) dio.interceptors.add(ChuckerInterceptor());
     dio.interceptors.add(TokenRefreshInterceptor(dio));
 
     return dio;
@@ -71,6 +75,7 @@ class DioFactory {
 
 
     dio.interceptors.add(DioLogger.logger);
+    if (ChuckerInterceptor.enabled) dio.interceptors.add(ChuckerInterceptor());
 
     return dio;
   }

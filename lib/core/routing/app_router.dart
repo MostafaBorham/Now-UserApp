@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -122,6 +123,8 @@ abstract class AppRouter {
   }
 
   static final GoRouter router = GoRouter(
+    // The QA network inspector shows its toasts and screens on this navigator.
+    navigatorKey: ChuckerFlutter.navigatorKey,
     initialLocation: '/',
     observers: <NavigatorObserver>[AppToastRouteObserver()],
     // A route that does not resolve used to render `SizedBox.shrink()` — a blank

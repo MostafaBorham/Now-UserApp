@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
+import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
 
 /// How a refresh attempt ended.
@@ -85,7 +86,8 @@ class TokenRefreshInterceptor extends Interceptor {
 
   /// Bare Dio dedicated to the refresh call: no auth interceptor (it must carry
   /// the refresh token, not the access token) and no refresh interceptor (it
-  /// must never recurse into itself). Keeps the logger for debug visibility.
+  /// must never recurse into itself). Keeps the logger for debug visibility,
+  /// and the QA inspector so a forced logout can be traced to its refresh.
   final Dio _refreshDio;
 
   static Dio _buildRefreshDio() => Dio(
@@ -97,7 +99,10 @@ class TokenRefreshInterceptor extends Interceptor {
           responseType: ResponseType.json,
           headers: DioConstants.defaultHeaders,
         ),
-      )..interceptors.add(DioLogger.logger);
+      )..interceptors.addAll(<Interceptor>[
+          DioLogger.logger,
+          if (ChuckerInterceptor.enabled) ChuckerInterceptor(),
+        ]);
 
   /// The single in-flight refresh shared by every `401` that arrives while it
   /// runs. `null` when idle.

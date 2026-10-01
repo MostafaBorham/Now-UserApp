@@ -21,10 +21,16 @@ dart run build_runner build --delete-conflicting-outputs
 # Regenerate the native splash after changing assets or config in pubspec.yaml:
 dart run flutter_native_splash:create
 
+# QA build with the Chucker network inspector (toast per request + "Network inspector" row on Profile):
+flutter build apk --release --dart-define=CHUCKER=true
+flutter build ipa --dart-define=CHUCKER=true
+
 # Home frame-time benchmark — real device, profile mode; writes build/perf/<label>/*.json:
 PERF_LABEL=<label> flutter drive --profile --no-dds --keep-app-running \
   --driver=test_driver/perf_driver.dart --target=integration_test/home_perf_test.dart -d <device>
 ```
+
+**Never pass `CHUCKER=true` to a store build.** Chucker saves every request in full, tokens included, and anyone holding the phone can share them. It also slows every response, so don't judge performance on a Chucker build. Without the flag, none of it runs (`ChuckerInterceptor.enabled` in `core/dio/interceptors/chucker_interceptor.dart`).
 
 The benchmark (`integration_test/home_perf_test.dart`) needs `--no-dds` (its timeline connection fails behind DDS) and `--keep-app-running` (otherwise `flutter drive` uninstalls the app, session and location grant included). Grant the location prompt by hand before the first run. Emulator raster numbers measure the host GPU; judge on a phone.
 
