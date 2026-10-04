@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 class ComplaintRequestModel extends Equatable {
-  /// The order number the complaint is about. A customer's ticket stores no
-  /// order id (the backend takes none), so the title is what tells support
-  /// which order it is.
+  /// The order number the complaint is about, so support can read it at a
+  /// glance; [orderId] is the actual link.
   final String title;
+
+  /// The order the ticket is linked to (`order_id`). The backend takes one
+  /// ticket per order and answers a second with a translated 422.
+  final int? orderId;
 
   /// Free-text detail the user typed ("tell us more").
   final String description;
@@ -20,6 +23,7 @@ class ComplaintRequestModel extends Equatable {
 
   const ComplaintRequestModel({
     this.title = _defaultTitle,
+    this.orderId,
     this.description = '',
     this.category = _defaultCategory,
     this.attachments = const <ComplaintAttachment>[],
@@ -30,11 +34,12 @@ class ComplaintRequestModel extends Equatable {
   static const String _defaultCategory = 'orders_and_banners';
 
   /// Builds the request from the raw inputs the File-a-Complaint screen gathers:
-  /// the order's [orderNumber] as the title, the free-text [description] and
-  /// the picked [images], each read and base64 encoded into a
+  /// the order's [orderId], its [orderNumber] as the title, the free-text
+  /// [description] and the picked [images], each read and base64 encoded into a
   /// [ComplaintAttachment]. An empty [images] list yields an empty
   /// [attachments] list; [category] keeps its static value.
   static Future<ComplaintRequestModel> fromComplaintInputs({
+    required int? orderId,
     required String? orderNumber,
     required String description,
     required List<File> images,
@@ -48,6 +53,7 @@ class ComplaintRequestModel extends Equatable {
       title: (orderNumber == null || orderNumber.isEmpty)
           ? _defaultTitle
           : orderNumber,
+      orderId: orderId,
       description: description,
       attachments: attachments,
     );
@@ -55,12 +61,14 @@ class ComplaintRequestModel extends Equatable {
 
   ComplaintRequestModel copyWith({
     String? title,
+    int? orderId,
     String? description,
     String? category,
     List<ComplaintAttachment>? attachments,
   }) {
     return ComplaintRequestModel(
       title: title ?? this.title,
+      orderId: orderId ?? this.orderId,
       description: description ?? this.description,
       category: category ?? this.category,
       attachments: attachments ?? this.attachments,
@@ -70,6 +78,7 @@ class ComplaintRequestModel extends Equatable {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'title': title,
+      'order_id': ?orderId,
       'description': description,
       'category': category,
       'attachments': attachments
@@ -81,6 +90,7 @@ class ComplaintRequestModel extends Equatable {
   @override
   List<Object?> get props => <Object?>[
         title,
+        orderId,
         description,
         category,
         attachments,

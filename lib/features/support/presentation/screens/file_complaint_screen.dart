@@ -17,7 +17,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_d
 class FileComplaintScreen extends ConsumerStatefulWidget {
   const FileComplaintScreen({super.key, required this.order});
 
-  /// The order this complaint is about — its number becomes the ticket title.
+  /// The order this complaint is about — linked by its id, its number becomes
+  /// the ticket title.
   final OrderModel order;
 
   @override
@@ -81,6 +82,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     try {
       final ComplaintRequestModel complaint =
           await ComplaintRequestModel.fromComplaintInputs(
+        orderId: widget.order.id,
         orderNumber: widget.order.orderNumber,
         description: description,
         images: _images,
