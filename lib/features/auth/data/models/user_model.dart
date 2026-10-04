@@ -8,7 +8,6 @@ class UserModel {
   final String phone;
   final String? gender;
   final String? birthday;
-  final String? nationality;
   final String status;
   final bool isAdmin;
   final bool profileCompleted;
@@ -23,7 +22,6 @@ class UserModel {
     required this.phone,
     required this.gender,
     required this.birthday,
-    required this.nationality,
     required this.status,
     required this.isAdmin,
     required this.profileCompleted,
@@ -40,7 +38,6 @@ class UserModel {
       phone: map['phone'] as String? ?? '',
       gender: map['gender'] as String?,
       birthday: map['birthday'] as String?,
-      nationality: map['nationality'] as String?,
       status: map['status'] as String? ?? '',
       isAdmin: map['is_admin'] as bool? ?? false,
       profileCompleted: map['profile_completed'] as bool? ?? false,

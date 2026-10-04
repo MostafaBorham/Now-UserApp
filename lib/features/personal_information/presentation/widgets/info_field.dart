@@ -21,7 +21,7 @@ class InfoField extends StatelessWidget {
 
   /// Renders the value left-to-right regardless of the app locale. Only for
   /// values that are always Latin-script, such as the phone number — forcing it
-  /// on an Arabic name or nationality misplaces their punctuation.
+  /// on an Arabic name misplaces its punctuation.
   final bool forceLtrValue;
 
   @override

@@ -39,7 +39,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  final TextEditingController _nationality = TextEditingController();
 
   ProfileModel? _original;
 
@@ -93,7 +92,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       ..dispose();
     _email.removeListener(_clearEmailError);
     _email.dispose();
-    _nationality.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -105,7 +103,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     _firstName.text = name.first;
     _lastName.text = name.last;
     _email.text = p.email ?? '';
-    _nationality.text = p.nationality ?? '';
     _phone = p.phone;
     _gender = p.gender;
     _dob = p.birthday == null ? null : DateTime.tryParse(p.birthday!);
@@ -139,7 +136,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     email: _clean(_email.text),
     gender: _gender,
     birthday: _dob == null ? null : _apiDate(_dob!),
-    nationality: _clean(_nationality.text),
   );
 
   bool get _hasUnsavedChanges =>
@@ -508,14 +504,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                         leadingAsset: Assets.media.images.svg.date.path,
                         readOnly: true,
                         onTap: _pickDate,
-                      ),
-                      const SizedBox(height: _fieldGap),
-                      EditField(
-                        label: LangKeys.nationalityKey.tr(),
-                        controller: _nationality,
-                        hintText: LangKeys.enterNationalityKey.tr(),
-                        leadingAsset: Assets.media.images.svg.pen.path,
-                        maxLength: 40,
                       ),
                     ],
                   ),

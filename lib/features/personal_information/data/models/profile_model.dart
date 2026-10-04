@@ -1,10 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-
-
-
-
-
 class ProfileModel extends Equatable {
   final int? id;
   final String? fullName;
@@ -12,7 +7,6 @@ class ProfileModel extends Equatable {
   final String? phone;
   final String? gender;
   final String? birthday;
-  final String? nationality;
 
   /// The server's own verdict on whether onboarding is finished — the gate for
   /// `CompleteProfileScreen`. Server-owned and read-only: it is never part of
@@ -30,7 +24,6 @@ class ProfileModel extends Equatable {
     this.phone,
     this.gender,
     this.birthday,
-    this.nationality,
     this.profileCompleted,
   });
 
@@ -44,35 +37,15 @@ class ProfileModel extends Equatable {
       phone: json['phone']?.toString(),
       gender: json['gender']?.toString(),
       birthday: json['birthday']?.toString(),
-      nationality: json['nationality']?.toString(),
       profileCompleted: json['profile_completed'] as bool?,
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   Map<String, dynamic> changesFrom(ProfileModel? original) => {
     if (fullName != original?.fullName) 'full_name': fullName,
     if (email != original?.email) 'email': email,
     if (gender != original?.gender) 'gender': gender,
     if (birthday != original?.birthday) 'birthday': birthday,
-    if (nationality != original?.nationality) 'nationality': nationality,
   };
 
   @override
@@ -83,7 +56,6 @@ class ProfileModel extends Equatable {
     phone,
     gender,
     birthday,
-    nationality,
     profileCompleted,
   ];
 }

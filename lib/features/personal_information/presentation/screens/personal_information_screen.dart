@@ -132,11 +132,6 @@ class _ProfileBody extends StatelessWidget {
                     // does in the editor.
                     value: formatLocalizedDateOnly(context, profile.birthday),
                     hint: LangKeys.selectDateOfBirthKey.tr(),
-                  ),
-                  InfoField(
-                    label: LangKeys.nationalityKey.tr(),
-                    value: profile.nationality,
-                    hint: LangKeys.enterNationalityKey.tr(),
                     showDivider: false,
                   ),
                 ],

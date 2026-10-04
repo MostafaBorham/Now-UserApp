@@ -10,7 +10,6 @@ void main() {
     phone: '+966512345678',
     gender: 'male',
     birthday: '1995-04-17',
-    nationality: 'Saudi',
   );
 
   ProfileModel edit({
@@ -18,16 +17,12 @@ void main() {
     Object? email = _unset,
     Object? gender = _unset,
     Object? birthday = _unset,
-    Object? nationality = _unset,
   }) {
     return ProfileModel(
       fullName: fullName == _unset ? loaded.fullName : fullName as String?,
       email: email == _unset ? loaded.email : email as String?,
       gender: gender == _unset ? loaded.gender : gender as String?,
       birthday: birthday == _unset ? loaded.birthday : birthday as String?,
-      nationality: nationality == _unset
-          ? loaded.nationality
-          : nationality as String?,
     );
   }
 
@@ -44,8 +39,8 @@ void main() {
     });
 
     test('an emptied field is sent as an explicit null to clear it', () {
-      expect(edit(nationality: null).changesFrom(loaded), <String, dynamic>{
-        'nationality': null,
+      expect(edit(email: null).changesFrom(loaded), <String, dynamic>{
+        'email': null,
       });
     });
 
@@ -55,11 +50,10 @@ void main() {
         email: null,
         gender: 'female',
         birthday: '2000-01-01',
-        nationality: 'Egyptian',
       ).changesFrom(loaded);
 
       expect(body.keys, isNot(contains('phone')));
-      expect(body.keys, hasLength(5));
+      expect(body.keys, hasLength(4));
     });
 
     test('a gender the toggle cannot represent survives an unrelated edit', () {

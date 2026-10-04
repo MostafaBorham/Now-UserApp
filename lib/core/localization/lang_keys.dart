@@ -202,10 +202,8 @@ abstract class LangKeys {
   static const String maleKey = 'male';
   static const String femaleKey = 'female';
   static const String dateOfBirthKey = 'dateOfBirth';
-  static const String nationalityKey = 'nationality';
   static const String enterEmailAddressKey = 'enterEmailAddress';
   static const String selectDateOfBirthKey = 'selectDateOfBirth';
-  static const String enterNationalityKey = 'enterNationality';
 
   static const String nameKey = 'name';
   static const String firstNameHintKey = 'firstNameHint';
