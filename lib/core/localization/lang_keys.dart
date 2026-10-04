@@ -101,7 +101,8 @@ abstract class LangKeys {
   static const String defaultAddress = 'defaultAddress';
   static const String noSavedAddresses = 'noSavedAddresses';
   static const String addressDeletedSuccessfully = 'addressDeletedSuccessfully';
-  static const String deleteAddressConfirmationKey = 'deleteAddressConfirmation';
+  static const String deleteAddressConfirmationKey =
+      'deleteAddressConfirmation';
 
   // Bottom navigation
   static const String homeKey = 'home';
@@ -111,6 +112,7 @@ abstract class LangKeys {
   static const String orderKey = 'order';
   static const String profileKey = 'profile';
   static const String deliveredOnKey = 'deliveredOnKey';
+
   /// Plural (`'…'.plural(n)`): "3 items" / "٣ منتجات", with Arabic's forms.
   static const String itemsCountKey = 'itemsCount';
   static const String imagePickingErrorKey = 'imagePickingErrorKey';
@@ -367,7 +369,7 @@ abstract class LangKeys {
   static const String addInstructionsHintKey = 'addInstructionsHint';
   static const String editKey = 'edit';
   static const String noAddressKey = 'noAddress';
-  static const String noAddressSelectedKey = 'noAddressSelected';
+  static const String setYourLocationKey = 'setYourLocation';
   static const String noDeliveryAddressSelectedKey =
       'noDeliveryAddressSelected';
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';

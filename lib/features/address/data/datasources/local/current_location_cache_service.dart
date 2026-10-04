@@ -7,10 +7,12 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 /// Local store for the device's current location, reverse-geocoded into an
 /// [AddressModel] and persisted as JSON under [CacheKeys.currentLocation].
 ///
-/// This is the app-wide "current location" the splash guarantees is non-null
-/// before the app is entered, and the home header reads as its default delivery
-/// address. Reads are tolerant — a cold or corrupt cache returns `null` rather
-/// than throwing — so nothing downstream ever crashes on a missing location.
+/// This is the app-wide "current location" the splash resolves before the app
+/// is entered, and the home header reads as its fallback delivery address. It
+/// can be empty: the device location may be unavailable, and it is cleared on
+/// every session change. Reads are tolerant — a cold or corrupt cache returns
+/// `null` rather than throwing — so nothing downstream ever crashes on a
+/// missing location.
 class CurrentLocationCacheService {
   /// The cached current location, or `null` when nothing valid is stored yet.
   AddressModel? getCurrentLocation() {
@@ -34,4 +36,9 @@ class CurrentLocationCacheService {
       jsonEncode(address.toJson()),
     );
   }
+
+  /// Forgets the current location. Called on a session change: the delivery
+  /// sheet saves a confirmed address here, saved addresses included, so the
+  /// next user would otherwise see the previous one's address in the header.
+  Future<void> clear() => SharedPrefManager.remove(CacheKeys.currentLocation);
 }

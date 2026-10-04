@@ -19,8 +19,9 @@ abstract class CacheKeys {
 
   /// The device's current location, reverse-geocoded into an address and stored
   /// as JSON. Written by the splash once a location is obtained and read as the
-  /// default delivery address in the home header. This value must never be
-  /// null before the app is entered (see `CurrentLocationViewModel`).
+  /// fallback delivery address in the home header. May be absent: there is no
+  /// default location, and it is cleared on every session change (see
+  /// `CurrentLocationViewModel`).
   static const String currentLocation = 'current_location';
 
   /// The first-order welcome voucher code (e.g. `WELCOME10`). Refreshed from the

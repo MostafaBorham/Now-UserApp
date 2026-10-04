@@ -129,27 +129,32 @@ class HomeHeaderView extends ConsumerWidget {
                                       child: Row(
                                         spacing: 5,
                                         children: [
-                                          Assets
-                                              .media
-                                              .images
-                                              .svg
-                                              .homeLocationIcon
-                                              .svg(width: con.maxWidth * 0.05),
+                                          // No pin without an address: a pin
+                                          // over "set your location" read as a
+                                          // location the app had found.
+                                          if (hasAddress)
+                                            Assets
+                                                .media
+                                                .images
+                                                .svg
+                                                .homeLocationIcon
+                                                .svg(
+                                                  width: con.maxWidth * 0.05,
+                                                ),
                                           Flexible(
                                             child: Text(
                                               hasAddress
                                                   ? displayedAddress
-                                                  : LangKeys
-                                                        .noAddressSelectedKey
+                                                  : LangKeys.setYourLocationKey
                                                         .tr(),
                                               textDirection: TextDirection.ltr,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                color: hasAddress
-                                                    ? colors.black
-                                                    : colors.error,
-                                                fontWeight: FontWeight.w400,
+                                                color: colors.black,
+                                                fontWeight: hasAddress
+                                                    ? FontWeight.w400
+                                                    : FontWeight.w600,
                                                 fontSize: con.maxWidth * 0.03,
                                               ),
                                             ),

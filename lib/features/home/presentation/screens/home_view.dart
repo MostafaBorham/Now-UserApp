@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_se
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/current_location_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/connectivity_controller.dart';
@@ -66,9 +67,12 @@ class _HomeViewState extends ConsumerState<HomeView>
 
   double? _anchor;
 
+  late final AppLifecycleListener _lifecycle;
+
   @override
   void initState() {
     super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _recheckLocation);
     _scrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -97,8 +101,17 @@ class _HomeViewState extends ConsumerState<HomeView>
         );
   }
 
+  // The location is otherwise resolved only on the splash, so switching GPS on
+  // with the app in the background changed nothing until a cold start. Without
+  // a prompt: the user may have just refused one.
+  void _recheckLocation() {
+    if (CurrentLocationCacheService().getCurrentLocation() != null) return;
+    ref.read(currentLocationProvider.notifier).resolve(prompt: false);
+  }
+
   @override
   void dispose() {
+    _lifecycle.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _dropController.dispose();
@@ -185,6 +198,18 @@ class _HomeViewState extends ConsumerState<HomeView>
       SessionType next,
     ) {
       if (previous != null && previous != next) _loadFeed();
+    });
+    // A location found after the feed loaded (on resume, or after a session
+    // change) moves the nearby stores to it.
+    ref.listen<CurrentLocationStatus>(currentLocationProvider, (
+      CurrentLocationStatus? previous,
+      CurrentLocationStatus next,
+    ) {
+      if (previous == CurrentLocationStatus.resolving &&
+          next == CurrentLocationStatus.ready &&
+          CurrentLocationCacheService().getCurrentLocation() != null) {
+        _loadFeed();
+      }
     });
     final bool isUserSession =
         ref.watch(authSessionProvider.select((s) => s.sessionType)) ==

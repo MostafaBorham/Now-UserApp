@@ -12,7 +12,7 @@ abstract class LocationManager {
   /// fix, and the splash blocks on it — so a phone indoors or underground could
   /// sit on the loading screen forever with no way past. Giving up hands
   /// control back to the caller, which falls back to the last known position
-  /// and then to a default location.
+  /// and otherwise goes without one.
   static const Duration _fixTimeout = Duration(seconds: 10);
 
   /// Reverse geocoding needs the network, so it gets its own ceiling for the

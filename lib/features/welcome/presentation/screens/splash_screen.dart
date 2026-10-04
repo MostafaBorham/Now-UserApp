@@ -30,7 +30,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late final AnimationController _logoController;
   ProviderSubscription<AsyncValue<AppInfoModel>>? _appInfoSub;
   ProviderSubscription<AsyncValue<PaginationModel<CategoryModel>>>?
-      _appCategoriesSub;
+  _appCategoriesSub;
   ProviderSubscription<AsyncValue<CouponModel>>? _welcomeVoucherSub;
 
   // Flipped once the logo animation ends; from then on the loader is shown
@@ -65,34 +65,31 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // instance — so it is disposed with no listeners and gets recreated (and
     // refetched) automatically the next time a screen opens it, rather than
     // inheriting the cached error.
-    _appInfoSub = ref.listenManual(
-      getAppInfoProvider,
-      (AsyncValue<AppInfoModel>? previous, AsyncValue<AppInfoModel> next) {
-        if (next is AsyncError) {
-          _appInfoSub?.close();
-          _appInfoSub = null;
-          ref.invalidate(getAppInfoProvider);
-        }
-      },
-    );
+    _appInfoSub = ref.listenManual(getAppInfoProvider, (
+      AsyncValue<AppInfoModel>? previous,
+      AsyncValue<AppInfoModel> next,
+    ) {
+      if (next is AsyncError) {
+        _appInfoSub?.close();
+        _appInfoSub = null;
+        ref.invalidate(getAppInfoProvider);
+      }
+    });
 
     // Same warm-up for the (kept-alive) app-categories provider: preload the
     // first page here so the home carousel and categories screen reuse it. On
     // failure, drop the subscription and invalidate the errored instance so it
     // is recreated (and refetched) the next time a screen opens it.
-    _appCategoriesSub = ref.listenManual(
-      getAppCategoriesProvider,
-      (
-        AsyncValue<PaginationModel<CategoryModel>>? previous,
-        AsyncValue<PaginationModel<CategoryModel>> next,
-      ) {
-        if (next is AsyncError) {
-          _appCategoriesSub?.close();
-          _appCategoriesSub = null;
-          ref.invalidate(getAppCategoriesProvider);
-        }
-      },
-    );
+    _appCategoriesSub = ref.listenManual(getAppCategoriesProvider, (
+      AsyncValue<PaginationModel<CategoryModel>>? previous,
+      AsyncValue<PaginationModel<CategoryModel>> next,
+    ) {
+      if (next is AsyncError) {
+        _appCategoriesSub?.close();
+        _appCategoriesSub = null;
+        ref.invalidate(getAppCategoriesProvider);
+      }
+    });
 
     // Warm up the (kept-alive) welcome-voucher provider so the empty cart and
     // guest settings reuse the code instead of refetching. The repo already
@@ -100,16 +97,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // reaches an error state when both the server fails and the cache is empty —
     // in which case drop the subscription and invalidate the errored instance so
     // it is recreated (and refetched) the next time a screen opens it.
-    _welcomeVoucherSub = ref.listenManual(
-      welcomeVoucherProvider,
-      (AsyncValue<CouponModel>? previous, AsyncValue<CouponModel> next) {
-        if (next is AsyncError) {
-          _welcomeVoucherSub?.close();
-          _welcomeVoucherSub = null;
-          ref.invalidate(welcomeVoucherProvider);
-        }
-      },
-    );
+    _welcomeVoucherSub = ref.listenManual(welcomeVoucherProvider, (
+      AsyncValue<CouponModel>? previous,
+      AsyncValue<CouponModel> next,
+    ) {
+      if (next is AsyncError) {
+        _welcomeVoucherSub?.close();
+        _welcomeVoucherSub = null;
+        ref.invalidate(welcomeVoucherProvider);
+      }
+    });
   }
 
   @override
@@ -117,7 +114,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final AppColorScheme colors = context.colors;
 
     // Two independent gates must both settle before the splash may leave: the
-    // session orchestrator's dependencies, and the guaranteed current location.
+    // session orchestrator's dependencies, and the current-location pass.
     ref.listen(
       authSessionProvider.select((s) => s.dependenciesStatus),
       (AppDependenciesStatus? previous, AppDependenciesStatus next) =>
@@ -211,7 +208,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     final bool dependenciesReady =
         ref.read(authSessionProvider).dependenciesStatus ==
-            AppDependenciesStatus.ready;
+        AppDependenciesStatus.ready;
     final bool locationReady =
         ref.read(currentLocationProvider) == CurrentLocationStatus.ready;
 

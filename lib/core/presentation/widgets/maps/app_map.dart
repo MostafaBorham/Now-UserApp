@@ -251,11 +251,14 @@ class _AppMapState extends State<AppMap> with WidgetsBindingObserver {
                             ),
                           },
                       initialCameraPosition: initialCameraPosition,
+                      // No pin until there is a real point: the camera may open
+                      // on the fallback, but a pin there read as the user's
+                      // location.
                       markers: {
-                        if (_markerIcon != null)
+                        if (_markerIcon != null && target != null)
                           Marker(
                             markerId: const MarkerId('selected-location'),
-                            position: target ?? _fallbackTarget,
+                            position: target,
                             icon: _markerIcon!,
                           ),
                       },

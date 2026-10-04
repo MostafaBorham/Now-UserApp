@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/database/cache_purger.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
+import 'package:nowdelivery_user_app/features/address/viewmodel/current_location_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/data/repo/auth_repo.dart';
@@ -80,8 +84,8 @@ class AuthSessionState {
   /// read and no dependency fired until [AuthSessionViewModel.resolveSession]
   /// is first called.
   const AuthSessionState.initial()
-      : sessionType = SessionType.guest,
-        dependenciesStatus = AppDependenciesStatus.idle;
+    : sessionType = SessionType.guest,
+      dependenciesStatus = AppDependenciesStatus.idle;
 
   final SessionType sessionType;
   final AppDependenciesStatus dependenciesStatus;
@@ -115,8 +119,8 @@ class AuthSessionState {
 /// orchestration is a side effect they never see.
 final authSessionProvider =
     StateNotifierProvider<AuthSessionViewModel, AuthSessionState>(
-  (Ref ref) => AuthSessionViewModel(ref),
-);
+      (Ref ref) => AuthSessionViewModel(ref),
+    );
 
 class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   AuthSessionViewModel(this._ref) : super(const AuthSessionState.initial());
@@ -246,5 +250,14 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     // and wallet stay on disk and are served to the next user as the offline
     // fallback — see [CachePurger].
     await CachePurger.purgeUserData();
+
+    // The current location can hold the previous user's saved address (the
+    // delivery sheet writes the one it confirms there). Forget it, then look
+    // for the device again without a prompt; with the service off the header
+    // asks the next user to set a location.
+    await CurrentLocationCacheService().clear();
+    unawaited(
+      _ref.read(currentLocationProvider.notifier).resolve(prompt: false),
+    );
   }
 }
