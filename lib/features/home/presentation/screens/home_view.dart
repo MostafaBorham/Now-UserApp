@@ -215,7 +215,11 @@ class _HomeViewState extends ConsumerState<HomeView>
     }
 
     final HomeSectionModel? categoriesSection = byType['categories'];
-    final bool showCategories = !feed.hasValue || categoriesSection != null;
+    // Placeholders only while the feed has nothing yet. A loaded section with no
+    // items (every category deactivated) hides the carousel: its placeholders
+    // looked like a loader that never finished.
+    final bool showCategories =
+        !feed.hasValue || (categoriesSection?.categories.isNotEmpty ?? false);
     final HomeSectionModel? offersSection = byType['featured_offers'];
     final List<BannerModel> topBanners =
         byType['top_banner']?.banners ?? const <BannerModel>[];

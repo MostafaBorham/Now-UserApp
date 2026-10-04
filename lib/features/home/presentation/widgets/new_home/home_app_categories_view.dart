@@ -15,8 +15,9 @@ typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
 /// The home categories carousel, rendered from the `categories` section of the
 /// `/api/v1/home-sections` feed — its items, in the order the admin arranged
-/// them. Empty (still loading, or a feed without the section) shows blank
-/// placeholders so the header keeps its layout.
+/// them. Empty (the feed is still loading) shows blank placeholders so the
+/// header keeps its layout; a loaded but empty section is not built at all
+/// (see `HomeView`).
 class HomeAppCategoriesView extends ConsumerWidget {
   const HomeAppCategoriesView({super.key, required this.categories});
 
@@ -62,8 +63,14 @@ class HomeAppCategoriesView extends ConsumerWidget {
         )
         .toList();
 
+    final List<_CarouselItem> shown = items.isEmpty ? _placeholderItems : items;
+    final bool loops = shown.length >= _CategoriesCarousel.minLoopingItems;
+    // Keyed on the mode, so placeholders giving way to a short list start a
+    // fresh carousel instead of keeping the looping one's page and timer.
     return _CategoriesCarousel(
-      items: items.isEmpty ? _placeholderItems : items,
+      key: ValueKey<bool>(loops),
+      items: shown,
+      loops: loops,
     );
   }
 
@@ -75,9 +82,21 @@ class HomeAppCategoriesView extends ConsumerWidget {
 }
 
 class _CategoriesCarousel extends StatefulWidget {
-  const _CategoriesCarousel({required this.items});
+  const _CategoriesCarousel({
+    super.key,
+    required this.items,
+    required this.loops,
+  });
+
+  /// About 3.8 pages fit at a 0.26 viewport fraction. Fewer items than that
+  /// would repeat on screen if they looped (one category filled every slot), so
+  /// they sit still instead.
+  static const int minLoopingItems = 4;
 
   final List<_CarouselItem> items;
+
+  /// Endless and auto-sliding, or one page per item and still.
+  final bool loops;
 
   @override
   State<_CategoriesCarousel> createState() => _CategoriesCarouselState();
@@ -95,10 +114,11 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
   void initState() {
     super.initState();
     _controller = PageController(
-      initialPage: _initialPage,
+      initialPage: widget.loops ? _initialPage : 0,
       viewportFraction: 0.26,
     );
 
+    if (!widget.loops) return;
     _autoSlideTimer = Timer.periodic(_slideInterval, (_) {
       if (!_controller.hasClients) return;
       _controller.nextPage(duration: _slideDuration, curve: Curves.easeInOut);
@@ -126,6 +146,7 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
             physics: const BouncingScrollPhysics(),
 
             reverse: true,
+            itemCount: widget.loops ? null : items.length,
             itemBuilder: (context, index) {
               final _CarouselItem item = items[index % items.length];
               return _CategoryCarouselItem(
