@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
@@ -25,18 +26,6 @@ import '../widgets/gender_selector.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/profile_avatar.dart';
 
-
-
-
-
-
-
-
-
-
-
-
-
 class EditInformationScreen extends ConsumerStatefulWidget {
   const EditInformationScreen({super.key});
 
@@ -51,9 +40,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _nationality = TextEditingController();
 
-
-
-
   ProfileModel? _original;
 
   String? _phone;
@@ -64,22 +50,14 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   File? _pickedAvatar;
   bool _removeAvatar = false;
 
-
-
   String? _nameError;
   String? _emailError;
 
-
   bool _isPicking = false;
-
-
 
   final ScrollController _scrollController = ScrollController();
 
   static const double _fieldGap = 18;
-
-
-
 
   static final DateTime _earliestBirthday = DateTime(1900);
 
@@ -115,12 +93,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-
-
-
-
-
-
 
   void _prefill(PersonalInformationData data) {
     final ProfileModel p = data.profile;
@@ -158,7 +130,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     return _clean(joined);
   }
 
-
   ProfileModel get _edited => ProfileModel(
     fullName: _editedFullName,
     email: _clean(_email.text),
@@ -172,16 +143,11 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       _removeAvatar ||
       _edited.changesFrom(_original).isNotEmpty;
 
-
-
-
-
   int get _genderTabIndex => switch (_gender?.trim().toLowerCase()) {
     'male' => 0,
     'female' => 1,
     _ => -1,
   };
-
 
   String? _dobText(BuildContext context) =>
       _dob == null ? null : formatLocalizedDateOnly(context, _apiDate(_dob!));
@@ -194,7 +160,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       latest.month,
       latest.day,
     );
-
 
     final DateTime initial = switch (_dob) {
       null => fallback,
@@ -242,51 +207,26 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         _pickedAvatar != null ||
         (!_removeAvatar && (_currentAvatarUrl?.isNotEmpty ?? false));
 
-    final _AvatarAction? action = await showModalBottomSheet<_AvatarAction>(
-      context: context,
-      builder: (BuildContext sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(LangKeys.chooseFromGalleryKey.tr()),
-              onTap: () => Navigator.pop(sheetContext, _AvatarAction.pick),
-            ),
-            if (hasAvatar)
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: Text(LangKeys.removePhotoKey.tr()),
-                onTap: () => Navigator.pop(sheetContext, _AvatarAction.remove),
-              ),
-          ],
-        ),
-      ),
+    final ImageSource? source = await showImageSourceSheet(
+      context,
+      onRemove: hasAvatar
+          ? () => setState(() {
+              _pickedAvatar = null;
+              _removeAvatar = true;
+            })
+          : null,
     );
-
-    if (action == _AvatarAction.pick) {
-      await _pickAvatar();
-    } else if (action == _AvatarAction.remove && mounted) {
-      setState(() {
-        _pickedAvatar = null;
-        _removeAvatar = true;
-      });
-    }
+    if (source != null) await _pickAvatar(source);
   }
 
-
-
-
-
-  Future<void> _pickAvatar() async {
+  Future<void> _pickAvatar(ImageSource source) async {
     if (_isPicking) return;
     _isPicking = true;
 
     try {
       final XFile? picked = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
+        source: source,
         imageQuality: 85,
-
 
         maxWidth: 1024,
         maxHeight: 1024,
@@ -311,24 +251,16 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     return trimmed.isEmpty ? null : trimmed;
   }
 
-
-
-
-
   String? _ltrPhone(String? phone) {
     if (phone == null || phone.isEmpty) return null;
 
     return '\u{2066}${AppValidator.saudiPhoneDisplay(phone)}\u{2069}';
   }
 
-
-
   String _apiDate(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-'
       '${d.month.toString().padLeft(2, '0')}-'
       '${d.day.toString().padLeft(2, '0')}';
-
-
 
   bool _validate() {
     final String email = _email.text.trim();
@@ -375,8 +307,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     }
   }
 
-
-
   Future<bool> _confirmDiscard() async {
     bool discard = false;
     await AppCustomAlertDialog.show(
@@ -400,9 +330,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
       getProfileProvider,
     );
 
-
-
-
     ref.listen<AsyncValue<PersonalInformationData>>(getProfileProvider, (
       AsyncValue<PersonalInformationData>? previous,
       AsyncValue<PersonalInformationData> next,
@@ -415,10 +342,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     final bool saving = ref.watch(updateProfileProvider).isLoading;
 
     return PopScope(
-
-
-
-
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (didPop) return;
@@ -443,9 +366,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     );
   }
 
-
-
-
   Widget _notReady(AsyncValue<PersonalInformationData> profile) {
     return profile.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -453,7 +373,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         message: error.toString(),
         onRetry: () => ref.read(getProfileProvider.notifier).getProfile(),
       ),
-
 
       data: (_) => const Center(child: CircularProgressIndicator()),
     );
@@ -465,8 +384,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         Expanded(
           child: SingleChildScrollView(
             controller: _scrollController,
-
-
 
             padding: const EdgeInsets.only(top: 57, bottom: 24),
             child: Column(
@@ -485,7 +402,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                   ),
                 ),
                 const SizedBox(height: 28),
-
 
                 Container(
                   width: double.infinity,
@@ -597,7 +513,6 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   }
 }
 
-
 class _SaveBar extends StatelessWidget {
   const _SaveBar({required this.onSave, required this.isLoading});
 
@@ -622,6 +537,3 @@ class _SaveBar extends StatelessWidget {
     );
   }
 }
-
-
-enum _AvatarAction { pick, remove }

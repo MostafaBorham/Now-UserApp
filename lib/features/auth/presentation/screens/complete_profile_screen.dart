@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -38,8 +39,7 @@ class CompleteProfileScreen extends ConsumerStatefulWidget {
       _CompleteProfileScreenState();
 }
 
-class _CompleteProfileScreenState
-    extends ConsumerState<CompleteProfileScreen> {
+class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -82,12 +82,14 @@ class _CompleteProfileScreenState
 
   Future<void> _pickAvatar() async {
     if (_isPicking) return;
-    _isPicking = true;
     FocusScope.of(context).unfocus();
+    final ImageSource? source = await showImageSourceSheet(context);
+    if (source == null || _isPicking) return;
+    _isPicking = true;
 
     try {
       final XFile? picked = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
+        source: source,
         imageQuality: 85,
         maxWidth: 1024,
         maxHeight: 1024,
@@ -104,8 +106,9 @@ class _CompleteProfileScreenState
 
   bool _validate() {
     final String email = _email.text.trim();
-    final String? nameError =
-        _fullName.isEmpty ? LangKeys.nameRequiredKey.tr() : null;
+    final String? nameError = _fullName.isEmpty
+        ? LangKeys.nameRequiredKey.tr()
+        : null;
     final String? emailError = email.isEmpty || AppValidator.isValidEmail(email)
         ? null
         : LangKeys.invalidEmailKey.tr();

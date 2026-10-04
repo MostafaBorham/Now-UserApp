@@ -188,6 +188,7 @@ abstract class LangKeys {
   static const String personalInformationKey = 'personalInformation';
   static const String editInformationKey = 'editInformation';
   static const String saveKey = 'save';
+  static const String takePhotoKey = 'takePhoto';
   static const String chooseFromGalleryKey = 'chooseFromGallery';
   static const String removePhotoKey = 'removePhoto';
 

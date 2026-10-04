@@ -5,15 +5,12 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class ComplaintPhotosPicker extends StatefulWidget {
-  const ComplaintPhotosPicker({
-    super.key,
-    required this.onChanged,
-  });
-
+  const ComplaintPhotosPicker({super.key, required this.onChanged});
 
   final ValueChanged<List<File>> onChanged;
 
@@ -35,6 +32,9 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
     if (_isPicking) return;
     if (_images.length >= _maxImages) return;
 
+    final ImageSource? source = await showImageSourceSheet(context);
+    if (source == null || _isPicking || !mounted) return;
+
     setState(() {
       _isPicking = true;
     });
@@ -44,7 +44,7 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
       // JSON body, and the API's proxy takes 8 MB — two full-size camera
       // photos already exceed it.
       final XFile? picked = await _picker.pickImage(
-        source: ImageSource.gallery,
+        source: source,
         imageQuality: 85,
         maxWidth: 1600,
         maxHeight: 1600,
@@ -89,18 +89,17 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
     final canAddMore = _images.length < _maxImages;
     final AppColorScheme colors = context.colors;
 
-
-
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 16,
         children: [
-          Text(LangKeys.complaintPhotosKey.tr(),overflow: TextOverflow.visible,style: AppTextStyles.style16Medium.copyWith(
-            color: colors.black
-          ),),
+          Text(
+            LangKeys.complaintPhotosKey.tr(),
+            overflow: TextOverflow.visible,
+            style: AppTextStyles.style16Medium.copyWith(color: colors.black),
+          ),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.start,
             spacing: _spacing,
@@ -113,10 +112,7 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
                 ),
 
               if (canAddMore)
-                _AddImageTile(
-                  isLoading: _isPicking,
-                  onTap: _pickImage,
-                ),
+                _AddImageTile(isLoading: _isPicking, onTap: _pickImage),
             ],
           ),
         ],
@@ -126,10 +122,7 @@ class _ComplaintPhotosPickerState extends State<ComplaintPhotosPicker> {
 }
 
 class _AddImageTile extends StatelessWidget {
-  const _AddImageTile({
-    required this.isLoading,
-    required this.onTap,
-  });
+  const _AddImageTile({required this.isLoading, required this.onTap});
 
   final bool isLoading;
   final VoidCallback onTap;
@@ -155,15 +148,11 @@ class _AddImageTile extends StatelessWidget {
             child: Center(
               child: isLoading
                   ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-                  :  Icon(
-                Icons.add,
-                size: 24,
-                color: colors.tertiaryContainer,
-              ),
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Icon(Icons.add, size: 24, color: colors.tertiaryContainer),
             ),
           ),
         ),
@@ -173,10 +162,7 @@ class _AddImageTile extends StatelessWidget {
 }
 
 class _PickedImageTile extends StatelessWidget {
-  const _PickedImageTile({
-    required this.imageFile,
-    required this.onRemove,
-  });
+  const _PickedImageTile({required this.imageFile, required this.onRemove});
 
   final File imageFile;
   final VoidCallback onRemove;
@@ -204,9 +190,6 @@ class _PickedImageTile extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
 
-
-
-
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -233,11 +216,7 @@ class _PickedImageTile extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: Icon(
-                  Icons.close,
-                  color: colors.white,
-                  size: 14,
-                ),
+                child: Icon(Icons.close, color: colors.white, size: 14),
               ),
             ),
           ),
