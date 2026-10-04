@@ -60,13 +60,16 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
   static const double _fieldGap = 18;
 
-  static final DateTime _earliestBirthday = DateTime(1900);
+  /// Ages 12 to 100, a product rule the app alone enforces: the API only
+  /// checks `before:today` (`User/UpdateProfileRequest`), which the minimum
+  /// already covers.
+  static DateTime get _earliestBirthday => _yearsAgo(100);
+  static DateTime get _latestBirthday => _yearsAgo(12);
 
-  /// Yesterday, not today: the API validates `birthday` with `before:today`
-  /// (`User/UpdateProfileRequest`), so offering today would let the user pick a
-  /// date the save then rejects with a 422. There is no minimum age rule.
-  static DateTime get _latestBirthday =>
-      DateTime.now().subtract(const Duration(days: 1));
+  static DateTime _yearsAgo(int years) {
+    final DateTime now = DateTime.now();
+    return DateTime(now.year - years, now.month, now.day);
+  }
 
   @override
   void initState() {
@@ -155,6 +158,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
   Future<void> _pickDate() async {
     FocusScope.of(context).unfocus();
+    final DateTime earliest = _earliestBirthday;
     final DateTime latest = _latestBirthday;
     final DateTime fallback = DateTime(
       latest.year - 20,
@@ -164,7 +168,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
 
     final DateTime initial = switch (_dob) {
       null => fallback,
-      final DateTime d when d.isBefore(_earliestBirthday) => _earliestBirthday,
+      final DateTime d when d.isBefore(earliest) => earliest,
       final DateTime d when d.isAfter(latest) => latest,
       final DateTime d => d,
     };
@@ -172,7 +176,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: _earliestBirthday,
+      firstDate: earliest,
       lastDate: latest,
       builder: (BuildContext pickerContext, Widget? child) {
         final AppColorScheme colors = pickerContext.colors;
@@ -184,6 +188,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
               onPrimary: colors.white,
               surface: colors.white,
               onSurface: colors.black,
+              // The year grid draws unselected years in this, which the app
+              // theme sets to a pale green that barely shows on white.
+              onSurfaceVariant: colors.tertiaryContainer,
             ),
             dividerColor: colors.primary500Main,
             datePickerTheme: DatePickerThemeData(
