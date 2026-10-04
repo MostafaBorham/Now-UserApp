@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -428,6 +429,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                               controller: _firstName,
                               leadingAsset: Assets.media.images.svg.pen.path,
                               maxLength: 40,
+                              inputFormatters: <TextInputFormatter>[
+                                nameInputFormatter,
+                              ],
                               errorText: _nameError,
                             ),
                           ),
@@ -437,6 +441,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                               controller: _lastName,
                               leadingAsset: Assets.media.images.svg.pen.path,
                               maxLength: 40,
+                              inputFormatters: <TextInputFormatter>[
+                                nameInputFormatter,
+                              ],
                             ),
                           ),
                         ],
@@ -458,6 +465,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                         keyboardType: TextInputType.emailAddress,
                         maxLength: 80,
                         errorText: _emailError,
+                        // Latin text: laid out RTL, Arabic reorders it around
+                        // `@` and `.`.
+                        textDirection: TextDirection.ltr,
                       ),
                       const SizedBox(height: _fieldGap),
                       Text(

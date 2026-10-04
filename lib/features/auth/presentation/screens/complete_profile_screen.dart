@@ -52,19 +52,18 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // The name fields share one character counter, so both have to repaint it.
-    _firstName.addListener(_onNameChanged);
-    _lastName.addListener(_onNameChanged);
+    _firstName.addListener(_clearNameError);
+    _lastName.addListener(_clearNameError);
     _email.addListener(_clearEmailError);
   }
 
   @override
   void dispose() {
     _firstName
-      ..removeListener(_onNameChanged)
+      ..removeListener(_clearNameError)
       ..dispose();
     _lastName
-      ..removeListener(_onNameChanged)
+      ..removeListener(_clearNameError)
       ..dispose();
     _email
       ..removeListener(_clearEmailError)
@@ -72,7 +71,9 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     super.dispose();
   }
 
-  void _onNameChanged() => setState(() => _nameError = null);
+  void _clearNameError() {
+    if (_nameError != null) setState(() => _nameError = null);
+  }
 
   void _clearEmailError() {
     if (_emailError != null) setState(() => _emailError = null);

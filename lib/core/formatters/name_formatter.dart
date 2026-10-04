@@ -1,3 +1,12 @@
+import 'package:flutter/services.dart';
+
+/// What a name box lets through: letters of any script with their marks
+/// (Arabic diacritics), spaces, hyphens and apostrophes. Digits, symbols and
+/// emoji never reach the field.
+final TextInputFormatter nameInputFormatter = FilteringTextInputFormatter.allow(
+  RegExp(r"[\p{L}\p{M} '\-]", unicode: true),
+);
+
 /// Joins the design's two name boxes into the single `full_name` the API
 /// takes. Blank parts drop out, so a one-word name stays one word and never
 /// carries a stray separator.

@@ -43,13 +43,16 @@ class AppValidator {
     return tail == null ? (raw ?? '') : '+96605$tail';
   }
 
-  static final RegExp _emailRegExp = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
+  static final RegExp _emailRegExp = RegExp(
+    r'^[\w.+-]+@[\w-]+(\.[\w-]+)*\.[A-Za-z]{2,}$',
+  );
 
   /// Whether [email] is a plausible address.
   ///
-  /// Deliberately permissive: the server is the authority on what it will
-  /// accept, and an over-strict client regex rejects valid addresses (plus
-  /// tags, long TLDs, subdomains). This exists only to catch the obvious typo
-  /// before spending a round-trip on it.
+  /// Deliberately permissive: an over-strict client regex rejects valid
+  /// addresses (plus tags, long TLDs, subdomains). This exists only to catch
+  /// the obvious typo before spending a round-trip on it. The one thing it
+  /// insists on is a TLD of two letters or more: the server's `email` rule
+  /// accepts `1@2.3`, so this is the only check that rejects it.
   static bool isValidEmail(String email) => _emailRegExp.hasMatch(email.trim());
 }

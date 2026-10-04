@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
@@ -23,6 +24,8 @@ class EditField extends StatelessWidget {
     this.readOnly = false,
     this.valueText,
     this.errorText,
+    this.inputFormatters,
+    this.textDirection,
   });
 
   final String label;
@@ -46,6 +49,9 @@ class EditField extends StatelessWidget {
   /// Validation message shown under the pill, which also turns red. Null when
   /// the field is valid.
   final String? errorText;
+
+  final List<TextInputFormatter>? inputFormatters;
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +134,8 @@ class EditField extends StatelessWidget {
             controller: controller,
             keyboardType: keyboardType,
             maxLength: maxLength,
+            inputFormatters: inputFormatters,
+            textDirection: textDirection,
             buildCounter:
                 (
                   BuildContext context, {

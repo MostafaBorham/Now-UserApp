@@ -1,5 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -7,7 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/text_field.dart';
 
 /// Personal-information card for the post-OTP profile step: name (first + last)
-/// with a live character counter, and an optional email.
+/// and an optional email.
 ///
 /// Deliberately stateless — the controllers belong to the screen, which has to
 /// read them to validate and save. It only renders what it is handed.
@@ -40,26 +42,13 @@ class CompleteProfileForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  LangKeys.nameKey.tr(),
-                  style: AppTextStyles.style14Medium.copyWith(
-                    color: context.colors.neutral500,
-                  ),
-                ),
-              ),
-              Text(
-                // The design counts the whole name against one budget, so the
-                // two fields share the counter rather than each having its own.
-                '${firstName.text.length + lastName.text.length}'
-                '/$maxNameLength',
-                style: AppTextStyles.style12Regular.copyWith(
-                  color: context.colors.neutral500,
-                ),
-              ),
-            ],
+          // No counter: each box has its own limit, and the one shared counter
+          // added both against a single one, reading "80/40".
+          Text(
+            LangKeys.nameKey.tr(),
+            style: AppTextStyles.style14Medium.copyWith(
+              color: context.colors.neutral500,
+            ),
           ),
           const SizedBox(height: 8),
           Row(
@@ -69,6 +58,7 @@ class CompleteProfileForm extends StatelessWidget {
                   controller: firstName,
                   hint: LangKeys.firstNameHintKey.tr(),
                   maxLength: maxNameLength,
+                  inputFormatters: <TextInputFormatter>[nameInputFormatter],
                 ),
               ),
               const SizedBox(width: 12),
@@ -77,6 +67,7 @@ class CompleteProfileForm extends StatelessWidget {
                   controller: lastName,
                   hint: LangKeys.lastNameHintKey.tr(),
                   maxLength: maxNameLength,
+                  inputFormatters: <TextInputFormatter>[nameInputFormatter],
                 ),
               ),
             ],
@@ -95,6 +86,9 @@ class CompleteProfileForm extends StatelessWidget {
             hint: LangKeys.enterYourEmailKey.tr(),
             keyboardType: TextInputType.emailAddress,
             maxLength: 80,
+            // An address is Latin text. Laid out RTL, Arabic reorders it
+            // around `@` and `.`.
+            textDirection: TextDirection.ltr,
           ),
           if (emailError != null) _error(context, emailError!),
         ],

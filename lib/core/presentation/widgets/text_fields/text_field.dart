@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -11,12 +12,16 @@ class RoundedField extends StatefulWidget {
     required this.hint,
     this.keyboardType,
     this.maxLength,
+    this.inputFormatters,
+    this.textDirection,
   });
 
   final TextEditingController? controller;
   final String hint;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextDirection? textDirection;
 
   @override
   State<RoundedField> createState() => _RoundedFieldState();
@@ -53,6 +58,8 @@ class _RoundedFieldState extends State<RoundedField> {
       focusNode: _focusNode,
       keyboardType: widget.keyboardType,
       maxLength: widget.maxLength,
+      inputFormatters: widget.inputFormatters,
+      textDirection: widget.textDirection,
       style: AppTextStyles.style16Medium.copyWith(
         color: context.colors.tertiaryContainer,
       ),

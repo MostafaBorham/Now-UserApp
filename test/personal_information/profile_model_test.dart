@@ -2,12 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
 
-
-
-
-
-
-
 void main() {
   const ProfileModel loaded = ProfileModel(
     id: 7,
@@ -43,8 +37,10 @@ void main() {
     });
 
     test('only the edited key is sent', () {
-      expect(edit(fullName: 'Basem Elsawah').changesFrom(loaded), <String,
-          dynamic>{'full_name': 'Basem Elsawah'});
+      expect(
+        edit(fullName: 'Basem Elsawah').changesFrom(loaded),
+        <String, dynamic>{'full_name': 'Basem Elsawah'},
+      );
     });
 
     test('an emptied field is sent as an explicit null to clear it', () {
@@ -66,8 +62,6 @@ void main() {
       expect(body.keys, hasLength(5));
     });
 
-
-
     test('a gender the toggle cannot represent survives an unrelated edit', () {
       const ProfileModel other = ProfileModel(
         fullName: 'Basem',
@@ -81,8 +75,6 @@ void main() {
       expect(body, <String, dynamic>{'full_name': 'Basem Elsawah'});
       expect(body.keys, isNot(contains('gender')));
     });
-
-
 
     test('a blank form with no baseline sends nothing', () {
       expect(const ProfileModel().changesFrom(null), isEmpty);
@@ -128,6 +120,7 @@ void main() {
         'basem@example.com',
         'basem.elsawah+tag@now-delivery.com',
         'a@b.co.uk',
+        'a+b@x.co.uk',
       ]) {
         expect(AppValidator.isValidEmail(email), isTrue, reason: email);
       }
@@ -140,12 +133,15 @@ void main() {
         '@example.com',
         'basem@example',
         'basem @example.com',
+        // A domain without a real TLD (BUG-010).
+        'a@b',
+        '1@2.3',
+        '13426.2452@1245677',
       ]) {
         expect(AppValidator.isValidEmail(email), isFalse, reason: email);
       }
     });
   });
 }
-
 
 const Object _unset = Object();

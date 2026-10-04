@@ -8,11 +8,7 @@ import 'package:nowdelivery_user_app/features/personal_information/presentation/
 /// (rendered by [ProfileAvatar], which attaches the bearer token), otherwise
 /// the placeholder.
 class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({
-    super.key,
-    required this.name,
-    this.avatarUrl,
-  });
+  const ProfileInfo({super.key, required this.name, this.avatarUrl});
 
   final String name;
   final String? avatarUrl;
@@ -25,6 +21,8 @@ class ProfileInfo extends StatelessWidget {
         const SizedBox(height: 14),
         Text(
           name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,

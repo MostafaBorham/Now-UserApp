@@ -47,6 +47,8 @@ class InfoField extends StatelessWidget {
               Text(
                 hasValue ? value! : (hint ?? ''),
                 textDirection: forceLtrValue ? TextDirection.ltr : null,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
