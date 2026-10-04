@@ -165,5 +165,19 @@ void main() {
       expect(address.street, 'King Fahd Road');
       expect(address.area, 'Al Olaya - Riyadh - Riyadh Province');
     });
+
+    test('cuts an Arabic address line down to its street (BUG-024)', () {
+      // Android's geocoder splits only on an ASCII comma, so the whole Arabic
+      // line arrives as the street.
+      final AddressModel address = AddressModel.fromPlacemark(
+        const Placemark(
+          street: 'شارع الملك فهد، العليا، الرياض 12214، السعودية',
+          locality: 'الرياض',
+        ),
+        pin,
+      );
+
+      expect(address.street, 'شارع الملك فهد');
+    });
   });
 }

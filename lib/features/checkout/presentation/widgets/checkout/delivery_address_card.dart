@@ -9,12 +9,10 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/select_address_button.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/utils/address_line.dart';
 
 class DeliveryAddressCard extends ConsumerStatefulWidget {
-  const DeliveryAddressCard({
-    super.key,
-    this.onAddressIdChanged,
-  });
+  const DeliveryAddressCard({super.key, this.onAddressIdChanged});
 
   /// Reports the id of the resolved default address (`null` when there is no
   /// default) whenever it changes. Lets the parent submit the order with this
@@ -50,15 +48,15 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
 
     // Only adopt a new address when the provider is in the data state.
     // On loading / error the previous address stays untouched.
-    ref.listen<AsyncValue<AddressModel?>>(
-      defaultAddressProvider,
-      (previous, next) {
-        next.whenData((address) {
-          setState(() => _address = address);
-          widget.onAddressIdChanged?.call(address?.id);
-        });
-      },
-    );
+    ref.listen<AsyncValue<AddressModel?>>(defaultAddressProvider, (
+      previous,
+      next,
+    ) {
+      next.whenData((address) {
+        setState(() => _address = address);
+        widget.onAddressIdChanged?.call(address?.id);
+      });
+    });
 
     // No delivery address yet: show the "add address" prompt in place of the
     // card, which routes the user to the address screen to pick or create one.
@@ -68,7 +66,7 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
       );
     }
 
-    final String? fullAddress = _address?.fullAddress;
+    final String line = addressLine(context, _address!);
 
     return Container(
       width: double.infinity,
@@ -104,10 +102,10 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
             ],
           ),
           Text(
-            fullAddress ?? LangKeys.noAddressKey.tr(),
+            line.isNotEmpty ? line : LangKeys.noAddressKey.tr(),
             maxLines: 3,
             style: AppTextStyles.style14Regular.copyWith(
-              color: fullAddress != null ? colors.neutral500 : colors.error,
+              color: line.isNotEmpty ? colors.neutral500 : colors.error,
             ),
           ),
         ],

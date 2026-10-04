@@ -124,13 +124,21 @@ class AddressModel extends Equatable {
       country: placemark.country,
       city: city,
       area: area.isEmpty ? firstFilled(<String?>[placemark.name, city]) : area,
-      street: firstFilled(<String?>[
-        placemark.street,
-        placemark.thoroughfare,
-        placemark.name,
-        placemark.subLocality,
-        city,
-      ]),
+      // Each candidate is cut at its first comma. Android's geocoder splits
+      // the address line on an ASCII `,` only, so an Arabic result (joined
+      // with `،`) arrived whole as the street — and area, city and country
+      // were then shown twice.
+      street: firstFilled(
+        <String?>[
+              placemark.street,
+              placemark.thoroughfare,
+              placemark.name,
+              placemark.subLocality,
+              city,
+            ]
+            .map((String? part) => part?.split(RegExp('[،,]')).first.trim())
+            .toList(),
+      ),
       latitude: location.latitude.toString(),
       longitude: location.longitude.toString(),
     );

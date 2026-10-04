@@ -28,6 +28,7 @@ import 'package:nowdelivery_user_app/features/address/data/models/address_model.
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_address_provider.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/utils/address_line.dart';
 
 class HomeDeliveryAddressView extends ConsumerStatefulWidget {
   const HomeDeliveryAddressView({super.key});
@@ -174,8 +175,9 @@ class _HomeDeliveryAddressViewState
         AsyncValue<PaginationModel<AddressModel>>? previous,
         AsyncValue<PaginationModel<AddressModel>> next,
       ) {
-        final String? nextPageError =
-            PaginationStatus<AddressModel>.from(next).nextPageError;
+        final String? nextPageError = PaginationStatus<AddressModel>.from(
+          next,
+        ).nextPageError;
         if (nextPageError != null) {
           AppToast.showError(context, nextPageError);
         }
@@ -419,7 +421,7 @@ class _AddressList extends StatelessWidget {
           _AddressItem(
             icon: _iconForLabel(address.label),
             title: context.getLocalizedApiText(address.label),
-            subtitle: address.fullAddress ?? '',
+            subtitle: addressLine(context, address),
             highlighted: address.id == selectedAddressId,
             onTap: () => onSelect(address),
             onEdit: () => context.pushNamed(

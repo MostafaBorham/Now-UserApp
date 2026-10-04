@@ -20,6 +20,8 @@
   "amountDue": "المبلغ المستحق",
   "anotherPaymentMethod": "طريقة دفع أخرى",
   "apartment": "رقم الشقة (اختياري)",
+  "apartmentValue": "شقة {}",
+  "floorValue": "الطابق {}",
   "appAbout": "عن التطبيق",
   "appName": "ناو",
   "appPrivacy": "خصوصية التطبيق",

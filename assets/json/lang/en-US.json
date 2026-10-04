@@ -20,6 +20,8 @@
   "amountDue": "Amount Due",
   "anotherPaymentMethod": "Another Payment Method",
   "apartment": "Apartment number (optional)",
+  "apartmentValue": "Apartment {}",
+  "floorValue": "Floor {}",
   "appAbout": "App About",
   "appName": "Now",
   "appPrivacy": "App Privacy",

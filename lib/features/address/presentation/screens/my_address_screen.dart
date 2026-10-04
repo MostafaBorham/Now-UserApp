@@ -22,6 +22,7 @@ import 'package:nowdelivery_user_app/features/address/presentation/widgets/no_ad
 import 'package:nowdelivery_user_app/features/address/viewmodel/default_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/delete_address_vm.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/utils/address_line.dart';
 
 /// The user's saved addresses: pick the delivery default, edit one, or add a
 /// new one from the map.
@@ -130,7 +131,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                             confirmDismiss: (_) => _onDelete(address),
                             child: AddressCard(
                               title: context.getLocalizedApiText(address.label),
-                              address: address.fullAddress ?? '',
+                              address: addressLine(context, address),
                               isDefault: address.isDefault ?? false,
                               onSelect: () => _onSelect(address),
                               onEdit: () => context.pushNamed(

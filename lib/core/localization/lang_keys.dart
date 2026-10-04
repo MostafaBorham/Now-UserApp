@@ -90,6 +90,11 @@ abstract class LangKeys {
   static const String apartment = 'apartment';
   static const String phoneNumberOptional = 'phoneNumberOptional';
   static const String instructions = 'instructions';
+
+  /// An address line's parts: "Floor 3", "Apartment 12" (`{}` is the value).
+  static const String floorValueKey = 'floorValue';
+  static const String apartmentValueKey = 'apartmentValue';
+
   static const String saveAddress = 'saveAddress';
   static const String completeAddressInfo = 'completeAddressInfo';
   static const String enterValidMobileNumber = 'enterValidMobileNumber';

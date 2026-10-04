@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/header_intro_animations.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_delivery_address_view.dart';
+import 'package:nowdelivery_user_app/features/address/presentation/utils/address_line.dart';
 
 class HomeHeaderView extends ConsumerWidget {
   const HomeHeaderView({
@@ -50,17 +51,8 @@ class HomeHeaderView extends ConsumerWidget {
   }
 
   String _addressName(BuildContext context, AddressModel address) {
-    final String full = address.fullAddress ?? '';
-    if (full.isNotEmpty) return full;
-
-    final String label = context.getLocalizedApiText(address.label);
-    if (label.isNotEmpty) return label;
-
-    return <String?>[
-      address.street,
-      address.area,
-      address.city,
-    ].whereType<String>().where((String e) => e.isNotEmpty).join('، ');
+    final String line = addressLine(context, address);
+    return line.isNotEmpty ? line : context.getLocalizedApiText(address.label);
   }
 
   @override
@@ -147,7 +139,6 @@ class HomeHeaderView extends ConsumerWidget {
                                                   ? displayedAddress
                                                   : LangKeys.setYourLocationKey
                                                         .tr(),
-                                              textDirection: TextDirection.ltr,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
