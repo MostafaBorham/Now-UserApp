@@ -70,6 +70,9 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
       AsyncValue<AddressModel?>? previous,
       AsyncValue<AddressModel?> next,
     ) {
+      // The next tap's loading state still carries the last error, and
+      // `whenOrNull` reports it as an error again — replaying the old toast.
+      if (next.isLoading) return;
       next.whenOrNull(
         error: (Object error, StackTrace stackTrace) =>
             AppToast.showError(context, error.toString()),

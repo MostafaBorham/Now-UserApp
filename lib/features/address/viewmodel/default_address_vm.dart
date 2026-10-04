@@ -124,11 +124,28 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
 
     if (!mounted) return;
 
-    state = result.fold(_errorOverCurrent, (AddressModel address) {
-      _ref
-          .read(getMyAddressesProvider.notifier)
-          .updateDefaultInMyAddress(address: address);
-      return AsyncValue<AddressModel?>.data(address);
-    });
+    state = result.fold(_errorOverCurrent, _adopt);
+    if (result.isLeft()) await _reconcile();
+  }
+
+  /// Makes [address] the default here and on the loaded list.
+  AsyncValue<AddressModel?> _adopt(AddressModel address) {
+    _ref
+        .read(getMyAddressesProvider.notifier)
+        .updateDefaultInMyAddress(address: address);
+    return AsyncValue<AddressModel?>.data(address);
+  }
+
+  /// After a failed set-default, asks the server which address is the default
+  /// and adopts it. A failure is not proof nothing changed: when the request
+  /// landed but its answer was lost, the app went on marking the old address
+  /// while the server had the new one — tapping the new one then got a 409
+  /// "already default", tapping the old one did nothing, and both cards were
+  /// dead until a refresh. Quietly: the failure is already on screen, and a
+  /// reconcile that fails too (still offline) leaves everything as it was.
+  Future<void> _reconcile() async {
+    final result = await _repo.getDefaultAddress();
+    if (!mounted) return;
+    result.fold((_) {}, (AddressModel address) => state = _adopt(address));
   }
 }
