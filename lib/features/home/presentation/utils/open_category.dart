@@ -10,13 +10,13 @@ import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_v
 /// Opens category details for a category the home feed or a banner names by
 /// [slug] or only by [id].
 ///
-/// Category details loads by slug, but a `products_by_category` section and a
-/// category banner carry just the id. Such a tap resolves the slug from the
-/// categories already in memory — the app-wide list the splash preloads and
-/// the feed's own `categories` section — and does nothing when neither holds
-/// it. A section built on a subcategory therefore opens its main category.
-// ponytail: in-memory id → slug lookup; drop it once the feed and banners send
-// `category_slug` (backend ticket).
+/// Category details loads by slug, which the feed and banners now send
+/// (`category_slug`). A payload without one — e.g. a feed cached before the
+/// backend added it — resolves the slug from the categories already in memory
+/// (the app-wide list the splash preloads and the feed's own `categories`
+/// section), and does nothing when neither holds it.
+// ponytail: in-memory id → slug lookup kept only for slug-less payloads; drop
+// it once no cached feed predates the slugs.
 void openHomeCategory(
   BuildContext context,
   WidgetRef ref, {

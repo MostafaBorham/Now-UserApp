@@ -51,10 +51,10 @@ class HomeSectionModel extends Equatable {
   /// details queries by, so the carousel fills it in on tap.
   final List<CategoryModel> categories;
 
-  /// The category a `products_by_category` section lists, titled by
-  /// `category_name` (falling back to the section's own `title`). Its `slug`
-  /// comes from `category_slug`, which the feed does not send yet, so "See
-  /// All" resolves it from the category's `id` (`openHomeCategory`).
+  /// The category a `products_by_category` section lists: its subcategory when
+  /// the admin set one, else its category. Titled by that one's name (falling
+  /// back to the section's own `title`), so the heading and the screen "See
+  /// All" opens both name what is listed.
   final CategoryModel? category;
 
   /// Accent colour of a `products_by_category` section: the background wash and
@@ -224,9 +224,14 @@ class HomeSectionModel extends Equatable {
       // shown is the category's name; the title is only a last resort.
       category: isProductsByCategory
           ? CategoryModel(
-              id: (json['category_id'] as num?)?.toInt(),
-              name: json.localized('category_name') ?? json.localized('title'),
-              slug: json['category_slug']?.toString(),
+              id: ((json['subcategory_id'] ?? json['category_id']) as num?)
+                  ?.toInt(),
+              name:
+                  json.localized('subcategory_name') ??
+                  json.localized('category_name') ??
+                  json.localized('title'),
+              slug: (json['subcategory_slug'] ?? json['category_slug'])
+                  ?.toString(),
             )
           : null,
       primaryColor: json.colorHex('primary_color'),

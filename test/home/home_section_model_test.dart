@@ -506,6 +506,23 @@ void main() {
     expect(section.banners, isEmpty);
   });
 
+  test('a section set to a subcategory is named and opened as it', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'type': 'products_by_category',
+      'category_id': 1,
+      'category_name': {'ar': 'إلكترونيات', 'en': 'Electronics'},
+      'category_slug': 'phones',
+      'subcategory_id': 7,
+      'subcategory_name': {'ar': 'هواتف', 'en': 'Phones'},
+      'subcategory_slug': 'phones',
+      'items': <Map<String, dynamic>>[],
+    });
+
+    expect(section.category?.id, 7);
+    expect(section.category?.name?['en'], 'Phones');
+    expect(section.category?.slug, 'phones');
+  });
+
   test('a color_only products_by_category section carries no media', () {
     final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
       'id': 52,
