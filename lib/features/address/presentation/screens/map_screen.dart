@@ -142,9 +142,7 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
           isChangingAddress
               ? LangKeys.changeAddress.tr()
               : LangKeys.addNewAddress.tr(),
-          style: AppTextStyles.style24SemiBold.copyWith(
-            color: colors.black,
-          ),
+          style: AppTextStyles.style24SemiBold.copyWith(color: colors.black),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
@@ -173,7 +171,14 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            // Clears the system navigation bar: on Android 15+ the app draws
+            // edge-to-edge, and a 3-button bar covered the button.
+            padding: EdgeInsets.fromLTRB(
+              20,
+              20,
+              20,
+              20 + MediaQuery.viewPaddingOf(context).bottom,
+            ),
             child: AspectRatio(
               aspectRatio: 7,
               child: PrimaryAppButton(
