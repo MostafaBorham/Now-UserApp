@@ -44,15 +44,22 @@ class AppValidator {
   }
 
   static final RegExp _emailRegExp = RegExp(
-    r'^[\w.+-]+@[\w-]+(\.[\w-]+)*\.[A-Za-z]{2,}$',
+    r'^[A-Za-z0-9]+(?:[._+-][A-Za-z0-9]+)*'
+    r'@(?:[A-Za-z0-9]+(?:-+[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}$',
   );
 
   /// Whether [email] is a plausible address.
   ///
-  /// Deliberately permissive: an over-strict client regex rejects valid
-  /// addresses (plus tags, long TLDs, subdomains). This exists only to catch
-  /// the obvious typo before spending a round-trip on it. The one thing it
-  /// insists on is a TLD of two letters or more: the server's `email` rule
-  /// accepts `1@2.3`, so this is the only check that rejects it.
+  /// * The name before `@` starts and ends with a letter or digit, and `.`,
+  ///   `_`, `-` and `+` only ever sit one at a time between them — so
+  ///   `-------.------@…`, `_a@…`, `a.@…` and `a..b@…` are refused.
+  /// * Every domain label starts and ends with a letter or digit (no `_`
+  ///   anywhere), and the TLD has two letters or more — the server's `email`
+  ///   rule accepts `1@2.3`.
+  ///
+  /// It still allows plus tags, long TLDs and subdomains. Stricter than RFC
+  /// 5322 on purpose: everything it accepts is valid RFC syntax, which is what
+  /// the server's `email` rule checks, so a save is never refused for a shape
+  /// this let through.
   static bool isValidEmail(String email) => _emailRegExp.hasMatch(email.trim());
 }

@@ -115,6 +115,9 @@ void main() {
         'basem.elsawah+tag@now-delivery.com',
         'a@b.co.uk',
         'a+b@x.co.uk',
+        'first_last@mail.example.com',
+        'first-last.2026@x--y.io',
+        '13426.2452@gmail.com',
       ]) {
         expect(AppValidator.isValidEmail(email), isTrue, reason: email);
       }
@@ -131,6 +134,19 @@ void main() {
         'a@b',
         '1@2.3',
         '13426.2452@1245677',
+        // Punctuation where a letter or digit has to be (BUG-012).
+        '-------.------@-------',
+        '-------.------@-------.com',
+        '_basem@example.com',
+        'basem_@example.com',
+        '.basem@example.com',
+        'basem.@example.com',
+        'ba..sem@example.com',
+        'ba._sem@example.com',
+        'basem@-example.com',
+        'basem@example-.com',
+        'basem@exa_mple.com',
+        'basem@.example.com',
       ]) {
         expect(AppValidator.isValidEmail(email), isFalse, reason: email);
       }
