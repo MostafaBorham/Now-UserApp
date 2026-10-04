@@ -53,43 +53,50 @@ class _PhoneVerificationScreenState
     });
     final bool isRequestOtpLoading = ref.watch(requestOtpProvider).isLoading;
 
-    return Scaffold(
-      body: AppWavedView(
-        appBarTitle: LangKeys.verificationCodeKey.tr(),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              VerificationHeadline(
-                title: LangKeys.verifyGuestViaPhoneKey.tr(),
-                subtitle: Text(LangKeys.phoneVerificationSubtitleKey.tr()),
-              ),
-              const SizedBox(height: 32),
-              PhoneNumberField(
-                controller: _phoneController,
-                onValidChanged: (bool isValid) =>
-                    setState(() => _isPhoneValid = isValid),
-              ),
-              const SizedBox(height: 28),
-              !_isPhoneValid && !isRequestOtpLoading
-                  ? PrimaryAppDisabledButton(
-                      title: LangKeys.continueKey.tr(),
-                      buttonPadding: 16,
-                    )
-                  : PrimaryAppButton(
-                      title: LangKeys.continueKey.tr(),
-                      buttonPadding: 16,
-                      isLoading: isRequestOtpLoading,
-                      onTap: () {
-                        final String? phone =
-                            AppValidator.saudiPhoneToInternational(
-                              _phoneController.text,
-                            );
-                        if (phone == null) return;
-                        ref.read(requestOtpProvider.notifier).requestOtp(phone);
-                      },
-                    ),
-            ],
+    // No leaving while the code is requested: the answer would push the OTP
+    // screen onto whatever screen is underneath by then.
+    return PopScope(
+      canPop: !isRequestOtpLoading,
+      child: Scaffold(
+        body: AppWavedView(
+          appBarTitle: LangKeys.verificationCodeKey.tr(),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                VerificationHeadline(
+                  title: LangKeys.verifyGuestViaPhoneKey.tr(),
+                  subtitle: Text(LangKeys.phoneVerificationSubtitleKey.tr()),
+                ),
+                const SizedBox(height: 32),
+                PhoneNumberField(
+                  controller: _phoneController,
+                  onValidChanged: (bool isValid) =>
+                      setState(() => _isPhoneValid = isValid),
+                ),
+                const SizedBox(height: 28),
+                !_isPhoneValid && !isRequestOtpLoading
+                    ? PrimaryAppDisabledButton(
+                        title: LangKeys.continueKey.tr(),
+                        buttonPadding: 16,
+                      )
+                    : PrimaryAppButton(
+                        title: LangKeys.continueKey.tr(),
+                        buttonPadding: 16,
+                        isLoading: isRequestOtpLoading,
+                        onTap: () {
+                          final String? phone =
+                              AppValidator.saudiPhoneToInternational(
+                                _phoneController.text,
+                              );
+                          if (phone == null) return;
+                          ref
+                              .read(requestOtpProvider.notifier)
+                              .requestOtp(phone);
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),

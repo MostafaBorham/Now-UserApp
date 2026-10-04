@@ -91,7 +91,11 @@ class OnBoardingContentView extends ConsumerWidget {
           AspectRatio(
             aspectRatio: 7,
             child: PrimaryGradientAppButton(
-              onTap: () => context.pushNamed(AppRoutes.phoneVerificationScreen),
+              // Not while the guest request runs: its answer resets the stack
+              // to main, removing the login screen from under the user.
+              onTap: isGuestTokenLoading
+                  ? null
+                  : () => context.pushNamed(AppRoutes.phoneVerificationScreen),
               title: LangKeys.loginKey.tr(),
               buttonGradient: screenGradient,
             ),
