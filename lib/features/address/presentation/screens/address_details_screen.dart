@@ -64,30 +64,44 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     <String>[LangKeys.floor, LangKeys.apartment],
   ];
 
-  /// The backend's own caps (`max:50` on floor / apartment / building_number,
-  /// `max:1000` on notes). Past them a save is a bare "Validation failed.".
+  /// Emoji, with the joiners and modifiers that build them. Text fields reach
+  /// the courier, and the backend checks only their length.
+  static final TextInputFormatter _noEmoji = FilteringTextInputFormatter.deny(
+    RegExp(
+      // The lint's own parser lacks two of these properties; the VM has them
+      // (the screen's test types emoji through this).
+      // ignore: valid_regexps
+      r'[\p{Extended_Pictographic}\p{Emoji_Modifier}\p{Regional_Indicator}\u{FE0F}\u{200D}\u{20E3}]',
+      unicode: true,
+    ),
+  );
+
+  /// The free-text fields (building, and Work's company name) within the
+  /// backend's own `max:50`, and the notes within its `max:1000`. Past them a
+  /// save is a 422.
   static final List<TextInputFormatter> _columnLimit = <TextInputFormatter>[
+    _noEmoji,
     LengthLimitingTextInputFormatter(50),
   ];
-
-  /// Same 50-char cap, but digits only — for the fields whose label is a number
-  /// (floor / villa / apartment). Company name (work) and building keep
-  /// [_columnLimit] since they are free text.
-  static final List<TextInputFormatter> _numericColumnLimit =
-      <TextInputFormatter>[
-    FilteringTextInputFormatter.digitsOnly,
-    LengthLimitingTextInputFormatter(50),
-  ];
-
-  /// Hints that name a numeric field, so the field gets a number keyboard and
-  /// rejects letters. `floorWork` ("Company Name") and `building` are text.
-  static const Set<String> _numericHints = <String>{
-    LangKeys.floor,
-    LangKeys.floorNumberOptional,
-    LangKeys.apartment,
-  };
   static final List<TextInputFormatter> _notesLimit = <TextInputFormatter>[
+    _noEmoji,
     LengthLimitingTextInputFormatter(1000),
+  ];
+
+  /// The number fields, by hint, so each gets a number keyboard, rejects
+  /// letters and stays within a real length: a floor or villa number fits in
+  /// 4 digits, an apartment in 5. The backend allows 50 characters on each.
+  /// `floorWork` ("Company Name") and `building` are text.
+  static final Map<String, List<TextInputFormatter>> _numericLimits =
+      <String, List<TextInputFormatter>>{
+        LangKeys.floor: _digits(4),
+        LangKeys.floorNumberOptional: _digits(4),
+        LangKeys.apartment: _digits(5),
+      };
+
+  static List<TextInputFormatter> _digits(int max) => <TextInputFormatter>[
+    FilteringTextInputFormatter.digitsOnly,
+    LengthLimitingTextInputFormatter(max),
   ];
 
   int _selectedLabelIndex = 0;
@@ -367,37 +381,33 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                       setState(() => _selectedLabelIndex = index),
                 ),
                 AddressField(
-                  hintText: hints[0].tr(),
+                  label: hints[0].tr(),
                   controller: _floorNumberController,
-                  keyboardType: _numericHints.contains(hints[0])
+                  keyboardType: _numericLimits.containsKey(hints[0])
                       ? TextInputType.number
                       : null,
-                  inputFormatters: _numericHints.contains(hints[0])
-                      ? _numericColumnLimit
-                      : _columnLimit,
+                  inputFormatters: _numericLimits[hints[0]] ?? _columnLimit,
                 ),
                 AddressField(
-                  hintText: hints[1].tr(),
+                  label: hints[1].tr(),
                   controller: _apartmentController,
-                  keyboardType: _numericHints.contains(hints[1])
+                  keyboardType: _numericLimits.containsKey(hints[1])
                       ? TextInputType.number
                       : null,
-                  inputFormatters: _numericHints.contains(hints[1])
-                      ? _numericColumnLimit
-                      : _columnLimit,
+                  inputFormatters: _numericLimits[hints[1]] ?? _columnLimit,
                 ),
                 AddressField(
-                  hintText: LangKeys.building.tr(),
+                  label: LangKeys.building.tr(),
                   controller: _buildingNameController,
                   inputFormatters: _columnLimit,
                 ),
                 AddressField(
-                  hintText: LangKeys.instructions.tr(),
+                  label: LangKeys.instructions.tr(),
                   controller: _instructionsController,
                   inputFormatters: _notesLimit,
                 ),
                 AddressField(
-                  hintText: LangKeys.phoneNumberOptional.tr(),
+                  label: LangKeys.phoneNumberOptional.tr(),
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textDirection: TextDirection.ltr,

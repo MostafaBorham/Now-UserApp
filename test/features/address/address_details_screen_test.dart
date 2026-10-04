@@ -34,9 +34,12 @@ class _RecordingEdit extends EditAddressViewModel {
   }) async => sent = address;
 }
 
-/// The field whose placeholder is [hintKey] (the harness renders keys as-is).
-Finder _field(String hintKey) =>
-    find.ancestor(of: find.text(hintKey), matching: find.byType(TextField));
+/// The field labelled [labelKey] (the harness renders keys as-is).
+Finder _field(String labelKey) =>
+    find.ancestor(of: find.text(labelKey), matching: find.byType(TextField));
+
+String _text(WidgetTester tester, String labelKey) =>
+    tester.widget<TextField>(_field(labelKey)).controller!.text;
 
 Future<void> _save(WidgetTester tester) async {
   await tester.ensureVisible(find.text(LangKeys.saveAddress));
@@ -110,5 +113,22 @@ void main() {
     expect(vm.sent?.apartment, 'Acme');
     expect(vm.sent?.floor, '5');
     expect(vm.sent?.buildingNumber, 'Tower B');
+  });
+
+  testWidgets('floor takes 4 digits, apartment 5, and text drops emoji '
+      '(BUG-021, BUG-022)', (WidgetTester tester) async {
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(address: AddressModel(area: 'Olaya')),
+    );
+
+    await tester.enterText(_field(LangKeys.floor), '123456789012345678');
+    await tester.enterText(_field(LangKeys.apartment), '123456789');
+    await tester.enterText(_field(LangKeys.building), 'Tower 😀🇸🇦👍🏽❤️ B');
+    await tester.pump();
+
+    expect(_text(tester, LangKeys.floor), '1234');
+    expect(_text(tester, LangKeys.apartment), '12345');
+    expect(_text(tester, LangKeys.building), 'Tower  B');
   });
 }

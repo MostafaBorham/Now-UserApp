@@ -21,7 +21,7 @@ void main() {
     await tester.pumpWidget(
       _host(
         AddressField(
-          hintText: 'Mobile number',
+          label: 'Mobile number',
           controller: controller,
           textDirection: TextDirection.ltr,
           inputFormatters: const [SaudiPhoneInputFormatter()],
@@ -40,7 +40,7 @@ void main() {
     await tester.pumpWidget(
       _host(
         const AddressField(
-          hintText: 'رقم الجوال',
+          label: 'رقم الجوال',
           textDirection: TextDirection.ltr,
         ),
         direction: TextDirection.rtl,
@@ -55,7 +55,7 @@ void main() {
   testWidgets('field without a text direction follows the locale', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(_host(const AddressField(hintText: 'Building')));
+    await tester.pumpWidget(_host(const AddressField(label: 'Building')));
 
     final TextField field = tester.widget(find.byType(TextField));
     expect(field.textDirection, isNull);

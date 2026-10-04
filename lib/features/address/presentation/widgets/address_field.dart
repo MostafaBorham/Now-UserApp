@@ -3,21 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-/// A single, label-less rounded input used on the Address Details form.
+/// A single rounded input used on the Address Details form.
 ///
 /// Shares the grey fill of the app's other inputs but uses a softer
-/// rounded-rectangle radius and shows only placeholder ([hintText]) text.
+/// rounded-rectangle radius. Its [label] sits inside the empty field and floats
+/// above the text once there is some — as a plain placeholder it vanished on
+/// the first keystroke, leaving filled fields unnamed.
 class AddressField extends StatelessWidget {
   const AddressField({
     super.key,
-    required this.hintText,
+    required this.label,
     this.controller,
     this.keyboardType,
     this.inputFormatters,
     this.textDirection,
   });
 
-  final String hintText;
+  final String label;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
@@ -48,8 +50,8 @@ class AddressField extends StatelessWidget {
           isDense: true,
           contentPadding: EdgeInsets.zero,
           border: InputBorder.none,
-          hintText: hintText,
-          hintStyle: AppTextStyles.style14Regular.copyWith(
+          labelText: label,
+          labelStyle: AppTextStyles.style14Regular.copyWith(
             color: context.colors.neutral500,
           ),
         ),
