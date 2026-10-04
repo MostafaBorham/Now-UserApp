@@ -60,7 +60,7 @@ class OrderConfirmedScreen extends ConsumerWidget {
                         for (final OrderModel order in orders) ...[
                           ConfirmedOrderCard(
                             orderNumber: order.orderNumber ?? '',
-                            price: formatMoney(order.total),
+                            price: formatMoney(order.totalWithTip),
                             itemsCount: order.itemsQuantity,
                             // No logo → the image widget's own placeholder.
                             imageUrl: order.vendor.logoUrl ?? '',

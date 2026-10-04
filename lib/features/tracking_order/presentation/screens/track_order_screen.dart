@@ -111,7 +111,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                     store: store,
                     itemsCount: order.itemsQuantity,
                     paymentMethod: order.paymentMethodLabel,
-                    amount: formatMoney(order.total),
+                    amount: formatMoney(order.totalWithTip),
                   ),
                   // The card shows once a courier is assigned — which can be
                   // well before the order leaves the store — for as long as
@@ -145,7 +145,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                         orderUuid: widget.orderUuid,
                         orderNumber: order.orderNumber ?? '',
                         itemsCount: order.itemsQuantity,
-                        amount: formatMoney(order.total),
+                        amount: formatMoney(order.totalWithTip),
                       ),
                     ),
                     8.hSpace,

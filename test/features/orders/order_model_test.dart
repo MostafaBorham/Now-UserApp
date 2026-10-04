@@ -64,4 +64,46 @@ void main() {
 
     expect(order.items.single.price, 12.5);
   });
+
+  // Store invoice: 100 − 10 discount + 13.5 VAT + 15 delivery = 118.5.
+  Map<String, dynamic> invoice({
+    required double total,
+    double tip = 0,
+  }) => <String, dynamic>{
+    'subtotal': 100,
+    'discount_amount': 10,
+    'tax_amount': 13.5,
+    'delivery_fee': 15,
+    'driver_tip': tip,
+    'total_amount': total,
+  };
+
+  test('Total adds the tip the backend keeps outside total_amount', () {
+    expect(
+      OrderModel.fromJson(invoice(total: 118.5, tip: 5)).totalWithTip,
+      123.5,
+    );
+  });
+
+  test('Total does not add the tip twice on an older order that holds it', () {
+    expect(
+      OrderModel.fromJson(invoice(total: 123.5, tip: 5)).totalWithTip,
+      123.5,
+    );
+  });
+
+  test('Total is total_amount when there is no tip', () {
+    expect(OrderModel.fromJson(invoice(total: 118.5)).totalWithTip, 118.5);
+  });
+
+  test('the voucher share is taken out of the discount row', () {
+    final OrderModel order = OrderModel.fromJson(<String, dynamic>{
+      'discount_amount': 15.3,
+      'voucher': <String, dynamic>{'code': 'GIFT10', 'discount_applied': 10.2},
+    });
+
+    expect(order.voucherCode, 'GIFT10');
+    expect(order.voucherDiscount, 10.2);
+    expect(order.couponDiscount, 5.1);
+  });
 }

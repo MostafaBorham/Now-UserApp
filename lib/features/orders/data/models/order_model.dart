@@ -1,6 +1,7 @@
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/data/models/delivery_man_model.dart';
 
@@ -66,6 +67,13 @@ class OrderModel {
   final double discount;
   final double driverTip;
   final double total;
+
+  /// The purchase voucher this order used (`voucher.code`) and its share of the
+  /// order's discount (`voucher.discount_applied`). That share is already inside
+  /// [discount]; see [couponDiscount].
+  final String? voucherCode;
+  final double voucherDiscount;
+
   final String? paymentMethod;
   final String? deliveryAddress;
 
@@ -117,6 +125,28 @@ class OrderModel {
   int get itemsQuantity =>
       items.fold(0, (int sum, ProductModel item) => sum + (item.quantity ?? 0));
 
+  /// [discount] without the voucher's share, which gets its own row.
+  double get couponDiscount =>
+      (sarDoubleToHalalas(discount) - sarDoubleToHalalas(voucherDiscount)) /
+      halalasPerSar;
+
+  /// What this order costs the customer: [total] plus the [driverTip] it
+  /// carries. The backend keeps the tip outside `total_amount`, but orders from
+  /// the older cart checkout added it inside; like the backend
+  /// (`Order::tipInsideTotalHalalas`), a total that already covers the store's
+  /// invoice plus the tip is taken to hold it.
+  double get totalWithTip {
+    final int tip = sarDoubleToHalalas(driverTip);
+    final int storeTotal =
+        sarDoubleToHalalas(subtotal) -
+        sarDoubleToHalalas(discount) +
+        sarDoubleToHalalas(tax) +
+        sarDoubleToHalalas(deliveryFee);
+    final int charged = sarDoubleToHalalas(total);
+    final bool tipInside = tip <= 0 || charged >= storeTotal + tip;
+    return (tipInside ? charged : charged + tip) / halalasPerSar;
+  }
+
   const OrderModel({
     this.id,
     this.uuid,
@@ -138,6 +168,8 @@ class OrderModel {
     this.discount = 0,
     this.driverTip = 0,
     this.total = 0,
+    this.voucherCode,
+    this.voucherDiscount = 0,
     this.paymentMethod,
     this.deliveryAddress,
     this.region = const OrderRegionModel(),
@@ -172,6 +204,10 @@ class OrderModel {
             .toList();
     bool isUnavailable(Map<String, dynamic> line) =>
         line['is_unavailable'] == true;
+    final Map<String, dynamic>? voucher =
+        json['voucher'] is Map<String, dynamic>
+        ? json['voucher'] as Map<String, dynamic>
+        : null;
 
     return OrderModel(
       id: (json['id'] as num?)?.toInt(),
@@ -218,6 +254,10 @@ class OrderModel {
           double.tryParse(
             (json['total'] ?? json['total_amount'])?.toString() ?? '',
           ) ??
+          0.0,
+      voucherCode: voucher?['code']?.toString(),
+      voucherDiscount:
+          double.tryParse(voucher?['discount_applied']?.toString() ?? '') ??
           0.0,
       paymentMethod: json['payment_method']?.toString(),
       deliveryAddress: json['delivery_address']?.toString(),

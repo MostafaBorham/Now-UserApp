@@ -568,7 +568,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                         color: colors.neutral500,
                                         size: 14,
                                         fontWeight: FontWeight.w400,
-                                        price: order.total.toStringAsFixed(2),
+                                        price: order.totalWithTip
+                                            .toStringAsFixed(2),
                                       ),
                                     ],
                                   ),
@@ -621,11 +622,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   valueColor: colors.black,
                                 ),
                                 // The tip is charged but untaxed, so it is no
-                                // part of the rows above. The backend doesn't
-                                // yet record it the same way on every order
-                                // (cart checkout folds it into each store's
-                                // total, single-store checkout doesn't), so
-                                // Total stays the server's own figure.
+                                // part of the rows above; Total adds it.
                                 if (order.driverTip > 0)
                                   OrderInvoiceRow(
                                     label: LangKeys.driverTipKey.tr(),
@@ -633,10 +630,17 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                     valueColor: colors.black,
                                   ),
                                 // Only surfaced when there is an actual discount.
-                                if (order.discount != 0)
+                                if (order.couponDiscount != 0)
                                   OrderInvoiceRow(
                                     label: LangKeys.discountLabelKey.tr(),
-                                    value: order.discount,
+                                    value: order.couponDiscount,
+                                    valueColor: colors.onError,
+                                  ),
+                                if (order.voucherDiscount > 0)
+                                  OrderInvoiceRow(
+                                    label:
+                                        '${LangKeys.purchaseVoucherKey.tr()} (${order.voucherCode ?? ''})',
+                                    value: order.voucherDiscount,
                                     valueColor: colors.onError,
                                   ),
                                 Divider(
@@ -645,7 +649,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 ),
                                 OrderInvoiceRow(
                                   label: LangKeys.totalKey.tr(),
-                                  value: order.total,
+                                  value: order.totalWithTip,
                                   valueColor: colors.primary500Main,
                                   isTotal: true,
                                 ),
