@@ -91,7 +91,8 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
 
     state = result.fold(
       _errorOverCurrent,
-      (AddressModel address) => AsyncValue<AddressModel?>.data(address),
+      // null: the user has no default (no longer an error state).
+      (AddressModel? address) => AsyncValue<AddressModel?>.data(address),
     );
   }
 
@@ -146,6 +147,8 @@ class DefaultAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
   Future<void> _reconcile() async {
     final result = await _repo.getDefaultAddress();
     if (!mounted) return;
-    result.fold((_) {}, (AddressModel address) => state = _adopt(address));
+    result.fold((_) {}, (AddressModel? address) {
+      if (address != null) state = _adopt(address);
+    });
   }
 }

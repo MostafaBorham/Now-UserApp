@@ -118,13 +118,45 @@ void main() {
         }),
       );
 
-      final Either<Failure, AddressModel> result =
+      final Either<Failure, AddressModel?> result =
           await repo.getDefaultAddress();
 
       expect(
-        result.getOrElse(() => fail('expected a Right')).isDefault,
+        result.getOrElse(() => fail('expected a Right'))?.isDefault,
         isTrue,
       );
+    });
+
+    // BUG-002 (QA V2): no default is not an error, before (404) and after
+    // (200 with a null address) the backend change.
+    test('getDefaultAddress reads a 404 as no default', () async {
+      final AddressRepo repo = repoOn(
+        _FakeAddressApi(
+          error: DioException(
+            requestOptions: RequestOptions(path: '/addresses/default'),
+            response: answer(404, <String, dynamic>{'message': 'not found'}),
+            type: DioExceptionType.badResponse,
+          ),
+        ),
+      );
+
+      final Either<Failure, AddressModel?> result =
+          await repo.getDefaultAddress();
+
+      expect(result, const Right<Failure, AddressModel?>(null));
+    });
+
+    test('getDefaultAddress reads a null data.address as no default', () async {
+      final AddressRepo repo = repoOn(
+        replying(200, <String, dynamic>{
+          'data': <String, dynamic>{'address': null},
+        }),
+      );
+
+      final Either<Failure, AddressModel?> result =
+          await repo.getDefaultAddress();
+
+      expect(result, const Right<Failure, AddressModel?>(null));
     });
 
     test('deleteAddress succeeds without reading a body', () async {
@@ -224,7 +256,7 @@ void main() {
         replying(200, <String, dynamic>{'data': null}),
       );
 
-      final Either<Failure, AddressModel> result =
+      final Either<Failure, AddressModel?> result =
           await repo.getDefaultAddress();
 
       final String message = failureMessage(result);

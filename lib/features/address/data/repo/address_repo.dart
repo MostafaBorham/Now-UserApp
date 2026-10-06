@@ -79,8 +79,22 @@ class AddressRepo {
     );
   }
 
-  Future<Either<Failure, AddressModel>> getDefaultAddress() {
-    return _fetch(_addressApiService.getDefaultAddress, _address);
+  /// The user's default address, or `null` when they have none. The backend
+  /// answers that case with a 404 today and is asked to answer 200 with
+  /// `data.address: null` (BUG-002, QA V2); both read as "no default", not an
+  /// error. Parsed as nullable: `AddressModel.fromJson(null)` is an empty
+  /// address, which the checkout card and the home header would show.
+  Future<Either<Failure, AddressModel?>> getDefaultAddress() {
+    return _fetch(
+      _addressApiService.getDefaultAddress,
+      (Map<String, dynamic> body) {
+        final Map<String, dynamic> data = body['data'] as Map<String, dynamic>;
+        final Map<String, dynamic>? address =
+            data['address'] as Map<String, dynamic>?;
+        return address == null ? null : AddressModel.fromJson(address);
+      },
+      onNotFound: () => null,
+    );
   }
 
   Future<Either<Failure, AddressModel>> setDefaultAddress({
@@ -112,10 +126,13 @@ class AddressRepo {
   /// [parse] runs inside the same guard as the request, so a payload in a shape
   /// we did not expect surfaces as a [Failure] rather than throwing out of the
   /// repo and into a snackbar as a raw Dart error string.
+  ///
+  /// [onNotFound], when given, answers a 404 instead of a failure.
   Future<Either<Failure, T>> _fetch<T>(
     Future<Response> Function() request,
-    T Function(Map<String, dynamic> body) parse,
-  ) async {
+    T Function(Map<String, dynamic> body) parse, {
+    T Function()? onNotFound,
+  }) async {
     if (!await _isConnected()) {
       return Left<Failure, T>(
         const Failure(LangKeys.noInternetConnectionKey),
@@ -132,6 +149,9 @@ class AddressRepo {
           raw is Map<String, dynamic> ? raw : <String, dynamic>{};
 
       final int statusCode = response.statusCode ?? 0;
+      if (statusCode == 404 && onNotFound != null) {
+        return Right<Failure, T>(onNotFound());
+      }
       if (statusCode < 200 || statusCode >= 300) {
         return Left<Failure, T>(
           Failure(ApiErrorHandler.extractErrorMessage(body)),
@@ -150,6 +170,9 @@ class AddressRepo {
         return Left<Failure, T>(
           const Failure(LangKeys.serverConnectionFailedKey),
         );
+      }
+      if (response.statusCode == 404 && onNotFound != null) {
+        return Right<Failure, T>(onNotFound());
       }
 
       final dynamic data = response.data;
