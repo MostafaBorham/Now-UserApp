@@ -163,8 +163,12 @@ class PaginatedView<T> extends ConsumerWidget {
         return firstPageLoadingBuilder(context);
       }
       // Skeletons in the real layout: same arrangement, same item geometry.
-      return CustomScrollView(
+      // Pullable too, so a first load that hangs can be retried by hand.
+      final Widget skeletons = CustomScrollView(
         controller: scrollController,
+        physics: enablePullToRefresh
+            ? const AlwaysScrollableScrollPhysics()
+            : null,
         slivers: <Widget>[
           layout.buildSliver(
             itemCount: firstPagePlaceholdersCount,
@@ -173,6 +177,8 @@ class PaginatedView<T> extends ConsumerWidget {
           ),
         ],
       );
+      if (!enablePullToRefresh) return skeletons;
+      return AppRefreshIndicator(onRefresh: onRefresh, child: skeletons);
     }
 
     // Skeletons trail the loaded items while the next page is on its way — only

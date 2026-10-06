@@ -43,7 +43,14 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
   void initState() {
     super.initState();
 
-    _controller = TabController(length: widget.tabs.length, vsync: this);
+    // Opens on the selected tab: a rebuilt bar (e.g. keyed on the tab count)
+    // used to reset to tab 0 while the caller still had another one selected.
+    final int initial = widget.selectedIndex ?? 0;
+    _controller = TabController(
+      length: widget.tabs.length,
+      vsync: this,
+      initialIndex: initial >= 0 && initial < widget.tabs.length ? initial : 0,
+    );
   }
 
   @override
