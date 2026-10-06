@@ -12,6 +12,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
@@ -34,6 +36,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -99,6 +102,15 @@ class _HomeViewState extends ConsumerState<HomeView>
           lat: double.tryParse(location?.latitude ?? ''),
           lng: double.tryParse(location?.longitude ?? ''),
         );
+  }
+
+  /// The full-screen retry after a failed first load: top brands failed with
+  /// the feed (it is hidden behind the one error), so it is retried too.
+  void _retryAfterFailure() {
+    _loadFeed();
+    if (!ref.read(getFeaturedStoresProvider).hasValue) {
+      ref.read(getFeaturedStoresProvider.notifier).loadFirstPage();
+    }
   }
 
   // The location is otherwise resolved only on the splash, so switching GPS on
@@ -225,7 +237,7 @@ class _HomeViewState extends ConsumerState<HomeView>
           ),
         );
     // Only cue when there is content to show (cached or live); with no cache the
-    // feed errors and the existing _FeedErrorRetry covers it instead.
+    // feed errors and the full-size error covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;
 
     final Map<String, HomeSectionModel> byType = <String, HomeSectionModel>{};
@@ -239,26 +251,40 @@ class _HomeViewState extends ConsumerState<HomeView>
       }
     }
 
-    final HomeSectionModel? categoriesSection = byType['categories'];
-    // Placeholders only while the feed has nothing yet. A loaded section with no
-    // items (every category deactivated) hides the carousel: its placeholders
-    // looked like a loader that never finished.
-    final bool showCategories =
-        !feed.hasValue || (categoriesSection?.categories.isNotEmpty ?? false);
-    final HomeSectionModel? offersSection = byType['featured_offers'];
-    final List<BannerModel> topBanners =
-        byType['top_banner']?.banners ?? const <BannerModel>[];
     // The header and top brands render before the feed lands, so special
     // offers holds its slot as a skeleton rather than popping in between them.
     // Only the first load: a refresh keeps the loaded feed, and a failed load
     // shows the retry instead.
     final bool feedFirstLoading = feed.isLoading && !feed.hasValue;
-    final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
-    final HomeSectionModel? nearbyStoresSection = byType['nearby_stores'];
-    final HomeSectionModel? flashOffersSection = byType['flash_offers'];
-    final HomeSectionModel? middlePromoSection = byType['promo_block_middle'];
-    final HomeSectionModel? footerPromoSection = byType['promo_block_footer'];
-    final HomeSectionModel? allStoresSection = byType['all_stores'];
+    // Nothing loaded and the load failed (BUG-004, QA V2): one full-size error
+    // with a retry replaces the feed. A failed refresh keeps the loaded feed
+    // and only adds the small retry at its end.
+    final bool feedFailed = feed.hasError && !feed.hasValue && !feed.isLoading;
+
+    final HomeSectionModel? categoriesSection = byType['categories'];
+    final bool hasCategories =
+        categoriesSection?.categories.isNotEmpty ?? false;
+    // Placeholders only while the first load is on its way. A failed load or a
+    // loaded section with no items (every category deactivated) hides the
+    // carousel: its placeholders looked like a loader that never finished.
+    final bool showCategories = feedFirstLoading || hasCategories;
+    final HomeSectionModel? offersSection = byType['featured_offers'];
+    final List<BannerModel> topBanners =
+        byType['top_banner']?.banners ?? const <BannerModel>[];
+    final bool hasOffers =
+        (offersSection?.offers.isNotEmpty ?? false) || topBanners.isNotEmpty;
+    // Top brands hides itself when nothing is featured; the empty state below
+    // waits for that, so it never sits under a row of brands.
+    final bool noFeaturedStores = ref.watch(
+      getFeaturedStoresProvider.select(
+        (s) => s.hasValue && s.requireValue.data.isEmpty,
+      ),
+    );
+    final List<HomeFeedSection> feedSections = _feedSections(
+      context,
+      byType,
+      categorySections,
+    );
 
     // Every section is keyed, so one appearing or disappearing — the
     // live-orders strip collapsing, the feed landing — moves the others
@@ -286,9 +312,7 @@ class _HomeViewState extends ConsumerState<HomeView>
           key: ValueKey<String>('live_orders'),
           child: HomeLiveOrdersSectionView(),
         ),
-      if (feedFirstLoading ||
-          (offersSection?.offers.isNotEmpty ?? false) ||
-          topBanners.isNotEmpty)
+      if (feedFirstLoading || hasOffers)
         HomeFeedSection(
           key: const ValueKey<String>('special_offers'),
           content: (offersSection, byType['top_banner'], feedFirstLoading),
@@ -298,90 +322,30 @@ class _HomeViewState extends ConsumerState<HomeView>
             isLoading: feedFirstLoading,
           ),
         ),
-      const HomeFeedSection(
-        key: ValueKey<String>('top_brands'),
-        child: HomeMostPopularBrandsView(),
-      ),
-      if (featuredStoresSection != null &&
-          featuredStoresSection.stores.isNotEmpty)
+      if (feedFailed)
         HomeFeedSection(
-          key: _sectionKey(featuredStoresSection),
-          content: featuredStoresSection,
-          child: HomeFeaturedStoresView(stores: featuredStoresSection.stores),
-        ),
-      if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
-        HomeFeedSection(
-          key: _sectionKey(nearbyStoresSection),
-          content: nearbyStoresSection,
-          child: AspectRatio(
-            aspectRatio: 1.47,
-            child: BestNearbyStoresSection(
-              title: nearbyStoresSection.title,
-              stores: nearbyStoresSection.stores,
-            ),
+          key: const ValueKey<String>('feed_failed'),
+          child: ServerConnectionErrorWidget(
+            message: feed.error is String ? feed.error as String : null,
+            onRetry: _retryAfterFailure,
           ),
+        )
+      else
+        const HomeFeedSection(
+          key: ValueKey<String>('top_brands'),
+          child: HomeMostPopularBrandsView(),
         ),
-      if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
-        HomeFeedSection(
-          key: _sectionKey(flashOffersSection),
-          content: flashOffersSection,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: HomeNeverMissOffersSection(
-              products: flashOffersSection.products,
-              backgroundColor: flashOffersSection.backgroundColor,
-              viewAllTextColor: flashOffersSection.viewAllTextColor,
-              viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
-            ),
-          ),
+      ...feedSections,
+      if (feed.hasValue &&
+          !hasCategories &&
+          !hasOffers &&
+          feedSections.isEmpty &&
+          noFeaturedStores)
+        const HomeFeedSection(
+          key: ValueKey<String>('feed_empty'),
+          child: NoResultsWidget(),
         ),
-      if (middlePromoSection != null &&
-          middlePromoSection.banners.isNotEmpty &&
-          HomeBannerView.imageUrlFor(
-                context,
-                middlePromoSection.banners.first,
-              ) !=
-              null)
-        HomeFeedSection(
-          key: _sectionKey(middlePromoSection),
-          content: middlePromoSection,
-          child: AspectRatio(
-            aspectRatio: 3.5,
-            child: HomeBannerView(banner: middlePromoSection.banners.first),
-          ),
-        ),
-      for (final HomeSectionModel section in categorySections)
-        if (section.products.isNotEmpty)
-          HomeFeedSection(
-            key: _sectionKey(section),
-            content: section,
-            child: _ProductsByCategorySection(section: section),
-          ),
-      if (footerPromoSection != null &&
-          footerPromoSection.banners.isNotEmpty &&
-          HomeBannerView.imageUrlFor(
-                context,
-                footerPromoSection.banners.first,
-              ) !=
-              null)
-        HomeFeedSection(
-          key: _sectionKey(footerPromoSection),
-          content: footerPromoSection,
-          child: AspectRatio(
-            aspectRatio: 3.5,
-            child: HomeBannerView(banner: footerPromoSection.banners.first),
-          ),
-        ),
-      if (allStoresSection != null)
-        HomeFeedSection(
-          key: _sectionKey(allStoresSection),
-          content: allStoresSection,
-          child: HomeAllStoresSectionView(
-            stores: allStoresSection.stores,
-            pinTop: _searchBarHeight,
-          ),
-        ),
-      if (feed.hasError)
+      if (feed.hasError && feed.hasValue)
         HomeFeedSection(
           key: const ValueKey<String>('feed_error'),
           child: _FeedErrorRetry(onRetry: _loadFeed),
@@ -471,6 +435,102 @@ class _HomeViewState extends ConsumerState<HomeView>
           ),
       ],
     );
+  }
+
+  /// The sections built from the feed's own content, in feed order below top
+  /// brands. Empty when the feed has nothing to show.
+  List<HomeFeedSection> _feedSections(
+    BuildContext context,
+    Map<String, HomeSectionModel> byType,
+    List<HomeSectionModel> categorySections,
+  ) {
+    final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
+    final HomeSectionModel? nearbyStoresSection = byType['nearby_stores'];
+    final HomeSectionModel? flashOffersSection = byType['flash_offers'];
+    final HomeSectionModel? middlePromoSection = byType['promo_block_middle'];
+    final HomeSectionModel? footerPromoSection = byType['promo_block_footer'];
+    final HomeSectionModel? allStoresSection = byType['all_stores'];
+    return <HomeFeedSection>[
+      if (featuredStoresSection != null &&
+          featuredStoresSection.stores.isNotEmpty)
+        HomeFeedSection(
+          key: _sectionKey(featuredStoresSection),
+          content: featuredStoresSection,
+          child: HomeFeaturedStoresView(stores: featuredStoresSection.stores),
+        ),
+      if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
+        HomeFeedSection(
+          key: _sectionKey(nearbyStoresSection),
+          content: nearbyStoresSection,
+          child: AspectRatio(
+            aspectRatio: 1.47,
+            child: BestNearbyStoresSection(
+              title: nearbyStoresSection.title,
+              stores: nearbyStoresSection.stores,
+            ),
+          ),
+        ),
+      if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
+        HomeFeedSection(
+          key: _sectionKey(flashOffersSection),
+          content: flashOffersSection,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: HomeNeverMissOffersSection(
+              products: flashOffersSection.products,
+              backgroundColor: flashOffersSection.backgroundColor,
+              viewAllTextColor: flashOffersSection.viewAllTextColor,
+              viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
+            ),
+          ),
+        ),
+      if (middlePromoSection != null &&
+          middlePromoSection.banners.isNotEmpty &&
+          HomeBannerView.imageUrlFor(
+                context,
+                middlePromoSection.banners.first,
+              ) !=
+              null)
+        HomeFeedSection(
+          key: _sectionKey(middlePromoSection),
+          content: middlePromoSection,
+          child: AspectRatio(
+            aspectRatio: 3.5,
+            child: HomeBannerView(banner: middlePromoSection.banners.first),
+          ),
+        ),
+      for (final HomeSectionModel section in categorySections)
+        if (section.products.isNotEmpty)
+          HomeFeedSection(
+            key: _sectionKey(section),
+            content: section,
+            child: _ProductsByCategorySection(section: section),
+          ),
+      if (footerPromoSection != null &&
+          footerPromoSection.banners.isNotEmpty &&
+          HomeBannerView.imageUrlFor(
+                context,
+                footerPromoSection.banners.first,
+              ) !=
+              null)
+        HomeFeedSection(
+          key: _sectionKey(footerPromoSection),
+          content: footerPromoSection,
+          child: AspectRatio(
+            aspectRatio: 3.5,
+            child: HomeBannerView(banner: footerPromoSection.banners.first),
+          ),
+        ),
+      if (allStoresSection != null)
+        HomeFeedSection(
+          key: _sectionKey(allStoresSection),
+          content: allStoresSection,
+          child: HomeAllStoresSectionView(
+            stores: allStoresSection.stores,
+            pinTop: _searchBarHeight,
+          ),
+        ),
+    ];
   }
 }
 
