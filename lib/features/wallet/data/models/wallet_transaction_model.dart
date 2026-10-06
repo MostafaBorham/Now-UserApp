@@ -36,6 +36,11 @@ class WalletTransactionModel extends Equatable {
   final String? title;
   final WalletTransactionMerchant? merchant;
   final WalletTransactionReference? reference;
+
+  /// The card a top-up was charged to, as it was then (`payment_card`:
+  /// `{brand, last_four}`). Requested from the backend (BUG-013, QA V2) and
+  /// absent until it ships, or on anything that isn't a card top-up.
+  final ({String? brand, String? lastFour})? paymentCard;
   final double? balanceAfter;
   final String? createdAt;
   final String? occurredAt;
@@ -56,6 +61,7 @@ class WalletTransactionModel extends Equatable {
     this.title,
     this.merchant,
     this.reference,
+    this.paymentCard,
     this.balanceAfter,
     this.createdAt,
     this.occurredAt,
@@ -67,6 +73,8 @@ class WalletTransactionModel extends Equatable {
         json['merchant'] as Map<String, dynamic>?;
     final Map<String, dynamic>? reference =
         json['reference'] as Map<String, dynamic>?;
+    final Map<String, dynamic>? card =
+        json['payment_card'] as Map<String, dynamic>?;
 
     return WalletTransactionModel(
       id: (json['id'] as num?)?.toInt(),
@@ -89,6 +97,12 @@ class WalletTransactionModel extends Equatable {
       reference: reference == null
           ? null
           : WalletTransactionReference.fromJson(reference),
+      paymentCard: card == null
+          ? null
+          : (
+              brand: card['brand']?.toString(),
+              lastFour: card['last_four']?.toString(),
+            ),
       balanceAfter: (json['balance_after'] as num?)?.toDouble(),
       createdAt: json['created_at']?.toString(),
       occurredAt: json['occurred_at']?.toString(),
@@ -112,6 +126,12 @@ class WalletTransactionModel extends Equatable {
       'title': title,
       'merchant': merchant?.toJson(),
       'reference': reference?.toJson(),
+      'payment_card': paymentCard == null
+          ? null
+          : <String, dynamic>{
+              'brand': paymentCard!.brand,
+              'last_four': paymentCard!.lastFour,
+            },
       'balance_after': balanceAfter,
       'created_at': createdAt,
       'occurred_at': occurredAt,
@@ -135,6 +155,7 @@ class WalletTransactionModel extends Equatable {
     title,
     merchant,
     reference,
+    paymentCard,
     balanceAfter,
     createdAt,
     occurredAt,

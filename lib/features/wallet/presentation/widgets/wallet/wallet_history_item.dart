@@ -40,12 +40,24 @@ class WalletHistoryItem extends StatelessWidget {
     return transaction.description ?? '';
   }
 
+  /// "Visa •••• 4242" for a top-up whose card the backend sends; '' otherwise.
+  String _cardLabel() {
+    final String lastFour = transaction.paymentCard?.lastFour ?? '';
+    if (lastFour.isEmpty) return '';
+    final String brand = transaction.paymentCard?.brand ?? '';
+    final String name = brand.isEmpty
+        ? ''
+        : '${brand[0].toUpperCase()}${brand.substring(1)} ';
+    return '$name•••• $lastFour';
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final WalletTransactionMerchant? merchant = transaction.merchant;
     final String logoUrl = merchant?.logoUrl ?? '';
     final String title = _rowTitle(context);
+    final String card = _cardLabel();
     // The status drives the chip's colors and the amount color, mapped through
     // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
     final WalletTransactionStatus status = transaction.status;
@@ -113,6 +125,19 @@ class WalletHistoryItem extends StatelessWidget {
                               overflow: TextOverflow.visible,
                             ),
                           ),
+                          // Which card paid a top-up (BUG-013, QA V2), digits
+                          // left-to-right in Arabic too.
+                          if (card.isNotEmpty)
+                            Text(
+                              card,
+                              textDirection: TextDirection.ltr,
+                              style: AppTextStyles.style12Regular.copyWith(
+                                color: colors.onPrimaryFixed.withValues(
+                                  alpha: 0.7,
+                                ),
+                                fontSize: con.maxWidth * 0.03,
+                              ),
+                            ),
                           // The date sits under the merchant name; hidden when
                           // the server omits it, and shown in full (no ellipsis)
                           // just like the merchant name.
