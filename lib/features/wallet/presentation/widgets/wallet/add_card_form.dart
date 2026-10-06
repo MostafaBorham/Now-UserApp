@@ -25,7 +25,6 @@ class AddCardForm extends StatelessWidget {
     this.expiryController,
     this.cvvController,
     this.optionalSecrets = false,
-    this.numberHint,
   });
   final Color? labelColor;
   final Color? hintColor;
@@ -41,10 +40,6 @@ class AddCardForm extends StatelessWidget {
   /// change the name or expiry. A blank field skips validation; a filled one is
   /// still format-checked.
   final bool optionalSecrets;
-
-  /// Overrides the card-number placeholder — the edit sheet passes the masked
-  /// number (e.g. `•••• 4242`) to signal what is currently stored.
-  final String? numberHint;
 
   String? _required(String? value) =>
       (value == null || value.trim().isEmpty)
@@ -153,13 +148,13 @@ class AddCardForm extends StatelessWidget {
           _CardInputField(
             controller: numberController,
             validator: _cardNumber,
-            hintText: numberHint ?? '1111-1111-1111-1111',
+            hintText: '0000 0000 0000 0000',
             hintColor: hintColor,
             fieldColor: fieldColor,
             keyboardType: TextInputType.number,
+            isLtr: true,
             inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(_maxCardNumberLength),
+              CardNumberInputFormatter(),
             ],
           ),
 
@@ -191,8 +186,8 @@ class AddCardForm extends StatelessWidget {
                   labelColor: labelColor,
                   hintColor: hintColor,
                   fieldColor: fieldColor,
-                  label: 'CVV',
-                  hint: '**1',
+                  label: LangKeys.cvvKey.tr(),
+                  hint: '000',
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
@@ -248,6 +243,8 @@ class _CardFieldColumn extends StatelessWidget {
           controller: controller,
           validator: validator,
           inputFormatters: inputFormatters,
+          // Expiry and CVV are digits: keep them left-to-right in Arabic too.
+          isLtr: true,
         ),
       ],
     );
@@ -281,6 +278,10 @@ class _CardInputField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final List<TextInputFormatter>? inputFormatters;
 
+  /// Digits (number, expiry, CVV) read left-to-right even in Arabic, or the
+  /// groups of a card number come out reversed.
+  final bool isLtr;
+
   const _CardInputField({
     required this.hintText,
     this.keyboardType,
@@ -290,28 +291,42 @@ class _CardInputField extends StatelessWidget {
     this.controller,
     this.validator,
     this.inputFormatters,
+    this.isLtr = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    // The field is a borderless filled pill in every state — validation only
-    // shows the message below, never a mismatched red outline. So the error and
-    // focused-error borders reuse the same borderless rounded shape as the rest.
+    // The field is a borderless filled pill — validation only shows the message
+    // below, never a red outline. Focus adds the primary ring (RoundedField's
+    // style), with or without an error.
     final OutlineInputBorder border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(24),
       borderSide: BorderSide.none,
     );
+    final OutlineInputBorder focused = border.copyWith(
+      borderSide: BorderSide(color: colors.primary500Main, width: 1.5),
+    );
+    final TextDirection? direction = isLtr ? TextDirection.ltr : null;
     return TextFormField(
       controller: controller,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       inputFormatters: inputFormatters,
       keyboardType: keyboardType,
+      textDirection: direction,
+      // Left-to-right digits still sit on the locale's start edge, as in the
+      // phone field: right in Arabic.
+      textAlign:
+          textAlign ??
+          (isLtr && Directionality.of(context) == TextDirection.rtl
+              ? TextAlign.right
+              : TextAlign.start),
       style: const TextStyle(fontSize: 15, color: Colors.black87),
       decoration: InputDecoration(
         counterText: '',
         hintText: hintText,
+        hintTextDirection: direction,
         hintStyle: TextStyle(
           color: hintColor ?? colors.neutral500,
           fontSize: 15,
@@ -323,9 +338,9 @@ class _CardInputField extends StatelessWidget {
           vertical: 10,
         ),
         enabledBorder: border,
-        focusedBorder: border,
+        focusedBorder: focused,
         errorBorder: border,
-        focusedErrorBorder: border,
+        focusedErrorBorder: focused,
       ),
     );
   }
@@ -349,6 +364,56 @@ class _ExpiryDateInputFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
+/// Groups the card number in fours as the user types (`4111 1111 1111 1111`):
+/// strips non-digits, caps at 19 digits and keeps the caret after the same
+/// digit. The spaces are display-only; the view model strips them.
+class CardNumberInputFormatter extends TextInputFormatter {
+  static final RegExp _nonDigit = RegExp(r'\D');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digits = newValue.text.replaceAll(_nonDigit, '');
+    final int caret = newValue.selection.baseOffset.clamp(
+      0,
+      newValue.text.length,
+    );
+    int before = newValue.text
+        .substring(0, caret)
+        .replaceAll(_nonDigit, '')
+        .length;
+
+    // Backspace on a group space removes no digit; drop the one before it,
+    // or the caret would be stuck behind the re-inserted space.
+    final bool deletedOnlySpace =
+        newValue.text.length < oldValue.text.length &&
+        digits == oldValue.text.replaceAll(_nonDigit, '');
+    if (deletedOnlySpace && before > 0) {
+      digits = digits.substring(0, before - 1) + digits.substring(before);
+      before--;
+    }
+
+    if (digits.length > AddCardForm._maxCardNumberLength) {
+      digits = digits.substring(0, AddCardForm._maxCardNumberLength);
+    }
+    if (before > digits.length) before = digits.length;
+
+    final String formatted = digits.replaceAllMapped(
+      RegExp(r'.{4}(?!$)'),
+      (Match m) => '${m[0]} ',
+    );
+    // Each full group of four before the caret adds one space.
+    final int offset = before == 0 ? 0 : before + (before - 1) ~/ 4;
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: offset),
     );
   }
 }

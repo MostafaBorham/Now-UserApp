@@ -113,13 +113,60 @@ void main() {
     expect(find.text('invalidCardNumber'), findsOneWidget);
   });
 
-  testWidgets('the number field caps input at 19 digits', (tester) async {
+  testWidgets('the number field caps at 19 digits, grouped in fours', (
+    tester,
+  ) async {
     await pumpForm(tester);
     await tester.enterText(
       find.byType(TextFormField).at(1),
-      '4000 0000 0000 0000 0061 23',
+      '4000-0000 0000 0000 0061 23',
     );
-    expect(number.text, '4000000000000000006');
+    expect(number.text, '4000 0000 0000 0000 006');
+  });
+
+  testWidgets('a grouped number still validates', (tester) async {
+    await pumpForm(tester);
+    expect(await numberIsValid(tester, '4242 4242 4242 4242'), isTrue);
+  });
+
+  group('CardNumberInputFormatter', () {
+    final CardNumberInputFormatter formatter = CardNumberInputFormatter();
+
+    TextEditingValue edit(String oldText, String newText, int caret) =>
+        formatter.formatEditUpdate(
+          TextEditingValue(
+            text: oldText,
+            selection: TextSelection.collapsed(offset: oldText.length),
+          ),
+          TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: caret),
+          ),
+        );
+
+    test('typing the fifth digit opens a new group', () {
+      final TextEditingValue v = edit('4242', '42424', 5);
+      expect(v.text, '4242 4');
+      expect(v.selection.baseOffset, 6);
+    });
+
+    test('no trailing space after a full group', () {
+      expect(edit('424', '4242', 4).text, '4242');
+    });
+
+    test('backspace on a group space deletes the digit before it', () {
+      // '4242 4|' → caret after the space, backspace removes the space.
+      final TextEditingValue v = edit('4242 4', '42424', 4);
+      expect(v.text, '4244');
+      expect(v.selection.baseOffset, 3);
+    });
+
+    test('a mid-number insert keeps the caret after the typed digit', () {
+      // '4242 |4242' + '1' → '4242 14242' → '4242 1424 2', caret after the 1.
+      final TextEditingValue v = edit('4242 4242', '4242 14242', 6);
+      expect(v.text, '4242 1424 2');
+      expect(v.selection.baseOffset, 6);
+    });
   });
 
   testWidgets('the name field keeps English letters and spaces only', (

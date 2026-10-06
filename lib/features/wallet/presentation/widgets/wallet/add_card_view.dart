@@ -36,7 +36,7 @@ class AddCardView extends ConsumerStatefulWidget {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.85,
         ),
-        child: AddCardView(card: card),
+        child: SafeArea(top: false, child: AddCardView(card: card)),
       ),
     );
   }
@@ -85,14 +85,6 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
     if (month == null || year == null) return '';
     return '${month.toString().padLeft(2, '0')}/'
         '${(year % 100).toString().padLeft(2, '0')}';
-  }
-
-  String? get _numberHint {
-    final CardPaymentModel? card = widget.card;
-    if (card == null) return null;
-    if (card.maskedNumber != null) return card.maskedNumber;
-    if (card.lastFour != null) return '•••• ${card.lastFour}';
-    return null;
   }
 
   Future<void> _submit() async {
@@ -182,7 +174,6 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                   expiryController: _expiryController,
                   cvvController: _cvvController,
                   optionalSecrets: _isEditing,
-                  numberHint: _numberHint,
                 ),
                 SetAsDefaultCheckbox(
                   value: _setAsDefault,

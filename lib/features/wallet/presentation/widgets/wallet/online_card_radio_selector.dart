@@ -1,7 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/params/online_card_params.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/lists/delete_swipe_background.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector_item.dart';
 
@@ -54,7 +57,7 @@ class OnlineCardRadioSelector extends StatelessWidget {
             alignment: AlignmentDirectional.centerEnd,
             borderRadius: AppBorderRadius.brCircular12,
           ),
-          confirmDismiss: (_) => _confirmDelete(card),
+          confirmDismiss: (_) => _confirmDelete(context, card),
           child: InkWell(
             // An unusable card can't be made the default — the server rejects
             // it — so the row takes no tap at all rather than rippling into a
@@ -74,12 +77,28 @@ class OnlineCardRadioSelector extends StatelessWidget {
     );
   }
 
-  /// Swiping a card fires the delete but never dismisses the card itself:
-  /// returning `false` springs it back into place, and the view model removes it
-  /// (by refetching the list) only once the server confirms the delete. So the
-  /// card stays on screen until the delete-card VM succeeds.
-  Future<bool> _confirmDelete(OnlineCardParams card) async {
-    onDeleteCard?.call(card);
+  /// Swiping a card asks first, then fires the delete but never dismisses the
+  /// card itself: returning `false` springs it back into place, and the view
+  /// model removes it (by refetching the list) only once the server confirms the
+  /// delete. So the card stays on screen until the delete-card VM succeeds.
+  Future<bool> _confirmDelete(
+    BuildContext context,
+    OnlineCardParams card,
+  ) async {
+    bool confirmed = false;
+    await AppCustomAlertDialog.show(
+      context,
+      (BuildContext dialogContext) => AppCustomAlertDialog(
+        title: LangKeys.deleteKey.tr(),
+        message: LangKeys.deleteCardConfirmationKey.tr(),
+        confirmLabel: LangKeys.deleteKey.tr(),
+        onConfirm: () {
+          confirmed = true;
+          Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+    if (confirmed) onDeleteCard?.call(card);
     return false;
   }
 }

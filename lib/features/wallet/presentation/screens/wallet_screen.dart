@@ -57,9 +57,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       isScrollControlled: isScrollControlled,
       enableDrag: enableDrag,
       backgroundColor: backgroundColor,
+      // SafeArea keeps the sheet's bottom button above a 3-button nav bar.
       builder: (context) => ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
-        child: sheet,
+        child: SafeArea(top: false, child: sheet),
       ),
     );
     if (!mounted) return;

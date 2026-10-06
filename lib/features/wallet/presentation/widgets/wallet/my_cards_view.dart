@@ -12,7 +12,6 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/online_card_radio_selector.dart';
@@ -217,7 +216,7 @@ class MyCardsView extends ConsumerWidget {
           5.hSpace,
           PrimaryAppButton(
             title: LangKeys.addNewCardKey.tr(),
-            onTap: () => context.pushNamed(AppRoutes.addPaymentCard),
+            onTap: () => AddCardView.show(context),
           ),
         ],
       ),
