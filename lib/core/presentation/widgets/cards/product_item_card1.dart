@@ -223,6 +223,7 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                     ? const OutOfStockLabel()
                                     : AnimatedCartButton(
                                         productId: widget.product?.id,
+                                        productSlug: widget.product?.slug,
                                         productQuantity:
                                             widget.product?.cartQuantity ?? 0,
                                         stock: widget.product?.stock,

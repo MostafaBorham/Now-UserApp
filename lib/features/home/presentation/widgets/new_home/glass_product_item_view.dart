@@ -181,6 +181,7 @@ class GlassProductItemView extends StatelessWidget {
                   end: 8,
                   child: AnimatedCartButton(
                     productId: product.productId ?? product.id,
+                    productSlug: product.slug,
                     productQuantity: product.cartQuantity ?? 0,
                     stock: product.stock,
                   ),

@@ -45,10 +45,8 @@ void showCartUpdateFeedback(
   if (!vm.claimFeedback()) return;
 
   if (!vm.joinedCart) {
-    // ponytail: quantityOf/lineOf match the first line of a product, so when the
-    // same product is in the cart as two variant lines this toast's wording can
-    // read off the sibling line. The update/remove itself is correct (driven by
-    // cart_item_id). Upgrade: cart_item_id-aware quantityOfItem/lineOfItem.
+    // Both quantities are the product's total across its variant lines, so
+    // the wording follows what changed even with several lines.
     AppToast.showSuccess(
       context,
       cartUpdateMessageKey(

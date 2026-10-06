@@ -135,6 +135,7 @@ class ProductItem3View extends StatelessWidget {
                             ? OutOfStockLabel(fontSize: con.maxWidth * 0.06)
                             : AnimatedCartButton(
                                 productId: product.productId ?? product.id,
+                                productSlug: product.slug,
                                 productQuantity: product.cartQuantity ?? 0,
                                 stock: product.stock,
                               ),

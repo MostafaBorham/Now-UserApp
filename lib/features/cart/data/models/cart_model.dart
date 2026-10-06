@@ -28,21 +28,24 @@ class CartModel {
     return CartModel(id: id ?? this.id, vendors: vendors ?? this.vendors);
   }
 
-  /// This product's line, or `null` when the cart has none. Cart lines carry
-  /// the product id in `product_id`, while listing products carry it in `id` —
-  /// match either.
-  ProductModel? lineOf(int productId) {
-    for (final CartVendorModel vendor in vendors) {
-      for (final ProductModel product in vendor.products) {
-        if ((product.productId ?? product.id) == productId) return product;
-      }
-    }
+  /// This product's lines: one per variant (set of options) it is in the cart
+  /// with. Cart lines carry the product id in `product_id`, while listing
+  /// products carry it in `id` — match either.
+  List<ProductModel> linesOf(int productId) => <ProductModel>[
+    for (final CartVendorModel vendor in vendors)
+      for (final ProductModel product in vendor.products)
+        if ((product.productId ?? product.id) == productId) product,
+  ];
 
-    return null;
-  }
+  /// This product's first line, or `null` when the cart has none.
+  ProductModel? lineOf(int productId) => linesOf(productId).firstOrNull;
 
-  /// Quantity this product has in the cart; `0` when it is not in it at all.
-  int quantityOf(int productId) => lineOf(productId)?.quantity ?? 0;
+  /// Units of this product in the cart, across all its variant lines; `0` when
+  /// it is not in it at all. Summed: the first line alone showed one variant's
+  /// count on the product cards (BUG-022, QA V2).
+  int quantityOf(int productId) => linesOf(
+    productId,
+  ).fold<int>(0, (int sum, ProductModel line) => sum + (line.quantity ?? 0));
 
   /// Total units across every store line — the number shown on the cart badge.
   int get itemCount => vendors.fold<int>(

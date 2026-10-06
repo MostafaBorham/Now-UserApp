@@ -15,6 +15,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rating_stars.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
@@ -36,6 +38,18 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
     final int productId = product.id ?? -1;
     final cartState = ref.watch(updateCartProductProvider(productId));
     final bool isAddingToCart = cartState.isLoading;
+    // How many are in the cart, from the shared cart once it is loaded and the
+    // listing's own count until then. The button used to say only "Add to
+    // cart", so a product already added looked reset (BUG-022, QA V2).
+    final int inCart =
+        ref.watch(
+          getCartProvider.select(
+            (AsyncValue<CartModel> cart) =>
+                cart.valueOrNull?.quantityOf(productId),
+          ),
+        ) ??
+        product.cartQuantity ??
+        0;
 
     ref.listen(updateCartProductProvider(productId), (previous, next) {
       next.whenOrNull(
@@ -181,12 +195,18 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                     },
                     title: LangKeys.addToCartKey.tr(),
                     buttonColor: colors.secondaryFixedDim,
-                    prefixIcon: ReverseWidget(
-                      child: Assets.media.images.svg.shoppingCartIcon.svg(
-                        width: 20,
-                        colorFilter: ColorFilter.mode(
-                          colors.white,
-                          BlendMode.srcIn,
+                    prefixIcon: Badge(
+                      isLabelVisible: inCart > 0,
+                      label: Text('$inCart'),
+                      backgroundColor: colors.white,
+                      textColor: colors.secondaryFixedDim,
+                      child: ReverseWidget(
+                        child: Assets.media.images.svg.shoppingCartIcon.svg(
+                          width: 20,
+                          colorFilter: ColorFilter.mode(
+                            colors.white,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),

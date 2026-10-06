@@ -37,6 +37,18 @@ void main() {
     expect(const CartModel().quantityOf(7), 0);
   });
 
+  test('sums a product\'s variant lines (BUG-022, QA V2)', () {
+    final CartModel cart = _cartOf(<ProductModel>[
+      const ProductModel(productId: 7, cartItemId: 1, quantity: 2),
+      const ProductModel(productId: 8, cartItemId: 2, quantity: 4),
+      const ProductModel(productId: 7, cartItemId: 3, quantity: 3),
+    ]);
+
+    expect(cart.quantityOf(7), 5);
+    expect(cart.linesOf(7).map((ProductModel l) => l.cartItemId), <int>[1, 3]);
+    expect(cart.lineOf(7)?.cartItemId, 1);
+  });
+
   test('searches across vendors', () {
     const CartModel cart = CartModel(
       vendors: <CartVendorModel>[

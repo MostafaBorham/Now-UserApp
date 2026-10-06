@@ -136,6 +136,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                   alignment: AlignmentDirectional.bottomEnd,
                   child: AnimatedCartButton(
                     productId: product.productId ?? product.id,
+                    productSlug: product.slug,
                     productQuantity: product.cartQuantity ?? 0,
                     stock: product.stock,
                   ),

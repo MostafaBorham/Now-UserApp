@@ -4,9 +4,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
@@ -43,10 +45,16 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product
 ///
 /// With [productId] left `null` the widget keeps its offline behaviour and just
 /// counts locally (used by the cards that are still on placeholder data).
+///
+/// A product in the cart as several variant lines shows their total, and a tap
+/// opens its product page (or the cart, without a [productSlug]) instead of
+/// the counter: a card can't tell which line a +/- is for, and the server
+/// refused the line-less update with a 422.
 class AnimatedCartButton extends ConsumerStatefulWidget {
   const AnimatedCartButton({
     super.key,
     this.productId,
+    this.productSlug,
     this.productQuantity = 0,
     this.stock,
   });
@@ -54,6 +62,9 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
   /// Product this control manages in the cart. `null` disables backend
   /// integration.
   final int? productId;
+
+  /// Opens the product page when the product has several cart lines.
+  final String? productSlug;
 
   /// Quantity this product currently has in the cart — `0` when it is not in the
   /// cart at all. Seeds the counter.
@@ -151,7 +162,13 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
             onDelete: _confirmRemove,
           )
         : InkWell(
-            onTap: () => setState(() => _isRotate = !_isRotate),
+            onTap: () {
+              if (_hasSeveralLines()) {
+                _openProduct();
+                return;
+              }
+              setState(() => _isRotate = !_isRotate);
+            },
             child: AnimatedAddToCartButton(
               text: counter < 1 ? '+' : counter.toString(),
               isRotate: _isRotate,
@@ -181,6 +198,24 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
               },
             ),
           );
+  }
+
+  /// This product's cart lines, one per variant it is in the cart with.
+  List<ProductModel> _lines() =>
+      ref.read(getCartProvider).valueOrNull?.linesOf(widget.productId!) ??
+      const <ProductModel>[];
+
+  bool _hasSeveralLines() => _isIntegrated && _lines().length > 1;
+
+  /// Where several variant lines are told apart: the product page, or the
+  /// cart when the card has no slug to open it by.
+  void _openProduct() {
+    final String? slug = widget.productSlug;
+    if (slug == null || slug.isEmpty) {
+      openMainCartTab(context, ref);
+      return;
+    }
+    context.pushNamed(AppRoutes.productDetailsScreen, extra: slug);
   }
 
   /// One unit less than [counter], floored at 1 — dropping the last unit is the
@@ -231,6 +266,15 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       return;
     }
 
+    // A second variant can land (from the product page) while the counter is
+    // open; which line a +/- is for is then unknown.
+    final List<ProductModel> lines = _lines();
+    if (lines.length > 1) {
+      _collapse();
+      _openProduct();
+      return;
+    }
+
     // The counter view has to stay open until the request settles.
     _collapseTimer?.cancel();
 
@@ -239,6 +283,8 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         .updateCartProductQuantity(
           newQuantity,
           productId: widget.productId!,
+          // The one line the product has, so the server needn't guess.
+          cartItemId: lines.firstOrNull?.cartItemId,
           seededQuantity: widget.productQuantity,
         );
   }
