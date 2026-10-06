@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interceptor.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/layout/above_system_nav_bar.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/theme_manager.dart';
 import 'package:nowdelivery_user_app/core/routing/app_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -44,7 +45,8 @@ class NowUserApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       darkTheme: AppThemes.getDarkModeTheme(),
       locale: context.locale,
-      builder: DevicePreview.appBuilder,
+      builder: (BuildContext context, Widget? child) =>
+          DevicePreview.appBuilder(context, AboveSystemNavBar(child: child!)),
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       routerConfig: AppRouter.router,

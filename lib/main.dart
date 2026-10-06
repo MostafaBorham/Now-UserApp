@@ -36,6 +36,10 @@ void main() {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        // Dark buttons on the white strip AboveSystemNavBar leaves under the
+        // navigation bar (and a white bar where Android still colours it).
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
     await SystemChrome.setPreferredOrientations(<DeviceOrientation>[

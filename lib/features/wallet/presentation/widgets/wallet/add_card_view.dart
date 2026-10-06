@@ -36,7 +36,7 @@ class AddCardView extends ConsumerStatefulWidget {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.85,
         ),
-        child: SafeArea(top: false, child: AddCardView(card: card)),
+        child: AddCardView(card: card),
       ),
     );
   }
