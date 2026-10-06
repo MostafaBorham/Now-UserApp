@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 
 /// A labelled, editable field on the Edit Information screen.
 ///
@@ -171,7 +172,7 @@ class EditField extends StatelessWidget {
       );
     }
 
-    final Widget pill = Container(
+    final Widget box = Container(
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -183,6 +184,9 @@ class EditField extends StatelessWidget {
       ),
       child: Row(children: children),
     );
+    final Widget pill = readOnly
+        ? box
+        : FocusRing(borderRadius: BorderRadius.circular(999), child: box);
 
     if (onTap != null) {
       return GestureDetector(

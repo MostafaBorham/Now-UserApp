@@ -53,7 +53,14 @@ class RatingCommentField extends StatelessWidget {
         contentPadding: const EdgeInsets.all(12),
         border: border,
         enabledBorder: border,
-        focusedBorder: border,
+        focusedBorder: readOnly
+            ? border
+            : border.copyWith(
+                borderSide: BorderSide(
+                  color: colors.primary500Main,
+                  width: 1.5,
+                ),
+              ),
       ),
     );
   }

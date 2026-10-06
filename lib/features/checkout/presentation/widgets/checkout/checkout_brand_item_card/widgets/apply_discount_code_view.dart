@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -184,7 +185,9 @@ class _ApplyDiscountCodeViewState
       children: [
         Expanded(
           flex: 3,
-          child: Container(
+          child: FocusRing(
+            borderRadius: BorderRadius.circular(999),
+            child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: colors.onPrimaryContainer,
@@ -208,6 +211,7 @@ class _ApplyDiscountCodeViewState
                 ),
               ),
             ),
+          ),
           ),
         ),
         Expanded(

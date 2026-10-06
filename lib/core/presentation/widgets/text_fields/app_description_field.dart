@@ -18,6 +18,9 @@ class AppDescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final InputBorder focused = filledDescriptionBorder.copyWith(
+      borderSide: BorderSide(color: colors.primary500Main, width: 1.5),
+    );
     return TextFormField(
       controller: controller,
       maxLines: 4,
@@ -37,9 +40,9 @@ class AppDescriptionField extends StatelessWidget {
         ),
         border: filledDescriptionBorder,
         enabledBorder: filledDescriptionBorder,
-        focusedBorder: filledDescriptionBorder,
+        focusedBorder: focused,
         errorBorder: filledDescriptionBorder,
-        focusedErrorBorder: filledDescriptionBorder,
+        focusedErrorBorder: focused,
       ),
     );
   }

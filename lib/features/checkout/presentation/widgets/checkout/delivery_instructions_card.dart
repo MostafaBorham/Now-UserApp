@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -19,46 +20,49 @@ class DeliveryInstructionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.onPrimaryContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Text(
-            LangKeys.deliveryInstructionsKey.tr(),
-            style: AppTextStyles.style16Medium.copyWith(
-              color: colors.tertiaryContainer,
-            ),
-          ),
-          TextField(
-            controller: controller,
-            minLines: 1,
-            maxLines: 5,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-            onTapOutside: (_) => FocusScope.of(context).unfocus(),
-            style: AppTextStyles.style14Regular.copyWith(color: colors.black),
-            cursorColor: colors.tertiaryContainer,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              hintText: LangKeys.addInstructionsHintKey.tr(),
-              hintStyle: AppTextStyles.style14Regular.copyWith(
-                color: colors.neutral500,
+    return FocusRing(
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colors.onPrimaryContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Text(
+              LangKeys.deliveryInstructionsKey.tr(),
+              style: AppTextStyles.style16Medium.copyWith(
+                color: colors.tertiaryContainer,
               ),
             ),
-          ),
-        ],
+            TextField(
+              controller: controller,
+              minLines: 1,
+              maxLines: 5,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
+              style: AppTextStyles.style14Regular.copyWith(color: colors.black),
+              cursorColor: colors.tertiaryContainer,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                hintText: LangKeys.addInstructionsHintKey.tr(),
+                hintStyle: AppTextStyles.style14Regular.copyWith(
+                  color: colors.neutral500,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

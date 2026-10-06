@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
@@ -67,67 +68,70 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: AppBorderRadius.brCircular16,
-        border: Border.all(color: context.colors.neutral200),
-        boxShadow: AppBoxShadows.greyElevation2,
-      ),
-      child: Row(
-        children: [
-          Assets.media.images.svg.mobile.svg(width: 24, height: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  LangKeys.mobileNumberKey.tr(),
-                  style: AppTextStyles.style14Regular.copyWith(
-                    color: context.colors.neutral500,
-                  ),
-                ),
-                TextFormField(
-                  controller: widget.controller,
-                  keyboardType: TextInputType.phone,
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                  // The number always reads left-to-right so the "(05)" head
-                  // stays on the correct side of the digits, but the field
-                  // aligns to the locale's start edge: left in English, right
-                  // in Arabic.
-                  textDirection: TextDirection.ltr,
-                  textAlign: Directionality.of(context) == TextDirection.rtl
-                      ? TextAlign.right
-                      : TextAlign.left,
-                  inputFormatters: const [SaudiPhoneInputFormatter()],
-                  style: AppTextStyles.style16Medium.copyWith(
-                    color: context.colors.tertiaryContainer,
-                  ),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    counterText: "",
-                    isCollapsed: true,
-                    hintText: widget.hint ?? '(05) 1111-2222',
-                    // Keep the hint reading left-to-right so the "(05)" head
-                    // stays on the left in Arabic too — matching the order of
-                    // the digits the user will actually type.
-                    hintTextDirection: TextDirection.ltr,
-                    hintStyle: AppTextStyles.style16Medium.copyWith(
+    return FocusRing(
+      borderRadius: AppBorderRadius.brCircular16,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: AppBorderRadius.brCircular16,
+          border: Border.all(color: context.colors.neutral200),
+          boxShadow: AppBoxShadows.greyElevation2,
+        ),
+        child: Row(
+          children: [
+            Assets.media.images.svg.mobile.svg(width: 24, height: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    LangKeys.mobileNumberKey.tr(),
+                    style: AppTextStyles.style14Regular.copyWith(
                       color: context.colors.neutral500,
                     ),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.only(top: 4),
                   ),
-                ),
-              ],
+                  TextFormField(
+                    controller: widget.controller,
+                    keyboardType: TextInputType.phone,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    // The number always reads left-to-right so the "(05)" head
+                    // stays on the correct side of the digits, but the field
+                    // aligns to the locale's start edge: left in English, right
+                    // in Arabic.
+                    textDirection: TextDirection.ltr,
+                    textAlign: Directionality.of(context) == TextDirection.rtl
+                        ? TextAlign.right
+                        : TextAlign.left,
+                    inputFormatters: const [SaudiPhoneInputFormatter()],
+                    style: AppTextStyles.style16Medium.copyWith(
+                      color: context.colors.tertiaryContainer,
+                    ),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      counterText: "",
+                      isCollapsed: true,
+                      hintText: widget.hint ?? '(05) 1111-2222',
+                      // Keep the hint reading left-to-right so the "(05)" head
+                      // stays on the left in Arabic too — matching the order of
+                      // the digits the user will actually type.
+                      hintTextDirection: TextDirection.ltr,
+                      hintStyle: AppTextStyles.style16Medium.copyWith(
+                        color: context.colors.neutral500,
+                      ),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.only(top: 4),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
