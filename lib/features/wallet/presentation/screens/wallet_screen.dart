@@ -187,13 +187,20 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                             child: WalletActionButton(
                               actionName: LangKeys.addCardKey.tr(),
                               isSelected: _selectedActionIndex == 2,
-                              onTap: () => _openActionSheet(
-                                index: 2,
-                                sheet: AddCardView(),
-                                maxHeight: screenHeight * 0.75,
-                                backgroundColor: colors.white,
-                                isScrollControlled: true,
-                              ),
+                              onTap: () {
+                                // Loaded so a card already saved is caught
+                                // before it is sent again (BUG-014, QA V2).
+                                ref
+                                    .read(getMyCardsProvider.notifier)
+                                    .getMyCards();
+                                _openActionSheet(
+                                  index: 2,
+                                  sheet: AddCardView(),
+                                  maxHeight: screenHeight * 0.75,
+                                  backgroundColor: colors.white,
+                                  isScrollControlled: true,
+                                );
+                              },
                             ),
                           ),
                         ),

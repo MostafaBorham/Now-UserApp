@@ -111,6 +111,7 @@ abstract class LangKeys {
   static const String deleteCardConfirmationKey = 'deleteCardConfirmation';
   static const String failedToLoadImageKey = 'failedToLoadImage';
   static const String topUpUnconfirmedKey = 'topUpUnconfirmed';
+  static const String cardAlreadySavedKey = 'cardAlreadySaved';
 
   // Bottom navigation
   static const String homeKey = 'home';

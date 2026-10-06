@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/repo/wallet_repo.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
@@ -48,15 +50,17 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     required String cvc,
     bool setAsDefault = false,
   }) async {
-    state = const AsyncValue<void>.loading();
-
     final ({int month, int year}) parsed = parseExpiry(expiry);
+    final String number = cardNumber.replaceAll(RegExp(r'\D'), '');
+    if (_isAlreadySaved(number, parsed)) return _alreadySaved();
+
+    state = const AsyncValue<void>.loading();
 
     // The default travels with the card itself: one request, so there is no
     // second call to fail after the "card added" toast.
     final Either<Failure, CardPaymentModel> result = await _repo.addPaymentCard(
       cardholderName: cardholderName,
-      cardNumber: cardNumber.replaceAll(RegExp(r'\D'), ''),
+      cardNumber: number,
       expiryMonth: parsed.month,
       expiryYear: parsed.year,
       cvc: cvc,
@@ -80,11 +84,14 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     String? cvc,
     bool setAsDefault = false,
   }) async {
-    state = const AsyncValue<void>.loading();
-
     final ({int month, int year}) parsed = parseExpiry(expiry);
     final String number = (cardNumber ?? '').replaceAll(RegExp(r'\D'), '');
     final String cvcValue = cvc?.trim() ?? '';
+    if (number.isNotEmpty && _isAlreadySaved(number, parsed, except: cardId)) {
+      return _alreadySaved();
+    }
+
+    state = const AsyncValue<void>.loading();
 
     final Either<Failure, CardPaymentModel> result =
         await _repo.updatePaymentCard(
@@ -98,6 +105,48 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
 
     if (!mounted) return null;
     return _finish(result, setAsDefault: setAsDefault);
+  }
+
+  /// Whether another loaded card has the same last four digits and expiry —
+  /// the same card saved twice (BUG-014, QA V2). Caught here for instant
+  /// feedback; the backend is asked to refuse it too (only it sees every
+  /// card, and the list may not be loaded). [except] is the card being edited.
+  bool _isAlreadySaved(
+    String number,
+    ({int month, int year}) expiry, {
+    int? except,
+  }) => isAlreadySaved(
+    _ref.read(getMyCardsProvider).valueOrNull ?? const <CardPaymentModel>[],
+    number,
+    expiry,
+    except: except,
+  );
+
+  /// The rule behind [_isAlreadySaved], over [cards].
+  @visibleForTesting
+  static bool isAlreadySaved(
+    List<CardPaymentModel> cards,
+    String number,
+    ({int month, int year}) expiry, {
+    int? except,
+  }) {
+    if (number.length < 4) return false;
+    final String lastFour = number.substring(number.length - 4);
+    return cards.any(
+      (CardPaymentModel card) =>
+          card.id != except &&
+          card.lastFour == lastFour &&
+          card.expiryMonth == expiry.month &&
+          (card.expiryYear ?? -1) % 100 == expiry.year % 100,
+    );
+  }
+
+  String _alreadySaved() {
+    state = AsyncValue<void>.error(
+      LangKeys.cardAlreadySavedKey,
+      StackTrace.current,
+    );
+    return LangKeys.cardAlreadySavedKey;
   }
 
   /// Shared success/failure handling for add and update. [setAsDefault] asks

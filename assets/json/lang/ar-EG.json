@@ -17,6 +17,7 @@
   "deleteAddressConfirmation": "هل أنت متأكد من حذف هذا العنوان؟",
   "deleteCardConfirmation": "هل أنت متأكد من حذف هذه البطاقة؟",
   "failedToLoadImage": "تعذّر تحميل الصورة",
+  "cardAlreadySaved": "هذه البطاقة محفوظة بالفعل.",
   "topUpUnconfirmed": "تعذّر تأكيد عملية الشحن. يُرجى التحقق من رصيد محفظتك قبل المحاولة مرة أخرى.",
   "addressDetails": "تفاصيل العنوان",
   "all": "الكل",
