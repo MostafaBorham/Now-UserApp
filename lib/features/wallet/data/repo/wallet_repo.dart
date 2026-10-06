@@ -206,6 +206,9 @@ class WalletRepo {
         idempotencyKey: idempotencyKey,
       ),
       (Map<String, dynamic> data) => data,
+      // The charge may have gone through (BUG-016, QA V2: the generic error
+      // read as a plain failure).
+      noResponseMessage: LangKeys.topUpUnconfirmedKey,
     );
 
     return serverResult.fold(
@@ -435,10 +438,15 @@ class WalletRepo {
   /// `POST /api/v1/wallet/top-up` answers **201** — including when it replays an
   /// already-completed attempt. Treating that 201 as a failure would tell the
   /// customer a charge failed that the server had already taken.
+  ///
+  /// [noResponseMessage] replaces the generic message when the request went
+  /// out but no answer came back (a timeout, the network dropping mid-call):
+  /// for a write, its outcome is then unknown.
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
-    T Function(Map<String, dynamic> data) parse,
-  ) async {
+    T Function(Map<String, dynamic> data) parse, {
+    String? noResponseMessage,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -450,6 +458,11 @@ class WalletRepo {
             parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
       );
     } on DioException catch (exception) {
+      if (noResponseMessage != null &&
+          exception.response == null &&
+          exception.type != DioExceptionType.cancel) {
+        return Left(Failure(noResponseMessage));
+      }
       final dynamic data = exception.response?.data;
       final Map<String, dynamic>? responseBody =
           data is Map<String, dynamic> ? data : null;

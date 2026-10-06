@@ -17,6 +17,7 @@
   "deleteAddressConfirmation": "Are you sure you want to delete this address?",
   "deleteCardConfirmation": "Are you sure you want to delete this card?",
   "failedToLoadImage": "Failed to load image",
+  "topUpUnconfirmed": "We couldn't confirm your top-up. Please check your wallet balance before trying again.",
   "addressDetails": "Address Details",
   "all": "ALL",
   "amountDue": "Amount Due",

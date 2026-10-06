@@ -67,6 +67,12 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
       // Surface the error and keep the sheet open so the customer can retry; the
       // toast floats on the root overlay, above the sheet.
       AppToast.showError(context, error);
+      // No answer came back, so the top-up may have landed: reload the balance
+      // and history behind the sheet so it shows if it did.
+      if (error == LangKeys.topUpUnconfirmedKey) {
+        ref.read(getWalletInfoProvider.notifier).getWalletInfo();
+        ref.read(getWalletTransactionsProvider.notifier).refresh();
+      }
       return;
     }
 
