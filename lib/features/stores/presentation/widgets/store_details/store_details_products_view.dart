@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
@@ -68,6 +69,10 @@ class StoreDetailsProductsView extends ConsumerWidget {
       // one does, so the skeleton always matches the real cards.
       placeholderBuilder: (BuildContext context) =>
           const AppShimmer(child: ProductItemCard1()),
+      // Near the top of the grid: centred, it landed at the bottom of the
+      // screen, under the tall store header.
+      emptyBuilder: (BuildContext context) =>
+          const NoResultsWidget(isScrollable: true, alignTop: true),
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
           ProductItemCard1(
             product: product,

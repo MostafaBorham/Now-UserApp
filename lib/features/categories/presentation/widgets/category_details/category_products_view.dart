@@ -115,7 +115,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
     return AppRefreshIndicator(
       onRefresh: viewModel.loadFirstPage,
       child: view.length == 0
-          ? const NoResultsWidget(isScrollable: true)
+          ? const NoResultsWidget(isScrollable: true, alignTop: true)
           : LayoutBuilder(
               builder: (BuildContext context, BoxConstraints con) =>
                   GridView.builder(

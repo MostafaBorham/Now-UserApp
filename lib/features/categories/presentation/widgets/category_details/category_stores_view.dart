@@ -124,7 +124,7 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
     return AppRefreshIndicator(
       onRefresh: viewModel.loadFirstPage,
       child: view.length == 0
-          ? const NoResultsWidget(isScrollable: true)
+          ? const NoResultsWidget(isScrollable: true, alignTop: true)
           : ListView.separated(
               controller: _scrollController,
               addRepaintBoundaries: true,

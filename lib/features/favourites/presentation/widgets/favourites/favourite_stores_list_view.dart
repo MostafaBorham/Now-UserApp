@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/features/favourites/presentation/widgets/favourites/empty_favourites_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
@@ -64,8 +67,14 @@ class FavouriteStoresListView extends ConsumerWidget {
         aspectRatio: 1.75,
         child: AppShimmer(child: StoreCardView()),
       ),
-      emptyBuilder: (BuildContext context) =>
-          const EmptyFavouritesWidget(isScrollable: true),
+      // Near the top: centred, it sat low, under the header, tabs and search,
+      // and behind the floating nav bar.
+      emptyBuilder: (BuildContext context) => NoResultsWidget(
+        isScrollable: true,
+        alignTop: true,
+        image: Assets.media.images.svg.emptyFavourite.svg(),
+        emptyMessage: LangKeys.emptyFavouritesKey.tr(),
+      ),
       itemBuilder: (BuildContext context, StoreModel store, int index) =>
           AspectRatio(
         aspectRatio: 1.75,
