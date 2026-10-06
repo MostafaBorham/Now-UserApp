@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
@@ -36,16 +37,21 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
+  /// False until the refresh below is sent (the frame after the first).
+  bool _refreshSent = false;
+
   @override
   void initState() {
     super.initState();
-    // The categories are preloaded on splash and reused here. Fetch only if
-    // that never happened or failed (no value yet) — already-loaded data is
-    // kept as-is (no refetch) — so opening this while errored flips it to
-    // loading and the shimmer grid shows first.
+    // The categories are preloaded on the splash and kept alive, so the list
+    // could be stale or cut short until a manual pull (BUG-020, QA V2). Every
+    // open refreshes it: a loaded list stays on screen while page one reloads,
+    // a failed or missing one loads afresh behind the shimmer, and a load
+    // already on its way is left alone.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || ref.read(getAppCategoriesProvider).hasValue) return;
-      ref.read(getAppCategoriesProvider.notifier).loadFirstPage();
+      if (!mounted) return;
+      setState(() => _refreshSent = true);
+      ref.read(getAppCategoriesProvider.notifier).refresh();
     });
   }
 
@@ -68,7 +74,18 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         scrollController: _scrollController,
         body: SafeArea(
           child: PaginatedView<CategoryModel>(
-            provider: getAppCategoriesProvider,
+            // Until the refresh goes out, a failure left over from the splash
+            // reads as loading: the first frame showed that stale error page.
+            provider: _refreshSent
+                ? getAppCategoriesProvider
+                : getAppCategoriesProvider.select(
+                    (AsyncValue<PaginationModel<CategoryModel>> s) =>
+                        s.hasError && !s.hasValue
+                        ? const AsyncValue<
+                            PaginationModel<CategoryModel>
+                          >.loading()
+                        : s,
+                  ),
             onRefresh: categoriesViewModel.loadFirstPage,
             onLoadNextPage: categoriesViewModel.loadNextPage,
             scrollController: _scrollController,

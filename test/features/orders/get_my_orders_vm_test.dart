@@ -67,7 +67,7 @@ void main() {
     expect(_statuses(vm), <String>['pending']);
   });
 
-  test('a load in flight is joined, not repeated', () async {
+  test('a load in flight is not repeated', () async {
     final _ScriptedOrdersVM vm = _ScriptedOrdersVM(
       <Either<Failure, PaginationModel<OrderModel>>>[
         Right(_page(<String>['pending'])),

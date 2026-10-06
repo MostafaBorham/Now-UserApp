@@ -7,11 +7,46 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
+import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 
+/// A loaded list that only counts refreshes.
+class _CountingCategoriesVM extends GetAppCategoriesViewModel {
+  _CountingCategoriesVM(AsyncValue<PaginationModel<CategoryModel>> initial) {
+    state = initial;
+  }
+
+  int refreshes = 0;
+
+  @override
+  Future<void> loadFirstPage() async {}
+
+  @override
+  Future<void> refresh() async => refreshes++;
+}
+
 void main() {
   setUpAll(initCategoriesTestLocalization);
+
+  testWidgets('opening refreshes the preloaded list and keeps it on screen '
+      '(BUG-020, QA V2)', (WidgetTester tester) async {
+    final _CountingCategoriesVM vm = _CountingCategoriesVM(
+      AsyncValue<PaginationModel<CategoryModel>>.data(
+        pageOf<CategoryModel>(sampleCategories(3)),
+      ),
+    );
+    await pumpCategoriesScreen(
+      tester,
+      const CategoriesScreen(),
+      overrides: <Override>[
+        getAppCategoriesProvider.overrideWith((Ref ref) => vm),
+      ],
+    );
+
+    expect(vm.refreshes, 1);
+    expect(find.byType(CategoryCard), findsNWidgets(3));
+  });
 
   testWidgets('first-page loading shows skeleton cards, no real cards',
       (WidgetTester tester) async {

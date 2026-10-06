@@ -258,6 +258,9 @@ class _FakeAppCategoriesVM extends GetAppCategoriesViewModel {
   Future<void> loadFirstPage() async {}
 
   @override
+  Future<void> refresh() async {}
+
+  @override
   Future<Either<Failure, PaginationModel<CategoryModel>>> fetchPage(int page) =>
       throw UnimplementedError('fake view-model must not fetch');
 }

@@ -58,20 +58,56 @@ abstract class PaginatedViewModel<T>
   /// page. Subclasses that take query parameters should store them and then
   /// delegate here, so a refresh replays the same query.
   Future<void> loadFirstPage() async {
-    state = AsyncValue<PaginationModel<T>>.loading();
+    _firstPageLoadsInFlight++;
+    try {
+      state = AsyncValue<PaginationModel<T>>.loading();
 
-    final Either<Failure, PaginationModel<T>> result =
-        await fetchPage(firstPageNumber);
+      final Either<Failure, PaginationModel<T>> result = await fetchPage(
+        firstPageNumber,
+      );
+
+      if (!mounted) return;
+
+      state = result.fold(
+        (Failure failure) => AsyncValue<PaginationModel<T>>.error(
+          failure.message,
+          StackTrace.current,
+        ),
+        AsyncValue<PaginationModel<T>>.data,
+      );
+    } finally {
+      _firstPageLoadsInFlight--;
+    }
+  }
+
+  /// First-page loads on their way. The initial state is "loading" too, so the
+  /// state alone can't tell a load in flight from one that never started.
+  int _firstPageLoadsInFlight = 0;
+
+  /// Reloads the first page while the loaded list stays on screen, and keeps
+  /// that list if the request fails — for a screen opening onto a kept-alive
+  /// list that may have gone stale (order statuses, the categories preloaded
+  /// on the splash).
+  ///
+  /// Without a list yet it is a plain [loadFirstPage] (the earlier load failed,
+  /// or never started); while a first load is on its way it does nothing, so
+  /// opening a screen never doubles a request already sent.
+  Future<void> refresh() async {
+    if (!state.hasValue) {
+      if (_firstPageLoadsInFlight == 0) await loadFirstPage();
+      return;
+    }
+
+    final Either<Failure, PaginationModel<T>> result = await fetchPage(
+      firstPageNumber,
+    );
 
     if (!mounted) return;
 
-    state = result.fold(
-      (Failure failure) =>
-          AsyncValue<PaginationModel<T>>.error(
-            failure.message,
-            StackTrace.current,
-          ),
-      AsyncValue<PaginationModel<T>>.data,
+    result.fold(
+      (Failure _) {},
+      (PaginationModel<T> firstPage) =>
+          state = AsyncValue<PaginationModel<T>>.data(firstPage),
     );
   }
 
@@ -90,20 +126,19 @@ abstract class PaginatedViewModel<T>
     final PaginationModel<T>? currentPage = state.valueOrNull;
     if (currentPage == null || !status.canRequestNextPage) return;
 
-    state =
-        AsyncValue<PaginationModel<T>>.loading().copyWithPrevious(state);
+    state = AsyncValue<PaginationModel<T>>.loading().copyWithPrevious(state);
 
-    final Either<Failure, PaginationModel<T>> result =
-        await fetchPage(currentPage.currentPage + 1);
+    final Either<Failure, PaginationModel<T>> result = await fetchPage(
+      currentPage.currentPage + 1,
+    );
 
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue<PaginationModel<T>>.error(
-            failure.message,
-            StackTrace.current,
-          ).copyWithPrevious(state),
+      (Failure failure) => AsyncValue<PaginationModel<T>>.error(
+        failure.message,
+        StackTrace.current,
+      ).copyWithPrevious(state),
       (PaginationModel<T> nextPage) {
         // Append onto the *current* state, not the `currentPage` snapshot taken
         // before the await: an in-place edit ([updateItemsWhere] /
@@ -154,8 +189,9 @@ abstract class PaginatedViewModel<T>
     final PaginationModel<T>? current = state.valueOrNull;
     if (current == null) return;
 
-    final List<T> remaining =
-        current.data.where((T item) => !test(item)).toList();
+    final List<T> remaining = current.data
+        .where((T item) => !test(item))
+        .toList();
     final int removed = current.data.length - remaining.length;
     if (removed == 0) return;
 
