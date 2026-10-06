@@ -80,6 +80,10 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
   // start/update/end notifications that `jumpTo` emits on every frame.
   bool _programmatic = false;
 
+  // Fingers resting on the list. A press that doesn't drag sends no scroll
+  // notification, so the strip used to slide on under it (BUG-021, QA V2).
+  int _fingersDown = 0;
+
   double get _slotExtent => widget.itemWidth + widget.separatorWidth;
 
   double get _cycleExtent => widget.itemCount * _slotExtent;
@@ -119,7 +123,9 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
     // resume with a small delta instead of a jump. A gap longer than any frame
     // means the ticker was muted (scrolled off screen, another tab, a pushed
     // route) — resync the same way, or the strip leaps ahead on its return.
-    if (_userScrolling || dt <= 0 || dt > _maxTickGap) return;
+    if (_userScrolling || _fingersDown > 0 || dt <= 0 || dt > _maxTickGap) {
+      return;
+    }
 
     double target = _controller.offset + widget.pixelsPerSecond * dt;
     // Wrap back by whole cycles; the content one cycle earlier is identical, so
@@ -163,25 +169,30 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: _onNotification,
-        child: ListView.builder(
-          controller: _controller,
-          scrollDirection: Axis.horizontal,
-          // App-wide motion rule (see `AppSlider`): self-moving content travels
-          // with the locale's reading sweep. Index order drifts the opposite
-          // way in both locales, so `reverse` flips it — items enter from the
-          // leading edge and leave by the trailing one.
-          reverse: true,
-          physics: const BouncingScrollPhysics(),
-          padding: widget.padding,
-          itemExtent: _slotExtent,
-          itemCount: widget.itemCount * _repeat,
-          itemBuilder: (context, index) => Padding(
-            padding: EdgeInsetsDirectional.only(end: widget.separatorWidth),
-            child: SizedBox(
-              width: widget.itemWidth,
-              child: widget.itemBuilder(context, index % widget.itemCount),
+      child: Listener(
+        onPointerDown: (_) => _fingersDown++,
+        onPointerUp: (_) => _fingersDown--,
+        onPointerCancel: (_) => _fingersDown--,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _onNotification,
+          child: ListView.builder(
+            controller: _controller,
+            scrollDirection: Axis.horizontal,
+            // App-wide motion rule (see `AppSlider`): self-moving content travels
+            // with the locale's reading sweep. Index order drifts the opposite
+            // way in both locales, so `reverse` flips it — items enter from the
+            // leading edge and leave by the trailing one.
+            reverse: true,
+            physics: const BouncingScrollPhysics(),
+            padding: widget.padding,
+            itemExtent: _slotExtent,
+            itemCount: widget.itemCount * _repeat,
+            itemBuilder: (context, index) => Padding(
+              padding: EdgeInsetsDirectional.only(end: widget.separatorWidth),
+              child: SizedBox(
+                width: widget.itemWidth,
+                child: widget.itemBuilder(context, index % widget.itemCount),
+              ),
             ),
           ),
         ),

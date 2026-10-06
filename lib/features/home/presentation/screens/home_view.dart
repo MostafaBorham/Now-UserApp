@@ -108,14 +108,14 @@ class _HomeViewState extends ConsumerState<HomeView>
         );
   }
 
-  /// The full-screen retry after a failed first load: top brands failed with
-  /// the feed (it is hidden behind the one error), so it is retried too.
-  void _retryAfterFailure() {
-    _loadFeed();
-    if (!ref.read(getFeaturedStoresProvider).hasValue) {
-      ref.read(getFeaturedStoresProvider.notifier).loadFirstPage();
-    }
-  }
+  /// Pull-to-refresh and the full-screen retry: the feed and Top Brands. Top
+  /// Brands is kept alive, so before this a new brand showed only after the
+  /// app was killed (BUG-023, QA V2). Its loaded cards stay on screen while it
+  /// reloads; a failed or missing list loads afresh.
+  Future<void> _refreshAll() => Future.wait<void>(<Future<void>>[
+    _loadFeed(),
+    ref.read(getFeaturedStoresProvider.notifier).refresh(),
+  ]);
 
   // The location is otherwise resolved only on the splash, so switching GPS on
   // with the app in the background changed nothing until a cold start. Without
@@ -344,7 +344,7 @@ class _HomeViewState extends ConsumerState<HomeView>
           key: const ValueKey<String>('feed_failed'),
           child: ServerConnectionErrorWidget(
             message: feed.error is String ? feed.error as String : null,
-            onRetry: _retryAfterFailure,
+            onRetry: _refreshAll,
           ),
         )
       else
@@ -374,7 +374,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         // Pull-to-refresh: the feed is kept alive and cached, so without this
         // the only ways to refresh it were the offline cue and the error retry.
         AppRefreshIndicator(
-          onRefresh: _loadFeed,
+          onRefresh: _refreshAll,
           child: CustomScrollView(
             controller: _scrollController,
             // Always scrollable, so a short or empty feed can still be pulled.

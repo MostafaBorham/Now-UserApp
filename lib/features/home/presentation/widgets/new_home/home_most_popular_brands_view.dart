@@ -152,13 +152,17 @@ class _BrandsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Two rows fill column by column, so one or two brands used to leave an
+    // empty cell or stack in the first column (BUG-024, QA V2): they get one
+    // row.
+    final int rows = itemCount <= 2 ? 1 : 2;
     return SizedBox(
-      height: cardHeight * 2 + 12,
+      height: cardHeight * rows + 12 * (rows - 1),
       child: GridView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: rows,
           mainAxisExtent: cardWidth,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
@@ -199,12 +203,15 @@ class _BrandCard extends StatelessWidget {
           Expanded(
             child: store == null
                 ? _placeholder(colors, height: 12)
+                // Two lines at a fixed 13: at ~16 a single line cut long names
+                // after a few letters.
                 : Text(
                     context.getLocalizedApiText(store.name),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: width * 0.1,
+                      fontSize: 13,
+                      height: 1.25,
                       color: colors.black,
                       fontWeight: FontWeight.w500,
                     ),

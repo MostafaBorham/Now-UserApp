@@ -36,16 +36,26 @@ class _FakeFeed extends GetHomeSectionsViewModel {
   }) async => loads++;
 }
 
+/// Featured stores answering every page with [stores]; counts the fetches.
 class _FakeFeatured extends GetFeaturedStoresViewModel {
-  _FakeFeatured(List<StoreModel> stores) {
+  _FakeFeatured(this.stores) {
     state = AsyncValue<PaginationModel<StoreModel>>.data(
       pageOf<StoreModel>(stores),
     );
   }
 
+  final List<StoreModel> stores;
+  int fetches = 0;
+
   @override
-  Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(int page) =>
-      throw UnimplementedError();
+  Future<Either<Failure, PaginationModel<StoreModel>>> fetchPage(
+    int page,
+  ) async {
+    fetches++;
+    return Right<Failure, PaginationModel<StoreModel>>(
+      pageOf<StoreModel>(stores),
+    );
+  }
 }
 
 /// Home's own states (BUG-004, QA V2): a failed first load, an empty feed, and
@@ -56,31 +66,30 @@ void main() {
     await SharedPrefManager.init();
   });
 
-  Future<_FakeFeed> pumpHome(
+  Future<({_FakeFeed feed, _FakeFeatured featured})> pumpHome(
     WidgetTester tester,
     AsyncValue<List<HomeSectionModel>> feed, {
     List<StoreModel> featured = const <StoreModel>[],
   }) async {
     final _FakeFeed fake = _FakeFeed(feed);
+    final _FakeFeatured fakeFeatured = _FakeFeatured(featured);
     await pumpCategoriesWidget(
       tester,
       const HomeView(),
       overrides: <Override>[
         getHomeSectionsProvider.overrideWith((Ref ref) => fake),
-        getFeaturedStoresProvider.overrideWith(
-          (Ref ref) => _FakeFeatured(featured),
-        ),
+        getFeaturedStoresProvider.overrideWith((Ref ref) => fakeFeatured),
         isConnectedProvider.overrideWith((Ref ref) => Stream<bool>.value(true)),
       ],
     );
     await tester.pump(const Duration(seconds: 3));
-    return fake;
+    return (feed: fake, featured: fakeFeatured);
   }
 
   testWidgets('a failed first load is one full error, no endless carousel', (
     WidgetTester tester,
   ) async {
-    final _FakeFeed feed = await pumpHome(
+    final (:_FakeFeed feed, :_FakeFeatured featured) = await pumpHome(
       tester,
       AsyncValue<List<HomeSectionModel>>.error('boom', StackTrace.empty),
     );
@@ -94,6 +103,8 @@ void main() {
     await tester.pump();
     await tester.tap(find.text(LangKeys.retryKey));
     expect(feed.loads, before + 1);
+    // Top Brands is retried with it (BUG-023, QA V2).
+    expect(featured.fetches, 1);
   });
 
   testWidgets('an empty feed shows the empty state', (

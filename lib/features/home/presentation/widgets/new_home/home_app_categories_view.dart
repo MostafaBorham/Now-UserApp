@@ -114,6 +114,10 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
   late final PageController _controller;
   Timer? _autoSlideTimer;
 
+  // Fingers resting on the carousel: it holds still under them (BUG-021,
+  // QA V2).
+  int _fingersDown = 0;
+
   @override
   void initState() {
     super.initState();
@@ -124,7 +128,7 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
 
     if (!widget.loops) return;
     _autoSlideTimer = Timer.periodic(_slideInterval, (_) {
-      if (!_controller.hasClients) return;
+      if (!_controller.hasClients || _fingersDown > 0) return;
       _controller.nextPage(duration: _slideDuration, curve: Curves.easeInOut);
     });
   }
@@ -143,26 +147,31 @@ class _CategoriesCarouselState extends State<_CategoriesCarousel> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
-        return SizedBox(
-          height: width * 0.42,
-          child: PageView.builder(
-            controller: _controller,
-            physics: const BouncingScrollPhysics(),
+        return Listener(
+          onPointerDown: (_) => _fingersDown++,
+          onPointerUp: (_) => _fingersDown--,
+          onPointerCancel: (_) => _fingersDown--,
+          child: SizedBox(
+            height: width * 0.42,
+            child: PageView.builder(
+              controller: _controller,
+              physics: const BouncingScrollPhysics(),
 
-            reverse: true,
-            itemCount: widget.loops ? null : items.length,
-            itemBuilder: (context, index) {
-              final _CarouselItem item = items[index % items.length];
-              return _CategoryCarouselItem(
-                controller: _controller,
-                index: index,
-                width: width,
-                label: item.label,
-                imageUrl: item.imageUrl,
-                onTap: item.onTap,
-                colors: colors,
-              );
-            },
+              reverse: true,
+              itemCount: widget.loops ? null : items.length,
+              itemBuilder: (context, index) {
+                final _CarouselItem item = items[index % items.length];
+                return _CategoryCarouselItem(
+                  controller: _controller,
+                  index: index,
+                  width: width,
+                  label: item.label,
+                  imageUrl: item.imageUrl,
+                  onTap: item.onTap,
+                  colors: colors,
+                );
+              },
+            ),
           ),
         );
       },

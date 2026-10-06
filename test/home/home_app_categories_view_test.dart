@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -53,5 +54,30 @@ void main() {
       HomeAppCategoriesView(categories: <CategoryModel>[sampleCategory()]),
     );
     expect(find.text('failedToLoadImage'), findsOneWidget);
+  });
+
+  testWidgets('a finger resting on the carousel holds it (BUG-021, QA V2)', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      HomeAppCategoriesView(categories: sampleCategories(5)),
+    );
+    double page() =>
+        tester.widget<PageView>(find.byType(PageView)).controller!.page!;
+    final double start = page();
+
+    final TestGesture finger = await tester.startGesture(
+      tester.getCenter(find.byType(PageView)),
+    );
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pump(const Duration(seconds: 1));
+    expect(page(), start);
+
+    // Cancelled rather than lifted: a lift on a category is a tap.
+    await finger.cancel();
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pump(const Duration(seconds: 1));
+    expect(page(), greaterThan(start));
   });
 }

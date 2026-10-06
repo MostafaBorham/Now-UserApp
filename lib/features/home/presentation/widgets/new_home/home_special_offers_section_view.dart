@@ -169,6 +169,9 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
   final ScrollController _controller = ScrollController();
   Timer? _timer;
 
+  // Fingers resting on the strip: it holds still under them (BUG-021, QA V2).
+  int _fingersDown = 0;
+
   @override
   void initState() {
     super.initState();
@@ -179,7 +182,7 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
   }
 
   void _stepForward() {
-    if (!_controller.hasClients) return;
+    if (!_controller.hasClients || _fingersDown > 0) return;
     final ScrollPosition position = _controller.position;
     final double max = position.maxScrollExtent;
     if (max <= 0) return;
@@ -210,57 +213,62 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return ListView.separated(
-      controller: _controller,
-      padding: const EdgeInsetsDirectional.only(
-        end: 10,
-        top: _AutoScrollOffersList.shadowInset,
-        bottom: _AutoScrollOffersList.shadowInset,
-      ),
-      scrollDirection: Axis.horizontal,
-      // Scroll right-to-left in Arabic, left-to-right in English — see the
-      // motion rule on `AppSlider`. This mirrors the card order (the first
-      // offer sits on the leading edge of the sweep, still the first one
-      // seen), which is what keeps the drift going the same way as the
-      // carousels above it.
-      reverse: true,
-      itemBuilder: (context, index) {
-        final HomeOfferModel offer = widget.offers[index];
-        return RepaintBoundary(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => _onOfferTap(context, offer),
-            child: AspectRatio(
-              aspectRatio: _aspectRatio,
-              // The top banner's own shadow, so the two strips match. Each
-              // card is its own RepaintBoundary, so this is painted once and
-              // only moved while the strip steps.
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: colors.black.withValues(alpha: 0.25),
-                      blurRadius: 4,
+    return Listener(
+      onPointerDown: (_) => _fingersDown++,
+      onPointerUp: (_) => _fingersDown--,
+      onPointerCancel: (_) => _fingersDown--,
+      child: ListView.separated(
+        controller: _controller,
+        padding: const EdgeInsetsDirectional.only(
+          end: 10,
+          top: _AutoScrollOffersList.shadowInset,
+          bottom: _AutoScrollOffersList.shadowInset,
+        ),
+        scrollDirection: Axis.horizontal,
+        // Scroll right-to-left in Arabic, left-to-right in English — see the
+        // motion rule on `AppSlider`. This mirrors the card order (the first
+        // offer sits on the leading edge of the sweep, still the first one
+        // seen), which is what keeps the drift going the same way as the
+        // carousels above it.
+        reverse: true,
+        itemBuilder: (context, index) {
+          final HomeOfferModel offer = widget.offers[index];
+          return RepaintBoundary(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _onOfferTap(context, offer),
+              child: AspectRatio(
+                aspectRatio: _aspectRatio,
+                // The top banner's own shadow, so the two strips match. Each
+                // card is its own RepaintBoundary, so this is painted once and
+                // only moved while the strip steps.
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: colors.black.withValues(alpha: 0.25),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: AppCachedNetworkImage(
+                      imageUrl: offer.imageUrl ?? '',
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: AppCachedNetworkImage(
-                    imageUrl: offer.imageUrl ?? '',
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => const SizedBox(width: 12),
-      itemCount: widget.offers.length,
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemCount: widget.offers.length,
+      ),
     );
   }
 }
