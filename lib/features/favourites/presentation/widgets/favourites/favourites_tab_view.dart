@@ -92,6 +92,11 @@ class FavouritesTabView extends ConsumerWidget {
       ),
     ];
 
+    // No favourites in any category: a lone "All" chip over the empty state is
+    // noise, so the list shows without the tab bar. Only once the categories
+    // have loaded, so users with favourites don't see the bar pop in.
+    final bool hideTabs = categoriesState.hasValue && categories.isEmpty;
+
     return Column(
       spacing: 16,
       children: <Widget>[
@@ -102,7 +107,7 @@ class FavouritesTabView extends ConsumerWidget {
               .setSearch(query),
         ),
         Expanded(
-          child: CustomButtonTabBar(
+          child: hideTabs ? listBuilder(null) : CustomButtonTabBar(
             // Rebuild (and re-size the TabController) when the tab count changes
             // — e.g. once categories finish loading.
             key: ValueKey<int>(tabs.length),
