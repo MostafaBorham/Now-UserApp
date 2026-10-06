@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -217,16 +217,10 @@ class _BrandCard extends StatelessWidget {
 
   Widget _logo(BuildContext context, AppColorScheme colors, StoreModel? store) {
     if (store == null) return _placeholder(colors);
-    final String? url = store.logoUrl;
-    if (url == null) return const SizedBox.shrink();
-    return CachedNetworkImage(
-      imageUrl: url,
+    // No approved logo → the "failed to load image" placeholder, not a blank.
+    return AppCachedNetworkImage(
+      imageUrl: store.logoUrl ?? '',
       fit: BoxFit.contain,
-      // The square logo slot: the card's height less its 12pt padding.
-      memCacheWidth: ((height - 24) * MediaQuery.devicePixelRatioOf(context))
-          .round(),
-      placeholder: (context, url) => const SizedBox.shrink(),
-      errorWidget: (context, url, error) => const SizedBox.shrink(),
     );
   }
 

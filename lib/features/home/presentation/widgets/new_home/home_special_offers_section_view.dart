@@ -161,7 +161,7 @@ class _AutoScrollOffersList extends StatefulWidget {
 }
 
 class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
-  static const Duration _dwell = Duration(seconds: 3);
+  static const Duration _dwell = Duration(seconds: 5);
   static const Duration _step = Duration(milliseconds: 900);
   static const double _separator = 12;
   static const double _aspectRatio = 0.7;

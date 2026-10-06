@@ -121,10 +121,6 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get logoAndroid12 =>
       const AssetGenImage('assets/media/images/png/logo-android12.png');
 
-  /// File path: assets/media/images/png/no-image-avail.png
-  AssetGenImage get noImageAvail =>
-      const AssetGenImage('assets/media/images/png/no-image-avail.png');
-
   /// File path: assets/media/images/png/onboarding_img.png
   AssetGenImage get onboardingImg =>
       const AssetGenImage('assets/media/images/png/onboarding_img.png');
@@ -189,7 +185,6 @@ class $AssetsMediaImagesPngGen {
     homeNeverMissOffersLogo,
     increamentIcon,
     logoAndroid12,
-    noImageAvail,
     onboardingImg,
     quickDeliveryAr1,
     quickDeliveryAr2,
@@ -412,6 +407,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/home_selected.svg
   SvgGenImage get homeSelected =>
       const SvgGenImage('assets/media/images/svg/home_selected.svg');
+
+  /// File path: assets/media/images/svg/image-error-placeholder.svg
+  SvgGenImage get imageErrorPlaceholder =>
+      const SvgGenImage('assets/media/images/svg/image-error-placeholder.svg');
 
   /// File path: assets/media/images/svg/info-blue.svg
   SvgGenImage get infoBlue =>
@@ -714,6 +713,7 @@ class $AssetsMediaImagesSvgGen {
     homeOffersBackground,
     homeHeaderBackground,
     homeSelected,
+    imageErrorPlaceholder,
     infoBlue,
     infoRed,
     language,

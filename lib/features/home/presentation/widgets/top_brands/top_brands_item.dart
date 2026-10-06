@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -90,13 +90,10 @@ class TopBrandsItem extends StatelessWidget {
         ),
       );
     }
-    final String? url = store.logoUrl;
-    if (url == null) return const SizedBox.shrink();
-    return CachedNetworkImage(
-      imageUrl: url,
+    // No approved logo → the "failed to load image" placeholder, not a blank.
+    return AppCachedNetworkImage(
+      imageUrl: store.logoUrl ?? '',
       fit: BoxFit.contain,
-      placeholder: (context, url) => const SizedBox.shrink(),
-      errorWidget: (context, url, error) => const SizedBox.shrink(),
     );
   }
 }

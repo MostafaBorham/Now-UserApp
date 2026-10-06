@@ -66,6 +66,7 @@ class _AppSliderState extends State<AppSlider> {
           options: CarouselOptions(
             enlargeCenterPage: false,
             autoPlay: !isSingleItem,
+            autoPlayInterval: const Duration(seconds: 5),
             // App-wide motion rule: anything that moves on its own travels
             // with the locale's reading sweep — right-to-left in Arabic,
             // left-to-right in English (the same rule the delivery-man

@@ -16,6 +16,7 @@
   "addressDeletedSuccessfully": "تم حذف العنوان بنجاح",
   "deleteAddressConfirmation": "هل أنت متأكد من حذف هذا العنوان؟",
   "deleteCardConfirmation": "هل أنت متأكد من حذف هذه البطاقة؟",
+  "failedToLoadImage": "تعذّر تحميل الصورة",
   "addressDetails": "تفاصيل العنوان",
   "all": "الكل",
   "amountDue": "المبلغ المستحق",

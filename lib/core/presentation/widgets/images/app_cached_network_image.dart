@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 
 class AppCachedNetworkImage extends StatelessWidget {
@@ -106,10 +109,29 @@ class AppCachedNetworkImage extends StatelessWidget {
       decoration: BoxDecoration(
         color: errorBackgroundColor ?? colors.onPrimaryContainer,
       ),
-      child: Assets.media.images.png.noImageAvail.image(
-        fit: BoxFit.contain,
-        height: double.infinity,
-        width: double.infinity,
+      // Figma "failed to load image" (User-App 12803:42671 / 12867:11679).
+      // Scaled down, never overflowing, in slots smaller than its own size.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 7.04,
+          children: <Widget>[
+            Assets.media.images.svg.imageErrorPlaceholder.svg(
+              width: 51.38,
+              height: 51.37,
+            ),
+            Text(
+              LangKeys.failedToLoadImageKey.tr(),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.style10Medium.copyWith(
+                fontSize: 10.565,
+                height: 14.09 / 10.565,
+                color: colors.neutral400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
 

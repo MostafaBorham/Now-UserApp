@@ -109,6 +109,7 @@ abstract class LangKeys {
   static const String deleteAddressConfirmationKey =
       'deleteAddressConfirmation';
   static const String deleteCardConfirmationKey = 'deleteCardConfirmation';
+  static const String failedToLoadImageKey = 'failedToLoadImage';
 
   // Bottom navigation
   static const String homeKey = 'home';

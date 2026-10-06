@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
@@ -119,19 +119,13 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                               maxWidth: (con.maxWidth - 32) / 2,
                             ),
                             child: FittedBox(
-                              child: CachedNetworkImage(
+                              // FittedBox lays its child out unbounded, so the
+                              // image needs its own (design 164×96) box.
+                              child: AppCachedNetworkImage(
                                 imageUrl: image,
-                                memCacheWidth:
-                                    (164 *
-                                            s *
-                                            MediaQuery.devicePixelRatioOf(
-                                              context,
-                                            ))
-                                        .round(),
-                                placeholder: (context, url) =>
-                                    const SizedBox.shrink(),
-                                errorWidget: (context, url, error) =>
-                                    const SizedBox.shrink(),
+                                width: 164 * s,
+                                height: 96 * s,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),

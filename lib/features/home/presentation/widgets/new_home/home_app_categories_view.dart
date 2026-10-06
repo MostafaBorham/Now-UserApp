@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
+/// [imageUrl] is null only for the loading skeletons, which stay blank circles.
 typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
 /// The home categories carousel, rendered from the `categories` section of the
@@ -48,7 +50,9 @@ class HomeAppCategoriesView extends ConsumerWidget {
         .map(
           (CategoryModel category) => (
             label: context.getLocalizedApiText(category.name),
-            imageUrl: category.image,
+            // '' (not null): a real category without an image shows the
+            // "failed to load image" placeholder; null is a loading skeleton.
+            imageUrl: category.image ?? '',
             onTap: () {
               final CategoryModel target = _withSlug(ref, category);
               final String? slug = target.slug;
@@ -104,7 +108,7 @@ class _CategoriesCarousel extends StatefulWidget {
 
 class _CategoriesCarouselState extends State<_CategoriesCarousel> {
   static const int _initialPage = 10000;
-  static const Duration _slideInterval = Duration(seconds: 3);
+  static const Duration _slideInterval = Duration(seconds: 5);
   static const Duration _slideDuration = Duration(milliseconds: 900);
 
   late final PageController _controller;
@@ -191,11 +195,6 @@ class _CategoryCarouselItem extends StatelessWidget {
 
     final double minImageSize = diameter * 0.5;
     final double maxImageSize = diameter * 1.2;
-    // Decoded once, at the largest size the slide ever draws: keyed on the
-    // animated size, every frame of every slide was a new cache entry — a
-    // fresh decode of all five images, pushing real images out of the cache.
-    final int memCacheWidth =
-        (maxImageSize * MediaQuery.devicePixelRatioOf(context)).round();
 
     return RepaintBoundary(
       child: AnimatedBuilder(
@@ -248,18 +247,26 @@ class _CategoryCarouselItem extends StatelessWidget {
                       maxHeight: double.infinity,
                       alignment: Alignment.center,
 
-                      child: (imageUrl == null || imageUrl!.isEmpty)
-                          ? const SizedBox.shrink()
-                          : CachedNetworkImage(
-                              imageUrl: imageUrl!,
-                              width: imageSize,
-                              height: imageSize,
-                              fit: BoxFit.contain,
-                              memCacheWidth: memCacheWidth,
-                              placeholder: (context, url) =>
-                                  const SizedBox.shrink(),
-                              errorWidget: (context, url, error) =>
-                                  const SizedBox.shrink(),
+                      // Decoded once, at the largest size the slide ever
+                      // draws, and scaled down by the FittedBox: keyed on the
+                      // animated size, every frame of every slide was a new
+                      // cache entry — a fresh decode of all five images.
+                      child: imageUrl == null
+                          ? null
+                          : SizedBox.square(
+                              dimension: imageSize,
+                              child: FittedBox(
+                                child: AppCachedNetworkImage(
+                                  imageUrl: imageUrl!,
+                                  width: maxImageSize,
+                                  height: maxImageSize,
+                                  fit: BoxFit.contain,
+                                  placeholderType: LoadingViewTypes.circular,
+                                  circularProgressSize: maxImageSize * 0.3,
+                                  // The circle's gradient shows through.
+                                  errorBackgroundColor: Colors.transparent,
+                                ),
+                              ),
                             ),
                     ),
                   ),

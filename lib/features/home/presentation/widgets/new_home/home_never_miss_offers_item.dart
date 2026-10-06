@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
@@ -224,23 +223,10 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                         SizedBox(
                           width: con.maxWidth * 0.25,
                           height: con.maxWidth * 0.25,
-                          child: vendorLogoUrl.isEmpty
-                              ? null
-                              : CachedNetworkImage(
-                                  imageUrl: vendorLogoUrl,
-                                  fit: BoxFit.contain,
-                                  memCacheWidth:
-                                      (con.maxWidth *
-                                              0.25 *
-                                              MediaQuery.devicePixelRatioOf(
-                                                context,
-                                              ))
-                                          .round(),
-                                  placeholder: (context, url) =>
-                                      const SizedBox.shrink(),
-                                  errorWidget: (context, url, error) =>
-                                      const SizedBox.shrink(),
-                                ),
+                          child: AppCachedNetworkImage(
+                            imageUrl: vendorLogoUrl,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ],
                     ),
