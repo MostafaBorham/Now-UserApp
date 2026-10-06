@@ -34,16 +34,28 @@ class GetMyOrdersViewModel extends PaginatedViewModel<OrderModel> {
       ? a.uuid == b.uuid
       : a.id != null && a.id == b.id;
 
+  /// The first-page load on its way, if any. The initial state is "loading"
+  /// too, so the state alone can't tell a load in flight from one that never
+  /// started — which left the tab on a spinner forever.
+  Future<void>? _firstLoad;
+
+  /// A second call while a first-page load is on its way joins it instead of
+  /// firing another request.
+  @override
+  Future<void> loadFirstPage() => _firstLoad ??= super
+      .loadFirstPage()
+      .whenComplete(() => _firstLoad = null);
+
   /// Loads the first page again while the loaded list stays on screen, and
   /// keeps that list if the request fails — for opening the tab, where
   /// statuses have moved on (pending → delivered) since the list was loaded at
   /// sign-in.
   ///
   /// Without a list yet it is a plain first load (the sign-in load failed, or
-  /// never ran); while that first load is still on its way it does nothing.
+  /// never ran), joining the one on its way if there is one.
   Future<void> refresh() async {
     if (!state.hasValue) {
-      if (!state.isLoading) await loadFirstPage();
+      await loadFirstPage();
       return;
     }
 

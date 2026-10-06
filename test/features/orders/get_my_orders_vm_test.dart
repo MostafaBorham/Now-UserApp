@@ -67,14 +67,34 @@ void main() {
     expect(_statuses(vm), <String>['pending']);
   });
 
-  test('with nothing loaded yet it waits for the load in flight', () async {
+  test('a load in flight is joined, not repeated', () async {
     final _ScriptedOrdersVM vm = _ScriptedOrdersVM(
-      <Either<Failure, PaginationModel<OrderModel>>>[],
+      <Either<Failure, PaginationModel<OrderModel>>>[
+        Right(_page(<String>['pending'])),
+      ],
+    );
+
+    final Future<void> signInLoad = vm.loadFirstPage();
+    await vm.refresh();
+    await signInLoad;
+
+    expect(vm.fetches, 1);
+    expect(_statuses(vm), <String>['pending']);
+  });
+
+  test('a load that never started is started (BUG-011, QA V2)', () async {
+    // The initial state is "loading" with nothing on its way: the tab used to
+    // wait on it forever.
+    final _ScriptedOrdersVM vm = _ScriptedOrdersVM(
+      <Either<Failure, PaginationModel<OrderModel>>>[
+        Right(_page(<String>['pending'])),
+      ],
     );
 
     await vm.refresh();
 
-    expect(vm.fetches, 0);
+    expect(vm.fetches, 1);
+    expect(_statuses(vm), <String>['pending']);
   });
 
   test('after a failed sign-in load it loads the first page', () async {
