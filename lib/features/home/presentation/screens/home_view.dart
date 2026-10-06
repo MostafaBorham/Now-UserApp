@@ -70,6 +70,10 @@ class _HomeViewState extends ConsumerState<HomeView>
 
   double? _anchor;
 
+  /// A session change waiting for the location re-check it started to settle,
+  /// so the two trigger one feed reload instead of two (BUG-003, QA V2).
+  bool _reloadAfterLocation = false;
+
   late final AppLifecycleListener _lifecycle;
 
   @override
@@ -209,7 +213,15 @@ class _HomeViewState extends ConsumerState<HomeView>
       SessionType? previous,
       SessionType next,
     ) {
-      if (previous != null && previous != next) _loadFeed();
+      if (previous == null || previous == next) return;
+      // The session change also re-resolves the location; one reload once that
+      // settles serves both.
+      if (ref.read(currentLocationProvider) ==
+          CurrentLocationStatus.resolving) {
+        _reloadAfterLocation = true;
+      } else {
+        _loadFeed();
+      }
     });
     // A location found after the feed loaded (on resume, or after a session
     // change) moves the nearby stores to it.
@@ -217,8 +229,13 @@ class _HomeViewState extends ConsumerState<HomeView>
       CurrentLocationStatus? previous,
       CurrentLocationStatus next,
     ) {
-      if (previous == CurrentLocationStatus.resolving &&
-          next == CurrentLocationStatus.ready &&
+      if (previous != CurrentLocationStatus.resolving ||
+          next != CurrentLocationStatus.ready) {
+        return;
+      }
+      final bool sessionChanged = _reloadAfterLocation;
+      _reloadAfterLocation = false;
+      if (sessionChanged ||
           CurrentLocationCacheService().getCurrentLocation() != null) {
         _loadFeed();
       }

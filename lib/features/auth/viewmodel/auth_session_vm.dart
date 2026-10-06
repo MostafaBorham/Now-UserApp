@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/database/cache_purger.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
@@ -213,8 +215,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     await Future.wait(<Future<void>>[
       _ref.read(getMyOrdersProvider.notifier).loadFirstPage(),
       _ref.read(getOrderToRateProvider.notifier).getOrderToRate(),
-      _ref.read(getMyAddressesProvider.notifier).loadFirstPage(),
-      _ref.read(defaultAddressProvider.notifier).getDefaultAddress(),
+      _loadAddresses(),
       _ref.read(getProfileProvider.notifier).getProfile(),
       // Saved cards are no longer fetched at boot: they are loaded fresh when
       // the wallet's "My Cards" / "Add Balance" buttons are tapped (see
@@ -232,6 +233,22 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     if (!mounted) return;
 
     state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
+  }
+
+  /// The address list, and the default only when the list can't tell it
+  /// (BUG-003, QA V2: `/addresses/default` went out at every launch). The
+  /// default provider picks the default up from page one as it lands, so the
+  /// call is needed only when page one has none and more pages follow (the
+  /// list is paged by id, 15 at a time) or when the list failed.
+  Future<void> _loadAddresses() async {
+    await _ref.read(getMyAddressesProvider.notifier).loadFirstPage();
+    if (!mounted) return;
+    if (_ref.read(defaultAddressProvider).valueOrNull != null) return;
+    final PaginationModel<AddressModel>? page = _ref
+        .read(getMyAddressesProvider)
+        .valueOrNull;
+    if (page != null && !page.hasMore) return;
+    await _ref.read(defaultAddressProvider.notifier).getDefaultAddress();
   }
 
   /// Drops everything the previous user left behind: first the in-memory
