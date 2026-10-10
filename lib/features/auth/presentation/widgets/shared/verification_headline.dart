@@ -22,7 +22,7 @@ class VerificationHeadline extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyles.style24SemiBold.copyWith(
+          style: AppTextStyles.style20SemiBold.copyWith(
             color: context.colors.tertiaryContainer,
           ),
         ),
