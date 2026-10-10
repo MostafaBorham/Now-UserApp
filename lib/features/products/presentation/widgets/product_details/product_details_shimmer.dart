@@ -4,8 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -251,7 +251,8 @@ class ProductDetailsShimmer extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: PrimaryAppPrefixIconButton(
+                    child: PrimaryAppButton(
+                      titleStyle: AppTextStyles.style14Medium,
                       title: LangKeys.addToCartKey.tr(),
                       buttonPadding: 10,
                       buttonRadius: 8,

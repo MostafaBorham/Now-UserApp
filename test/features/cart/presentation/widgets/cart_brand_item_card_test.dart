@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
@@ -110,13 +110,12 @@ void main() {
     expect(find.byIcon(Icons.info_outline_rounded), findsOneWidget);
 
     // Tap by widget, not by label: the label is localized.
-    final PrimaryAppPostfixIconButton button = tester
-        .widget<PrimaryAppPostfixIconButton>(
-          find.byType(PrimaryAppPostfixIconButton),
-        );
+    final PrimaryAppButton button = tester.widget<PrimaryAppButton>(
+      find.byType(PrimaryAppButton),
+    );
     expect(button.onTap, isNull);
 
-    await tester.tap(find.byType(PrimaryAppPostfixIconButton));
+    await tester.tap(find.byType(PrimaryAppButton));
     await tester.pumpAndSettle();
     expect(tapped, isFalse);
   });
@@ -141,7 +140,7 @@ void main() {
     expect(pill.blockedReason, isNull);
     expect(find.byIcon(Icons.info_outline_rounded), findsNothing);
 
-    await tester.tap(find.byType(PrimaryAppPostfixIconButton));
+    await tester.tap(find.byType(PrimaryAppButton));
     await tester.pumpAndSettle();
     expect(tapped, isTrue);
   });

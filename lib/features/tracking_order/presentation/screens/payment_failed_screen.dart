@@ -5,7 +5,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
 
 import '../components/order_amount_card.dart';
@@ -52,7 +53,8 @@ class PaymentFailedScreen extends StatelessWidget {
                 ),
               ),
               12.hSpace,
-              PrimaryAppPrefixIconButton(
+              PrimaryAppButton(
+                titleStyle: AppTextStyles.style14Medium,
                 title: LangKeys.retryKey.tr(),
                 buttonPadding: 16,
                 prefixIcon: Assets.media.images.svg.retryIcon.svg(

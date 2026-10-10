@@ -10,7 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rating_stars.dart';
@@ -185,7 +185,8 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                   color: Colors.transparent,
                   shadowColor: colors.secondaryFixedDim.withValues(alpha: 0.33),
                   borderRadius: BorderRadius.circular(14),
-                  child: PrimaryAppPrefixIconButton(
+                  child: PrimaryAppButton(
+                    titleStyle: AppTextStyles.style14Medium,
                     isLoading: isAddingToCart,
                     onTap: () {
                       if (product.id == null) return;

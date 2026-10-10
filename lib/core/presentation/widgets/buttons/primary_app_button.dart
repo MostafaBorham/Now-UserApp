@@ -11,11 +11,23 @@ class PrimaryAppButton extends StatelessWidget {
     this.isLoading = false,
     this.isDisabled = false,
     this.titleStyle,
+    this.prefixIcon,
+    this.postfixIcon,
+    this.buttonColor,
+    this.buttonRadius = 8,
   });
 
   final String title;
   final VoidCallback? onTap;
   final double buttonPadding;
+  final double buttonRadius;
+
+  /// Overrides the primary fill; a disabled button is grey regardless.
+  final Color? buttonColor;
+
+  /// Shown before / after the title, scaled down with it when space is short.
+  final Widget? prefixIcon;
+  final Widget? postfixIcon;
 
   /// Overrides the default 18/SemiBold label style.
   final TextStyle? titleStyle;
@@ -34,7 +46,7 @@ class PrimaryAppButton extends StatelessWidget {
     // disabled colors are the same and only isDisabled picks between them.
     final Color background = isDisabled
         ? colors.neutral500.withValues(alpha: 0.3)
-        : colors.primary500Main;
+        : buttonColor ?? colors.primary500Main;
     final Color foreground = isDisabled ? colors.neutral500 : colors.white;
     return ElevatedButton(
       onPressed: (isLoading || isDisabled) ? null : onTap,
@@ -52,7 +64,9 @@ class PrimaryAppButton extends StatelessWidget {
         padding: EdgeInsets.all(buttonPadding + 2),
         minimumSize: const Size.fromHeight(0),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(buttonRadius),
+        ),
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -60,7 +74,14 @@ class PrimaryAppButton extends StatelessWidget {
           // Hidden, not removed, so the button keeps its height while loading.
           Opacity(
             opacity: isLoading ? 0 : 1,
-            child: FittedBox(fit: BoxFit.scaleDown, child: Text(title)),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [?prefixIcon, Text(title), ?postfixIcon],
+              ),
+            ),
           ),
           if (isLoading)
             SizedBox.square(

@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_postfix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -125,7 +125,8 @@ class CartItemCheckoutView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadiusGeometry.circular(999),
                     clipBehavior: Clip.antiAlias,
-                    child: PrimaryAppPostfixIconButton(
+                    child: PrimaryAppButton(
+                      titleStyle: AppTextStyles.style14Medium,
                       title: LangKeys.checkoutKey.tr(),
                       onTap: reason == null ? onCheckout : null,
                       postfixIcon: ReverseWidget(

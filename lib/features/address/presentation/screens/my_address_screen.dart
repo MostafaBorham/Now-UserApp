@@ -8,7 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/blocking_loading_overlay.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/lists/delete_swipe_background.dart';
@@ -150,7 +151,8 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
               padding: EdgeInsets.only(
                 top: MediaQuery.sizeOf(context).width * 0.05,
               ),
-              child: PrimaryAppPrefixIconButton(
+              child: PrimaryAppButton(
+                titleStyle: AppTextStyles.style14Medium,
                 onTap: () =>
                     context.pushNamed(AppRoutes.addNewAddressFromMapScreen),
                 title: LangKeys.addNewAddress.tr(),

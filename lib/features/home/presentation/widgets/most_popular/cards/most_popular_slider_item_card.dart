@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/white_gradient_overlay_effect.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
@@ -53,7 +53,8 @@ class MostPopularSliderItemCard extends StatelessWidget {
               children: [
                 _titleAndPriceSection(colors),
                 _ratingRow(colors),
-                PrimaryAppPrefixIconButton(
+                PrimaryAppButton(
+                  titleStyle: AppTextStyles.style14Medium,
                   title: context.tr(LangKeys.addToCartKey),
                   buttonRadius: 16,
                   buttonColor: colors.primaryFixedDim,

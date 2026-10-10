@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_form.dart';
 
 /// Bottom sheet for entering a new payment card. Opened from the
@@ -75,7 +75,8 @@ class AddNewCardBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          PrimaryAppPrefixIconButton(
+          PrimaryAppButton(
+            titleStyle: AppTextStyles.style14Medium,
             title: LangKeys.addKey.tr(),
             prefixIcon: Assets.media.images.svg.addCircle.svg(),
             onTap: () => context.pop(),

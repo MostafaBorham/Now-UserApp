@@ -6,7 +6,8 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -85,7 +86,8 @@ class ProductActionButtons extends ConsumerWidget {
         children: [
           Expanded(
             flex: 2,
-            child: PrimaryAppPrefixIconButton(
+            child: PrimaryAppButton(
+              titleStyle: AppTextStyles.style14Medium,
               isLoading: isAddingToCart,
               onTap: () {
                 final int productQuantity = ref.read(productQuantityProvider);

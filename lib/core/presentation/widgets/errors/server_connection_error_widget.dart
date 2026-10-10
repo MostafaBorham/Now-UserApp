@@ -6,7 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_prefix_icon_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 class ServerConnectionErrorWidget extends StatelessWidget {
   const ServerConnectionErrorWidget({
@@ -68,7 +68,8 @@ class ServerConnectionErrorWidget extends StatelessWidget {
               ),
               if (onRetry != null) ...[
                 15.hSpace,
-                PrimaryAppPrefixIconButton(
+                PrimaryAppButton(
+                  titleStyle: AppTextStyles.style14Medium,
                   title: LangKeys.retryKey.tr(),
                   onTap: onRetry,
                   prefixIcon: Assets.media.images.svg.retryIcon.svg(
