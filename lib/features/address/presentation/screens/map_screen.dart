@@ -183,7 +183,6 @@ class _AddNewAddressFromMapState extends ConsumerState<AddNewAddressFromMap> {
               aspectRatio: 7,
               child: PrimaryAppButton(
                 title: confirmLabel,
-                buttonPadding: 8,
                 titleStyle: AppTextStyles.style20SemiBold,
                 isLoading: isResolvingAddress,
                 isDisabled: _selectedLocation == null,

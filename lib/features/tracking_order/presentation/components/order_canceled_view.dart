@@ -56,13 +56,11 @@ class OrderCanceledView extends StatelessWidget {
         const SizedBox(height: 32),
         PrimaryAppButton(
           title: LangKeys.continueShoppingKey.tr(),
-          buttonPadding: 16,
           onTap: onContinueShopping,
         ),
         const SizedBox(height: 12),
         UnPrimaryAppButton(
           title: LangKeys.viewOrdersKey.tr(),
-          buttonPadding: 16,
           side: BorderSide(color: colors.neutral200),
           titleColor: colors.black,
           onTap: onViewOrders,

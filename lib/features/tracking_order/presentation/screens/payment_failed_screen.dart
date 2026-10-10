@@ -56,7 +56,6 @@ class PaymentFailedScreen extends StatelessWidget {
               PrimaryAppButton(
                 titleStyle: AppTextStyles.style14Medium,
                 title: LangKeys.retryKey.tr(),
-                buttonPadding: 16,
                 prefixIcon: Assets.media.images.svg.retryIcon.svg(
                   width: 18,
                   height: 18,
@@ -70,7 +69,6 @@ class PaymentFailedScreen extends StatelessWidget {
               12.hSpace,
               UnPrimaryAppButton(
                 title: LangKeys.backToOrderKey.tr(),
-                buttonPadding: 16,
                 side: BorderSide(
                   color: colors.neutral400.withValues(alpha: 0.5),
                 ),

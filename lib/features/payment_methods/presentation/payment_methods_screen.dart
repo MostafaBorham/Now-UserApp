@@ -116,7 +116,6 @@ class _BottomActions extends StatelessWidget {
         const SizedBox(height: 14),
         PrimaryAppButton(
           title: LangKeys.continueKey.tr(),
-          buttonPadding: 16,
           onTap: () => context.pushNamed(AppRoutes.phoneVerificationScreen),
         ),
         const SizedBox(height: 8),

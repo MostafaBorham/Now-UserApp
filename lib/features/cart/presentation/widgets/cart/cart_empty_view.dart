@@ -54,7 +54,6 @@ class CartEmptyView extends ConsumerWidget {
                   aspectRatio: 7,
                   child: PrimaryAppButton(
                     title: LangKeys.browseProductsKey.tr(),
-                    buttonPadding: 10,
                     onTap: () {
                       ref.read(mainTabIndexProvider.notifier).state = 0;
                       context.goNamed(AppRoutes.mainScreen);

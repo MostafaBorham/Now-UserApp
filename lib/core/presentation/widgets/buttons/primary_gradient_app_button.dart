@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 class PrimaryGradientAppButton extends StatelessWidget {
   const PrimaryGradientAppButton({
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12,
     required this.buttonGradient,
   });
 
   final String title;
   final GestureTapCallback? onTap;
-  final double? buttonPadding;
   final Gradient buttonGradient;
 
   @override
@@ -23,7 +22,8 @@ class PrimaryGradientAppButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: buttonPadding!, vertical: 4),
+        height: PrimaryAppButton.height,
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
           gradient: buttonGradient,
           borderRadius: BorderRadius.circular(8),

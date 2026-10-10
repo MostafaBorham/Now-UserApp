@@ -99,7 +99,6 @@ class ProductActionButtons extends ConsumerWidget {
                     );
               },
               title: LangKeys.addToCartKey.tr(),
-              buttonPadding: 10,
               buttonRadius: 8,
               prefixIcon: ReverseWidget(
                 child: Assets.media.images.svg.shoppingCartIcon.svg(
@@ -113,7 +112,6 @@ class ProductActionButtons extends ConsumerWidget {
             child: UnPrimaryAppButton(
               isLoading: isBuyNowLoading,
               title: LangKeys.buyNowKey.tr(),
-              buttonPadding: 10,
               onTap: () {
                 final int productQuantity = ref.read(productQuantityProvider);
                 ref.read(productBuyNowProvider.notifier).state = true;

@@ -139,7 +139,6 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                       title: LangKeys.cancelOrderKey.tr(),
                       buttonColor: colors.errorContainer,
                       titleColor: colors.white,
-                      buttonPadding: 16,
                       onTap: () => CancelOrderBottomSheet.show(
                         context,
                         orderUuid: widget.orderUuid,

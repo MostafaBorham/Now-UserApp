@@ -7,7 +7,6 @@ class PrimaryAppButton extends StatelessWidget {
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12,
     this.isLoading = false,
     this.isDisabled = false,
     this.titleStyle,
@@ -17,9 +16,11 @@ class PrimaryAppButton extends StatelessWidget {
     this.buttonRadius = 8,
   });
 
+  /// The one height every full-width button in the app shares.
+  static const double height = 54;
+
   final String title;
   final VoidCallback? onTap;
-  final double buttonPadding;
   final double buttonRadius;
 
   /// Overrides the primary fill; a disabled button is grey regardless.
@@ -61,20 +62,23 @@ class PrimaryAppButton extends StatelessWidget {
         textStyle: DefaultTextStyle.of(
           context,
         ).style.merge(titleStyle ?? AppTextStyles.style18SemiBold),
-        padding: EdgeInsets.all(buttonPadding + 2),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         minimumSize: const Size.fromHeight(0),
+        fixedSize: const Size.fromHeight(height),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(buttonRadius),
         ),
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Hidden, not removed, so the button keeps its height while loading.
-          Opacity(
-            opacity: isLoading ? 0 : 1,
-            child: FittedBox(
+      child: isLoading
+          ? SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: colors.white,
+              ),
+            )
+          : FittedBox(
               fit: BoxFit.scaleDown,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -82,17 +86,6 @@ class PrimaryAppButton extends StatelessWidget {
                 children: [?prefixIcon, Text(title), ?postfixIcon],
               ),
             ),
-          ),
-          if (isLoading)
-            SizedBox.square(
-              dimension: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: colors.white,
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -193,7 +193,6 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
               ),
               PrimaryAppButton(
                 title: LangKeys.continueKey.tr(),
-                buttonPadding: 16,
                 isLoading: isSaving,
                 onTap: _submit,
               ),

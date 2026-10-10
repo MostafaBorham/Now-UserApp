@@ -122,11 +122,7 @@ class ConfirmedOrderCard extends StatelessWidget {
               ),
             ],
           ),
-          PrimaryAppButton(
-            title: LangKeys.trackOrderKey.tr(),
-            buttonPadding: 8,
-            onTap: onTrack,
-          ),
+          PrimaryAppButton(title: LangKeys.trackOrderKey.tr(), onTap: onTrack),
         ],
       ),
     );

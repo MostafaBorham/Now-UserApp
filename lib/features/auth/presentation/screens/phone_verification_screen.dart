@@ -76,7 +76,6 @@ class _PhoneVerificationScreenState
                 const SizedBox(height: 28),
                 PrimaryAppButton(
                   title: LangKeys.continueKey.tr(),
-                  buttonPadding: 16,
                   isDisabled: !_isPhoneValid && !isRequestOtpLoading,
                   isLoading: isRequestOtpLoading,
                   onTap: () {

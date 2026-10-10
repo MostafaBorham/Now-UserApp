@@ -672,7 +672,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     // delivered — hide the button for every other status.
                     if (status is DeliveredStatus)
                       PrimaryButton(
-                        buttonPadding: 16,
                         title: LangKeys.submitAComplaintKey.tr(),
                         onTap: () => context.pushNamed(
                           AppRoutes.fileComplaintScreen,

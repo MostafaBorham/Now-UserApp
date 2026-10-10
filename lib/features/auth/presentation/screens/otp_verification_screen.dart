@@ -187,7 +187,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   const SizedBox(height: 28),
                   PrimaryAppButton(
                     title: LangKeys.continueKey.tr(),
-                    buttonPadding: 16,
                     isDisabled: !_isCodeComplete && !isVerifyOtpLoading,
                     isLoading: isVerifyOtpLoading,
                     onTap: () {

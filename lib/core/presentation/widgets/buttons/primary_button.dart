@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 
 class PrimaryButton extends StatelessWidget {
@@ -8,13 +9,12 @@ class PrimaryButton extends StatelessWidget {
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12, this.titleColor, this.buttonColor,
+    this.titleColor, this.buttonColor,
     this.isLoading = false,
   });
 
   final String title;
   final GestureTapCallback? onTap;
-  final double? buttonPadding;
   final Color? titleColor;
   final Color? buttonColor;
 
@@ -29,7 +29,8 @@ class PrimaryButton extends StatelessWidget {
       onTap: isLoading ? null : onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(buttonPadding!),
+        height: PrimaryAppButton.height,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: buttonColor?? colors.black.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(8),

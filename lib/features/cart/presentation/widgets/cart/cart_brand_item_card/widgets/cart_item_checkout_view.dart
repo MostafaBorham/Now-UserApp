@@ -133,7 +133,6 @@ class CartItemCheckoutView extends StatelessWidget {
                         child: Assets.media.images.svg.rightArrowBrokenIcon
                             .svg(),
                       ),
-                      buttonPadding: 8,
                     ),
                   ),
                 ),

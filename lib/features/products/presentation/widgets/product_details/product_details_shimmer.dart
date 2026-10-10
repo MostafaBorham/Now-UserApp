@@ -254,7 +254,6 @@ class ProductDetailsShimmer extends StatelessWidget {
                     child: PrimaryAppButton(
                       titleStyle: AppTextStyles.style14Medium,
                       title: LangKeys.addToCartKey.tr(),
-                      buttonPadding: 10,
                       buttonRadius: 8,
                       prefixIcon: Assets.media.images.svg.shoppingCartIcon
                           .svg(
@@ -265,7 +264,6 @@ class ProductDetailsShimmer extends StatelessWidget {
                   Expanded(
                     child: PrimaryAppButton(
                       title: '',
-                      buttonPadding: 10,
                     ),
                   ),
                 ],

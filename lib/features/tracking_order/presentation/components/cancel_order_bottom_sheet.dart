@@ -154,7 +154,6 @@ class _CancelOrderBottomSheetState
             title: LangKeys.yesCancelOrderKey.tr(),
             buttonColor: colors.errorContainer,
             titleColor: colors.white,
-            buttonPadding: 16,
             isLoading: isLoading,
             onTap: () async {
               final String? error = await ref
@@ -171,7 +170,6 @@ class _CancelOrderBottomSheetState
           const SizedBox(height: 12),
           UnPrimaryAppButton(
             title: LangKeys.keepOrderKey.tr(),
-            buttonPadding: 16,
             side: BorderSide(color: colors.neutral200),
             titleColor: colors.black,
             onTap: isLoading ? null : () => context.pop(),

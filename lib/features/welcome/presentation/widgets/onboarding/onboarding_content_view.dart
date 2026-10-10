@@ -88,34 +88,28 @@ class OnBoardingContentView extends ConsumerWidget {
             ],
           ),
           4.hSpace,
-          AspectRatio(
-            aspectRatio: 7,
-            child: PrimaryGradientAppButton(
-              // Not while the guest request runs: its answer resets the stack
-              // to main, removing the login screen from under the user.
-              onTap: isGuestTokenLoading
-                  ? null
-                  : () => context.pushNamed(AppRoutes.phoneVerificationScreen),
-              title: LangKeys.loginKey.tr(),
-              buttonGradient: screenGradient,
-            ),
+          PrimaryGradientAppButton(
+            // Not while the guest request runs: its answer resets the stack
+            // to main, removing the login screen from under the user.
+            onTap: isGuestTokenLoading
+                ? null
+                : () => context.pushNamed(AppRoutes.phoneVerificationScreen),
+            title: LangKeys.loginKey.tr(),
+            buttonGradient: screenGradient,
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: heightFactor * 0.01),
             child: OrDivider(),
           ),
-          AspectRatio(
-            aspectRatio: 7,
-            child: UnPrimaryGradientAppButton(
-              title: LangKeys.continueAsGuestKey.tr(),
-              isLoading: isGuestTokenLoading,
-              onTap: () {
-                ref
-                    .read(generateGuestTokenProvider.notifier)
-                    .generateGuestToken();
-              },
-              buttonGradient: screenGradient,
-            ),
+          UnPrimaryGradientAppButton(
+            title: LangKeys.continueAsGuestKey.tr(),
+            isLoading: isGuestTokenLoading,
+            onTap: () {
+              ref
+                  .read(generateGuestTokenProvider.notifier)
+                  .generateGuestToken();
+            },
+            buttonGradient: screenGradient,
           ),
         ],
       ),

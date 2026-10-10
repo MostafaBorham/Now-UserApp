@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 class UnPrimaryGradientAppButton extends StatelessWidget {
   const UnPrimaryGradientAppButton({
     super.key,
     required this.title,
     this.onTap,
-    this.buttonPadding = 12,
     required this.buttonGradient,
     this.backgroundColor,
     this.isLoading = false,
@@ -15,7 +15,6 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
 
   final String title;
   final GestureTapCallback? onTap;
-  final double? buttonPadding;
   final Gradient buttonGradient;
   final Color? backgroundColor;
 
@@ -28,6 +27,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
     return InkWell(
       onTap: isLoading ? null : onTap,
       child: Container(
+        height: PrimaryAppButton.height,
         padding: EdgeInsets.all(2),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
@@ -36,10 +36,7 @@ class UnPrimaryGradientAppButton extends StatelessWidget {
         ),
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(
-            horizontal: buttonPadding!,
-            vertical: 4,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: backgroundColor ?? colors.white,
             borderRadius: BorderRadius.circular(8),
