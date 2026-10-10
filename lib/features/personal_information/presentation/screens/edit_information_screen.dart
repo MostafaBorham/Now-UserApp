@@ -36,8 +36,7 @@ class EditInformationScreen extends ConsumerStatefulWidget {
 }
 
 class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
-  final TextEditingController _firstName = TextEditingController();
-  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _fullName = TextEditingController();
   final TextEditingController _email = TextEditingController();
 
   ProfileModel? _original;
@@ -77,17 +76,13 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
         .read(getProfileProvider)
         .valueOrNull;
     if (data != null) _prefill(data);
-    _firstName.addListener(_clearNameError);
-    _lastName.addListener(_clearNameError);
+    _fullName.addListener(_clearNameError);
     _email.addListener(_clearEmailError);
   }
 
   @override
   void dispose() {
-    _firstName
-      ..removeListener(_clearNameError)
-      ..dispose();
-    _lastName
+    _fullName
       ..removeListener(_clearNameError)
       ..dispose();
     _email.removeListener(_clearEmailError);
@@ -99,9 +94,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
   void _prefill(PersonalInformationData data) {
     final ProfileModel p = data.profile;
     _original = p;
-    final ({String first, String last}) name = splitFullName(p.fullName);
-    _firstName.text = name.first;
-    _lastName.text = name.last;
+    _fullName.text = p.fullName ?? '';
     _email.text = p.email ?? '';
     _phone = p.phone;
     _gender = p.gender;
@@ -117,18 +110,14 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     if (_emailError != null) setState(() => _emailError = null);
   }
 
-  /// The two boxes joined back into `full_name`. A name the user left as it
-  /// was keeps its stored spelling (spacing included), so opening and saving
-  /// the form never sends a name change nobody made.
+  /// A name the user left as it was keeps its stored spelling (outer spacing
+  /// included), so opening and saving the form never sends a name change
+  /// nobody made.
   String? get _editedFullName {
-    final String joined = joinFullName(_firstName.text, _lastName.text);
-    final ({String first, String last}) original = splitFullName(
-      _original?.fullName,
-    );
-    if (joined == joinFullName(original.first, original.last)) {
-      return _original?.fullName;
-    }
-    return _clean(joined);
+    final String? cleaned = _clean(_fullName.text);
+    return cleaned == _original?.fullName?.trim()
+        ? _original?.fullName
+        : cleaned;
   }
 
   ProfileModel get _edited => ProfileModel(
@@ -271,8 +260,7 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     // Same rule as the completion screen. An emptied name used to be saved as
     // `full_name: null`, which the backend accepts — and a user with no name
     // is sent straight back to the completion screen.
-    final String? nameError =
-        joinFullName(_firstName.text, _lastName.text).isEmpty
+    final String? nameError = _fullName.text.trim().isEmpty
         ? LangKeys.nameRequiredKey.tr()
         : null;
     final String? emailError = email.isEmpty || AppValidator.isValidEmail(email)
@@ -420,36 +408,16 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // The completion screen's two boxes, with its 40-char cap
-                      // per box.
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12,
-                        children: [
-                          Expanded(
-                            child: EditField(
-                              label: LangKeys.firstNameKey.tr(),
-                              controller: _firstName,
-                              leadingAsset: Assets.media.images.svg.pen.path,
-                              maxLength: 40,
-                              inputFormatters: <TextInputFormatter>[
-                                nameInputFormatter,
-                              ],
-                              errorText: _nameError,
-                            ),
-                          ),
-                          Expanded(
-                            child: EditField(
-                              label: LangKeys.lastNameKey.tr(),
-                              controller: _lastName,
-                              leadingAsset: Assets.media.images.svg.pen.path,
-                              maxLength: 40,
-                              inputFormatters: <TextInputFormatter>[
-                                nameInputFormatter,
-                              ],
-                            ),
-                          ),
+                      // Same cap as the completion screen.
+                      EditField(
+                        label: LangKeys.fullNameKey.tr(),
+                        controller: _fullName,
+                        leadingAsset: Assets.media.images.svg.pen.path,
+                        maxLength: 80,
+                        inputFormatters: <TextInputFormatter>[
+                          nameInputFormatter,
                         ],
+                        errorText: _nameError,
                       ),
                       const SizedBox(height: _fieldGap),
                       EditField(

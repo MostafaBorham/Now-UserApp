@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nowdelivery_user_app/core/formatters/name_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
@@ -26,11 +25,6 @@ import '../widgets/complete_profile/complete_profile_form.dart';
 /// whenever the server reports `profile_completed: false`, and the only way out
 /// is a successful save. Backing out would drop them into the app in exactly
 /// the state the flag exists to prevent.
-///
-/// The backend models the name as a single `full_name` (see [ProfileModel]);
-/// the two boxes here are the design's, and are joined on save
-/// ([joinFullName]). Edit profile shows the same two boxes and splits a stored
-/// name back with `splitFullName`.
 class CompleteProfileScreen extends ConsumerStatefulWidget {
   const CompleteProfileScreen({super.key});
 
@@ -40,8 +34,7 @@ class CompleteProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
-  final TextEditingController _firstName = TextEditingController();
-  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _email = TextEditingController();
 
   File? _avatar;
@@ -52,17 +45,13 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _firstName.addListener(_clearNameError);
-    _lastName.addListener(_clearNameError);
+    _fullNameController.addListener(_clearNameError);
     _email.addListener(_clearEmailError);
   }
 
   @override
   void dispose() {
-    _firstName
-      ..removeListener(_clearNameError)
-      ..dispose();
-    _lastName
+    _fullNameController
       ..removeListener(_clearNameError)
       ..dispose();
     _email
@@ -79,7 +68,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     if (_emailError != null) setState(() => _emailError = null);
   }
 
-  String get _fullName => joinFullName(_firstName.text, _lastName.text);
+  String get _fullName => _fullNameController.text.trim();
 
   Future<void> _pickAvatar() async {
     if (_isPicking) return;
@@ -181,8 +170,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                       ),
                       const SizedBox(height: 32),
                       CompleteProfileForm(
-                        firstName: _firstName,
-                        lastName: _lastName,
+                        fullName: _fullNameController,
                         email: _email,
                         nameError: _nameError,
                         emailError: _emailError,
