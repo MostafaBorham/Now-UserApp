@@ -7,11 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({
-    super.key,
-    required this.category,
-    this.onTap,
-  });
+  const CategoryCard({super.key, required this.category, this.onTap});
 
   final CategoryModel category;
   final VoidCallback? onTap;
@@ -19,6 +15,7 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color background = category.primaryColor ?? colors.secondary600;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -31,18 +28,18 @@ class CategoryCard extends StatelessWidget {
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: colors.secondary600,
+                color: background,
                 borderRadius: AppBorderRadius.brCircular10,
               ),
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
                   AppCachedNetworkImage(
-                    imageUrl: category.image??'',
+                    imageUrl: category.image ?? '',
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.contain,
-                    errorBackgroundColor: colors.secondary600,
+                    errorBackgroundColor: background,
                   ),
                   // White glow: the image fades to white at its bottom edge so
                   // the card blends into the surface below it, matching the
@@ -55,7 +52,10 @@ class CategoryCard extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           stops: const [0.6, 1],
-                          colors: [colors.white.withValues(alpha: 0), colors.white],
+                          colors: [
+                            colors.white.withValues(alpha: 0),
+                            colors.white,
+                          ],
                         ),
                       ),
                     ),

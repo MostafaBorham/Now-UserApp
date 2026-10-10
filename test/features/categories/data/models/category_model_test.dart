@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 
@@ -52,6 +54,18 @@ void main() {
       expect(CategoryModel.fromJson({'slug': 'x'}).image, isNull);
     });
 
+    test('primary_color is parsed; missing or malformed is null', () {
+      expect(
+        CategoryModel.fromJson({'primary_color': '#4BB749'}).primaryColor,
+        const Color(0xFF4BB749),
+      );
+      expect(CategoryModel.fromJson({}).primaryColor, isNull);
+      expect(
+        CategoryModel.fromJson({'primary_color': 'green'}).primaryColor,
+        isNull,
+      );
+    });
+
     test('numeric fields are coerced from num', () {
       final model = CategoryModel.fromJson({
         'id': 7,
@@ -75,6 +89,14 @@ void main() {
       expect(round['slug'], 'food');
       expect(round['name'], {'ar': 'طعام', 'en': 'Food'});
       expect(round['image'], {'download_url': 'https://cdn/x.png'});
+    });
+
+    test('primary_color survives the cache round-trip', () {
+      const Color translucent = Color(0x0A4BB749);
+      final round = CategoryModel.fromJson(
+        const CategoryModel(primaryColor: translucent).toJson(),
+      );
+      expect(round.primaryColor, translucent);
     });
 
     test('null descendants_count is written as 0', () {

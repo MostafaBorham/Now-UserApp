@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
@@ -17,6 +19,10 @@ class CategoryModel extends Equatable {
   final String? searchKeywords;
   final int? index;
   final bool? active;
+
+  /// Brand colour set in the dashboard, drawn behind the category's image.
+  /// Null when the category has none (e.g. vendor-submitted).
+  final Color? primaryColor;
   final String? adminStatus;
   final String? reviewedAt;
   final String? rejectionReason;
@@ -41,6 +47,7 @@ class CategoryModel extends Equatable {
     this.searchKeywords,
     this.index,
     this.active,
+    this.primaryColor,
     this.adminStatus,
     this.reviewedAt,
     this.rejectionReason,
@@ -71,6 +78,7 @@ class CategoryModel extends Equatable {
       searchKeywords: json['search_keywords']?.toString(),
       index: (json['index'] as num?)?.toInt(),
       active: json['active'] as bool?,
+      primaryColor: json.colorHex('primary_color'),
       adminStatus: json['admin_status']?.toString(),
       reviewedAt: json['reviewed_at']?.toString(),
       rejectionReason: json['rejection_reason']?.toString(),
@@ -100,6 +108,10 @@ class CategoryModel extends Equatable {
       'search_keywords': searchKeywords,
       'index': index,
       'active': active,
+      'primary_color': primaryColor
+          ?.toARGB32()
+          .toRadixString(16)
+          .padLeft(8, '0'),
       'admin_status': adminStatus,
       'reviewed_at': reviewedAt,
       'rejection_reason': rejectionReason,
@@ -127,6 +139,7 @@ class CategoryModel extends Equatable {
     searchKeywords,
     index,
     active,
+    primaryColor,
     adminStatus,
     reviewedAt,
     rejectionReason,
