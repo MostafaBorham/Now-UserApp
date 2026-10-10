@@ -9,10 +9,14 @@ class AppShimmer extends StatelessWidget {
     super.key,
     required this.child,
     this.enabled = true,
+    this.baseColor,
+    this.highlightColor,
   });
 
   final Widget child;
   final bool enabled;
+  final Color? baseColor;
+  final Color? highlightColor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,9 @@ class AppShimmer extends StatelessWidget {
     // swallows every pointer event for any shimmer built through this widget.
     return IgnorePointer(
       child: Shimmer.fromColors(
-        baseColor: colors.neutral500.withValues(alpha: 0.6),
-        highlightColor: colors.neutral500.withValues(alpha: 0.3),
+        baseColor: baseColor ?? colors.neutral500.withValues(alpha: 0.6),
+        highlightColor:
+            highlightColor ?? colors.neutral500.withValues(alpha: 0.3),
         child: child,
       ),
     );

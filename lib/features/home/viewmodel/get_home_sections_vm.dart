@@ -134,6 +134,7 @@ class GetHomeSectionsViewModel
     double? lat,
     double? lng,
   }) async {
+    _lastQuery = (platform: platform, lang: lang, lat: lat, lng: lng);
     state = const AsyncValue<List<HomeSectionModel>>.loading()
         .copyWithPrevious(state);
 
@@ -152,6 +153,21 @@ class GetHomeSectionsViewModel
         StackTrace.current,
       ).copyWithPrevious(state),
       (List<HomeSectionModel> sections) => AsyncValue.data(sections),
+    );
+  }
+
+  ({String platform, String lang, double? lat, double? lng})? _lastQuery;
+
+  /// Repeats the last [getHomeSections], for a retry from a screen with no
+  /// [HomeView] context to rebuild its arguments (the offers "View all" list).
+  Future<void> reload() async {
+    final q = _lastQuery;
+    if (q == null) return;
+    await getHomeSections(
+      platform: q.platform,
+      lang: q.lang,
+      lat: q.lat,
+      lng: q.lng,
     );
   }
 }

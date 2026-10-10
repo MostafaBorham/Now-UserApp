@@ -19,6 +19,7 @@ abstract class AppRoutes {
   static const String topBrandsScreen = 'top-brands';
   static const String mostPopularScreen = 'most-popular';
   static const String offersCannotWaitScreen = 'offers-cannot-wait';
+  static const String homeNeverMissOffersScreen = 'home-never-miss-offers';
   static const String notificationsScreen = 'notifications';
   static const String searchScreen = 'search';
   static const String allStoresScreen = 'all-stores';

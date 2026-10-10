@@ -445,4 +445,10 @@ abstract class LangKeys {
   // Home - live orders section
   static const String preparingKey = 'preparing';
   static const String onTheWayKey = 'onTheWay';
+
+  // Home - never miss offers "View all" screen
+  static const String neverMissOffersHeadlineFirstLineKey =
+      'neverMissOffersHeadlineFirstLine';
+  static const String neverMissOffersHeadlineSecondLineKey =
+      'neverMissOffersHeadlineSecondLine';
 }

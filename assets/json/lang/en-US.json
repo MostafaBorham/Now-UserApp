@@ -193,6 +193,8 @@
   "myWallet": "My Wallet",
   "nameHint": "Name ...",
   "nameRequired": "Please enter your name",
+  "neverMissOffersHeadlineFirstLine": "Catch these offers",
+  "neverMissOffersHeadlineSecondLine": "before they run out!",
   "newArrival": "New Arrival",
   "noAddress": "No Address",
   "noAddressResults": "No matching addresses",

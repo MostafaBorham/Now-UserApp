@@ -328,6 +328,16 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get discount =>
       const SvgGenImage('assets/media/images/svg/discount.svg');
 
+  /// File path: assets/media/images/svg/donot-miss-offers-badge-discount-icon-arabic.svg
+  SvgGenImage get donotMissOffersBadgeDiscountIconArabic => const SvgGenImage(
+    'assets/media/images/svg/donot-miss-offers-badge-discount-icon-arabic.svg',
+  );
+
+  /// File path: assets/media/images/svg/donot-miss-offers-badge-discount-icon-english.svg
+  SvgGenImage get donotMissOffersBadgeDiscountIconEnglish => const SvgGenImage(
+    'assets/media/images/svg/donot-miss-offers-badge-discount-icon-english.svg',
+  );
+
   /// File path: assets/media/images/svg/edit-icon.svg
   SvgGenImage get editIcon =>
       const SvgGenImage('assets/media/images/svg/edit-icon.svg');
@@ -693,6 +703,8 @@ class $AssetsMediaImagesSvgGen {
     discountBadge,
     discountTicketIcon,
     discount,
+    donotMissOffersBadgeDiscountIconArabic,
+    donotMissOffersBadgeDiscountIconEnglish,
     editIcon,
     edit,
     emptyAddToCart,

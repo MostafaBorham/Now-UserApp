@@ -26,6 +26,7 @@ import 'package:nowdelivery_user_app/features/categories/presentation/screens/ca
 import 'package:nowdelivery_user_app/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:nowdelivery_user_app/features/favourites/presentation/screens/favourites_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/most_popular_screen.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/screens/home_never_miss_offers_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/offers_cannot_wait_screen.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/top_brands_screen.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/screens/main_screen.dart';
@@ -258,6 +259,11 @@ abstract class AppRouter {
         name: AppRoutes.offersCannotWaitScreen,
         path: '/${AppRoutes.offersCannotWaitScreen}',
         builder: (context, state) => const OffersCannotWaitScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.homeNeverMissOffersScreen,
+        path: '/${AppRoutes.homeNeverMissOffersScreen}',
+        builder: (context, state) => const HomeNeverMissOffersScreen(),
       ),
       GoRoute(
         name: AppRoutes.notificationsScreen,

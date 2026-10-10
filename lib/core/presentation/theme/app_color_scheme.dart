@@ -86,6 +86,9 @@ class AppColorScheme {
 
 
   Color get orange900 => const Color(0xff923E0E);
+
+  Color get purple200 => const Color(0xffBAB3FF);
+  Color get purple800 => const Color(0xff43368E);
 }
 
 extension BuildContextColors on BuildContext {
