@@ -7,7 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 
 import '../components/order_amount_card.dart';
 import '../components/payment_error_banner.dart';
@@ -68,9 +68,13 @@ class PaymentFailedScreen extends StatelessWidget {
                 onTap: () {},
               ),
               12.hSpace,
-              UnPrimaryButton(
+              UnPrimaryAppButton(
                 title: LangKeys.backToOrderKey.tr(),
                 buttonPadding: 16,
+                side: BorderSide(
+                  color: colors.neutral400.withValues(alpha: 0.5),
+                ),
+                titleColor: colors.black,
                 onTap: () => context.pop(),
               ),
               12.hSpace,

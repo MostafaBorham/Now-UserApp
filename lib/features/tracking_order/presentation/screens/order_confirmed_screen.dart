@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -76,10 +76,13 @@ class OrderConfirmedScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                UnPrimaryButton(
+                UnPrimaryAppButton(
                   title: LangKeys.returnToHomePageKey.tr(),
                   backgroundColor: colors.neutral200.withValues(alpha: 0.2),
-                  borderColor: colors.neutral200.withValues(alpha: 0.7),
+                  side: BorderSide(
+                    color: colors.neutral200.withValues(alpha: 0.7),
+                  ),
+                  titleColor: colors.black,
                   onTap: () => _returnToHome(context, ref),
                 ),
                 16.hSpace,

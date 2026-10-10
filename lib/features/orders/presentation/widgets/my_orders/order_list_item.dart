@@ -12,7 +12,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -209,9 +209,13 @@ class OrderListItem extends ConsumerWidget {
                 if (showTrackButton) ...[
                   12.wSpace,
                   Expanded(
-                    child: UnPrimaryButton(
+                    child: UnPrimaryAppButton(
                       title: LangKeys.trackOrderKey.tr(),
                       buttonPadding: 8,
+                      side: BorderSide(
+                        color: colors.neutral400.withValues(alpha: 0.5),
+                      ),
+                      titleColor: colors.black,
                       onTap: () {
                         context.pushNamed(
                           AppRoutes.trackOrderScreen,

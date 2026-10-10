@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
@@ -169,10 +169,11 @@ class _CancelOrderBottomSheetState
             },
           ),
           const SizedBox(height: 12),
-          UnPrimaryButton(
+          UnPrimaryAppButton(
             title: LangKeys.keepOrderKey.tr(),
             buttonPadding: 16,
-            borderColor: colors.neutral200,
+            side: BorderSide(color: colors.neutral200),
+            titleColor: colors.black,
             onTap: isLoading ? null : () => context.pop(),
           ),
           const SizedBox(height: 8),

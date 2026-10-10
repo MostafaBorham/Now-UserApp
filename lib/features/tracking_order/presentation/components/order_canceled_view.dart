@@ -5,7 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 
 /// Success state shown inside the Cancel Order bottom sheet once the order is
 /// canceled: confirms it and offers to keep shopping or review orders.
@@ -60,10 +60,11 @@ class OrderCanceledView extends StatelessWidget {
           onTap: onContinueShopping,
         ),
         const SizedBox(height: 12),
-        UnPrimaryButton(
+        UnPrimaryAppButton(
           title: LangKeys.viewOrdersKey.tr(),
           buttonPadding: 16,
-          borderColor: colors.neutral200,
+          side: BorderSide(color: colors.neutral200),
+          titleColor: colors.black,
           onTap: onViewOrders,
         ),
         const SizedBox(height: 8),
