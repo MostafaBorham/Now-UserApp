@@ -11,7 +11,6 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/selectors/app_segmented_selector.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -427,8 +426,9 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                               ? LangKeys.enterValidMobileNumber
                               : LangKeys.completeAddressInfo,
                         ),
-                        child: PrimaryAppDisabledButton(
+                        child: PrimaryAppButton(
                           title: LangKeys.saveAddress.tr(),
+                          isDisabled: true,
                         ),
                       )
                     : PrimaryAppButton(

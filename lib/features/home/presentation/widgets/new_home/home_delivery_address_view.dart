@@ -15,7 +15,6 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -357,27 +356,23 @@ class _HomeDeliveryAddressViewState
                   ),
                 ),
               ),
-              (selectedLocation == null || _resolvingPick)
-                  ? PrimaryAppDisabledButton(
-                      title: LangKeys.confirmAddressKey.tr(),
-                    )
-                  : PrimaryAppButton(
-                      title: LangKeys.confirmAddressKey.tr(),
-                      // Make this the address the home page shows, then close the
-                      // sheet. The header watches [homeAddressProvider], so the
-                      // pick surfaces there without passing it back through pop.
-                      onTap: () {
-                        final AddressModel confirmed = selectedAddress!;
-                        ref.read(homeAddressProvider.notifier).state =
-                            confirmed;
-                        unawaited(
-                          CurrentLocationCacheService().saveCurrentLocation(
-                            confirmed,
-                          ),
-                        );
-                        context.pop();
-                      },
+              PrimaryAppButton(
+                title: LangKeys.confirmAddressKey.tr(),
+                isDisabled: selectedLocation == null || _resolvingPick,
+                // Make this the address the home page shows, then close the
+                // sheet. The header watches [homeAddressProvider], so the
+                // pick surfaces there without passing it back through pop.
+                onTap: () {
+                  final AddressModel confirmed = selectedAddress!;
+                  ref.read(homeAddressProvider.notifier).state = confirmed;
+                  unawaited(
+                    CurrentLocationCacheService().saveCurrentLocation(
+                      confirmed,
                     ),
+                  );
+                  context.pop();
+                },
+              ),
             ],
           ),
         ),

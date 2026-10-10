@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
-
 class PrimaryAppButton extends StatelessWidget {
   const PrimaryAppButton({
     super.key,
@@ -15,8 +14,8 @@ class PrimaryAppButton extends StatelessWidget {
   });
 
   final String title;
-  final GestureTapCallback? onTap;
-  final double? buttonPadding;
+  final VoidCallback? onTap;
+  final double buttonPadding;
 
   /// Overrides the default 18/SemiBold label style.
   final TextStyle? titleStyle;
@@ -31,45 +30,47 @@ class PrimaryAppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
-    return InkWell(
-      onTap: (isLoading || isDisabled) ? null : onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(buttonPadding!),
-        decoration: BoxDecoration(
-          color: isDisabled
-              ? colors.neutral500.withValues(alpha: 0.3)
-              : colors.primary500Main,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.transparent, width: 2),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Opacity(
-              opacity: isLoading ? 0.0 : 1.0,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: (titleStyle ?? AppTextStyles.style18SemiBold).copyWith(
-                    color: isDisabled ? colors.neutral500 : colors.white,
-                  ),
-                ),
+    // Loading disables taps but keeps the primary look, so the enabled and
+    // disabled colors are the same and only isDisabled picks between them.
+    final Color background = isDisabled
+        ? colors.neutral500.withValues(alpha: 0.3)
+        : colors.primary500Main;
+    final Color foreground = isDisabled ? colors.neutral500 : colors.white;
+    return ElevatedButton(
+      onPressed: (isLoading || isDisabled) ? null : onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: background,
+        disabledBackgroundColor: background,
+        foregroundColor: foreground,
+        disabledForegroundColor: foreground,
+        shadowColor: Colors.transparent,
+        // The button's own Material replaces the ambient text style rather
+        // than merging into it, so merge here or the theme's Cairo is lost.
+        textStyle: DefaultTextStyle.of(
+          context,
+        ).style.merge(titleStyle ?? AppTextStyles.style18SemiBold),
+        padding: EdgeInsets.all(buttonPadding + 2),
+        minimumSize: const Size.fromHeight(0),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Hidden, not removed, so the button keeps its height while loading.
+          Opacity(
+            opacity: isLoading ? 0 : 1,
+            child: FittedBox(fit: BoxFit.scaleDown, child: Text(title)),
+          ),
+          if (isLoading)
+            SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: colors.white,
               ),
             ),
-            if (isLoading)
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: colors.white,
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

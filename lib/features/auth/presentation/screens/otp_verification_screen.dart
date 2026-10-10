@@ -8,7 +8,6 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_disabled_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
@@ -186,24 +185,20 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                     ),
                   ),
                   const SizedBox(height: 28),
-                  !_isCodeComplete && !isVerifyOtpLoading
-                      ? PrimaryAppDisabledButton(
-                          title: LangKeys.continueKey.tr(),
-                          buttonPadding: 16,
-                        )
-                      : PrimaryAppButton(
-                          title: LangKeys.continueKey.tr(),
-                          buttonPadding: 16,
-                          isLoading: isVerifyOtpLoading,
-                          onTap: () {
-                            ref
-                                .read(verifyOtpProvider.notifier)
-                                .verifyOtp(
-                                  phone: widget.phoneNumber,
-                                  code: _otpController.text,
-                                );
-                          },
-                        ),
+                  PrimaryAppButton(
+                    title: LangKeys.continueKey.tr(),
+                    buttonPadding: 16,
+                    isDisabled: !_isCodeComplete && !isVerifyOtpLoading,
+                    isLoading: isVerifyOtpLoading,
+                    onTap: () {
+                      ref
+                          .read(verifyOtpProvider.notifier)
+                          .verifyOtp(
+                            phone: widget.phoneNumber,
+                            code: _otpController.text,
+                          );
+                    },
+                  ),
                 ],
               ),
             ),
