@@ -127,7 +127,7 @@ class _OtpBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64,
+      height: 55,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -147,7 +147,11 @@ class _OtpBox extends StatelessWidget {
               ),
             )
           : isActive
-          ? Container(width: 2, height: 26, color: context.colors.primary500Main)
+          ? Container(
+              width: 2,
+              height: 26,
+              color: context.colors.primary500Main,
+            )
           : null,
     );
   }
