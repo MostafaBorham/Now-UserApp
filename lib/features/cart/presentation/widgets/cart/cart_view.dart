@@ -181,8 +181,13 @@ class _CartViewState extends ConsumerState<CartView> {
                                 // its index.
                                 key: ValueKey<int>(cartVendor.vendor.id!),
                                 cartVendor: cartVendor,
-                                onCheckout: () =>
-                                    _checkout(vendorId: cartVendor.vendor.id!),
+                                // One store: the footer button checks it
+                                // out, so a second button is just noise.
+                                onCheckout: vendors.length == 1
+                                    ? null
+                                    : () => _checkout(
+                                        vendorId: cartVendor.vendor.id!,
+                                      ),
                               );
                             },
                             separatorBuilder: (context, index) {

@@ -144,4 +144,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(tapped, isTrue);
   });
+
+  // BUG-033: a single-store cart had this pill and the footer button doing the
+  // same thing. With no onCheckout the pill goes, but the reason stays.
+  testWidgets('no onCheckout: no pill, the blocked reason still shows', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      CartBrandItemCard(cartVendor: vendorOf(1, 'Panda', checkoutable: false)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PrimaryAppButton), findsNothing);
+    expect(find.byIcon(Icons.info_outline_rounded), findsOneWidget);
+  });
 }

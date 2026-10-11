@@ -26,7 +26,8 @@ class CartItemCheckoutView extends StatelessWidget {
 
   /// Reported to the parent, which drafts the order group for this store and
   /// navigates only once the request succeeded. Ignored while
-  /// [blockedReason] has something to say.
+  /// [blockedReason] has something to say. `null` hides the pill: in a
+  /// single-store cart the footer button checks out the same store (BUG-033).
   final VoidCallback? onCheckout;
 
   /// Why this store can't be checked out, or `null` when it can.
@@ -118,25 +119,26 @@ class CartItemCheckoutView extends StatelessWidget {
                   ],
                 ),
               ),
-              Flexible(
-                flex: 3,
-                child: Opacity(
-                  opacity: reason == null ? 1 : 0.5,
-                  child: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(999),
-                    clipBehavior: Clip.antiAlias,
-                    child: PrimaryAppButton(
-                      titleStyle: AppTextStyles.style14Medium,
-                      title: LangKeys.checkoutKey.tr(),
-                      onTap: reason == null ? onCheckout : null,
-                      postfixIcon: ReverseWidget(
-                        child: Assets.media.images.svg.rightArrowBrokenIcon
-                            .svg(),
+              if (onCheckout != null)
+                Flexible(
+                  flex: 3,
+                  child: Opacity(
+                    opacity: reason == null ? 1 : 0.5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadiusGeometry.circular(999),
+                      clipBehavior: Clip.antiAlias,
+                      child: PrimaryAppButton(
+                        titleStyle: AppTextStyles.style14Medium,
+                        title: LangKeys.checkoutKey.tr(),
+                        onTap: reason == null ? onCheckout : null,
+                        postfixIcon: ReverseWidget(
+                          child: Assets.media.images.svg.rightArrowBrokenIcon
+                              .svg(),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

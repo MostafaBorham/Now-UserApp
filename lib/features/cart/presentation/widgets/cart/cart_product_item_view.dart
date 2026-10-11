@@ -36,6 +36,13 @@ class CartProductItemView extends ConsumerStatefulWidget {
 }
 
 class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
+  /// Around the 20 dp + and − circles: a 44 × 40 tap target each, with the
+  /// extra width on the outer side so the circles stay 4 dp from the count.
+  static const EdgeInsetsDirectional _incTapPadding =
+      EdgeInsetsDirectional.fromSTEB(20, 10, 4, 10);
+  static const EdgeInsetsDirectional _decTapPadding =
+      EdgeInsetsDirectional.fromSTEB(4, 10, 20, 10);
+
   /// The quantity the server last confirmed for this line.
   ///
   /// Read straight off the line rather than mirrored into local state: the
@@ -216,27 +223,31 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                   ),
                   AbsorbPointer(
                     absorbing: isUpdating,
+                    // The circles stay 20 dp; padding grows their tap areas
+                    // (BUG-031).
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: 4,
                       children: [
                         InkWell(
                           onTap: _canIncrement
                               ? () => _updateQuantity(quantity + 1)
                               : null,
                           customBorder: const CircleBorder(),
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.add_rounded,
-                              size: 12,
-                              color: colors.black.withValues(
-                                alpha: _canIncrement ? 1 : 0.3,
+                          child: Padding(
+                            padding: _incTapPadding,
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.add_rounded,
+                                size: 12,
+                                color: colors.black.withValues(
+                                  alpha: _canIncrement ? 1 : 0.3,
+                                ),
                               ),
                             ),
                           ),
@@ -273,24 +284,27 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                               ? () => _updateQuantity(quantity - 1)
                               : _confirmRemove,
                           customBorder: const CircleBorder(),
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: colors.white,
-                              shape: BoxShape.circle,
+                          child: Padding(
+                            padding: _decTapPadding,
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: quantity > _minQuantity
+                                  ? Icon(
+                                      Icons.remove_rounded,
+                                      size: 12,
+                                      color: colors.neutral500,
+                                    )
+                                  : Assets.media.images.png.removeIcon.image(
+                                      width: 12,
+                                      color: colors.errorContainer,
+                                    ),
                             ),
-                            child: quantity > _minQuantity
-                                ? Icon(
-                                    Icons.remove_rounded,
-                                    size: 12,
-                                    color: colors.neutral500,
-                                  )
-                                : Assets.media.images.png.removeIcon.image(
-                                    width: 12,
-                                    color: colors.errorContainer,
-                                  ),
                           ),
                         ),
                       ],
