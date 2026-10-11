@@ -21,8 +21,9 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
     final store = ref.watch(storeProvider);
     final String deliveryTime =
         '${store.deliveryTime ?? 0} ${LangKeys.minutesKey.tr()}';
-    final String deliveryDistance =
-        '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}';
+    final String? deliveryDistance = store.distance == null
+        ? null
+        : '${formatDouble(store.distance)} ${LangKeys.kmKey.tr()}';
     final String deliveryFee = formatMoney(store.deliveryFee);
     return Column(
       spacing: 5,

@@ -57,9 +57,11 @@ class StoreCardView extends StatelessWidget {
     final String deliveryTime = hasStore
         ? (store!.deliveryTime ?? '0 ${LangKeys.minutesKey.tr()}')
         : '40-50 ${LangKeys.minutesKey.tr()}';
-    final String distance = hasStore
-        ? '${formatDouble(store!.distance)} ${LangKeys.kmKey.tr()}'
-        : '40 - 50 ${LangKeys.kmKey.tr()}';
+    final String? distance = !hasStore
+        ? '40 - 50 ${LangKeys.kmKey.tr()}'
+        : store!.distance == null
+        ? null
+        : '${formatDouble(store!.distance)} ${LangKeys.kmKey.tr()}';
     final String deliveryFee = hasStore
         ? formatMoney(store!.deliveryFee)
         : '10';

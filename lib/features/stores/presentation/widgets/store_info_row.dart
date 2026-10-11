@@ -51,18 +51,22 @@ class StoreInfoRow extends StatelessWidget {
             ),
           ),
           5.wSpace,
-          Assets.media.images.svg.locationIcon.svg(
-            width: infoIconSize,
-            colorMapper: SvgTint(iconColor),
-          ),
-          Text(
-            distance ?? '-',
-            style: AppTextStyles.style12Medium.copyWith(
-              color: textColor,
-              fontSize: infoFontSize,
+          // No distance (no location to measure from) leaves the pair out:
+          // it used to read "0 km" or "-" (BUG-004).
+          if (distance != null) ...[
+            Assets.media.images.svg.locationIcon.svg(
+              width: infoIconSize,
+              colorMapper: SvgTint(iconColor),
             ),
-          ),
-          5.wSpace,
+            Text(
+              distance!,
+              style: AppTextStyles.style12Medium.copyWith(
+                color: textColor,
+                fontSize: infoFontSize,
+              ),
+            ),
+            5.wSpace,
+          ],
           ReverseWidget(
             child: Assets.media.images.svg.shippingIcon.svg(
               width: infoIconSize,
