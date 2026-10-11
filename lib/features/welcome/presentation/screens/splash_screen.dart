@@ -72,7 +72,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (next is AsyncError) {
         _appInfoSub?.close();
         _appInfoSub = null;
-        ref.invalidate(getAppInfoProvider);
+        _invalidateAfterNotify(getAppInfoProvider);
       }
     });
 
@@ -87,14 +87,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (next is AsyncError) {
         _appCategoriesSub?.close();
         _appCategoriesSub = null;
-        ref.invalidate(getAppCategoriesProvider);
+        _invalidateAfterNotify(getAppCategoriesProvider);
       }
     });
 
     // Warm up the (kept-alive) welcome-voucher provider so the empty cart and
-    // guest settings reuse the code instead of refetching. The repo already
-    // falls back to the cached code when the server is unreachable, so this only
-    // reaches an error state when both the server fails and the cache is empty —
+    // guest settings reuse the code instead of refetching. It errors when the
+    // server refuses the code (switched off) or, offline, with no cached code —
     // in which case drop the subscription and invalidate the errored instance so
     // it is recreated (and refetched) the next time a screen opens it.
     _welcomeVoucherSub = ref.listenManual(welcomeVoucherProvider, (
@@ -104,10 +103,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (next is AsyncError) {
         _welcomeVoucherSub?.close();
         _welcomeVoucherSub = null;
-        ref.invalidate(welcomeVoucherProvider);
+        _invalidateAfterNotify(welcomeVoucherProvider);
       }
     });
   }
+
+  /// Invalidates a warm-up provider after the notification that reported its
+  /// error, not inside it: disposing a StateNotifier from its own listener loop
+  /// throws "Concurrent modification during iteration" — which a welcome code
+  /// the server refuses triggered on every start.
+  void _invalidateAfterNotify(ProviderOrFamily provider) =>
+      Future<void>.microtask(() {
+        if (mounted) ref.invalidate(provider);
+      });
 
   @override
   Widget build(BuildContext context) {
