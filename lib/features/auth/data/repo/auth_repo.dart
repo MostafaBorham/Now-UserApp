@@ -96,8 +96,7 @@ class AuthRepo {
       return await readApiResponse(response, requireSuccessFlag: true).fold(
         (Failure failure) async => Left<Failure, UserModel>(failure),
         (Map<String, dynamic> body) async {
-          final Map<String, dynamic> data =
-              body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+          final Map<String, dynamic> data = responseData(body);
           final String accessToken = data['access_token'] as String? ?? '';
           final String refreshToken = data['refresh_token'] as String? ?? '';
 

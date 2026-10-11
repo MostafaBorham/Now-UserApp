@@ -113,7 +113,7 @@ class FavouritesRepo {
       final Response response = await request();
       return readApiResponse(response).map(
         (Map<String, dynamic> body) =>
-            parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+            parse(responseData(body)),
       );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;

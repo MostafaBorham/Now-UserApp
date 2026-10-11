@@ -154,7 +154,9 @@ class CategoriesRepo {
     String listKey,
     T Function(Map<String, dynamic> json) fromJson,
   ) {
-    final Map<String, dynamic> meta = data['meta'] as Map<String, dynamic>;
+    // A page without `meta` is still a page (BUG-003): the counters default.
+    final Map<String, dynamic> meta =
+        data['meta'] as Map<String, dynamic>? ?? const <String, dynamic>{};
     final List<dynamic> rawItems = data[listKey] as List<dynamic>? ?? <dynamic>[];
     final List<T> items = rawItems
         .map((dynamic e) => fromJson(e as Map<String, dynamic>))
@@ -176,7 +178,7 @@ class CategoriesRepo {
       final Response response = await request();
       return readApiResponse(response).map(
         (Map<String, dynamic> body) =>
-            parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+            parse(responseData(body)),
       );
     } on DioException catch (exception) {
       final dynamic data = exception.response?.data;
@@ -192,7 +194,8 @@ class CategoriesRepo {
 
 PaginationModel<CategoryModel> _decodeCachedCategories(Object? decoded) {
   final Map<String, dynamic> data = decoded as Map<String, dynamic>;
-  final Map<String, dynamic> meta = data['meta'] as Map<String, dynamic>;
+  final Map<String, dynamic> meta =
+      data['meta'] as Map<String, dynamic>? ?? const <String, dynamic>{};
   final List<dynamic> rawItems =
       data['categories'] as List<dynamic>? ?? <dynamic>[];
   final List<CategoryModel> items = rawItems

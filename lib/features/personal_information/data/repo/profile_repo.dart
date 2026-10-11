@@ -114,7 +114,7 @@ class ProfileRepo {
       final Response response = await request();
       return readApiResponse(response).map(
         (Map<String, dynamic> body) =>
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{},
+            responseData(body),
       );
     } on DioException catch (exception) {
       final Response<dynamic>? response = exception.response;

@@ -52,3 +52,12 @@ Either<Failure, Map<String, dynamic>> readApiResponse(
 
   return Right<Failure, Map<String, dynamic>>(body);
 }
+
+/// The envelope's `data` object, or an empty one when it is missing or not an
+/// object. An empty list page can come as `"data": []`, and the `Map` cast that
+/// used to read it threw — the catch-all then reported "server connection
+/// failed" where the screen should have said there is nothing here (BUG-003).
+Map<String, dynamic> responseData(Map<String, dynamic> body) {
+  final dynamic data = body['data'];
+  return data is Map<String, dynamic> ? data : <String, dynamic>{};
+}

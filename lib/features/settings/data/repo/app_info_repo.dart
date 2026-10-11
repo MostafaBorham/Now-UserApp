@@ -41,7 +41,7 @@ class AppInfoRepo {
       final Response response = await _appInfoApiService.getAppInfo();
       return readApiResponse(response).map(
         (Map<String, dynamic> body) => AppInfoModel.fromJson(
-          body['data'] as Map<String, dynamic>? ?? <String, dynamic>{},
+          responseData(body),
         ),
       );
     } on DioException catch (exception) {

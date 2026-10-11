@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/remote/api/address_api_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/core/dio/api_response.dart';
 
 /// All data operations of the address feature.
 ///
@@ -38,8 +39,7 @@ class AddressRepo {
     return _fetch(
       () => _addressApiService.getMyAddresses(page: page),
       (Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         final List<dynamic> rawAddresses =
             data['addresses'] as List<dynamic>? ?? <dynamic>[];

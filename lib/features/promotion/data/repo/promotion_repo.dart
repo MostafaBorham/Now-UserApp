@@ -41,8 +41,7 @@ class PromotionRepo {
       final Response response = await _promotionApiService.getCoupons(page: page);
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         final Map<String, dynamic> paginationData =
             data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
@@ -83,8 +82,7 @@ class PromotionRepo {
       final Response response = await _promotionApiService.getCoupon(code);
 
       return readApiResponse(response).flatMap((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
         final Map<String, dynamic>? couponJson =
             data['coupon'] as Map<String, dynamic>?;
 

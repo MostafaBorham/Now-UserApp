@@ -182,7 +182,7 @@ class StoresRepo {
         }
 
         return Right<Failure, T>(
-          parse(body['data'] as Map<String, dynamic>? ?? <String, dynamic>{}),
+          parse(responseData(body)),
         );
       });
     } on DioException catch (exception) {

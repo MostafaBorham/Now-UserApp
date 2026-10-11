@@ -41,8 +41,7 @@ class WelcomeRepo {
       return await readApiResponse(response, requireSuccessFlag: true).fold(
         (Failure failure) async => Left<Failure, String>(failure),
         (Map<String, dynamic> body) async {
-          final Map<String, dynamic> data =
-              body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+          final Map<String, dynamic> data = responseData(body);
           final String guestToken = data['guest_token'] as String? ?? '';
 
           if (guestToken.isEmpty) {

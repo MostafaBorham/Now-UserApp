@@ -35,8 +35,7 @@ class OrdersRepo {
       );
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         final Map<String, dynamic> paginationData =
             data['pagination'] as Map<String, dynamic>? ?? <String, dynamic>{};
@@ -74,8 +73,7 @@ class OrdersRepo {
       );
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         return OrderModel.fromJson(data['order'] as Map<String, dynamic>?);
       });

@@ -36,8 +36,7 @@ class ProductsRepo {
       );
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         final List<ProductModel> products =
             (data['products'] as List<dynamic>? ?? <dynamic>[])
@@ -71,8 +70,7 @@ class ProductsRepo {
       final Response response = await _productsApiService.getProductDetails(productSlug: productSlug);
 
       return readApiResponse(response).map((Map<String, dynamic> body) {
-        final Map<String, dynamic> data =
-            body['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+        final Map<String, dynamic> data = responseData(body);
 
         return ProductModel.fromJson(data['product']);
       });
