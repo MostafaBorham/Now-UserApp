@@ -70,5 +70,21 @@ void main() {
       forStatus(422, data: <String, dynamic>{'message': 'Coupon expired'}),
       'Coupon expired',
     );
+    // A 404 names what is gone when the caller says so (A8).
+    final RequestOptions options = RequestOptions(path: '/orders/x');
+    expect(
+      ApiErrorHandler.messageForDio(
+        DioException(
+          requestOptions: options,
+          response: Response<dynamic>(
+            requestOptions: options,
+            statusCode: 404,
+            data: <String, dynamic>{'message': 'Order not found.'},
+          ),
+        ),
+        notFound: LangKeys.orderNotFoundKey,
+      ),
+      LangKeys.orderNotFoundKey,
+    );
   });
 }

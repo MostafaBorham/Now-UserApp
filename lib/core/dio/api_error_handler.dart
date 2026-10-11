@@ -16,16 +16,20 @@ class ApiErrorHandler {
   ///   "Server Error" or a proxy's HTML page;
   /// - a 405 → the generic message, not "Method POST is not allowed…";
   /// - anything else → the server's own message ([extractErrorMessage]), read
-  ///   from [body] when the caller decoded it (a plain-text request).
+  ///   from [body] when the caller decoded it (a plain-text request);
+  /// - a 404 → [notFound] when the caller names what is missing (a deleted
+  ///   order, product or store), never the server's English "not found".
   static String messageForDio(
     DioException exception, {
     Map<String, dynamic>? body,
+    String? notFound,
   }) {
     final Response<dynamic>? response = exception.response;
     if (response == null) return LangKeys.serverConnectionFailedKey;
     final int status = response.statusCode ?? 0;
     if (status >= 500 || status == 413) return LangKeys.serverUnavailableKey;
     if (status == 405) return _defaultMessage;
+    if (status == 404 && notFound != null) return notFound;
     final dynamic data = response.data;
     return extractErrorMessage(
       body ?? (data is Map<String, dynamic> ? data : null),

@@ -115,6 +115,7 @@ class StoresRepo {
       () => _storesApiService.getStoreDetails(storeId: storeId),
       (Map<String, dynamic> data) =>
           StoreModel.fromJson((data['store'] ?? data) as Map<String, dynamic>?),
+      notFound: LangKeys.storeUnavailableKey,
     );
   }
 
@@ -164,8 +165,9 @@ class StoresRepo {
   /// either a server-supplied message or a [LangKeys] key.
   Future<Either<Failure, T>> _guard<T>(
     Future<Response> Function() request,
-    T Function(Map<String, dynamic> data) parse,
-  ) async {
+    T Function(Map<String, dynamic> data) parse, {
+    String? notFound,
+  }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
@@ -184,7 +186,9 @@ class StoresRepo {
         return Right<Failure, T>(parse(responseData(body)));
       });
     } on DioException catch (exception) {
-      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
+      return Left(
+        Failure(ApiErrorHandler.messageForDio(exception, notFound: notFound)),
+      );
     } catch (_) {
       return const Left(Failure(LangKeys.somethingWentWrongKey));
     }

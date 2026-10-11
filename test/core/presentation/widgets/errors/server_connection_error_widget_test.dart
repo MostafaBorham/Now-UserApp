@@ -29,4 +29,19 @@ void main() {
     expect(find.text(LangKeys.loadFailedTitleKey), findsOneWidget);
     expect(find.text(LangKeys.serverConnectionFailedKey), findsNothing);
   });
+
+  // A8: a deleted order, product or store is an empty state, with no Retry.
+  testWidgets('a gone item reads as empty, not as a failure', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      ServerConnectionErrorWidget(
+        message: LangKeys.productUnavailableKey,
+        onRetry: () {},
+      ),
+    );
+    expect(find.text(LangKeys.productUnavailableKey), findsOneWidget);
+    expect(find.text(LangKeys.retryKey), findsNothing);
+  });
 }

@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/features/orders/viewmodel/cancel_order_vm.d
 
 import 'cancel_sheet_scaffold.dart';
 import 'order_canceled_view.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
 /// The [MainScreen] bottom-nav index of the My Orders tab (Home, Favourites,
 /// Cart, **My Orders**, Settings).
@@ -163,6 +164,13 @@ class _CancelOrderBottomSheetState
               if (!mounted) return;
               // On failure the notifier holds the error and the banner above
               // renders it; the sheet stays open so the user can retry.
+              if (error == LangKeys.orderCannotBeCancelledKey) {
+                // Refused: the order has most likely moved on (accepted,
+                // picked up), so the screen behind should show where it is.
+                ref
+                    .read(getOrderDetailsProvider(widget.orderUuid).notifier)
+                    .getOrderDetails();
+              }
               if (error != null) return;
               setState(() => _canceled = true);
             },

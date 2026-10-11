@@ -74,7 +74,14 @@ class OrdersRepo {
         return OrderModel.fromJson(data['order'] as Map<String, dynamic>?);
       });
     } on DioException catch (exception) {
-      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
+      return Left(
+        Failure(
+          ApiErrorHandler.messageForDio(
+            exception,
+            notFound: LangKeys.orderNotFoundKey,
+          ),
+        ),
+      );
     } catch (_) {
       return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
@@ -94,7 +101,15 @@ class OrdersRepo {
 
       return readApiResponse(response).map((_) => unit);
     } on DioException catch (exception) {
-      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
+      // The backend answers a refused cancel with any exception's own text
+      // (400), so the customer reads the app's reason instead (QA-003 A9).
+      return Left(
+        Failure(
+          exception.response == null
+              ? ApiErrorHandler.messageForDio(exception)
+              : LangKeys.orderCannotBeCancelledKey,
+        ),
+      );
     } catch (_) {
       return const Left(Failure(LangKeys.somethingWentWrongKey));
     }

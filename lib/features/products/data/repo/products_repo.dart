@@ -72,7 +72,14 @@ class ProductsRepo {
         return ProductModel.fromJson(data['product']);
       });
     } on DioException catch (exception) {
-      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
+      return Left(
+        Failure(
+          ApiErrorHandler.messageForDio(
+            exception,
+            notFound: LangKeys.productUnavailableKey,
+          ),
+        ),
+      );
     } catch (_) {
       // A parse error's text is a Dart type error, not a message for the
       // customer.

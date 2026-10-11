@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 class ServerConnectionErrorWidget extends StatelessWidget {
   const ServerConnectionErrorWidget({
@@ -32,8 +33,22 @@ class ServerConnectionErrorWidget extends StatelessWidget {
   /// with the scroll — mirrors [NoResultsWidget.isScrollable].
   final bool isScrollable;
 
+  /// What a 404 reports: the thing is gone, so there is nothing to retry and
+  /// no failure to blame (QA-003 A8).
+  static const Set<String> _gone = <String>{
+    LangKeys.orderNotFoundKey,
+    LangKeys.productUnavailableKey,
+    LangKeys.storeUnavailableKey,
+  };
+
   @override
   Widget build(BuildContext context) {
+    if (_gone.contains(message)) {
+      return NoResultsWidget(
+        isScrollable: isScrollable,
+        emptyMessage: message!.tr(),
+      );
+    }
     final AppColorScheme colors = context.colors;
     // The whole column is laid out at its natural design size, then scaled down
     // as one unit to fit the space this widget is given (a tab view is far
