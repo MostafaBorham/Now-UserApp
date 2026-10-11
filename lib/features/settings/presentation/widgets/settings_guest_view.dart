@@ -46,7 +46,7 @@ class SettingsGuestView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Top spacing lives inside the scroll view (owned by SettingsScreen)
-        // so it scrolls up with the content when the wave flattens on scroll.
+        // so it scrolls up with the content.
         const SizedBox(height: 57),
         // Welcome discount banner: the SVG carries the "BIG DISCOUNT / خصم
         // كبير" lettering as vectors, but its motorbike is a raster inside an

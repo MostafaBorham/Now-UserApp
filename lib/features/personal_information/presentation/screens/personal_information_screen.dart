@@ -88,7 +88,7 @@ class _ProfileBody extends StatelessWidget {
     return SingleChildScrollView(
       controller: scrollController,
       // Owns the top spacing AppWavedView drops when a scroll controller is
-      // wired in, so it scrolls up with the content and flattens the wave.
+      // wired in, so it scrolls up with the content.
       padding: const EdgeInsets.only(top: 57, bottom: 32),
       child: Column(
         children: [

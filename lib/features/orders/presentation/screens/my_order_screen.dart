@@ -57,7 +57,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         onRefresh: viewModel.loadFirstPage,
         onLoadNextPage: viewModel.loadNextPage,
         // Owns the top spacing AppWavedView drops when a scroll controller is
-        // wired in, so it scrolls up with the content and flattens the wave.
+        // wired in, so it scrolls up with the content.
         // The bottom clears the bar the main screen draws behind the body
         // (extendBody), so the last order isn't hidden.
         layout: PaginatedListLayout(

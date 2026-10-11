@@ -167,7 +167,7 @@ class _CartViewState extends ConsumerState<CartView> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             // Owns the top spacing AppWavedView drops when a
                             // scroll controller is wired in, so it scrolls up
-                            // with the content and flattens the wave.
+                            // with the content.
                             padding: const EdgeInsets.fromLTRB(3, 57, 3, 20),
                             itemBuilder: (context, index) {
                               final CartVendorModel cartVendor = vendors[index];

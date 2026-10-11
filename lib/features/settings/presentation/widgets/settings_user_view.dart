@@ -55,7 +55,7 @@ class SettingsUserView extends ConsumerWidget {
     return Column(
       children: [
         // Top spacing lives inside the scroll view so it scrolls up with the
-        // content when the wave flattens on scroll.
+        // content.
         const SizedBox(height: 57),
         // While loading, show a same-size shimmer avatar + name bar instead of
         // the default placeholder, then swap in the real picture and name.

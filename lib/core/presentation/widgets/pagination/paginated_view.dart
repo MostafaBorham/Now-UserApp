@@ -103,8 +103,8 @@ class PaginatedView<T> extends ConsumerWidget {
   final double nextPageThreshold;
 
   /// Drives the scroll view holding the items. Optional — pass it when the
-  /// screen needs to react to the list's scroll offset (e.g. an [AppWavedView]
-  /// that flattens its wave as the list scrolls away from the top). The empty
+  /// screen needs the list's scroll controller (e.g. an [AppWavedView], which
+  /// then leaves the top spacing to the list). The empty
   /// and first-page-error states scroll on their own and ignore it.
   final ScrollController? scrollController;
 

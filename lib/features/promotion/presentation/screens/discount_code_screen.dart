@@ -45,8 +45,7 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
           onRefresh: viewModel.loadFirstPage,
           onLoadNextPage: viewModel.loadNextPage,
           // The list owns the top spacing AppWavedView drops when a scroll
-          // controller is wired in, so it scrolls up with the cards and
-          // flattens the wave.
+          // controller is wired in, so it scrolls up with the cards.
           layout: PaginatedListLayout(
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: 16),

@@ -29,8 +29,8 @@ class FileComplaintScreen extends ConsumerStatefulWidget {
 class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
-  /// Drives the [AppWavedView] wave animation — the wave flattens while the
-  /// content is scrolled away from the top and restores once it settles back.
+  /// The body's scroll view; handed to [AppWavedView] too, which then leaves
+  /// the top spacing to it.
   final ScrollController _scrollController = ScrollController();
 
   List<File> _images = const [];
@@ -136,8 +136,7 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   // Owns the top spacing AppWavedView drops when a scroll
-                  // controller is wired in, so it scrolls up with the content
-                  // and flattens the wave.
+                  // controller is wired in, so it scrolls up with the content.
                   padding: const EdgeInsets.only(top: 57),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

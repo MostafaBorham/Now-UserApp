@@ -106,8 +106,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 // Owns the top spacing AppWavedView drops when a scroll
-                // controller is wired in, so it scrolls up with the content and
-                // flattens the wave.
+                // controller is wired in, so it scrolls up with the content.
                 padding: const EdgeInsets.only(top: 57),
                 child: Column(
                   spacing: 15,

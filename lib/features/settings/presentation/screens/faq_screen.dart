@@ -82,7 +82,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       // Owns the top spacing AppWavedView drops when a scroll
                       // controller is wired in, so it scrolls up with the
-                      // content and flattens the wave.
+                      // content.
                       padding: const EdgeInsets.only(top: 57),
                       itemCount: faqs.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 14),

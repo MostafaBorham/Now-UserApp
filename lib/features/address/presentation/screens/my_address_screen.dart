@@ -113,7 +113,7 @@ class _MyAddressScreenState extends ConsumerState<MyAddressScreen> {
                   onLoadNextPage: viewModel.loadNextPage,
                   // The list owns the top spacing AppWavedView drops when a
                   // scroll controller is wired in, so it scrolls up with the
-                  // cards and flattens the wave.
+                  // cards.
                   layout: const PaginatedListLayout(
                     separatorBuilder: _separator,
                     padding: EdgeInsets.only(top: 57),

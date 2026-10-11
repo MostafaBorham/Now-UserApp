@@ -11,7 +11,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/support/circular_
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 
-class AppWavedView extends StatefulWidget {
+/// A screen's wave header and white body. The wave stays put while the body
+/// scrolls (BUG-009); it used to flatten into a straight edge.
+class AppWavedView extends StatelessWidget {
   const AppWavedView({
     super.key,
     required this.body,
@@ -23,7 +25,8 @@ class AppWavedView extends StatefulWidget {
     this.canPop,
     this.bodyPadding,
     this.onCartTap,
-    this.scrollController, this.leading,
+    this.scrollController,
+    this.leading,
     this.actions,
   });
   final String appBarTitle;
@@ -37,42 +40,17 @@ class AppWavedView extends StatefulWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final EdgeInsets? bodyPadding;
+
+  /// Set when the body scrolls: its top spacing then belongs to the scroll
+  /// view (so it scrolls up with the content) and is dropped here.
   final ScrollController? scrollController;
-
-  @override
-  State<AppWavedView> createState() => _AppWavedViewState();
-}
-
-class _AppWavedViewState extends State<AppWavedView> {
-  bool _isFlattened = false;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.scrollController?.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    widget.scrollController?.removeListener(_onScroll);
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final ScrollController? controller = widget.scrollController;
-    if (controller == null || !controller.hasClients) return;
-    final bool flattened = controller.offset > 0;
-    if (flattened != _isFlattened) {
-      setState(() => _isFlattened = flattened);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Size screenSize = MediaQuery.sizeOf(context);
-    final EdgeInsets bodyPadding =
-        widget.bodyPadding ??
+    final EdgeInsets basePadding =
+        bodyPadding ??
         const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 57,
@@ -84,21 +62,19 @@ class _AppWavedViewState extends State<AppWavedView> {
     // Codes, Wallet, cards). Reserve the device bottom inset in the white body
     // padding instead, so content clears the bar without capping the gradient.
     final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
-    final EdgeInsets insetBodyPadding =
-        bodyPadding.copyWith(bottom: bodyPadding.bottom + bottomInset);
+    final EdgeInsets insetBodyPadding = basePadding.copyWith(
+      bottom: basePadding.bottom + bottomInset,
+    );
 
-    final EdgeInsets effectiveBodyPadding = widget.scrollController != null
+    final EdgeInsets effectiveBodyPadding = scrollController != null
         ? insetBodyPadding.copyWith(top: 0)
         : insetBodyPadding;
 
+    const TopWaveClipper waveClipper = TopWaveClipper();
 
-    final TopWaveClipper? waveClipper = _isFlattened
-        ? null
-        : const TopWaveClipper();
-
-    final Widget leading =
-        widget.leading ??
-        (widget.canPop ?? context.canPop()
+    final Widget leadingWidget =
+        leading ??
+        (canPop ?? context.canPop()
             ? InkWell(
                 onTap: () => Navigator.maybePop(context),
                 child: ReverseWidget(
@@ -118,28 +94,26 @@ class _AppWavedViewState extends State<AppWavedView> {
             : const SizedBox.shrink());
 
     final Widget trailing =
-        widget.hasCartIcon ||
-            widget.hasSupportIcon ||
-            (widget.actions?.isNotEmpty ?? false)
+        hasCartIcon || hasSupportIcon || (actions?.isNotEmpty ?? false)
         ? Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              ...?widget.actions,
-              if (widget.hasSupportIcon)
+              ...?actions,
+              if (hasSupportIcon)
                 CircularSupportIcon(
                   size: screenSize.width * 0.05,
                   onTap:
-                      widget.onSupportTap ??
+                      onSupportTap ??
                       () {
                         context.pushNamed(AppRoutes.supportScreen);
                       },
                 ),
-              if (widget.hasCartIcon)
+              if (hasCartIcon)
                 CircularCartButton(
                   size: screenSize.width * 0.05,
                   onTap:
-                      widget.onCartTap ??
+                      onCartTap ??
                       () {
                         context.pushNamed(AppRoutes.cartScreen);
                       },
@@ -182,13 +156,13 @@ class _AppWavedViewState extends State<AppWavedView> {
                         maintainState: true,
                         child: trailing,
                       ),
-                      leading,
+                      leadingWidget,
                     ],
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: widget.loadAppBarTitle
+                      child: loadAppBarTitle
                           ? Center(
                               child: AppShimmer(
                                 child: Container(
@@ -202,12 +176,12 @@ class _AppWavedViewState extends State<AppWavedView> {
                               ),
                             )
                           : Text(
-                              widget.appBarTitle,
+                              appBarTitle,
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.visible,
                               style: AppTextStyles.style24SemiBold.copyWith(
                                 color: colors.black,
-                                fontSize: screenSize.width*0.05,
+                                fontSize: screenSize.width * 0.05,
                               ),
                             ),
                     ),
@@ -220,7 +194,7 @@ class _AppWavedViewState extends State<AppWavedView> {
                         maintainSize: true,
                         maintainAnimation: true,
                         maintainState: true,
-                        child: leading,
+                        child: leadingWidget,
                       ),
                       trailing,
                     ],
@@ -249,7 +223,7 @@ class _AppWavedViewState extends State<AppWavedView> {
                           ),
                         ],
                       ),
-                      child: widget.body,
+                      child: body,
                     ),
                   ),
                 ),

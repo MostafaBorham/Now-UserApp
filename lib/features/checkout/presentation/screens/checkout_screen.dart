@@ -50,8 +50,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   // confirm and sent as the order `delivery_instructions`.
   final TextEditingController _instructionsController = TextEditingController();
 
-  // Drives the wave-flatten animation in [AppWavedView]: as the body scrolls
-  // off the top the header wave straightens out.
+  // The body's scroll view; handed to [AppWavedView] too, which then leaves
+  // the top spacing to it.
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -213,8 +213,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             child: SingleChildScrollView(
               controller: _scrollController,
               // Owns the top spacing AppWavedView drops when a scroll controller
-              // is wired in, so it scrolls up with the content and flattens the
-              // wave.
+              // is wired in, so it scrolls up with the content.
               padding: const EdgeInsets.only(top: 57),
               child: Column(
                 spacing: 16,

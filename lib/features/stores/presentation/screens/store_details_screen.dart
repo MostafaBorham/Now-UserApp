@@ -44,9 +44,8 @@ class StoreDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
-  // Wired to both the NestedScrollView (outer position) and AppWavedView so the
-  // top wave flattens into a straight edge while scrolled and restores at the
-  // top — same behavior as the settings screen.
+  // The NestedScrollView's outer position. AppWavedView gets it too, and the
+  // refresh indicator reads it to accept a pull only from the top.
   final ScrollController _scrollController = ScrollController();
 
   @override
