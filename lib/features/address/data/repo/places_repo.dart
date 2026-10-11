@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
-import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/remote/api/places_api_service.dart';
@@ -43,7 +42,7 @@ class PlacesRepo {
 
       final int statusCode = response.statusCode ?? 0;
       if (statusCode < 200 || statusCode >= 300) {
-        return Left(Failure(_extractPlacesError(body)));
+        return const Left(Failure(LangKeys.addressSearchFailedKey));
       }
 
       // `suggestions` is omitted entirely — not sent empty — when nothing
@@ -66,7 +65,7 @@ class PlacesRepo {
       return Left(Failure(_dioError(exception)));
     } catch (_) {
       // Never surface a raw exception string: it ends up in a snackbar.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -94,7 +93,7 @@ class PlacesRepo {
 
       final int statusCode = response.statusCode ?? 0;
       if (statusCode < 200 || statusCode >= 300) {
-        return Left(Failure(_extractPlacesError(body)));
+        return const Left(Failure(LangKeys.addressSearchFailedKey));
       }
 
       final Map<String, dynamic>? location =
@@ -111,31 +110,16 @@ class PlacesRepo {
       return Left(Failure(_dioError(exception)));
     } catch (_) {
       // Never surface a raw exception string: it ends up in a snackbar.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
-  /// Maps a [DioException] to a user-facing message.
-  ///
-  /// No response at all means we never reached Google (DNS, timeout, connection
-  /// dropped, request cancelled) — a different failure from one it answered
-  /// with, and one [ApiErrorHandler] would otherwise report as its generic
-  /// "something went wrong".
-  static String _dioError(DioException exception) {
-    final Response<dynamic>? response = exception.response;
-    if (response == null) return LangKeys.serverConnectionFailedKey;
-
-    final dynamic data = response.data;
-    return _extractPlacesError(data is Map<String, dynamic> ? data : null);
-  }
-
-  /// Places (New) reports failures as `{"error": {"message": ...}}`, one level
-  /// deeper than the app's own API, so [ApiErrorHandler] is fed the nested
-  /// object and falls back to its generic message when the shape differs.
-  static String _extractPlacesError(Map<String, dynamic>? body) {
-    final dynamic error = body?['error'];
-    return ApiErrorHandler.extractErrorMessage(
-      error is Map<String, dynamic> ? error : body,
-    );
-  }
+  /// Maps a [DioException] to a user-facing message. No response means Google
+  /// was never reached; any answer it gave is its own English, often about
+  /// the API key, so the customer reads the app's message instead (QA-003
+  /// A10).
+  static String _dioError(DioException exception) =>
+      exception.response == null
+      ? LangKeys.serverConnectionFailedKey
+      : LangKeys.addressSearchFailedKey;
 }

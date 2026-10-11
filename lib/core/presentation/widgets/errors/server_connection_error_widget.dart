@@ -16,8 +16,9 @@ class ServerConnectionErrorWidget extends StatelessWidget {
     this.isScrollable = false,
   });
 
-  /// Optional error details shown under the title. Falls back to the generic
-  /// "unable to reach servers" copy when null or empty.
+  /// Optional error details shown under the title (which it also picks: the
+  /// offline key gets the offline title). Falls back to the generic "something
+  /// went wrong" when null or empty.
   final String? message;
 
   /// Called when the user taps the retry button. The button is hidden when
@@ -48,8 +49,14 @@ class ServerConnectionErrorWidget extends StatelessWidget {
             spacing: 10,
             children: [
               Assets.media.images.svg.serverFailIcon.svg(width: 300),
+              // Titled by cause: it used to say "Failed to connect to the
+              // server" above an offline notice, a 404 and a server message
+              // alike (QA-003 A1).
               AutoSizeText(
-                LangKeys.serverConnectionFailedKey.tr(),
+                (message == LangKeys.noInternetConnectionKey
+                        ? LangKeys.noInternetTitleKey
+                        : LangKeys.loadFailedTitleKey)
+                    .tr(),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: AppTextStyles.style24Bold.copyWith(
@@ -58,7 +65,7 @@ class ServerConnectionErrorWidget extends StatelessWidget {
               ),
               AutoSizeText(
                 (message == null || message!.isEmpty)
-                    ? LangKeys.unableToReachServersKey.tr()
+                    ? LangKeys.somethingWentWrongKey.tr()
                     : message!.tr(),
                 textAlign: TextAlign.center,
                 maxLines: 4,

@@ -160,34 +160,15 @@ class AddressRepo {
 
       return Right<Failure, T>(parse(body));
     } on DioException catch (exception) {
-      final Response<dynamic>? response = exception.response;
-
-      // No response at all means we never reached the server (DNS, timeout,
-      // connection dropped, request cancelled). That is a different failure
-      // from one the server answered with, so it gets its own key rather than
-      // `ApiErrorHandler`'s generic one.
-      if (response == null) {
-        return Left<Failure, T>(
-          const Failure(LangKeys.serverConnectionFailedKey),
-        );
-      }
-      if (response.statusCode == 404 && onNotFound != null) {
+      if (exception.response?.statusCode == 404 && onNotFound != null) {
         return Right<Failure, T>(onNotFound());
       }
-
-      final dynamic data = response.data;
       return Left<Failure, T>(
-        Failure(
-          ApiErrorHandler.extractErrorMessage(
-            data is Map<String, dynamic> ? data : null,
-          ),
-        ),
+        Failure(ApiErrorHandler.messageForDio(exception)),
       );
     } catch (_) {
       // Never surface a raw exception string: it ends up in a snackbar.
-      return Left<Failure, T>(
-        const Failure(LangKeys.serverConnectionFailedKey),
-      );
+      return Left<Failure, T>(const Failure(LangKeys.somethingWentWrongKey));
     }
   }
 

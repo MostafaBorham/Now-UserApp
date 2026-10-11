@@ -47,9 +47,7 @@ class HomeSectionsRepo {
           );
         } catch (_) {
           // A 2xx that is not the feed's JSON — fall back as for any failure.
-          return _readFromCache(
-            const Failure(LangKeys.serverConnectionFailedKey),
-          );
+          return _readFromCache(const Failure(LangKeys.somethingWentWrongKey));
         }
         // Cached as it came, so nothing is re-encoded on the UI thread either.
         await _cacheHomeSections(body);
@@ -84,14 +82,15 @@ class HomeSectionsRepo {
     } on DioException catch (exception) {
       return Left(
         Failure(
-          ApiErrorHandler.extractErrorMessage(
-            _errorBody(exception.response?.data),
+          ApiErrorHandler.messageForDio(
+            exception,
+            body: _errorBody(exception.response?.data),
           ),
         ),
       );
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 

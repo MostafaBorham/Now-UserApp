@@ -117,23 +117,11 @@ class ProfileRepo {
             responseData(body),
       );
     } on DioException catch (exception) {
-      final Response<dynamic>? response = exception.response;
-
-      // No response at all means we never reached the server (DNS, timeout,
-      // connection dropped, request cancelled). That is a different failure from
-      // one the server answered with, and only this kind may fall back to cache
-      // — so it gets its own key rather than `ApiErrorHandler`'s generic one.
-      if (response == null) {
-        return const Left(Failure(LangKeys.serverConnectionFailedKey));
-      }
-
-      final dynamic data = response.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      // No response at all comes back as `serverConnectionFailed`, the one
+      // server failure that may fall back to the cache ([_isUnreachable]).
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 

@@ -135,7 +135,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
       final Object? error = ref.read(updateProfileProvider).error;
       AppToast.showError(
         context,
-        error?.toString() ?? LangKeys.serverConnectionFailedKey,
+        error?.toString() ?? LangKeys.somethingWentWrongKey,
       );
     }
   }

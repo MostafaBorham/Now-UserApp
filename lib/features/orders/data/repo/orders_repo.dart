@@ -50,13 +50,9 @@ class OrdersRepo {
         return PaginationModel<OrderModel>.fromJson(paginationData, orders);
       });
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -78,13 +74,9 @@ class OrdersRepo {
         return OrderModel.fromJson(data['order'] as Map<String, dynamic>?);
       });
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -102,13 +94,9 @@ class OrdersRepo {
 
       return readApiResponse(response).map((_) => unit);
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -159,13 +147,9 @@ class OrdersRepo {
         return order;
       });
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -211,13 +195,9 @@ class OrdersRepo {
 
       return readApiResponse(response, requireSuccessFlag: true).map((_) => unit);
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }

@@ -49,15 +49,11 @@ class PurchaseVoucherRepo {
         );
       });
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // A parse error's text is a Dart type error, not a message for the
       // customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }

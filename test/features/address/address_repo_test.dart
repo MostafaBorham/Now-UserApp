@@ -261,7 +261,8 @@ void main() {
 
       final String message = failureMessage(result);
       expect(message, isNot(contains('is not a subtype of')));
-      expect(message, LangKeys.serverConnectionFailedKey);
+      // The server did answer, so not a connection message (QA-003 A2).
+      expect(message, LangKeys.somethingWentWrongKey);
     });
   });
 }

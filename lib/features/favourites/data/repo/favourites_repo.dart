@@ -116,13 +116,9 @@ class FavouritesRepo {
             parse(responseData(body)),
       );
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -180,16 +176,9 @@ class FavouritesRepo {
         ),
       );
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      return Left(
-        Failure(
-          ApiErrorHandler.extractErrorMessage(
-            data is Map<String, dynamic> ? data : null,
-          ),
-        ),
-      );
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }

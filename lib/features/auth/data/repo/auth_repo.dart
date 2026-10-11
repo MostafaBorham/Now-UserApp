@@ -48,10 +48,10 @@ class AuthRepo {
       );
       if (retryAfter != null) return Right(retryAfter);
 
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -102,7 +102,9 @@ class AuthRepo {
 
           if (accessToken.isEmpty) {
             return Left<Failure, UserModel>(
-              Failure(ApiErrorHandler.extractErrorMessage(body)),
+              // A 2xx without a token: its `message` is a success text ("Guest
+              // token issued."), not an error to show (QA-003 A11).
+              const Failure(LangKeys.somethingWentWrongKey),
             );
           }
 
@@ -125,14 +127,10 @@ class AuthRepo {
     } on CacheException catch (exception) {
       return Left(Failure(exception.message));
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -171,7 +169,7 @@ class AuthRepo {
       );
     } catch (_) {
       // An exception's text is a Dart error, not a message for the customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }

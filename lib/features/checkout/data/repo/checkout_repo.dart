@@ -43,15 +43,11 @@ class CheckoutRepo {
             : CheckoutModel.fromSingleStoreJson(data);
       });
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // A parse error's text is a Dart type error, not a message for the
       // customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -103,15 +99,11 @@ class CheckoutRepo {
         ),
       );
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // A parse error's text is a Dart type error, not a message for the
       // customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -151,19 +143,21 @@ class CheckoutRepo {
       // defined (`checkout.errors.*`), so the customer read the raw key.
       switch (exception.response?.statusCode) {
         case 402:
-          return const Left(Failure(LangKeys.cardDeclinedTitleKey));
+          return const Left(Failure(LangKeys.orderCardDeclinedKey));
         case 409:
           return const Left(Failure(LangKeys.orderItemOutOfStockKey));
       }
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody = data is Map<String, dynamic>
-          ? data
-          : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      // No answer to a place request: the order may exist all the same, so
+      // send the customer to My Orders before a retry (QA-003 A15).
+      if (exception.response == null &&
+          exception.type != DioExceptionType.cancel) {
+        return const Left(Failure(LangKeys.orderUnconfirmedKey));
+      }
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
       // A parse error's text is a Dart type error, not a message for the
       // customer.
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }

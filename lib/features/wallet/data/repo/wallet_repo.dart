@@ -422,12 +422,9 @@ class WalletRepo {
         (_) {},
       );
     } on DioException catch (exception) {
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 
@@ -463,12 +460,9 @@ class WalletRepo {
           exception.type != DioExceptionType.cancel) {
         return Left(Failure(noResponseMessage));
       }
-      final dynamic data = exception.response?.data;
-      final Map<String, dynamic>? responseBody =
-          data is Map<String, dynamic> ? data : null;
-      return Left(Failure(ApiErrorHandler.extractErrorMessage(responseBody)));
+      return Left(Failure(ApiErrorHandler.messageForDio(exception)));
     } catch (_) {
-      return const Left(Failure(LangKeys.serverConnectionFailedKey));
+      return const Left(Failure(LangKeys.somethingWentWrongKey));
     }
   }
 }
