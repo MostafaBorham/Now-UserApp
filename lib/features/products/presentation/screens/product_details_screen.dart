@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/features/products/data/models/product_attribute_model.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_model_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_options_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
@@ -49,6 +50,13 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
       .read(getProductDetailsProvider(widget.productSlug).notifier)
       .getProductDetails();
 
+  void _selectAttribute(int? productId, String? attributeId, int? valueId) {
+    if (productId == null || attributeId == null || valueId == null) return;
+    ref
+        .read(productOptionsProvider(productId).notifier)
+        .selectAttributeValue(attributeId, valueId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -82,7 +90,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 // Idempotent so pull-to-refresh never drops the shopper's count.
                 final int minQuantity = product.minOrderQuantity ?? 1;
                 if (ref.read(productQuantityProvider) < minQuantity) {
-                  ref.read(productQuantityProvider.notifier).state = minQuantity;
+                  ref.read(productQuantityProvider.notifier).state =
+                      minQuantity;
                 }
               });
               final List<String> keyFeatures = (product.mainFeatures ?? [])
@@ -96,149 +105,125 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         (spec.value?.isNotEmpty ?? false),
                   )
                   .toList();
+              final bool canBuy =
+                  (product.stock ?? 1) >= 1 && product.id != null;
               return ProviderScope(
                 overrides: [productProvider.overrideWithValue(product)],
-                child: AppRefreshIndicator(
-                  onRefresh: _fetchProductDetails,
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.only(top: 57),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Column(
-                        spacing: 16,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            child: Column(
-                              spacing: 16,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    if (product.activeDeal != null &&
-                                        (product.activeDeal!.discountValue ??
-                                                0) >
-                                            0)
-                                      ProductDiscountTicket(
-                                        deal: product.activeDeal!,
-                                      )
-                                    else
-                                      const SizedBox.shrink(),
-                                    CircularAppFavouriteIcon(
-                                      favouriteType: FavouriteType.product,
-                                      itemId: product.id,
-                                      isFavourite: product.isFavorite ?? false,
-                                      onFavouriteChanged: (p0) {},
-                                    ),
-                                  ],
-                                ),
-                                AppSlider(
-                                  sliderItems: (product.images ?? [])
-                                      .map(
-                                        (image) => AppCachedNetworkImage(
-                                          imageUrl: image,
-                                          height: double.infinity,
-                                          width: double.infinity,
-                                          fit: BoxFit.contain,
-                                          placeholderType:
-                                              LoadingViewTypes.circular,
-                                          circularProgressSize: 50,
-                                        ),
-                                      )
-                                      .toList(),
-                                  itemAspectRatio: 1.5,
-                                ),
-                                const ProductMainInfoCard(isTrusted: false),
-                                if (product.colors?.isNotEmpty ?? false)
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: ProductColorsSelector(
-                                      colors: product.colors!,
-                                      onColorSelected: productId == null
-                                          ? null
-                                          : (color) => ref
-                                                .read(
-                                                  productOptionsProvider(
-                                                    productId,
-                                                  ).notifier,
-                                                )
-                                                .selectColor(color.hex),
-                                    ),
-                                  ),
-                                ...(product.attributes ?? [])
-                                    .where(
-                                      (attribute) =>
-                                          attribute.values?.isNotEmpty ?? false,
+                // The add/buy footer is pinned under the scroll view, so it
+                // never scrolls away (BUG-028).
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: AppRefreshIndicator(
+                        onRefresh: _fetchProductDetails,
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(16, 57, 16, 16),
+                          child: Column(
+                            spacing: 16,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if ((product.activeDeal?.discountValue ?? 0) >
+                                      0)
+                                    ProductDiscountTicket(
+                                      deal: product.activeDeal!,
                                     )
-                                    .map(
-                                      (attribute) => Align(
-                                        alignment:
-                                            AlignmentDirectional.centerStart,
-                                        child: ProductSizeSelector(
-                                          attribute: attribute,
-                                          onValueSelected:
-                                              (productId == null ||
-                                                  attribute.attributeId == null)
-                                              ? null
-                                              : (value) {
-                                                  if (value.id == null) return;
-                                                  ref
-                                                      .read(
-                                                        productOptionsProvider(
-                                                          productId,
-                                                        ).notifier,
-                                                      )
-                                                      .selectAttributeValue(
-                                                        attribute.attributeId!,
-                                                        value.id!,
-                                                      );
-                                                },
-                                        ),
-                                      ),
-                                    ),
-                                if (keyFeatures.isNotEmpty)
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: ProductKeyFeaturesView(
-                                      productFeatures: keyFeatures,
-                                    ),
+                                  else
+                                    const SizedBox.shrink(),
+                                  CircularAppFavouriteIcon(
+                                    favouriteType: FavouriteType.product,
+                                    itemId: product.id,
+                                    isFavourite: product.isFavorite ?? false,
+                                    onFavouriteChanged: (p0) {},
                                   ),
-                                if (specifications.isNotEmpty)
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: ProductBasicSpecificationsView(
-                                      specifications: specifications,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          if ((product.stock ?? 1) >= 1)
-                            Container(
-                              color: colors.neutral500.withValues(alpha: 0.3),
-                              width: double.infinity,
-                              height: 1,
-                            ),
-                          if ((product.stock ?? 1) >= 1 && product.id != null)
-                            ProductActionButtons(
-                              productId: product.id!,
-                              productName: context.getLocalizedApiText(
-                                product.name,
+                                ],
                               ),
-                              productImageUrl:
-                                  (product.images?.isNotEmpty ?? false)
-                                  ? product.images!.first
-                                  : '',
-                            ),
-                        ],
+                              AppSlider(
+                                sliderItems: (product.images ?? [])
+                                    .map(
+                                      (image) => AppCachedNetworkImage(
+                                        imageUrl: image,
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        fit: BoxFit.contain,
+                                        placeholderType:
+                                            LoadingViewTypes.circular,
+                                        circularProgressSize: 50,
+                                      ),
+                                    )
+                                    .toList(),
+                                itemAspectRatio: 1.5,
+                              ),
+                              const ProductMainInfoCard(isTrusted: false),
+                              if (product.colors?.isNotEmpty ?? false)
+                                ProductColorsSelector(
+                                  colors: product.colors!,
+                                  onColorSelected: productId == null
+                                      ? null
+                                      : (color) => ref
+                                            .read(
+                                              productOptionsProvider(
+                                                productId,
+                                              ).notifier,
+                                            )
+                                            .selectColor(color.hex),
+                                ),
+                              for (final attribute
+                                  in product.attributes ??
+                                      const <ProductAttributeModel>[])
+                                if (attribute.values?.isNotEmpty ?? false)
+                                  ProductSizeSelector(
+                                    attribute: attribute,
+                                    onValueSelected: (value) =>
+                                        _selectAttribute(
+                                          productId,
+                                          attribute.attributeId,
+                                          value.id,
+                                        ),
+                                  ),
+                              if (keyFeatures.isNotEmpty)
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: ProductKeyFeaturesView(
+                                    productFeatures: keyFeatures,
+                                  ),
+                                ),
+                              if (specifications.isNotEmpty)
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: ProductBasicSpecificationsView(
+                                    specifications: specifications,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if (canBuy) ...[
+                      Container(
+                        color: colors.neutral500.withValues(alpha: 0.3),
+                        width: double.infinity,
+                        height: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: ProductActionButtons(
+                          productId: product.id!,
+                          productName: context.getLocalizedApiText(
+                            product.name,
+                          ),
+                          productImageUrl: (product.images?.isNotEmpty ?? false)
+                              ? product.images!.first
+                              : '',
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               );
             },

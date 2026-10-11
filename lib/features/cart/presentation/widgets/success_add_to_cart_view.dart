@@ -23,18 +23,20 @@ import 'package:nowdelivery_user_app/features/main/presentation/controllers/main
 /// Every screen that changes a cart line routes its success here, so the two
 /// cases cannot drift apart again. The product's name and image are read off
 /// the fresh [cart] line, so callers need nothing but the id.
-/// [onContinueShopping] and [onViewCart] are forwarded to the sheet — only
-/// screens that need to step back out of the way, or to land the shopper
-/// somewhere other than a pushed cart screen, pass them.
+/// [alwaysSheet] answers every add with the sheet (the product page, BUG-029).
 void showCartUpdateFeedback(
   BuildContext context,
   WidgetRef ref, {
   required int productId,
   int? laneId,
   required CartModel cart,
-  VoidCallback? onContinueShopping,
-  VoidCallback? onViewCart,
+  bool alwaysSheet = false,
 }) {
+  // Only the screen on top answers. A card on a covered screen — the listing
+  // the product page was opened from — hears the same response, and claiming
+  // it first would silence the screen the shopper is actually on.
+  if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
+
   // The lane is the notifier that ran the update — a cart line keys it by its
   // `cart_item_id`, everything else by the product id ([laneId] omitted).
   final UpdateCartProductViewModel vm = ref.read(
@@ -44,7 +46,7 @@ void showCartUpdateFeedback(
   // Another card showing this product has already answered this response.
   if (!vm.claimFeedback()) return;
 
-  if (!vm.joinedCart) {
+  if (!alwaysSheet && !vm.joinedCart) {
     // Both quantities are the product's total across its variant lines, so
     // the wording follows what changed even with several lines.
     AppToast.showSuccess(
@@ -63,8 +65,7 @@ void showCartUpdateFeedback(
     context,
     productName: line == null ? '' : context.getLocalizedApiText(line.name),
     productImageUrl: line?.images?.firstOrNull ?? '',
-    onContinueShopping: onContinueShopping,
-    onViewCart: onViewCart ?? () => openMainCartTab(context, ref),
+    onViewCart: () => openMainCartTab(context, ref),
   );
 }
 
@@ -97,9 +98,7 @@ String cartUpdateMessageKey({
 /// Opens the confirmation sheet for a product that just landed in the cart.
 ///
 /// Every "add to cart" action answers this way, so the sheet is configured in
-/// one place. [onContinueShopping] runs after the sheet closes; the default —
-/// staying put — suits any screen the shopper can keep browsing from, so only
-/// screens that need to step back (product details) pass their own.
+/// one place. "Continue shopping" just closes it, staying put.
 ///
 /// [onViewCart] decides where "view cart" lands; callers routed through
 /// [showCartUpdateFeedback] default to the main shell's cart tab.
@@ -107,7 +106,6 @@ Future<void> showSuccessAddToCartSheet(
   BuildContext context, {
   required String productName,
   required String productImageUrl,
-  VoidCallback? onContinueShopping,
   VoidCallback? onViewCart,
 }) {
   return showModalBottomSheet<void>(
@@ -125,10 +123,7 @@ Future<void> showSuccessAddToCartSheet(
         sheetContext.pop();
         onViewCart?.call();
       },
-      onContinueShopping: () {
-        sheetContext.pop();
-        onContinueShopping?.call();
-      },
+      onContinueShopping: () => sheetContext.pop(),
     ),
   );
 }

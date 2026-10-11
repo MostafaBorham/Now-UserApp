@@ -72,20 +72,14 @@ class ProductActionButtons extends ConsumerWidget {
             context.goNamed(AppRoutes.mainScreen);
             return;
           }
-          // Routed through the shared helper so this screen follows the same
-          // rule as every other place a cart line changes: the sheet the first
-          // time the product joins the cart, a toast for a later quantity
-          // change. Going straight to the sheet here would confirm an add that
-          // was really an increment.
+          // Every add here gets the sheet (BUG-029), and "continue shopping"
+          // just closes it, staying on the product.
           showCartUpdateFeedback(
             context,
             ref,
             productId: productId,
             cart: cart,
-            // Back to whatever list the shopper came from.
-            onContinueShopping: () {
-              if (context.canPop()) context.pop();
-            },
+            alwaysSheet: true,
           );
         },
         error: (error, _) {
@@ -106,7 +100,7 @@ class ProductActionButtons extends ConsumerWidget {
             isDisabled: cartIsFull,
             onTap: () => add(buyNow: false),
             title: LangKeys.addToCartKey.tr(),
-              buttonRadius: 8,
+            buttonRadius: 8,
             prefixIcon: ReverseWidget(
               child: Assets.media.images.svg.shoppingCartIcon.svg(
                 width: 20,

@@ -411,7 +411,7 @@ abstract class LangKeys {
   static const String buyNowKey = 'buyNow';
   static const String basicSpecificationsKey = 'basicSpecifications';
   static const String keyFeaturesKey = 'keyFeatures';
-  static const String chooseColorKey = 'chooseColor';
+  static const String colorKey = 'color';
   static const String selectRequiredKey = 'selectRequired';
   static const String inTheShoppingCartKey = 'inTheShoppingCart';
   static const String viewCartKey = 'viewCart';
