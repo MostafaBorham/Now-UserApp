@@ -180,6 +180,7 @@
   "logout": "Log Out",
   "logoutConfirmation": "Are you sure you want to log out of your account?",
   "male": "Male",
+  "maxAlreadyInCart": "You already have all the available stock in your cart.",
   "maximum": "Maximum",
   "minimumLimit": "Minimum Limit",
   "minutes": "minutes",

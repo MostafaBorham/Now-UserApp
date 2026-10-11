@@ -35,8 +35,14 @@ class ProductMainInfoCard extends ConsumerWidget {
     final productQuantityController = ref.read(
       productQuantityProvider.notifier,
     );
-    final productQuantity = ref.watch(productQuantityProvider);
-    final int maxQuantity = product.stock ?? 1;
+    // Capped by what the cart can still take (stock less the units already in
+    // it), not the bare stock: the server refuses the difference.
+    final int? remaining = ref.watch(productRemainingProvider);
+    final int productQuantity = stepperQuantity(
+      ref.watch(productQuantityProvider),
+      remaining,
+    );
+    final bool canIncrement = remaining == null || productQuantity < remaining;
     final int minQuantity = product.minOrderQuantity ?? 1;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -90,7 +96,7 @@ class ProductMainInfoCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-              if (maxQuantity < 1)
+              if ((product.stock ?? 1) < 1)
                 const OutOfStockLabel(fontSize: 15)
               else
                 Container(
@@ -104,17 +110,16 @@ class ProductMainInfoCard extends ConsumerWidget {
                     spacing: 4,
                     children: [
                       InkWell(
-                        onTap: productQuantity < maxQuantity
-                            ? () {
-                                productQuantityController.state++;
-                              }
+                        onTap: canIncrement
+                            ? () => productQuantityController.state =
+                                  productQuantity + 1
                             : null,
                         customBorder: const CircleBorder(),
                         child: Container(
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: productQuantity < maxQuantity
+                            color: canIncrement
                                 ? colors.tertiaryContainer
                                 : colors.neutral200,
                             shape: BoxShape.circle,
@@ -142,9 +147,8 @@ class ProductMainInfoCard extends ConsumerWidget {
                       ),
                       InkWell(
                         onTap: productQuantity > minQuantity
-                            ? () {
-                                productQuantityController.state--;
-                              }
+                            ? () => productQuantityController.state =
+                                  productQuantity - 1
                             : null,
                         customBorder: const CircleBorder(),
                         child: Container(

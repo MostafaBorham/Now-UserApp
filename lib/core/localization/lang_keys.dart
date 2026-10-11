@@ -417,6 +417,7 @@ abstract class LangKeys {
   static const String viewCartKey = 'viewCart';
   static const String trustedProductKey = 'trustedProduct';
   static const String outOfStockKey = 'outOfStock';
+  static const String maxAlreadyInCartKey = 'maxAlreadyInCart';
 
   // Address search
   static const String searchForAddressKey = 'searchForAddress';

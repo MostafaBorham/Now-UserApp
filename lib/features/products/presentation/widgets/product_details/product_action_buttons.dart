@@ -45,6 +45,22 @@ class ProductActionButtons extends ConsumerWidget {
       productOptionsProvider(productId),
     );
 
+    // Everything in stock is already in the cart: another add is refused.
+    final bool cartIsFull = ref.watch(productRemainingProvider) == 0;
+
+    void add({required bool buyNow}) {
+      ref.read(productBuyNowProvider.notifier).state = buyNow;
+      ref
+          .read(updateCartProductProvider(productId).notifier)
+          .addToCart(
+            stepperQuantity(
+              ref.read(productQuantityProvider),
+              ref.read(productRemainingProvider),
+            ),
+            options: productOptions.toBody(),
+          );
+    }
+
     ref.listen(updateCartProductProvider(productId), (previous, next) {
       next.whenOrNull(
         data: (cart) {
@@ -79,53 +95,57 @@ class ProductActionButtons extends ConsumerWidget {
       );
     });
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        spacing: 10,
-        children: [
-          Expanded(
-            flex: 2,
-            child: PrimaryAppButton(
-              titleStyle: AppTextStyles.style14Medium,
-              isLoading: isAddingToCart,
-              onTap: () {
-                final int productQuantity = ref.read(productQuantityProvider);
-                ref
-                    .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(
-                      productQuantity,
-                      options: productOptions.toBody(),
-                    );
-              },
-              title: LangKeys.addToCartKey.tr(),
+    final Widget buttons = Row(
+      spacing: 10,
+      children: [
+        Expanded(
+          flex: 2,
+          child: PrimaryAppButton(
+            titleStyle: AppTextStyles.style14Medium,
+            isLoading: isAddingToCart,
+            isDisabled: cartIsFull,
+            onTap: () => add(buyNow: false),
+            title: LangKeys.addToCartKey.tr(),
               buttonRadius: 8,
-              prefixIcon: ReverseWidget(
-                child: Assets.media.images.svg.shoppingCartIcon.svg(
-                  width: 20,
-                  colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
-                ),
+            prefixIcon: ReverseWidget(
+              child: Assets.media.images.svg.shoppingCartIcon.svg(
+                width: 20,
+                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
               ),
             ),
           ),
-          Expanded(
-            child: UnPrimaryAppButton(
-              isLoading: isBuyNowLoading,
-              title: LangKeys.buyNowKey.tr(),
-              onTap: () {
-                final int productQuantity = ref.read(productQuantityProvider);
-                ref.read(productBuyNowProvider.notifier).state = true;
-                ref
-                    .read(updateCartProductProvider(productId).notifier)
-                    .addToCart(
-                      productQuantity,
-                      options: productOptions.toBody(),
-                    );
-              },
-            ),
+        ),
+        Expanded(
+          child: UnPrimaryAppButton(
+            isLoading: isBuyNowLoading,
+            title: LangKeys.buyNowKey.tr(),
+            titleColor: cartIsFull ? colors.neutral500 : null,
+            side: cartIsFull ? BorderSide(color: colors.neutral200) : null,
+            onTap: cartIsFull ? null : () => add(buyNow: true),
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: cartIsFull
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                Text(
+                  LangKeys.maxAlreadyInCartKey.tr(),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  style: AppTextStyles.style12Regular.copyWith(
+                    color: colors.neutral500,
+                  ),
+                ),
+                buttons,
+              ],
+            )
+          : buttons,
     );
   }
 }
