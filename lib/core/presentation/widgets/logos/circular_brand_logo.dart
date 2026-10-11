@@ -11,6 +11,7 @@ class CircularBrandLogo extends StatelessWidget {
     this.backgroundColor,
     this.elevation = 0,
     this.logoScale = 1.1,
+    this.fit = BoxFit.contain,
   });
 
   final double radius;
@@ -18,8 +19,11 @@ class CircularBrandLogo extends StatelessWidget {
   final Color? backgroundColor;
   final double? elevation;
 
-  /// Width of the logo itself as a multiple of [radius].
+  /// Width of the logo itself as a multiple of [radius]: 2 with
+  /// [BoxFit.cover] fills the circle, so a square logo reads as round.
   final double logoScale;
+
+  final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class CircularBrandLogo extends StatelessWidget {
           // An empty URL shows the "failed to load image" placeholder.
           child: AppCachedNetworkImage(
             imageUrl: hasValidUrl ? url! : '',
-            fit: BoxFit.contain,
+            fit: fit,
             width: logoSize,
             height: logoSize,
             placeholderType: LoadingViewTypes.circular,

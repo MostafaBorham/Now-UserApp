@@ -14,7 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 
@@ -91,18 +91,11 @@ class OrderListItem extends ConsumerWidget {
             spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: AppBorderRadius.brCircular12,
-                child: SizedBox(
-                  width: 88,
-                  height: 88,
-                  child: AppCachedNetworkImage(
-                    imageUrl: orderModel.vendor.logoUrl ?? '',
-                    width: 88,
-                    height: 88,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+              CircularBrandLogo(
+                radius: 44,
+                logoScale: 2,
+                fit: BoxFit.cover,
+                logoUrl: orderModel.vendor.logoUrl ?? '',
               ),
               Expanded(
                 child: Column(

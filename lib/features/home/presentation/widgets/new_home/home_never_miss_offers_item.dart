@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/card_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -221,13 +222,11 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          width: con.maxWidth * 0.25,
-                          height: con.maxWidth * 0.25,
-                          child: AppCachedNetworkImage(
-                            imageUrl: vendorLogoUrl,
-                            fit: BoxFit.contain,
-                          ),
+                        CircularBrandLogo(
+                          radius: con.maxWidth * 0.125,
+                          logoScale: 2,
+                          fit: BoxFit.cover,
+                          logoUrl: vendorLogoUrl,
                         ),
                       ],
                     ),

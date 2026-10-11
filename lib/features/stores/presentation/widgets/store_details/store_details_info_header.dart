@@ -48,9 +48,12 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
                   shape: BoxShape.circle,
                   color: colors.white,
                 ),
+                // Fills the circle: at 1.9 × contain a solid-background logo
+                // showed as a rounded square inside it (BUG-025).
                 child: CircularBrandLogo(
                   radius: 28,
-                  logoScale: 1.9,
+                  logoScale: 2,
+                  fit: BoxFit.cover,
                   logoUrl: store.logoUrl ?? '',
                 ),
               ),

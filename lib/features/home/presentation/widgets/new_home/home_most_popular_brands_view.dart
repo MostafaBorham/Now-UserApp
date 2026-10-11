@@ -1,4 +1,3 @@
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +9,7 @@ import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 
@@ -225,9 +225,13 @@ class _BrandCard extends StatelessWidget {
   Widget _logo(BuildContext context, AppColorScheme colors, StoreModel? store) {
     if (store == null) return _placeholder(colors);
     // No approved logo → the "failed to load image" placeholder, not a blank.
-    return AppCachedNetworkImage(
-      imageUrl: store.logoUrl ?? '',
-      fit: BoxFit.contain,
+    // Round like every store logo (BUG-025); the row is the card's height less
+    // its 12 px padding.
+    return CircularBrandLogo(
+      radius: (height - 24) / 2,
+      logoScale: 2,
+      fit: BoxFit.cover,
+      logoUrl: store.logoUrl ?? '',
     );
   }
 
