@@ -32,11 +32,7 @@ enum WalletUse {
 /// order.
 final walletUseProvider = Provider.autoDispose<WalletUse>((Ref ref) {
   final WalletModel? wallet = ref.watch(getWalletInfoProvider).valueOrNull;
-  final double? total = ref.watch(
-    checkoutProvider.select(
-      (AsyncValue<CheckoutModel?> state) => state.valueOrNull?.orderGroup.total,
-    ),
-  );
+  final double? total = ref.watch(checkoutTotalProvider);
   final bool short = walletFallsShort(wallet, total);
   final bool ticked =
       ref.watch(walletPaymentProvider) ??
@@ -53,9 +49,23 @@ int? _halalas(WalletModel? wallet) {
 
 /// Whether [wallet] can't pay [total] on its own. `false` while either is
 /// unknown: the server decides.
-bool walletFallsShort(WalletModel? wallet, double? total) {
+bool walletFallsShort(WalletModel? wallet, double? total) =>
+    walletShortfallHalalas(wallet, total) != null;
+
+/// How far [wallet] falls short of [total], in halalas; `null` when it covers
+/// it or either is unknown.
+int? walletShortfallHalalas(WalletModel? wallet, double? total) {
   final int? halalas = _halalas(wallet);
-  return halalas != null &&
-      total != null &&
-      halalas < sarDoubleToHalalas(total);
+  if (halalas == null || total == null) return null;
+  final int shortfall = sarDoubleToHalalas(total) - halalas;
+  return shortfall > 0 ? shortfall : null;
 }
+
+/// The checkout total, `null` until the checkout loads.
+final checkoutTotalProvider = Provider.autoDispose<double?>(
+  (Ref ref) => ref.watch(
+    checkoutProvider.select(
+      (AsyncValue<CheckoutModel?> state) => state.valueOrNull?.orderGroup.total,
+    ),
+  ),
+);

@@ -147,7 +147,16 @@ class WalletPaymentRow extends ConsumerWidget {
             ),
           ),
           if (use == WalletUse.short)
-            _ShortfallNote(onTopUp: () => _topUp(context, ref)),
+            _ShortfallNote(
+              shortfall: formatHalalasAsSar(
+                walletShortfallHalalas(
+                      walletState.valueOrNull,
+                      ref.watch(checkoutTotalProvider),
+                    ) ??
+                    0,
+              ),
+              onTopUp: () => _topUp(context, ref),
+            ),
         ],
       ),
     );
@@ -233,8 +242,10 @@ class _StaleBalance extends StatelessWidget {
 /// The hint under the wallet row: the balance can't cover this order, so the
 /// wallet has to be unticked for a card to pay, or topped up.
 class _ShortfallNote extends StatelessWidget {
-  const _ShortfallNote({required this.onTopUp});
+  const _ShortfallNote({required this.shortfall, required this.onTopUp});
 
+  /// How much the wallet is short, formatted.
+  final String shortfall;
   final VoidCallback onTopUp;
 
   @override
@@ -256,7 +267,9 @@ class _ShortfallNote extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  LangKeys.walletShortfallHintKey.tr(),
+                  LangKeys.walletShortfallHintKey.tr(
+                    namedArgs: <String, String>{'amount': shortfall},
+                  ),
                   // Every `AppTextStyles` entry carries
                   // `TextOverflow.ellipsis`, and an ellipsis with no
                   // `maxLines` collapses the paragraph to one line — the hint

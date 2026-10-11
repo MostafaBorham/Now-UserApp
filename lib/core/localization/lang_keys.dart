@@ -451,4 +451,39 @@ abstract class LangKeys {
       'neverMissOffersHeadlineFirstLine';
   static const String neverMissOffersHeadlineSecondLineKey =
       'neverMissOffersHeadlineSecondLine';
+
+  // QA semi-final 003: error and empty-state messages
+  static const String noInternetTitleKey = 'noInternetTitle';
+  static const String loadFailedTitleKey = 'loadFailedTitle';
+  static const String serverUnavailableKey = 'serverUnavailable';
+  static const String loadMoreFailedTitleKey = 'loadMoreFailedTitle';
+  static const String pricesNotUpdatedTitleKey = 'pricesNotUpdatedTitle';
+  static const String noSearchMatchesKey = 'noSearchMatches';
+  static const String noOrdersYetKey = 'noOrdersYet';
+  static const String noTransactionsYetKey = 'noTransactionsYet';
+  static const String noProductsYetKey = 'noProductsYet';
+  static const String noStoresYetKey = 'noStoresYet';
+  static const String noCategoriesYetKey = 'noCategoriesYet';
+  static const String noOffersNowKey = 'noOffersNow';
+  static const String homeFeedEmptyKey = 'homeFeedEmpty';
+  static const String noFavouriteProductsKey = 'noFavouriteProducts';
+  static const String noFavouriteStoresKey = 'noFavouriteStores';
+  static const String noDiscountCodesKey = 'noDiscountCodes';
+  static const String contentUnavailableKey = 'contentUnavailable';
+  static const String orderNotFoundKey = 'orderNotFound';
+  static const String productUnavailableKey = 'productUnavailable';
+  static const String orderCannotBeCancelledKey = 'orderCannotBeCancelled';
+  static const String orderUnconfirmedKey = 'orderUnconfirmed';
+  static const String couponApplyFailedKey = 'couponApplyFailed';
+  static const String orderCardDeclinedKey = 'orderCardDeclined';
+  static const String addCardOrUseWalletKey = 'addCardOrUseWallet';
+  static const String walletBalanceLoadFailedKey = 'walletBalanceLoadFailed';
+  static const String topUpNeedsCardKey = 'topUpNeedsCard';
+  static const String invalidAmountKey = 'invalidAmount';
+  static const String addressSearchFailedKey = 'addressSearchFailed';
+  static const String addressDetailsIncompleteKey = 'addressDetailsIncomplete';
+  static const String sessionExpiredKey = 'sessionExpired';
+  static const String profileLoadFailedKey = 'profileLoadFailed';
+  static const String complaintPhotosReadFailedKey = 'complaintPhotosReadFailed';
+  static const String pageUnavailableKey = 'pageUnavailable';
 }
