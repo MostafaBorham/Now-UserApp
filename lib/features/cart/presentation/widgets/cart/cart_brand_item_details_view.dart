@@ -56,6 +56,9 @@ class CartBrandItemDetailsView extends StatelessWidget {
         ),
 
         ListView.separated(
+          // A null padding takes the screen's insets — under the main shell
+          // that includes the nav bar — as a gap under the items (BUG-038).
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) =>
