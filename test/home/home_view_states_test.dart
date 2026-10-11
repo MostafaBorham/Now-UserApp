@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -134,5 +136,46 @@ void main() {
 
     expect(find.byType(HomeAppCategoriesView), findsOneWidget);
     expect(find.byType(NoResultsWidget), findsNothing);
+  });
+
+  // BUG-007: the order used to be hardcoded, so the admin's was ignored.
+  testWidgets('feed sections follow the feed order', (
+    WidgetTester tester,
+  ) async {
+    await pumpHome(
+      tester,
+      AsyncValue<List<HomeSectionModel>>.data(<HomeSectionModel>[
+        HomeSectionModel(
+          id: 3,
+          type: 'products_by_category',
+          category: sampleCategory(),
+          products: <ProductModel>[sampleProduct()],
+        ),
+        HomeSectionModel(
+          id: 1,
+          type: 'featured_stores',
+          stores: <StoreModel>[sampleStore()],
+        ),
+        HomeSectionModel(
+          id: 2,
+          type: 'nearby_stores',
+          stores: <StoreModel>[sampleStore()],
+        ),
+      ]),
+    );
+
+    final List<Key?> keys = tester
+        .widget<HomeFeedList>(find.byType(HomeFeedList))
+        .sections
+        .map((HomeFeedSection s) => s.key)
+        .toList();
+    expect(
+      keys.where((Key? k) => k is ValueKey<Object> && k.value is int),
+      <Key>[
+        const ValueKey<Object>(3),
+        const ValueKey<Object>(1),
+        const ValueKey<Object>(2),
+      ],
+    );
   });
 }

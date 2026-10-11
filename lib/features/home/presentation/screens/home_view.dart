@@ -257,16 +257,9 @@ class _HomeViewState extends ConsumerState<HomeView>
     // feed errors and the full-size error covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;
 
-    final Map<String, HomeSectionModel> byType = <String, HomeSectionModel>{};
-    final List<HomeSectionModel> categorySections = <HomeSectionModel>[];
-    for (final HomeSectionModel section in sections) {
-      final String type = section.type;
-      if (type == 'products_by_category') {
-        categorySections.add(section);
-      } else {
-        byType[type] = section;
-      }
-    }
+    final Map<String, HomeSectionModel> byType = <String, HomeSectionModel>{
+      for (final HomeSectionModel section in sections) section.type: section,
+    };
 
     // The header and top brands render before the feed lands, so special
     // offers holds its slot as a skeleton rather than popping in between them.
@@ -297,11 +290,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         (s) => s.hasValue && s.requireValue.data.isEmpty,
       ),
     );
-    final List<HomeFeedSection> feedSections = _feedSections(
-      context,
-      byType,
-      categorySections,
-    );
+    final List<HomeFeedSection> feedSections = _feedSections(context, sections);
 
     // Every section is keyed, so one appearing or disappearing — the
     // live-orders strip collapsing, the feed landing — moves the others
@@ -454,100 +443,65 @@ class _HomeViewState extends ConsumerState<HomeView>
     );
   }
 
-  /// The sections built from the feed's own content, in feed order below top
-  /// brands. Empty when the feed has nothing to show.
+  /// The sections built from the feed's own content, below top brands, in the
+  /// order the feed lists them — the admin's order (BUG-007). Empty when the
+  /// feed has nothing to show.
   List<HomeFeedSection> _feedSections(
     BuildContext context,
-    Map<String, HomeSectionModel> byType,
-    List<HomeSectionModel> categorySections,
+    List<HomeSectionModel> sections,
   ) {
-    final HomeSectionModel? featuredStoresSection = byType['featured_stores'];
-    final HomeSectionModel? nearbyStoresSection = byType['nearby_stores'];
-    final HomeSectionModel? flashOffersSection = byType['flash_offers'];
-    final HomeSectionModel? middlePromoSection = byType['promo_block_middle'];
-    final HomeSectionModel? footerPromoSection = byType['promo_block_footer'];
-    final HomeSectionModel? allStoresSection = byType['all_stores'];
+    final Set<ValueKey<Object>> seen = <ValueKey<Object>>{};
     return <HomeFeedSection>[
-      if (featuredStoresSection != null &&
-          featuredStoresSection.stores.isNotEmpty)
-        HomeFeedSection(
-          key: _sectionKey(featuredStoresSection),
-          content: featuredStoresSection,
-          child: HomeFeaturedStoresView(stores: featuredStoresSection.stores),
-        ),
-      if (nearbyStoresSection != null && nearbyStoresSection.stores.isNotEmpty)
-        HomeFeedSection(
-          key: _sectionKey(nearbyStoresSection),
-          content: nearbyStoresSection,
-          child: AspectRatio(
-            aspectRatio: 1.47,
-            child: BestNearbyStoresSection(
-              title: nearbyStoresSection.title,
-              stores: nearbyStoresSection.stores,
+      for (final HomeSectionModel section in sections)
+        if (_feedSectionChild(context, section) case final Widget child)
+          // A repeated type without an id would share a key; the first wins.
+          if (seen.add(_sectionKey(section)))
+            HomeFeedSection(
+              key: _sectionKey(section),
+              content: section,
+              child: child,
             ),
-          ),
-        ),
-      if (flashOffersSection != null && flashOffersSection.products.isNotEmpty)
-        HomeFeedSection(
-          key: _sectionKey(flashOffersSection),
-          content: flashOffersSection,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: HomeNeverMissOffersSection(
-              products: flashOffersSection.products,
-              backgroundColor: flashOffersSection.backgroundColor,
-              viewAllTextColor: flashOffersSection.viewAllTextColor,
-              viewAllUnderlineColor: flashOffersSection.viewAllUnderlineColor,
-            ),
-          ),
-        ),
-      if (middlePromoSection != null &&
-          middlePromoSection.banners.isNotEmpty &&
-          HomeBannerView.imageUrlFor(
-                context,
-                middlePromoSection.banners.first,
-              ) !=
-              null)
-        HomeFeedSection(
-          key: _sectionKey(middlePromoSection),
-          content: middlePromoSection,
-          child: AspectRatio(
-            aspectRatio: 3.5,
-            child: HomeBannerView(banner: middlePromoSection.banners.first),
-          ),
-        ),
-      for (final HomeSectionModel section in categorySections)
-        if (section.products.isNotEmpty)
-          HomeFeedSection(
-            key: _sectionKey(section),
-            content: section,
-            child: _ProductsByCategorySection(section: section),
-          ),
-      if (footerPromoSection != null &&
-          footerPromoSection.banners.isNotEmpty &&
-          HomeBannerView.imageUrlFor(
-                context,
-                footerPromoSection.banners.first,
-              ) !=
-              null)
-        HomeFeedSection(
-          key: _sectionKey(footerPromoSection),
-          content: footerPromoSection,
-          child: AspectRatio(
-            aspectRatio: 3.5,
-            child: HomeBannerView(banner: footerPromoSection.banners.first),
-          ),
-        ),
-      if (allStoresSection != null)
-        HomeFeedSection(
-          key: _sectionKey(allStoresSection),
-          content: allStoresSection,
-          child: HomeAllStoresSectionView(
-            stores: allStoresSection.stores,
-            pinTop: _searchBarHeight,
-          ),
-        ),
     ];
+  }
+
+  /// The widget for one feed-driven section, or null for a type rendered
+  /// elsewhere (header, offers) or one with nothing to show.
+  Widget? _feedSectionChild(BuildContext context, HomeSectionModel section) {
+    return switch (section.type) {
+      'featured_stores' when section.stores.isNotEmpty =>
+        HomeFeaturedStoresView(stores: section.stores),
+      'nearby_stores' when section.stores.isNotEmpty => AspectRatio(
+        aspectRatio: 1.47,
+        child: BestNearbyStoresSection(
+          title: section.title,
+          stores: section.stores,
+        ),
+      ),
+      'flash_offers' when section.products.isNotEmpty => AspectRatio(
+        aspectRatio: 1,
+        child: HomeNeverMissOffersSection(
+          products: section.products,
+          backgroundColor: section.backgroundColor,
+          viewAllTextColor: section.viewAllTextColor,
+          viewAllUnderlineColor: section.viewAllUnderlineColor,
+        ),
+      ),
+      'promo_block_middle' || 'promo_block_footer'
+          when section.banners.isNotEmpty &&
+              HomeBannerView.imageUrlFor(context, section.banners.first) !=
+                  null =>
+        AspectRatio(
+          aspectRatio: 3.5,
+          child: HomeBannerView(banner: section.banners.first),
+        ),
+      'products_by_category' when section.products.isNotEmpty =>
+        _ProductsByCategorySection(section: section),
+      'all_stores' => HomeAllStoresSectionView(
+        stores: section.stores,
+        pinTop: _searchBarHeight,
+      ),
+      _ => null,
+    };
   }
 }
 
