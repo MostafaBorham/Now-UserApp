@@ -9,12 +9,18 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 /// driver"). The typed text is submitted with the order as `delivery_instructions`;
 /// the parent owns the [controller] so it can read that value on confirm.
 ///
-/// The field auto-grows: it starts one line tall and expands the card as the
-/// text wraps onto more lines, up to [maxLines] before it starts scrolling.
+/// The field starts three lines tall on its own white box, so it reads as a
+/// place to write (BUG-043), and grows to five lines before it scrolls.
 class DeliveryInstructionsCard extends StatelessWidget {
   const DeliveryInstructionsCard({super.key, required this.controller});
 
   final TextEditingController controller;
+
+  // The card's FocusRing already marks focus, so the box itself never changes.
+  static const OutlineInputBorder _box = OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+    borderSide: BorderSide.none,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class DeliveryInstructionsCard extends StatelessWidget {
             ),
             TextField(
               controller: controller,
-              minLines: 1,
+              minLines: 3,
               maxLines: 5,
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
@@ -51,10 +57,12 @@ class DeliveryInstructionsCard extends StatelessWidget {
               cursorColor: colors.tertiaryContainer,
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.zero,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
+                filled: true,
+                fillColor: colors.white,
+                contentPadding: const EdgeInsets.all(12),
+                border: _box,
+                enabledBorder: _box,
+                focusedBorder: _box,
                 hintText: LangKeys.addInstructionsHintKey.tr(),
                 hintStyle: AppTextStyles.style14Regular.copyWith(
                   color: colors.neutral500,
