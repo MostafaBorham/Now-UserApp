@@ -86,23 +86,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       return;
     }
 
-    // The wallet pays while its checkbox is ticked (the default). Untick it and
-    // the picked saved card pays: the backend requires a `payment_method_id` for
-    // the `card` method and prohibits one for wallet/cod, so the id rides along
-    // only in the card case. Selection defaults to the preview's default card.
-    // There is no split payment: a wallet that can't cover the total is refused
-    // outright, so that is said here rather than after a failed request.
-    final bool walletSelected = ref.read(walletPaymentProvider);
+    // The wallet pays while its checkbox is ticked (see walletUseProvider for
+    // the default). Untick it and the picked saved card pays: the backend
+    // requires a `payment_method_id` for the `card` method and prohibits one
+    // for wallet/cod, so the id rides along only in the card case. Selection
+    // defaults to the preview's default card. There is no split payment: a
+    // short wallet disables the button, and its note says why.
+    final WalletUse walletUse = ref.read(walletUseProvider);
     final String paymentMethod;
     final int? paymentMethodId;
-    if (walletSelected) {
-      if (walletFallsShort(
-        ref.read(getWalletInfoProvider).valueOrNull,
-        checkout.orderGroup.total,
-      )) {
-        AppToast.showError(context, LangKeys.walletShortfallHintKey.tr());
-        return;
-      }
+    if (walletUse == WalletUse.short) return;
+    if (walletUse == WalletUse.pays) {
       paymentMethod = 'wallet';
       paymentMethodId = null;
     } else {

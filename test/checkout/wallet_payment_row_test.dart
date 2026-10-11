@@ -5,8 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/payment_method/wallet_payment_row.dart';
+import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
@@ -24,9 +25,21 @@ class _FakeWalletInfoViewModel extends GetWalletInfoViewModel {
   Future<void> getWalletInfo() async => fetches++;
 }
 
-/// Guards the wallet toggle: ticked on arrival (so the wallet is the default
-/// payment method), and the shortfall note only when the balance can't cover
-/// the total — there is no split payment, so a short wallet is refused.
+/// A checkout already priced at [total], without a request.
+class _PricedCheckout extends CheckoutViewModel {
+  _PricedCheckout(double total) {
+    state = AsyncValue<CheckoutModel?>.data(
+      CheckoutModel(orderGroup: OrderGroupModel(total: total)),
+    );
+  }
+}
+
+Override _total(double total) =>
+    checkoutProvider.overrideWith((Ref ref) => _PricedCheckout(total));
+
+/// Guards the wallet toggle: ticked on arrival only when the balance covers
+/// the total (BUG-036), and the shortfall note only when a ticked balance
+/// can't — there is no split payment, so a short wallet is refused.
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
@@ -35,9 +48,7 @@ void main() {
 
   List<Override> priced({required double total, required int balance}) =>
       <Override>[
-        checkoutModelProvider.overrideWith(
-          (Ref ref) => CheckoutModel(orderGroup: OrderGroupModel(total: total)),
-        ),
+        _total(total),
         getWalletInfoProvider.overrideWith(
           (Ref ref) =>
               GetWalletInfoViewModel()
@@ -45,7 +56,14 @@ void main() {
         ),
       ];
 
-  testWidgets('a short wallet says so while ticked', (
+  Finder tick() => find.byIcon(Icons.check_rounded);
+
+  Future<void> toggle(WidgetTester tester) async {
+    await tester.tap(find.text(LangKeys.walletKey));
+    await tester.pump();
+  }
+
+  testWidgets('a short wallet starts unticked, and says so once ticked', (
     WidgetTester tester,
   ) async {
     await pumpCategoriesWidget(
@@ -54,15 +72,17 @@ void main() {
       overrides: priced(total: 50, balance: 1000),
     );
 
-    expect(note(), findsOneWidget);
-
-    await tester.tap(find.text(LangKeys.walletKey));
-    await tester.pump();
-
+    expect(tick(), findsNothing);
     expect(note(), findsNothing);
+
+    await toggle(tester);
+
+    expect(tick(), findsOneWidget);
+    expect(note(), findsOneWidget);
+    expect(find.text(LangKeys.topUpKey), findsOneWidget);
   });
 
-  testWidgets('a wallet that covers the total shows no note', (
+  testWidgets('a wallet that covers the total starts ticked, with no note', (
     WidgetTester tester,
   ) async {
     await pumpCategoriesWidget(
@@ -71,6 +91,7 @@ void main() {
       overrides: priced(total: 50, balance: 5000),
     );
 
+    expect(tick(), findsOneWidget);
     expect(note(), findsNothing);
   });
 
@@ -80,6 +101,7 @@ void main() {
       const WalletPaymentRow(),
       overrides: priced(total: 50, balance: 1000),
     );
+    await toggle(tester);
 
     // Every `AppTextStyles` entry bakes in `TextOverflow.ellipsis`, and an
     // ellipsis with no `maxLines` collapses the paragraph to a single line —
@@ -92,7 +114,6 @@ void main() {
 
   group('while the balance is not current, the row stays payable', () {
     Finder stale() => find.text(LangKeys.walletBalanceNotUpdatedKey);
-    Finder tick() => find.byIcon(Icons.check_rounded);
 
     Future<_FakeWalletInfoViewModel> pumpRow(
       WidgetTester tester,
@@ -103,22 +124,19 @@ void main() {
         tester,
         const WalletPaymentRow(),
         overrides: <Override>[
-          checkoutModelProvider.overrideWith(
-            (Ref ref) => CheckoutModel(orderGroup: OrderGroupModel(total: 50)),
-          ),
+          _total(50),
           getWalletInfoProvider.overrideWith((Ref ref) => vm),
         ],
       );
       return vm;
     }
 
-    // The wallet is ticked by default, so the tick must stay reachable in every
-    // state or the customer could never switch to a card.
+    // The tick must stay reachable in every state, or a ticked wallet could
+    // never give way to a card.
     Future<void> expectUntickable(WidgetTester tester) async {
-      expect(tick(), findsOneWidget);
-      await tester.tap(find.text(LangKeys.walletKey));
-      await tester.pump();
-      expect(tick(), findsNothing);
+      final bool wasTicked = tick().evaluate().isNotEmpty;
+      await toggle(tester);
+      expect(tick(), wasTicked ? findsNothing : findsOneWidget);
     }
 
     testWidgets('first load: the amount shimmers', (tester) async {

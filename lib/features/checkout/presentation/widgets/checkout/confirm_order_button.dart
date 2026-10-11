@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/confirm_order_vm.dart';
@@ -38,6 +39,11 @@ class ConfirmOrderButton extends ConsumerWidget {
     return PrimaryAppButton(
       title: LangKeys.confirmOrderKey.tr(),
       isLoading: isLoading,
+      // A ticked wallet that can't cover the total; the note under the wallet
+      // row says why and offers a top-up.
+      isDisabled: ref.watch(
+        walletUseProvider.select((WalletUse use) => use == WalletUse.short),
+      ),
       onTap: onConfirm,
     );
   }

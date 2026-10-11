@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -9,52 +10,42 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
-/// Whether [wallet] can't pay [total] on its own. There is no split payment —
-/// a short wallet makes the server refuse the whole order — so checkout says
-/// so up front instead. `false` while either is unknown: the server decides.
-bool walletFallsShort(WalletModel? wallet, double? total) {
-  final double? balance = wallet?.balance;
-  final int? halalas =
-      wallet?.balanceHalalas ??
-      (balance == null ? null : sarDoubleToHalalas(balance));
-  return halalas != null &&
-      total != null &&
-      halalas < sarDoubleToHalalas(total);
-}
-
 /// The wallet payment option, shown under the payment methods section: the
-/// balance with a checkbox that is ticked by default, and — while it is ticked
-/// and the balance can't cover the total — a note saying to pay by card.
+/// balance with a checkbox (see [walletUseProvider] for when it starts ticked),
+/// and — while it is ticked and the balance can't cover the total — a note
+/// saying to pay by card or top up.
 class WalletPaymentRow extends ConsumerWidget {
   const WalletPaymentRow({super.key});
+
+  /// Opens the wallet to top up, and re-checks the balance on the way back.
+  Future<void> _topUp(BuildContext context, WidgetRef ref) async {
+    await context.pushNamed(AppRoutes.walletScreen);
+    if (context.mounted) {
+      ref.read(getWalletInfoProvider.notifier).getWalletInfo();
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
-    final bool selected = ref.watch(walletPaymentProvider);
+    final WalletUse use = ref.watch(walletUseProvider);
+    final bool selected = use != WalletUse.off;
 
     // Checkout refetches this on open, and the last balance stays while that
     // loads. Whatever the state, the row stays — it is the payment choice, and
-    // hiding it is what 05e26eb fixed; with the wallet ticked by default, a
-    // hidden row would leave no way to pay by card. With no balance yet the
-    // amount shimmers, and after a failure (or a balance only the offline
-    // cache had) a line says it may be out of date, with a retry.
+    // hiding it is what 05e26eb fixed: a ticked wallet with no row would leave
+    // no way to pay by card. With no balance yet the amount shimmers, and
+    // after a failure (or a balance only the offline cache had) a line says it
+    // may be out of date, with a retry.
     final AsyncValue<WalletModel> walletState = ref.watch(
       getWalletInfoProvider,
     );
-    final WalletModel? wallet = walletState.valueOrNull;
-    final double? balance = wallet?.balance;
-    final double? total = ref.watch(
-      checkoutModelProvider.select(
-        (CheckoutModel? checkout) => checkout?.orderGroup.total,
-      ),
-    );
+    final double? balance = walletState.valueOrNull?.balance;
 
     return Container(
       width: double.infinity,
@@ -155,8 +146,8 @@ class WalletPaymentRow extends ConsumerWidget {
               ),
             ),
           ),
-          if (selected && walletFallsShort(wallet, total))
-            const _ShortfallNote(),
+          if (use == WalletUse.short)
+            _ShortfallNote(onTopUp: () => _topUp(context, ref)),
         ],
       ),
     );
@@ -240,9 +231,11 @@ class _StaleBalance extends StatelessWidget {
 }
 
 /// The hint under the wallet row: the balance can't cover this order, so the
-/// wallet has to be unticked for a card to pay.
+/// wallet has to be unticked for a card to pay, or topped up.
 class _ShortfallNote extends StatelessWidget {
-  const _ShortfallNote();
+  const _ShortfallNote({required this.onTopUp});
+
+  final VoidCallback onTopUp;
 
   @override
   Widget build(BuildContext context) {
@@ -258,16 +251,36 @@ class _ShortfallNote extends StatelessWidget {
         spacing: 10,
         children: [
           Expanded(
-            child: Text(
-              LangKeys.walletShortfallHintKey.tr(),
-              // Every `AppTextStyles` entry carries `TextOverflow.ellipsis`,
-              // and an ellipsis with no `maxLines` collapses the paragraph to
-              // one line — the hint has to opt out to wrap in full.
-              overflow: TextOverflow.visible,
-              style: AppTextStyles.style12Regular.copyWith(
-                color: colors.neutral500,
-                height: 1.5,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  LangKeys.walletShortfallHintKey.tr(),
+                  // Every `AppTextStyles` entry carries
+                  // `TextOverflow.ellipsis`, and an ellipsis with no
+                  // `maxLines` collapses the paragraph to one line — the hint
+                  // has to opt out to wrap in full.
+                  overflow: TextOverflow.visible,
+                  style: AppTextStyles.style12Regular.copyWith(
+                    color: colors.neutral500,
+                    height: 1.5,
+                  ),
+                ),
+                InkWell(
+                  onTap: onTopUp,
+                  borderRadius: AppBorderRadius.brCircular4,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      LangKeys.topUpKey.tr(),
+                      style: AppTextStyles.style14Medium.copyWith(
+                        color: colors.primary500Main,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(

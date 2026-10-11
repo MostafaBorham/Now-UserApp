@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/payment_methods_radio_group.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_payment_card_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 
 /// A soft grey card that lists the customer's saved cards (from the checkout
@@ -20,7 +21,7 @@ import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_mo
 ///
 /// The picked card id is published to [selectedPaymentCardProvider]; the confirm
 /// step reads it and sends `payment_method: card` + `payment_method_id` when the
-/// wallet toggle is off. Selection defaults to the server-marked default card.
+/// wallet is unticked. Selection defaults to the server-marked default card.
 class PaymentMethodsCard extends ConsumerWidget {
   const PaymentMethodsCard({
     super.key,
@@ -37,6 +38,12 @@ class PaymentMethodsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
 
+    // Only one method pays: while the wallet is ticked no card is selected and
+    // the list is greyed out. Tapping a card switches to it.
+    final bool walletPays = ref.watch(
+      walletUseProvider.select((WalletUse use) => use != WalletUse.off),
+    );
+
     // Selection: whatever the customer last tapped, else the default card. The
     // index feeds the radio group; a stale/unknown id lands on the first card.
     final int? defaultId = CheckoutModel.resolveDefaultCard(cards)?.id;
@@ -44,7 +51,11 @@ class PaymentMethodsCard extends ConsumerWidget {
     final int matchedIndex = cards.indexWhere(
       (CardPaymentModel card) => card.id == selectedId,
     );
-    final int selectedIndex = matchedIndex < 0 ? 0 : matchedIndex;
+    final int selectedIndex = walletPays
+        ? -1
+        : matchedIndex < 0
+        ? 0
+        : matchedIndex;
 
     final List<PaymentMethodEntry> methods = cards
         .map(
@@ -76,12 +87,17 @@ class PaymentMethodsCard extends ConsumerWidget {
               color: colors.tertiaryContainer,
             ),
           ),
-          PaymentMethodsRadioGroup(
-            methods: methods,
-            selectedIndex: selectedIndex,
-            onChanged: (int index) => ref
-                .read(selectedPaymentCardProvider.notifier)
-                .state = cards[index].id,
+          Opacity(
+            opacity: walletPays ? 0.5 : 1,
+            child: PaymentMethodsRadioGroup(
+              methods: methods,
+              selectedIndex: selectedIndex,
+              onChanged: (int index) {
+                ref.read(selectedPaymentCardProvider.notifier).state =
+                    cards[index].id;
+                ref.read(walletPaymentProvider.notifier).state = false;
+              },
+            ),
           ),
           InkWell(
             onTap: onAddCard,
