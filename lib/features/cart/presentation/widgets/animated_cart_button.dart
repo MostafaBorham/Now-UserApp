@@ -10,14 +10,13 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_add_to_cart_button.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_counter_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_stepper_pill.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
-/// Cart control shown on a product card: a round add-to-cart button that flips
-/// into a quantity counter and back.
+/// Cart control shown on a product card: a round add-to-cart button that grows
+/// into a quantity pill and back (see [CartStepperPill] for the visuals).
 ///
 /// Pass [productId] together with [productQuantity] to wire the counter to
 /// `updateCartProductProvider(productId)`. Exactly three interactions reach the
@@ -85,7 +84,10 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   late int _counter = widget.productQuantity ?? 0;
 
   bool _showCounterView = false;
-  bool _isRotate = false;
+
+  /// Tapped open: the pill is growing, and [_onPillSettled] then opens the
+  /// counter.
+  bool _isOpening = false;
   Timer? _collapseTimer;
 
   bool get _isIntegrated => widget.productId != null;
@@ -150,54 +152,51 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
     // uncapped.
     final bool canIncrement = widget.stock == null || counter < widget.stock!;
 
-    // Both children size themselves naturally — it is up to the card to give
-    // this control a stable slot to flip inside of.
-    return showCounterView
-        ? AnimatedCartCounterView(
-            counter: counter,
-            isLoading: isUpdating,
-            canIncrement: canIncrement,
-            onInc: canIncrement ? () => _updateQuantity(counter + 1) : null,
-            onDec: () => _decrement(counter),
-            onDelete: _confirmRemove,
-          )
-        : InkWell(
-            onTap: () {
-              if (_hasSeveralLines()) {
-                _openProduct();
-                return;
-              }
-              setState(() => _isRotate = !_isRotate);
-            },
-            child: AnimatedAddToCartButton(
-              text: counter < 1 ? '+' : counter.toString(),
-              isRotate: _isRotate,
-              onEnd: () {
-                // The rotation has finished: open the counter.
-                setState(() => _showCounterView = true);
+    // The pill grows toward the start from the card's corner; the card only
+    // has to anchor it there.
+    return CartStepperPill(
+      expanded: showCounterView || (_isOpening && !_showCounterView),
+      counter: counter,
+      isLoading: isUpdating,
+      canIncrement: canIncrement,
+      onTap: () {
+        if (_hasSeveralLines()) {
+          _openProduct();
+          return;
+        }
+        setState(() => _isOpening = true);
+      },
+      onInc: () => _updateQuantity(counter + 1),
+      onDec: () => _decrement(counter),
+      onDelete: _confirmRemove,
+      onAnimationEnd: () => _onPillSettled(counter, canIncrement),
+    );
+  }
 
-                // The button doubles as the add-to-cart action only while
-                // the product is not in the cart yet — a single tap is then
-                // already an add. With units already in the cart it only
-                // reveals the counter, and the request is left to the
-                // counter's own icons.
-                if (counter >= 1) {
-                  _startCollapseTimer();
-                  return;
-                }
+  /// The pill finished growing (or shrinking). Grown from a tap, it opens the
+  /// counter.
+  void _onPillSettled(int counter, bool canIncrement) {
+    if (!_isOpening || _showCounterView) return;
+    setState(() => _showCounterView = true);
 
-                if (canIncrement) {
-                  _updateQuantity(1);
-                  return;
-                }
+    // The button doubles as the add-to-cart action only while the product is
+    // not in the cart yet — a single tap is then already an add. With units
+    // already in the cart it only reveals the counter, and the request is left
+    // to the counter's own icons.
+    if (counter >= 1) {
+      _startCollapseTimer();
+      return;
+    }
 
-                // Nothing left to add. This used to rotate open and collapse
-                // again in silence, which reads as a dead button — say why.
-                AppToast.showError(context, LangKeys.outOfStockKey.tr());
-                _collapse();
-              },
-            ),
-          );
+    if (canIncrement) {
+      _updateQuantity(1);
+      return;
+    }
+
+    // Nothing left to add. This used to open and collapse again in silence,
+    // which reads as a dead button — say why.
+    AppToast.showError(context, LangKeys.outOfStockKey.tr());
+    _collapse();
   }
 
   /// This product's cart lines, one per variant it is in the cart with.
@@ -347,7 +346,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
 
     setState(() {
       _showCounterView = false;
-      _isRotate = false;
+      _isOpening = false;
     });
   }
 }

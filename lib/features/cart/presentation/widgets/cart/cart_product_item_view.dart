@@ -276,7 +276,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                         ),
                         // At the store's minimum there is nothing left to
                         // decrement, so the icon becomes the delete action —
-                        // same rule as [AnimatedCartCounterView], where `0`
+                        // same rule as the product cards' pill, where `0`
                         // removes the line. Unlike there, dropping the last
                         // unit asks first.
                         InkWell(

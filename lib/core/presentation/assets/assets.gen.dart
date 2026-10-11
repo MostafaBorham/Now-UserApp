@@ -94,10 +94,6 @@ class $AssetsMediaImagesPngGen {
     'assets/media/images/png/bottom-nav-bar-background.png',
   );
 
-  /// File path: assets/media/images/png/decrement-icon.png
-  AssetGenImage get decrementIcon =>
-      const AssetGenImage('assets/media/images/png/decrement-icon.png');
-
   /// File path: assets/media/images/png/english-offers-cannot-miss-logo.png
   AssetGenImage get englishOffersCannotMissLogo => const AssetGenImage(
     'assets/media/images/png/english-offers-cannot-miss-logo.png',
@@ -112,10 +108,6 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get homeNeverMissOffersLogo => const AssetGenImage(
     'assets/media/images/png/home-never-miss-offers-logo.png',
   );
-
-  /// File path: assets/media/images/png/increament-icon.png
-  AssetGenImage get increamentIcon =>
-      const AssetGenImage('assets/media/images/png/increament-icon.png');
 
   /// File path: assets/media/images/png/logo-android12.png
   AssetGenImage get logoAndroid12 =>
@@ -179,11 +171,9 @@ class $AssetsMediaImagesPngGen {
     appIconForeground,
     appIcon,
     bottomNavBarBackground,
-    decrementIcon,
     englishOffersCannotMissLogo,
     guestWelcomeDiscountMotorbike,
     homeNeverMissOffersLogo,
-    increamentIcon,
     logoAndroid12,
     onboardingImg,
     quickDeliveryAr1,
@@ -271,6 +261,22 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get cancel =>
       const SvgGenImage('assets/media/images/svg/cancel.svg');
 
+  /// File path: assets/media/images/svg/card-cart-add-bulk.svg
+  SvgGenImage get cardCartAddBulk =>
+      const SvgGenImage('assets/media/images/svg/card-cart-add-bulk.svg');
+
+  /// File path: assets/media/images/svg/card-cart-add.svg
+  SvgGenImage get cardCartAdd =>
+      const SvgGenImage('assets/media/images/svg/card-cart-add.svg');
+
+  /// File path: assets/media/images/svg/card-cart-minus-bulk.svg
+  SvgGenImage get cardCartMinusBulk =>
+      const SvgGenImage('assets/media/images/svg/card-cart-minus-bulk.svg');
+
+  /// File path: assets/media/images/svg/card-cart-trash-bulk.svg
+  SvgGenImage get cardCartTrashBulk =>
+      const SvgGenImage('assets/media/images/svg/card-cart-trash-bulk.svg');
+
   /// File path: assets/media/images/svg/card.svg
   SvgGenImage get card => const SvgGenImage('assets/media/images/svg/card.svg');
 
@@ -344,10 +350,6 @@ class $AssetsMediaImagesSvgGen {
 
   /// File path: assets/media/images/svg/edit.svg
   SvgGenImage get edit => const SvgGenImage('assets/media/images/svg/edit.svg');
-
-  /// File path: assets/media/images/svg/empty-add-to-cart.svg
-  SvgGenImage get emptyAddToCart =>
-      const SvgGenImage('assets/media/images/svg/empty-add-to-cart.svg');
 
   /// File path: assets/media/images/svg/empty-cart-img.svg
   SvgGenImage get emptyCartImg =>
@@ -688,6 +690,10 @@ class $AssetsMediaImagesSvgGen {
     call,
     camera,
     cancel,
+    cardCartAddBulk,
+    cardCartAdd,
+    cardCartMinusBulk,
+    cardCartTrashBulk,
     card,
     chat,
     circleAddMoreBrokenIcon,
@@ -707,7 +713,6 @@ class $AssetsMediaImagesSvgGen {
     donotMissOffersBadgeDiscountIconEnglish,
     editIcon,
     edit,
-    emptyAddToCart,
     emptyCartImg,
     emptyFavourite,
     errorToastIcon,
