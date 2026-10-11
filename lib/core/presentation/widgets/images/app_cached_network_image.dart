@@ -33,15 +33,37 @@ class AppCachedNetworkImage extends StatelessWidget {
 
   final Map<String, String>? httpHeaders;
 
-  static final Set<String> _failedUrls = <String>{};
+  /// URL → when it last failed. A failed URL shows the placeholder at once
+  /// rather than being fetched again on every rebuild — but only for
+  /// [_failedUrlTtl]. It used to be held for the whole session, so an image
+  /// that failed once (a hiccup, a cover not uploaded yet) never showed until a
+  /// restart (BUG-021).
+  /// ponytail: one fixed back-off; per-URL exponential back-off if a bad URL
+  /// ever floods the logs.
+  static final Map<String, DateTime> _failedUrls = <String, DateTime>{};
 
   static const int _maxFailedUrls = 200;
 
-  static void _rememberFailedUrl(String url) {
+  static const Duration _failedUrlTtl = Duration(seconds: 60);
+
+  @visibleForTesting
+  static void rememberFailedUrl(String url) {
+    _failedUrls.remove(url);
     if (_failedUrls.length >= _maxFailedUrls) {
-      _failedUrls.remove(_failedUrls.first);
+      _failedUrls.remove(_failedUrls.keys.first);
     }
-    _failedUrls.add(url);
+    _failedUrls[url] = DateTime.now();
+  }
+
+  @visibleForTesting
+  static bool recentlyFailed(String url, {DateTime? now}) {
+    final DateTime? failedAt = _failedUrls[url];
+    if (failedAt == null) return false;
+    if ((now ?? DateTime.now()).difference(failedAt) < _failedUrlTtl) {
+      return true;
+    }
+    _failedUrls.remove(url);
+    return false;
   }
 
   static bool _watchingConnection = false;
@@ -135,7 +157,7 @@ class AppCachedNetworkImage extends StatelessWidget {
       ),
     );
 
-    if (imageUrl.isEmpty || _failedUrls.contains(imageUrl)) {
+    if (imageUrl.isEmpty || recentlyFailed(imageUrl)) {
       return errorPlaceholder;
     }
 
@@ -180,7 +202,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         }
       },
       errorWidget: (_, url, _) {
-        _rememberFailedUrl(url);
+        rememberFailedUrl(url);
         _clearFailedUrlsOnReconnect();
         return errorPlaceholder;
       },
