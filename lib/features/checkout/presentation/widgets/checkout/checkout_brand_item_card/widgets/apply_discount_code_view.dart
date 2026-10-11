@@ -101,7 +101,12 @@ class _ApplyDiscountCodeViewState
           // not nag on every checkout open, nor stay highlighted back on the
           // store screen as if it were waiting to work.
           _forgetPick(vendorId);
-          AppToast.showError(context, model.reason ?? LangKeys.discount.tr());
+          // Without a reason it used to show the field's label, "Discount
+          // Code", as the error (QA-003 A4).
+          AppToast.showError(
+            context,
+            model.reason ?? LangKeys.couponApplyFailedKey.tr(),
+          );
           return;
         }
         final AppliedDiscountModel? replaced =

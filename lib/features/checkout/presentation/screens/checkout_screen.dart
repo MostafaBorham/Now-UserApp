@@ -103,7 +103,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       final int? selectedCardId = ref.read(selectedPaymentCardProvider) ??
           CheckoutModel.resolveDefaultCard(checkout.paymentCards)?.id;
       if (selectedCardId == null) {
-        AppToast.showError(context, LangKeys.selectPaymentMethodFirstKey.tr());
+        // Only reachable with no usable card and the wallet unticked.
+        AppToast.showError(context, LangKeys.addCardOrUseWalletKey.tr());
         return;
       }
       paymentMethod = 'card';
@@ -151,7 +152,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       if (!next.isLoading && next.hasError && next.hasValue) {
         // failure.message is a LangKeys key or a raw server string; .tr()
         // localizes the key case and passes a server string through unchanged.
-        AppToast.showError(context, next.error.toString().tr());
+        AppToast.showError(
+          context,
+          next.error.toString().tr(),
+          title: LangKeys.pricesNotUpdatedTitleKey.tr(),
+        );
       }
     });
 

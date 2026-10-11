@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vo
 import 'package:nowdelivery_user_app/features/promotions/presentation/widgets/vouchers/voucher_tickets_list.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/data/models/purchase_voucher_model.dart';
 import 'package:nowdelivery_user_app/features/purchase_vouchers/viewmodel/get_purchase_vouchers_vm.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 
 /// The purchase-vouchers strip on the checkout screen.
 ///
@@ -166,9 +167,15 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
 
     result.fold(
       // Voucher rejection reasons come back as raw untranslated keys, so never
-      // surface the server text — show a generic message. Nothing was applied,
-      // so the previous selection (if any) still stands.
-      (_) => AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr()),
+      // surface the server text — show a generic message. A request that never
+      // reached the server says so instead of blaming the voucher (QA-003 A5).
+      // Nothing was applied, so the previous selection (if any) still stands.
+      (Failure failure) => AppToast.showError(
+        context,
+        _isTransport(failure)
+            ? failure.message.tr()
+            : LangKeys.voucherApplyFailedKey.tr(),
+      ),
       (model) {
         if (!model.applied) {
           AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr());
@@ -195,6 +202,10 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
       },
     );
   }
+
+  static bool _isTransport(Failure failure) =>
+      failure.message == LangKeys.noInternetConnectionKey ||
+      failure.message == LangKeys.serverConnectionFailedKey;
 
   /// The bare discount amount (no `%`/currency — [VoucherTicket] adds the unit).
   String _discountText(PurchaseVoucherModel voucher) {

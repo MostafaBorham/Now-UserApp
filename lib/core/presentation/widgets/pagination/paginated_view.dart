@@ -8,6 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_con
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagination_scroll_listener.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 
 /// Renders a paginated list of [T] driven by a `PaginatedViewModel`: infinite
 /// scroll, pull-to-refresh, first-page shimmer and error, empty state, and a
@@ -141,7 +143,11 @@ class PaginatedView<T> extends ConsumerWidget {
           PaginationStatus<T>.from(next).nextPageError;
       if (nextPageError == null) return;
 
-      AppToast.showError(context, nextPageError);
+      AppToast.showError(
+        context,
+        nextPageError,
+        title: LangKeys.loadMoreFailedTitleKey.tr(),
+      );
     });
 
     final PaginationStatus<T> status =

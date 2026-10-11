@@ -102,7 +102,7 @@ class _DeliveryAddressCardState extends ConsumerState<DeliveryAddressCard> {
             ],
           ),
           Text(
-            line.isNotEmpty ? line : LangKeys.noAddressKey.tr(),
+            line.isNotEmpty ? line : LangKeys.addressDetailsIncompleteKey.tr(),
             maxLines: 3,
             style: AppTextStyles.style14Regular.copyWith(
               color: line.isNotEmpty ? colors.neutral500 : colors.error,
