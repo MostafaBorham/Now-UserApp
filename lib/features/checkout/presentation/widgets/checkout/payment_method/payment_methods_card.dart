@@ -60,9 +60,8 @@ class PaymentMethodsCard extends ConsumerWidget {
     final List<PaymentMethodEntry> methods = cards
         .map(
           (CardPaymentModel card) => (
-            icon: Icons.credit_card,
+            icon: _brandLogo(card, colors),
             color: colors.secondaryContainer,
-            solid: false,
             title: _title(card),
             subtitle: _maskedNumber(card),
           ),
@@ -128,6 +127,19 @@ class PaymentMethodsCard extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// The Visa / Mastercard logo, as on the wallet screen; any other brand
+  /// (Mada has no asset yet) keeps the generic card icon.
+  Widget _brandLogo(CardPaymentModel card, AppColorScheme colors) {
+    final String brand = (card.brand ?? '').toLowerCase();
+    if (brand.contains('master')) {
+      return Assets.media.images.svg.masterLogo.svg(width: 28);
+    }
+    if (brand.contains('visa')) {
+      return Assets.media.images.svg.visaLogo.svg(width: 28);
+    }
+    return Icon(Icons.credit_card, size: 24, color: colors.secondaryContainer);
   }
 
   /// The brand (capitalised) as the row title, falling back to a generic label.

@@ -10,19 +10,18 @@ class ChoosePaymentMethod extends StatelessWidget {
     this.title,
     this.actionLabel,
     this.onTap,
-    this.onAddWallet,
   });
 
   final String? title;
   final String? actionLabel;
   final VoidCallback? onTap;
-  final VoidCallback? onAddWallet;
 
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final String resolvedTitle = title ?? LangKeys.choosePaymentMethodKey.tr();
-    final String resolvedActionLabel = actionLabel ?? LangKeys.addWalletKey.tr();
+    // It opens the add-card screen, so it says so (BUG-046).
+    final String resolvedActionLabel = actionLabel ?? LangKeys.addCardKey.tr();
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -49,13 +48,10 @@ class ChoosePaymentMethod extends StatelessWidget {
                       color: colors.tertiaryContainer,
                     ),
                   ),
-                  InkWell(
-                    onTap: onAddWallet,
-                    child: Text(
-                      resolvedActionLabel,
-                      style: AppTextStyles.style14Regular.copyWith(
-                        color: colors.error,
-                      ),
+                  Text(
+                    resolvedActionLabel,
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.error,
                     ),
                   ),
                 ],
@@ -75,11 +71,7 @@ class ChoosePaymentMethod extends StatelessWidget {
                   color: colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.add,
-                  size: 16,
-                  color: colors.error,
-                ),
+                child: Icon(Icons.add, size: 16, color: colors.error),
               ),
             ),
           ],

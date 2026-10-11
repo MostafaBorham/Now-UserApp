@@ -5,13 +5,12 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 /// A single payment method entry passed to [PaymentMethodsRadioGroup].
 ///
-/// A plain record (no model class): [icon] and [color] describe the brand
-/// badge, [solid] fills the circle with [color] (e.g. Apple Pay black) instead
-/// of a light tint, and [subtitle] is optional supporting text.
+/// A plain record (no model class): [icon] sits in a circle lightly tinted
+/// with [color] (a brand logo or a generic icon), and [subtitle] is optional
+/// supporting text.
 typedef PaymentMethodEntry = ({
-  IconData icon,
+  Widget icon,
   Color color,
-  bool solid,
   String title,
   String? subtitle,
 });
@@ -63,16 +62,10 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                     height: 46,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: method.solid
-                          ? method.color
-                          : method.color.withValues(alpha: 0.12),
+                      color: method.color.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      method.icon,
-                      size: 24,
-                      color: method.solid ? colors.white : method.color,
-                    ),
+                    child: method.icon,
                   ),
                   Expanded(
                     child: Column(

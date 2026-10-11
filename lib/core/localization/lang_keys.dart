@@ -377,7 +377,6 @@ abstract class LangKeys {
       'noDeliveryAddressSelected';
   static const String pleaseSelectAddressKey = 'pleaseSelectAddress';
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
-  static const String addWalletKey = 'addWallet';
   static const String balanceKey = 'balance';
   static const String walletShortfallHintKey = 'walletShortfallHint';
   static const String walletBalanceNotUpdatedKey = 'walletBalanceNotUpdated';
