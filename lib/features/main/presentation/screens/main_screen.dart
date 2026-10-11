@@ -78,33 +78,41 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
     );
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBody: true,
-      body: Stack(
-        children: [
-          Offstage(
-            offstage: currentPageIndex != 0,
-            child: TickerMode(
-              enabled: currentPageIndex == 0,
-              child: mainPages[0],
+    // `/main` is reached with `go`, so it is the only route: back on another
+    // tab returns to Home, and only Home's back leaves the app.
+    return PopScope(
+      canPop: currentPageIndex == 0,
+      onPopInvokedWithResult: (bool didPop, Object? _) {
+        if (!didPop) ref.read(mainTabIndexProvider.notifier).state = 0;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        extendBody: true,
+        body: Stack(
+          children: [
+            Offstage(
+              offstage: currentPageIndex != 0,
+              child: TickerMode(
+                enabled: currentPageIndex == 0,
+                child: mainPages[0],
+              ),
             ),
-          ),
 
-          if (currentPageIndex != 0) mainPages[currentPageIndex],
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: AppBottomNavBar(
-          currentIndex: currentPageIndex,
-          cartItemCount: cartItemCount,
-          onIndexChanged: (int value) {
-            if (_loginRequiredTabs.contains(value) &&
-                redirectGuestToLogin(context)) {
-              return;
-            }
-            ref.read(mainTabIndexProvider.notifier).state = value;
-          },
+            if (currentPageIndex != 0) mainPages[currentPageIndex],
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: AppBottomNavBar(
+            currentIndex: currentPageIndex,
+            cartItemCount: cartItemCount,
+            onIndexChanged: (int value) {
+              if (_loginRequiredTabs.contains(value) &&
+                  redirectGuestToLogin(context)) {
+                return;
+              }
+              ref.read(mainTabIndexProvider.notifier).state = value;
+            },
+          ),
         ),
       ),
     );
