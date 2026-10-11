@@ -110,8 +110,13 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                 child: AppRefreshIndicator(
                   // A NestedScrollView's top overscroll reaches the indicator
                   // deeper than level 0, so the default predicate would ignore
-                  // the gesture and the pull would do nothing.
-                  notificationPredicate: (_) => true,
+                  // the gesture and the pull would do nothing. Any depth, then
+                  // — but only with the page itself at its top: the inner
+                  // grid sits at its own top mid-page, and a pull started
+                  // there refreshed the store (BUG-018).
+                  notificationPredicate: (_) =>
+                      !_scrollController.hasClients ||
+                      _scrollController.offset <= 0,
                   // refresh() deliberately does not flip the state back to
                   // loading, so the page stays on screen instead of collapsing
                   // into the shimmer under the spinner.
