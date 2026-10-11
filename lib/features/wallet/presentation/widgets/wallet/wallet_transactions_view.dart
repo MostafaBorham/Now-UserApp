@@ -7,6 +7,9 @@ import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transact
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_history_item.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/wallet_history_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 /// The wallet transaction history list.
 ///
@@ -39,6 +42,10 @@ class WalletTransactionsView extends ConsumerWidget {
       ),
       placeholderBuilder: (BuildContext context) =>
           const WalletHistoryItemShimmer(),
+      emptyBuilder: (BuildContext context) => NoResultsWidget(
+        isScrollable: true,
+        emptyMessage: LangKeys.noTransactionsYetKey.tr(),
+      ),
       itemBuilder:
           (
             BuildContext context,

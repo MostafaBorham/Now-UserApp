@@ -73,7 +73,10 @@ class FavouriteStoresListView extends ConsumerWidget {
         isScrollable: true,
         alignTop: true,
         image: Assets.media.images.svg.emptyFavourite.svg(),
-        emptyMessage: LangKeys.emptyFavouritesKey.tr(),
+        emptyMessage: (args.searchKey == null
+                ? LangKeys.noFavouriteStoresKey
+                : LangKeys.noSearchMatchesKey)
+            .tr(),
       ),
       itemBuilder: (BuildContext context, StoreModel store, int index) =>
           AspectRatio(

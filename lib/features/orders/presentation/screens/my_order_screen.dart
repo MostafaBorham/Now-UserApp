@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dar
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/my_orders/order_list_item_shimmer.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 /// The signed-in user's orders: infinite scroll, pull-to-refresh, and the
 /// first-page shimmer, error and empty states, all from [PaginatedView].
@@ -69,6 +70,10 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
             3,
             3 + MediaQuery.paddingOf(context).bottom,
           ),
+        ),
+        emptyBuilder: (BuildContext context) => NoResultsWidget(
+          isScrollable: true,
+          emptyMessage: LangKeys.noOrdersYetKey.tr(),
         ),
         placeholderBuilder: (_) => const AspectRatio(
           aspectRatio: 2,

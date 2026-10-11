@@ -9,6 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagina
 import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/all_stores/stores_search_filter_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 /// One store tab on [AllStoresScreen]. Every tab pages [getAllStoresProvider]
 /// (`/api/v1/stores`) — the same provider the home screen uses. The "All" tab
@@ -64,6 +67,13 @@ class StoresListView extends ConsumerWidget {
       placeholderBuilder: (context) => const AspectRatio(
         aspectRatio: 1.5,
         child: AppShimmer(child: StoreCardView()),
+      ),
+      emptyBuilder: (BuildContext context) => NoResultsWidget(
+        isScrollable: true,
+        emptyMessage: (searchKey == null && rating == null
+                ? LangKeys.noStoresYetKey
+                : LangKeys.noSearchMatchesKey)
+            .tr(),
       ),
       itemBuilder: (context, store, index) => AspectRatio(
         aspectRatio: 1.5,

@@ -67,7 +67,6 @@ abstract class LangKeys {
   static const String productsKey = 'products';
   static const String storesKey = 'stores';
   static const String favouriteKey = 'favourite';
-  static const String emptyFavouritesKey = 'emptyFavourites';
   static const String allKey = 'all';
   static const String otherKey = 'other';
   static const String filtersKey = 'filters';

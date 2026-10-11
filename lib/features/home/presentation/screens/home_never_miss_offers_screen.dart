@@ -21,6 +21,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/home_nev
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_item.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// The feed's `flash_offers` products. The feed sends every product of each
 /// offer the section holds, so this is the whole list, not a first page.
@@ -251,7 +252,10 @@ class _HomeNeverMissOffersScreenState
                                 return Padding(
                                   padding: const EdgeInsets.all(16),
                                   child: error == null
-                                      ? const NoResultsWidget()
+                                      ? NoResultsWidget(
+                                          emptyMessage:
+                                              LangKeys.noOffersNowKey.tr(),
+                                        )
                                       : ServerConnectionErrorWidget(
                                           message: error is String
                                               ? error

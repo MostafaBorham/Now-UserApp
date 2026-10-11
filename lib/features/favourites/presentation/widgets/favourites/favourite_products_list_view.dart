@@ -76,7 +76,10 @@ class FavouriteProductsListView extends ConsumerWidget {
         isScrollable: true,
         alignTop: true,
         image: Assets.media.images.svg.emptyFavourite.svg(),
-        emptyMessage: LangKeys.emptyFavouritesKey.tr(),
+        emptyMessage: (args.searchKey == null
+                ? LangKeys.noFavouriteProductsKey
+                : LangKeys.noSearchMatchesKey)
+            .tr(),
       ),
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
           ProductItem3View(

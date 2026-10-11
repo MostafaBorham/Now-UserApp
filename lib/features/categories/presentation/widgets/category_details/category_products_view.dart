@@ -13,6 +13,8 @@ import 'package:nowdelivery_user_app/features/categories/presentation/providers/
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_products_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/product_item3_view.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// The products of the opened category as an infinite-scrolling grid.
 ///
@@ -115,7 +117,14 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
     return AppRefreshIndicator(
       onRefresh: viewModel.loadFirstPage,
       child: view.length == 0
-          ? const NoResultsWidget(isScrollable: true, alignTop: true)
+          ? NoResultsWidget(
+              isScrollable: true,
+              alignTop: true,
+              emptyMessage: (search.isEmpty
+                      ? LangKeys.noProductsYetKey
+                      : LangKeys.noSearchMatchesKey)
+                  .tr(),
+            )
           : LayoutBuilder(
               builder: (BuildContext context, BoxConstraints con) =>
                   GridView.builder(

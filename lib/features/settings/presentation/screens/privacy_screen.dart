@@ -95,7 +95,7 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
             return isEmpty
                 ? NoResultsWidget(
                     isScrollable: true,
-                    emptyMessage: LangKeys.noItemsYetKey.tr(),
+                    emptyMessage: LangKeys.contentUnavailableKey.tr(),
                   )
                 : SingleChildScrollView(
                     controller: _scrollController,

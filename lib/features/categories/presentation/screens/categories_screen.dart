@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/categories/category_card_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 /// The app categories as an infinite-scrolling grid.
 ///
@@ -92,6 +93,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             layout: const PaginatedGridLayout(
               gridDelegate: _gridDelegate,
               padding: EdgeInsets.only(top: 57),
+            ),
+            emptyBuilder: (BuildContext context) => NoResultsWidget(
+              isScrollable: true,
+              emptyMessage: LangKeys.noCategoriesYetKey.tr(),
             ),
             firstPagePlaceholdersCount: 9,
             // Fills the grid while the first page loads and trails it while the

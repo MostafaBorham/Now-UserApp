@@ -14,6 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagina
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 
 /// One category of **one store**, reached from the category chips on that
 /// store's details screen.
@@ -122,6 +123,13 @@ class _ViewStoreCategoryProductsScreenState
                 ),
                 placeholderBuilder: (BuildContext context) =>
                     const AppShimmer(child: ProductItemCard1()),
+                emptyBuilder: (BuildContext context) => NoResultsWidget(
+                  isScrollable: true,
+                  emptyMessage: (_search.isEmpty
+                          ? LangKeys.noProductsYetKey
+                          : LangKeys.noSearchMatchesKey)
+                      .tr(),
+                ),
                 itemBuilder:
                     (BuildContext context, ProductModel product, int index) =>
                         ProductItemCard1(

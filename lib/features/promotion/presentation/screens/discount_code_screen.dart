@@ -55,7 +55,7 @@ class _DiscountCodeScreenState extends ConsumerState<DiscountCodeScreen> {
           nextPagePlaceholdersCount: 3,
           emptyBuilder: (_) => NoResultsWidget(
             isScrollable: true,
-            emptyMessage: LangKeys.noItemsYetKey.tr(),
+            emptyMessage: LangKeys.noDiscountCodesKey.tr(),
           ),
           itemBuilder: (BuildContext context, CouponModel coupon, int index) =>
               DiscountCard(

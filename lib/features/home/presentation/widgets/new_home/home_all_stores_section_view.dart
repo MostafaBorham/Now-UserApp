@@ -236,7 +236,9 @@ class HomeStoresListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<StoreModel> shown = stores.take(itemCount).toList();
-    if (shown.isEmpty) return const NoResultsWidget();
+    if (shown.isEmpty) {
+      return NoResultsWidget(emptyMessage: LangKeys.noStoresYetKey.tr());
+    }
     return _StoresList(
       itemCount: shown.length,
       itemBuilder: (context, index) => StoreCardView(

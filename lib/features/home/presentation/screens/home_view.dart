@@ -353,9 +353,9 @@ class _HomeViewState extends ConsumerState<HomeView>
           !hasOffers &&
           feedSections.isEmpty &&
           noFeaturedStores)
-        const HomeFeedSection(
-          key: ValueKey<String>('feed_empty'),
-          child: NoResultsWidget(),
+        HomeFeedSection(
+          key: const ValueKey<String>('feed_empty'),
+          child: NoResultsWidget(emptyMessage: LangKeys.homeFeedEmptyKey.tr()),
         ),
       if (feed.hasError && feed.hasValue)
         HomeFeedSection(

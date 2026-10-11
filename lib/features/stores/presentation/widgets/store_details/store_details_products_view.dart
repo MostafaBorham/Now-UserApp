@@ -8,6 +8,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_sliver_layout.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/paginated_view.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// One store details filter tab: the store's products for [filter] as an
 /// infinite-scrolling grid.
@@ -71,8 +73,14 @@ class StoreDetailsProductsView extends ConsumerWidget {
           const AppShimmer(child: ProductItemCard1()),
       // Near the top of the grid: centred, it landed at the bottom of the
       // screen, under the tall store header.
-      emptyBuilder: (BuildContext context) =>
-          const NoResultsWidget(isScrollable: true, alignTop: true),
+      emptyBuilder: (BuildContext context) => NoResultsWidget(
+        isScrollable: true,
+        alignTop: true,
+        emptyMessage: (filter == ProductFilters.offer
+                ? LangKeys.noOffersNowKey
+                : LangKeys.noProductsYetKey)
+            .tr(),
+      ),
       itemBuilder: (BuildContext context, ProductModel product, int index) =>
           ProductItemCard1(
             product: product,

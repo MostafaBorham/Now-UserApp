@@ -76,7 +76,7 @@ void main() {
         ],
       );
 
-      expect(find.text('emptyFavourites'), findsOneWidget);
+      expect(find.text('noFavouriteProducts'), findsOneWidget);
       expect(find.byType(ProductItem3View), findsNothing);
     });
 

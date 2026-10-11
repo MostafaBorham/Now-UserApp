@@ -9,6 +9,8 @@ import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_category_card.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_category_card_shimmer.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchTopCategoriesList extends ConsumerWidget {
   const SearchTopCategoriesList({super.key});
@@ -29,8 +31,19 @@ class SearchTopCategoriesList extends ConsumerWidget {
     final double cardHeight = cardWidth / _cardAspectRatio;
 
     final Widget strip;
-    if (status.firstPageError != null || status.isEmpty) {
-      strip = const NoResultsWidget();
+    // A failed load used to read as "No results found", with no way to try
+    // again (QA-003 A17).
+    if (status.firstPageError != null) {
+      strip = Center(
+        child: TextButton.icon(
+          onPressed: () =>
+              ref.read(getAppCategoriesProvider.notifier).loadFirstPage(),
+          icon: const Icon(Icons.refresh),
+          label: Text(LangKeys.retryKey.tr()),
+        ),
+      );
+    } else if (status.isEmpty) {
+      strip = NoResultsWidget(emptyMessage: LangKeys.noCategoriesYetKey.tr());
     } else if (!status.hasLoadedPage) {
       strip = _CardsStrip(
         cardWidth: cardWidth,

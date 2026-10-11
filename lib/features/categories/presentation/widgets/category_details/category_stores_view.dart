@@ -14,6 +14,8 @@ import 'package:nowdelivery_user_app/features/categories/presentation/providers/
 import 'package:nowdelivery_user_app/features/categories/presentation/providers/category_details/category_stores_search_provider.dart';
 import 'package:nowdelivery_user_app/features/categories/presentation/widgets/category_details/category_stores_view_shimmer.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_category_stores_vm.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// The stores of the opened category as an infinite-scrolling list.
 ///
@@ -124,7 +126,14 @@ class _CategoryStoresViewState extends ConsumerState<CategoryStoresView> {
     return AppRefreshIndicator(
       onRefresh: viewModel.loadFirstPage,
       child: view.length == 0
-          ? const NoResultsWidget(isScrollable: true, alignTop: true)
+          ? NoResultsWidget(
+              isScrollable: true,
+              alignTop: true,
+              emptyMessage: (search.isEmpty
+                      ? LangKeys.noStoresYetKey
+                      : LangKeys.noSearchMatchesKey)
+                  .tr(),
+            )
           : ListView.separated(
               controller: _scrollController,
               addRepaintBoundaries: true,
