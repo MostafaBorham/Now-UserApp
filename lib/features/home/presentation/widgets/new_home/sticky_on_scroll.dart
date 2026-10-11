@@ -39,20 +39,14 @@ class StickyOnScroll extends StatefulWidget {
 }
 
 class _StickyOnScrollState extends State<StickyOnScroll> {
-  final GlobalKey _childKey = GlobalKey();
   final ValueNotifier<double> _translation = ValueNotifier<double>(0);
 
   ScrollPosition? _position;
 
-  /// Scroll offset at which the child's top reaches [pinTop]. Resolved lazily
-  /// (while still unpinned, so the measurement isn't skewed by our own
-  /// translate) and cached; invalidated when [pinTop] changes.
-  double? _threshold;
-
   @override
   void initState() {
     super.initState();
-    widget.pinTop.addListener(_onPinTopChanged);
+    widget.pinTop.addListener(_onScroll);
   }
 
   @override
@@ -68,34 +62,31 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
 
   @override
   void dispose() {
-    widget.pinTop.removeListener(_onPinTopChanged);
+    widget.pinTop.removeListener(_onScroll);
     _position?.removeListener(_onScroll);
     _translation.dispose();
     super.dispose();
   }
 
-  void _onPinTopChanged() {
-    _threshold = null;
-    _onScroll();
-  }
-
-  double? _resolveThreshold() {
-    if (_threshold != null) return _threshold;
-    final RenderObject? box = _childKey.currentContext?.findRenderObject();
+  /// Scroll offset at which the child's top reaches [pinTop]. Measured on
+  /// every scroll rather than cached once: the content above (the live-orders
+  /// strip, special offers, a section appearing) changes height after the
+  /// first layout, and a cached value then parked the bar too high or too low
+  /// (BUG-008). Measured on this widget's own box, which sits outside the
+  /// translate, so the reading isn't skewed by it.
+  double? _threshold() {
+    final RenderObject? box = context.findRenderObject();
     if (box == null || !box.attached) return null;
     final double reveal = RenderAbstractViewport.of(
       box,
     ).getOffsetToReveal(box, 0.0).offset;
-    return _threshold = (reveal - widget.pinTop.value).clamp(
-      0.0,
-      double.infinity,
-    );
+    return (reveal - widget.pinTop.value).clamp(0.0, double.infinity);
   }
 
   void _onScroll() {
     final ScrollPosition? position = _position;
     if (position == null) return;
-    final double? threshold = _resolveThreshold();
+    final double? threshold = _threshold();
     if (threshold == null) return;
     // Beyond the threshold, translate down by exactly the extra scroll so the
     // child stays parked at [pinTop]; before it, ride along with the page.
@@ -107,7 +98,7 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<double>(
       valueListenable: _translation,
-      child: KeyedSubtree(key: _childKey, child: widget.child),
+      child: widget.child,
       builder: (context, dy, child) {
         return Transform.translate(
           offset: Offset(0, dy),
