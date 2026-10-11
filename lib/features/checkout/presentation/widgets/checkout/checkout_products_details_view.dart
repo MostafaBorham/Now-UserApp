@@ -15,8 +15,9 @@ class CheckoutProductsDetailsView extends StatelessWidget {
     final List<ProductModel> items =
         order?.items ?? const <ProductModel>[];
     return ListView.separated(
-      // A null padding takes the screen's safe-area insets — a gesture-bar
-      // sized gap under the items inside this card (BUG-038).
+      // A null padding would take the screen's MediaQuery insets as a gap
+      // under the items; the card's own spacing is all there should be
+      // (BUG-038).
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
