@@ -49,9 +49,11 @@ class _HomeAllStoresSectionViewState
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
 
-  // Height reserved for the pills row. The store list is offset below it and
-  // scrolls with the page, while the pills stay parked here once pinned.
-  static const double _pillsBarHeight = HomeStoresListView.tabRowHeight;
+  // The pills row (CustomButtonTabBar's TabBar). The store list starts a
+  // small gap below it and scrolls with the page, while the pills stay parked
+  // here once pinned.
+  static const double _pillsRowHeight = 48;
+  static const double _listTop = _pillsRowHeight + 8;
 
   @override
   bool get wantKeepAlive => true;
@@ -87,23 +89,30 @@ class _HomeAllStoresSectionViewState
 
     final int selectedIndex = _selectedIndex.clamp(0, tabs.length - 1);
 
+    // Only the pill row is reserved: the bar's own 16 px gap and its TabBarView
+    // (empty here — the list lives below) overflow unseen, instead of pushing
+    // the stores ~23 px further down (BUG-024).
     Widget pills = SizedBox(
-      height: _pillsBarHeight,
-      child: CustomButtonTabBar(
-        tabs: tabs,
-        views: List<Widget>.filled(tabs.length, const SizedBox.shrink()),
-        onTap: (int index) {
-          if (index == _selectedIndex) return;
-          if (index > 0) {
-            ref.invalidate(
-              getCategoryStoresProvider(
-                _HomeCategoryStoresListView.argsOf(categories[index - 1]),
-              ),
-            );
-          }
-          setState(() => _selectedIndex = index);
-        },
-        unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
+      height: _pillsRowHeight,
+      child: OverflowBox(
+        alignment: Alignment.topCenter,
+        maxHeight: _pillsRowHeight + 16,
+        child: CustomButtonTabBar(
+          tabs: tabs,
+          views: List<Widget>.filled(tabs.length, const SizedBox.shrink()),
+          onTap: (int index) {
+            if (index == _selectedIndex) return;
+            if (index > 0) {
+              ref.invalidate(
+                getCategoryStoresProvider(
+                  _HomeCategoryStoresListView.argsOf(categories[index - 1]),
+                ),
+              );
+            }
+            setState(() => _selectedIndex = index);
+          },
+          unSelectedTabColor: colors.neutral500.withValues(alpha: 0.2),
+        ),
       ),
     );
     final ValueListenable<double>? pinTop = widget.pinTop;
@@ -157,7 +166,7 @@ class _HomeAllStoresSectionViewState
             clipBehavior: Clip.none,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: _pillsBarHeight),
+                padding: const EdgeInsets.only(top: _listTop),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: views[selectedIndex],
@@ -177,11 +186,8 @@ class _HomeCategoryStoresListView extends ConsumerWidget {
 
   final CategoryModel category;
 
-  static CategoryStoresArgs argsOf(CategoryModel category) => (
-    categorySlug: category.slug ?? '',
-    categoryId: null,
-    searchKey: null,
-  );
+  static CategoryStoresArgs argsOf(CategoryModel category) =>
+      (categorySlug: category.slug ?? '', categoryId: null, searchKey: null);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -222,11 +228,6 @@ class HomeStoresListView extends StatelessWidget {
 
   static const int itemCount = 7;
   static const double separator = 15;
-
-  // Reserved height for the pills row that sits above the list. Covers the
-  // TabBar row plus CustomButtonTabBar's own 16px gap below it, with a little
-  // slack so the (emptied) TabBarView never forces a RenderFlex overflow.
-  static const double tabRowHeight = 66;
 
   // The store card cover scales with width (w * 0.32) while its text block is a
   // roughly constant ~110px, so this tracks the card's natural height closely.

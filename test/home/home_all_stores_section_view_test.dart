@@ -120,4 +120,19 @@ void main() {
     expect(find.text('From The Category'), findsOneWidget);
     expect(find.text('From The Feed'), findsNothing);
   });
+
+  // BUG-024: the list sat 66 px under the pills' top — the bar's own gap and
+  // empty view area — leaving a wide band of nothing under the pills.
+  testWidgets('the stores start just under the pill row', (
+    WidgetTester tester,
+  ) async {
+    await pumpSection(
+      tester,
+      stores: <StoreModel>[feedStore(id: 1, name: 'A')],
+    );
+
+    final double pillsBottom = tester.getRect(find.byType(TabBar)).bottom;
+    final double listTop = tester.getRect(find.byType(StoreCardView)).top;
+    expect(listTop - pillsBottom, 8);
+  });
 }
