@@ -23,4 +23,9 @@ class WelcomeVoucherCacheService {
   Future<void> saveWelcomeCode(String code) async {
     await SharedPrefManager.setString(CacheKeys.welcomeVoucherCode, code);
   }
+
+  /// Forgets the code — the server no longer offers it.
+  Future<void> clearWelcomeCode() async {
+    await SharedPrefManager.remove(CacheKeys.welcomeVoucherCode);
+  }
 }

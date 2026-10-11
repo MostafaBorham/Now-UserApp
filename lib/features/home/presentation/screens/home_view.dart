@@ -79,7 +79,13 @@ class _HomeViewState extends ConsumerState<HomeView>
   @override
   void initState() {
     super.initState();
-    _lifecycle = AppLifecycleListener(onResume: _recheckLocation);
+    _lifecycle = AppLifecycleListener(
+      onResume: _recheckLocation,
+      // Back from the background: pick up what the admin changed meanwhile
+      // (sections, their order, offers, brands) without a restart (BUG-022).
+      // The loaded feed stays on screen while it reloads.
+      onShow: _refreshAll,
+    );
     _scrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

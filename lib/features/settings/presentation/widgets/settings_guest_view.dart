@@ -36,107 +36,111 @@ class SettingsGuestView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     // The badge promo code comes from the same first-order welcome voucher the
-    // empty cart shows; fall back to the canonical code until it loads.
-    final String? apiCode =
-        ref.watch(welcomeVoucherProvider).valueOrNull?.code;
-    final String promoCode = (apiCode != null && apiCode.isNotEmpty)
-        ? apiCode
-        : welcomeVoucherCode;
+    // empty cart shows. With no live code there is no offer to advertise, so
+    // the banner goes — it used to fall back to a hardcoded WELCOME10 that the
+    // admin may have switched off (BUG-022).
+    final String? promoCode = ref
+        .watch(welcomeVoucherProvider)
+        .valueOrNull
+        ?.code;
+    final bool hasCode = promoCode != null && promoCode.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Top spacing lives inside the scroll view (owned by SettingsScreen)
         // so it scrolls up with the content.
         const SizedBox(height: 57),
-        // Welcome discount banner: the SVG carries the "BIG DISCOUNT / خصم
-        // كبير" lettering as vectors, but its motorbike is a raster inside an
-        // SVG <pattern> that flutter_svg can't paint — so the same cutout is
-        // overlaid as a PNG, positioned to match its rect in the artwork.
-        Center(
-          child: SizedBox(
-            height: 243,
-            width: 243 * _artWidth / _artHeight,
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Assets.media.images.svg.guestWelcomeDiscountImg.svg(
-                      fit: BoxFit.fill,
-                    ),
-                    Positioned(
-                      top: constraints.maxHeight * (_bikeTop / _artHeight),
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Assets
-                          .media
-                          .images
-                          .png
-                          .guestWelcomeDiscountMotorbike
-                          .image(fit: BoxFit.fill),
-                    ),
-                  ],
-                );
-              },
+        if (hasCode) ...[
+          // Welcome discount banner: the SVG carries the "BIG DISCOUNT / خصم
+          // كبير" lettering as vectors, but its motorbike is a raster inside an
+          // SVG <pattern> that flutter_svg can't paint — so the same cutout is
+          // overlaid as a PNG, positioned to match its rect in the artwork.
+          Center(
+            child: SizedBox(
+              height: 243,
+              width: 243 * _artWidth / _artHeight,
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Assets.media.images.svg.guestWelcomeDiscountImg.svg(
+                        fit: BoxFit.fill,
+                      ),
+                      Positioned(
+                        top: constraints.maxHeight * (_bikeTop / _artHeight),
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Assets
+                            .media
+                            .images
+                            .png
+                            .guestWelcomeDiscountMotorbike
+                            .image(fit: BoxFit.fill),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        // Promo strip: "promo code" + WELCOME badge on the start side, "on
-        // first order" on the end side.
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    formatArabicKashida(LangKeys.promoCodeKey.tr(), count: 4),
-                    style: AppTextStyles.style12SemiBold.copyWith(
-                      color: colors.primary500Main,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      gradient: RadialGradient(
-                        colors: [
-                          colors.surfaceContainerHighest,
-                          colors.surfaceContainerHigh,
-                          colors.onSecondaryFixed,
-                        ],
-                        stops: const [0, 0.5, 1],
+          const SizedBox(height: 8),
+          // Promo strip: "promo code" + WELCOME badge on the start side, "on
+          // first order" on the end side.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      formatArabicKashida(LangKeys.promoCodeKey.tr(), count: 4),
+                      style: AppTextStyles.style12SemiBold.copyWith(
+                        color: colors.primary500Main,
                       ),
                     ),
-                    child: Text(
-                      promoCode,
-                      style: AppTextStyles.style12Bold.copyWith(
-                        color: colors.black,
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        gradient: RadialGradient(
+                          colors: [
+                            colors.surfaceContainerHighest,
+                            colors.surfaceContainerHigh,
+                            colors.onSecondaryFixed,
+                          ],
+                          stops: const [0, 0.5, 1],
+                        ),
+                      ),
+                      child: Text(
+                        promoCode,
+                        style: AppTextStyles.style12Bold.copyWith(
+                          color: colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Text(
-                formatArabicKashida(LangKeys.onFirstOrderKey.tr(), count: 4),
-                textAlign: TextAlign.center,
-                style: AppTextStyles.style12SemiBold.copyWith(
-                  color: colors.primary500Main,
+                  ],
                 ),
-              ),
-            ],
+                Text(
+                  formatArabicKashida(LangKeys.onFirstOrderKey.tr(), count: 4),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.style12SemiBold.copyWith(
+                    color: colors.primary500Main,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
+        ],
         PrimaryAppButton(
           title: LangKeys.loginOrRegisterKey.tr(),
           titleStyle: AppTextStyles.style16Bold,

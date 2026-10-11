@@ -16,7 +16,15 @@ import 'package:nowdelivery_user_app/features/promotion/data/datasources/remote/
 /// error message (a [LangKeys] key or a raw server message — callers apply
 /// `.tr()` which leaves non-key strings untouched), `Right` carries the data.
 class PromotionRepo {
-  final PromotionApiService _promotionApiService = PromotionApiService();
+  /// [api] and [isConnected] are injectable for tests, as in `CartRepo`.
+  PromotionRepo({
+    PromotionApiService? api,
+    Future<bool> Function()? isConnected,
+  }) : _promotionApiService = api ?? PromotionApiService(),
+       _isConnected = isConnected ?? (() => ConnectionChecker.isConnected);
+
+  final PromotionApiService _promotionApiService;
+  final Future<bool> Function() _isConnected;
   final WelcomeVoucherCacheService _welcomeVoucherCacheService =
       WelcomeVoucherCacheService();
 
@@ -25,7 +33,7 @@ class PromotionRepo {
   Future<Either<Failure, PaginationModel<CouponModel>>> getCoupons({
     required int page,
   }) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -67,7 +75,7 @@ class PromotionRepo {
   /// [Left] — callers (the welcome-voucher banner) treat any [Left] as "don't
   /// show".
   Future<Either<Failure, CouponModel>> getCoupon(String code) async {
-    if (!await ConnectionChecker.isConnected) {
+    if (!await _isConnected()) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
     }
 
@@ -102,16 +110,28 @@ class PromotionRepo {
 
   /// The first-order welcome voucher, server-first with an offline cache.
   ///
-  /// Always hits the server ([getCoupon]) first: on success the fresh code is
-  /// persisted (best-effort) and the coupon returned; on any failure it falls
-  /// back to the cached code — reconstructed into a [CouponModel] carrying just
-  /// the code — and only surfaces the original failure when the cache is empty.
+  /// Offline, the cached code — reconstructed into a [CouponModel] carrying
+  /// just the code — stands in, and the failure surfaces only when the cache is
+  /// empty. Online, the server's answer stands: on success the fresh code is
+  /// persisted (best-effort); on a failure the cache is cleared. Falling back
+  /// on *any* failure kept a code the admin had deactivated (a 404) on screen
+  /// for good (BUG-022).
+  /// ponytail: every online failure clears it, not only a 404 — the cache only
+  /// serves offline starts, and the next successful fetch restores it.
   Future<Either<Failure, CouponModel>> getWelcomeVoucher(String code) async {
+    if (!await _isConnected()) {
+      return _readWelcomeCodeFromCache(
+        const Failure(LangKeys.noInternetConnectionKey),
+      );
+    }
+
     final Either<Failure, CouponModel> serverResult = await getCoupon(code);
 
     return serverResult.fold(
-      // Server failed → fall back to the cached code.
-      (Failure serverFailure) => _readWelcomeCodeFromCache(serverFailure),
+      (Failure serverFailure) async {
+        await _forgetWelcomeCode();
+        return Left<Failure, CouponModel>(serverFailure);
+      },
       // Server succeeded → persist the fresh code, then return the coupon.
       (CouponModel coupon) async {
         final String? freshCode = coupon.code;
@@ -121,6 +141,14 @@ class PromotionRepo {
         return Right<Failure, CouponModel>(coupon);
       },
     );
+  }
+
+  Future<void> _forgetWelcomeCode() async {
+    try {
+      await _welcomeVoucherCacheService.clearWelcomeCode();
+    } catch (_) {
+      // Ignored, like the save: the cache is a side effect.
+    }
   }
 
   Future<void> _cacheWelcomeCode(String code) async {
