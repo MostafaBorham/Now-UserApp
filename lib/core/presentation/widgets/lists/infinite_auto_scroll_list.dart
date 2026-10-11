@@ -18,6 +18,9 @@ import 'package:flutter/widgets.dart';
 ///   on each side; once the gesture ends the offset is re-centred by whole
 ///   cycles, which is invisible because the content repeats every cycle.
 ///
+/// A row that fits the strip doesn't loop: it shows still, with no ticker —
+/// looping it put the same few products side by side (BUG-011).
+///
 /// Performance notes:
 /// - Motion is driven by a single [Ticker] that calls [ScrollController.jumpTo]
 ///   each frame. `jumpTo` only repositions the viewport; it never rebuilds the
@@ -84,6 +87,12 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
   // notification, so the strip used to slide on under it (BUG-021, QA V2).
   int _fingersDown = 0;
 
+  // Whether the items overflow the strip; only then does it loop and move.
+  bool _loops = false;
+
+  // Whether the looping list has been parked in its centre band yet.
+  bool _centered = false;
+
   double get _slotExtent => widget.itemWidth + widget.separatorWidth;
 
   double get _cycleExtent => widget.itemCount * _slotExtent;
@@ -95,13 +104,19 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
     super.initState();
     _controller = ScrollController();
     _ticker = createTicker(_onTick);
-    // Park the offset in the middle and start once the first frame is laid out
-    // so the controller has clients.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_controller.hasClients) return;
-      _jumpTo(_centerOffset);
+  }
+
+  /// Runs the ticker exactly while the strip loops. After layout, so a list
+  /// that just started looping has its controller attached by the first tick.
+  void _syncTicker() {
+    if (!mounted) return;
+    if (_loops && !_ticker.isActive) {
+      _centered = false;
+      _lastElapsed = Duration.zero;
       _ticker.start();
-    });
+    } else if (!_loops && _ticker.isActive) {
+      _ticker.stop();
+    }
   }
 
   void _jumpTo(double value) {
@@ -112,6 +127,11 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
 
   void _onTick(Duration elapsed) {
     if (!_controller.hasClients || _cycleExtent <= 0) return;
+    // Park the offset in the middle first, leaving a cycle of room either way.
+    if (!_centered) {
+      _centered = true;
+      _jumpTo(_centerOffset);
+    }
     // Skip the first tick so the initial delta is measured from a real frame.
     if (_lastElapsed == Duration.zero) {
       _lastElapsed = elapsed;
@@ -166,8 +186,44 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
     super.dispose();
   }
 
+  Widget _item(BuildContext context, int index) => Padding(
+    padding: EdgeInsetsDirectional.only(end: widget.separatorWidth),
+    child: SizedBox(
+      width: widget.itemWidth,
+      child: widget.itemBuilder(context, index % widget.itemCount),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double available =
+            constraints.maxWidth -
+            widget.padding.resolve(Directionality.of(context)).horizontal;
+        final bool loops =
+            _cycleExtent - widget.separatorWidth > available + 0.5;
+        if (loops != _loops) {
+          _loops = loops;
+          WidgetsBinding.instance.addPostFrameCallback((_) => _syncTicker());
+        }
+        if (!loops) {
+          // Still, from the reading start.
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: widget.padding,
+            itemExtent: _slotExtent,
+            itemCount: widget.itemCount,
+            itemBuilder: _item,
+          );
+        }
+        return _looping();
+      },
+    );
+  }
+
+  Widget _looping() {
     return RepaintBoundary(
       child: Listener(
         onPointerDown: (_) => _fingersDown++,
@@ -187,13 +243,7 @@ class _InfiniteAutoScrollListState extends State<InfiniteAutoScrollList>
             padding: widget.padding,
             itemExtent: _slotExtent,
             itemCount: widget.itemCount * _repeat,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsetsDirectional.only(end: widget.separatorWidth),
-              child: SizedBox(
-                width: widget.itemWidth,
-                child: widget.itemBuilder(context, index % widget.itemCount),
-              ),
-            ),
+            itemBuilder: _item,
           ),
         ),
       ),

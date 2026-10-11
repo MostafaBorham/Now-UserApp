@@ -346,6 +346,29 @@ void main() {
     expect(product.productId ?? product.id, 52);
   });
 
+  // BUG-012: a product in two offers showed twice in the strip.
+  test('flash_offers lists a product in two offers once', () {
+    final HomeSectionModel section = HomeSectionModel.fromJson(<String, dynamic>{
+      'type': 'flash_offers',
+      'items': <Map<String, dynamic>>[
+        {
+          'products': <Map<String, dynamic>>[
+            {'id': 52},
+            {'id': 38},
+          ],
+        },
+        {
+          'products': <Map<String, dynamic>>[
+            {'id': 38},
+            {'id': 7},
+          ],
+        },
+      ],
+    });
+
+    expect(section.products.map((p) => p.id).toList(), <int>[52, 38, 7]);
+  });
+
   test('promo_block_middle parses its banner item', () {
 
 

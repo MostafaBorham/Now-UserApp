@@ -168,6 +168,7 @@ class HomeSectionModel extends Equatable {
     final List<dynamic> rawItems =
         json['items'] as List<dynamic>? ?? <dynamic>[];
     final bool isProductsByCategory = type == 'products_by_category';
+    final Set<int> seenFlashIds = <int>{};
 
     return HomeSectionModel(
       id: (json['id'] as num?)?.toInt(),
@@ -198,6 +199,11 @@ class HomeSectionModel extends Equatable {
                           .whereType<Map<String, dynamic>>(),
                 )
                 .map(ProductModel.fromJson)
+                // One product can sit in two offer wrappers; the strip shows
+                // it once (BUG-012).
+                .where(
+                  (ProductModel p) => p.id == null || seenFlashIds.add(p.id!),
+                )
                 .toList()
           // A products_by_category item is the product itself — no offer
           // wrapper to flatten, unlike flash_offers above.
