@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/carousel_hold.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/featured_stores_controller.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_featured_store_item.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
@@ -32,34 +33,38 @@ class HomeFeaturedStoresView extends ConsumerWidget {
 
     final bool isSingleStore = visible.length == 1;
 
-    return CarouselSlider.builder(
-      itemCount: visible.length,
-      itemBuilder: (_, index, _) => RepaintBoundary(
-        child: HomeFeaturedStoreItem(
-          store: visible[index],
-          storesCount: visible.length,
-          onProductFavouriteChanged: (int? productId, bool isFavourite) => ref
-              .read(getHomeSectionsProvider.notifier)
-              .updateProductFavourite(productId, isFavourite),
+    return CarouselHold(
+      builder: (CarouselSliderController controller) => CarouselSlider.builder(
+        carouselController: controller,
+        itemCount: visible.length,
+        itemBuilder: (_, index, _) => RepaintBoundary(
+          child: HomeFeaturedStoreItem(
+            store: visible[index],
+            storesCount: visible.length,
+            onProductFavouriteChanged: (int? productId, bool isFavourite) => ref
+                .read(getHomeSectionsProvider.notifier)
+                .updateProductFavourite(productId, isFavourite),
+          ),
         ),
-      ),
-      options: CarouselOptions(
-        onPageChanged: isSingleStore
-            ? null
-            : (index, reason) => ref
-                  .read(currentFeaturedStoreIndexProvider.notifier)
-                  .state = index,
-        enlargeCenterPage: false,
-        autoPlay: !isSingleStore,
-        autoPlayInterval: const Duration(seconds: 5),
-        // Drift right-to-left in Arabic, left-to-right in English — see the
-        // motion rule on `AppSlider`.
-        reverse: true,
-        scrollPhysics: isSingleStore
-            ? const NeverScrollableScrollPhysics()
-            : null,
-        aspectRatio: 0.75,
-        viewportFraction: 1,
+        options: CarouselOptions(
+          onPageChanged: isSingleStore
+              ? null
+              : (index, reason) =>
+                    ref.read(currentFeaturedStoreIndexProvider.notifier).state =
+                        index,
+          enlargeCenterPage: false,
+          autoPlay: !isSingleStore,
+          autoPlayInterval: const Duration(seconds: 5),
+          pauseAutoPlayOnTouch: false,
+          // Drift right-to-left in Arabic, left-to-right in English — see the
+          // motion rule on `AppSlider`.
+          reverse: true,
+          scrollPhysics: isSingleStore
+              ? const NeverScrollableScrollPhysics()
+              : null,
+          aspectRatio: 0.75,
+          viewportFraction: 1,
+        ),
       ),
     );
   }

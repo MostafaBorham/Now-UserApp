@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/carousel_hold.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 /// An auto-playing carousel with a dots indicator.
@@ -55,34 +56,38 @@ class _AppSliderState extends State<AppSlider> {
     return Column(
       spacing: 20,
       children: [
-        CarouselSlider.builder(
-          itemCount: widget.sliderItems.length,
-          itemBuilder: (_, index, _) {
-            return Padding(
-              padding: EdgeInsets.all(widget.sliderSpace!),
-              child: widget.sliderItems.elementAt(index),
-            );
-          },
-          options: CarouselOptions(
-            enlargeCenterPage: false,
-            autoPlay: !isSingleItem,
-            autoPlayInterval: const Duration(seconds: 5),
-            // App-wide motion rule: anything that moves on its own travels
-            // with the locale's reading sweep — right-to-left in Arabic,
-            // left-to-right in English (the same rule the delivery-man
-            // animation follows via `ReverseWidget`). A `PageView` lays its
-            // pages out in index order, which drifts the opposite way in both
-            // locales, so `reverse` flips it: the next item enters from the
-            // leading edge and the current one leaves by the trailing edge.
-            reverse: true,
-            scrollPhysics: isSingleItem
-                ? const NeverScrollableScrollPhysics()
-                : null,
-            aspectRatio: widget.itemAspectRatio!,
-            viewportFraction: isSingleItem ? 1 : 0.9,
-            onPageChanged: isSingleItem
-                ? null
-                : (index, _) => setState(() => _index = index),
+        CarouselHold(
+          builder: (CarouselSliderController controller) => CarouselSlider.builder(
+            carouselController: controller,
+            itemCount: widget.sliderItems.length,
+            itemBuilder: (_, index, _) {
+              return Padding(
+                padding: EdgeInsets.all(widget.sliderSpace!),
+                child: widget.sliderItems.elementAt(index),
+              );
+            },
+            options: CarouselOptions(
+              enlargeCenterPage: false,
+              autoPlay: !isSingleItem,
+              autoPlayInterval: const Duration(seconds: 5),
+              pauseAutoPlayOnTouch: false,
+              // App-wide motion rule: anything that moves on its own travels
+              // with the locale's reading sweep — right-to-left in Arabic,
+              // left-to-right in English (the same rule the delivery-man
+              // animation follows via `ReverseWidget`). A `PageView` lays its
+              // pages out in index order, which drifts the opposite way in both
+              // locales, so `reverse` flips it: the next item enters from the
+              // leading edge and the current one leaves by the trailing edge.
+              reverse: true,
+              scrollPhysics: isSingleItem
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
+              aspectRatio: widget.itemAspectRatio!,
+              viewportFraction: isSingleItem ? 1 : 0.9,
+              onPageChanged: isSingleItem
+                  ? null
+                  : (index, _) => setState(() => _index = index),
+            ),
           ),
         ),
         if (!isSingleItem && widget.showIndicator)
