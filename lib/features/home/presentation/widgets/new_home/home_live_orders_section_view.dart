@@ -34,6 +34,8 @@ int? _minutesUntil(String? isoTimestamp) {
 class HomeLiveOrdersSectionView extends ConsumerWidget {
   const HomeLiveOrdersSectionView({super.key});
 
+  static const double _margin = 10;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<OrderModel>> liveOrders = ref.watch(
@@ -45,18 +47,26 @@ class HomeLiveOrdersSectionView extends ConsumerWidget {
 
     return LayoutBuilder(
       builder: (context, con) {
+        // A lone order fills the strip between even margins rather than
+        // sitting off-centre at the strip's 85 % peek width (BUG-035).
+        final bool single = !isLoading && orders.length == 1;
+        final double cardWidth = single
+            ? con.maxWidth - 2 * _margin
+            : con.maxWidth * 0.85;
         return SizedBox(
           height: con.maxWidth * 0.3,
           child: ListView.separated(
-            padding: const EdgeInsetsDirectional.only(start: 10, end: 10),
+            padding: const EdgeInsets.symmetric(horizontal: _margin),
             scrollDirection: Axis.horizontal,
-            physics: isLoading ? const NeverScrollableScrollPhysics() : null,
+            physics: isLoading || single
+                ? const NeverScrollableScrollPhysics()
+                : null,
             itemCount: isLoading ? 2 : orders.length,
             separatorBuilder: (context, index) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               if (isLoading) {
                 return SizedBox(
-                  width: con.maxWidth * 0.85,
+                  width: cardWidth,
                   child: AppShimmer(
                     child: LiveOrderTrackCard(
                       logoUrl: '',
@@ -73,7 +83,7 @@ class HomeLiveOrdersSectionView extends ConsumerWidget {
               final OrderStatus status = OrderStatus.fromKey(order.status);
               final String? uuid = order.uuid;
               return SizedBox(
-                width: con.maxWidth * 0.85,
+                width: cardWidth,
                 child: LiveOrderTrackCard(
                   remainingMinutes: _minutesUntil(order.estimatedDeliveryTime),
                   logoUrl: order.vendor.logoUrl ?? '',
