@@ -115,7 +115,15 @@ class AuthRepo {
             accessToken: accessToken,
             refreshToken: refreshToken,
           );
-          await _tokenCache.clearGuestToken();
+          // A guest token that won't clear fails the sign-in, and says so:
+          // it used to read "Failed to log out" here (QA-003 A12).
+          try {
+            await _tokenCache.clearGuestToken();
+          } on CacheException {
+            throw const CacheException(
+              CacheException.saveUserSessionFailedMessage,
+            );
+          }
 
           return Right<Failure, UserModel>(
             UserModel.fromMap(

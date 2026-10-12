@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/dio_logger.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 
 /// How a refresh attempt ended.
 ///
@@ -166,7 +167,18 @@ class TokenRefreshInterceptor extends Interceptor {
       // flashing it on a screen that is already being torn down.
       case _RefreshOutcome.rejected:
         await _expireSession();
-        return handler.next(err);
+        // A screen that still shows the failure reads why, not the server's
+        // "Unauthenticated." (QA-003 A13); the toast replaces the hook's own
+        // with the same words.
+        return handler.next(
+          err.copyWith(
+            response: Response<dynamic>(
+              requestOptions: err.requestOptions,
+              statusCode: err.response?.statusCode,
+              data: <String, dynamic>{'message': LangKeys.sessionExpiredKey},
+            ),
+          ),
+        );
 
       // The refresh never got an answer — rate limited, server error, timeout,
       // connection dropped. None of that says the token is dead, so the session

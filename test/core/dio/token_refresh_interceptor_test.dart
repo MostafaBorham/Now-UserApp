@@ -5,8 +5,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
+import 'package:nowdelivery_user_app/core/dio/api_error_handler.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/token_refresh_interceptor.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Answers every request from a caller-supplied function — enough to decide
@@ -115,9 +117,17 @@ void main() {
 
       final Dio dio = buildWiredDio(refreshStatus: 401);
 
+      // The screen that still shows the failure reads why, not the server's
+      // "Unauthenticated." (QA-003 A13).
       await expectLater(
         dio.get<dynamic>(protectedPath),
-        throwsA(isA<DioException>()),
+        throwsA(
+          isA<DioException>().having(
+            (DioException e) => ApiErrorHandler.messageForDio(e),
+            'message',
+            LangKeys.sessionExpiredKey,
+          ),
+        ),
       );
 
       expect(tokens.getAccessToken(), isNull);

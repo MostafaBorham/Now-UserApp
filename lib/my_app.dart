@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/theme_manager.dart'
 import 'package:nowdelivery_user_app/core/routing/app_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 
 class NowUserApp extends ConsumerWidget {
   const NowUserApp({super.key});
@@ -31,6 +32,13 @@ class NowUserApp extends ConsumerWidget {
     TokenRefreshInterceptor.onSessionExpired = () async {
       await ref.read(authSessionProvider.notifier).resolveSession();
       AppRouter.router.goNamed(AppRoutes.onBoardingScreen);
+      // It used to land on onboarding without a word (QA-003 A13). Shown in
+      // the same beat as the navigation, so the route change keeps it.
+      final BuildContext? navigatorContext =
+          AppRouter.router.routerDelegate.navigatorKey.currentContext;
+      if (navigatorContext != null && navigatorContext.mounted) {
+        AppToast.showError(navigatorContext, LangKeys.sessionExpiredKey);
+      }
     };
 
     // The backend translates every error and validation message from this
