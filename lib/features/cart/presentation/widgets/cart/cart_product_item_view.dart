@@ -21,8 +21,8 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/car
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
-/// One cart line inside an expanded store card: the product, its price and the
-/// quantity stepper.
+/// One cart line inside an expanded store card: the product, its price, the
+/// quantity stepper and a delete button.
 class CartProductItemView extends ConsumerStatefulWidget {
   const CartProductItemView({super.key, required this.product});
 
@@ -42,6 +42,11 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
       EdgeInsetsDirectional.fromSTEB(20, 10, 4, 10);
   static const EdgeInsetsDirectional _decTapPadding =
       EdgeInsetsDirectional.fromSTEB(4, 10, 20, 10);
+
+  /// Around the 28 dp delete circle: a 60 × 40 tap target, and the end inset
+  /// centres the circle over the − below it.
+  static const EdgeInsetsDirectional _deleteTapPadding =
+      EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6);
 
   /// The quantity the server last confirmed for this line.
   ///
@@ -92,8 +97,8 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         );
   }
 
-  /// Asks before dropping the last unit — removing a line is as destructive as
-  /// emptying a whole store, which has always confirmed.
+  /// Asks before removing the line — as destructive as emptying a whole store,
+  /// which has always confirmed.
   void _confirmRemove() {
     AppCustomAlertDialog.show(
       context,
@@ -186,12 +191,45 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                context.getLocalizedApiText(product.name),
-                maxLines: 1,
-                style: AppTextStyles.style16Medium.copyWith(
-                  color: colors.tertiaryContainer,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      context.getLocalizedApiText(product.name),
+                      maxLines: 1,
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: colors.tertiaryContainer,
+                      ),
+                    ),
+                  ),
+                  AbsorbPointer(
+                    absorbing: isUpdating,
+                    child: Semantics(
+                      button: true,
+                      label: LangKeys.removeProductKey.tr(),
+                      child: InkWell(
+                        onTap: _confirmRemove,
+                        customBorder: const CircleBorder(),
+                        child: Padding(
+                          padding: _deleteTapPadding,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: colors.error.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Assets.media.images.svg.deleteIcon.svg(
+                              colorFilter: ColorFilter.mode(
+                                colors.onError,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               CartVariantPills(options: product.options),
               const SizedBox(height: 8),
@@ -274,15 +312,12 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                   ),
                           ),
                         ),
-                        // At the store's minimum there is nothing left to
-                        // decrement, so the icon becomes the delete action —
-                        // same rule as the product cards' pill, where `0`
-                        // removes the line. Unlike there, dropping the last
-                        // unit asks first.
+                        // At the store's minimum the − goes inert; removing
+                        // the line is the delete button's job.
                         InkWell(
                           onTap: quantity > _minQuantity
                               ? () => _updateQuantity(quantity - 1)
-                              : _confirmRemove,
+                              : null,
                           customBorder: const CircleBorder(),
                           child: Padding(
                             padding: _decTapPadding,
@@ -294,16 +329,13 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                 color: colors.white,
                                 shape: BoxShape.circle,
                               ),
-                              child: quantity > _minQuantity
-                                  ? Icon(
-                                      Icons.remove_rounded,
-                                      size: 12,
-                                      color: colors.neutral500,
-                                    )
-                                  : Assets.media.images.png.removeIcon.image(
-                                      width: 12,
-                                      color: colors.errorContainer,
-                                    ),
+                              child: Icon(
+                                Icons.remove_rounded,
+                                size: 12,
+                                color: colors.neutral500.withValues(
+                                  alpha: quantity > _minQuantity ? 1 : 0.3,
+                                ),
+                              ),
                             ),
                           ),
                         ),
