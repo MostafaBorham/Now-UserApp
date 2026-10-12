@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/personal_information/data/models/profile_model.dart';
 import 'package:nowdelivery_user_app/features/personal_information/presentation/widgets/profile_avatar.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/update_profile_vm.dart';
@@ -19,7 +18,8 @@ import 'package:nowdelivery_user_app/features/personal_information/viewmodel/upd
 import '../widgets/complete_profile/complete_profile_form.dart';
 
 /// The step between OTP verification and the app: the user names themselves
-/// (and optionally adds a photo and an email) before reaching the home screen.
+/// (and optionally adds a photo and an email) before returning to the screen
+/// the login started from.
 ///
 /// **Mandatory.** There is no skip and no back button: the user is sent here
 /// whenever the server reports `profile_completed: false`, and the only way out
@@ -130,7 +130,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     if (!mounted) return;
 
     if (saved) {
-      context.goNamed(AppRoutes.mainScreen);
+      leaveLoginFlow(context);
     } else {
       final Object? error = ref.read(updateProfileProvider).error;
       AppToast.showError(

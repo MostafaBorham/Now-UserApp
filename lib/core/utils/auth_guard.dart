@@ -18,3 +18,28 @@ bool redirectGuestToLogin(BuildContext context) {
   context.pushNamed(AppRoutes.phoneVerificationScreen);
   return true;
 }
+
+/// The way out of login, back to the screen that started it — the cart a guest
+/// tried to check out from, say.
+///
+/// Called from the top of the flow, the OTP screen or the profile-completion
+/// screen that replaced it, with the phone screen underneath: the two pops
+/// leave both. Landing anywhere that is not the app — onboarding, splash, or
+/// nothing when the boot sent a returning user straight to profile
+/// completion — goes to the main screen instead.
+void leaveLoginFlow(BuildContext context) {
+  final GoRouter router = GoRouter.of(context);
+
+  if (router.canPop()) router.pop();
+  if (router.canPop()) router.pop();
+
+  final String? landedOn = router.state.topRoute?.name;
+  if (landedOn == null ||
+      landedOn == AppRoutes.onBoardingScreen ||
+      landedOn == AppRoutes.phoneVerificationScreen ||
+      landedOn == AppRoutes.otpVerificationScreen ||
+      landedOn == AppRoutes.completeProfileScreen ||
+      landedOn == AppRoutes.splashScreen) {
+    router.goNamed(AppRoutes.mainScreen);
+  }
+}

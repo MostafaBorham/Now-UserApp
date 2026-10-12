@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
+import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
 import 'package:nowdelivery_user_app/features/auth/data/models/user_model.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/request_otp_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/verify_otp_vm.dart';
@@ -53,22 +54,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     _otpController.text = digits;
   }
 
-  void _leaveVerificationFlow() {
-    final GoRouter router = GoRouter.of(context);
-
-    if (router.canPop()) router.pop();
-    if (router.canPop()) router.pop();
-
-    final String? landedOn = router.state.topRoute?.name;
-    if (landedOn == null ||
-        landedOn == AppRoutes.onBoardingScreen ||
-        landedOn == AppRoutes.phoneVerificationScreen ||
-        landedOn == AppRoutes.otpVerificationScreen ||
-        landedOn == AppRoutes.splashScreen) {
-      router.goNamed(AppRoutes.mainScreen);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue<UserModel?>>(verifyOtpProvider, (
@@ -81,14 +66,16 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
           // A user the server says has not finished onboarding goes to the
           // completion screen instead of back into the app — including the
-          // guest who was sent here mid-flow. `goNamed` resets the stack on
-          // purpose: that screen must not be escapable backwards.
+          // guest who was sent here mid-flow. It *replaces* this screen rather
+          // than resetting the stack, so a guest who signed up from the cart
+          // is returned to the cart, not to Home; that screen's own PopScope
+          // is what keeps it from being escaped backwards.
           if (!user.profileCompleted) {
-            context.goNamed(AppRoutes.completeProfileScreen);
+            context.pushReplacementNamed(AppRoutes.completeProfileScreen);
             return;
           }
 
-          _leaveVerificationFlow();
+          leaveLoginFlow(context);
         },
         error: (Object error, StackTrace stackTrace) =>
             AppToast.showError(context, error.toString()),
