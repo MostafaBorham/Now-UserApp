@@ -129,14 +129,6 @@ class TokenRefreshInterceptor extends Interceptor {
       return handler.next(err);
     }
 
-    // A multipart body is a one-shot stream: by the time the `401` comes back it
-    // has already been consumed, so replaying it would upload an empty file and
-    // report success. Surface the `401` instead and let the caller re-submit —
-    // a visible error beats a save that silently drops the user's picture.
-    if (request.data is FormData) {
-      return handler.next(err);
-    }
-
     // A guest has no session to refresh and none to expire, so a `401` here is
     // the endpoint's own answer (it wanted a logged-in user), not an expiry.
     // Without this the refresh below would "fail" for every guest — there is no
@@ -280,6 +272,14 @@ class TokenRefreshInterceptor extends Interceptor {
         'Bearer ${_tokenCache.getAccessToken() ?? ''}';
 
     try {
+      // A multipart body is a one-shot stream, spent by the first attempt. The
+      // clone re-reads each file from its source (same boundary), so a photo
+      // upload replays with the photo instead of failing "Unauthenticated."
+      // every time (QA-003 A14). Inside the try: an uncloneable part surfaces
+      // the original `401`.
+      final Object? body = request.data;
+      if (body is FormData) request.data = body.clone();
+
       final Response response = await _dio.fetch(request);
       // Success → hand the response back to the waiting service as normal.
       handler.resolve(response);

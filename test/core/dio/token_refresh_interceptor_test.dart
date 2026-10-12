@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -12,18 +13,24 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Answers every request from a caller-supplied function — enough to decide
-/// what the refresh endpoint replies with, which is the whole point here.
+/// what the refresh endpoint replies with, which is the whole point here. The
+/// request body is drained and handed over as text, as a server would read it.
 class _StubAdapter implements HttpClientAdapter {
   _StubAdapter(this.respond);
 
-  final ResponseBody Function(RequestOptions options) respond;
+  final ResponseBody Function(RequestOptions options, String body) respond;
 
   @override
   Future<ResponseBody> fetch(
     RequestOptions options,
     Stream<Uint8List>? requestStream,
     Future<void>? cancelFuture,
-  ) async => respond(options);
+  ) async {
+    final List<int> bytes = requestStream == null
+        ? <int>[]
+        : await requestStream.expand((Uint8List chunk) => chunk).toList();
+    return respond(options, utf8.decode(bytes, allowMalformed: true));
+  }
 
   @override
   void close({bool force = false}) {}
@@ -62,13 +69,13 @@ void main() {
   }) {
     final Dio refreshDio = Dio()
       ..httpClientAdapter = _StubAdapter(
-        (RequestOptions options) =>
+        (RequestOptions options, _) =>
             _json(refreshBody ?? <String, dynamic>{}, refreshStatus),
       );
 
     final Dio dio = Dio(BaseOptions(baseUrl: 'https://example.test'))
       ..httpClientAdapter = _StubAdapter(
-        (RequestOptions options) =>
+        (RequestOptions options, _) =>
             _json(<String, dynamic>{'message': 'Unauthenticated.'}, 401),
       );
 
@@ -172,4 +179,57 @@ void main() {
     expect(tokens.getAccessToken(), 'fresh-access');
     expect(tokens.getRefreshToken(), 'fresh-refresh');
   });
+
+  test(
+    'a photo upload refreshes and replays with the photo (QA-003 A14)',
+    () async {
+      // The multipart body is a one-shot stream the first attempt spends.
+      // Uploads used to skip the refresh, so an expired token made every
+      // profile-photo save say "Unauthenticated.".
+      final Directory dir = Directory.systemTemp.createTempSync('a14_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final File photo = File('${dir.path}/avatar.jpg')
+        ..writeAsStringSync('PHOTO-BYTES');
+
+      final List<String> uploads = <String>[];
+      final Dio refreshDio = Dio()
+        ..httpClientAdapter = _StubAdapter(
+          (RequestOptions options, _) => _json(<String, dynamic>{
+            'data': <String, dynamic>{
+              'access_token': 'fresh-access',
+              'refresh_token': 'fresh-refresh',
+            },
+          }, 200),
+        );
+      final Dio dio = Dio(BaseOptions(baseUrl: 'https://example.test'))
+        ..httpClientAdapter = _StubAdapter((
+          RequestOptions options,
+          String body,
+        ) {
+          uploads.add(body);
+          return options.headers['Authorization'] == 'Bearer fresh-access'
+              ? _json(<String, dynamic>{'data': <String, dynamic>{}}, 200)
+              : _json(<String, dynamic>{'message': 'Unauthenticated.'}, 401);
+        });
+      dio.interceptors
+        ..add(AuthTokenInterceptor())
+        ..add(TokenRefreshInterceptor(dio, refreshDio: refreshDio));
+
+      final Response<dynamic> response = await dio.post<dynamic>(
+        '/api/v1/user/profile',
+        data: FormData.fromMap(<String, dynamic>{
+          'name': 'Sara',
+          'avatar': await MultipartFile.fromFile(
+            photo.path,
+            filename: 'avatar.jpg',
+          ),
+        }),
+      );
+
+      expect(response.statusCode, 200);
+      expect(uploads, hasLength(2));
+      expect(uploads.last, contains('PHOTO-BYTES'));
+      expect(uploads.last, contains('Sara'));
+    },
+  );
 }
