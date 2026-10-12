@@ -111,6 +111,36 @@ void main() {
         .read(getMyAddressesProvider)
         .requireValue
         .data;
-    expect(list.map((AddressModel a) => a.isDefault), <bool>[false, true]);
+    expect(list.map((AddressModel a) => a.id), <int>[2, 1]);
+    expect(list.map((AddressModel a) => a.isDefault), <bool>[true, false]);
+  });
+
+  test('a new default moves to the top and the rest keep their order', () {
+    final GetMyAddressesViewModel vm = GetMyAddressesViewModel();
+    addTearDown(vm.dispose);
+    vm.state = const AsyncValue<PaginationModel<AddressModel>>.data(
+      PaginationModel<AddressModel>(
+        currentPage: 1,
+        lastPage: 1,
+        perPage: 15,
+        total: 4,
+        hasMore: false,
+        data: <AddressModel>[
+          AddressModel(id: 1, isDefault: true),
+          AddressModel(id: 2, isDefault: false),
+          AddressModel(id: 3, isDefault: false),
+          AddressModel(id: 4, isDefault: false),
+        ],
+      ),
+    );
+
+    vm.updateDefaultInMyAddress(address: const AddressModel(id: 3));
+
+    final List<AddressModel> list = vm.state.requireValue.data;
+    expect(list.map((AddressModel a) => a.id), <int>[3, 1, 2, 4]);
+    expect(
+      list.map((AddressModel a) => a.isDefault),
+      <bool>[true, false, false, false],
+    );
   });
 }

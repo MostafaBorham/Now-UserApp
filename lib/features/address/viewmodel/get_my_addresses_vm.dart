@@ -46,15 +46,19 @@ class GetMyAddressesViewModel extends PaginatedViewModel<AddressModel> {
     );
   }
 
-  /// Moves the "default" flag onto [address], clearing it everywhere else.
+  /// Moves the "default" flag onto [address], clearing it everywhere else, and
+  /// puts it first while the rest keep their order — the order the server
+  /// lists them in (by `default_set_at`), so a refresh doesn't reshuffle.
   void updateDefaultInMyAddress({required AddressModel address}) {
     _replaceItems(
-      (List<AddressModel> items) => items
-          .map(
-            (AddressModel item) =>
-                item.copyWith(isDefault: item.id == address.id),
-          )
-          .toList(),
+      (List<AddressModel> items) => <AddressModel>[
+        ...items
+            .where((AddressModel item) => item.id == address.id)
+            .map((AddressModel item) => item.copyWith(isDefault: true)),
+        ...items
+            .where((AddressModel item) => item.id != address.id)
+            .map((AddressModel item) => item.copyWith(isDefault: false)),
+      ],
       whenContains: address.id,
     );
   }
