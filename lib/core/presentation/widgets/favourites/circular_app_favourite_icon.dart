@@ -42,7 +42,7 @@ class CircularAppFavouriteIcon extends ConsumerStatefulWidget {
   /// Material elevation of the circular button.
   final double elevation;
 
-  /// Background of the circular button; defaults to translucent white.
+  /// Background of the circular button; defaults to white at 40% opacity.
   final Color? backgroundColor;
 
   /// Initial favourite status, and the seed of the viewmodel's state.
@@ -87,7 +87,7 @@ class _CircularAppFavouriteIconState
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Color backgroundColor =
-        widget.backgroundColor ?? colors.white.withValues(alpha: 0.6);
+        widget.backgroundColor ?? colors.white.withValues(alpha: 0.4);
 
     AsyncValue<bool> state = AsyncValue<bool>.data(_isFavourite);
 
@@ -132,7 +132,9 @@ class _CircularAppFavouriteIconState
                         ? Assets.media.images.svg.filledFavouriteIcon
                         : Assets.media.images.svg.favouriteIcon)
                     .svg(
-                      width: widget.size,
+                      // A touch over the radius so the heart fills more of
+                      // the circle without growing the button itself.
+                      width: (widget.size ?? 20) * 1.2,
                       colorMapper: SvgTint(
                         isFavourite
                             ? colors.errorContainer
