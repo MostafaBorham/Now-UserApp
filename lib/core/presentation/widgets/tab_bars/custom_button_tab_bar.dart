@@ -9,7 +9,7 @@ class CustomButtonTabBar extends StatefulWidget {
   const CustomButtonTabBar({
     super.key,
     required this.tabs,
-    required this.views,
+    this.views = const <Widget>[],
     this.selectedTabColor,
     required this.unSelectedTabColor,
     this.filterWidget,
@@ -20,6 +20,10 @@ class CustomButtonTabBar extends StatefulWidget {
   });
 
   final List<String> tabs;
+
+  /// One per tab, shown under the row. Empty builds the row alone: the caller
+  /// shows the selected view itself (via [onTap]), e.g. under a pinned sliver
+  /// header where an `Expanded` view has no height to fill.
   final List<Widget> views;
 
   final int? selectedIndex;
@@ -77,74 +81,74 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
     final AppColorScheme colors = context.colors;
     return LayoutBuilder(
       builder: (context, con) {
+        final Widget row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 5,
+          children: [
+            Flexible(
+              child: AnimatedBuilder(
+                animation: _controller.animation ?? _controller,
+                builder: (context, _) => TabBar(
+                  controller: _controller,
+                  onTap: widget.onTap,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  padding: EdgeInsets.zero,
+                  indicator: const BoxDecoration(),
+                  dividerHeight: 0,
+                  splashFactory: NoSplash.splashFactory,
+                  dividerColor: Colors.transparent,
+                  overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => Colors.transparent,
+                  ),
+                  labelPadding: EdgeInsets.zero,
+                  tabs: List.generate(widget.tabs.length, (index) {
+                    final isSelected = _controller.index == index;
+
+                    return Tab(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: EdgeInsetsDirectional.only(
+                          start: index == 0 ? 0 : 12,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: AppBorderRadius.brCircular20,
+                          color: isSelected
+                              ? widget.selectedTabColor ?? colors.primary500Main
+                              : widget.unSelectedTabColor,
+                        ),
+                        child: Text(
+                          widget.tabs[index],
+                          maxLines: 1,
+                          style: AppTextStyles.style16Medium.copyWith(
+                            fontSize: con.maxWidth * 0.04,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? widget.selectedLabelColor ?? colors.white
+                                : widget.unSelectedLabelColor ?? colors.black,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+            widget.filterWidget ?? 0.wSpace,
+          ],
+        );
+        if (widget.views.isEmpty) return row;
         return Column(
           spacing: 16,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 5,
-              children: [
-                Flexible(
-                  child: AnimatedBuilder(
-                    animation: _controller.animation ?? _controller,
-                    builder: (context, _) => TabBar(
-                      controller: _controller,
-                      onTap: widget.onTap,
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.start,
-                      padding: EdgeInsets.zero,
-                      indicator: const BoxDecoration(),
-                      dividerHeight: 0,
-                      splashFactory: NoSplash.splashFactory,
-                      dividerColor: Colors.transparent,
-                      overlayColor: WidgetStateProperty.resolveWith(
-                        (states) => Colors.transparent,
-                      ),
-                      labelPadding: EdgeInsets.zero,
-                      tabs: List.generate(widget.tabs.length, (index) {
-                        final isSelected = _controller.index == index;
-
-                        return Tab(
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            margin: EdgeInsetsDirectional.only(
-                              start: index == 0 ? 0 : 12,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: AppBorderRadius.brCircular20,
-                              color: isSelected
-                                  ? widget.selectedTabColor ??
-                                        colors.primary500Main
-                                  : widget.unSelectedTabColor,
-                            ),
-                            child: Text(
-                              widget.tabs[index],
-                              maxLines: 1,
-                              style: AppTextStyles.style16Medium.copyWith(
-                                fontSize: con.maxWidth * 0.04,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.w500,
-                                color: isSelected
-                                    ? widget.selectedLabelColor ?? colors.white
-                                    : widget.unSelectedLabelColor ??
-                                          colors.black,
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-                widget.filterWidget ?? 0.wSpace,
-              ],
-            ),
+            row,
             Expanded(
               child: TabBarView(
                 controller: _controller,

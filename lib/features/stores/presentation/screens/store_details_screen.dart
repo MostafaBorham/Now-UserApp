@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/core/data/models/banner_model.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
@@ -16,6 +17,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_wave
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagination_scroll_listener.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
@@ -26,7 +28,9 @@ import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_products_view.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_details_shimmer.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_discount_coupons_list.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_details_vm.dart';
+import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 
 class StoreDetailsScreen extends ConsumerStatefulWidget {
   const StoreDetailsScreen({super.key, required this.storeId, this.storeName});
@@ -44,9 +48,12 @@ class StoreDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
-  // The NestedScrollView's outer position. AppWavedView gets it too, and the
-  // refresh indicator reads it to accept a pull only from the top.
+  // The page's one scroll position. AppWavedView gets it too, and the refresh
+  // indicator reads it to accept a pull only from the top.
   final ScrollController _scrollController = ScrollController();
+
+  // The tab whose products fill the grid. All tabs share the page's scroll.
+  ProductFilters _filter = ProductFilters.values.first;
 
   @override
   void dispose() {
@@ -107,15 +114,12 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
               child: ProviderScope(
                 overrides: [storeProvider.overrideWithValue(store)],
                 child: AppRefreshIndicator(
-                  // A NestedScrollView's top overscroll reaches the indicator
-                  // deeper than level 0, so the default predicate would ignore
-                  // the gesture and the pull would do nothing. Any depth, then
-                  // — but only with the page itself at its top: the inner
-                  // grid sits at its own top mid-page, and a pull started
-                  // there refreshed the store (BUG-018).
-                  notificationPredicate: (_) =>
-                      !_scrollController.hasClients ||
-                      _scrollController.offset <= 0,
+                  // Only from the page's own top: a pull started mid-page, on
+                  // the grid, used to refresh the store (BUG-018).
+                  notificationPredicate: (ScrollNotification notification) =>
+                      notification.depth == 0 &&
+                      (!_scrollController.hasClients ||
+                          _scrollController.offset <= 0),
                   // refresh() deliberately does not flip the state back to
                   // loading, so the page stays on screen instead of collapsing
                   // into the shimmer under the spinner.
@@ -127,110 +131,117 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                       AppToast.showError(context, error);
                     }
                   },
-                  child: NestedScrollView(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    // Header + banners scroll away with the content; only the
-                    // CustomButtonTabBar (the NestedScrollView body) stays
-                    // pinned to the top while the product grid scrolls.
-                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: [
-                            AspectRatio(
-                              aspectRatio: 390 / 240,
-                              child: StoreDetailsInfoHeader(),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              color: colors.white,
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              width: double.infinity,
-                              child: Column(
-                                spacing: 20,
-                                children: [
-                                  // Built only when there are banners: an empty
-                                  // AppSlider collapses to nothing, but the
-                                  // column's 20px gap around it would remain.
-                                  if (banners.isNotEmpty)
-                                    AppSlider(
-                                      sliderItems: banners
-                                          .map(
-                                            (BannerModel banner) =>
-                                                StoreDetailsBanner(
-                                                  banner: banner,
-                                                ),
-                                          )
-                                          .toList(),
-                                      itemAspectRatio: 3,
-                                    ),
-                                  // Each is left out when it has nothing, as
-                                  // the banners are: a hidden one inside the
-                                  // spaced column still took its 20 dp gap
-                                  // (QA-030 S1).
-                                  if (store.offer?.products?.isNotEmpty ??
-                                      false)
-                                    UniqueStoreProductsSlider(),
-                                  if (store.coupons?.isNotEmpty ?? false)
-                                    StoreDiscountCouponsList(),
-                                  if (store.categories?.isNotEmpty ?? false)
-                                    Align(
-                                      alignment:
-                                          AlignmentDirectional.centerStart,
-                                      child: StoreCategoryCirclesList(),
-                                    ),
-                                ],
+                  // The grid is a sliver of this page, so the page pages it.
+                  child: Consumer(
+                    builder:
+                        (BuildContext context, WidgetRef ref, Widget? child) {
+                          final products = getStoreCategoryProductsProvider(
+                            StoreDetailsProductsView.argsFor(storeId, _filter),
+                          );
+                          return PaginationScrollListener(
+                            canLoadNextPage:
+                                PaginationStatus<ProductModel>.from(
+                                  ref.watch(products),
+                                ).canRequestNextPage,
+                            onLoadNextPage: ref
+                                .read(products.notifier)
+                                .loadNextPage,
+                            child: child!,
+                          );
+                        },
+                    // One scroll view, so the page ends at its last product
+                    // (BUG-017): a NestedScrollView always gave the grid a full
+                    // screen of scroll, and two products left ~370 dp of white
+                    // under them.
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 390 / 240,
+                                child: StoreDetailsInfoHeader(),
+                              ),
+                              const SizedBox(height: 16),
+                              Container(
+                                color: colors.white,
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                width: double.infinity,
+                                child: Column(
+                                  spacing: 20,
+                                  children: [
+                                    // Built only when there are banners: an
+                                    // empty AppSlider collapses to nothing, but
+                                    // the column's 20px gap around it would
+                                    // remain.
+                                    if (banners.isNotEmpty)
+                                      AppSlider(
+                                        sliderItems: banners
+                                            .map(
+                                              (BannerModel banner) =>
+                                                  StoreDetailsBanner(
+                                                    banner: banner,
+                                                  ),
+                                            )
+                                            .toList(),
+                                        itemAspectRatio: 3,
+                                      ),
+                                    // Each is left out when it has nothing, as
+                                    // the banners are: a hidden one inside the
+                                    // spaced column still took its 20 dp gap
+                                    // (QA-030 S1).
+                                    if (store.offer?.products?.isNotEmpty ??
+                                        false)
+                                      UniqueStoreProductsSlider(),
+                                    if (store.coupons?.isNotEmpty ?? false)
+                                      StoreDiscountCouponsList(),
+                                    if (store.categories?.isNotEmpty ?? false)
+                                      Align(
+                                        alignment:
+                                            AlignmentDirectional.centerStart,
+                                        child: StoreCategoryCirclesList(),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // The tab row stays at the top while the products
+                        // scroll under it, so it must be opaque.
+                        PinnedHeaderSliver(
+                          child: ColoredBox(
+                            color: colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              child: CustomButtonTabBar(
+                                tabs: ProductFilters.values
+                                    .map(
+                                      (ProductFilters filter) => filter.label,
+                                    )
+                                    .toList(),
+                                selectedIndex: _filter.index,
+                                onTap: (int index) => setState(
+                                  () => _filter = ProductFilters.values[index],
+                                ),
+                                unSelectedTabColor: colors.neutral400
+                                    .withValues(alpha: 0.2),
+                                selectedLabelColor: colors.white,
+                                unSelectedLabelColor: colors.black,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
-                    body: Container(
-                      color: colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                              const double minTabBarHeight = 70;
-                              return ClipRect(
-                                child: OverflowBox(
-                                  alignment: AlignmentDirectional.topStart,
-                                  minHeight: 0,
-                                  maxHeight: double.infinity,
-                                  child: SizedBox(
-                                    height:
-                                        constraints.maxHeight < minTabBarHeight
-                                        ? minTabBarHeight
-                                        : constraints.maxHeight,
-                                    width: constraints.maxWidth,
-                                    child: CustomButtonTabBar(
-                                      tabs: ProductFilters.values
-                                          .map(
-                                            (ProductFilters filter) =>
-                                                filter.label,
-                                          )
-                                          .toList(),
-                                      views: ProductFilters.values
-                                          .map(
-                                            (ProductFilters filter) =>
-                                                StoreDetailsProductsView(
-                                                  storeId: storeId,
-                                                  filter: filter,
-                                                ),
-                                          )
-                                          .toList(),
-                                      // selectedTabColor: colors.tertiaryContainer,
-                                      unSelectedTabColor: colors.neutral400
-                                          .withValues(alpha: 0.2),
-                                      selectedLabelColor: colors.white,
-                                      unSelectedLabelColor: colors.black,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                      ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          sliver: StoreDetailsProductsView(
+                            storeId: storeId,
+                            filter: _filter,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

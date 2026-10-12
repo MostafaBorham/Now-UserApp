@@ -52,6 +52,7 @@ class PaginatedView<T> extends ConsumerWidget {
     this.scrollController,
     this.isFirstPageErrorScrollable = true,
     this.enablePullToRefresh = true,
+    this.asSliver = false,
   }) : assert(
           placeholderBuilder != null || firstPageLoadingBuilder != null,
           'A first-page loading state is required: give a placeholderBuilder, '
@@ -124,6 +125,14 @@ class PaginatedView<T> extends ConsumerWidget {
   /// error retry regardless.
   final bool enablePullToRefresh;
 
+  /// Builds a sliver instead of a scroll view, for a list that is one part of a
+  /// bigger `CustomScrollView` (store details: header, pinned tabs, grid). The
+  /// caller then owns the scroll: it pages by wrapping that scroll view in a
+  /// [PaginationScrollListener] and owns any refresh. [scrollController],
+  /// [enablePullToRefresh] and [isFirstPageErrorScrollable] are ignored, and
+  /// [emptyBuilder] must not scroll.
+  final bool asSliver;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Surface a next-page failure as a snackbar the moment state turns to error
@@ -156,35 +165,28 @@ class PaginatedView<T> extends ConsumerWidget {
     // Nothing loaded yet, so loading and error own the whole view.
     final String? firstPageError = status.firstPageError;
     if (firstPageError != null) {
-      return ServerConnectionErrorWidget(
-        message: firstPageError,
-        onRetry: onRefresh,
-        isScrollable: isFirstPageErrorScrollable,
+      return _box(
+        ServerConnectionErrorWidget(
+          message: firstPageError,
+          onRetry: onRefresh,
+          isScrollable: isFirstPageErrorScrollable && !asSliver,
+        ),
       );
     }
     if (!status.hasLoadedPage) {
       final WidgetBuilder? firstPageLoadingBuilder =
           this.firstPageLoadingBuilder;
       if (firstPageLoadingBuilder != null) {
-        return firstPageLoadingBuilder(context);
+        return _box(firstPageLoadingBuilder(context));
       }
       // Skeletons in the real layout: same arrangement, same item geometry.
       // Pullable too, so a first load that hangs can be retried by hand.
-      final Widget skeletons = CustomScrollView(
-        controller: scrollController,
-        physics: enablePullToRefresh
-            ? const AlwaysScrollableScrollPhysics()
-            : null,
-        slivers: <Widget>[
-          layout.buildSliver(
-            itemCount: firstPagePlaceholdersCount,
-            itemBuilder: (BuildContext context, int index) =>
-                placeholderBuilder!(context),
-          ),
-        ],
+      final Widget skeletons = layout.buildSliver(
+        itemCount: firstPagePlaceholdersCount,
+        itemBuilder: (BuildContext context, int index) =>
+            placeholderBuilder!(context),
       );
-      if (!enablePullToRefresh) return skeletons;
-      return AppRefreshIndicator(onRefresh: onRefresh, child: skeletons);
+      return asSliver ? skeletons : _refreshable(_scrollView(skeletons));
     }
 
     // Skeletons trail the loaded items while the next page is on its way — only
@@ -194,40 +196,49 @@ class PaginatedView<T> extends ConsumerWidget {
             ? nextPagePlaceholdersCount
             : 0;
 
-    final Widget content = status.isEmpty
-        ? (emptyBuilder?.call(context) ??
-            const NoResultsWidget(isScrollable: true))
-        : PaginationScrollListener(
-            canLoadNextPage: status.canRequestNextPage,
-            threshold: nextPageThreshold,
-            onLoadNextPage: onLoadNextPage,
-            // A failed next page leaves the list untouched — no footer, no
-            // retry affordance: the snackbar reports it and reaching the end
-            // again asks for the same page again.
-            child: CustomScrollView(
-              controller: scrollController,
-              physics: enablePullToRefresh
-                  ? const AlwaysScrollableScrollPhysics()
-                  : null,
-              slivers: <Widget>[
-                layout.buildSliver(
-                  itemCount: status.items.length + trailingPlaceholders,
-                  itemBuilder: (BuildContext context, int index) {
-                    // Past the loaded items: one of the next-page skeletons,
-                    // which only exist when there is a builder for them.
-                    if (index >= status.items.length) {
-                      return placeholderBuilder!(context);
-                    }
-                    return itemBuilder(context, status.items[index], index);
-                  },
-                ),
-              ],
-            ),
-          );
+    if (status.isEmpty) {
+      final Widget empty = emptyBuilder?.call(context) ??
+          NoResultsWidget(isScrollable: !asSliver);
+      return asSliver ? SliverToBoxAdapter(child: empty) : _refreshable(empty);
+    }
 
-    if (!enablePullToRefresh) return content;
+    final Widget items = layout.buildSliver(
+      itemCount: status.items.length + trailingPlaceholders,
+      itemBuilder: (BuildContext context, int index) {
+        // Past the loaded items: one of the next-page skeletons, which only
+        // exist when there is a builder for them.
+        if (index >= status.items.length) {
+          return placeholderBuilder!(context);
+        }
+        return itemBuilder(context, status.items[index], index);
+      },
+    );
+    if (asSliver) return items;
 
-    return AppRefreshIndicator(onRefresh: onRefresh, child: content);
+    return _refreshable(
+      PaginationScrollListener(
+        canLoadNextPage: status.canRequestNextPage,
+        threshold: nextPageThreshold,
+        onLoadNextPage: onLoadNextPage,
+        // A failed next page leaves the list untouched — no footer, no retry
+        // affordance: the snackbar reports it and reaching the end again asks
+        // for the same page again.
+        child: _scrollView(items),
+      ),
+    );
   }
 
+  /// [child] as a sliver when [asSliver], as is otherwise.
+  Widget _box(Widget child) =>
+      asSliver ? SliverToBoxAdapter(child: child) : child;
+
+  Widget _scrollView(Widget sliver) => CustomScrollView(
+    controller: scrollController,
+    physics: enablePullToRefresh ? const AlwaysScrollableScrollPhysics() : null,
+    slivers: <Widget>[sliver],
+  );
+
+  Widget _refreshable(Widget child) => enablePullToRefresh
+      ? AppRefreshIndicator(onRefresh: onRefresh, child: child)
+      : child;
 }
