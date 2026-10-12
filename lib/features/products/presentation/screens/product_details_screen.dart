@@ -223,6 +223,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           productImageUrl: (product.images?.isNotEmpty ?? false)
                               ? product.images!.first
                               : '',
+                          // A reload that finds no stock swaps the stepper for
+                          // the out-of-stock label and drops this footer; less
+                          // stock just caps the stepper.
+                          onQuantityRejected: _fetchProductDetails,
                         ),
                       ),
                     ],

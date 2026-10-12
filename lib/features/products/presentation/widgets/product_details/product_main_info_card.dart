@@ -109,30 +109,12 @@ class ProductMainInfoCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     spacing: 4,
                     children: [
-                      InkWell(
+                      _StepperButton(
+                        icon: Icons.add,
                         onTap: canIncrement
                             ? () => productQuantityController.state =
                                   productQuantity + 1
                             : null,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: canIncrement
-                                ? colors.tertiaryContainer
-                                : colors.neutral200,
-                            shape: BoxShape.circle,
-                            boxShadow: AppBoxShadows.blackBottomShadow2,
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 14,
-                              color: colors.white,
-                            ),
-                          ),
-                        ),
                       ),
                       SizedBox(
                         width: 28,
@@ -145,27 +127,12 @@ class ProductMainInfoCard extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      InkWell(
+                      _StepperButton(
+                        icon: Icons.remove,
                         onTap: productQuantity > minQuantity
                             ? () => productQuantityController.state =
                                   productQuantity - 1
                             : null,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: colors.neutral200,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.remove,
-                              size: 14,
-                              color: colors.neutral500,
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -227,23 +194,25 @@ class ProductMainInfoCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                      if ((product.rating?.average ?? 0) > 0)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.tertiaryFixed,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: AppRateWidget(
+                            starColor: colors.surface,
+                            rateColor: colors.tertiaryContainer,
+                            rateRatio:
+                                '${formatDouble(product.rating?.average)}',
+                            rateCount: '${product.rating?.total ?? 0}',
+                            size: 15,
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          color: colors.tertiaryFixed,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: AppRateWidget(
-                          starColor: colors.surface,
-                          rateColor: colors.tertiaryContainer,
-                          rateRatio: '${formatDouble(product.rating?.average)}',
-                          rateCount: '${product.rating?.total ?? 0}',
-                          size: 15,
-                        ),
-                      ),
                     ],
                   );
                 },
@@ -275,6 +244,41 @@ class ProductMainInfoCard extends ConsumerWidget {
               ],
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// One stepper button: dark while it can be tapped, grey once [onTap] is
+/// `null` (at the minimum, or nothing more the cart can take).
+class _StepperButton extends StatelessWidget {
+  const _StepperButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    final bool enabled = onTap != null;
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: enabled ? colors.tertiaryContainer : colors.neutral200,
+          shape: BoxShape.circle,
+          boxShadow: enabled ? AppBoxShadows.blackBottomShadow2 : null,
+        ),
+        child: Center(
+          child: Icon(
+            icon,
+            size: 14,
+            color: enabled ? colors.white : colors.neutral500,
+          ),
+        ),
       ),
     );
   }

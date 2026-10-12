@@ -133,14 +133,16 @@ class GlassProductItemView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  AppRateWidget(
-                                    starColor: colors.amber500,
-                                    rateRatio:
-                                        '${formatDouble(product.rating?.average)}',
-                                    rateColor: colors.black,
-                                    rateCount: '${product.rating?.total ?? 0}',
-                                    size: 14,
-                                  ),
+                                  if ((product.rating?.average ?? 0) > 0)
+                                    AppRateWidget(
+                                      starColor: colors.amber500,
+                                      rateRatio:
+                                          '${formatDouble(product.rating?.average)}',
+                                      rateColor: colors.black,
+                                      rateCount:
+                                          '${product.rating?.total ?? 0}',
+                                      size: 14,
+                                    ),
                                 ],
                               ),
                               Row(

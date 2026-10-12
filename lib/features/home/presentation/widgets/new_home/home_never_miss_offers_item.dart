@@ -205,20 +205,22 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                     ),
                                 ],
                               ),
-                              Wrap(
-                                spacing: 7,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  Assets.media.images.svg.starRate.svg(
-                                    width: 20,
-                                  ),
-                                  AutoSizeText(
-                                    '${formatDouble(product.rating?.average)}',
-                                    style: AppTextStyles.style14Regular
-                                        .copyWith(color: colors.neutral1200),
-                                  ),
-                                ],
-                              ),
+                              if ((product.rating?.average ?? 0) > 0)
+                                Wrap(
+                                  spacing: 7,
+                                  crossAxisAlignment:
+                                      WrapCrossAlignment.center,
+                                  children: [
+                                    Assets.media.images.svg.starRate.svg(
+                                      width: 20,
+                                    ),
+                                    AutoSizeText(
+                                      '${formatDouble(product.rating?.average)}',
+                                      style: AppTextStyles.style14Regular
+                                          .copyWith(color: colors.neutral1200),
+                                    ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),

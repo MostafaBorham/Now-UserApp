@@ -153,13 +153,17 @@ class ProductItem3View extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            AppRateWidget(
-                              starColor: colors.amber500,
-                              rateRatio:
-                                  '${formatDouble(product.rating?.average)}',
-                              rateColor: colors.black,
-                              size: con.maxWidth*0.1,
-                            ),
+                            // Kept as a slot so the deal badge stays at the end.
+                            if ((product.rating?.average ?? 0) > 0)
+                              AppRateWidget(
+                                starColor: colors.amber500,
+                                rateRatio:
+                                    '${formatDouble(product.rating?.average)}',
+                                rateColor: colors.black,
+                                size: con.maxWidth*0.1,
+                              )
+                            else
+                              const SizedBox.shrink(),
                             hasDeal
                                 ? Container(
                                     padding: EdgeInsets.symmetric(

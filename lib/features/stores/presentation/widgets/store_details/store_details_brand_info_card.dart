@@ -106,22 +106,23 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
               height: 1.7,
             ),
           ),
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 6,
-              children: [
-                Text(
-                  '${formatDouble(product.rating?.average)} (${product.rating?.total ?? 0})',
-                  style: AppTextStyles.style12Regular.copyWith(
-                    color: colors.neutral400,
+          if ((product.rating?.average ?? 0) > 0)
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 6,
+                children: [
+                  Text(
+                    '${formatDouble(product.rating?.average)} (${product.rating?.total ?? 0})',
+                    style: AppTextStyles.style12Regular.copyWith(
+                      color: colors.neutral400,
+                    ),
                   ),
-                ),
-                AppRatingStars(average: product.rating?.average, size: 12),
-              ],
+                  AppRatingStars(average: product.rating?.average, size: 12),
+                ],
+              ),
             ),
-          ),
           Divider(color: colors.neutral200, height: 24),
           Row(
             spacing: 16,

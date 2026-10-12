@@ -177,7 +177,7 @@ class BestNearbyStoresListItem extends StatelessWidget {
                               size: iconSize,
                             ),
                           ],
-                          if (store.rating != null)
+                          if ((store.rating ?? 0) > 0)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,

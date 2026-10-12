@@ -24,6 +24,12 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
 
   int _previousQuantity = 0;
   bool _feedbackPending = false;
+  int? _failedStatus;
+
+  /// The HTTP status of the update that just failed, `null` when the server
+  /// never answered. On an add a 422 is the server refusing the quantity: out
+  /// of stock, more than is left, below the minimum, or an option gone.
+  int? get failedStatus => _failedStatus;
 
   /// This product's quantity as the cart stood *before* the update that just
   /// settled. Read it when a success lands: compared against the fresh cart it
@@ -121,8 +127,13 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
     if (!mounted) return;
 
     state = result.fold(
-      (Failure failure) =>
-          AsyncValue<CartModel?>.error(failure.message, StackTrace.current),
+      (Failure failure) {
+        _failedStatus = failure.statusCode;
+        return AsyncValue<CartModel?>.error(
+          failure.message,
+          StackTrace.current,
+        );
+      },
       (CartModel cart) {
         _previousQuantity = cachedQuantity ?? seededQuantity ?? 0;
         _feedbackPending = true;

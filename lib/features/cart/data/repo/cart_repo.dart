@@ -102,7 +102,10 @@ class CartRepo {
       );
     } on DioException catch (exception) {
       return Left<Failure, CartModel>(
-        Failure(ApiErrorHandler.messageForDio(exception)),
+        Failure(
+          ApiErrorHandler.messageForDio(exception),
+          statusCode: exception.response?.statusCode,
+        ),
       );
     } catch (_) {
       // Never surface a raw exception string: it ends up in a toast, or as the

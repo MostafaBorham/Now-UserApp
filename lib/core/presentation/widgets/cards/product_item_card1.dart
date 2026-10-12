@@ -89,13 +89,14 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                 ),
                               ),
                             ),
-                            AppRateWidget(
-                              starColor: colors.amber500,
-                              rateRatio:
-                                  '${formatDouble(widget.product?.rating?.average)}',
-                              rateColor: colors.neutral500,
-                              size: con.maxWidth * 0.08,
-                            ),
+                            if ((widget.product?.rating?.average ?? 0) > 0)
+                              AppRateWidget(
+                                starColor: colors.amber500,
+                                rateRatio:
+                                    '${formatDouble(widget.product?.rating?.average)}',
+                                rateColor: colors.neutral500,
+                                size: con.maxWidth * 0.08,
+                              ),
                           ],
                         ),
                         Padding(

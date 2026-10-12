@@ -163,6 +163,8 @@ void main() {
       ).updateCartProductQuantity(7, 99);
 
       expect(failureMessage(result), 'Quantity exceeds available stock');
+      // The product page reloads its stock on exactly this status.
+      expect(result.fold((Failure f) => f.statusCode, (_) => null), 422);
     });
 
     test(

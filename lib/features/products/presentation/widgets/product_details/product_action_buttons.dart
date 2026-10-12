@@ -24,11 +24,16 @@ class ProductActionButtons extends ConsumerWidget {
     required this.productId,
     required this.productName,
     required this.productImageUrl,
+    required this.onQuantityRejected,
   });
 
   final int productId;
   final String productName;
   final String productImageUrl;
+
+  /// The server refused the add with a 422. Most often the stock ran out since
+  /// the page loaded, so the page reloads the product and shows what's left.
+  final VoidCallback onQuantityRejected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,6 +90,10 @@ class ProductActionButtons extends ConsumerWidget {
         error: (error, _) {
           ref.read(productBuyNowProvider.notifier).state = false;
           AppToast.showError(context, error.toString());
+          final int? status = ref
+              .read(updateCartProductProvider(productId).notifier)
+              .failedStatus;
+          if (status == 422) onQuantityRejected();
         },
       );
     });

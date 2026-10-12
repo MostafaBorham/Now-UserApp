@@ -54,6 +54,8 @@ class StoreCardView extends StatelessWidget {
         : 'شركة دار الأميرات هي واحدة من أشهر وأبرز الوجهات في المملكة العربية السعودية المتخصصة في عالم التجميل';
     final String rating = hasStore ? '${formatDouble(store!.rating)}' : '4.5';
     final String ratingCount = hasStore ? '${store!.ratingCount ?? 0}' : '4';
+    // The shimmer placeholder keeps its rating; a real store rated 0 hides it.
+    final bool showRating = !hasStore || (store!.rating ?? 0) > 0;
     final String deliveryTime = hasStore
         ? (store!.deliveryTime ?? '0 ${LangKeys.minutesKey.tr()}')
         : '40-50 ${LangKeys.minutesKey.tr()}';
@@ -182,13 +184,14 @@ class StoreCardView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                AppRateWidget(
-                                  starColor: colors.amber500,
-                                  rateRatio: rating,
-                                  rateCount: ratingCount,
-                                  rateColor: colors.neutral500,
-                                  size: w * 0.045,
-                                ),
+                                if (showRating)
+                                  AppRateWidget(
+                                    starColor: colors.amber500,
+                                    rateRatio: rating,
+                                    rateCount: ratingCount,
+                                    rateColor: colors.neutral500,
+                                    size: w * 0.045,
+                                  ),
                               ],
                             ),
                           ),
