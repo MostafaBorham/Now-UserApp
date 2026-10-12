@@ -89,6 +89,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get appIcon =>
       const AssetGenImage('assets/media/images/png/app-icon.png');
 
+  /// File path: assets/media/images/png/app-logo.png
+  AssetGenImage get appLogo =>
+      const AssetGenImage('assets/media/images/png/app-logo.png');
+
   /// File path: assets/media/images/png/bottom-nav-bar-background.png
   AssetGenImage get bottomNavBarBackground => const AssetGenImage(
     'assets/media/images/png/bottom-nav-bar-background.png',
@@ -162,14 +166,11 @@ class $AssetsMediaImagesPngGen {
     'assets/media/images/png/user-avatar-placeholder-img.png',
   );
 
-  /// File path: assets/media/images/png/white-app-logo.png
-  AssetGenImage get whiteAppLogo =>
-      const AssetGenImage('assets/media/images/png/white-app-logo.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
     appIconForeground,
     appIcon,
+    appLogo,
     bottomNavBarBackground,
     englishOffersCannotMissLogo,
     guestWelcomeDiscountMotorbike,
@@ -187,7 +188,6 @@ class $AssetsMediaImagesPngGen {
     seeAllEn,
     starsBackground,
     userAvatarPlaceholderImg,
-    whiteAppLogo,
   ];
 }
 
