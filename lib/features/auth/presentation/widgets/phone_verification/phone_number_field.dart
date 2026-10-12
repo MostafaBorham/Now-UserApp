@@ -96,7 +96,6 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                   TextFormField(
                     controller: widget.controller,
                     keyboardType: TextInputType.phone,
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     // The number always reads left-to-right so the "(05)" head
                     // stays on the correct side of the digits, but the field
                     // aligns to the locale's start edge: left in English, right

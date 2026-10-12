@@ -52,7 +52,6 @@ class DeliveryInstructionsCard extends StatelessWidget {
               maxLines: 5,
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               style: AppTextStyles.style14Regular.copyWith(color: colors.black),
               cursorColor: colors.tertiaryContainer,
               decoration: InputDecoration(

@@ -13,6 +13,17 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 
+/// A tap outside the focused text field unfocuses it, closing the keyboard, on
+/// every screen, dialog and sheet. Flutter's default does this for mouse taps
+/// only, never for a touch on a phone. A field keeps focus when the tap lands
+/// in a [TextFieldTapRegion], such as a search field's recents panel.
+final Map<Type, Action<Intent>> tapOutsideUnfocusActions = {
+  EditableTextTapOutsideIntent: CallbackAction<EditableTextTapOutsideIntent>(
+    onInvoke: (EditableTextTapOutsideIntent intent) =>
+        intent.focusNode.unfocus(),
+  ),
+};
+
 class NowUserApp extends ConsumerWidget {
   const NowUserApp({super.key});
 
@@ -54,7 +65,13 @@ class NowUserApp extends ConsumerWidget {
       darkTheme: AppThemes.getDarkModeTheme(),
       locale: context.locale,
       builder: (BuildContext context, Widget? child) =>
-          DevicePreview.appBuilder(context, AboveSystemNavBar(child: child!)),
+          DevicePreview.appBuilder(
+            context,
+            Actions(
+              actions: tapOutsideUnfocusActions,
+              child: AboveSystemNavBar(child: child!),
+            ),
+          ),
       theme: AppThemes.getLightModeTheme(),
       themeMode: ThemeManager.appThemeMode,
       routerConfig: AppRouter.router,

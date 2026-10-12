@@ -119,10 +119,9 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
         _focusNode.hasFocus &&
         keywords.isNotEmpty;
 
-    return TapRegion(
-      onTapOutside: (PointerDownEvent event) {
-        if (_focusNode.hasFocus) _focusNode.unfocus();
-      },
+    // Taps on the recents panel count as inside the field, so the app-wide
+    // tap-outside unfocus leaves it open.
+    return TextFieldTapRegion(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

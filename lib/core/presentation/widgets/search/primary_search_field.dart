@@ -246,10 +246,9 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     }
 
     if (_isEditable) {
-      child = TapRegion(
-        onTapOutside: (_) => _focusNode.unfocus(),
-        child: child,
-      );
+      // Taps on the recents panel count as inside the field, so the app-wide
+      // tap-outside unfocus leaves it open.
+      child = TextFieldTapRegion(child: child);
     }
 
     return child;

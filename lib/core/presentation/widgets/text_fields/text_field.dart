@@ -54,7 +54,6 @@ class _RoundedFieldState extends State<RoundedField> {
     );
     return TextFormField(
       controller: widget.controller,
-      onTapOutside: (event) => _focusNode.unfocus(),
       focusNode: _focusNode,
       keyboardType: widget.keyboardType,
       maxLength: widget.maxLength,

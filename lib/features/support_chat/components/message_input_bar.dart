@@ -54,11 +54,15 @@ class MessageInputBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              GestureDetector(
-                onTap: onSend,
-                child: Assets.media.images.svg.send.svg(
-                  width: 52,
-                  height: 52,
+              // Part of the field for tap-outside, so sending keeps the
+              // keyboard up for the next message.
+              TextFieldTapRegion(
+                child: GestureDetector(
+                  onTap: onSend,
+                  child: Assets.media.images.svg.send.svg(
+                    width: 52,
+                    height: 52,
+                  ),
                 ),
               ),
             ],

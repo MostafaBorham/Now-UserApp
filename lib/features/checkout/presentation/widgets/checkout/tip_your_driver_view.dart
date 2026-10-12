@@ -114,7 +114,6 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
                 ),
               ],
               onChanged: (_) => widget.onTipChanged?.call(_otherTip),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               style: AppTextStyles.style14Regular.copyWith(
                 color: colors.tertiaryContainer,
               ),

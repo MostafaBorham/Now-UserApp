@@ -201,7 +201,6 @@ class _ApplyDiscountCodeViewState
             child: Center(
               child: TextField(
                 controller: _controller,
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 style: AppTextStyles.style14Regular.copyWith(
                   color: colors.black,
                 ),
