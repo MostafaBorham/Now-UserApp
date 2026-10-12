@@ -138,9 +138,11 @@ flutter_launcher_icons:
     image_path: "assets/media/images/png/app-icon.png"
     min_sdk_android: 21
     remove_alpha_ios: true
-    background_color_ios: "#4CB749"
-    adaptive_icon_background: "#4CB749"
-    adaptive_icon_foreground: "assets/media/images/png/app-icon-foreground.png"
+    background_color_ios: "#4BB749"
+    # The foreground is the whole icon: its green matches the background
+    # exactly, so only the logo shows, at the icon's own proportions.
+    adaptive_icon_background: "#4BB749"
+    adaptive_icon_foreground: "assets/media/images/png/app-icon.png"
 
 flutter_native_splash:
     color: "#FFFFFF"

@@ -81,10 +81,6 @@ class $AssetsMediaImagesGen {
 class $AssetsMediaImagesPngGen {
   const $AssetsMediaImagesPngGen();
 
-  /// File path: assets/media/images/png/app-icon-foreground.png
-  AssetGenImage get appIconForeground =>
-      const AssetGenImage('assets/media/images/png/app-icon-foreground.png');
-
   /// File path: assets/media/images/png/app-icon.png
   AssetGenImage get appIcon =>
       const AssetGenImage('assets/media/images/png/app-icon.png');
@@ -168,7 +164,6 @@ class $AssetsMediaImagesPngGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    appIconForeground,
     appIcon,
     appLogo,
     bottomNavBarBackground,
