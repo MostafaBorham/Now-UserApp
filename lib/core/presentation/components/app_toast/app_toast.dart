@@ -6,14 +6,15 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_card.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast_type.dart';
 
-/// App-wide toast, shown as a top overlay above every other layer — including
-/// modal bottom sheets and dialogs, which a [SnackBar] renders *behind*. This
-/// replaces the former `ErrorSnackBar` / `SuccessSnackBar`.
+/// App-wide toast, shown at the bottom of the screen above every other layer —
+/// including modal bottom sheets and dialogs, which a [SnackBar] renders
+/// *behind*. This replaces the former `ErrorSnackBar` / `SuccessSnackBar`.
 ///
 /// It inserts into the root [Overlay], so a single call from anywhere floats an
-/// [AppToastCard] down from the top, auto-dismisses after a few seconds, and can
-/// be tapped or swiped up to dismiss early. Only one toast is on screen at a
-/// time — a new one replaces the current.
+/// [AppToastCard] up from the bottom (above the keyboard when it is open),
+/// auto-dismisses after a few seconds, and can be tapped, or swiped sideways or
+/// down, to dismiss early. Only one toast is on screen at a time — a new one replaces the
+/// current.
 ///
 /// [message] may be a [LangKeys] key or a raw server message; it is passed
 /// through `.tr()`, which leaves non-key strings untouched. [title] defaults to a
@@ -111,8 +112,9 @@ class AppToast {
   }
 }
 
-/// Hosts one toast: slides + fades it in from the top, holds for [duration],
-/// then animates out. Dismisses early on tap or an upward swipe.
+/// Hosts one toast: slides + fades it in from the bottom, holds for [duration],
+/// then animates out. Dismisses early on tap, or on a sideways or downward
+/// swipe that carries the card off with the finger.
 class _AppToastOverlay extends StatefulWidget {
   const _AppToastOverlay({
     required this.type,
@@ -149,7 +151,7 @@ class _AppToastOverlayState extends State<_AppToastOverlay>
     );
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _slide = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: const Offset(0, 1),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
@@ -164,6 +166,13 @@ class _AppToastOverlayState extends State<_AppToastOverlay>
     widget.onDismissed();
   }
 
+  /// A swipe has already carried the card off screen: no exit animation.
+  void _swiped(DismissDirection _) {
+    _dismissing = true;
+    _timer?.cancel();
+    widget.onDismissed();
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -174,7 +183,12 @@ class _AppToastOverlayState extends State<_AppToastOverlay>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: MediaQuery.paddingOf(context).top + 12,
+      // The keyboard inset already covers the safe area beneath it, which
+      // `padding` drops to 0 while the keyboard is up.
+      bottom:
+          MediaQuery.viewInsetsOf(context).bottom +
+          MediaQuery.paddingOf(context).bottom +
+          12,
       left: 16,
       right: 16,
       child: SlideTransition(
@@ -183,15 +197,26 @@ class _AppToastOverlayState extends State<_AppToastOverlay>
           opacity: _fade,
           child: Material(
             type: MaterialType.transparency,
-            child: GestureDetector(
-              onTap: _dismiss,
-              onVerticalDragEnd: (DragEndDetails details) {
-                if ((details.primaryVelocity ?? 0) < 0) _dismiss();
-              },
-              child: AppToastCard(
-                type: widget.type,
-                title: widget.title,
-                message: widget.message,
+            // Two Dismissibles because one takes a single direction. Their
+            // drags are horizontal and vertical, so they never compete.
+            child: Dismissible(
+              key: const ValueKey<String>('app-toast-sideways'),
+              direction: DismissDirection.horizontal,
+              resizeDuration: null,
+              onDismissed: _swiped,
+              child: Dismissible(
+                key: const ValueKey<String>('app-toast-down'),
+                direction: DismissDirection.down,
+                resizeDuration: null,
+                onDismissed: _swiped,
+                child: GestureDetector(
+                  onTap: _dismiss,
+                  child: AppToastCard(
+                    type: widget.type,
+                    title: widget.title,
+                    message: widget.message,
+                  ),
+                ),
               ),
             ),
           ),
