@@ -20,7 +20,9 @@ class StoreDetailsBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final StoreModel store = ref.watch(storeProvider);
     final int? storeId = store.id;
-    final int? categoryId = banner.mainCategoryId;
+    // The exact (sub)category the admin picked; older payloads only send the
+    // top level.
+    final int? categoryId = banner.categoryId ?? banner.mainCategoryId;
     final bool isAr = context.locale.languageCode == 'ar';
     final String imageUrl =
         (isAr ? banner.imageAr : banner.imageEn) ?? banner.image ?? '';
@@ -34,8 +36,7 @@ class StoreDetailsBanner extends ConsumerWidget {
         extra: banner.productSlug,
       ),
       // This store's products in that category — the screen its category
-      // chips open — not the platform-wide category (BUG-023). The banner's
-      // `category_slug` is always null from the store payload anyway.
+      // chips open — not the platform-wide category (BUG-023).
       'category' when storeId != null && categoryId != null =>
         () => context.pushNamed(
           AppRoutes.viewStoreCategoryProductsScreen,

@@ -23,6 +23,10 @@ class BannerModel extends Equatable {
   /// nested under `categories` on `/api/v1/banners`).
   final int? mainCategoryId;
 
+  /// The deepest category a store banner links to (`category_id`, store
+  /// payload only); [mainCategoryId] is just its top level.
+  final int? categoryId;
+
   /// Locale-agnostic fallback image (`image.download_url`).
   final String? image;
 
@@ -45,6 +49,7 @@ class BannerModel extends Equatable {
     this.productSlug,
     this.categorySlug,
     this.mainCategoryId,
+    this.categoryId,
     this.image,
     this.imageAr,
     this.imageEn,
@@ -80,6 +85,7 @@ class BannerModel extends Equatable {
                       : null))
               as num?)
           ?.toInt(),
+      categoryId: (json['category_id'] as num?)?.toInt(),
       image: json.downloadUrl('image'),
       imageAr: json.downloadUrl('image_ar'),
       imageEn: json.downloadUrl('image_en'),
@@ -102,6 +108,7 @@ class BannerModel extends Equatable {
       'product_slug': productSlug,
       'category_slug': categorySlug,
       'main_category_id': mainCategoryId,
+      'category_id': categoryId,
       'image': image == null ? null : {'download_url': image},
       'image_ar': imageAr == null ? null : {'download_url': imageAr},
       'image_en': imageEn == null ? null : {'download_url': imageEn},
@@ -123,6 +130,7 @@ class BannerModel extends Equatable {
     String? productSlug,
     String? categorySlug,
     int? mainCategoryId,
+    int? categoryId,
     String? image,
     String? imageAr,
     String? imageEn,
@@ -142,6 +150,7 @@ class BannerModel extends Equatable {
       productSlug: productSlug ?? this.productSlug,
       categorySlug: categorySlug ?? this.categorySlug,
       mainCategoryId: mainCategoryId ?? this.mainCategoryId,
+      categoryId: categoryId ?? this.categoryId,
       image: image ?? this.image,
       imageAr: imageAr ?? this.imageAr,
       imageEn: imageEn ?? this.imageEn,
@@ -164,6 +173,7 @@ class BannerModel extends Equatable {
     productSlug,
     categorySlug,
     mainCategoryId,
+    categoryId,
     image,
     imageAr,
     imageEn,

@@ -15,16 +15,10 @@ import '../../../../helpers/categories_test_harness.dart';
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  testWidgets("a category banner opens this store's category", (
-    WidgetTester tester,
-  ) async {
+  Future<void> tapBanner(WidgetTester tester, BannerModel banner) async {
     await pumpCategoriesScreen(
       tester,
-      const Scaffold(
-        body: StoreDetailsBanner(
-          banner: BannerModel(linkType: 'category', mainCategoryId: 12),
-        ),
-      ),
+      Scaffold(body: StoreDetailsBanner(banner: banner)),
       overrides: <Override>[
         storeProvider.overrideWithValue(const StoreModel(id: 5)),
       ],
@@ -42,7 +36,31 @@ void main() {
 
     await tester.tap(find.byType(StoreDetailsBanner));
     await tester.pumpAndSettle();
+  }
+
+  testWidgets("a category banner opens this store's category", (
+    WidgetTester tester,
+  ) async {
+    await tapBanner(
+      tester,
+      const BannerModel(linkType: 'category', mainCategoryId: 12),
+    );
 
     expect(find.text('store 5 category 12'), findsOneWidget);
+  });
+
+  testWidgets('a subcategory banner opens that exact subcategory', (
+    WidgetTester tester,
+  ) async {
+    await tapBanner(
+      tester,
+      const BannerModel(
+        linkType: 'category',
+        mainCategoryId: 12,
+        categoryId: 34,
+      ),
+    );
+
+    expect(find.text('store 5 category 34'), findsOneWidget);
   });
 }
