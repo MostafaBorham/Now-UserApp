@@ -1,17 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/counters/full_width_counter_view.dart';
 
 /// The tip picker. Nothing is preselected — there is no tip until the customer
 /// picks one — and tapping the selected pill again takes the tip back.
 class TipYourDriverView extends StatefulWidget {
   const TipYourDriverView({super.key, this.onTipChanged});
 
-  /// Reports the tip the user picked — a preset amount, the counter value
-  /// while "Other" is selected, or `0` when the selection is taken back.
+  /// Reports the tip the user picked — a preset amount, the typed amount
+  /// while "Other" is selected (`0` while empty), or `0` when the selection
+  /// is taken back.
   final ValueChanged<double>? onTipChanged;
 
   @override
@@ -19,10 +20,16 @@ class TipYourDriverView extends StatefulWidget {
 }
 
 class _TipYourDriverViewState extends State<TipYourDriverView> {
-  /// The amount the counter starts at when "Other" is selected.
-  static const int _otherTipInitialValue = 15;
+  /// The server refuses a larger `driver_tip` (`max:1000`), so the field
+  /// never holds one.
+  static const int _maxTip = 1000;
 
   static const List<String> _presetTips = <String>['2', '5', '7', '10'];
+
+  /// Kept across a deselect, so picking "Other" again brings the amount back.
+  final TextEditingController _otherTipController = TextEditingController();
+
+  double get _otherTip => double.tryParse(_otherTipController.text) ?? 0;
 
   late final List<String> _tips = <String>[
     ..._presetTips,
@@ -34,6 +41,12 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
 
   bool get _isOtherSelected => _selectedIndex == _tips.length - 1;
 
+  @override
+  void dispose() {
+    _otherTipController.dispose();
+    super.dispose();
+  }
+
   void _onTipSelected(int index) {
     setState(() => _selectedIndex = index == _selectedIndex ? null : index);
 
@@ -42,7 +55,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
       selected == null
           ? 0
           : _isOtherSelected
-          ? _otherTipInitialValue.toDouble()
+          ? _otherTip
           : double.parse(_tips[selected]),
     );
   }
@@ -90,10 +103,41 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
             ],
           ),
           if (_isOtherSelected)
-            FullWidthCounterView(
-              initialValue: _otherTipInitialValue,
-              onValueChanged: (int value) =>
-                  widget.onTipChanged?.call(value.toDouble()),
+            TextField(
+              controller: _otherTipController,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+                TextInputFormatter.withFunction(
+                  (TextEditingValue old, TextEditingValue next) =>
+                      (int.tryParse(next.text) ?? 0) <= _maxTip ? next : old,
+                ),
+              ],
+              onChanged: (_) => widget.onTipChanged?.call(_otherTip),
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
+              style: AppTextStyles.style14Regular.copyWith(
+                color: colors.tertiaryContainer,
+              ),
+              cursorColor: colors.tertiaryContainer,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                hintText: LangKeys.enterAmountKey.tr(),
+                hintStyle: AppTextStyles.style14Regular.copyWith(
+                  color: colors.neutral500,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(999),
+                  borderSide: BorderSide(color: colors.neutral200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(999),
+                  borderSide: BorderSide(color: colors.primary500Main),
+                ),
+              ),
             ),
         ],
       ),

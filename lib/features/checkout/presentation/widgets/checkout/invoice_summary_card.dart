@@ -26,9 +26,11 @@ class InvoiceSummaryCard extends ConsumerWidget {
         ) ??
         const OrderGroupModel();
 
-    // Every figure is the server's: the checkout is re-priced with the address,
-    // tip and applied codes whenever they change, so nothing is patched in here
-    // — a local subtraction can't know the tax the discount also removes.
+    // Every figure is the server's: the checkout is re-priced with the address
+    // and applied codes whenever they change, so nothing is patched in here —
+    // a local subtraction can't know the tax the discount also removes. The
+    // tip alone is added by the app (OrderGroupModel.withTip): the server adds
+    // it to the total and to nothing else.
     final double discount = orderGroup.discount;
     final double total = orderGroup.total;
 

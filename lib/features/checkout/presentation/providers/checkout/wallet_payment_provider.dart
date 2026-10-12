@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
-import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/driver_tip_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
@@ -61,11 +61,11 @@ int? walletShortfallHalalas(WalletModel? wallet, double? total) {
   return shortfall > 0 ? shortfall : null;
 }
 
-/// The checkout total, `null` until the checkout loads.
+/// The checkout total, tip included; `null` until the checkout loads.
 final checkoutTotalProvider = Provider.autoDispose<double?>(
   (Ref ref) => ref.watch(
-    checkoutProvider.select(
-      (AsyncValue<CheckoutModel?> state) => state.valueOrNull?.orderGroup.total,
+    tippedCheckoutProvider.select(
+      (CheckoutModel? checkout) => checkout?.orderGroup.total,
     ),
   ),
 );

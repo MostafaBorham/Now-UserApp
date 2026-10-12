@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/features/checkout/data/models/applied_disco
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/checkout_model_provider.dart';
+import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/driver_tip_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_cards_section.dart';
@@ -41,8 +42,6 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
-  double _driverTip = 0;
-
   int? _addressId;
 
   // Holds the per-order delivery instructions the user types inline; read on
@@ -117,7 +116,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           addressId: _addressId!,
           paymentMethod: paymentMethod,
           paymentMethodId: paymentMethodId,
-          driverTip: _driverTip,
+          driverTip: ref.read(driverTipProvider),
           deliveryInstructions: _instructionsController.text.trim(),
           discounts: ref.read(appliedDiscountsProvider),
         );
@@ -129,7 +128,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       .read(checkoutProvider.notifier)
       .reprice(
         addressId: _addressId,
-        driverTip: _driverTip,
         discounts: ref.read(appliedDiscountsProvider),
       );
 
@@ -144,6 +142,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       appliedDiscountsProvider,
       (_, _) => _reprice(),
     );
+
+    // Keeps the autoDispose tip alive for as long as the screen is, so confirm
+    // sends the tip the invoice shows.
+    ref.listen<double>(driverTipProvider, (_, _) {});
 
     // A failed re-price keeps the page (see the builder below), so say so:
     // the totals on it may no longer match the choices above them.
@@ -208,7 +210,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             // recomputes this provider itself, so the subtree below is never
             // rebuilt wholesale — only its `select`ing descendants are.
             checkoutModelProvider.overrideWith(
-              (Ref ref) => ref.watch(checkoutProvider).valueOrNull,
+              (Ref ref) => ref.watch(tippedCheckoutProvider),
             ),
           ],
           child: Consumer(
@@ -233,10 +235,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     controller: _instructionsController,
                   ),
                   TipYourDriverView(
-                    onTipChanged: (double tip) {
-                      _driverTip = tip;
-                      _reprice();
-                    },
+                    onTipChanged: (double tip) =>
+                        ref.read(driverTipProvider.notifier).state = tip,
                   ),
                   const CheckoutPaymentSection(),
                   const WalletPaymentRow(),

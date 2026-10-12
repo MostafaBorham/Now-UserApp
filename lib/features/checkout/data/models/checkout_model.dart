@@ -1,3 +1,4 @@
+import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 
@@ -33,6 +34,14 @@ class CheckoutModel {
       if (card.isDefault ?? false) return card;
     }
     return cards.isEmpty ? null : cards.first;
+  }
+
+  /// This checkout with [tip] as the driver tip; see [OrderGroupModel.withTip].
+  CheckoutModel withTip(double tip) {
+    final OrderGroupModel tipped = orderGroup.withTip(tip);
+    return identical(tipped, orderGroup)
+        ? this
+        : CheckoutModel(orderGroup: tipped, paymentCards: paymentCards);
   }
 
   static List<CardPaymentModel> _parseCards(Map<String, dynamic> checkout) {
@@ -191,6 +200,32 @@ class OrderGroupModel {
               ?.map((e) => OrderModel.fromJson(e as Map<String, dynamic>?))
               .toList() ??
           const <OrderModel>[],
+    );
+  }
+
+  /// This pricing with [tip] as the driver tip, so a tip costs no request.
+  ///
+  /// The server adds the tip to the group total and to nothing else — not the
+  /// tax, a discount, the delivery fee or any store's invoice, and only once
+  /// for a multi-store group (`PerVendorPricingService::calculate`; pinned by
+  /// its `test_driver_tip_only_changes_the_group_total`). Placing the order
+  /// prices it the same way and charges that group total. Swapped in halalas,
+  /// so the total never drifts by a binary-double cent.
+  OrderGroupModel withTip(double tip) {
+    if (tip == driverTip) return this;
+    return OrderGroupModel(
+      currency: currency,
+      subtotal: subtotal,
+      tax: tax,
+      deliveryFee: deliveryFee,
+      discount: discount,
+      driverTip: tip,
+      total:
+          (sarDoubleToHalalas(total) -
+              sarDoubleToHalalas(driverTip) +
+              sarDoubleToHalalas(tip)) /
+          halalasPerSar,
+      orders: orders,
     );
   }
 }

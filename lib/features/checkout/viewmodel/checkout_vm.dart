@@ -16,8 +16,9 @@ final checkoutProvider =
 /// The checkout's pricing, straight from the server.
 ///
 /// [checkout] opens a checkout; [reprice] and [refresh] then price it again as
-/// the customer changes what the server charges for — address, tip, coupons,
-/// voucher — so the invoice shows what placing the order will charge. A
+/// the customer changes what the server charges for — address, coupons,
+/// voucher — so the invoice shows what placing the order will charge. The tip
+/// is never priced here: `tippedCheckoutProvider` adds it on top. A
 /// re-price keeps the loaded checkout in state (loading, then data or error,
 /// each carrying the previous value), so the screen never drops to its shimmer.
 class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
@@ -36,7 +37,7 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
   /// dropped rather than rolling the invoice back.
   int _request = 0;
 
-  /// Coalesces a burst of changes — the tip counter's taps — into one request:
+  /// Coalesces a burst of changes into one request:
   /// every preview shares the per-user checkout rate limit (30 a minute) with
   /// apply, place and cancel.
   Timer? _debounce;
@@ -71,13 +72,11 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
   /// no-op when they price the same as the last request.
   void reprice({
     int? addressId,
-    double driverTip = 0,
     List<AppliedDiscountModel> discounts = const <AppliedDiscountModel>[],
   }) {
     final Map<String, dynamic> body = CheckoutEndpoints.pricingBody(
       vendorId: _vendorId,
       addressId: addressId,
-      driverTip: driverTip,
       discounts: discounts,
     );
     if (jsonEncode(body) == jsonEncode(_body)) return;

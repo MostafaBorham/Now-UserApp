@@ -51,12 +51,28 @@ void main() {
     expect(body.containsKey('coupon_codes'), isFalse);
   });
 
-  test('no tip and no codes send nothing for them', () {
+  test('no codes send nothing for them', () {
     final Map<String, dynamic> body = CheckoutEndpoints.pricingBody(
       vendorId: 1,
     );
 
     expect(body, isEmpty);
+  });
+
+  // The app adds the tip to the preview's total itself, so a preview priced
+  // with one would count it twice — and a tip would cost a request again.
+  test('only placing sends the tip, and a zero tip not even then', () {
+    expect(
+      CheckoutEndpoints.pricingBody(addressId: 3).containsKey('driver_tip'),
+      isFalse,
+    );
+    expect(
+      CheckoutEndpoints.placeBody(
+        addressId: 3,
+        paymentMethod: 'cod',
+      ).containsKey('driver_tip'),
+      isFalse,
+    );
   });
 
   test('applying a coupon sends the delivery address when there is one', () {

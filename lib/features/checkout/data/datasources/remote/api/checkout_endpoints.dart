@@ -43,18 +43,18 @@ abstract class CheckoutEndpoints {
   };
 
   /// The pricing choices [preview] and [place] both take, so what the invoice
-  /// shows and what the order is charged are priced from the same input.
+  /// shows and what the order is charged are priced from the same input. The
+  /// tip is the one choice left out: the app adds it to the preview's total
+  /// itself (see `OrderGroupModel.withTip`), and only [placeBody] sends it.
   ///
   /// Coupons travel as one `coupon` on the vendor endpoints and as a
   /// `vendor id → code` map (`coupon_codes`) on the cart ones; a purchase
-  /// voucher is a single `voucher` either way. The coupons are sorted and a
-  /// zero tip is left out (the server's default), so the same choices always
-  /// encode the same way — the place body doubles as the idempotency
-  /// fingerprint.
+  /// voucher is a single `voucher` either way. The coupons are sorted, so the
+  /// same choices always encode the same way — the place body doubles as the
+  /// idempotency fingerprint.
   static Map<String, dynamic> pricingBody({
     int? vendorId,
     int? addressId,
-    double driverTip = 0,
     List<AppliedDiscountModel> discounts = const <AppliedDiscountModel>[],
   }) {
     final List<AppliedDiscountModel> coupons =
@@ -70,7 +70,6 @@ abstract class CheckoutEndpoints {
 
     return <String, dynamic>{
       'address_id': ?addressId,
-      if (driverTip > 0) 'driver_tip': driverTip,
       if (vendorId != null)
         'coupon': ?coupons
             .where((AppliedDiscountModel d) => d.vendorId == vendorId)
@@ -84,7 +83,10 @@ abstract class CheckoutEndpoints {
     };
   }
 
-  /// The [place] body: the [pricingBody] plus how it is paid.
+  /// The [place] body: the [pricingBody] plus the tip and how it is paid.
+  ///
+  /// A zero tip is left out (the server's default), so the same choices always
+  /// encode the same way.
   ///
   /// `payment_method_id` rides only with the `card` method — the backend
   /// prohibits it for wallet/cod — so callers pass it null otherwise.
@@ -100,9 +102,9 @@ abstract class CheckoutEndpoints {
     ...pricingBody(
       vendorId: vendorId,
       addressId: addressId,
-      driverTip: driverTip,
       discounts: discounts,
     ),
+    if (driverTip > 0) 'driver_tip': driverTip,
     'delivery_instructions': deliveryInstructions,
     'payment_method': paymentMethod,
     'payment_method_id': ?paymentMethodId,
