@@ -12,6 +12,7 @@ class LocalizationInit extends StatelessWidget {
     return EasyLocalization(
         supportedLocales: LocalizationConstants.supportedLocales,
         path: LocalizationConstants.languagesPath,
+        startLocale: LocalizationConstants.arabicLocale,
         fallbackLocale: LocalizationConstants.englishLocale,
         saveLocale: true,
         useOnlyLangCode: false,
