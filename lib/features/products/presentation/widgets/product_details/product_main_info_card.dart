@@ -250,27 +250,30 @@ class ProductMainInfoCard extends ConsumerWidget {
               ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4,
-            children: [
-              Text(
-                LangKeys.descriptionKey.tr(),
-                style: AppTextStyles.style16Bold.copyWith(
-                  color: colors.black,
-                  fontSize: 15,
+          // No heading over a blank line when there is no description
+          // (QA-030 S7).
+          if (context.getLocalizedApiText(product.description).isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(
+                  LangKeys.descriptionKey.tr(),
+                  style: AppTextStyles.style16Bold.copyWith(
+                    color: colors.black,
+                    fontSize: 15,
+                  ),
                 ),
-              ),
-              ExpandableText(
-                text: context.getLocalizedApiText(product.description),
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.neutral500,
+                ExpandableText(
+                  text: context.getLocalizedApiText(product.description),
+                  style: AppTextStyles.style14Regular.copyWith(
+                    color: colors.neutral500,
+                  ),
+                  maxCharacters: 150,
+                  seeMoreText: LangKeys.seeMoreKey.tr(),
                 ),
-                maxCharacters: 150,
-                seeMoreText: LangKeys.seeMoreKey.tr(),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

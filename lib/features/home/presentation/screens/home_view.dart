@@ -37,6 +37,7 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
+import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -342,7 +343,9 @@ class _HomeViewState extends ConsumerState<HomeView>
             onRetry: _refreshAll,
           ),
         )
-      else
+      // With nothing featured the section drew nothing but kept its two
+      // 24 dp gaps (QA-030 S5).
+      else if (!noFeaturedStores)
         const HomeFeedSection(
           key: ValueKey<String>('top_brands'),
           child: HomeMostPopularBrandsView(),
@@ -474,7 +477,12 @@ class _HomeViewState extends ConsumerState<HomeView>
   /// elsewhere (header, offers) or one with nothing to show.
   Widget? _feedSectionChild(BuildContext context, HomeSectionModel section) {
     return switch (section.type) {
-      'featured_stores' when section.stores.isNotEmpty =>
+      // The carousel drops stores without products; with none left it
+      // drew nothing in a spaced slot (QA-030 S8).
+      'featured_stores'
+          when section.stores.any(
+            (StoreModel store) => store.products?.isNotEmpty ?? false,
+          ) =>
         HomeFeaturedStoresView(stores: section.stores),
       'nearby_stores' when section.stores.isNotEmpty => AspectRatio(
         aspectRatio: 1.47,

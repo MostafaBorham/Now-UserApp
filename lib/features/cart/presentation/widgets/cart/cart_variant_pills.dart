@@ -9,7 +9,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 /// value pill per selected attribute value (`Medium`, `Polyester`, …).
 ///
 /// Reads the raw `options` map straight off the [ProductModel] cart line so the
-/// core model stays untyped. Renders nothing when there is no variant to show.
+/// core model stays untyped. Renders nothing when there is no variant to show,
+/// and otherwise carries its own 8 dp gap above it, so a line with no variant
+/// gets no extra gap (QA-030 S2).
 class CartVariantPills extends StatelessWidget {
   const CartVariantPills({super.key, required this.options});
 
@@ -27,14 +29,17 @@ class CartVariantPills extends StatelessWidget {
 
     final AppColorScheme colors = context.colors;
 
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        if (swatch != null) _swatchPill(colors, swatch),
-        for (final String value in values) _textPill(colors, value),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: <Widget>[
+          if (swatch != null) _swatchPill(colors, swatch),
+          for (final String value in values) _textPill(colors, value),
+        ],
+      ),
     );
   }
 

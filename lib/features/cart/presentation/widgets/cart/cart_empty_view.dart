@@ -32,15 +32,19 @@ class CartEmptyView extends ConsumerWidget {
                   aspectRatio: 2,
                   child: Assets.media.images.svg.emptyCartImg.svg(),
                 ),
-                const WelcomeVoucherBanner(),
-                Text(
-                  LangKeys.cartEmptyTitleKey.tr(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: con.maxWidth * 0.06,
-                    color: colors.black,
-                  ),
+                Column(
+                  children: [
+                    const WelcomeVoucherBanner(),
+                    Text(
+                      LangKeys.cartEmptyTitleKey.tr(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: con.maxWidth * 0.06,
+                        color: colors.black,
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
                   LangKeys.cartEmptySubtitleKey.tr(),

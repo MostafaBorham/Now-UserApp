@@ -61,15 +61,17 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
             ],
           ),
         ),
-        Text(
-          context.getLocalizedApiText(store.description),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.style14Regular.copyWith(
-            color: colors.neutral500,
+        // An empty description still took a blank line (QA-030 S4).
+        if (context.getLocalizedApiText(store.description).isNotEmpty)
+          Text(
+            context.getLocalizedApiText(store.description),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.style14Regular.copyWith(
+              color: colors.neutral500,
+            ),
           ),
-        ),
         StoreInfoRow(
           infoFontSize: 14,
           infoIconSize: 16,

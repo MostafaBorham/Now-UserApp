@@ -142,22 +142,25 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   ),
                                 ],
                               ),
-                              AppSlider(
-                                sliderItems: (product.images ?? [])
-                                    .map(
-                                      (image) => AppCachedNetworkImage(
-                                        imageUrl: image,
-                                        height: double.infinity,
-                                        width: double.infinity,
-                                        fit: BoxFit.contain,
-                                        placeholderType:
-                                            LoadingViewTypes.circular,
-                                        circularProgressSize: 50,
-                                      ),
-                                    )
-                                    .toList(),
-                                itemAspectRatio: 1.5,
-                              ),
+                              // An empty slider kept its spaced slot (QA-030
+                              // S6).
+                              if (product.images?.isNotEmpty ?? false)
+                                AppSlider(
+                                  sliderItems: (product.images ?? [])
+                                      .map(
+                                        (image) => AppCachedNetworkImage(
+                                          imageUrl: image,
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          fit: BoxFit.contain,
+                                          placeholderType:
+                                              LoadingViewTypes.circular,
+                                          circularProgressSize: 50,
+                                        ),
+                                      )
+                                      .toList(),
+                                  itemAspectRatio: 1.5,
+                                ),
                               const ProductMainInfoCard(isTrusted: false),
                               if (product.colors?.isNotEmpty ?? false)
                                 ProductColorsSelector(

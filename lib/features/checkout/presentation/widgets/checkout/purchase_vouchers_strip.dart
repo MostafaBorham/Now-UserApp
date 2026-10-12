@@ -78,51 +78,56 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
     // ticket is locked so a second voucher can't be applied concurrently.
     final bool isApplying = _applyingKey != null;
 
-    return VoucherTicketsList(
-      itemCount: vouchers.length,
-      itemBuilder: (BuildContext context, int index, bool darkHead) {
-        final PurchaseVoucherModel voucher = vouchers[index];
-        final int? targetVendorId = _resolveVendorId(voucher, vendorIds);
-        final bool applicable = targetVendorId != null;
+    // Carries its own gap below, so a checkout with no vouchers gets none
+    // (QA-030 S3): the screen groups it with the invoice.
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: VoucherTicketsList(
+        itemCount: vouchers.length,
+        itemBuilder: (BuildContext context, int index, bool darkHead) {
+          final PurchaseVoucherModel voucher = vouchers[index];
+          final int? targetVendorId = _resolveVendorId(voucher, vendorIds);
+          final bool applicable = targetVendorId != null;
 
-        final bool selected =
-            applicable &&
-            applied.any(
-              (AppliedDiscountModel d) =>
-                  d.vendorId == targetVendorId &&
-                  d.isVoucher &&
-                  d.code == voucher.code,
-            );
+          final bool selected =
+              applicable &&
+              applied.any(
+                (AppliedDiscountModel d) =>
+                    d.vendorId == targetVendorId &&
+                    d.isVoucher &&
+                    d.code == voucher.code,
+              );
 
-        final bool isLoading =
-            applicable &&
-            _applyingKey == _voucherKey(targetVendorId, voucher.code);
+          final bool isLoading =
+              applicable &&
+              _applyingKey == _voucherKey(targetVendorId, voucher.code);
 
-        // Non-applicable tickets are never tappable; while an apply is in
-        // flight every other ticket is locked too.
-        final bool tappable = applicable && !isApplying;
+          // Non-applicable tickets are never tappable; while an apply is in
+          // flight every other ticket is locked too.
+          final bool tappable = applicable && !isApplying;
 
-        // Clip the overlay to the ticket's rounded corners so the progress
-        // barrier doesn't paint white squares over the transparent corners.
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BlockingLoadingOverlay(
-            isLoading: isLoading,
-            child: VoucherTicket(
-              discountValue: _discountText(voucher),
-              isPercentage: voucher.isPercentage,
-              name: voucher.name,
-              validityText: _validity(context, voucher),
-              darkHead: darkHead,
-              isDimmed: !applicable,
-              isSelected: selected,
-              onTap: tappable
-                  ? () => _onTap(voucher, targetVendorId, selected)
-                  : null,
+          // Clip the overlay to the ticket's rounded corners so the progress
+          // barrier doesn't paint white squares over the transparent corners.
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BlockingLoadingOverlay(
+              isLoading: isLoading,
+              child: VoucherTicket(
+                discountValue: _discountText(voucher),
+                isPercentage: voucher.isPercentage,
+                name: voucher.name,
+                validityText: _validity(context, voucher),
+                darkHead: darkHead,
+                isDimmed: !applicable,
+                isSelected: selected,
+                onTap: tappable
+                    ? () => _onTap(voucher, targetVendorId, selected)
+                    : null,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

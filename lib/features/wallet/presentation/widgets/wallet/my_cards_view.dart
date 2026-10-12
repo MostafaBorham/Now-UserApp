@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,15 +45,21 @@ class MyCardsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
 
-    // Pin the cards area to the height of the four shimmer rows, so the sheet
-    // keeps one fixed height across every state: it does not jump taller for the
-    // 4-row shimmer and then shorter for a couple of real cards. Fewer cards
-    // leave empty space below; more than four scroll inside this fixed box.
-    const double cardsAreaHeight =
-        _cardRowHeight * _visibleCards + _cardRowGap * (_visibleCards - 1);
     final AsyncValue<List<CardPaymentModel>> cardsState = ref.watch(
       getMyCardsProvider,
     );
+    // The cards area is as tall as the cards, up to four rows, past which the
+    // list scrolls inside it: pinned at four, one card left ~250 dp empty
+    // (QA-030 S13). The shimmer and the error keep four rows; no cards gets two
+    // for the empty state.
+    final int rows =
+        cardsState.whenOrNull(
+          data: (List<CardPaymentModel> cards) =>
+              cards.isEmpty ? 2 : math.min(cards.length, _visibleCards),
+        ) ??
+        _visibleCards;
+    final double cardsAreaHeight =
+        _cardRowHeight * rows + _cardRowGap * (rows - 1);
 
     // Delete runs under the same blocking overlay (below). A failure surfaces as
     // a snackbar; the swiped card has already sprung back into place, so nothing
@@ -115,12 +123,10 @@ class MyCardsView extends ConsumerWidget {
               ),
             ],
           ),
-          // Fixed-height box (not Flexible): the cards area is always four rows
-          // tall, so the sheet keeps one height whether the shimmer, a short
-          // list, or the empty state is showing. The list scrolls inside it once
-          // there are more than four cards. The overlay blocks the list while a
-          // set-default / delete is in flight — the header and add-card button
-          // below stay tappable.
+          // Sized box (not Flexible), as tall as the rows above. The list scrolls
+          // inside it once there are more than four cards. The overlay blocks
+          // the list while a set-default / delete is in flight — the header and
+          // add-card button below stay tappable.
           SizedBox(
             height: cardsAreaHeight,
             child: BlockingLoadingOverlay(

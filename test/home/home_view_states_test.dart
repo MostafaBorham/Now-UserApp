@@ -154,7 +154,10 @@ void main() {
         HomeSectionModel(
           id: 1,
           type: 'featured_stores',
-          stores: <StoreModel>[sampleStore()],
+          // Featured stores with no products are left out (QA-030 S8).
+          stores: <StoreModel>[
+            StoreModel(id: 1, products: <ProductModel>[sampleProduct()]),
+          ],
         ),
         HomeSectionModel(
           id: 2,

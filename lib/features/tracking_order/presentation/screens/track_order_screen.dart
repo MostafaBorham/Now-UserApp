@@ -7,7 +7,6 @@ import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
@@ -133,7 +132,6 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                   // The cancel action is only offered while the order can still
                   // be cancelled (before the vendor starts preparing it).
                   if (orderStatus.isCancellable) ...[
-                    4.hSpace,
                     PrimaryButton(
                       title: LangKeys.cancelOrderKey.tr(),
                       buttonColor: colors.errorContainer,
@@ -146,7 +144,6 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                         amount: formatMoney(order.totalWithTip),
                       ),
                     ),
-                    8.hSpace,
                   ],
                   ],
                 ),

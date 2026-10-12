@@ -58,8 +58,10 @@ class WelcomeVoucherBanner extends ConsumerWidget {
       color: _text,
     );
 
+    // Carries its own 10 dp gap below, so the empty cart keeps an even rhythm
+    // when the banner is hidden (QA-030 S9).
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
       child: GestureDetector(
         onTap: () => CopyToClipboard.copy(context, code),
         child: Container(

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
@@ -241,11 +240,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   ),
                   const CheckoutPaymentSection(),
                   const WalletPaymentRow(),
-                  const PurchaseVouchersStrip(),
-                  const InvoiceSummarySection(),
+                  const Column(
+                    children: <Widget>[
+                      PurchaseVouchersStrip(),
+                      InvoiceSummarySection(),
+                    ],
+                  ),
 
                   ConfirmOrderButton(onConfirm: _onConfirmOrder),
-                  10.hSpace,
                 ],
               ),
             ),

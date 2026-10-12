@@ -185,7 +185,6 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
             children: [
               Text(
                 context.getLocalizedApiText(product.name),
@@ -195,6 +194,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                 ),
               ),
               CartVariantPills(options: product.options),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

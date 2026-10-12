@@ -164,12 +164,21 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                                           .toList(),
                                       itemAspectRatio: 3,
                                     ),
-                                  UniqueStoreProductsSlider(),
-                                  StoreDiscountCouponsList(),
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: StoreCategoryCirclesList(),
-                                  ),
+                                  // Each is left out when it has nothing, as
+                                  // the banners are: a hidden one inside the
+                                  // spaced column still took its 20 dp gap
+                                  // (QA-030 S1).
+                                  if (store.offer?.products?.isNotEmpty ??
+                                      false)
+                                    UniqueStoreProductsSlider(),
+                                  if (store.coupons?.isNotEmpty ?? false)
+                                    StoreDiscountCouponsList(),
+                                  if (store.categories?.isNotEmpty ?? false)
+                                    Align(
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
+                                      child: StoreCategoryCirclesList(),
+                                    ),
                                 ],
                               ),
                             ),
