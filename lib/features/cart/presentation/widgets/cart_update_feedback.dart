@@ -2,35 +2,23 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/effects/animated_success_badge.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 
-/// The standard answer to a cart update that just succeeded: the confirmation
-/// sheet the first time a product joins the cart, and after that a toast that
+/// The standard answer to a cart update that just succeeded: a toast that
 /// matches what actually changed — the line was added to, reduced, or removed.
 ///
-/// Every screen that changes a cart line routes its success here, so the two
-/// cases cannot drift apart again. The product's name and image are read off
-/// the fresh [cart] line, so callers need nothing but the id.
-/// [alwaysSheet] answers every add with the sheet (the product page, BUG-029).
+/// Every screen that changes a cart line routes its success here, so the
+/// wording cannot drift apart between screens.
 void showCartUpdateFeedback(
   BuildContext context,
   WidgetRef ref, {
   required int productId,
   int? laneId,
   required CartModel cart,
-  bool alwaysSheet = false,
 }) {
   // Only the screen on top answers. A card on a covered screen — the listing
   // the product page was opened from — hears the same response, and claiming
@@ -46,26 +34,14 @@ void showCartUpdateFeedback(
   // Another card showing this product has already answered this response.
   if (!vm.claimFeedback()) return;
 
-  if (!alwaysSheet && !vm.joinedCart) {
-    // Both quantities are the product's total across its variant lines, so
-    // the wording follows what changed even with several lines.
-    AppToast.showSuccess(
-      context,
-      cartUpdateMessageKey(
-        previousQuantity: vm.previousQuantity,
-        quantity: cart.quantityOf(productId),
-      ).tr(),
-    );
-    return;
-  }
-
-  final ProductModel? line = cart.lineOf(productId);
-
-  showSuccessAddToCartSheet(
+  // Both quantities are the product's total across its variant lines, so the
+  // wording follows what changed even with several lines.
+  AppToast.showSuccess(
     context,
-    productName: line == null ? '' : context.getLocalizedApiText(line.name),
-    productImageUrl: line?.images?.firstOrNull ?? '',
-    onViewCart: () => openMainCartTab(context, ref),
+    cartUpdateMessageKey(
+      previousQuantity: vm.previousQuantity,
+      quantity: cart.quantityOf(productId),
+    ).tr(),
   );
 }
 
@@ -80,12 +56,13 @@ void openMainCartTab(BuildContext context, WidgetRef ref) {
   }
 }
 
-/// The message for a settled update of a line that was already in the cart,
-/// chosen by which way the line moved: [previousQuantity] is the quantity before
-/// the request, [quantity] the one the fresh cart reports.
+/// The message for a settled update, chosen by which way the line moved:
+/// [previousQuantity] is the quantity before the request, [quantity] the one
+/// the fresh cart reports.
 ///
-/// Anything that is not a drop reads as an add, so a quantity the server left
-/// untouched still confirms rather than claiming a change that didn't happen.
+/// Anything that is not a drop reads as an add, so a first add and a quantity
+/// the server left untouched both confirm rather than claim a change that
+/// didn't happen.
 String cartUpdateMessageKey({
   required int previousQuantity,
   required int quantity,
@@ -93,109 +70,4 @@ String cartUpdateMessageKey({
   if (quantity < 1) return LangKeys.productRemovedFromCartKey;
   if (quantity < previousQuantity) return LangKeys.cartQuantityUpdatedKey;
   return LangKeys.productAddedToCartKey;
-}
-
-/// Opens the confirmation sheet for a product that just landed in the cart.
-///
-/// Every "add to cart" action answers this way, so the sheet is configured in
-/// one place. "Continue shopping" just closes it, staying put.
-///
-/// [onViewCart] decides where "view cart" lands; callers routed through
-/// [showCartUpdateFeedback] default to the main shell's cart tab.
-Future<void> showSuccessAddToCartSheet(
-  BuildContext context, {
-  required String productName,
-  required String productImageUrl,
-  VoidCallback? onViewCart,
-}) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    backgroundColor: context.colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (BuildContext sheetContext) => SuccessAddToCartView(
-      productName: productName,
-      productImageUrl: productImageUrl,
-      onViewCart: () {
-        sheetContext.pop();
-        onViewCart?.call();
-      },
-      onContinueShopping: () => sheetContext.pop(),
-    ),
-  );
-}
-
-/// Bottom sheet confirming that a product just landed in the cart.
-class SuccessAddToCartView extends StatelessWidget {
-  const SuccessAddToCartView({
-    super.key,
-    required this.productName,
-    required this.productImageUrl,
-    this.onViewCart,
-    this.onContinueShopping,
-  });
-
-  final String productName;
-  final String productImageUrl;
-  final GestureTapCallback? onViewCart;
-  final GestureTapCallback? onContinueShopping;
-
-  @override
-  Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
-    return SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedSuccessBadge(
-                  imageUrl: productImageUrl,
-                  label: productName,
-                ),
-                16.hSpace,
-                Text(
-                  LangKeys.inTheShoppingCartKey.tr(),
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.style20Bold.copyWith(
-                    color: colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 1, thickness: 1, color: colors.neutral200),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-            child: Row(
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.viewCartKey.tr(),
-                    titleStyle: AppTextStyles.style16Medium,
-                    onTap: onViewCart,
-                  ),
-                ),
-                Expanded(
-                  child: UnPrimaryAppButton(
-                    title: LangKeys.continueShoppingKey.tr(),
-                    titleStyle: AppTextStyles.style16Medium,
-                    onTap: onContinueShopping,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -410,8 +410,6 @@ abstract class LangKeys {
   static const String keyFeaturesKey = 'keyFeatures';
   static const String colorKey = 'color';
   static const String selectRequiredKey = 'selectRequired';
-  static const String inTheShoppingCartKey = 'inTheShoppingCart';
-  static const String viewCartKey = 'viewCart';
   static const String trustedProductKey = 'trustedProduct';
   static const String outOfStockKey = 'outOfStock';
   static const String maxAlreadyInCartKey = 'maxAlreadyInCart';

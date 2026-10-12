@@ -18,7 +18,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_w
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_variant_pills.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
 /// One cart line inside an expanded store card: the product, its price and the

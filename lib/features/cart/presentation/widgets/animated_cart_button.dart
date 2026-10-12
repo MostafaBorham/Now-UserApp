@@ -11,7 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custo
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_stepper_pill.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 

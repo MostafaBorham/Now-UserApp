@@ -33,16 +33,10 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
 
   /// This product's quantity as the cart stood *before* the update that just
   /// settled. Read it when a success lands: compared against the fresh cart it
-  /// is what tells an add, a decrement and a removal apart, and `0` marks the
-  /// first add — the one that gets the confirmation sheet instead of a toast.
+  /// is what tells an add, a decrement and a removal apart.
   ///
-  /// With the cart not loaded yet it reads `0`, so an add reads as a first one
-  /// — which is what it almost always is.
+  /// With the cart not loaded yet it reads `0`, so an update reads as an add.
   int get previousQuantity => _previousQuantity;
-
-  /// Whether the update that just settled put this product in the cart for the
-  /// first time, rather than changing a line that was already there.
-  bool get joinedCart => _previousQuantity == 0;
 
   /// Claims the right to confirm the update that just settled: true for the
   /// first caller, false for everyone after it.
@@ -50,7 +44,7 @@ class UpdateCartProductViewModel extends StateNotifier<AsyncValue<CartModel?>> {
   /// One product can be on screen in several places at once — the same card in
   /// two home sections, a listing behind an open sheet — and they all listen to
   /// this one notifier. Without this they would each answer the same response,
-  /// stacking duplicate toasts and sheets.
+  /// stacking duplicate toasts.
   bool claimFeedback() {
     if (!_feedbackPending) return false;
 

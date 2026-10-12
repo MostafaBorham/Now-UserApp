@@ -16,7 +16,7 @@ import 'package:nowdelivery_user_app/features/main/presentation/controllers/main
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_buy_now_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_options_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/providers/product_details/product_quantity_provider.dart';
-import 'package:nowdelivery_user_app/features/cart/presentation/widgets/success_add_to_cart_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
 
 class ProductActionButtons extends ConsumerWidget {
   const ProductActionButtons({
@@ -77,14 +77,11 @@ class ProductActionButtons extends ConsumerWidget {
             context.goNamed(AppRoutes.mainScreen);
             return;
           }
-          // Every add here gets the sheet (BUG-029), and "continue shopping"
-          // just closes it, staying on the product.
           showCartUpdateFeedback(
             context,
             ref,
             productId: productId,
             cart: cart,
-            alwaysSheet: true,
           );
         },
         error: (error, _) {
