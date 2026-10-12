@@ -93,6 +93,15 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
       ref
           .read(submitComplaintProvider.notifier)
           .submitComplaint(complaint: complaint);
+    } catch (_) {
+      // A photo that can't be read any more (deleted, moved) used to just
+      // re-enable Send with no word (QA-003 A17).
+      if (mounted) {
+        AppToast.showError(
+          context,
+          LangKeys.complaintPhotosReadFailedKey.tr(),
+        );
+      }
     } finally {
       if (mounted) setState(() => _isPreparing = false);
     }

@@ -167,6 +167,18 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
                 ),
               ),
               5.hSpace,
+              // Without a card that can be charged, Top up stayed disabled
+              // with no reason (QA-003 A17).
+              if (hasLimits && fundingCard == null) ...[
+                Text(
+                  LangKeys.topUpNeedsCardKey.tr(),
+                  overflow: TextOverflow.visible,
+                  style: AppTextStyles.style12Medium.copyWith(
+                    color: context.colors.neutral500,
+                  ),
+                ),
+                5.hSpace,
+              ],
               PrimaryAppButton(
                 title: LangKeys.topUpKey.tr(),
                 isLoading: isSubmitting,

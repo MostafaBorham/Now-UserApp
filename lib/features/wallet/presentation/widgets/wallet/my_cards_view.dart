@@ -183,9 +183,16 @@ class MyCardsView extends ConsumerWidget {
                         // expired (the server would reject the charge) —
                         // nothing to do.
                         final int? id = card.id;
-                        if (card.isDefault || id == null || !card.isUsable) {
+                        // An expired card did nothing when tapped (QA-003
+                        // A17); it says why now.
+                        if (!card.isUsable) {
+                          AppToast.showError(
+                            context,
+                            LangKeys.cardExpiredKey.tr(),
+                          );
                           return;
                         }
+                        if (card.isDefault || id == null) return;
                         ref
                             .read(defaultPaymentCardProvider.notifier)
                             .setPaymentCardDefault(id);

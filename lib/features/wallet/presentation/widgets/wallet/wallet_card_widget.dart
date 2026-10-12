@@ -78,15 +78,32 @@ class WalletCardWidget extends StatelessWidget {
                                 ? GestureDetector(
                                     onTap: onReload,
                                     behavior: HitTestBehavior.opaque,
+                                    // A bare retry icon said nothing
+                                    // about what failed (QA-003 A17).
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
-                                      child: Assets.media.images.svg.retryIcon
-                                          .svg(
-                                            colorFilter: ColorFilter.mode(
-                                              colors.red400,
-                                              BlendMode.srcIn,
-                                            ),
+                                      child: Row(
+                                        spacing: 6,
+                                        children: [
+                                          Assets.media.images.svg.retryIcon
+                                              .svg(
+                                                colorFilter: ColorFilter.mode(
+                                                  colors.red400,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                          Text(
+                                            LangKeys
+                                                .walletBalanceLoadFailedKey
+                                                .tr(),
+                                            style: AppTextStyles
+                                                .style14Medium
+                                                .copyWith(
+                                                  color: colors.red400,
+                                                ),
                                           ),
+                                        ],
+                                      ),
                                     ),
                                   )
                                 : balance == null

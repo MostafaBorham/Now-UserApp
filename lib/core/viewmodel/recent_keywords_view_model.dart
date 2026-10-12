@@ -48,8 +48,12 @@ class RecentKeywordsViewModel extends StateNotifier<AsyncValue<List<String>>> {
 
   AsyncValue<List<String>> _apply(Either<Failure, List<String>> result) {
     return result.fold(
-      (Failure failure) =>
-          AsyncValue<List<String>>.error(failure.message, StackTrace.current),
+      // The list on screen stays: a failed read or write used to wipe the
+      // recent searches from view (QA-003 A17).
+      (Failure failure) => AsyncValue<List<String>>.error(
+        failure.message,
+        StackTrace.current,
+      ).copyWithPrevious(state),
       AsyncValue<List<String>>.data,
     );
   }

@@ -246,6 +246,17 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                       ),
                     ),
                     const SizedBox(height: 8),
+                    // Text that isn't an amount at all (three decimals, two
+                    // points) got only a red border (QA-003 A17).
+                    if (hasInvalidAmount) ...[
+                      Text(
+                        LangKeys.invalidAmountKey.tr(),
+                        style: AppTextStyles.style12Medium.copyWith(
+                          color: colors.errorContainer,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                    ],
                     // Both limits are shown, and each reddens only for its own
                     // breach, so the customer can see what they have to hit
                     // rather than discovering it through a server rejection.

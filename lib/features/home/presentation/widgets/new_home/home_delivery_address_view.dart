@@ -314,6 +314,7 @@ class _HomeDeliveryAddressViewState
                       state: addressesState,
                       selectedAddressId: selectedAddress?.id,
                       onSelect: _onAddressSelected,
+                      onRetry: _viewModel.loadFirstPage,
                     ),
                   ),
                 ),
@@ -392,19 +393,39 @@ class _AddressList extends StatelessWidget {
     required this.state,
     required this.selectedAddressId,
     required this.onSelect,
+    required this.onRetry,
   });
 
   final AsyncValue<PaginationModel<AddressModel>> state;
   final int? selectedAddressId;
   final ValueChanged<AddressModel> onSelect;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final PaginationStatus<AddressModel> status =
         PaginationStatus<AddressModel>.from(state);
 
-    // Nothing on screen yet: a first page in flight or a failed first page both
-    // fall back to the shimmer, so an error never shows a bare empty sheet.
+    // A failed first page says so, with a retry: it used to shimmer forever
+    // (QA-003 A17).
+    final String? firstPageError = status.firstPageError;
+    if (firstPageError != null) {
+      return Column(
+        spacing: 4,
+        children: <Widget>[
+          Text(
+            firstPageError.tr(),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.visible,
+          ),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(LangKeys.retryKey.tr()),
+          ),
+        ],
+      );
+    }
     if (!status.hasLoadedPage) return const _AddressShimmerList();
 
     final int loadingItemsCount = status.isNextPageLoading ? 2 : 0;

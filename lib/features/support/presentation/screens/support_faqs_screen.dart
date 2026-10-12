@@ -9,7 +9,6 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/widgets/faq_card_shell.dart';
@@ -71,56 +70,52 @@ class _SupportFaqsScreenState extends ConsumerState<SupportFaqsScreen> {
             onRetry: _loadFaqs,
           ),
           data: (List<FaqModel> faqs) {
+            // No FAQs still lists the "Other" tile: an empty state in its place
+            // left no way to reach support (QA-003 A17).
             return AppRefreshIndicator(
               onRefresh: _loadFaqs,
-              child: faqs.isEmpty
-                  ? NoResultsWidget(
-                      isScrollable: true,
-                      emptyMessage: LangKeys.noFaqsYetKey.tr(),
-                    )
-                  : ListView.separated(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      // Owns the top spacing AppWavedView drops when a scroll
-                      // controller is wired in, so it scrolls up with the
-                      // content.
-                      padding: const EdgeInsets.only(top: 57),
-                      // One extra trailing item: the "Other" tile that routes
-                      // to the support screen.
-                      itemCount: faqs.length + 1,
-                      separatorBuilder: (_, _) => const SizedBox(height: 14),
-                      itemBuilder: (context, index) {
-                        // Trailing "Other" entry: styled like a collapsed
-                        // FaqTile but routes to the support screen instead of
-                        // expanding, and carries no chevron.
-                        if (index == faqs.length) {
-                          return FaqCardShell(
-                            onTap: () =>
-                                context.pushNamed(AppRoutes.supportScreen),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                LangKeys.otherKey.tr(),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  height: 1.3,
-                                  fontWeight: FontWeight.w700,
-                                  color: context.colors.tertiaryContainer,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
+              child: ListView.separated(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                // Owns the top spacing AppWavedView drops when a scroll
+                // controller is wired in, so it scrolls up with the
+                // content.
+                padding: const EdgeInsets.only(top: 57),
+                // One extra trailing item: the "Other" tile that routes
+                // to the support screen.
+                itemCount: faqs.length + 1,
+                separatorBuilder: (_, _) => const SizedBox(height: 14),
+                itemBuilder: (context, index) {
+                  // Trailing "Other" entry: styled like a collapsed
+                  // FaqTile but routes to the support screen instead of
+                  // expanding, and carries no chevron.
+                  if (index == faqs.length) {
+                    return FaqCardShell(
+                      onTap: () => context.pushNamed(AppRoutes.supportScreen),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          LangKeys.otherKey.tr(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            height: 1.3,
+                            fontWeight: FontWeight.w700,
+                            color: context.colors.tertiaryContainer,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
 
-                        final FaqModel faq = faqs[index];
-                        return FaqTile(
-                          question: context.getLocalizedApiText(faq.question),
-                          answer: context.getLocalizedApiText(faq.answer),
-                          expanded: _expanded.contains(index),
-                          onTap: () => _toggle(index),
-                        );
-                      },
-                    ),
+                  final FaqModel faq = faqs[index];
+                  return FaqTile(
+                    question: context.getLocalizedApiText(faq.question),
+                    answer: context.getLocalizedApiText(faq.answer),
+                    expanded: _expanded.contains(index),
+                    onTap: () => _toggle(index),
+                  );
+                },
+              ),
             );
           },
         ),

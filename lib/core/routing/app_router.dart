@@ -81,7 +81,8 @@ class RouteErrorScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                LangKeys.errorTitleKey.tr(),
+                // A bare "Error" explained nothing (QA-003 B39).
+                LangKeys.pageUnavailableKey.tr(),
                 textAlign: TextAlign.center,
                 style: AppTextStyles.style24Bold,
               ),

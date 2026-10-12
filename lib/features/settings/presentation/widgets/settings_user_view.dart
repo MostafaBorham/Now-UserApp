@@ -18,6 +18,8 @@ import 'profile_info.dart';
 import 'profile_info_shimmer.dart';
 import 'settings_section.dart';
 import 'settings_tile.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 /// Logged-in variant of the settings screen body: profile header followed by
 /// the full set of setting groups and the logout action.
@@ -61,7 +63,26 @@ class SettingsUserView extends ConsumerWidget {
         // the default placeholder, then swap in the real picture and name.
         profile.when(
           loading: () => const ProfileInfoShimmer(),
-          error: (_, _) => const ProfileInfo(name: ''),
+          // A blank name with no way back looked like an empty profile
+          // (QA-003 A17): say so, and retry on tap.
+          error: (_, _) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ref.read(getProfileProvider.notifier).getProfile(),
+            child: Column(
+              spacing: 8,
+              children: [
+                const ProfileInfo(name: ''),
+                Text(
+                  LangKeys.profileLoadFailedKey.tr(),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  style: AppTextStyles.style14Medium.copyWith(
+                    color: context.colors.errorContainer,
+                  ),
+                ),
+              ],
+            ),
+          ),
           data: (PersonalInformationData data) => ProfileInfo(
             name: data.profile.fullName ?? '',
             avatarUrl: data.avatarUrl,
