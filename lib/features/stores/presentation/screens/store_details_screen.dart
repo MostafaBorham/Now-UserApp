@@ -80,6 +80,7 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
           appBarTitle: widget.storeName == null
               ? LangKeys.storeKey.tr()
               : context.getLocalizedApiText(widget.storeName),
+          waveGap: 4,
         ),
       );
     }
@@ -287,6 +288,9 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
           }
         },
         bodyPadding: EdgeInsets.zero,
+        // The cover makes the yellow band above the wave stand out, so the
+        // wave sits closer to the app bar here than on other screens.
+        waveGap: 4,
       ),
     );
   }

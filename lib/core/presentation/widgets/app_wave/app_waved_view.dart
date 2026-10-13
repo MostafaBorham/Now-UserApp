@@ -28,6 +28,7 @@ class AppWavedView extends StatelessWidget {
     this.scrollController,
     this.leading,
     this.actions,
+    this.waveGap = 12,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -40,6 +41,9 @@ class AppWavedView extends StatelessWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final EdgeInsets? bodyPadding;
+
+  /// Space between the app bar row and the top of the wave.
+  final double waveGap;
 
   /// Set when the body scrolls: its top spacing then belongs to the scroll
   /// view (so it scrolls up with the content) and is dropped here.
@@ -139,7 +143,7 @@ class AppWavedView extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Column(
-          spacing: 12,
+          spacing: waveGap,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
