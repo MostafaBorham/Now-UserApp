@@ -66,8 +66,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     return Scaffold(
       body: AppWavedView(
         scrollController: _scrollController,
-        bodyPadding: const EdgeInsets.only(bottom: 20),
+        bodyPadding: const EdgeInsets.only(bottom: 12),
+        // AppWavedView already reserves the bottom inset; a second one doubled
+        // the gap under the footer on edge-to-edge devices.
         body: SafeArea(
+          bottom: false,
           child: productDetailsState.when(
             loading: () {
               return ProductDetailsShimmer();
