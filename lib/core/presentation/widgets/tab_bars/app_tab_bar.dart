@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
 class AppTabBar extends StatelessWidget {
   const AppTabBar({
@@ -32,7 +32,7 @@ class AppTabBar extends StatelessWidget {
         spacing: 16,
         children: [
           Container(
-            height: 58,
+            height: 49,
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: Color(0xFFF1F1F1),
@@ -74,7 +74,10 @@ class AppTabBar extends StatelessWidget {
                             );
                           },
                         ),
-                      Text(tabs[i]),
+                      Text(
+                        tabs[i],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                 );
@@ -87,9 +90,7 @@ class AppTabBar extends StatelessWidget {
                   .map(
                     (v) => _KeepAliveView(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
                         child: v,
                       ),
                     ),
