@@ -322,6 +322,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 12,
                         children: [
                           Text(
                             LangKeys.itemInformationKey.tr(),
@@ -329,28 +330,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               color: colors.black,
                             ),
                           ),
-                          12.hSpace,
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: colors.white,
-                              borderRadius: AppBorderRadius.brCircular8,
-                            ),
-                            child: Column(
-                              spacing: 16,
-                              children: [
-                                for (final ProductModel item in order.items)
-                                  _OrderLineRow(item: item),
-                                // Refused by the vendor: kept visible so the
-                                // customer knows it didn't come, but out of
-                                // every total.
-                                for (final ProductModel item
-                                    in order.unavailableItems)
-                                  _OrderLineRow(item: item, unavailable: true),
-                              ],
-                            ),
-                          ),
+                          for (final ProductModel item in order.items)
+                            _OrderLineRow(item: item),
+                          // Refused by the vendor: kept visible so the
+                          // customer knows it didn't come, but out of every
+                          // total.
+                          for (final ProductModel item
+                              in order.unavailableItems)
+                            _OrderLineRow(item: item, unavailable: true),
                         ],
                       ),
                     ),
@@ -688,9 +675,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 }
 
-/// One line of the order: picture, name, the price paid per unit and the
-/// quantity. An [unavailable] line — refused by the vendor, never delivered,
-/// charged nothing — is dimmed and says so in place of its price.
+/// One line of the order, on its own white card: picture, name, the price paid
+/// per unit and the quantity. An [unavailable] line — refused by the vendor,
+/// never delivered, charged nothing — is dimmed and says so in place of its
+/// price.
 class _OrderLineRow extends StatelessWidget {
   const _OrderLineRow({required this.item, this.unavailable = false});
 
@@ -701,57 +689,68 @@ class _OrderLineRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    return Opacity(
-      opacity: unavailable ? 0.5 : 1,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 10,
-        children: [
-          ClipRRect(
-            borderRadius: AppBorderRadius.brCircular12,
-            child: AppCachedNetworkImage(
-              imageUrl: item.images?.firstOrNull ?? '',
-              width: 70,
-              height: 70,
-              fit: BoxFit.cover,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.white,
+        borderRadius: AppBorderRadius.brCircular8,
+      ),
+      // Inside the card, so only the content dims and the card stays white.
+      child: Opacity(
+        opacity: unavailable ? 0.5 : 1,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 10,
+          children: [
+            ClipRRect(
+              borderRadius: AppBorderRadius.brCircular12,
+              child: AppCachedNetworkImage(
+                imageUrl: item.images?.firstOrNull ?? '',
+                width: 70,
+                height: 70,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AutoSizeText(
-                  context.getLocalizedApiText(item.name),
-                  style: AppTextStyles.style16Medium.copyWith(
-                    color: colors.black,
-                  ),
-                ),
-                if (unavailable)
-                  Text(
-                    LangKeys.outOfStockKey.tr(),
-                    style: AppTextStyles.style14Regular.copyWith(
-                      color: colors.onError,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AutoSizeText(
+                    context.getLocalizedApiText(item.name),
+                    style: AppTextStyles.style16Medium.copyWith(
+                      color: colors.black,
                     ),
-                  )
-                else
-                  NewPriceWidget(
-                    color: colors.black,
-                    size: 14,
-                    fontWeight: FontWeight.w400,
-                    price: (item.price ?? 0).toStringAsFixed(2),
                   ),
-              ],
+                  if (unavailable)
+                    Text(
+                      LangKeys.outOfStockKey.tr(),
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.onError,
+                      ),
+                    )
+                  else
+                    NewPriceWidget(
+                      color: colors.black,
+                      size: 14,
+                      fontWeight: FontWeight.w400,
+                      price: (item.price ?? 0).toStringAsFixed(2),
+                    ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 40,
-            child: AutoSizeText(
-              'x${item.quantity ?? 0}',
-              style: AppTextStyles.style16Medium.copyWith(color: colors.black),
+            SizedBox(
+              height: 40,
+              child: AutoSizeText(
+                'x${item.quantity ?? 0}',
+                style: AppTextStyles.style16Medium.copyWith(
+                  color: colors.black,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -14,10 +14,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'tracking_section_card.dart';
 
 /// "Item Information" section: every product in the order with its thumbnail,
-/// localized name, price and ordered quantity. A detail-page list, so all items
-/// are shown in full rather than clamped to one.
+/// localized name, price and ordered quantity, each on its own card. A
+/// detail-page list, so all items are shown in full rather than clamped to one.
 class ItemInformationSection extends StatelessWidget {
-  const ItemInformationSection({super.key, this.items = const <ProductModel>[]});
+  const ItemInformationSection({
+    super.key,
+    this.items = const <ProductModel>[],
+  });
 
   final List<ProductModel> items;
 
@@ -26,60 +29,57 @@ class ItemInformationSection extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return TrackingSectionCard(
       title: LangKeys.itemInformationKey.tr(),
-      child: Column(
-        spacing: 16,
-        children: [
-          for (final ProductModel item in items)
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: AppBorderRadius.brCircular12,
-                  child: AppCachedNetworkImage(
-                    imageUrl: item.images?.firstOrNull ?? '',
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                  ),
+      children: [
+        for (final ProductModel item in items)
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: AppBorderRadius.brCircular12,
+                child: AppCachedNetworkImage(
+                  imageUrl: item.images?.firstOrNull ?? '',
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.cover,
                 ),
-                12.wSpace,
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context.getLocalizedApiText(item.name),
-                              overflow: TextOverflow.visible,
-                              style: AppTextStyles.style16Medium.copyWith(
-                                color: colors.black,
-                              ),
-                            ),
-                            6.hSpace,
-                            NewPriceWidget(
+              ),
+              12.wSpace,
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.getLocalizedApiText(item.name),
+                            overflow: TextOverflow.visible,
+                            style: AppTextStyles.style16Medium.copyWith(
                               color: colors.black,
-                              size: 14,
-                              fontWeight: FontWeight.w400,
-                              price: formatMoney(item.price),
                             ),
-                          ],
-                        ),
+                          ),
+                          6.hSpace,
+                          NewPriceWidget(
+                            color: colors.black,
+                            size: 14,
+                            fontWeight: FontWeight.w400,
+                            price: formatMoney(item.price),
+                          ),
+                        ],
                       ),
-                      Text(
-                        'x${item.quantity ?? 0}',
-                        style: AppTextStyles.style16Medium.copyWith(
-                          color: colors.black,
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    Text(
+                      'x${item.quantity ?? 0}',
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: colors.black,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-        ],
-      ),
+              ),
+            ],
+          ),
+      ],
     );
   }
 }

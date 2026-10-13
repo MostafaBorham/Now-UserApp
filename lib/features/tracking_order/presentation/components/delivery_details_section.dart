@@ -34,32 +34,34 @@ class DeliveryDetailsSection extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     return TrackingSectionCard(
       title: LangKeys.deliveryDetailsKey.tr(),
-      child: Column(
-        spacing: 14,
-        children: [
-          LabeledDetailRow(label: LangKeys.receiverKey.tr(), value: receiver),
-          LabeledDetailRow(label: LangKeys.addressKey.tr(), value: address),
-          LabeledDetailRow(label: LangKeys.contactKey.tr(), value: contact),
-          LabeledDetailRow(label: LangKeys.storeKey.tr(), value: store),
-          LabeledDetailRow(
-            label: LangKeys.numberOfItemsKey.tr(),
-            value: '$itemsCount',
-          ),
-          LabeledDetailRow(
-            label: LangKeys.paymentKey.tr(),
-            value: paymentMethod,
-          ),
-          LabeledDetailRow(
-            label: LangKeys.payKey.tr(),
-            trailing: NewPriceWidget(
-              color: colors.black,
-              size: 14,
-              fontWeight: FontWeight.w600,
-              price: amount,
+      children: [
+        Column(
+          spacing: 14,
+          children: [
+            LabeledDetailRow(label: LangKeys.receiverKey.tr(), value: receiver),
+            LabeledDetailRow(label: LangKeys.addressKey.tr(), value: address),
+            LabeledDetailRow(label: LangKeys.contactKey.tr(), value: contact),
+            LabeledDetailRow(label: LangKeys.storeKey.tr(), value: store),
+            LabeledDetailRow(
+              label: LangKeys.numberOfItemsKey.tr(),
+              value: '$itemsCount',
             ),
-          ),
-        ],
-      ),
+            LabeledDetailRow(
+              label: LangKeys.paymentKey.tr(),
+              value: paymentMethod,
+            ),
+            LabeledDetailRow(
+              label: LangKeys.payKey.tr(),
+              trailing: NewPriceWidget(
+                color: colors.black,
+                size: 14,
+                fontWeight: FontWeight.w600,
+                price: amount,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
