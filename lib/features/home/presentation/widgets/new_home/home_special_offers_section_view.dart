@@ -230,7 +230,6 @@ class _AutoScrollOffersListState extends State<_AutoScrollOffersList> {
         // offer sits on the leading edge of the sweep, still the first one
         // seen), which is what keeps the drift going the same way as the
         // carousels above it.
-        reverse: true,
         itemBuilder: (context, index) {
           final HomeOfferModel offer = widget.offers[index];
           return RepaintBoundary(

@@ -33,7 +33,7 @@ class OnBoardingScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Assets.media.images.png.onboardingImg.image(
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   OnBoardingContentView(),

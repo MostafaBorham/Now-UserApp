@@ -75,8 +75,8 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: const [0, 0.803],
-                    colors: [accent.withAlpha(180), colors.white],
+                    stops: [0.0, 0.80],
+                    colors: [accent.withAlpha(120), colors.white],
                   ),
                 ),
               ),

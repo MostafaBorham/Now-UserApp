@@ -50,7 +50,8 @@ class HomeAppCategorySectionView extends ConsumerWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerRight,
                     end: Alignment.centerLeft,
-                    colors: [accent.withAlpha(180), colors.white],
+                    stops: [0.0, 0.80],
+                    colors: [accent.withAlpha(120), colors.white],
                   ),
                 ),
               ),
