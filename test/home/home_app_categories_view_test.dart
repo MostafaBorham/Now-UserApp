@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
@@ -35,7 +37,7 @@ void main() {
     }
   });
 
-  testWidgets('loading skeletons are blank circles, no image placeholder', (
+  testWidgets('loading skeletons pulse, no image placeholder', (
     WidgetTester tester,
   ) async {
     await pumpCategoriesWidget(
@@ -44,6 +46,56 @@ void main() {
     );
     expect(find.byType(AppCachedNetworkImage), findsNothing);
     expect(find.text('failedToLoadImage'), findsNothing);
+
+    Color? disc() => (tester
+            .widget<DecoratedBox>(
+              find
+                  .descendant(
+                    of: find.byType(LoadingPulse),
+                    matching: find.byType(DecoratedBox),
+                  )
+                  .first,
+            )
+            .decoration as BoxDecoration)
+        .color;
+    final Color? before = disc();
+    await tester.pump(LoadingPulse.period * 0.5);
+    expect(disc(), isNot(before));
+  });
+
+  testWidgets('a loading image pulses like a skeleton, no spinner', (
+    WidgetTester tester,
+  ) async {
+    // The centred disc's on-screen width.
+    double centredPulse() {
+      final Finder pulses = find.byType(LoadingPulse);
+      return List<double>.generate(
+        pulses.evaluate().length,
+        (int i) => tester.getRect(pulses.at(i)).width,
+      ).reduce(math.max);
+    }
+
+    await pumpCategoriesWidget(
+      tester,
+      const HomeAppCategoriesView(categories: <CategoryModel>[]),
+    );
+    final double skeleton = centredPulse();
+
+    await pumpCategoriesWidget(
+      tester,
+      HomeAppCategoriesView(
+        categories: <CategoryModel>[
+          CategoryModel(
+            id: 1,
+            slug: 'food',
+            name: const <String, dynamic>{'en': 'Food', 'ar': 'طعام'},
+            image: 'https://example.com/food.png',
+          ),
+        ],
+      ),
+    );
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(centredPulse(), moreOrLessEquals(skeleton));
   });
 
   testWidgets('a loaded category without an image shows the placeholder', (

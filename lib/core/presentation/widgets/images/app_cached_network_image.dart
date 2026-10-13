@@ -18,6 +18,7 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover,
     this.placeholderType = LoadingViewTypes.shimmer,
+    this.loadingPlaceholder,
     this.circularProgressSize,
     this.httpHeaders,
     this.errorBackgroundColor,
@@ -29,6 +30,9 @@ class AppCachedNetworkImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final LoadingViewTypes? placeholderType;
+
+  /// Shown while loading, in place of [placeholderType]'s.
+  final Widget? loadingPlaceholder;
   final Color? errorBackgroundColor;
 
   final Map<String, String>? httpHeaders;
@@ -182,6 +186,7 @@ class AppCachedNetworkImage extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) {
+        if (loadingPlaceholder != null) return loadingPlaceholder!;
         switch (placeholderType) {
           case LoadingViewTypes.circular:
             return Center(

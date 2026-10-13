@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
-import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +12,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 
-/// [imageUrl] is null only for the loading skeletons, which stay blank circles.
+/// [imageUrl] is null only for the loading skeletons, which show a
+/// [LoadingPulse] and no label.
 typedef _CarouselItem = ({String label, String? imageUrl, VoidCallback? onTap});
 
 /// The home categories carousel, rendered from the `categories` section of the
@@ -225,6 +226,10 @@ class _CategoryCarouselItem extends StatelessWidget {
           final double imageSize = isCentered
               ? rawImageSize
               : rawImageSize.clamp(minImageSize, diameter - padding * 2);
+          // Inside the circle's 10% padding. The OverflowBox keeps it as a
+          // minimum, so the image's slot is never smaller than this.
+          final double inner = diameter * 0.8;
+          final double slot = math.max(imageSize, inner);
           return Transform.scale(
             scale: scale,
 
@@ -261,7 +266,10 @@ class _CategoryCarouselItem extends StatelessWidget {
                       // animated size, every frame of every slide was a new
                       // cache entry — a fresh decode of all five images.
                       child: imageUrl == null
-                          ? null
+                          ? SizedBox.square(
+                              dimension: inner,
+                              child: const LoadingPulse(),
+                            )
                           : SizedBox.square(
                               dimension: imageSize,
                               child: FittedBox(
@@ -270,8 +278,19 @@ class _CategoryCarouselItem extends StatelessWidget {
                                   width: maxImageSize,
                                   height: maxImageSize,
                                   fit: BoxFit.contain,
-                                  placeholderType: LoadingViewTypes.circular,
-                                  circularProgressSize: maxImageSize * 0.3,
+                                  // Same box as the loaded image, so the pulse
+                                  // holds its size while the image fades in
+                                  // over it. The FittedBox draws the box at
+                                  // slot, so this share is the skeletons'
+                                  // disc, never popping out of the circle.
+                                  loadingPlaceholder: SizedBox.square(
+                                    dimension: maxImageSize,
+                                    child: FractionallySizedBox(
+                                      widthFactor: inner / slot,
+                                      heightFactor: inner / slot,
+                                      child: const LoadingPulse(),
+                                    ),
+                                  ),
                                   // The circle's gradient shows through.
                                   errorBackgroundColor: Colors.transparent,
                                 ),
@@ -300,6 +319,64 @@ class _CategoryCarouselItem extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// The carousel's loading state, in place of a spinner: a disc breathing
+/// between the shimmer's two greys. It runs off the wall clock, so discs built
+/// at different moments (pages built mid-slide) breathe in step.
+class LoadingPulse extends StatefulWidget {
+  const LoadingPulse({super.key});
+
+  static const Duration period = Duration(milliseconds: 1600);
+
+  @override
+  State<LoadingPulse> createState() => _LoadingPulseState();
+}
+
+class _LoadingPulseState extends State<LoadingPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: LoadingPulse.period,
+    value:
+        DateTime.now().millisecondsSinceEpoch %
+        LoadingPulse.period.inMilliseconds /
+        LoadingPulse.period.inMilliseconds,
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    // AppShimmer's greys, flattened onto white so the circle's yellow does not
+    // tint them.
+    final Color light = Color.alphaBlend(
+      colors.neutral500.withValues(alpha: 0.3),
+      colors.white,
+    );
+    final Color dark = Color.alphaBlend(
+      colors.neutral500.withValues(alpha: 0.6),
+      colors.white,
+    );
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) => DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Color.lerp(
+            light,
+            dark,
+            0.5 - 0.5 * math.cos(2 * math.pi * _controller.value),
+          ),
+        ),
       ),
     );
   }
