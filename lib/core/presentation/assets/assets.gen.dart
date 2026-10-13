@@ -85,6 +85,10 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get appIcon =>
       const AssetGenImage('assets/media/images/png/app-icon.png');
 
+  /// File path: assets/media/images/png/app-logo-android12.png
+  AssetGenImage get appLogoAndroid12 =>
+      const AssetGenImage('assets/media/images/png/app-logo-android12.png');
+
   /// File path: assets/media/images/png/app-logo.png
   AssetGenImage get appLogo =>
       const AssetGenImage('assets/media/images/png/app-logo.png');
@@ -108,10 +112,6 @@ class $AssetsMediaImagesPngGen {
   AssetGenImage get homeNeverMissOffersLogo => const AssetGenImage(
     'assets/media/images/png/home-never-miss-offers-logo.png',
   );
-
-  /// File path: assets/media/images/png/logo-android12.png
-  AssetGenImage get logoAndroid12 =>
-      const AssetGenImage('assets/media/images/png/logo-android12.png');
 
   /// File path: assets/media/images/png/onboarding_img.png
   AssetGenImage get onboardingImg =>
@@ -165,12 +165,12 @@ class $AssetsMediaImagesPngGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     appIcon,
+    appLogoAndroid12,
     appLogo,
     bottomNavBarBackground,
     englishOffersCannotMissLogo,
     guestWelcomeDiscountMotorbike,
     homeNeverMissOffersLogo,
-    logoAndroid12,
     onboardingImg,
     quickDeliveryAr1,
     quickDeliveryAr2,
