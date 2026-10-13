@@ -16,9 +16,9 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/add_payment_card_
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 /// The add-or-edit card bottom sheet. Passing [card] puts it in edit mode:
-/// the cardholder name, expiry and default flag are prefilled, the number and
-/// CVC start blank (a saved card never returns them), and submitting updates the
-/// card instead of creating one.
+/// the cardholder name and expiry are prefilled, the default flag is shown but
+/// locked, the number and CVC start blank (a saved card never returns them),
+/// and submitting updates the card instead of creating one.
 class AddCardView extends ConsumerStatefulWidget {
   const AddCardView({super.key, this.card});
 
@@ -100,7 +100,6 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
             expiry: _expiryController.text,
             cardNumber: _numberController.text,
             cvc: _cvvController.text,
-            setAsDefault: _setAsDefault,
           )
         : await notifier.addPaymentCard(
             cardholderName: _nameController.text.trim(),
@@ -175,9 +174,12 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                   cvvController: _cvvController,
                   optionalSecrets: _isEditing,
                 ),
+                // Edit mode only shows the card's state: the default is changed
+                // by tapping a card in the list, and the server refuses to
+                // leave the customer with no default anyway.
                 SetAsDefaultCheckbox(
                   value: _setAsDefault,
-                  onChanged: isSubmitting
+                  onChanged: isSubmitting || _isEditing
                       ? null
                       : (bool v) => setState(() => _setAsDefault = v),
                 ),

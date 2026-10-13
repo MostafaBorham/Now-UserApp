@@ -68,13 +68,14 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     );
 
     if (!mounted) return null;
-    return _finish(result, setAsDefault: false);
+    return _finish(result);
   }
 
   /// Updates the existing card [cardId]. A partial update: [cardNumber]/[cvc]
   /// are optional and sent only when re-entered (a saved card never exposes the
   /// full number or CVC to prefill). [cardholderName] and [expiry] are always
-  /// sent (the edit form prefills them). Returns `null` on success, else the
+  /// sent (the edit form prefills them). The default is never changed here —
+  /// that is the cards list's set-default. Returns `null` on success, else the
   /// error message.
   Future<String?> updatePaymentCard({
     required int cardId,
@@ -82,7 +83,6 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     required String expiry,
     String? cardNumber,
     String? cvc,
-    bool setAsDefault = false,
   }) async {
     final ({int month, int year}) parsed = parseExpiry(expiry);
     final String number = (cardNumber ?? '').replaceAll(RegExp(r'\D'), '');
@@ -104,7 +104,7 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     );
 
     if (!mounted) return null;
-    return _finish(result, setAsDefault: setAsDefault);
+    return _finish(result);
   }
 
   /// Whether another loaded card has the same last four digits and expiry —
@@ -149,12 +149,8 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
     return LangKeys.cardAlreadySavedKey;
   }
 
-  /// Shared success/failure handling for add and update. [setAsDefault] asks
-  /// for a follow-up promotion (the edit path; an add sends it in its body).
-  String? _finish(
-    Either<Failure, CardPaymentModel> result, {
-    required bool setAsDefault,
-  }) {
+  /// Shared success/failure handling for add and update.
+  String? _finish(Either<Failure, CardPaymentModel> result) {
     return result.fold(
       (Failure failure) {
         state = AsyncValue<void>.error(failure.message, StackTrace.current);
@@ -162,34 +158,14 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
       },
       (CardPaymentModel card) {
         state = const AsyncValue<void>.data(null);
-        final int? id = card.id;
         // The server made this card the default: the default provider keeps its
         // held card across a refetch, so it has to be told.
         if (card.isDefault == true) {
           _ref.read(defaultPaymentCardProvider.notifier).adopt(card);
         }
-        if (setAsDefault && id != null && card.isDefault != true) {
-          // Promote the saved card through the dedicated set-default endpoint
-          // (the backend auto-defaults only the first card, so a later card the
-          // customer wants as default has to be promoted). That call updates the
-          // default provider and refetches the cards list itself — on success
-          // only, so a failed promotion refetches here, or the list would miss
-          // the edit that did save. The notifier is read up front because this
-          // view model may be gone by the time the promotion settles.
-          final GetMyCardsViewModel myCards = _ref.read(
-            getMyCardsProvider.notifier,
-          );
-          _ref
-              .read(defaultPaymentCardProvider.notifier)
-              .setPaymentCardDefault(id)
-              .then((String? error) {
-                if (error != null) myCards.getMyCards();
-              });
-        } else {
-          // Confirmed by the server: refetch so the saved card lands in the list
-          // (and the default provider following it), straight from the repo.
-          _ref.read(getMyCardsProvider.notifier).getMyCards();
-        }
+        // Confirmed by the server: refetch so the saved card lands in the list
+        // (and the default provider following it), straight from the repo.
+        _ref.read(getMyCardsProvider.notifier).getMyCards();
         return null;
       },
     );
