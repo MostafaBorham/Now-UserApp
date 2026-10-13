@@ -36,6 +36,19 @@ class CheckoutModel {
     return cards.isEmpty ? null : cards.first;
   }
 
+  /// The card a card-payment charges: the one picked ([selectedId]) while it is
+  /// still in [cards], else [resolveDefaultCard]. A pick deleted in the wallet
+  /// meanwhile falls back, rather than ordering with a card that is gone.
+  static CardPaymentModel? payingCard(
+    List<CardPaymentModel> cards,
+    int? selectedId,
+  ) {
+    for (final CardPaymentModel card in cards) {
+      if (selectedId != null && card.id == selectedId) return card;
+    }
+    return resolveDefaultCard(cards);
+  }
+
   /// This checkout with [tip] as the driver tip; see [OrderGroupModel.withTip].
   CheckoutModel withTip(double tip) {
     final OrderGroupModel tipped = orderGroup.withTip(tip);

@@ -44,18 +44,15 @@ class PaymentMethodsCard extends ConsumerWidget {
       walletUseProvider.select((WalletUse use) => use != WalletUse.off),
     );
 
-    // Selection: whatever the customer last tapped, else the default card. The
-    // index feeds the radio group; a stale/unknown id lands on the first card.
-    final int? defaultId = CheckoutModel.resolveDefaultCard(cards)?.id;
-    final int? selectedId = ref.watch(selectedPaymentCardProvider) ?? defaultId;
-    final int matchedIndex = cards.indexWhere(
-      (CardPaymentModel card) => card.id == selectedId,
+    // Selection: whatever the customer last tapped, else the default card —
+    // the same card confirm sends (see [CheckoutModel.payingCard]).
+    final CardPaymentModel? paying = CheckoutModel.payingCard(
+      cards,
+      ref.watch(selectedPaymentCardProvider),
     );
-    final int selectedIndex = walletPays
+    final int selectedIndex = walletPays || paying == null
         ? -1
-        : matchedIndex < 0
-        ? 0
-        : matchedIndex;
+        : cards.indexOf(paying);
 
     final List<PaymentMethodEntry> methods = cards
         .map(
@@ -142,11 +139,12 @@ class PaymentMethodsCard extends ConsumerWidget {
     return Icon(Icons.credit_card, size: 24, color: colors.secondaryContainer);
   }
 
-  /// The brand (capitalised) as the row title, falling back to a generic label.
+  /// The cardholder name as the row title, as in the wallet's card list; the
+  /// brand when there is no name, else a generic label.
   String _title(CardPaymentModel card) {
-    final String brand = (card.brand ?? '').trim();
-    if (brand.isEmpty) return LangKeys.paymentCardKey.tr();
-    return brand[0].toUpperCase() + brand.substring(1);
+    final String name = (card.cardholderName ?? '').trim();
+    if (name.isNotEmpty) return name;
+    return displayCardBrand(card.brand) ?? LangKeys.paymentCardKey.tr();
   }
 
   /// The masked number the server sends (`•••• 4242`), or one built from the

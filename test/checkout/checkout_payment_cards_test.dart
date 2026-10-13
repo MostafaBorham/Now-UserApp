@@ -73,4 +73,30 @@ void main() {
       expect(CheckoutModel.resolveDefaultCard(const []), isNull);
     });
   });
+
+  group('payingCard', () {
+    const List<CardPaymentModel> cards = [
+      CardPaymentModel(id: 1),
+      CardPaymentModel(id: 2, isDefault: true),
+    ];
+
+    test('is the picked card while it is still listed', () {
+      expect(CheckoutModel.payingCard(cards, 1)?.id, 1);
+    });
+
+    test('falls back to the default when nothing is picked', () {
+      expect(CheckoutModel.payingCard(cards, null)?.id, 2);
+    });
+
+    test('falls back to the default when the pick was deleted', () {
+      expect(CheckoutModel.payingCard(cards, 99)?.id, 2);
+    });
+  });
+
+  test('displayCardBrand hides the test vault\'s "unknown"', () {
+    expect(displayCardBrand('visa'), 'Visa');
+    expect(displayCardBrand('unknown'), isNull);
+    expect(displayCardBrand(''), isNull);
+    expect(displayCardBrand(null), isNull);
+  });
 }

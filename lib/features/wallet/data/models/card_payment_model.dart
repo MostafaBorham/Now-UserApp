@@ -1,5 +1,14 @@
 import 'package:equatable/equatable.dart';
 
+/// [brand] as shown to the customer ("visa" → "Visa"), or `null` when there is
+/// nothing to show. The backend's test-card mode sends `unknown` for any number
+/// that isn't Visa, Mastercard or Amex, and that is not a brand name.
+String? displayCardBrand(String? brand) {
+  final String value = (brand ?? '').trim();
+  if (value.isEmpty || value.toLowerCase() == 'unknown') return null;
+  return value[0].toUpperCase() + value.substring(1);
+}
+
 /// A single saved payment card — one entry of the `cards` list from
 /// `GET /api/v1/payment-methods/cards`.
 ///

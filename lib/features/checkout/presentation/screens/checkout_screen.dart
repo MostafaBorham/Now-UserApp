@@ -98,8 +98,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       paymentMethod = 'wallet';
       paymentMethodId = null;
     } else {
-      final int? selectedCardId = ref.read(selectedPaymentCardProvider) ??
-          CheckoutModel.resolveDefaultCard(checkout.paymentCards)?.id;
+      final int? selectedCardId = CheckoutModel.payingCard(
+        checkout.paymentCards,
+        ref.read(selectedPaymentCardProvider),
+      )?.id;
       if (selectedCardId == null) {
         // Only reachable with no usable card and the wallet unticked.
         AppToast.showError(context, LangKeys.addCardOrUseWalletKey.tr());
