@@ -20,7 +20,10 @@ void main() {
   test('parses payment_card and survives the cache round-trip', () {
     final WalletTransactionModel model = WalletTransactionModel.fromJson(topUp);
 
-    expect(model.paymentCard, (brand: 'visa', lastFour: '4242'));
+    expect(
+      model.paymentCard,
+      (brand: 'visa', lastFour: '4242', cardholderName: null),
+    );
     expect(WalletTransactionModel.fromJson(model.toJson()), model);
   });
 
@@ -39,5 +42,25 @@ void main() {
     );
 
     expect(find.text('Visa •••• 4242'), findsOneWidget);
+  });
+
+  testWidgets('the row adds the cardholder name once the backend sends it', (
+    tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      WalletHistoryItem(
+        transaction: WalletTransactionModel.fromJson(<String, dynamic>{
+          ...topUp,
+          'payment_card': <String, dynamic>{
+            'brand': 'unknown',
+            'last_four': '4242',
+            'cardholder_name': 'MOHAMED ALI',
+          },
+        }),
+      ),
+    );
+
+    expect(find.text('•••• 4242 · MOHAMED ALI'), findsOneWidget);
   });
 }

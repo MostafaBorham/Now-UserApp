@@ -172,13 +172,13 @@ class MyCardsView extends ConsumerWidget {
                               cardHolder: card.cardholderName ?? '',
                               cardNumber:
                                   card.maskedNumber ?? card.lastFour ?? '',
-                              cardType:
-                                  (card.brand?.toLowerCase().contains(
-                                        'master',
-                                      ) ??
-                                      false)
-                                  ? OnlineCardTypes.master
-                                  : OnlineCardTypes.visa,
+                              cardType: switch (card.brand?.toLowerCase()) {
+                                final String b when b.contains('master') =>
+                                  OnlineCardTypes.master,
+                                final String b when b.contains('visa') =>
+                                  OnlineCardTypes.visa,
+                                _ => OnlineCardTypes.other,
+                              },
                               isDefault: card.isDefault ?? false,
                               isUsable: card.isUsable,
                             ),

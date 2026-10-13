@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_transaction_model.dart';
 
 /// One row of the wallet transaction history. Sizes to its own content so every
@@ -40,15 +41,15 @@ class WalletHistoryItem extends StatelessWidget {
     return transaction.description ?? '';
   }
 
-  /// "Visa •••• 4242" for a top-up whose card the backend sends; '' otherwise.
+  /// "Visa •••• 4242 · MOHAMED ALI" for a top-up whose card the backend sends;
+  /// '' otherwise. The number leads so a long name is what gets cut off.
   String _cardLabel() {
     final String lastFour = transaction.paymentCard?.lastFour ?? '';
     if (lastFour.isEmpty) return '';
-    final String brand = transaction.paymentCard?.brand ?? '';
-    final String name = brand.isEmpty
-        ? ''
-        : '${brand[0].toUpperCase()}${brand.substring(1)} ';
-    return '$name•••• $lastFour';
+    final String? brand = displayCardBrand(transaction.paymentCard?.brand);
+    final String holder = (transaction.paymentCard?.cardholderName ?? '').trim();
+    return '${brand == null ? '' : '$brand '}•••• $lastFour'
+        '${holder.isEmpty ? '' : ' · $holder'}';
   }
 
   @override

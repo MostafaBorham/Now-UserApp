@@ -127,6 +127,11 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                         Assets.media.images.svg.visaLogo.svg(width: 25),
                       OnlineCardTypes.master =>
                         Assets.media.images.svg.masterLogo.svg(width: 25),
+                      OnlineCardTypes.other => Icon(
+                        Icons.credit_card,
+                        size: 22,
+                        color: colors.neutral500,
+                      ),
                     },
                     if (onEdit != null)
                       InkWell(

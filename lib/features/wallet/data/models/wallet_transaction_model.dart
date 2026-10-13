@@ -38,9 +38,11 @@ class WalletTransactionModel extends Equatable {
   final WalletTransactionReference? reference;
 
   /// The card a top-up was charged to, as it was then (`payment_card`:
-  /// `{brand, last_four}`). Requested from the backend (BUG-013, QA V2) and
-  /// absent until it ships, or on anything that isn't a card top-up.
-  final ({String? brand, String? lastFour})? paymentCard;
+  /// `{brand, last_four, cardholder_name}`). Absent on anything that isn't a
+  /// card top-up. `cardholder_name` was requested later (semi-final §7), so
+  /// older top-ups never carry it.
+  final ({String? brand, String? lastFour, String? cardholderName})?
+  paymentCard;
   final double? balanceAfter;
   final String? createdAt;
   final String? occurredAt;
@@ -102,6 +104,7 @@ class WalletTransactionModel extends Equatable {
           : (
               brand: card['brand']?.toString(),
               lastFour: card['last_four']?.toString(),
+              cardholderName: card['cardholder_name']?.toString(),
             ),
       balanceAfter: (json['balance_after'] as num?)?.toDouble(),
       createdAt: json['created_at']?.toString(),
@@ -131,6 +134,7 @@ class WalletTransactionModel extends Equatable {
           : <String, dynamic>{
               'brand': paymentCard!.brand,
               'last_four': paymentCard!.lastFour,
+              'cardholder_name': paymentCard!.cardholderName,
             },
       'balance_after': balanceAfter,
       'created_at': createdAt,
