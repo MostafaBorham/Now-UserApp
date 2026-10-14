@@ -143,6 +143,10 @@ abstract class LangKeys {
   static const String walletKey = 'wallet';
   static const String support = 'supportTitle';
   static const String supportWelcomeMessageKey = 'supportWelcomeMessage';
+  static const String driverChatWelcomeMessageKey = 'driverChatWelcomeMessage';
+  static const String driverChatTitleKey = 'driverChatTitle';
+  static const String driverTypingIndicatorKey = 'driverTypingIndicator';
+  static const String chatClosedMessageKey = 'chatClosedMessage';
   static const String supportTypingIndicatorKey = 'supportTypingIndicator';
   static const String supportMessageHintKey = 'supportMessageHint';
   static const String walletRecordKey = 'walletRecord';

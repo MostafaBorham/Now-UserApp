@@ -11,6 +11,7 @@ class SupportChatRealtimeService {
   SupportChatRealtimeService({
     required this.onChatChanged,
     required this.onTypingChanged,
+    required this.onConversationClosed,
     required this.onConnectionChanged,
   });
 
@@ -18,7 +19,8 @@ class SupportChatRealtimeService {
   static const Duration _maxReconnectDelay = Duration(seconds: 30);
 
   final VoidCallback onChatChanged;
-  final ValueChanged<bool> onTypingChanged;
+  final void Function(String? actorType, bool isTyping) onTypingChanged;
+  final ValueChanged<bool> onConversationClosed;
   final ValueChanged<bool> onConnectionChanged;
   final Dio _dio = DioFactory.getDio();
 
@@ -74,7 +76,7 @@ class SupportChatRealtimeService {
     _protocolTimer = null;
     _closeSocket();
     _setSubscribed(false);
-    onTypingChanged(false);
+    onTypingChanged(null, false);
   }
 
   Future<void> _openSocket(int generation) async {
@@ -177,6 +179,25 @@ class SupportChatRealtimeService {
       return;
     }
 
+    if (event == 'support-chat.conversation.updated') {
+      final dynamic rawData = decoded['data'];
+      final dynamic eventData;
+      try {
+        eventData = rawData is String ? jsonDecode(rawData) : rawData;
+      } on FormatException {
+        debugPrint('Support chat realtime received invalid conversation data.');
+        return;
+      }
+      final dynamic rawConversation = eventData is Map<String, dynamic>
+          ? eventData['conversation']
+          : null;
+      if (rawConversation is Map<String, dynamic> &&
+          rawConversation['is_closed'] is bool) {
+        onConversationClosed(rawConversation['is_closed'] as bool);
+      }
+      return;
+    }
+
     if (event == 'support-chat.typing.updated') {
       final dynamic rawData = decoded['data'];
       final dynamic eventData;
@@ -190,7 +211,11 @@ class SupportChatRealtimeService {
           eventData['conversation_id'] == _conversationId &&
           eventData['actor_type'] != 'user' &&
           eventData['is_typing'] is bool) {
-        onTypingChanged(eventData['is_typing'] as bool);
+        final dynamic rawActorType = eventData['actor_type'];
+        onTypingChanged(
+          rawActorType is String ? rawActorType : null,
+          eventData['is_typing'] as bool,
+        );
       }
     }
   }
@@ -248,7 +273,7 @@ class SupportChatRealtimeService {
     _protocolTimer?.cancel();
     _protocolTimer = null;
     _setSubscribed(false);
-    onTypingChanged(false);
+    onTypingChanged(null, false);
     _closeSocket();
 
     final int exponent = _reconnectAttempt < 4 ? _reconnectAttempt : 4;

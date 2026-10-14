@@ -19,6 +19,26 @@ void main() {
       expect(message.createdAt, DateTime.parse('2026-10-14T17:20:00.000000Z'));
     });
 
+    test('parses delivery driver identity for conversation messages', () {
+      final SupportChatMessageModel message = SupportChatMessageModel.fromJson(
+        <String, dynamic>{
+          'id': 28,
+          'body': 'I am on my way.',
+          'is_mine': false,
+          'created_at': '2026-10-14T17:21:00.000000Z',
+          'sender': <String, dynamic>{
+            'type': 'delivery_man',
+            'name': 'Delivery Driver',
+            'avatar_url': '/api/v1/attachments/driver-avatar',
+          },
+        },
+      );
+
+      expect(message.senderType, 'delivery_man');
+      expect(message.senderName, 'Delivery Driver');
+      expect(message.senderAvatarUrl, '/api/v1/attachments/driver-avatar');
+    });
+
     test('rejects a response missing required message fields', () {
       expect(
         () => SupportChatMessageModel.fromJson(<String, dynamic>{'id': 27}),
@@ -103,6 +123,23 @@ void main() {
       expect(sync.syncedAt, DateTime.parse('2026-10-14T17:20:15.000000Z'));
       expect(sync.hasMore, isFalse);
       expect(sync.nextCursor, isNull);
+    });
+
+    test('parses the conversation closed state', () {
+      final SupportChatSyncModel sync = SupportChatSyncModel.fromJson(
+        <String, dynamic>{
+          'messages': <dynamic>[],
+          'deleted_messages': <dynamic>[],
+          'meta': <String, dynamic>{
+            'synced_at': '2026-10-14T17:20:15.000000Z',
+            'has_more': false,
+            'next_cursor': null,
+            'conversation_is_closed': true,
+          },
+        },
+      );
+
+      expect(sync.conversationIsClosed, isTrue);
     });
 
     test('parses a continuation cursor when more changes remain', () {

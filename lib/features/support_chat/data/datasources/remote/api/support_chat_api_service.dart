@@ -20,6 +20,13 @@ class SupportChatApiService {
     cancelToken: _canceller.token,
   );
 
+  Future<Response<dynamic>> openOrderDriverConversation(String orderUuid) =>
+      _dio.post<dynamic>(
+        SupportChatEndpoints.orderDriverConversation(orderUuid),
+        data: <String, dynamic>{},
+        cancelToken: _canceller.token,
+      );
+
   Future<Response<dynamic>> getMessages(int conversationId, {String? cursor}) =>
       _dio.get<dynamic>(
         SupportChatEndpoints.messages(conversationId),
@@ -33,9 +40,10 @@ class SupportChatApiService {
   Future<Response<dynamic>> sendMessage({
     required int conversationId,
     required String body,
+    required String clientMessageId,
   }) => _dio.post<dynamic>(
     SupportChatEndpoints.messages(conversationId),
-    data: <String, dynamic>{'body': body},
+    data: <String, dynamic>{'body': body, 'client_message_id': clientMessageId},
     cancelToken: _canceller.token,
   );
 

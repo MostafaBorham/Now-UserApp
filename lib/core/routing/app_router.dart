@@ -479,7 +479,8 @@ abstract class AppRouter {
         name: AppRoutes.supportScreen,
         path: '/${AppRoutes.supportScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const SupportScreen(),
+        builder: (context, state) =>
+            SupportScreen(orderUuid: state.extra as String?),
       ),
       GoRoute(
         name: AppRoutes.faqScreen,

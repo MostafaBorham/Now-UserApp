@@ -3,6 +3,9 @@ abstract class SupportChatEndpoints {
   static const String realtimeConfig =
       '/api/v1/user/support-chat/realtime-config';
 
+  static String orderDriverConversation(String orderUuid) =>
+      '/api/v1/user/support-chat/orders/${Uri.encodeComponent(orderUuid)}/driver-conversation';
+
   static String messages(int conversationId) =>
       '$conversations/$conversationId/messages';
 

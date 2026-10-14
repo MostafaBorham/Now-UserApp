@@ -4,12 +4,18 @@ class SupportChatMessageModel {
     required this.body,
     required this.isMine,
     required this.createdAt,
+    this.senderType,
+    this.senderName,
+    this.senderAvatarUrl,
   });
 
   final int id;
   final String body;
   final bool isMine;
   final DateTime? createdAt;
+  final String? senderType;
+  final String? senderName;
+  final String? senderAvatarUrl;
 
   factory SupportChatMessageModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -21,6 +27,7 @@ class SupportChatMessageModel {
     final dynamic rawBody = json['body'];
     final dynamic rawIsMine = json['is_mine'];
     final dynamic rawCreatedAt = json['created_at'];
+    final dynamic rawSender = json['sender'];
     final DateTime? createdAt = rawCreatedAt is String
         ? DateTime.tryParse(rawCreatedAt)
         : null;
@@ -36,6 +43,18 @@ class SupportChatMessageModel {
       body: rawBody,
       isMine: rawIsMine,
       createdAt: createdAt,
+      senderType:
+          rawSender is Map<String, dynamic> && rawSender['type'] is String
+          ? rawSender['type'] as String
+          : null,
+      senderName:
+          rawSender is Map<String, dynamic> && rawSender['name'] is String
+          ? rawSender['name'] as String
+          : null,
+      senderAvatarUrl:
+          rawSender is Map<String, dynamic> && rawSender['avatar_url'] is String
+          ? rawSender['avatar_url'] as String
+          : null,
     );
   }
 }
@@ -93,6 +112,7 @@ class SupportChatSyncModel {
     required this.syncedAt,
     required this.hasMore,
     required this.nextCursor,
+    this.conversationIsClosed,
   });
 
   final List<SupportChatMessageModel> messages;
@@ -100,6 +120,7 @@ class SupportChatSyncModel {
   final DateTime syncedAt;
   final bool hasMore;
   final String? nextCursor;
+  final bool? conversationIsClosed;
 
   factory SupportChatSyncModel.fromJson(Map<String, dynamic> json) {
     final dynamic rawMessages = json['messages'];
@@ -113,6 +134,9 @@ class SupportChatSyncModel {
         : null;
     final dynamic rawCursor = rawMeta is Map<String, dynamic>
         ? rawMeta['next_cursor']
+        : null;
+    final dynamic rawConversationIsClosed = rawMeta is Map<String, dynamic>
+        ? rawMeta['conversation_is_closed']
         : null;
     final DateTime? syncedAt = rawSyncedAt is String
         ? DateTime.tryParse(rawSyncedAt)
@@ -152,6 +176,9 @@ class SupportChatSyncModel {
       hasMore: rawHasMore,
       nextCursor: rawCursor is String && rawCursor.isNotEmpty
           ? rawCursor
+          : null,
+      conversationIsClosed: rawConversationIsClosed is bool
+          ? rawConversationIsClosed
           : null,
     );
   }

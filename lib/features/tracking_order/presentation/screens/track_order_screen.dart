@@ -119,8 +119,10 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                         courierName: order.driver?.name ?? '',
                         logoUrl: order.driver?.profileImg ?? '',
                         onCall: () => launchPhoneDialer(order.driver?.phone),
-                        onChat: () =>
-                            context.pushNamed(AppRoutes.supportScreen),
+                        onChat: () => context.pushNamed(
+                          AppRoutes.supportScreen,
+                          extra: widget.orderUuid,
+                        ),
                       ),
 
                     if (orderStatus.isTrackable)

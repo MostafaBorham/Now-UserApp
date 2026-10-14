@@ -12,6 +12,9 @@ class ChatMessage {
     this.fromAgent = false,
     this.id,
     this.createdAt,
+    this.senderType,
+    this.senderName,
+    this.senderAvatarUrl,
   });
 
   final int? id;
@@ -19,6 +22,9 @@ class ChatMessage {
   final String time;
   final bool fromAgent;
   final DateTime? createdAt;
+  final String? senderType;
+  final String? senderName;
+  final String? senderAvatarUrl;
 }
 
 class ChatBubble extends StatelessWidget {
@@ -35,31 +41,58 @@ class ChatBubble extends StatelessWidget {
     final bool agent = message.fromAgent;
 
     final Widget bubble = Flexible(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: agent
-              ? context.colors.onPrimaryContainer
-              : context.colors.primary500Main,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Text(
-          message.text,
-          style: TextStyle(
-            fontSize: 16,
-            height: 1.3,
-            fontWeight: FontWeight.w400,
-            color: agent
-                ? context.colors.tertiaryContainer
-                : context.colors.white,
+      child: Column(
+        crossAxisAlignment: agent
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
+        children: [
+          if (agent && (message.senderName?.trim().isNotEmpty ?? false))
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                bottom: 4,
+                start: 4,
+                end: 4,
+              ),
+              child: Text(
+                message.senderName!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: context.colors.neutral500,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: agent
+                  ? context.colors.onPrimaryContainer
+                  : context.colors.primary500Main,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Text(
+              message.text,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.3,
+                fontWeight: FontWeight.w400,
+                color: agent
+                    ? context.colors.tertiaryContainer
+                    : context.colors.white,
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
 
-    final Widget avatar = agent
-        ? const _NowAvatar(size: _avatar)
-        : _PersonAvatar(size: _avatar, imageUrl: userAvatarUrl);
+    final Widget avatar = !agent
+        ? _PersonAvatar(size: _avatar, imageUrl: userAvatarUrl)
+        : message.senderType == 'delivery_man'
+        ? _PersonAvatar(size: _avatar, imageUrl: message.senderAvatarUrl)
+        : const _NowAvatar(size: _avatar);
 
     return Column(
       crossAxisAlignment: agent

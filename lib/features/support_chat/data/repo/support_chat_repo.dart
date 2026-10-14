@@ -18,19 +18,27 @@ class SupportChatRepo {
       _guard(_api.getRealtimeConfig, SupportChatRealtimeConfig.fromJson);
 
   Future<Either<Failure, int>> openConversation() =>
-      _guard(_api.openConversation, (Map<String, dynamic> data) {
-        final dynamic conversation = data['conversation'];
-        final dynamic rawId = conversation is Map<String, dynamic>
-            ? conversation['id']
-            : null;
-        final int? id = rawId is int ? rawId : int.tryParse('$rawId');
-        if (id == null) {
-          throw const FormatException(
-            'Support chat response did not include a conversation ID.',
-          );
-        }
-        return id;
-      });
+      _guard(_api.openConversation, _conversationIdFromResponse);
+
+  Future<Either<Failure, int>> openOrderDriverConversation(String orderUuid) =>
+      _guard(
+        () => _api.openOrderDriverConversation(orderUuid),
+        _conversationIdFromResponse,
+      );
+
+  int _conversationIdFromResponse(Map<String, dynamic> data) {
+    final dynamic conversation = data['conversation'];
+    final dynamic rawId = conversation is Map<String, dynamic>
+        ? conversation['id']
+        : null;
+    final int? id = rawId is int ? rawId : int.tryParse('$rawId');
+    if (id == null) {
+      throw const FormatException(
+        'Support chat response did not include a conversation ID.',
+      );
+    }
+    return id;
+  }
 
   Future<Either<Failure, SupportChatMessagesPage>> getMessages(
     int conversationId, {
@@ -43,8 +51,13 @@ class SupportChatRepo {
   Future<Either<Failure, SupportChatMessageModel>> sendMessage({
     required int conversationId,
     required String body,
+    required String clientMessageId,
   }) => _guard(
-    () => _api.sendMessage(conversationId: conversationId, body: body),
+    () => _api.sendMessage(
+      conversationId: conversationId,
+      body: body,
+      clientMessageId: clientMessageId,
+    ),
     (Map<String, dynamic> data) => SupportChatMessageModel.fromJson(
       data['message'] is Map<String, dynamic>
           ? data['message'] as Map<String, dynamic>
@@ -61,6 +74,7 @@ class SupportChatRepo {
     final Set<int> deletedMessageIds = <int>{};
     final Set<String> requestedCursors = <String>{};
     DateTime? syncedAt;
+    bool? conversationIsClosed;
     String? cursor;
 
     while (true) {
@@ -79,6 +93,7 @@ class SupportChatRepo {
         (SupportChatSyncModel value) => value,
       );
       syncedAt ??= currentPage.syncedAt;
+      conversationIsClosed ??= currentPage.conversationIsClosed;
       for (final int id in currentPage.deletedMessageIds) {
         deletedMessageIds.add(id);
         messages.remove(id);
@@ -106,6 +121,7 @@ class SupportChatRepo {
         syncedAt: syncTimestamp,
         hasMore: false,
         nextCursor: null,
+        conversationIsClosed: conversationIsClosed,
       ),
     );
   }
