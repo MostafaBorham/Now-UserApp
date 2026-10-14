@@ -391,6 +391,7 @@
   "walletBalanceNotUpdated": "الرصيد غير محدّث",
   "walletRecord": "سجل المحفظة",
   "walletShortfallHint": "ينقص رصيد محفظتك {amount} ريال لتغطية هذا الطلب. اشحن رصيدك أو ألغِ تحديد المحفظة للدفع بالبطاقة.",
+  "walletTopUpsuccess": "تم تعبئه المحفظه بنجاح",
   "welcomeVoucherDiscount": "خصم",
   "welcomeVoucherMiddle": " واحصل على ",
   "welcomeVoucherPrefix": "استخدم كود ",

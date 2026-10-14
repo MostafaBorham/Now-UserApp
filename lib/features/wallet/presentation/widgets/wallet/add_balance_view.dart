@@ -1,18 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
-
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/money_amount_picker.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
@@ -79,6 +78,7 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     // Success: pull the new balance and the fresh history, then close the sheet.
     ref.read(getWalletInfoProvider.notifier).getWalletInfo();
     ref.read(getWalletTransactionsProvider.notifier).loadFirstPage();
+    AppToast.showSuccess(context, LangKeys.walletTopUpSuccess.tr());
     context.pop();
   }
 
@@ -101,8 +101,9 @@ class _AddBalanceViewState extends ConsumerState<AddBalanceView> {
     // Topping up charges a card, so the button stays disabled until one has
     // resolved — a list that is empty, still loading, or holds only expired
     // cards all leave this null.
-    final CardPaymentModel? fundingCard =
-        ref.watch(defaultPaymentCardProvider).valueOrNull;
+    final CardPaymentModel? fundingCard = ref
+        .watch(defaultPaymentCardProvider)
+        .valueOrNull;
 
     // Lift the whole sheet above the keyboard; the sheet grows by the keyboard
     // height (up to its max), then the middle area scrolls once capped.

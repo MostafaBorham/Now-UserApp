@@ -377,6 +377,7 @@ abstract class LangKeys {
   static const String choosePaymentMethodKey = 'choosePaymentMethod';
   static const String balanceKey = 'balance';
   static const String walletShortfallHintKey = 'walletShortfallHint';
+  static const String walletTopUpSuccess = 'walletTopUpSuccess';
   static const String walletBalanceNotUpdatedKey = 'walletBalanceNotUpdated';
   static const String tipYourDriverKey = 'tipYourDriver';
   static const String driverTipKey = 'driverTip';
@@ -480,6 +481,7 @@ abstract class LangKeys {
   static const String addressDetailsIncompleteKey = 'addressDetailsIncomplete';
   static const String sessionExpiredKey = 'sessionExpired';
   static const String profileLoadFailedKey = 'profileLoadFailed';
-  static const String complaintPhotosReadFailedKey = 'complaintPhotosReadFailed';
+  static const String complaintPhotosReadFailedKey =
+      'complaintPhotosReadFailed';
   static const String pageUnavailableKey = 'pageUnavailable';
 }

@@ -388,6 +388,7 @@
   "walletBalanceNotUpdated": "Balance is not up to date",
   "walletRecord": "Wallet Record",
   "walletShortfallHint": "Your wallet is SAR {amount} short for this order. Top up, or untick the wallet to pay by card.",
+  "walletTopUpsuccess": "The wallet has been filled successfully",
   "welcomeVoucherDiscount": "a discount",
   "welcomeVoucherMiddle": " and get ",
   "welcomeVoucherPrefix": "Use code ",
