@@ -27,9 +27,7 @@ Map<String, dynamic> _line({
 void main() {
   test('a line shows what was paid, not what the product costs today', () {
     final OrderModel order = OrderModel.fromJson(<String, dynamic>{
-      'items': <Map<String, dynamic>>[
-        _line(id: 1, quantity: 2, unitPrice: 10),
-      ],
+      'items': <Map<String, dynamic>>[_line(id: 1, quantity: 2, unitPrice: 10)],
     });
 
     expect(order.items.single.price, 10);
@@ -66,17 +64,15 @@ void main() {
   });
 
   // Store invoice: 100 − 10 discount + 13.5 VAT + 15 delivery = 118.5.
-  Map<String, dynamic> invoice({
-    required double total,
-    double tip = 0,
-  }) => <String, dynamic>{
-    'subtotal': 100,
-    'discount_amount': 10,
-    'tax_amount': 13.5,
-    'delivery_fee': 15,
-    'driver_tip': tip,
-    'total_amount': total,
-  };
+  Map<String, dynamic> invoice({required double total, double tip = 0}) =>
+      <String, dynamic>{
+        'subtotal': 100,
+        'discount_amount': 10,
+        'tax_amount': 13.5,
+        'delivery_fee': 15,
+        'driver_tip': tip,
+        'total_amount': total,
+      };
 
   test('Total adds the tip the backend keeps outside total_amount', () {
     expect(
@@ -105,5 +101,23 @@ void main() {
     expect(order.voucherCode, 'GIFT10');
     expect(order.voucherDiscount, 10.2);
     expect(order.couponDiscount, 5.1);
+  });
+
+  test('support is hidden only for closed and cancelled orders', () {
+    OrderModel orderWithStatus(String status, {String? deliveredAt}) =>
+        OrderModel.fromJson(<String, dynamic>{
+          'status': status,
+          'delivered_at': deliveredAt,
+        });
+
+    expect(orderWithStatus('pending').canContactSupport, isTrue);
+    expect(orderWithStatus('delivered').canContactSupport, isTrue);
+    expect(
+      orderWithStatus('closed', deliveredAt: '2026-10-14').canContactSupport,
+      isFalse,
+    );
+    expect(orderWithStatus('closed').canContactSupport, isFalse);
+    expect(orderWithStatus('cancelled').canContactSupport, isFalse);
+    expect(orderWithStatus('rejected').canContactSupport, isFalse);
   });
 }

@@ -68,7 +68,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       body: AppWavedView(
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
-        hasSupportIcon: true,
+        hasSupportIcon: orderState.valueOrNull?.canContactSupport ?? false,
         onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
         scrollController: _scrollController,
         body: orderState.when(

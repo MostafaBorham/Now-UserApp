@@ -121,6 +121,12 @@ class OrderModel {
   OrderStatus get lifecycleStatus =>
       OrderStatus.fromKey(status, wasDelivered: deliveredAt != null);
 
+  /// Support remains available for every order except closed and cancelled
+  /// orders. Rejected orders share the cancelled lifecycle state.
+  bool get canContactSupport =>
+      status?.trim().toLowerCase() != 'closed' &&
+      lifecycleStatus is! CancelledStatus;
+
   /// How many units were sold, across [items].
   int get itemsQuantity =>
       items.fold(0, (int sum, ProductModel item) => sum + (item.quantity ?? 0));
