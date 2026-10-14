@@ -186,7 +186,7 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
           AppToast.showError(context, LangKeys.voucherApplyFailedKey.tr());
           return;
         }
-        final AppliedDiscountModel? replaced = ref
+        final List<AppliedDiscountModel> displaced = ref
             .read(appliedDiscountsProvider.notifier)
             .add(
               AppliedDiscountModel(
@@ -195,10 +195,9 @@ class _PurchaseVouchersStripState extends ConsumerState<PurchaseVouchersStrip> {
                 isVoucher: true,
               ),
             );
-        // The vendor's single slot means this voucher just cancelled a coupon
-        // applied to the same store — the coupon chip reverts to an empty
-        // field, so say why.
-        if (replaced != null && !replaced.isVoucher) {
+        // A voucher cancels every store's coupon — their chips revert to
+        // empty fields, so say why.
+        if (displaced.any((AppliedDiscountModel d) => !d.isVoucher)) {
           AppToast.showSuccess(
             context,
             LangKeys.couponReplacedByVoucherKey.tr(),

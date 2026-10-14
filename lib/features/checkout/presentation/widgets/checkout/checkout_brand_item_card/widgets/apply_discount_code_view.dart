@@ -109,7 +109,7 @@ class _ApplyDiscountCodeViewState
           );
           return;
         }
-        final AppliedDiscountModel? replaced =
+        final List<AppliedDiscountModel> displaced =
             ref.read(appliedDiscountsProvider.notifier).add(
                   AppliedDiscountModel(
                     vendorId: vendorId,
@@ -124,7 +124,7 @@ class _ApplyDiscountCodeViewState
         // A vendor carries one discount, so this coupon just cancelled that
         // vendor's voucher — say so rather than letting the highlight silently
         // vanish from the strip.
-        if (replaced != null && replaced.isVoucher) {
+        if (displaced.any((AppliedDiscountModel d) => d.isVoucher)) {
           AppToast.showSuccess(
             context,
             LangKeys.voucherReplacedByCouponKey.tr(),

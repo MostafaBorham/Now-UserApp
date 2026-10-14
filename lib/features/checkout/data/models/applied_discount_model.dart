@@ -4,7 +4,8 @@
 /// Held as a flat, one-slot-per-vendor list while the user shops the checkout
 /// screen (see `appliedDiscountsProvider`). The single slot per vendor is what
 /// enforces coupon/voucher mutual exclusivity: applying either replaces the
-/// vendor's slot. The preview and place requests fold the list into the
+/// vendor's slot, and a voucher also clears every other vendor's coupon. The
+/// preview and place requests fold the list into the
 /// coupon(s) and the single voucher they take (see
 /// `CheckoutEndpoints.pricingBody`).
 class AppliedDiscountModel {

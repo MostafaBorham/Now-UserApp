@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/applied_discount_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/applied_discounts_provider.dart';
 
-// Coupon/voucher mutual exclusivity lives entirely in the vendor's single slot:
-// applying either must cancel the other and report what it cancelled, so the
-// screen can tell the user. Per-vendor, not global — a second store keeps its
-// own discount.
+// Coupon/voucher mutual exclusivity lives entirely in this notifier: applying
+// either must cancel the other and report what it cancelled, so the screen can
+// tell the user. A coupon only takes its own vendor's slot; a voucher clears
+// every vendor's coupon.
 void main() {
   late ProviderContainer container;
 
@@ -30,22 +30,22 @@ void main() {
   );
 
   test('a coupon cancels the same vendor\'s voucher and reports it', () {
-    expect(notifier().add(voucher), isNull);
+    expect(notifier().add(voucher), isEmpty);
 
-    final AppliedDiscountModel? replaced = notifier().add(coupon);
+    final List<AppliedDiscountModel> displaced = notifier().add(coupon);
 
-    expect(replaced?.code, 'VCHR');
-    expect(replaced?.isVoucher, isTrue);
+    expect(displaced.single.code, 'VCHR');
+    expect(displaced.single.isVoucher, isTrue);
     expect(applied().single.code, 'SAVE10');
   });
 
   test('a voucher cancels the same vendor\'s coupon and reports it', () {
-    expect(notifier().add(coupon), isNull);
+    expect(notifier().add(coupon), isEmpty);
 
-    final AppliedDiscountModel? replaced = notifier().add(voucher);
+    final List<AppliedDiscountModel> displaced = notifier().add(voucher);
 
-    expect(replaced?.code, 'SAVE10');
-    expect(replaced?.isVoucher, isFalse);
+    expect(displaced.single.code, 'SAVE10');
+    expect(displaced.single.isVoucher, isFalse);
     expect(applied().single.code, 'VCHR');
   });
 
@@ -64,17 +64,28 @@ void main() {
     expect(applied().single.code, 'V2');
   });
 
-  test('another vendor keeps its own discount', () {
+  test('a coupon leaves another vendor\'s coupon alone', () {
+    notifier().add(coupon);
+
+    expect(
+      notifier().add(const AppliedDiscountModel(vendorId: 2, code: 'OTHER')),
+      isEmpty,
+    );
+    expect(applied().length, 2);
+  });
+
+  test('a voucher cancels every vendor\'s coupon, not just its own', () {
     notifier().add(coupon);
     notifier().add(
       const AppliedDiscountModel(vendorId: 2, code: 'OTHER'),
     );
 
-    expect(notifier().add(voucher), isNotNull);
-    expect(applied().length, 2);
+    final List<AppliedDiscountModel> displaced = notifier().add(voucher);
+
     expect(
-      applied().map((AppliedDiscountModel d) => d.code),
-      containsAll(<String>['OTHER', 'VCHR']),
+      displaced.map((AppliedDiscountModel d) => d.code),
+      unorderedEquals(<String>['SAVE10', 'OTHER']),
     );
+    expect(applied().single.code, 'VCHR');
   });
 }
