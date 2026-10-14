@@ -142,6 +142,7 @@ abstract class LangKeys {
   // Wallet
   static const String walletKey = 'wallet';
   static const String support = 'supportTitle';
+  static const String supportWelcomeMessageKey = 'supportWelcomeMessage';
   static const String walletRecordKey = 'walletRecord';
   static const String nowCreditKey = 'nowCredit';
   static const String addBalanceKey = 'addBalance';

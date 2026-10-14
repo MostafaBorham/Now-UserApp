@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 class ChatMessage {
   const ChatMessage({
     required this.text,
     required this.time,
     this.fromAgent = false,
+    this.id,
+    this.createdAt,
   });
 
+  final int? id;
   final String text;
   final String time;
-
-
-
   final bool fromAgent;
+  final DateTime? createdAt;
 }
 
-
-
-
-
 class ChatBubble extends StatelessWidget {
-  const ChatBubble({super.key, required this.message});
+  const ChatBubble({super.key, required this.message, this.userAvatarUrl});
 
   final ChatMessage message;
+  final String? userAvatarUrl;
 
   static const double _avatar = 42;
   static const double _gap = 10;
@@ -59,15 +59,17 @@ class ChatBubble extends StatelessWidget {
 
     final Widget avatar = agent
         ? const _NowAvatar(size: _avatar)
-        : const _PersonAvatar(size: _avatar);
+        : _PersonAvatar(size: _avatar, imageUrl: userAvatarUrl);
 
     return Column(
-      crossAxisAlignment:
-          agent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: agent
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment:
-              agent ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment: agent
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: agent
               ? [bubble, const SizedBox(width: _gap), avatar]
@@ -88,24 +90,37 @@ class ChatBubble extends StatelessWidget {
   }
 }
 
-
 class _PersonAvatar extends StatelessWidget {
-  const _PersonAvatar({required this.size});
+  const _PersonAvatar({required this.size, this.imageUrl});
 
   final double size;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(
-      child: Assets.media.images.svg.person.image(
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
+    final String token = TokenCacheService().getAccessToken() ?? '';
+    final String url = imageUrl?.trim() ?? '';
+    final Widget placeholder = Assets.media.images.png.userAvatarPlaceholderImg
+        .image(width: size, height: size, fit: BoxFit.cover);
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: ClipOval(
+        child: url.isEmpty || token.isEmpty
+            ? placeholder
+            : AppCachedNetworkImage(
+                imageUrl: url,
+                width: size,
+                height: size,
+                placeholderType: LoadingViewTypes.shimmer,
+                loadingPlaceholder: placeholder,
+                httpHeaders: <String, String>{'Authorization': 'Bearer $token'},
+              ),
       ),
     );
   }
 }
-
 
 class _NowAvatar extends StatelessWidget {
   const _NowAvatar({required this.size});
