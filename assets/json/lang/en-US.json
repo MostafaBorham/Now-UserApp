@@ -360,6 +360,8 @@
   "support": "Support",
   "supportTitle": "Support",
   "supportWelcomeMessage": "Welcome to Now Customer Service. How can we help you?",
+  "supportTypingIndicator": "Customer service is typing...",
+  "supportMessageHint": "Write Your Message Here..",
   "takePhoto": "Take photo",
   "tellUsMore": "Tell us more ...",
   "thanksForRating": "Thank you for your rating",

@@ -10,6 +10,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class SupportChatRealtimeService {
   SupportChatRealtimeService({
     required this.onChatChanged,
+    required this.onTypingChanged,
     required this.onConnectionChanged,
   });
 
@@ -17,12 +18,14 @@ class SupportChatRealtimeService {
   static const Duration _maxReconnectDelay = Duration(seconds: 30);
 
   final VoidCallback onChatChanged;
+  final ValueChanged<bool> onTypingChanged;
   final ValueChanged<bool> onConnectionChanged;
   final Dio _dio = DioFactory.getDio();
 
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _subscription;
   Timer? _reconnectTimer;
+  Timer? _protocolTimer;
   int _conversationId = 0;
   int _generation = 0;
   int _reconnectAttempt = 0;
@@ -49,6 +52,8 @@ class SupportChatRealtimeService {
     _reconnectAttempt = 0;
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
+    _protocolTimer?.cancel();
+    _protocolTimer = null;
     _closeSocket();
     if (!_isConfigured) {
       debugPrint(
@@ -65,8 +70,11 @@ class SupportChatRealtimeService {
     _generation++;
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
+    _protocolTimer?.cancel();
+    _protocolTimer = null;
     _closeSocket();
     _setSubscribed(false);
+    onTypingChanged(false);
   }
 
   Future<void> _openSocket(int generation) async {
@@ -93,6 +101,7 @@ class SupportChatRealtimeService {
         await channel.sink.close();
         return;
       }
+      _armProtocolTimeout(generation, 'connection handshake timed out');
       _subscription = channel.stream.listen(
         (dynamic frame) => _handleFrame(frame, generation),
         onError: (Object error, StackTrace stackTrace) {
@@ -125,6 +134,7 @@ class SupportChatRealtimeService {
     }
 
     if (event == 'pusher:connection_established') {
+      _armProtocolTimeout(generation, 'private channel subscription timed out');
       final dynamic rawData = decoded['data'];
       final dynamic connectionData;
       try {
@@ -148,6 +158,8 @@ class SupportChatRealtimeService {
     }
 
     if (event == 'pusher_internal:subscription_succeeded') {
+      _protocolTimer?.cancel();
+      _protocolTimer = null;
       _reconnectAttempt = 0;
       _setSubscribed(true);
       return;
@@ -162,6 +174,24 @@ class SupportChatRealtimeService {
         event == 'support-chat.message.updated' ||
         event == 'support-chat.message.deleted') {
       onChatChanged();
+      return;
+    }
+
+    if (event == 'support-chat.typing.updated') {
+      final dynamic rawData = decoded['data'];
+      final dynamic eventData;
+      try {
+        eventData = rawData is String ? jsonDecode(rawData) : rawData;
+      } on FormatException {
+        debugPrint('Support chat realtime received invalid typing data.');
+        return;
+      }
+      if (eventData is Map<String, dynamic> &&
+          eventData['conversation_id'] == _conversationId &&
+          eventData['actor_type'] != 'user' &&
+          eventData['is_typing'] is bool) {
+        onTypingChanged(eventData['is_typing'] as bool);
+      }
     }
   }
 
@@ -215,7 +245,10 @@ class SupportChatRealtimeService {
   void _handleDisconnect(int generation, Object error) {
     if (!_isCurrent(generation) || _reconnectTimer != null) return;
     debugPrint('Support chat realtime disconnected: $error');
+    _protocolTimer?.cancel();
+    _protocolTimer = null;
     _setSubscribed(false);
+    onTypingChanged(false);
     _closeSocket();
 
     final int exponent = _reconnectAttempt < 4 ? _reconnectAttempt : 4;
@@ -234,6 +267,14 @@ class SupportChatRealtimeService {
   }
 
   bool _isCurrent(int generation) => !_disposed && generation == _generation;
+
+  void _armProtocolTimeout(int generation, String reason) {
+    _protocolTimer?.cancel();
+    _protocolTimer = Timer(_handshakeTimeout, () {
+      _protocolTimer = null;
+      _handleDisconnect(generation, reason);
+    });
+  }
 
   void _setSubscribed(bool value) {
     if (_subscribed == value) return;

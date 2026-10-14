@@ -32,11 +32,12 @@ class SupportChatRepo {
         return id;
       });
 
-  Future<Either<Failure, List<SupportChatMessageModel>>> getMessages(
-    int conversationId,
-  ) => _guard(
-    () => _api.getMessages(conversationId),
-    (Map<String, dynamic> data) => _parseMessages(data['messages']),
+  Future<Either<Failure, SupportChatMessagesPage>> getMessages(
+    int conversationId, {
+    String? cursor,
+  }) => _guard(
+    () => _api.getMessages(conversationId, cursor: cursor),
+    SupportChatMessagesPage.fromJson,
   );
 
   Future<Either<Failure, SupportChatMessageModel>> sendMessage({
@@ -54,29 +55,63 @@ class SupportChatRepo {
   Future<Either<Failure, SupportChatSyncModel>> syncMessages({
     required int conversationId,
     required DateTime changedAfter,
-  }) => _guard(
-    () => _api.syncMessages(
-      conversationId: conversationId,
-      changedAfter: changedAfter,
-    ),
-    SupportChatSyncModel.fromJson,
-  );
+  }) async {
+    final Map<int, SupportChatMessageModel> messages =
+        <int, SupportChatMessageModel>{};
+    final Set<int> deletedMessageIds = <int>{};
+    final Set<String> requestedCursors = <String>{};
+    DateTime? syncedAt;
+    String? cursor;
+
+    while (true) {
+      final result = await _guard(
+        () => _api.syncMessages(
+          conversationId: conversationId,
+          changedAfter: changedAfter,
+          cursor: cursor,
+        ),
+        SupportChatSyncModel.fromJson,
+      );
+
+      if (result.isLeft()) return result;
+      final SupportChatSyncModel currentPage = result.fold(
+        (_) => throw StateError('A failed sync result was not propagated.'),
+        (SupportChatSyncModel value) => value,
+      );
+      syncedAt ??= currentPage.syncedAt;
+      for (final int id in currentPage.deletedMessageIds) {
+        deletedMessageIds.add(id);
+        messages.remove(id);
+      }
+      for (final SupportChatMessageModel message in currentPage.messages) {
+        deletedMessageIds.remove(message.id);
+        messages[message.id] = message;
+      }
+
+      if (!currentPage.hasMore) break;
+      final String nextCursor = currentPage.nextCursor!;
+      if (!requestedCursors.add(nextCursor)) {
+        return Left<Failure, SupportChatSyncModel>(
+          const Failure(LangKeys.somethingWentWrongKey),
+        );
+      }
+      cursor = nextCursor;
+    }
+
+    final DateTime syncTimestamp = syncedAt;
+    return Right<Failure, SupportChatSyncModel>(
+      SupportChatSyncModel(
+        messages: messages.values.toList(),
+        deletedMessageIds: deletedMessageIds.toList(),
+        syncedAt: syncTimestamp,
+        hasMore: false,
+        nextCursor: null,
+      ),
+    );
+  }
 
   Future<Either<Failure, void>> markAsRead(int conversationId) =>
       _guard(() => _api.markAsRead(conversationId), (_) {});
-
-  List<SupportChatMessageModel> _parseMessages(Object? value) {
-    if (value is! List) {
-      throw const FormatException('Support chat response has no messages.');
-    }
-    return value
-        .map(
-          (dynamic item) => SupportChatMessageModel.fromJson(
-            item is Map<String, dynamic> ? item : null,
-          ),
-        )
-        .toList();
-  }
 
   Future<Either<Failure, T>> _guard<T>(
     Future<Response<dynamic>> Function() request,

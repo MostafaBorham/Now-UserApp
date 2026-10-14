@@ -27,6 +27,54 @@ void main() {
     });
   });
 
+  group('SupportChatMessagesPage', () {
+    test('parses the cursor used to load older conversation messages', () {
+      final SupportChatMessagesPage page = SupportChatMessagesPage.fromJson(
+        <String, dynamic>{
+          'messages': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'id': 27,
+              'body': 'Latest message in this page',
+              'is_mine': false,
+              'created_at': '2026-10-14T17:20:00.000000Z',
+            },
+          ],
+          'meta': <String, dynamic>{
+            'has_more': true,
+            'next_cursor': 'eyJpZCI6MjcsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0',
+          },
+        },
+      );
+
+      expect(page.messages.single.id, 27);
+      expect(page.hasMore, isTrue);
+      expect(page.nextCursor, isNotEmpty);
+    });
+
+    test('allows the last page to have no cursor', () {
+      final SupportChatMessagesPage page = SupportChatMessagesPage.fromJson(
+        <String, dynamic>{
+          'messages': <dynamic>[],
+          'meta': <String, dynamic>{'has_more': false, 'next_cursor': null},
+        },
+      );
+
+      expect(page.messages, isEmpty);
+      expect(page.hasMore, isFalse);
+      expect(page.nextCursor, isNull);
+    });
+
+    test('rejects a page claiming more history without a cursor', () {
+      expect(
+        () => SupportChatMessagesPage.fromJson(<String, dynamic>{
+          'messages': <dynamic>[],
+          'meta': <String, dynamic>{'has_more': true, 'next_cursor': null},
+        }),
+        throwsFormatException,
+      );
+    });
+  });
+
   group('SupportChatSyncModel', () {
     test('parses changed and deleted messages with the server sync time', () {
       final SupportChatSyncModel sync = SupportChatSyncModel.fromJson(
@@ -42,13 +90,36 @@ void main() {
           'deleted_messages': <Map<String, dynamic>>[
             <String, dynamic>{'id': 26, 'deleted_at': null},
           ],
-          'meta': <String, dynamic>{'synced_at': '2026-10-14T17:20:15.000000Z'},
+          'meta': <String, dynamic>{
+            'synced_at': '2026-10-14T17:20:15.000000Z',
+            'has_more': false,
+            'next_cursor': null,
+          },
         },
       );
 
       expect(sync.messages.single.id, 27);
       expect(sync.deletedMessageIds, <int>[26]);
       expect(sync.syncedAt, DateTime.parse('2026-10-14T17:20:15.000000Z'));
+      expect(sync.hasMore, isFalse);
+      expect(sync.nextCursor, isNull);
+    });
+
+    test('parses a continuation cursor when more changes remain', () {
+      final SupportChatSyncModel sync = SupportChatSyncModel.fromJson(
+        <String, dynamic>{
+          'messages': <dynamic>[],
+          'deleted_messages': <dynamic>[],
+          'meta': <String, dynamic>{
+            'synced_at': '2026-10-14T17:20:15.000000Z',
+            'has_more': true,
+            'next_cursor': 'opaque-sync-cursor',
+          },
+        },
+      );
+
+      expect(sync.hasMore, isTrue);
+      expect(sync.nextCursor, 'opaque-sync-cursor');
     });
   });
 

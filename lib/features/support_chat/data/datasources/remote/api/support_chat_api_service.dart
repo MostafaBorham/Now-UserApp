@@ -20,10 +20,13 @@ class SupportChatApiService {
     cancelToken: _canceller.token,
   );
 
-  Future<Response<dynamic>> getMessages(int conversationId) =>
+  Future<Response<dynamic>> getMessages(int conversationId, {String? cursor}) =>
       _dio.get<dynamic>(
         SupportChatEndpoints.messages(conversationId),
-        queryParameters: <String, dynamic>{'per_page': 100},
+        queryParameters: <String, dynamic>{
+          'per_page': 100,
+          ...?(cursor == null ? null : <String, String>{'cursor': cursor}),
+        },
         cancelToken: _canceller.token,
       );
 
@@ -39,10 +42,12 @@ class SupportChatApiService {
   Future<Response<dynamic>> syncMessages({
     required int conversationId,
     required DateTime changedAfter,
+    String? cursor,
   }) => _dio.get<dynamic>(
     SupportChatEndpoints.syncMessages(conversationId),
     queryParameters: <String, dynamic>{
       'changed_after': changedAfter.toUtc().toIso8601String(),
+      ...?(cursor == null ? null : <String, String>{'cursor': cursor}),
     },
     cancelToken: _canceller.token,
   );

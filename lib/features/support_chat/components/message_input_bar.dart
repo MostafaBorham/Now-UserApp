@@ -1,4 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
@@ -34,6 +37,8 @@ class MessageInputBar extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: controller,
+                    maxLength: 4000,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => onSend?.call(),
                     style: TextStyle(
@@ -44,7 +49,8 @@ class MessageInputBar extends StatelessWidget {
                       isDense: true,
                       contentPadding: EdgeInsets.zero,
                       border: InputBorder.none,
-                      hintText: 'Write Your Message Here..',
+                      counterText: '',
+                      hintText: LangKeys.supportMessageHintKey.tr(),
                       hintStyle: TextStyle(
                         fontSize: 15,
                         color: context.colors.neutral500,

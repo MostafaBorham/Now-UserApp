@@ -363,6 +363,8 @@
   "support": "الدعم",
   "supportTitle": "خدمة العملاء",
   "supportWelcomeMessage": "مرحبًا بك في خدمة عملاء ناو، كيف يمكننا مساعدتك؟",
+  "supportTypingIndicator": "خدمة العملاء تكتب الآن...",
+  "supportMessageHint": "اكتب رسالتك هنا..",
   "takePhoto": "التقط صورة",
   "tellUsMore": "أخبرنا بالمزيد ...",
   "thanksForRating": "شكرًا لتقييمك",

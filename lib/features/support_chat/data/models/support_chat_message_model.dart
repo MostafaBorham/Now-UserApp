@@ -40,16 +40,66 @@ class SupportChatMessageModel {
   }
 }
 
+class SupportChatMessagesPage {
+  const SupportChatMessagesPage({
+    required this.messages,
+    required this.hasMore,
+    required this.nextCursor,
+  });
+
+  final List<SupportChatMessageModel> messages;
+  final bool hasMore;
+  final String? nextCursor;
+
+  factory SupportChatMessagesPage.fromJson(Map<String, dynamic> json) {
+    final dynamic rawMessages = json['messages'];
+    final dynamic rawMeta = json['meta'];
+    final dynamic rawHasMore = rawMeta is Map<String, dynamic>
+        ? rawMeta['has_more']
+        : null;
+    final dynamic rawCursor = rawMeta is Map<String, dynamic>
+        ? rawMeta['next_cursor']
+        : null;
+
+    if (rawMessages is! List || rawHasMore is! bool) {
+      throw const FormatException('Support chat message page is incomplete.');
+    }
+    if (rawHasMore && (rawCursor is! String || rawCursor.isEmpty)) {
+      throw const FormatException(
+        'Support chat message page is missing its next cursor.',
+      );
+    }
+
+    return SupportChatMessagesPage(
+      messages: rawMessages
+          .map(
+            (dynamic item) => SupportChatMessageModel.fromJson(
+              item is Map<String, dynamic> ? item : null,
+            ),
+          )
+          .toList(),
+      hasMore: rawHasMore,
+      nextCursor: rawCursor is String && rawCursor.isNotEmpty
+          ? rawCursor
+          : null,
+    );
+  }
+}
+
 class SupportChatSyncModel {
   const SupportChatSyncModel({
     required this.messages,
     required this.deletedMessageIds,
     required this.syncedAt,
+    required this.hasMore,
+    required this.nextCursor,
   });
 
   final List<SupportChatMessageModel> messages;
   final List<int> deletedMessageIds;
   final DateTime syncedAt;
+  final bool hasMore;
+  final String? nextCursor;
 
   factory SupportChatSyncModel.fromJson(Map<String, dynamic> json) {
     final dynamic rawMessages = json['messages'];
@@ -58,14 +108,26 @@ class SupportChatSyncModel {
     final dynamic rawSyncedAt = rawMeta is Map<String, dynamic>
         ? rawMeta['synced_at']
         : null;
+    final dynamic rawHasMore = rawMeta is Map<String, dynamic>
+        ? rawMeta['has_more']
+        : null;
+    final dynamic rawCursor = rawMeta is Map<String, dynamic>
+        ? rawMeta['next_cursor']
+        : null;
     final DateTime? syncedAt = rawSyncedAt is String
         ? DateTime.tryParse(rawSyncedAt)
         : null;
 
     if (rawMessages is! List ||
         rawDeletedMessages is! List ||
-        syncedAt == null) {
+        syncedAt == null ||
+        rawHasMore is! bool) {
       throw const FormatException('Support chat sync response is incomplete.');
+    }
+    if (rawHasMore && (rawCursor is! String || rawCursor.isEmpty)) {
+      throw const FormatException(
+        'Support chat sync response is missing its next cursor.',
+      );
     }
 
     final List<int> deletedMessageIds = rawDeletedMessages.map((dynamic item) {
@@ -87,6 +149,10 @@ class SupportChatSyncModel {
           .toList(),
       deletedMessageIds: deletedMessageIds,
       syncedAt: syncedAt,
+      hasMore: rawHasMore,
+      nextCursor: rawCursor is String && rawCursor.isNotEmpty
+          ? rawCursor
+          : null,
     );
   }
 }
