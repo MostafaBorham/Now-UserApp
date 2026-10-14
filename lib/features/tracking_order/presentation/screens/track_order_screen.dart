@@ -62,7 +62,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
       body: AppWavedView(
         appBarTitle: LangKeys.trackOrderKey.tr(),
         canPop: true,
-        hasSupportIcon: true,
+        hasSupportIcon: orderState.valueOrNull?.canContactSupport ?? false,
         scrollController: _scrollController,
         onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
         body: orderState.when(
@@ -95,56 +95,57 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                   spacing: 16,
                   children: [
                     TrackOrderNumberHeader(
-                    orderNumber: order.orderNumber ?? '',
-                    status: orderStatus,
-                    statusLabel: localizedStatus.isEmpty
-                        ? LangKeys.pendingKey.tr()
-                        : localizedStatus,
-                  ),
-                  ItemInformationSection(items: order.items),
-                  DeliveryDetailsSection(
-                    receiver: order.user.name ?? '',
-                    address: order.deliveryAddress ?? '',
-                    contact: order.user.phone ?? '',
-                    store: store,
-                    itemsCount: order.itemsQuantity,
-                    paymentMethod: order.paymentMethodLabel,
-                    amount: formatMoney(order.totalWithTip),
-                  ),
-                  // The card shows once a courier is assigned — which can be
-                  // well before the order leaves the store — for as long as
-                  // the order is on its way.
-                  if (orderStatus.isTrackable && order.driver != null)
-                    CourierSection(
-                      courierName: order.driver?.name ?? '',
-                      logoUrl: order.driver?.profileImg ?? '',
-                      onCall: () => launchPhoneDialer(order.driver?.phone),
-                      onChat: () => context.pushNamed(AppRoutes.supportScreen),
-                    ),
-
-                  if (orderStatus.isTrackable)
-                    OrderTimelineSection(
+                      orderNumber: order.orderNumber ?? '',
                       status: orderStatus,
-                      estimatedTime: context.getLocalizedApiDate(
-                        apiDateTimeStamp: order.estimatedDeliveryTime,
-                      ),
+                      statusLabel: localizedStatus.isEmpty
+                          ? LangKeys.pendingKey.tr()
+                          : localizedStatus,
                     ),
-                  // The cancel action is only offered while the order can still
-                  // be cancelled (before the vendor starts preparing it).
-                  if (orderStatus.isCancellable) ...[
-                    PrimaryButton(
-                      title: LangKeys.cancelOrderKey.tr(),
-                      buttonColor: colors.errorContainer,
-                      titleColor: colors.white,
-                      onTap: () => CancelOrderBottomSheet.show(
-                        context,
-                        orderUuid: widget.orderUuid,
-                        orderNumber: order.orderNumber ?? '',
-                        itemsCount: order.itemsQuantity,
-                        amount: formatMoney(order.totalWithTip),
-                      ),
+                    ItemInformationSection(items: order.items),
+                    DeliveryDetailsSection(
+                      receiver: order.user.name ?? '',
+                      address: order.deliveryAddress ?? '',
+                      contact: order.user.phone ?? '',
+                      store: store,
+                      itemsCount: order.itemsQuantity,
+                      paymentMethod: order.paymentMethodLabel,
+                      amount: formatMoney(order.totalWithTip),
                     ),
-                  ],
+                    // The card shows once a courier is assigned — which can be
+                    // well before the order leaves the store — for as long as
+                    // the order is on its way.
+                    if (orderStatus.isTrackable && order.driver != null)
+                      CourierSection(
+                        courierName: order.driver?.name ?? '',
+                        logoUrl: order.driver?.profileImg ?? '',
+                        onCall: () => launchPhoneDialer(order.driver?.phone),
+                        onChat: () =>
+                            context.pushNamed(AppRoutes.supportScreen),
+                      ),
+
+                    if (orderStatus.isTrackable)
+                      OrderTimelineSection(
+                        status: orderStatus,
+                        estimatedTime: context.getLocalizedApiDate(
+                          apiDateTimeStamp: order.estimatedDeliveryTime,
+                        ),
+                      ),
+                    // The cancel action is only offered while the order can still
+                    // be cancelled (before the vendor starts preparing it).
+                    if (orderStatus.isCancellable) ...[
+                      PrimaryButton(
+                        title: LangKeys.cancelOrderKey.tr(),
+                        buttonColor: colors.errorContainer,
+                        titleColor: colors.white,
+                        onTap: () => CancelOrderBottomSheet.show(
+                          context,
+                          orderUuid: widget.orderUuid,
+                          orderNumber: order.orderNumber ?? '',
+                          itemsCount: order.itemsQuantity,
+                          amount: formatMoney(order.totalWithTip),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
