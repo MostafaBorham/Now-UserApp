@@ -48,7 +48,7 @@ class ChatBubble extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             height: 1.3,
-            fontWeight: agent ? FontWeight.w400 : FontWeight.w500,
+            fontWeight: FontWeight.w400,
             color: agent
                 ? context.colors.tertiaryContainer
                 : context.colors.white,

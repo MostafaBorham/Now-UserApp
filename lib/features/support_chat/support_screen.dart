@@ -46,7 +46,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
   bool _isSending = false;
   bool _isSyncing = false;
   bool _hasReportedSyncFailure = false;
-  bool _showWelcomeMessage = false;
+  bool _showWelcomeMessage = true;
   bool _realtimeConnected = false;
   bool _isForeground = true;
   bool _hasReportedRealtimeConfigFailure = false;
