@@ -15,8 +15,8 @@ class SelectableRatingStars extends StatelessWidget {
     required this.rating,
     this.onRatingSelected,
     this.count = 5,
-    this.size = 20,
-    this.spacing = 4,
+    this.size = 25,
+    this.spacing = 5,
     this.color,
     this.emptyColor,
   });
@@ -46,7 +46,7 @@ class SelectableRatingStars extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final Color filledColor = color ?? colors.amber500;
-    final Color emptyStarColor = emptyColor ?? colors.neutral300;
+    final Color emptyStarColor = emptyColor ?? colors.neutral200;
 
     return Directionality(
       textDirection: TextDirection.ltr,

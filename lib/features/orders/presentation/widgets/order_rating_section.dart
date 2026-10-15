@@ -66,9 +66,10 @@ class OrderRatingSection extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: AlignmentDirectional.centerStart,
-                end: AlignmentDirectional.centerEnd,
-                colors: [colors.secondary100, colors.primary100],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.4],
+                colors: [colors.primary100.withAlpha(80), colors.secondary100],
               ),
               borderRadius: AppBorderRadius.brCircular8,
             ),
@@ -78,15 +79,13 @@ class OrderRatingSection extends StatelessWidget {
               children: [
                 Text(
                   LangKeys.rateProductsKey.tr(),
-                  style: AppTextStyles.style14Bold.copyWith(color: colors.black),
+                  style: AppTextStyles.style14Bold.copyWith(
+                    color: colors.black,
+                  ),
                 ),
                 for (int i = 0; i < products.length; i++) ...[
                   if (i > 0)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: colors.neutral300,
-                    ),
+                    Divider(height: 1, thickness: 1, color: colors.neutral300),
                   OrderRatingProductRow(
                     name: context.getLocalizedApiText(products[i].name),
                     imageUrl: products[i].imageUrl ?? '',

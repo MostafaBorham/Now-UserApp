@@ -1,18 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
@@ -20,6 +19,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_b
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
@@ -57,7 +57,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final LinearGradient screenGradient = LinearGradient(
       begin: AlignmentDirectional.centerStart,
       end: AlignmentDirectional.centerEnd,
-      colors: [colors.secondary100, colors.primary100.withValues(alpha: 0.3)],
+      colors: [colors.primary100.withValues(alpha: 0.3), colors.secondary100],
     );
 
     final AsyncValue<OrderModel> orderState = ref.watch(
