@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
     required this.label,
     this.onPressed,
     this.isLoading = false,
+    this.isDisabled = false,
   });
 
   final String label;
@@ -16,14 +17,20 @@ class PrimaryButton extends StatelessWidget {
   /// When true the label is replaced by a spinner and taps are ignored.
   final bool isLoading;
 
+  /// Greys the button out and ignores taps, e.g. Save on a form nothing has
+  /// changed in yet.
+  final bool isDisabled;
+
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colors.primary500Main,
+      color: isDisabled
+          ? context.colors.neutral500.withValues(alpha: 0.3)
+          : context.colors.primary500Main,
       borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: isLoading ? null : onPressed,
+        onTap: isLoading || isDisabled ? null : onPressed,
         child: SizedBox(
           height: 54,
           width: double.infinity,
@@ -42,7 +49,9 @@ class PrimaryButton extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: context.colors.white,
+                      color: isDisabled
+                          ? context.colors.neutral500
+                          : context.colors.white,
                     ),
                   ),
           ),

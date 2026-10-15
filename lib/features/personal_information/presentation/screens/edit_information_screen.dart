@@ -78,14 +78,25 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
     if (data != null) _prefill(data);
     _fullName.addListener(_clearNameError);
     _email.addListener(_clearEmailError);
+    // Save is enabled only once the form differs from the saved profile, so
+    // typing has to rebuild it.
+    _fullName.addListener(_onFieldChanged);
+    _email.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
     _fullName
       ..removeListener(_clearNameError)
+      ..removeListener(_onFieldChanged)
       ..dispose();
-    _email.removeListener(_clearEmailError);
+    _email
+      ..removeListener(_clearEmailError)
+      ..removeListener(_onFieldChanged);
     _email.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -480,16 +491,25 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
             ),
           ),
         ),
-        _SaveBar(isLoading: saving, onSave: _save),
+        _SaveBar(
+          isLoading: saving,
+          isDisabled: !_hasUnsavedChanges,
+          onSave: _save,
+        ),
       ],
     );
   }
 }
 
 class _SaveBar extends StatelessWidget {
-  const _SaveBar({required this.onSave, required this.isLoading});
+  const _SaveBar({
+    required this.onSave,
+    required this.isLoading,
+    required this.isDisabled,
+  });
 
   final VoidCallback onSave;
+  final bool isDisabled;
   final bool isLoading;
 
   @override
@@ -504,6 +524,7 @@ class _SaveBar extends StatelessWidget {
         child: PrimaryButton(
           label: LangKeys.saveKey.tr(),
           isLoading: isLoading,
+          isDisabled: isDisabled,
           onPressed: onSave,
         ),
       ),

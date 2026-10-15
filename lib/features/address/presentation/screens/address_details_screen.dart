@@ -143,7 +143,32 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
     _buildingNameController.addListener(_onRequiredFieldChanged);
+    for (final TextEditingController controller in <TextEditingController>[
+      _phoneController,
+      _floorNumberController,
+      _apartmentController,
+      _buildingNameController,
+      _instructionsController,
+    ]) {
+      controller.addListener(_onAnyFieldChanged);
+    }
   }
+
+  /// Whether the form's text differed from the stored address at the last
+  /// rebuild; rebuilds only when that flips, not on every keystroke.
+  bool _wasEdited = false;
+
+  void _onAnyFieldChanged() {
+    final bool edited = _hasUnsavedChanges;
+    if (edited != _wasEdited) {
+      _wasEdited = edited;
+      setState(() {});
+    }
+  }
+
+  /// Editing an address and changing nothing has nothing to save, so Save
+  /// waits for a change there. A new address has no such baseline.
+  bool get _isUnchangedEdit => widget.isEditScreen && !_hasUnsavedChanges;
 
   @override
   void didUpdateWidget(covariant AddressDetailsScreen oldWidget) {
@@ -469,6 +494,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                     : PrimaryAppButton(
                         title: LangKeys.saveAddress.tr(),
                         isLoading: isSaving,
+                        isDisabled: _isUnchangedEdit && !isSaving,
                         onTap: _saveAddress,
                       ),
               ],

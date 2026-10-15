@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
 import 'package:nowdelivery_user_app/features/address/presentation/screens/address_details_screen.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.dart';
@@ -146,6 +147,54 @@ void main() {
     expect(vm.sent?.floor, '5');
     expect(vm.sent?.buildingNumber, 'Tower B');
     expect(vm.sent?.isDefault, isFalse);
+  });
+
+  testWidgets('editing an address keeps Save disabled until something changes', (
+    WidgetTester tester,
+  ) async {
+    late _RecordingEdit vm;
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(
+        isEditScreen: true,
+        address: AddressModel(
+          id: 7,
+          area: 'Olaya',
+          label: <String, dynamic>{'en': 'Home', 'ar': 'المنزل'},
+          apartment: '12',
+          floor: '3',
+          buildingNumber: 'Tower B',
+        ),
+      ),
+      overrides: <Override>[
+        editAddressProvider.overrideWith((Ref ref) => vm = _RecordingEdit(ref)),
+      ],
+    );
+
+    bool saveDisabled() => tester
+        .widget<PrimaryAppButton>(
+          find.widgetWithText(PrimaryAppButton, LangKeys.saveAddress),
+        )
+        .isDisabled;
+
+    expect(saveDisabled(), isTrue);
+    await _save(tester);
+    expect(vm.sent, isNull);
+
+    // Even the optional instructions count as a change.
+    await tester.enterText(_field(LangKeys.instructions), 'Ring twice');
+    await tester.pump();
+    expect(saveDisabled(), isFalse);
+
+    // Typing it back to how it was leaves nothing to save again.
+    await tester.enterText(_field(LangKeys.instructions), '');
+    await tester.pump();
+    expect(saveDisabled(), isTrue);
+
+    await tester.enterText(_field(LangKeys.building), 'Tower C');
+    await tester.pump();
+    await _save(tester);
+    expect(vm.sent?.buildingNumber, 'Tower C');
   });
 
   testWidgets('a non-default address initializes unchecked and persists a '

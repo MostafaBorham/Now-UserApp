@@ -219,34 +219,45 @@ class _ApplyDiscountCodeViewState
           ),
         ),
         Expanded(
-          child: InkWell(
-            onTap: _isApplying
-                ? null
-                : () => _apply(_controller.text.trim()),
-            child: Container(
-              decoration: BoxDecoration(
-                color: colors.onSecondaryFixedVariant,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: _isApplying
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: colors.black,
-                        ),
-                      )
-                    : Text(
-                        LangKeys.applyKey.tr(),
-                        style: AppTextStyles.style14Medium.copyWith(
-                          color: colors.black,
-                        ),
-                      ),
-              ),
-            ),
+          // Apply has nothing to send until a code is typed, so it stays
+          // dimmed and inert while the field is blank.
+          child: ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (BuildContext context, TextEditingValue value, Widget? _) {
+              final bool hasCode = value.text.trim().isNotEmpty;
+              return Opacity(
+                opacity: hasCode || _isApplying ? 1 : 0.5,
+                child: InkWell(
+                  onTap: _isApplying || !hasCode
+                      ? null
+                      : () => _apply(_controller.text.trim()),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: colors.onSecondaryFixedVariant,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: _isApplying
+                          ? SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: colors.black,
+                              ),
+                            )
+                          : Text(
+                              LangKeys.applyKey.tr(),
+                              style: AppTextStyles.style14Medium.copyWith(
+                                color: colors.black,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],

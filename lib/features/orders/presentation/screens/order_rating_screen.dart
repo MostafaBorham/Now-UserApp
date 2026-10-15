@@ -81,6 +81,13 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
     super.dispose();
   }
 
+  /// Nothing to send until some target has stars, so Submit starts disabled
+  /// and enables on the first star.
+  bool get _hasAnyStars =>
+      _productRatings.any((int rating) => rating >= 1) ||
+      (_rating.isVendorOpen && _storeRating >= 1) ||
+      (_rating.isDeliveryOpen && _courierRating >= 1);
+
   Future<void> _onSubmit() async {
     final int? orderId = widget.order.id;
     final String? blocker =
@@ -202,6 +209,7 @@ class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
               PrimaryAppButton(
                 title: LangKeys.submitRatingKey.tr(),
                 isLoading: isSubmitting,
+                isDisabled: !_hasAnyStars,
                 onTap: _onSubmit,
               ),
             ],

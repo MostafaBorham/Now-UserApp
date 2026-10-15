@@ -177,10 +177,18 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
                   ),
                 ),
               ),
-              PrimaryAppButton(
-                title: LangKeys.submitComplaintKey.tr(),
-                isLoading: isSubmitting,
-                onTap: _onSubmit,
+              // A complaint needs its description, so Submit waits for one.
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _descriptionController,
+                builder:
+                    (BuildContext context, TextEditingValue value, Widget? _) =>
+                        PrimaryAppButton(
+                          title: LangKeys.submitComplaintKey.tr(),
+                          isLoading: isSubmitting,
+                          isDisabled:
+                              !isSubmitting && value.text.trim().isEmpty,
+                          onTap: _onSubmit,
+                        ),
               ),
             ],
           ),
