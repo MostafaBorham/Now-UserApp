@@ -20,6 +20,7 @@ import 'package:nowdelivery_user_app/features/address/viewmodel/add_address_vm.d
 import 'package:nowdelivery_user_app/features/address/viewmodel/edit_address_vm.dart';
 import '../widgets/address_field.dart';
 import '../widgets/area_selector.dart';
+import '../widgets/set_default_address_checkbox.dart';
 
 class AddressDetailsScreen extends ConsumerStatefulWidget {
   const AddressDetailsScreen({
@@ -109,8 +110,12 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   /// untouched form from an edited one. Captured from the controllers after the
   /// prefill rather than rebuilt from [widget.address], so the comparison can
   /// never drift from what was actually put in the fields.
-  late final List<String> _baselineFields;
-  late final int _baselineLabelIndex;
+  late List<String> _baselineFields;
+  late int _baselineLabelIndex;
+  late bool _baselineIsDefaultAddress;
+
+  /// The checkbox value sent as `is_default` in the create/update payload.
+  bool _isDefaultAddress = false;
 
   /// Drives the Save button between its disabled and active states. Only the
   /// required fields (floor / building) feed it; the phone is optional but
@@ -127,51 +132,26 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.isEditScreen) {
-      // Restore the selected label by matching the stored English value against
-      // our segment maps; fall back to the first segment (home) when the stored
-      // label is missing or unrecognized. First, because [_isWork] decides
-      // which column the first two fields prefill from.
-      final String? storedLabel = widget.address.label?['en']?.toString();
-      final int labelIndex = AddressModel.labelOptions.indexWhere(
-        (Map<String, String> label) => label['en'] == storedLabel,
-      );
-      _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
-    }
+    _phoneController = TextEditingController();
+    _floorNumberController = TextEditingController();
+    _apartmentController = TextEditingController();
+    _buildingNameController = TextEditingController();
+    _instructionsController = TextEditingController();
 
-    // Prefill from the existing address when editing. The phone field shows a
-    // number the way the login field does (`(05) 1234-5678`), so a stored
-    // number is reduced to its 8-digit tail — whichever format it was saved
-    // in. One that isn't a Saudi mobile leaves the field empty rather than
-    // prefilling a value the form would reject, which used to freeze Save.
-    final AddressModel? stored = widget.isEditScreen ? widget.address : null;
-    _phoneController = TextEditingController(
-      text: SaudiPhoneInputFormatter.format(
-        AppValidator.saudiLocalPhoneTail(stored?.phone),
-      ),
-    );
-    _floorNumberController = TextEditingController(
-      text: _isWork ? stored?.apartment : stored?.floor,
-    );
-    _apartmentController = TextEditingController(
-      text: _isWork ? stored?.floor : stored?.apartment,
-    );
-    _buildingNameController = TextEditingController(
-      text: stored?.buildingNumber,
-    );
-    _instructionsController = TextEditingController(text: stored?.notes);
-
-    // Run the same check the listeners run, over whatever the prefill put in
-    // the fields: an existing address usually enables Save straight away, but
-    // one stored without a floor or building must not submit those blanks.
-    _isFormValid = _isRequiredFieldsFilled();
-
-    _baselineFields = _fieldValues();
-    _baselineLabelIndex = _selectedLabelIndex;
+    _applyWidgetState();
 
     _phoneController.addListener(_onRequiredFieldChanged);
     _floorNumberController.addListener(_onRequiredFieldChanged);
     _buildingNameController.addListener(_onRequiredFieldChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant AddressDetailsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.address != widget.address ||
+        oldWidget.isEditScreen != widget.isEditScreen) {
+      _applyWidgetState();
+    }
   }
 
   /// Every text field's current value, in a fixed order, for comparing the form
@@ -187,7 +167,54 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
   /// Whether anything the user typed or picked would be lost by leaving.
   bool get _hasUnsavedChanges =>
       _selectedLabelIndex != _baselineLabelIndex ||
+      _isDefaultAddress != _baselineIsDefaultAddress ||
       !listEquals(_fieldValues(), _baselineFields);
+
+  /// Rebuilds the form state from the current widget input, covering both
+  /// first build and updates to a different add/edit payload on the same route.
+  void _applyWidgetState() {
+    if (widget.isEditScreen) {
+      // Restore the selected label by matching the stored English value against
+      // our segment maps; fall back to the first segment (home) when the stored
+      // label is missing or unrecognized. First, because [_isWork] decides
+      // which column the first two fields prefill from.
+      final String? storedLabel = widget.address.label?['en']?.toString();
+      final int labelIndex = AddressModel.labelOptions.indexWhere(
+        (Map<String, String> label) => label['en'] == storedLabel,
+      );
+      _selectedLabelIndex = labelIndex == -1 ? 0 : labelIndex;
+    } else {
+      _selectedLabelIndex = 0;
+    }
+
+    // Prefill from the existing address when editing. The phone field shows a
+    // number the way the login field does (`(05) 1234-5678`), so a stored
+    // number is reduced to its 8-digit tail — whichever format it was saved
+    // in. One that isn't a Saudi mobile leaves the field empty rather than
+    // prefilling a value the form would reject, which used to freeze Save.
+    final AddressModel? stored = widget.isEditScreen ? widget.address : null;
+    _isDefaultAddress = stored?.isDefault ?? false;
+    _phoneController.text = SaudiPhoneInputFormatter.format(
+      AppValidator.saudiLocalPhoneTail(stored?.phone),
+    );
+    _floorNumberController.text = _isWork
+        ? stored?.apartment ?? ''
+        : stored?.floor ?? '';
+    _apartmentController.text = _isWork
+        ? stored?.floor ?? ''
+        : stored?.apartment ?? '';
+    _buildingNameController.text = stored?.buildingNumber ?? '';
+    _instructionsController.text = stored?.notes ?? '';
+
+    // Run the same check the listeners run, over whatever the prefill put in
+    // the fields: an existing address usually enables Save straight away, but
+    // one stored without a floor or building must not submit those blanks.
+    _isFormValid = _isRequiredFieldsFilled();
+
+    _baselineFields = _fieldValues();
+    _baselineLabelIndex = _selectedLabelIndex;
+    _baselineIsDefaultAddress = _isDefaultAddress;
+  }
 
   /// Asks before throwing the form away. Returns true when the user confirms.
   Future<bool> _confirmDiscard() async {
@@ -261,6 +288,7 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
       buildingNumber: _buildingNameController.text.trim(),
       notes: _instructionsController.text.trim(),
       label: AddressModel.labelOptions[_selectedLabelIndex],
+      isDefault: _isDefaultAddress,
     );
 
     if (widget.isEditScreen) {
@@ -411,6 +439,13 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   keyboardType: TextInputType.phone,
                   textDirection: TextDirection.ltr,
                   inputFormatters: const [SaudiPhoneInputFormatter()],
+                ),
+                SetDefaultAddressCheckbox(
+                  value: _isDefaultAddress,
+                  onChanged: isSaving
+                      ? null
+                      : (bool value) =>
+                            setState(() => _isDefaultAddress = value),
                 ),
                 !_isFormValid && !isSaving
                     // Tappable while disabled, so the button can say why instead

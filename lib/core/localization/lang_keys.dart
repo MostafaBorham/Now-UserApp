@@ -176,6 +176,7 @@ abstract class LangKeys {
   static const String cardExpiredKey = 'cardExpired';
   static const String invalidCvvKey = 'invalidCvv';
   static const String setAsDefaultKey = 'setAsDefault';
+  static const String setAsDefaultAddressKey = 'setAsDefaultAddress';
 
   // Payment methods
   static const String paymentMethodsKey = 'paymentMethods';

@@ -338,6 +338,7 @@
   "serverUnavailable": "Our service is having trouble right now. Please try again shortly.",
   "sessionExpired": "Your session has ended. Please log in again.",
   "setAsDefault": "Set as default card",
+  "setAsDefaultAddress": "Set as default address",
   "setYourLocation": "Set your location",
   "shareExperienceToImprove": "Share your experience to help us improve the service",
   "shopNow": "Shop Now",
