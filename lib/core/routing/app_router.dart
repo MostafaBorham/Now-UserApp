@@ -49,7 +49,7 @@ import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_st
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/view_store_category_products_screen.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/file_complaint_screen.dart';
-import 'package:nowdelivery_user_app/features/support_chat/support_screen.dart';
+import 'package:nowdelivery_user_app/features/support_chat/presentation/screens/support_screen.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/order_confirmed_screen.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/payment_failed_screen.dart';
 import 'package:nowdelivery_user_app/features/tracking_order/presentation/screens/track_order_screen.dart';
