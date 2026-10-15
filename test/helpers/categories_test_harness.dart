@@ -78,12 +78,14 @@ Future<void> pumpCategoriesWidget(
   Widget child, {
   List<Override> overrides = const <Override>[],
   bool useScaffold = true,
+  AssetLoader? assetLoader,
 }) async {
   _useDesignSurface(tester);
   await tester.pumpWidget(
     _localizedApp(
       overrides: overrides,
       home: useScaffold ? Scaffold(body: child) : child,
+      assetLoader: assetLoader,
     ),
   );
   await _settleLocalization(tester);
@@ -176,13 +178,14 @@ Widget _localizedApp({
   required List<Override> overrides,
   Widget? home,
   GoRouter? router,
+  AssetLoader? assetLoader,
 }) {
   return EasyLocalization(
     supportedLocales: LocalizationConstants.supportedLocales,
     path: LocalizationConstants.languagesPath,
     fallbackLocale: LocalizationConstants.englishLocale,
     startLocale: LocalizationConstants.englishLocale,
-    assetLoader: const _EmptyAssetLoader(),
+    assetLoader: assetLoader ?? const _EmptyAssetLoader(),
     child: ProviderScope(
       overrides: overrides,
       child: Builder(

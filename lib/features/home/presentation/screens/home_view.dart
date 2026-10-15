@@ -173,6 +173,18 @@ class _HomeViewState extends ConsumerState<HomeView>
     ).getOffsetToReveal(box, 0.0).offset;
   }
 
+  /// The header's top row changed height — a language switch rewraps the
+  /// greeting — so the field's slot under it moved with nothing scrolling to
+  /// notice. Measured again once this frame's layout is done.
+  bool _onHeaderResized(SizeChangedLayoutNotification _) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _anchor = null;
+      _onScroll();
+    });
+    return false;
+  }
+
   void _measureField() {
     final RenderObject? box = _overlayFieldKey.currentContext
         ?.findRenderObject();
@@ -313,11 +325,15 @@ class _HomeViewState extends ConsumerState<HomeView>
       HomeFeedSection(
         key: const ValueKey<String>('header'),
         content: (categoriesSection, showCategories),
-        child: HomeHeaderView(
-          searchFieldKey: _searchFieldKey,
-          searchBarHeight: _fieldHeight,
-          showCategories: showCategories,
-          categories: categoriesSection?.categories ?? const <CategoryModel>[],
+        child: NotificationListener<SizeChangedLayoutNotification>(
+          onNotification: _onHeaderResized,
+          child: HomeHeaderView(
+            searchFieldKey: _searchFieldKey,
+            searchBarHeight: _fieldHeight,
+            showCategories: showCategories,
+            categories:
+                categoriesSection?.categories ?? const <CategoryModel>[],
+          ),
         ),
       ),
       if (showLiveOrders)

@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:dartz/dartz.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
@@ -8,13 +9,16 @@ import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
+import 'package:nowdelivery_user_app/core/localization/constants.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_search_field.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/connectivity_controller.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/screens/home_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_app_categories_view.dart';
+import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_header_view.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_most_popular_brands_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
@@ -60,6 +64,20 @@ class _FakeFeatured extends GetFeaturedStoresViewModel {
   }
 }
 
+/// A short Arabic greeting and an English one that wraps to a second line, as
+/// the real strings do, so a language switch moves the search field's slot.
+class _Greetings extends AssetLoader {
+  const _Greetings();
+
+  @override
+  Future<Map<String, dynamic>> load(String path, Locale locale) async =>
+      <String, dynamic>{
+        LangKeys.homeGreetingKey: locale.languageCode == 'ar'
+            ? 'Hi'
+            : "Welcome! It's so good to have you here!",
+      };
+}
+
 /// Home's own states (BUG-004, QA V2): a failed first load, an empty feed, and
 /// a loaded one.
 void main() {
@@ -72,6 +90,7 @@ void main() {
     WidgetTester tester,
     AsyncValue<List<HomeSectionModel>> feed, {
     List<StoreModel> featured = const <StoreModel>[],
+    AssetLoader? assetLoader,
   }) async {
     final _FakeFeed fake = _FakeFeed(feed);
     final _FakeFeatured fakeFeatured = _FakeFeatured(featured);
@@ -83,6 +102,7 @@ void main() {
         getFeaturedStoresProvider.overrideWith((Ref ref) => fakeFeatured),
         isConnectedProvider.overrideWith((Ref ref) => Stream<bool>.value(true)),
       ],
+      assetLoader: assetLoader,
     );
     await tester.pump(const Duration(seconds: 3));
     return (feed: fake, featured: fakeFeatured);
@@ -136,6 +156,45 @@ void main() {
 
     expect(find.byType(HomeAppCategoriesView), findsOneWidget);
     expect(find.byType(NoResultsWidget), findsNothing);
+  });
+
+  // The field's slot was measured once, so after a language switch rewrapped
+  // the greeting the field kept floating where the old language put it.
+  testWidgets('the search field follows its slot across a language switch', (
+    WidgetTester tester,
+  ) async {
+    await pumpHome(
+      tester,
+      const AsyncValue<List<HomeSectionModel>>.data(<HomeSectionModel>[]),
+      assetLoader: const _Greetings(),
+    );
+
+    final Finder slot = find.descendant(
+      of: find.byType(HomeHeaderView),
+      matching: find.byWidgetPredicate(
+        (Widget w) => w is SizedBox && w.key is GlobalKey,
+      ),
+    );
+    double slotTop() => tester.getTopLeft(slot).dy;
+    double fieldTop() => tester.getTopLeft(find.byType(PrimarySearchField)).dy;
+
+    Future<void> switchTo(Locale locale) async {
+      await tester.element(find.byType(HomeView)).setLocale(locale);
+      for (int i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+    }
+
+    expect(fieldTop(), slotTop());
+    final double englishSlot = slotTop();
+
+    await switchTo(LocalizationConstants.arabicLocale);
+    expect(slotTop(), lessThan(englishSlot));
+    expect(fieldTop(), slotTop());
+
+    await switchTo(LocalizationConstants.englishLocale);
+    expect(slotTop(), englishSlot);
+    expect(fieldTop(), slotTop());
   });
 
   // BUG-007: the order used to be hardcoded, so the admin's was ignored.

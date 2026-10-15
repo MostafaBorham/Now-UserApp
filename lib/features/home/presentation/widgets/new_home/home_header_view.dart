@@ -93,86 +93,97 @@ class HomeHeaderView extends ConsumerWidget {
                       child: Column(
                         spacing: 12,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 8,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  spacing: 5,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      LangKeys.homeGreetingKey.tr(),
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                        color: colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: con.maxWidth * 0.04,
+                          // Its height places the search field's slot below
+                          // it; Home re-measures the slot when that changes.
+                          SizeChangedLayoutNotifier(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 8,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    spacing: 5,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        LangKeys.homeGreetingKey.tr(),
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                          color: colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: con.maxWidth * 0.04,
+                                        ),
                                       ),
-                                    ),
-                                    // The whole row opens the sheet, not just
-                                    // the small arrow at its end.
-                                    GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onTap: () =>
-                                          _openDeliveryAddressSheet(context),
-                                      child: Row(
-                                        spacing: 5,
-                                        children: [
-                                          // No pin without an address: a pin
-                                          // over "set your location" read as a
-                                          // location the app had found.
-                                          if (hasAddress)
-                                            Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .homeLocationIcon
-                                                .svg(
-                                                  width: con.maxWidth * 0.05,
+                                      // The whole row opens the sheet, not just
+                                      // the small arrow at its end.
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () =>
+                                            _openDeliveryAddressSheet(context),
+                                        child: Row(
+                                          spacing: 5,
+                                          children: [
+                                            // No pin without an address: a pin
+                                            // over "set your location" read as a
+                                            // location the app had found.
+                                            if (hasAddress)
+                                              Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .homeLocationIcon
+                                                  .svg(
+                                                    width: con.maxWidth * 0.05,
+                                                  ),
+                                            Flexible(
+                                              child: Text(
+                                                hasAddress
+                                                    ? displayedAddress
+                                                    : LangKeys
+                                                          .setYourLocationKey
+                                                          .tr(),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: colors.black,
+                                                  fontWeight: hasAddress
+                                                      ? FontWeight.w400
+                                                      : FontWeight.w600,
+                                                  fontSize: con.maxWidth * 0.03,
                                                 ),
-                                          Flexible(
-                                            child: Text(
-                                              hasAddress
-                                                  ? displayedAddress
-                                                  : LangKeys.setYourLocationKey
-                                                        .tr(),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                color: colors.black,
-                                                fontWeight: hasAddress
-                                                    ? FontWeight.w400
-                                                    : FontWeight.w600,
-                                                fontSize: con.maxWidth * 0.03,
                                               ),
                                             ),
-                                          ),
-                                          RotatedBox(
-                                            quarterTurns: 1,
-                                            child: Assets
-                                                .media
-                                                .images
-                                                .svg
-                                                .arrowBrokenIcon
-                                                .svg(
-                                                  width: con.maxWidth * 0.04,
-                                                ),
-                                          ),
-                                        ],
+                                            RotatedBox(
+                                              quarterTurns: 1,
+                                              child: Assets
+                                                  .media
+                                                  .images
+                                                  .svg
+                                                  .arrowBrokenIcon
+                                                  .svg(
+                                                    width: con.maxWidth * 0.04,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Assets.media.images.svg.appLogos.homeWhiteAppLogo
-                                  .svg(
-                                    fit: BoxFit.contain,
-                                    width: con.maxWidth * 0.3,
+                                    ],
                                   ),
-                            ],
+                                ),
+                                Assets
+                                    .media
+                                    .images
+                                    .svg
+                                    .appLogos
+                                    .homeWhiteAppLogo
+                                    .svg(
+                                      fit: BoxFit.contain,
+                                      width: con.maxWidth * 0.3,
+                                    ),
+                              ],
+                            ),
                           ),
                           ValueListenableBuilder<double>(
                             valueListenable:
