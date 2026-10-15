@@ -19,19 +19,34 @@ Future<ImageSource?> showImageSourceSheet(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.photo_camera_outlined),
-            title: Text(LangKeys.takePhotoKey.tr()),
+            leading: const Icon(
+              Icons.photo_camera_outlined,
+              color: Colors.black,
+            ),
+            title: Text(
+              LangKeys.takePhotoKey.tr(),
+              style: TextStyle(color: Colors.black),
+            ),
             onTap: () => sheetContext.pop(ImageSource.camera),
           ),
           ListTile(
-            leading: const Icon(Icons.photo_library_outlined),
-            title: Text(LangKeys.chooseFromGalleryKey.tr()),
+            leading: const Icon(
+              Icons.photo_library_outlined,
+              color: Colors.black,
+            ),
+            title: Text(
+              LangKeys.chooseFromGalleryKey.tr(),
+              style: TextStyle(color: Colors.black),
+            ),
             onTap: () => sheetContext.pop(ImageSource.gallery),
           ),
           if (onRemove != null)
             ListTile(
-              leading: const Icon(Icons.delete_outline),
-              title: Text(LangKeys.removePhotoKey.tr()),
+              leading: const Icon(Icons.delete_outline, color: Colors.black),
+              title: Text(
+                LangKeys.removePhotoKey.tr(),
+                style: TextStyle(color: Colors.black),
+              ),
               onTap: () {
                 sheetContext.pop();
                 onRemove();

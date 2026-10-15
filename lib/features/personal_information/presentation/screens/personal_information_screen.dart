@@ -93,7 +93,7 @@ class _ProfileBody extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24),
-          ProfileAvatar(size: 112, imageUrl: avatarUrl),
+          ProfileAvatar(size: 140, imageUrl: avatarUrl),
           const SizedBox(height: 28),
           Material(
             color: context.colors.onTertiaryContainer,

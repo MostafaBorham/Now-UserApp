@@ -40,11 +40,7 @@ class ProfileAvatar extends StatelessWidget {
       child: ClipOval(
         child: Stack(
           children: [
-            SizedBox(
-              width: size,
-              height: size,
-              child: _image(context),
-            ),
+            SizedBox(width: size, height: size, child: _image(context)),
             if (showCameraOverlay)
               Positioned(
                 left: 0,
@@ -72,8 +68,8 @@ class ProfileAvatar extends StatelessWidget {
 
   Widget _image(BuildContext context) {
     if (imageFile != null) {
-      final int decodeSize =
-          (size * MediaQuery.devicePixelRatioOf(context)).round();
+      final int decodeSize = (size * MediaQuery.devicePixelRatioOf(context))
+          .round();
       return Image.file(
         imageFile!,
         fit: BoxFit.cover,
@@ -96,6 +92,7 @@ class ProfileAvatar extends StatelessWidget {
         imageUrl: url,
         width: size,
         height: size,
+        fit: BoxFit.fill,
         // Shimmer (not a spinner) while the picture downloads; the app-wide
         // no-image placeholder shows if the request fails.
         placeholderType: LoadingViewTypes.shimmer,
