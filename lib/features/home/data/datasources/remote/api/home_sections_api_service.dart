@@ -23,9 +23,16 @@ class HomeSectionsApiService {
   /// Both are sent together or not at all; with neither (and no saved address)
   /// `nearby_stores` comes back empty.
   ///
+  /// `per_page` only sizes the `all_stores` section (the one paginated
+  /// section): its "All" tab lists every store, so it asks for the most the
+  /// backend serves in one page (100) rather than the default 15.
+  ///
   /// The body comes back as the raw JSON string, undecoded: the repository
   /// decodes it and builds the models in one background isolate. At the
   /// feed's size Dio would otherwise decode it on the UI thread.
+  /// The `all_stores` page size: the backend's maximum.
+  static const int allStoresPerPage = 100;
+
   Future<Response> getHomeSections({
     required String platform,
     required String lang,
@@ -38,6 +45,7 @@ class HomeSectionsApiService {
       queryParameters: <String, dynamic>{
         'platform': platform,
         'lang': lang,
+        'per_page': allStoresPerPage,
         if (hasLocation) 'lat': lat,
         if (hasLocation) 'lng': lng,
       },

@@ -77,22 +77,19 @@ void main() {
     expect(find.text('Al-Nour Store'), findsOneWidget);
   });
 
-  testWidgets('caps the All tab at the handful the category tabs show', (
+  testWidgets('with no admin limit, the All tab lists every store', (
     WidgetTester tester,
   ) async {
-    // The rest are behind "See All" — the section is a preview, not the list.
+    // It used to stop at seven, so "All" never showed all the stores.
     await pumpSection(
       tester,
       stores: List<StoreModel>.generate(
-        HomeStoresListView.itemCount + 3,
+        12,
         (int i) => feedStore(id: i, name: 'Store $i'),
       ),
     );
 
-    expect(
-      find.byType(StoreCardView),
-      findsNWidgets(HomeStoresListView.itemCount),
-    );
+    expect(find.byType(StoreCardView, skipOffstage: false), findsNWidgets(12));
   });
 
   testWidgets('the admin limit holds on the All tab and on every category tab', (

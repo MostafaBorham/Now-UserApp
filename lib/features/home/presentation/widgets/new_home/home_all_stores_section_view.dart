@@ -28,8 +28,8 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card
 /// that category's stores on demand (`getCategoryStoresProvider`).
 ///
 /// Every tab shows at most the same number of stores: the admin's
-/// [itemLimit] for this section, or [HomeStoresListView.itemCount] when none
-/// is set.
+/// [itemLimit] for this section, or every store it has when none is set — the
+/// All tab used to stop at a handful, so it never showed all the stores.
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   const HomeAllStoresSectionView({
     super.key,
@@ -43,9 +43,8 @@ class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   /// The admin's cap on stores shown per tab; 0 for none.
   final int itemLimit;
 
-  /// How many stores each tab shows.
-  int get visibleCount =>
-      itemLimit > 0 ? itemLimit : HomeStoresListView.itemCount;
+  /// How many stores each tab shows; null for all of them.
+  int? get visibleCount => itemLimit > 0 ? itemLimit : null;
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
@@ -203,7 +202,7 @@ class _HomeCategoryStoresListView extends ConsumerWidget {
   });
 
   final CategoryModel category;
-  final int limit;
+  final int? limit;
 
   static CategoryStoresArgs argsOf(CategoryModel category) =>
       (categorySlug: category.slug ?? '', categoryId: null, searchKey: null);
@@ -215,11 +214,16 @@ class _HomeCategoryStoresListView extends ConsumerWidget {
       getCategoryStoresProvider(args),
     );
 
+    final int? limit = this.limit;
+    final int placeholders =
+        limit != null && limit < HomeStoresListView.itemCount
+        ? limit
+        : HomeStoresListView.itemCount;
+
     return state.when(
       loading: () => _StoresList(
-        itemCount: limit < HomeStoresListView.itemCount
-            ? limit
-            : HomeStoresListView.itemCount,
+        // A few placeholders, never more than the tab will show.
+        itemCount: placeholders,
         itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
       ),
       error: (Object error, _) => ServerConnectionErrorWidget(
@@ -243,16 +247,16 @@ class HomeStoresListView extends StatelessWidget {
     super.key,
     required this.stores,
     required this.onFavouriteChanged,
-    this.limit = itemCount,
+    this.limit,
   });
 
   final List<StoreModel> stores;
   final void Function(int? storeId, bool isFavourite) onFavouriteChanged;
 
-  /// At most this many stores are shown.
-  final int limit;
+  /// At most this many stores are shown; null shows them all.
+  final int? limit;
 
-  /// Shown when the admin set no limit for the section.
+  /// Loading placeholders shown while a tab's stores arrive.
   static const int itemCount = 7;
   static const double separator = 15;
 
@@ -262,7 +266,9 @@ class HomeStoresListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<StoreModel> shown = stores.take(limit).toList();
+    final int? limit = this.limit;
+    final List<StoreModel> shown =
+        limit == null ? stores : stores.take(limit).toList();
     if (shown.isEmpty) {
       return NoResultsWidget(emptyMessage: LangKeys.noStoresYetKey.tr());
     }
