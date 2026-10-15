@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 class SearchCategoryCard extends StatelessWidget {
-  const SearchCategoryCard({
-    super.key,
-    required this.category,
-    this.onTap,
-  });
+  const SearchCategoryCard({super.key, required this.category, this.onTap});
 
   final CategoryModel category;
   final VoidCallback? onTap;
@@ -19,6 +15,7 @@ class SearchCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final Color background = category.primaryColor ?? colors.secondary600;
     return LayoutBuilder(
       builder: (context, cardConstraints) {
         return GestureDetector(
@@ -36,7 +33,7 @@ class SearchCategoryCard extends StatelessWidget {
                   blurRadius: 1.35,
                   spreadRadius: 0,
                   offset: Offset(0, 0),
-                )
+                ),
               ],
             ),
             child: Column(
@@ -48,7 +45,7 @@ class SearchCategoryCard extends StatelessWidget {
                   child: Container(
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: colors.secondary600,
+                      color: background,
                       borderRadius: AppBorderRadius.brCircular12,
                     ),
                     child: Stack(
