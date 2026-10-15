@@ -8,7 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/search/primary_se
 import 'package:nowdelivery_user_app/core/viewmodel/recent_keywords_view_model.dart';
 import 'package:nowdelivery_user_app/features/categories/viewmodel/get_app_categories_vm.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_categories_section.dart';
-import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_products_grid.dart';
+import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_results_view.dart';
 import 'package:nowdelivery_user_app/features/search/viewmodel/recent_search_vm.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -79,8 +79,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final RecentKeywordsViewModel recentVm =
-        ref.read(recentSearchProvider.notifier);
+    final RecentKeywordsViewModel recentVm = ref.read(
+      recentSearchProvider.notifier,
+    );
     final List<String> recentSearches =
         ref.watch(recentSearchProvider).valueOrNull ?? const <String>[];
 
@@ -111,7 +112,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             if (hasResults)
               Expanded(
                 // Keyed by the term so a new search starts at the top.
-                child: SearchProductsGrid(
+                child: SearchResultsView(
                   key: ValueKey<String>(_searchedTerm),
                   searchTerm: _searchedTerm,
                 ),
