@@ -7,7 +7,6 @@ import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
@@ -63,7 +62,14 @@ class CartBrandItemDetailsView extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) =>
               CartProductItemView(product: products[index]),
-          separatorBuilder: (context, index) => 16.hSpace,
+          // A rule, not just a gap: on the card's grey a bare 16 dp let one
+          // line's stepper and delete button run into the next line's image.
+          // neutral300, not neutral200, which barely shows on that grey.
+          separatorBuilder: (context, index) => Divider(
+            height: 33,
+            thickness: 1,
+            color: colors.neutral300,
+          ),
           itemCount: products.length,
         ),
 
