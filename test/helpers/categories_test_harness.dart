@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_page_transitions.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
@@ -163,6 +164,9 @@ Future<void> pumpSheetViaRouter(
   await _settleLocalization(tester);
   await tester.tap(find.text('__home__'));
   await _settleLocalization(tester);
+  // Let the push transition finish: the page slides in, so until then taps
+  // land beside the controls.
+  await tester.pump(AppSlidePageTransitionsBuilder.duration);
 }
 
 

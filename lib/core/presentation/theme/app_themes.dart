@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/fonts.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_page_transitions.dart';
 
 abstract class AppThemes {
   /// Material's default grabber takes its colour from `onSurfaceVariant`,
@@ -11,6 +12,7 @@ abstract class AppThemes {
 
   static ThemeData getLightModeTheme() => ThemeData(
     fontFamily: FontFamily.cairo,
+    pageTransitionsTheme: appPageTransitionsTheme,
     scaffoldBackgroundColor: Colors.white,
     bottomSheetTheme: _bottomSheetTheme,
     colorScheme: ColorScheme.light(
@@ -61,6 +63,7 @@ abstract class AppThemes {
   //////////////////////////////////////////////////////////////////////////////
   static ThemeData getDarkModeTheme() => ThemeData(
     fontFamily: FontFamily.cairo,
+    pageTransitionsTheme: appPageTransitionsTheme,
     scaffoldBackgroundColor: Colors.black,
     bottomSheetTheme: _bottomSheetTheme,
     colorScheme: ColorScheme.dark(

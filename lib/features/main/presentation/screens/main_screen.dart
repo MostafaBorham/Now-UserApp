@@ -24,7 +24,8 @@ class MainScreen extends ConsumerStatefulWidget {
   ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen>
+    with SingleTickerProviderStateMixin {
   static const Set<int> _loginRequiredTabs = <int>{1, 3};
   static const List<Widget> mainPages = <Widget>[
     HomeView(),
@@ -33,6 +34,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     MyOrderScreen(),
     SettingsScreen(),
   ];
+
+  /// Fades the body in on every tab switch, which used to cut straight to the
+  /// new tab. Opaque at rest, so it only costs anything for its 220 ms.
+  late final AnimationController _tabFade = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+    value: 1,
+  );
+  late final Animation<double> _tabOpacity = CurvedAnimation(
+    parent: _tabFade,
+    curve: Curves.easeOut,
+  );
+
+  @override
+  void dispose() {
+    _tabFade.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -69,6 +88,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final int currentPageIndex = ref.watch(mainTabIndexProvider);
+    // Any switch, from the bar, back, or another screen setting the tab.
+    ref.listen<int>(mainTabIndexProvider, (int? previous, int next) {
+      if (previous != next) _tabFade.forward(from: 0);
+    });
 
     // Cart badge count — rebuilds only when the total changes. getCartProvider
     // is session-scoped, so it clears with the signed-in user (no stale count).
@@ -88,18 +111,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         extendBody: true,
-        body: Stack(
-          children: [
-            Offstage(
-              offstage: currentPageIndex != 0,
-              child: TickerMode(
-                enabled: currentPageIndex == 0,
-                child: mainPages[0],
+        // Home stays mounted (Offstage) under the fade, so its state survives.
+        body: FadeTransition(
+          opacity: _tabOpacity,
+          child: Stack(
+            children: [
+              Offstage(
+                offstage: currentPageIndex != 0,
+                child: TickerMode(
+                  enabled: currentPageIndex == 0,
+                  child: mainPages[0],
+                ),
               ),
-            ),
 
-            if (currentPageIndex != 0) mainPages[currentPageIndex],
-          ],
+              if (currentPageIndex != 0) mainPages[currentPageIndex],
+            ],
+          ),
         ),
         bottomNavigationBar: SafeArea(
           child: AppBottomNavBar(

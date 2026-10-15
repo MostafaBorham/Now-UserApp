@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
@@ -51,5 +52,43 @@ void main() {
     // `true`: the app handled it, so it did not close.
     expect(await tester.binding.handlePopRoute(), isTrue);
     expect(container.read(mainTabIndexProvider), 0);
+  });
+
+  testWidgets('switching tabs fades the new tab in instead of cutting', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesScreen(
+      tester,
+      const MainScreen(),
+      overrides: <Override>[
+        getHomeSectionsProvider.overrideWith((Ref ref) => _EmptyFeed()),
+        isConnectedProvider.overrideWith((Ref ref) => Stream<bool>.value(true)),
+        mainTabIndexProvider.overrideWith((Ref ref) => 4),
+      ],
+    );
+    final ProviderContainer container = ProviderScope.containerOf(
+      tester.element(find.byType(MainScreen)),
+    );
+    double bodyOpacity() => tester
+        .widget<FadeTransition>(
+          find
+              .descendant(
+                of: find.byType(MainScreen),
+                matching: find.byType(FadeTransition),
+              )
+              .first,
+        )
+        .opacity
+        .value;
+
+    expect(bodyOpacity(), 1);
+
+    container.read(mainTabIndexProvider.notifier).state = 0;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+    expect(bodyOpacity(), inExclusiveRange(0, 1));
+
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(bodyOpacity(), 1);
   });
 }
