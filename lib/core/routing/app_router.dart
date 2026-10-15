@@ -234,7 +234,11 @@ abstract class AppRouter {
         name: AppRoutes.walletScreen,
         path: '/${AppRoutes.walletScreen}',
         redirect: _redirectToLogin,
-        builder: (context, state) => const WalletScreen(),
+        builder: (context, state) => WalletScreen(
+          entryAction: state.extra is WalletEntryAction
+              ? state.extra as WalletEntryAction
+              : null,
+        ),
       ),
       GoRoute(
         name: AppRoutes.fileComplaintScreen,

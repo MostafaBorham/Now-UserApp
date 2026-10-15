@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_w
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/wallet_model.dart';
+import 'package:nowdelivery_user_app/features/wallet/presentation/screens/wallet_screen.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 
 /// The wallet payment option, shown under the payment methods section: the
@@ -22,9 +23,13 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_v
 class WalletPaymentRow extends ConsumerWidget {
   const WalletPaymentRow({super.key});
 
-  /// Opens the wallet to top up, and re-checks the balance on the way back.
+  /// Opens the wallet straight on its add-balance sheet, and re-checks the
+  /// balance on the way back.
   Future<void> _topUp(BuildContext context, WidgetRef ref) async {
-    await context.pushNamed(AppRoutes.walletScreen);
+    await context.pushNamed(
+      AppRoutes.walletScreen,
+      extra: WalletEntryAction.addBalance,
+    );
     if (context.mounted) {
       ref.read(getWalletInfoProvider.notifier).getWalletInfo();
     }

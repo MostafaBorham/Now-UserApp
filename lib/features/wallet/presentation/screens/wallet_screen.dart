@@ -18,8 +18,17 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.d
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_info_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_wallet_transactions_vm.dart';
 
+/// What the wallet opens on, passed as the route's `extra`.
+enum WalletEntryAction {
+  /// Straight into the add-balance sheet: checkout's "top up" link, where the
+  /// customer came to add money, not to browse the wallet.
+  addBalance,
+}
+
 class WalletScreen extends ConsumerStatefulWidget {
-  const WalletScreen({super.key});
+  const WalletScreen({super.key, this.entryAction});
+
+  final WalletEntryAction? entryAction;
 
   @override
   ConsumerState<WalletScreen> createState() => _WalletScreenState();
@@ -34,8 +43,33 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     // The balance changes outside the app (refunds, credits, orders paid from
     // the wallet), so it is fetched fresh each time the screen opens.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(getWalletInfoProvider.notifier).getWalletInfo();
+      if (!mounted) return;
+      ref.read(getWalletInfoProvider.notifier).getWalletInfo();
+      if (widget.entryAction == WalletEntryAction.addBalance) {
+        _openAddBalance();
+      }
     });
+  }
+
+  void _openAddBalance() {
+    // Top-up charges the default card, which follows the cards list — no
+    // longer loaded at boot, so fetch it fresh here before the sheet needs a
+    // funding card.
+    ref.read(getMyCardsProvider.notifier).getMyCards();
+    _openActionSheet(
+      index: 0,
+      // No wallet snapshot passed in: the sheet watches the provider itself,
+      // so limits and suggested amounts that arrive while it is open still
+      // reach it.
+      sheet: const AddBalanceView(),
+      maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+      backgroundColor: context.colors.white,
+      isScrollControlled: true,
+      // The sheet blocks dismissal while a top-up is in flight via PopScope;
+      // drag-to-dismiss would bypass it, so it's disabled — the X button /
+      // barrier remain.
+      enableDrag: false,
+    );
   }
 
   Future<void> _refresh() => Future.wait<void>(<Future<void>>[
@@ -125,28 +159,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                             child: WalletActionButton(
                               actionName: LangKeys.addBalanceKey.tr(),
                               isSelected: _selectedActionIndex == 0,
-                              onTap: () {
-                                // Top-up charges the default card, which follows the
-                                // cards list — no longer loaded at boot, so fetch it
-                                // fresh here before the sheet needs a funding card.
-                                ref
-                                    .read(getMyCardsProvider.notifier)
-                                    .getMyCards();
-                                _openActionSheet(
-                                  index: 0,
-                                  // No wallet snapshot passed in: the sheet watches the
-                                  // provider itself, so limits and suggested amounts
-                                  // that arrive while it is open still reach it.
-                                  sheet: const AddBalanceView(),
-                                  maxHeight: screenHeight * 0.9,
-                                  backgroundColor: colors.white,
-                                  isScrollControlled: true,
-                                  // The sheet blocks dismissal while a top-up is in
-                                  // flight via PopScope; drag-to-dismiss would bypass
-                                  // it, so it's disabled — the X button / barrier remain.
-                                  enableDrag: false,
-                                );
-                              },
+                              onTap: _openAddBalance,
                             ),
                           ),
                         ),
