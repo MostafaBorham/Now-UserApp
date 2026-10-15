@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart' hide State;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
+import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -19,11 +20,11 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimm
 import 'package:nowdelivery_user_app/core/presentation/widgets/maps/app_map.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/auth_guard.dart';
-import 'package:nowdelivery_user_app/core/utils/location_manager.dart';
 import 'package:nowdelivery_user_app/core/viewmodel/pagination/pagination_status.dart';
 import 'package:nowdelivery_user_app/core/enums/session_types.dart';
 import 'package:nowdelivery_user_app/features/address/data/datasources/local/current_location_cache_service.dart';
 import 'package:nowdelivery_user_app/features/address/data/models/address_model.dart';
+import 'package:nowdelivery_user_app/features/address/data/repo/geocoding_repo.dart';
 import 'package:nowdelivery_user_app/features/address/viewmodel/get_my_addresses_vm.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/auth_session_vm.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/controllers/home_address_provider.dart';
@@ -124,13 +125,18 @@ class _HomeDeliveryAddressViewState
       _pendingPick = location;
     });
 
-    final Placemark? placemark = await LocationManager.getAddressFromLocation(
-      location,
-    );
+    // The same lookup as the add-address map, so offline it says to check the
+    // connection instead of to move the pin.
+    final Either<Failure, AddressModel> result = await GeocodingRepo()
+        .addressAt(location);
 
     if (!mounted) return;
 
-    if (placemark == null) {
+    final AddressModel? resolved = result.fold(
+      (Failure _) => null,
+      (AddressModel address) => address,
+    );
+    if (resolved == null) {
       // The selection did not change, so the pin goes back to it. It used to
       // stay on the tapped point while the list still highlighted the old
       // address — and picking that address again did nothing, because the map
@@ -139,7 +145,13 @@ class _HomeDeliveryAddressViewState
         _resolvingPick = false;
         _pendingPick = null;
       });
-      AppToast.showError(context, LangKeys.failedToGetAddress);
+      AppToast.showError(
+        context,
+        result.fold(
+          (Failure failure) => failure.message,
+          (_) => LangKeys.failedToGetAddress,
+        ),
+      );
       return;
     }
 
@@ -147,7 +159,7 @@ class _HomeDeliveryAddressViewState
       _resolvingPick = false;
       _pendingPick = null;
       _pickedOnMap = true;
-      _mapPickedAddress = AddressModel.fromPlacemark(placemark, location);
+      _mapPickedAddress = resolved;
       _selectedAddressId = null;
     });
   }
