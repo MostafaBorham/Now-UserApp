@@ -37,6 +37,7 @@ class _RecordingEdit extends EditAddressViewModel {
 /// The field labelled [labelKey] (the harness renders keys as-is).
 Finder _field(String labelKey) =>
     find.ancestor(of: find.text(labelKey), matching: find.byType(TextField));
+Finder _defaultAddressCheckbox() => find.byType(Checkbox);
 
 String _text(WidgetTester tester, String labelKey) =>
     tester.widget<TextField>(_field(labelKey)).controller!.text;
@@ -53,8 +54,8 @@ Future<void> _save(WidgetTester tester) async {
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  testWidgets('a home address saves floor, apartment and building to their '
-      'own columns', (WidgetTester tester) async {
+  testWidgets('a home address saves floor, apartment, building, and default '
+      'status to their own payload fields', (WidgetTester tester) async {
     late _RecordingAdd vm;
     await pumpCategoriesScreen(
       tester,
@@ -64,19 +65,46 @@ void main() {
       ],
     );
 
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isFalse);
+
     await tester.enterText(_field(LangKeys.floor), '3');
     await tester.enterText(_field(LangKeys.apartment), '12');
     await tester.enterText(_field(LangKeys.building), 'Al Noor Tower');
+    await tester.tap(find.text(LangKeys.setAsDefaultAddressKey));
     await tester.pump();
     await _save(tester);
 
     expect(vm.sent?.floor, '3');
     expect(vm.sent?.apartment, '12');
     expect(vm.sent?.buildingNumber, 'Al Noor Tower');
+    expect(vm.sent?.isDefault, isTrue);
   });
 
-  testWidgets('a work address prefills company and floor from their columns '
-      'and saves them back unchanged', (WidgetTester tester) async {
+  testWidgets('an add-address form keeps the backend default payload value '
+      'false until the checkbox is selected', (WidgetTester tester) async {
+    late _RecordingAdd vm;
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(address: AddressModel(area: 'Olaya')),
+      overrides: <Override>[
+        addAddressProvider.overrideWith((Ref ref) => vm = _RecordingAdd(ref)),
+      ],
+    );
+
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isFalse);
+
+    await tester.enterText(_field(LangKeys.floor), '3');
+    await tester.enterText(_field(LangKeys.building), 'Al Noor Tower');
+    await tester.pump();
+    await _save(tester);
+
+    expect(vm.sent?.isDefault, isFalse);
+  });
+
+  testWidgets('a default address initializes checked and persists an '
+      'unchecked edit back through the update flow', (
+    WidgetTester tester,
+  ) async {
     late _RecordingEdit vm;
     await pumpCategoriesScreen(
       tester,
@@ -89,6 +117,7 @@ void main() {
           apartment: 'Acme',
           floor: '5',
           buildingNumber: 'Tower B',
+          isDefault: true,
         ),
       ),
       overrides: <Override>[
@@ -107,12 +136,84 @@ void main() {
           ?.text,
       '5',
     );
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isTrue);
 
+    await tester.tap(find.text(LangKeys.setAsDefaultAddressKey));
+    await tester.pump();
     await _save(tester);
 
     expect(vm.sent?.apartment, 'Acme');
     expect(vm.sent?.floor, '5');
     expect(vm.sent?.buildingNumber, 'Tower B');
+    expect(vm.sent?.isDefault, isFalse);
+  });
+
+  testWidgets('a non-default address initializes unchecked and persists a '
+      'checked edit back through the update flow', (WidgetTester tester) async {
+    late _RecordingEdit vm;
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(
+        isEditScreen: true,
+        address: AddressModel(
+          id: 8,
+          area: 'Olaya',
+          label: <String, dynamic>{'en': 'Home', 'ar': 'المنزل'},
+          floor: '2',
+          apartment: '12',
+          buildingNumber: 'Tower C',
+          isDefault: false,
+        ),
+      ),
+      overrides: <Override>[
+        editAddressProvider.overrideWith((Ref ref) => vm = _RecordingEdit(ref)),
+      ],
+    );
+
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isFalse);
+
+    await tester.tap(find.text(LangKeys.setAsDefaultAddressKey));
+    await tester.pump();
+    await _save(tester);
+
+    expect(vm.sent?.isDefault, isTrue);
+  });
+
+  testWidgets('the checkbox resets when the same form is rebuilt for another '
+      'address', (WidgetTester tester) async {
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(
+        isEditScreen: true,
+        address: AddressModel(
+          id: 7,
+          area: 'Olaya',
+          label: <String, dynamic>{'en': 'Home', 'ar': 'المنزل'},
+          floor: '3',
+          buildingNumber: 'Tower A',
+          isDefault: true,
+        ),
+      ),
+    );
+
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isTrue);
+
+    await pumpCategoriesScreen(
+      tester,
+      const AddressDetailsScreen(
+        isEditScreen: true,
+        address: AddressModel(
+          id: 8,
+          area: 'Olaya',
+          label: <String, dynamic>{'en': 'Home', 'ar': 'المنزل'},
+          floor: '2',
+          buildingNumber: 'Tower B',
+          isDefault: false,
+        ),
+      ),
+    );
+
+    expect(tester.widget<Checkbox>(_defaultAddressCheckbox()).value, isFalse);
   });
 
   testWidgets('floor takes 4 digits, apartment 5, and text drops emoji '

@@ -341,6 +341,7 @@
   "serverUnavailable": "تواجه الخدمة مشكلة حاليًا. يرجى المحاولة بعد قليل.",
   "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
   "setAsDefault": "تعيين كبطاقة افتراضية",
+  "setAsDefaultAddress": "تعيين كعنوان افتراضي",
   "setYourLocation": "حدد موقعك",
   "shareExperienceToImprove": "شاركنا تجربتك لمساعدتنا في تحسين الخدمة",
   "shopNow": "تسوّق الآن",

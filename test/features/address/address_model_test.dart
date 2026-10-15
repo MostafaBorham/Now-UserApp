@@ -102,6 +102,20 @@ void main() {
       // backend promotes it is the backend's call, not this model's.
       expect(const AddressModel().toRequestJson()['is_default'], isFalse);
     });
+
+    test('is_default is sent as true when the form selects default', () {
+      expect(
+        const AddressModel(isDefault: true).toRequestJson()['is_default'],
+        isTrue,
+      );
+    });
+
+    test('is_default is sent as false when the form clears default', () {
+      expect(
+        const AddressModel(isDefault: false).toRequestJson()['is_default'],
+        isFalse,
+      );
+    });
   });
 
   group('fromJson', () {
