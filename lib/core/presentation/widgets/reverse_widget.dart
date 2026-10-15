@@ -12,10 +12,9 @@ class ReverseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return applyReverse??context.isRTL? Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.identity()..scaleByDouble(-1.0, 1.0, 1.0, 1),
-      child: child,
-    ) : child;
+    // A Transform either way (identity costs no layer): returning the bare
+    // child when unmirrored remounted it on every language switch, so stateful
+    // children such as the Home header's animated motorcycle reloaded.
+    return Transform.flip(flipX: applyReverse ?? context.isRTL, child: child);
   }
 }
