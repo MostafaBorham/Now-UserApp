@@ -73,6 +73,7 @@
   "complaintPhotos": "Complaint Photos",
   "complaintPhotosReadFailed": "Couldn't attach your photos. Remove them and try again.",
   "complaintSubmittedSuccessfully": "Your complaint has been submitted successfully",
+  "complaintAlreadySubmitted": "Complaint already submitted",
   "completeAddressInfo": "Please complete the address info",
   "confirmAddress": "Confirm Address",
   "confirmOrder": "Confirm Order",

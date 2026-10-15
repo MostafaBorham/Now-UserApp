@@ -655,8 +655,16 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       ),
                     ),
                     // The complaint flow only applies once the order has been
-                    // delivered — hide the button for every other status.
-                    if (status is DeliveredStatus)
+                    // delivered — hide the button for every other status. The
+                    // backend takes one complaint per order, so once one is on
+                    // file the button says so instead of opening the form.
+                    if (status is DeliveredStatus && order.hasComplaint)
+                      PrimaryButton(
+                        title: LangKeys.complaintAlreadySubmittedKey.tr(),
+                        buttonColor: colors.neutral300,
+                        titleColor: colors.neutral500,
+                      )
+                    else if (status is DeliveredStatus)
                       PrimaryButton(
                         title: LangKeys.submitAComplaintKey.tr(),
                         onTap: () => context.pushNamed(

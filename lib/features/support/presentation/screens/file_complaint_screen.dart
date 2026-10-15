@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_request_model.dart';
 import 'package:nowdelivery_user_app/features/support/data/models/complaint_response_model.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/widgets/file_complaint/complaint_photos_picker.dart';
@@ -58,6 +59,12 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) AppToast.showError(context, message);
     });
+  }
+
+  void _refreshOrder() {
+    final String? uuid = widget.order.uuid;
+    if (uuid == null || uuid.isEmpty) return;
+    ref.read(getOrderDetailsProvider(uuid).notifier).getOrderDetails();
   }
 
   /// Validates the form, then builds the request model (the order number,
@@ -113,6 +120,12 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
       submitComplaintProvider,
       (AsyncValue<ComplaintResponseModel?>? previous,
           AsyncValue<ComplaintResponseModel?> next) {
+        // Either way the order now has a complaint on file (the backend's
+        // "already has a ticket" 422 included), so the order details screen
+        // underneath reloads to swap its "Submit a complaint" button.
+        if (previous?.isLoading == true && !next.isLoading) {
+          _refreshOrder();
+        }
         next.whenOrNull(
           data: (ComplaintResponseModel? ticket) {
             if (ticket == null || !mounted) return;

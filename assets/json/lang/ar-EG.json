@@ -73,6 +73,7 @@
   "complaintPhotos": "صور الشكوى",
   "complaintPhotosReadFailed": "تعذّر إرفاق الصور. احذفها ثم حاول مرة أخرى.",
   "complaintSubmittedSuccessfully": "تم إرسال شكواك بنجاح",
+  "complaintAlreadySubmitted": "تم تقديم شكوى لهذا الطلب",
   "completeAddressInfo": "من فضلك أكمل بيانات العنوان",
   "confirmAddress": "تأكيد العنوان",
   "confirmOrder": "تأكيد الطلب",

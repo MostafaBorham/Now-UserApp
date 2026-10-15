@@ -120,4 +120,23 @@ void main() {
     expect(orderWithStatus('cancelled').canContactSupport, isFalse);
     expect(orderWithStatus('rejected').canContactSupport, isFalse);
   });
+
+  test('an order with a complaint on file says so', () {
+    final OrderModel order = OrderModel.fromJson(<String, dynamic>{
+      'status': 'delivered',
+      'complaint': <String, dynamic>{'id': 42, 'status': 'under_review'},
+    });
+
+    expect(order.hasComplaint, isTrue);
+    expect(order.complaintId, 42);
+    expect(order.complaintStatus, 'under_review');
+  });
+
+  test('a null or missing complaint means none was filed', () {
+    expect(
+      OrderModel.fromJson(<String, dynamic>{'complaint': null}).hasComplaint,
+      isFalse,
+    );
+    expect(OrderModel.fromJson(<String, dynamic>{}).hasComplaint, isFalse);
+  });
 }

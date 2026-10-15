@@ -60,6 +60,15 @@ class OrderModel {
   /// button and the read-only [OrderRatingView].
   final OrderRatingModel rating;
 
+  /// The customer's complaint (support ticket) about this order, from the
+  /// detail payload's `complaint` block; null when none was filed. The backend
+  /// takes one customer ticket per order whatever its status, so once this is
+  /// set the screen stops offering a new complaint.
+  final int? complaintId;
+  final String? complaintStatus;
+
+  bool get hasComplaint => complaintId != null;
+
   final String? paymentStatus;
   final double subtotal;
   final double tax;
@@ -167,6 +176,8 @@ class OrderModel {
     this.orderStatus,
     this.isTracking = false,
     this.rating = const OrderRatingModel(),
+    this.complaintId,
+    this.complaintStatus,
     this.paymentStatus,
     this.subtotal = 0,
     this.tax = 0,
@@ -214,6 +225,10 @@ class OrderModel {
         json['voucher'] is Map<String, dynamic>
         ? json['voucher'] as Map<String, dynamic>
         : null;
+    final Map<String, dynamic>? complaint =
+        json['complaint'] is Map<String, dynamic>
+        ? json['complaint'] as Map<String, dynamic>
+        : null;
 
     return OrderModel(
       id: (json['id'] as num?)?.toInt(),
@@ -241,6 +256,10 @@ class OrderModel {
       rating: OrderRatingModel.fromJson(
         json['rating'] as Map<String, dynamic>?,
       ),
+      complaintId: complaint == null
+          ? null
+          : int.tryParse(complaint['id']?.toString() ?? ''),
+      complaintStatus: complaint?['status']?.toString(),
       paymentStatus: json['payment_status']?.toString(),
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '') ?? 0.0,
       tax:
