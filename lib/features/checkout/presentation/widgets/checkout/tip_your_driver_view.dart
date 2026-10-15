@@ -1,9 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// The tip picker. Nothing is preselected — there is no tip until the customer
 /// picks one — and tapping the selected pill again takes the tip back.
@@ -103,40 +104,50 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
             ],
           ),
           if (_isOtherSelected)
-            TextField(
+            InputDirectionBuilder(
               controller: _otherTipController,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-                TextInputFormatter.withFunction(
-                  (TextEditingValue old, TextEditingValue next) =>
-                      (int.tryParse(next.text) ?? 0) <= _maxTip ? next : old,
-                ),
-              ],
-              onChanged: (_) => widget.onTipChanged?.call(_otherTip),
-              style: AppTextStyles.style14Regular.copyWith(
-                color: colors.tertiaryContainer,
-              ),
-              cursorColor: colors.tertiaryContainer,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                hintText: LangKeys.enterAmountKey.tr(),
-                hintStyle: AppTextStyles.style14Regular.copyWith(
-                  color: colors.neutral500,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(999),
-                  borderSide: BorderSide(color: colors.neutral200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(999),
-                  borderSide: BorderSide(color: colors.primary500Main),
-                ),
-              ),
+              builder:
+                  (BuildContext context, TextDirection? typedDirection) =>
+                      TextField(
+                        controller: _otherTipController,
+                        keyboardType: TextInputType.number,
+                        textDirection: typedDirection,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                          TextInputFormatter.withFunction(
+                            (TextEditingValue old, TextEditingValue next) =>
+                                (int.tryParse(next.text) ?? 0) <= _maxTip
+                                ? next
+                                : old,
+                          ),
+                        ],
+                        onChanged: (_) => widget.onTipChanged?.call(_otherTip),
+                        style: AppTextStyles.style14Regular.copyWith(
+                          color: colors.tertiaryContainer,
+                        ),
+                        cursorColor: colors.tertiaryContainer,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          hintText: LangKeys.enterAmountKey.tr(),
+                          hintStyle: AppTextStyles.style14Regular.copyWith(
+                            color: colors.neutral500,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(999),
+                            borderSide: BorderSide(color: colors.neutral200),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(999),
+                            borderSide: BorderSide(
+                              color: colors.primary500Main,
+                            ),
+                          ),
+                        ),
+                      ),
             ),
         ],
       ),

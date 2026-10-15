@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extens
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// Picks a top-up amount, either from the server's suggested chips or as a
 /// typed custom amount.
@@ -219,30 +220,41 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                           width: 1,
                         ),
                       ),
-                      child: TextField(
+                      child: InputDirectionBuilder(
                         controller: amountController,
-                        // Decimal, because the server's amounts are two-place
-                        // decimals — an integer pad would make a valid amount
-                        // untypeable.
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        style: AppTextStyles.style14Regular.copyWith(
-                          color: hasFieldError ? colors.error : colors.black,
-                        ),
-                        onChanged: _applyCustomAmount,
-                        decoration: InputDecoration(
-                          hintText: LangKeys.enterAmountKey.tr(),
-                          hintStyle: AppTextStyles.style14Regular.copyWith(
-                            color: colors.neutral500.withValues(alpha: 0.3),
-                          ),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                        ),
+                        builder:
+                            (context, typedDirection) => TextField(
+                              controller: amountController,
+                              // Decimal, because the server's amounts are
+                              // two-place decimals — an integer pad would make
+                              // a valid amount untypeable.
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              textDirection: typedDirection,
+                              style: AppTextStyles.style14Regular.copyWith(
+                                color: hasFieldError
+                                    ? colors.error
+                                    : colors.black,
+                              ),
+                              onChanged: _applyCustomAmount,
+                              decoration: InputDecoration(
+                                hintText: LangKeys.enterAmountKey.tr(),
+                                hintStyle: AppTextStyles.style14Regular
+                                    .copyWith(
+                                      color: colors.neutral500.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                    ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
+                              ),
+                            ),
                       ),
                     ),
                     const SizedBox(height: 8),

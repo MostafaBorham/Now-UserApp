@@ -1,9 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// Inline editor for the per-order delivery instructions ("directions to the
 /// driver"). The typed text is submitted with the order as `delivery_instructions`;
@@ -46,27 +47,34 @@ class DeliveryInstructionsCard extends StatelessWidget {
                 color: colors.tertiaryContainer,
               ),
             ),
-            TextField(
+            InputDirectionBuilder(
               controller: controller,
-              minLines: 3,
-              maxLines: 5,
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              style: AppTextStyles.style14Regular.copyWith(color: colors.black),
-              cursorColor: colors.tertiaryContainer,
-              decoration: InputDecoration(
-                isDense: true,
-                filled: true,
-                fillColor: colors.white,
-                contentPadding: const EdgeInsets.all(12),
-                border: _box,
-                enabledBorder: _box,
-                focusedBorder: _box,
-                hintText: LangKeys.addInstructionsHintKey.tr(),
-                hintStyle: AppTextStyles.style14Regular.copyWith(
-                  color: colors.neutral500,
-                ),
-              ),
+              builder: (BuildContext context, TextDirection? typedDirection) =>
+                  TextField(
+                    controller: controller,
+                    minLines: 3,
+                    maxLines: 5,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    textDirection: typedDirection,
+                    style: AppTextStyles.style14Regular.copyWith(
+                      color: colors.black,
+                    ),
+                    cursorColor: colors.tertiaryContainer,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      filled: true,
+                      fillColor: colors.white,
+                      contentPadding: const EdgeInsets.all(12),
+                      border: _box,
+                      enabledBorder: _box,
+                      focusedBorder: _box,
+                      hintText: LangKeys.addInstructionsHintKey.tr(),
+                      hintStyle: AppTextStyles.style14Regular.copyWith(
+                        color: colors.neutral500,
+                      ),
+                    ),
+                  ),
             ),
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// The saved-card entry fields (cardholder name, number, expiry, CVV), shared by
 /// every add-card surface.
@@ -308,40 +309,44 @@ class _CardInputField extends StatelessWidget {
       borderSide: BorderSide(color: colors.primary500Main, width: 1.5),
     );
     final TextDirection? direction = isLtr ? TextDirection.ltr : null;
-    return TextFormField(
+    return InputDirectionBuilder(
       controller: controller,
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      inputFormatters: inputFormatters,
-      keyboardType: keyboardType,
-      textDirection: direction,
-      // Left-to-right digits still sit on the locale's start edge, as in the
-      // phone field: right in Arabic.
-      textAlign:
-          textAlign ??
-          (isLtr && Directionality.of(context) == TextDirection.rtl
-              ? TextAlign.right
-              : TextAlign.start),
-      style: const TextStyle(fontSize: 15, color: Colors.black87),
-      decoration: InputDecoration(
-        counterText: '',
-        hintText: hintText,
-        hintTextDirection: direction,
-        hintStyle: TextStyle(
-          color: hintColor ?? colors.neutral500,
-          fontSize: 15,
-        ),
-        filled: true,
-        fillColor: fieldColor ?? colors.neutral200.withValues(alpha: 0.5),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 10,
-        ),
-        enabledBorder: border,
-        focusedBorder: focused,
-        errorBorder: border,
-        focusedErrorBorder: focused,
-      ),
+      builder: (BuildContext context, TextDirection? typedDirection) =>
+          TextFormField(
+            controller: controller,
+            validator: validator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            inputFormatters: inputFormatters,
+            keyboardType: keyboardType,
+            textDirection: direction ?? typedDirection,
+            // Left-to-right digits still sit on the locale's start edge, as in
+            // the phone field: right in Arabic.
+            textAlign:
+                textAlign ??
+                (isLtr && Directionality.of(context) == TextDirection.rtl
+                    ? TextAlign.right
+                    : TextAlign.start),
+            style: const TextStyle(fontSize: 15, color: Colors.black87),
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: hintText,
+              hintTextDirection: direction,
+              hintStyle: TextStyle(
+                color: hintColor ?? colors.neutral500,
+                fontSize: 15,
+              ),
+              filled: true,
+              fillColor: fieldColor ?? colors.neutral200.withValues(alpha: 0.5),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 10,
+              ),
+              enabledBorder: border,
+              focusedBorder: focused,
+              errorBorder: border,
+              focusedErrorBorder: focused,
+            ),
+          ),
     );
   }
 }

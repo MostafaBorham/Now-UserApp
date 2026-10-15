@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
 
@@ -143,41 +144,55 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                         child: Builder(
                           builder: (BuildContext context) {
                             final Widget field = Center(
-                              child: TextFormField(
+                              child: InputDirectionBuilder(
                                 controller: _controller,
-                                onChanged: widget.onChanged,
-                                onFieldSubmitted: _onSubmitted,
-                                textInputAction: TextInputAction.search,
-                                style: AppTextStyles.style16Regular.copyWith(
-                                  color: colors.black,
-                                  fontSize: con.maxWidth * 0.05,
-                                ),
-                                textAlignVertical: TextAlignVertical.center,
-                                autofocus: widget.autofocus,
-                                focusNode: _focusNode,
-                                readOnly: widget.navigateToSearchOnTap,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  hintText:
-                                      widget.hintText ??
-                                      LangKeys.searchHintKey.tr(),
-                                  hintStyle: AppTextStyles.style16Regular
-                                      .copyWith(
-                                        color: colors.onPrimaryFixed,
-                                        fontSize: con.maxWidth * 0.05,
+                                builder:
+                                    (
+                                      BuildContext context,
+                                      TextDirection? typedDirection,
+                                    ) => TextFormField(
+                                      controller: _controller,
+                                      onChanged: widget.onChanged,
+                                      onFieldSubmitted: _onSubmitted,
+                                      textInputAction: TextInputAction.search,
+                                      textDirection: typedDirection,
+                                      style: AppTextStyles.style16Regular
+                                          .copyWith(
+                                            color: colors.black,
+                                            fontSize: con.maxWidth * 0.05,
+                                          ),
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      autofocus: widget.autofocus,
+                                      focusNode: _focusNode,
+                                      readOnly: widget.navigateToSearchOnTap,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        hintText:
+                                            widget.hintText ??
+                                            LangKeys.searchHintKey.tr(),
+                                        hintStyle: AppTextStyles.style16Regular
+                                            .copyWith(
+                                              color: colors.onPrimaryFixed,
+                                              fontSize: con.maxWidth * 0.05,
+                                            ),
+                                        prefixIcon: ReverseWidget(
+                                          applyReverse: context.isRTL,
+                                          child: Assets
+                                              .media
+                                              .images
+                                              .svg
+                                              .searchIcon
+                                              .svg(),
+                                        ),
+                                        prefixIconConstraints: BoxConstraints(
+                                          maxHeight: con.maxWidth * 0.05,
+                                          minWidth: con.maxWidth * 0.05,
+                                        ),
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
                                       ),
-                                  prefixIcon: ReverseWidget(
-                                    applyReverse: context.isRTL,
-                                    child: Assets.media.images.svg.searchIcon
-                                        .svg(),
-                                  ),
-                                  prefixIconConstraints: BoxConstraints(
-                                    maxHeight: con.maxWidth * 0.05,
-                                    minWidth: con.maxWidth * 0.05,
-                                  ),
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.zero,
-                                ),
+                                    ),
                               ),
                             );
                             if (!widget.navigateToSearchOnTap) return field;

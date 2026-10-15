@@ -1,9 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// Bottom message composer: a rounded text field plus the green send button.
 ///
@@ -62,11 +63,19 @@ class _MessageInputBarState extends State<MessageInputBar> {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
+                    // The growing height is measured with the same base
+                    // direction the field itself renders with, so a typed
+                    // message that flips the field doesn't wrap to a
+                    // different number of lines than it is measured at.
+                    final TextDirection measureDirection =
+                        resolveInputDirection(widget.controller?.text) ??
+                        Directionality.of(context);
                     final int lineCount = _lineCount(
                       context,
                       widget.controller?.text ?? '',
                       (constraints.maxWidth - 40).clamp(1, double.infinity),
                       textStyle,
+                      measureDirection,
                     );
                     final TextPainter textPainter =
                         TextPainter(
@@ -74,7 +83,7 @@ class _MessageInputBarState extends State<MessageInputBar> {
                             text: widget.controller?.text ?? ' ',
                             style: textStyle,
                           ),
-                          textDirection: Directionality.of(context),
+                          textDirection: measureDirection,
                           textScaler: MediaQuery.textScalerOf(context),
                         )..layout(
                           maxWidth: (constraints.maxWidth - 40).clamp(
@@ -97,30 +106,36 @@ class _MessageInputBarState extends State<MessageInputBar> {
                         borderRadius: BorderRadius.circular(26),
                         border: Border.all(color: context.colors.neutral200),
                       ),
-                      child: TextField(
+                      child: InputDirectionBuilder(
                         controller: widget.controller,
-                        minLines: 1,
-                        maxLines: lineCount,
-                        maxLength: 4000,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.send,
-                        onSubmitted: (_) => widget.onSend?.call(),
-                        textAlignVertical: TextAlignVertical.center,
-                        style: textStyle,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                          ),
-                          border: InputBorder.none,
-                          counterText: '',
-                          hintText: LangKeys.supportMessageHintKey.tr(),
-                          hintStyle: TextStyle(
-                            fontSize: 15,
-                            color: context.colors.neutral500,
-                          ),
-                        ),
+                        builder:
+                            (context, typedDirection) => TextField(
+                              controller: widget.controller,
+                              minLines: 1,
+                              maxLines: lineCount,
+                              maxLength: 4000,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.send,
+                              textDirection: typedDirection,
+                              onSubmitted: (_) => widget.onSend?.call(),
+                              textAlignVertical: TextAlignVertical.center,
+                              style: textStyle,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                border: InputBorder.none,
+                                counterText: '',
+                                hintText: LangKeys.supportMessageHintKey.tr(),
+                                hintStyle: TextStyle(
+                                  fontSize: 15,
+                                  color: context.colors.neutral500,
+                                ),
+                              ),
+                            ),
                       ),
                     );
                   },
@@ -150,12 +165,13 @@ class _MessageInputBarState extends State<MessageInputBar> {
     String text,
     double maxWidth,
     TextStyle style,
+    TextDirection textDirection,
   ) {
     if (text.isEmpty) return 1;
 
     final TextPainter painter = TextPainter(
       text: TextSpan(text: text, style: style),
-      textDirection: Directionality.of(context),
+      textDirection: textDirection,
       textScaler: MediaQuery.textScalerOf(context),
       maxLines: 5,
     )..layout(maxWidth: maxWidth);

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// A single rounded input used on the Address Details form.
 ///
@@ -36,28 +37,32 @@ class AddressField extends StatelessWidget {
           color: context.colors.onPrimaryContainer,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: TextField(
+        child: InputDirectionBuilder(
           controller: controller,
-          keyboardType: keyboardType,
-          inputFormatters: inputFormatters,
-          textDirection: textDirection,
-          textAlign: textDirection == null
-              ? TextAlign.start
-              : Directionality.of(context) == TextDirection.rtl
-              ? TextAlign.right
-              : TextAlign.left,
-          style: AppTextStyles.style14Regular.copyWith(
-            color: context.colors.tertiaryContainer,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.zero,
-            border: InputBorder.none,
-            labelText: label,
-            labelStyle: AppTextStyles.style14Regular.copyWith(
-              color: context.colors.neutral500,
-            ),
-          ),
+          builder: (BuildContext context, TextDirection? typedDirection) =>
+              TextField(
+                controller: controller,
+                keyboardType: keyboardType,
+                inputFormatters: inputFormatters,
+                textDirection: textDirection ?? typedDirection,
+                textAlign: textDirection == null
+                    ? TextAlign.start
+                    : Directionality.of(context) == TextDirection.rtl
+                    ? TextAlign.right
+                    : TextAlign.left,
+                style: AppTextStyles.style14Regular.copyWith(
+                  color: context.colors.tertiaryContainer,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  border: InputBorder.none,
+                  labelText: label,
+                  labelStyle: AppTextStyles.style14Regular.copyWith(
+                    color: context.colors.neutral500,
+                  ),
+                ),
+              ),
         ),
       ),
     );

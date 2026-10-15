@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -9,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 class PrimarySearchField extends StatefulWidget {
   const PrimarySearchField({
@@ -164,22 +165,30 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
               children: <Widget>[
                 Expanded(
                   child: _isEditable
-                      ? TextField(
+                      ? InputDirectionBuilder(
                           controller: _controller,
-                          focusNode: _focusNode,
-                          onChanged: _onChanged,
-                          onSubmitted: _onSubmitted,
-                          textInputAction: TextInputAction.search,
-                          style: AppTextStyles.style16Regular.copyWith(
-                            color: colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            hintText: hints.first.tr(),
-                            hintStyle: hintStyle,
-                          ),
+                          builder:
+                              (
+                                BuildContext context,
+                                TextDirection? typedDirection,
+                              ) => TextField(
+                                controller: _controller,
+                                focusNode: _focusNode,
+                                onChanged: _onChanged,
+                                onSubmitted: _onSubmitted,
+                                textInputAction: TextInputAction.search,
+                                textDirection: typedDirection,
+                                style: AppTextStyles.style16Regular.copyWith(
+                                  color: colors.black,
+                                ),
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                  hintText: hints.first.tr(),
+                                  hintStyle: hintStyle,
+                                ),
+                              ),
                         )
                       : widget.isAnimated
                       ? _AnimatedSearchHint(hints: hints, style: hintStyle)

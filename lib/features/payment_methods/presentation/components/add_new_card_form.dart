@@ -1,10 +1,11 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// The "Add New Card" entry form — a light card holding the cardholder name,
 /// card number (with brand logos), expiry date and CVV, split by hairlines.
@@ -31,6 +32,8 @@ class AddNewCardForm extends StatelessWidget {
             label: LangKeys.cardNumberKey.tr(),
             initialValue: '2547 7487 4781 5241',
             keyboardType: TextInputType.number,
+            // Digits: the groups of a card number come out reversed RTL.
+            isLtr: true,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -50,6 +53,7 @@ class AddNewCardForm extends StatelessWidget {
                     label: LangKeys.expirationDateKey.tr(),
                     initialValue: '11/2025',
                     keyboardType: TextInputType.datetime,
+                    isLtr: true,
                   ),
                 ),
                 VerticalDivider(
@@ -62,6 +66,7 @@ class AddNewCardForm extends StatelessWidget {
                     label: LangKeys.cvvKey.tr(),
                     initialValue: '487',
                     keyboardType: TextInputType.number,
+                    isLtr: true,
                   ),
                 ),
               ],
@@ -75,18 +80,40 @@ class AddNewCardForm extends StatelessWidget {
 
 /// A single labelled field: muted label on top, editable value below,
 /// with optional trailing content (used for the card-number brand logos).
-class _CardField extends StatelessWidget {
+///
+/// Owns its text in a [TextEditingController] seeded from [initialValue], so
+/// the field can flip between LTR and RTL with what is being typed the way
+/// every other input in the app does. [isLtr] pins the direction instead —
+/// card numbers, expiry dates and CVVs read left-to-right even in Arabic.
+class _CardField extends StatefulWidget {
   const _CardField({
     required this.label,
     required this.initialValue,
     this.keyboardType,
     this.trailing,
+    this.isLtr = false,
   });
 
   final String label;
   final String initialValue;
   final TextInputType? keyboardType;
   final Widget? trailing;
+  final bool isLtr;
+
+  @override
+  State<_CardField> createState() => _CardFieldState();
+}
+
+class _CardFieldState extends State<_CardField> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialValue,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +122,7 @@ class _CardField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          widget.label,
           style: AppTextStyles.style14Regular.copyWith(
             color: context.colors.neutral500,
           ),
@@ -104,22 +131,33 @@ class _CardField extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: TextFormField(
-                initialValue: initialValue,
-                keyboardType: keyboardType,
-                style: AppTextStyles.style16Medium.copyWith(
-                  color: context.colors.tertiaryContainer,
-                ),
-                decoration: const InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
+              child: InputDirectionBuilder(
+                controller: _controller,
+                builder:
+                    (BuildContext context, TextDirection? typedDirection) =>
+                        TextFormField(
+                          controller: _controller,
+                          keyboardType: widget.keyboardType,
+                          textDirection: widget.isLtr
+                              ? TextDirection.ltr
+                              : typedDirection,
+                          style: AppTextStyles.style16Medium.copyWith(
+                            color: context.colors.tertiaryContainer,
+                          ),
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            isCollapsed: true,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                          ),
+                        ),
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+            if (widget.trailing != null) ...[
+              const SizedBox(width: 8),
+              widget.trailing!,
+            ],
           ],
         ),
       ],

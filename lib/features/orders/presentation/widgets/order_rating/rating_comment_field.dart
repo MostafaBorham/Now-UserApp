@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// The compact, filled comment box the rating screen puts under every rateable
 /// row. It grows from one line up to four as the shopper types and takes its
@@ -34,34 +35,39 @@ class RatingCommentField extends StatelessWidget {
       borderSide: const BorderSide(color: Colors.transparent),
     );
 
-    return TextField(
+    return InputDirectionBuilder(
       controller: controller,
-      readOnly: readOnly,
-      maxLength: readOnly ? null : maxLength,
-      minLines: 1,
-      maxLines: 4,
-      textInputAction: TextInputAction.newline,
-      style: AppTextStyles.style14Regular.copyWith(color: colors.black),
-      decoration: InputDecoration(
-        isDense: true,
-        filled: true,
-        fillColor: fillColor ?? colors.white,
-        hintText: hint,
-        hintStyle: AppTextStyles.style14Regular.copyWith(
-          color: colors.neutral400,
-        ),
-        contentPadding: const EdgeInsets.all(12),
-        border: border,
-        enabledBorder: border,
-        focusedBorder: readOnly
-            ? border
-            : border.copyWith(
-                borderSide: BorderSide(
-                  color: colors.primary500Main,
-                  width: 1.5,
-                ),
+      builder: (BuildContext context, TextDirection? typedDirection) =>
+          TextField(
+            controller: controller,
+            readOnly: readOnly,
+            maxLength: readOnly ? null : maxLength,
+            minLines: 1,
+            maxLines: 4,
+            textInputAction: TextInputAction.newline,
+            textDirection: typedDirection,
+            style: AppTextStyles.style14Regular.copyWith(color: colors.black),
+            decoration: InputDecoration(
+              isDense: true,
+              filled: true,
+              fillColor: fillColor ?? colors.white,
+              hintText: hint,
+              hintStyle: AppTextStyles.style14Regular.copyWith(
+                color: colors.neutral400,
               ),
-      ),
+              contentPadding: const EdgeInsets.all(12),
+              border: border,
+              enabledBorder: border,
+              focusedBorder: readOnly
+                  ? border
+                  : border.copyWith(
+                      borderSide: BorderSide(
+                        color: colors.primary500Main,
+                        width: 1.5,
+                      ),
+                    ),
+            ),
+          ),
     );
   }
 }

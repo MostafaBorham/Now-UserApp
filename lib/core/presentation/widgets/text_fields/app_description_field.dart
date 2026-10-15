@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/field_input_borders.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 class AppDescriptionField extends StatelessWidget {
   const AppDescriptionField({
@@ -21,29 +22,34 @@ class AppDescriptionField extends StatelessWidget {
     final InputBorder focused = filledDescriptionBorder.copyWith(
       borderSide: BorderSide(color: colors.primary500Main, width: 1.5),
     );
-    return TextFormField(
+    return InputDirectionBuilder(
       controller: controller,
-      maxLines: 4,
-      maxLength: maxLength,
-      style: AppTextStyles.style14Regular.copyWith(color: colors.black),
-      decoration: InputDecoration(
-        counterText: '',
-        filled: true,
-        fillColor: colors.onPrimaryContainer,
-        hintText: hintTxt,
-        hintStyle: AppTextStyles.style14Regular.copyWith(
-          color: colors.onPrimaryFixed
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ),
-        border: filledDescriptionBorder,
-        enabledBorder: filledDescriptionBorder,
-        focusedBorder: focused,
-        errorBorder: filledDescriptionBorder,
-        focusedErrorBorder: focused,
-      ),
+      builder: (BuildContext context, TextDirection? typedDirection) =>
+          TextFormField(
+            controller: controller,
+            maxLines: 4,
+            maxLength: maxLength,
+            textDirection: typedDirection,
+            style: AppTextStyles.style14Regular.copyWith(color: colors.black),
+            decoration: InputDecoration(
+              counterText: '',
+              filled: true,
+              fillColor: colors.onPrimaryContainer,
+              hintText: hintTxt,
+              hintStyle: AppTextStyles.style14Regular.copyWith(
+                color: colors.onPrimaryFixed,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
+              border: filledDescriptionBorder,
+              enabledBorder: filledDescriptionBorder,
+              focusedBorder: focused,
+              errorBorder: filledDescriptionBorder,
+              focusedErrorBorder: focused,
+            ),
+          ),
     );
   }
 }

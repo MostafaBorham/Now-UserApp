@@ -1,6 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -199,20 +200,26 @@ class _ApplyDiscountCodeViewState
               borderRadius: BorderRadius.circular(999),
             ),
             child: Center(
-              child: TextField(
+              child: InputDirectionBuilder(
                 controller: _controller,
-                style: AppTextStyles.style14Regular.copyWith(
-                  color: colors.black,
-                ),
-                decoration: InputDecoration(
-                  isCollapsed: true,
-                  isDense: true,
-                  border: InputBorder.none,
-                  hintText: widget.hintText ?? LangKeys.discount.tr(),
-                  hintStyle: AppTextStyles.style14Regular.copyWith(
-                    color: colors.neutral500,
-                  ),
-                ),
+                builder:
+                    (BuildContext context, TextDirection? typedDirection) =>
+                        TextField(
+                          controller: _controller,
+                          textDirection: typedDirection,
+                          style: AppTextStyles.style14Regular.copyWith(
+                            color: colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            isDense: true,
+                            border: InputBorder.none,
+                            hintText: widget.hintText ?? LangKeys.discount.tr(),
+                            hintStyle: AppTextStyles.style14Regular.copyWith(
+                              color: colors.neutral500,
+                            ),
+                          ),
+                        ),
               ),
             ),
           ),

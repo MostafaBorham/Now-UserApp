@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 /// A labelled, editable field on the Edit Information screen.
 ///
@@ -52,6 +53,10 @@ class EditField extends StatelessWidget {
   final String? errorText;
 
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Pins the direction (email, phone, …). When omitted the field follows the
+  /// language of what is being typed — Arabic reads right-to-left, English
+  /// left-to-right.
   final TextDirection? textDirection;
 
   @override
@@ -131,33 +136,38 @@ class EditField extends StatelessWidget {
     } else {
       children.add(
         Expanded(
-          child: TextField(
+          child: InputDirectionBuilder(
             controller: controller,
-            keyboardType: keyboardType,
-            maxLength: maxLength,
-            inputFormatters: inputFormatters,
-            textDirection: textDirection,
-            buildCounter:
-                (
-                  BuildContext context, {
-                  required int currentLength,
-                  required int? maxLength,
-                  required bool isFocused,
-                }) => null,
-            style: TextStyle(
-              fontSize: 16,
-              color: context.colors.tertiaryContainer,
-            ),
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 16,
-                color: context.colors.neutral500,
-              ),
-            ),
+            builder:
+                (BuildContext context, TextDirection? typedDirection) =>
+                    TextField(
+                      controller: controller,
+                      keyboardType: keyboardType,
+                      maxLength: maxLength,
+                      inputFormatters: inputFormatters,
+                      textDirection: textDirection ?? typedDirection,
+                      buildCounter:
+                          (
+                            BuildContext context, {
+                            required int currentLength,
+                            required int? maxLength,
+                            required bool isFocused,
+                          }) => null,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: context.colors.tertiaryContainer,
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                        border: InputBorder.none,
+                        hintText: hintText,
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          color: context.colors.neutral500,
+                        ),
+                      ),
+                    ),
           ),
         ),
       );
