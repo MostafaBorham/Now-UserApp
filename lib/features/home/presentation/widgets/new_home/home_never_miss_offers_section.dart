@@ -102,7 +102,15 @@ class HomeNeverMissOffersSection extends ConsumerWidget {
                           itemCount: products.length,
                           itemWidth: itemHeight * 0.55,
                           separatorWidth: 10,
-                          padding: const EdgeInsetsDirectional.only(bottom: 4),
+                          // The same inset as the All stores cards (the section's
+                          // 16 + the list's 5), so the first card no longer
+                          // touches the screen edge.
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                            21,
+                            0,
+                            21,
+                            4,
+                          ),
                           itemBuilder: (context, index) =>
                               HomeNeverMissOffersItem(
                                 product: products[index],

@@ -162,6 +162,30 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  // The first card used to touch the screen edge; it now sits as far in as
+  // the All stores cards (16 + 5).
+  testWidgets('the first card is inset from the reading-start edge', (
+    WidgetTester tester,
+  ) async {
+    await pumpSection(tester, <ProductModel>[offerProduct(id: 1)]);
+
+    final Finder card = find.byType(HomeNeverMissOffersItem).first;
+    final Rect rect = tester.getRect(card);
+    final double sectionWidth = tester
+        .getSize(find.byType(HomeNeverMissOffersSection))
+        .width;
+    final double sectionLeft = tester
+        .getTopLeft(find.byType(HomeNeverMissOffersSection))
+        .dx;
+    final bool rtl =
+        Directionality.of(tester.element(card)) == TextDirection.rtl;
+
+    final double inset = rtl
+        ? sectionLeft + sectionWidth - rect.right
+        : rect.left - sectionLeft;
+    expect(inset, 21);
+  });
+
   testWidgets('renders one card per product', (WidgetTester tester) async {
     await pumpSection(tester, <ProductModel>[
       offerProduct(id: 1, name: 'First'),
