@@ -634,4 +634,22 @@ void main() {
     // No slug today; the carousel fills it in from the app-wide list.
     expect(section.categories[1].slug, isNull);
   });
+
+  test('all_stores carries the admin item_limit, 0 when unset', () {
+    expect(
+      HomeSectionModel.fromJson(<String, dynamic>{
+        'type': 'all_stores',
+        'item_limit': 4,
+        'items': <dynamic>[],
+      }).itemLimit,
+      4,
+    );
+    expect(
+      HomeSectionModel.fromJson(<String, dynamic>{
+        'type': 'all_stores',
+        'items': <dynamic>[],
+      }).itemLimit,
+      0,
+    );
+  });
 }

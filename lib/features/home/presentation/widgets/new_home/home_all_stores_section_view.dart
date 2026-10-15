@@ -26,14 +26,26 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_card
 /// pick and order for this section, already carrying the user's
 /// `is_favourite` — with no request of its own. **Every category tab** fetches
 /// that category's stores on demand (`getCategoryStoresProvider`).
+///
+/// Every tab shows at most the same number of stores: the admin's
+/// [itemLimit] for this section, or [HomeStoresListView.itemCount] when none
+/// is set.
 class HomeAllStoresSectionView extends ConsumerStatefulWidget {
   const HomeAllStoresSectionView({
     super.key,
     required this.stores,
+    this.itemLimit = 0,
     this.pinTop,
   });
 
   final List<StoreModel> stores;
+
+  /// The admin's cap on stores shown per tab; 0 for none.
+  final int itemLimit;
+
+  /// How many stores each tab shows.
+  int get visibleCount =>
+      itemLimit > 0 ? itemLimit : HomeStoresListView.itemCount;
 
   /// When set, the tab bar pins this many pixels below the viewport top (i.e.
   /// right under the pinned search bar) as the page scrolls. Null disables it.
@@ -77,13 +89,16 @@ class _HomeAllStoresSectionViewState
     final List<Widget> views = <Widget>[
       HomeStoresListView(
         stores: widget.stores,
+        limit: widget.visibleCount,
         onFavouriteChanged: (int? storeId, bool isFavourite) => ref
             .read(getHomeSectionsProvider.notifier)
             .updateStoreFavourite(storeId, isFavourite),
       ),
       ...categories.map(
-        (CategoryModel category) =>
-            _HomeCategoryStoresListView(category: category),
+        (CategoryModel category) => _HomeCategoryStoresListView(
+          category: category,
+          limit: widget.visibleCount,
+        ),
       ),
     ];
 
@@ -182,9 +197,13 @@ class _HomeAllStoresSectionViewState
 }
 
 class _HomeCategoryStoresListView extends ConsumerWidget {
-  const _HomeCategoryStoresListView({required this.category});
+  const _HomeCategoryStoresListView({
+    required this.category,
+    required this.limit,
+  });
 
   final CategoryModel category;
+  final int limit;
 
   static CategoryStoresArgs argsOf(CategoryModel category) =>
       (categorySlug: category.slug ?? '', categoryId: null, searchKey: null);
@@ -198,7 +217,9 @@ class _HomeCategoryStoresListView extends ConsumerWidget {
 
     return state.when(
       loading: () => _StoresList(
-        itemCount: HomeStoresListView.itemCount,
+        itemCount: limit < HomeStoresListView.itemCount
+            ? limit
+            : HomeStoresListView.itemCount,
         itemBuilder: (context, index) => AppShimmer(child: StoreCardView()),
       ),
       error: (Object error, _) => ServerConnectionErrorWidget(
@@ -208,6 +229,7 @@ class _HomeCategoryStoresListView extends ConsumerWidget {
       ),
       data: (PaginationModel<StoreModel> page) => HomeStoresListView(
         stores: page.data,
+        limit: limit,
         onFavouriteChanged: (int? storeId, bool isFavourite) => ref
             .read(getCategoryStoresProvider(args).notifier)
             .updateStoreFavourite(storeId, isFavourite),
@@ -221,11 +243,16 @@ class HomeStoresListView extends StatelessWidget {
     super.key,
     required this.stores,
     required this.onFavouriteChanged,
+    this.limit = itemCount,
   });
 
   final List<StoreModel> stores;
   final void Function(int? storeId, bool isFavourite) onFavouriteChanged;
 
+  /// At most this many stores are shown.
+  final int limit;
+
+  /// Shown when the admin set no limit for the section.
   static const int itemCount = 7;
   static const double separator = 15;
 
@@ -235,7 +262,7 @@ class HomeStoresListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<StoreModel> shown = stores.take(itemCount).toList();
+    final List<StoreModel> shown = stores.take(limit).toList();
     if (shown.isEmpty) {
       return NoResultsWidget(emptyMessage: LangKeys.noStoresYetKey.tr());
     }

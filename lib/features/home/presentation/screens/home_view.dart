@@ -528,6 +528,7 @@ class _HomeViewState extends ConsumerState<HomeView>
         _ProductsByCategorySection(section: section),
       'all_stores' => HomeAllStoresSectionView(
         stores: section.stores,
+        itemLimit: section.itemLimit,
         pinTop: _searchBarHeight,
       ),
       _ => null,

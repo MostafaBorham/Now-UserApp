@@ -87,6 +87,11 @@ class HomeSectionModel extends Equatable {
   /// Whether the section's header shows a "See All" chip.
   final bool showViewAll;
 
+  /// `all_stores` only: the admin's cap on stores shown (`item_limit`),
+  /// already applied to [stores] and to be applied to the section's category
+  /// tabs too. 0 when the admin set none.
+  final int itemLimit;
+
   /// Section types whose `items` are vendors, parsed into [stores].
   static const Set<String> _storeTypes = <String>{
     'featured_stores',
@@ -120,6 +125,7 @@ class HomeSectionModel extends Equatable {
     this.displayDesign,
     this.media,
     this.showViewAll = false,
+    this.itemLimit = 0,
   });
 
   HomeSectionModel copyWith({
@@ -140,6 +146,7 @@ class HomeSectionModel extends Equatable {
     String? displayDesign,
     Map<String, dynamic>? media,
     bool? showViewAll,
+    int? itemLimit,
   }) {
     return HomeSectionModel(
       id: id ?? this.id,
@@ -160,6 +167,7 @@ class HomeSectionModel extends Equatable {
       displayDesign: displayDesign ?? this.displayDesign,
       media: media ?? this.media,
       showViewAll: showViewAll ?? this.showViewAll,
+      itemLimit: itemLimit ?? this.itemLimit,
     );
   }
 
@@ -248,6 +256,7 @@ class HomeSectionModel extends Equatable {
       displayDesign: json['display_design']?.toString(),
       media: _mediaFrom(json),
       showViewAll: json['show_view_all'] == true,
+      itemLimit: int.tryParse(json['item_limit']?.toString() ?? '') ?? 0,
     );
   }
 
@@ -281,6 +290,7 @@ class HomeSectionModel extends Equatable {
     displayDesign,
     media,
     showViewAll,
+    itemLimit,
   ];
 }
 

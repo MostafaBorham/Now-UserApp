@@ -39,11 +39,14 @@ void main() {
     required List<StoreModel> stores,
     List<CategoryModel> categories = const <CategoryModel>[],
     List<StoreModel> categoryStores = const <StoreModel>[],
+    int itemLimit = 0,
   }) => pumpCategoriesWidget(
     tester,
     // The section is taller than the screen once its cards are real, so it
     // needs the scrolling parent `HomeView` gives it.
-    SingleChildScrollView(child: HomeAllStoresSectionView(stores: stores)),
+    SingleChildScrollView(
+      child: HomeAllStoresSectionView(stores: stores, itemLimit: itemLimit),
+    ),
     overrides: <Override>[
       overrideAppCategories(
         AsyncValue<PaginationModel<CategoryModel>>.data(
@@ -90,6 +93,34 @@ void main() {
       find.byType(StoreCardView),
       findsNWidgets(HomeStoresListView.itemCount),
     );
+  });
+
+  testWidgets('the admin limit holds on the All tab and on every category tab', (
+    WidgetTester tester,
+  ) async {
+    await pumpSection(
+      tester,
+      itemLimit: 2,
+      stores: List<StoreModel>.generate(
+        5,
+        (int i) => feedStore(id: i, name: 'Feed $i'),
+      ),
+      categories: <CategoryModel>[sampleCategory(en: 'Food')],
+      categoryStores: List<StoreModel>.generate(
+        6,
+        (int i) => feedStore(id: 100 + i, name: 'Food $i'),
+      ),
+    );
+
+    expect(find.byType(StoreCardView), findsNWidgets(2));
+
+    await tester.tap(find.text('Food'));
+    await tester.pump();
+
+    // The category tab used to fill up to its own fixed handful instead.
+    expect(find.byType(StoreCardView), findsNWidgets(2));
+    expect(find.text('Food 0'), findsOneWidget);
+    expect(find.text('Food 2'), findsNothing);
   });
 
   testWidgets('an empty all_stores section shows the no-results widget', (
