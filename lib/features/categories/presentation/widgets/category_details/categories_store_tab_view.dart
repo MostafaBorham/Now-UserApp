@@ -20,15 +20,13 @@ class _CategoriesStoreTabViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-
         PrimarySearchField(
           isAnimated: false,
-          onSearch: (String query) =>
-              ref.read(categoryStoresSearchProvider.notifier).state = query,
+          onSearch: (String query) => (query.length >= 3)
+              ? ref.read(categoryStoresSearchProvider.notifier).state = query
+              : null,
         ),
         const Expanded(child: CategoryStoresView()),
-
-
       ],
     );
   }

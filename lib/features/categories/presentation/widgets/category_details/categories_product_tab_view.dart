@@ -22,10 +22,11 @@ class _CategoriesProductTabViewState
       children: [
         PrimarySearchField(
           isAnimated: false,
-          onSearch: (String query) =>
-              ref.read(categoryProductsSearchProvider.notifier).state = query,
+          onSearch: (String query) => (query.length >= 3)
+              ? ref.read(categoryProductsSearchProvider.notifier).state = query
+              : null,
         ),
-        const Expanded(child: CategoryProductsView())
+        const Expanded(child: CategoryProductsView()),
       ],
     );
   }

@@ -123,7 +123,7 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
                               // image needs its own (design 164×96) box.
                               child: AppCachedNetworkImage(
                                 imageUrl: image,
-                                width: 164 * s,
+                                width: 75,
                                 height: 96 * s,
                                 fit: BoxFit.contain,
                               ),
