@@ -28,6 +28,12 @@ class StoreModel {
   final String? deliveryTime;
   final double? distance;
   final List<CategoryModel>? categories;
+
+  /// The platform main categories the store is assigned to (store details'
+  /// `main_categories`), e.g. Supermarket or Pharmacy. Unlike [categories] —
+  /// wherever its products are filed, at any depth — this is what the store
+  /// screen shows as the store's categories.
+  final List<CategoryModel>? mainCategories;
   final List<CouponModel>? coupons;
   final List<ProductModel>? products;
   final OfferModel? offer;
@@ -55,6 +61,7 @@ class StoreModel {
     this.deliveryTime,
     this.distance,
     this.categories,
+    this.mainCategories,
     this.coupons,
     this.products,
     this.offer,
@@ -100,6 +107,9 @@ class StoreModel {
       categories: (json['categories'] as List?)
           ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
+      mainCategories: (json['main_categories'] as List?)
+          ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>?))
+          .toList(),
       coupons: (json['coupons'] as List?)
           ?.map((e) => CouponModel.fromJson(e as Map<String, dynamic>?))
           .toList(),
@@ -138,6 +148,7 @@ class StoreModel {
       'delivery_time': deliveryTime,
       'distance': distance,
       'categories': categories?.map((e) => e.toJson()).toList(),
+      'main_categories': mainCategories?.map((e) => e.toJson()).toList(),
       'coupons': coupons?.map((e) => e.toJson()).toList(),
       'products': products?.map((e) => e.toJson()).toList(),
       'offer': offer?.toJson(),
@@ -163,6 +174,7 @@ class StoreModel {
     String? deliveryTime,
     double? distance,
     List<CategoryModel>? categories,
+    List<CategoryModel>? mainCategories,
     List<CouponModel>? coupons,
     List<ProductModel>? products,
     OfferModel? offer,
@@ -185,6 +197,7 @@ class StoreModel {
       deliveryTime: deliveryTime ?? this.deliveryTime,
       distance: distance ?? this.distance,
       categories: categories ?? this.categories,
+      mainCategories: mainCategories ?? this.mainCategories,
       coupons: coupons ?? this.coupons,
       products: products ?? this.products,
       offer: offer ?? this.offer,

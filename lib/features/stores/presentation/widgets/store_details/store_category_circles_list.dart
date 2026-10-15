@@ -19,7 +19,11 @@ class StoreCategoryCirclesList extends ConsumerWidget {
     final AppColorScheme colors = context.colors;
     final StoreModel store = ref.watch(storeProvider);
     final int? storeId = store.id;
-    final List<CategoryModel> categories = store.categories ?? const [];
+    // Only the main categories the store is assigned to (Supermarket,
+    // Pharmacy): [StoreModel.categories] mixed in other main categories and
+    // deep subcategories from wherever its products were filed.
+    final List<CategoryModel> categories =
+        store.mainCategories ?? const <CategoryModel>[];
 
     if (categories.isEmpty) return const SizedBox.shrink();
 

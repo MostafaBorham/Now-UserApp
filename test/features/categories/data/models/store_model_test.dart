@@ -94,4 +94,29 @@ void main() {
       expect(updated.isOpen, true);
     });
   });
+
+  test('parses main categories apart from product categories', () {
+    final StoreModel store = StoreModel.fromJson(<String, dynamic>{
+      'id': 8,
+      'categories': <dynamic>[
+        <String, dynamic>{
+          'id': 5,
+          'name': <String, dynamic>{'en': 'Mobiles'},
+        },
+      ],
+      'main_categories': <dynamic>[
+        <String, dynamic>{
+          'id': 1,
+          'name': <String, dynamic>{'en': 'Supermarket'},
+        },
+      ],
+    });
+
+    expect(store.mainCategories?.map((c) => c.id), <int>[1]);
+    expect(store.categories?.map((c) => c.id), <int>[5]);
+    expect(
+      StoreModel.fromJson(<String, dynamic>{'id': 9}).mainCategories,
+      isNull,
+    );
+  });
 }
