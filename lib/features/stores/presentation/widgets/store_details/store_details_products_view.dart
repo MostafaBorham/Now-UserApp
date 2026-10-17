@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -73,6 +74,7 @@ class StoreDetailsProductsView extends ConsumerWidget {
       // screen, under the tall store header.
       emptyBuilder: (BuildContext context) => NoResultsWidget(
         alignTop: true,
+        image: Assets.media.images.svg.noProductsIcon.svg(),
         emptyMessage: (filter == ProductFilters.offer
                 ? LangKeys.noOffersNowKey
                 : LangKeys.noProductsYetKey)

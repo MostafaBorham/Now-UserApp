@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -120,6 +121,7 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
           ? NoResultsWidget(
               isScrollable: true,
               alignTop: true,
+              image: Assets.media.images.svg.noProductsIcon.svg(),
               emptyMessage: (search.isEmpty
                       ? LangKeys.noProductsYetKey
                       : LangKeys.noSearchMatchesKey)

@@ -484,6 +484,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get myAddress =>
       const SvgGenImage('assets/media/images/svg/my_address.svg');
 
+  /// File path: assets/media/images/svg/no-products-icon.svg
+  SvgGenImage get noProductsIcon =>
+      const SvgGenImage('assets/media/images/svg/no-products-icon.svg');
+
   /// File path: assets/media/images/svg/no-search-result-icon.svg
   SvgGenImage get noSearchResultIcon =>
       const SvgGenImage('assets/media/images/svg/no-search-result-icon.svg');
@@ -742,6 +746,7 @@ class $AssetsMediaImagesSvgGen {
     masterCardCircle,
     mobile,
     myAddress,
+    noProductsIcon,
     noSearchResultIcon,
     nowWalletCard,
     onTheWay,

@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
@@ -125,6 +126,7 @@ class _ViewStoreCategoryProductsScreenState
                     const AppShimmer(child: ProductItemCard1()),
                 emptyBuilder: (BuildContext context) => NoResultsWidget(
                   isScrollable: true,
+                  image: Assets.media.images.svg.noProductsIcon.svg(),
                   emptyMessage: (_search.isEmpty
                           ? LangKeys.noProductsYetKey
                           : LangKeys.noSearchMatchesKey)

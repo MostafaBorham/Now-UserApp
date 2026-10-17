@@ -253,6 +253,9 @@ class _HomeNeverMissOffersScreenState
                                   padding: const EdgeInsets.all(16),
                                   child: error == null
                                       ? NoResultsWidget(
+                                          image: Assets.media.images.svg
+                                              .noProductsIcon
+                                              .svg(),
                                           emptyMessage:
                                               LangKeys.noOffersNowKey.tr(),
                                         )
