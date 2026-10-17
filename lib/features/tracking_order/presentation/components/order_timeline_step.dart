@@ -28,6 +28,7 @@ class OrderTimelineStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
+    final bool isPending = status == OrderStepStatus.pending;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,19 +50,32 @@ class OrderTimelineStep extends StatelessWidget {
           12.wSpace,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
-
-
-            child: status == OrderStepStatus.pending
-                ? ColorFiltered(
-                    colorFilter: const ColorFilter.matrix(<double>[
-                      0.2126, 0.7152, 0.0722, 0, 0,
-                      0.2126, 0.7152, 0.0722, 0, 0,
-                      0.2126, 0.7152, 0.0722, 0, 0,
-                      0, 0, 0, 1, 0,
-                    ]),
-                    child: icon,
-                  )
-                : icon,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isPending
+                      ? null
+                      : colors.green300Main.withValues(alpha: 0.05),
+                  border: Border.all(
+                    color: isPending ? colors.neutral200 : colors.green300Main,
+                    width: 0.5,
+                  ),
+                ),
+                child: isPending
+                    ? ColorFiltered(
+                        colorFilter: const ColorFilter.matrix(<double>[
+                          0.2126, 0.7152, 0.0722, 0, 0,
+                          0.2126, 0.7152, 0.0722, 0, 0,
+                          0.2126, 0.7152, 0.0722, 0, 0,
+                          0, 0, 0, 1, 0,
+                        ]),
+                        child: icon,
+                      )
+                    : icon,
+              ),
+            ),
           ),
           12.wSpace,
           Expanded(
@@ -73,7 +87,7 @@ class OrderTimelineStep extends StatelessWidget {
                   title,
                   overflow: TextOverflow.visible,
                   style: AppTextStyles.style14Medium.copyWith(
-                    color: status == OrderStepStatus.pending
+                    color: isPending
                         ? colors.neutral500
                         : colors.black,
                   ),

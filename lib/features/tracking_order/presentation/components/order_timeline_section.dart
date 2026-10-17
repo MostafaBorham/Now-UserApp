@@ -11,10 +11,9 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'order_timeline_step.dart';
 
 /// "Track Order" progress section: the estimated-time header followed by the
-/// four-step delivery timeline. The step illustrations already encode their
-/// active/inactive state, so this widget only drives the rail markers & the
-/// connector colours from each step's [OrderStepStatus], which the order's live
-/// [status] reports through [OrderStatus.stepStatusAt].
+/// four-step delivery timeline. Each step's [OrderStepStatus], which the
+/// order's live [status] reports through [OrderStatus.stepStatusAt], drives its
+/// rail marker, connector colours and icon ring.
 class OrderTimelineSection extends StatelessWidget {
   const OrderTimelineSection({
     super.key,
@@ -31,37 +30,43 @@ class OrderTimelineSection extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final Color reached = colors.primary500Main;
     final Color pending = colors.neutral200;
+    final OrderStepStatus deliveredStatus = status.stepStatusAt(3);
 
     final List<_TimelineStepData> steps = [
       _TimelineStepData(
         status: status.stepStatusAt(0),
         icon: Assets.media.images.svg.orderAccepted.svg(
-          width: 34,
-          height: 34,
+          width: 18,
+          height: 18,
         ),
         title: LangKeys.orderAcceptedKey.tr(),
       ),
       _TimelineStepData(
         status: status.stepStatusAt(1),
         icon: Assets.media.images.svg.orderConfirmed.svg(
-          width: 34,
-          height: 34,
+          width: 18,
+          height: 18,
         ),
         title: LangKeys.orderConfirmedBeingPreparedKey.tr(),
       ),
       _TimelineStepData(
         status: status.stepStatusAt(2),
         icon: Assets.media.images.svg.onTheWay.svg(
-          width: 34,
-          height: 34,
+          width: 18,
+          height: 18,
         ),
         title: LangKeys.onTheWayToYouKey.tr(),
       ),
       _TimelineStepData(
-        status: status.stepStatusAt(3),
+        status: deliveredStatus,
+        // Figma only draws this one-colour glyph grey (pending); tint it once
+        // the order is delivered.
         icon: Assets.media.images.svg.delivered.svg(
-          width: 34,
-          height: 34,
+          width: 18,
+          height: 18,
+          colorFilter: deliveredStatus == OrderStepStatus.pending
+              ? null
+              : ColorFilter.mode(colors.green300Main, BlendMode.srcIn),
         ),
         title: LangKeys.deliveredKey.tr(),
       ),
