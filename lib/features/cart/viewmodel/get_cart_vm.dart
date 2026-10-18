@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/data/repo/cart_repo.dart';
@@ -62,6 +63,44 @@ class GetCartViewModel extends StateNotifier<AsyncValue<CartModel>> {
   void updateCartState(CartModel newCart) {
     _mutations++;
     state = AsyncValue.data(newCart);
+  }
+
+  /// Sets each line in [fixes] to its quantity (see
+  /// [CartVendorModel.stockFixes]), one request at a time, and returns why one
+  /// was refused — null when they all landed.
+  ///
+  /// Removals go first: the server checks each change against the product's
+  /// other lines as they still stand, so a line trimmed while a sibling still
+  /// holds the stock would be refused. Stops at the first refusal; what landed
+  /// before it stays.
+  Future<String?> fitToStock(Map<ProductModel, int> fixes) async {
+    final List<MapEntry<ProductModel, int>> ordered = fixes.entries.toList()
+      ..sort(
+        (MapEntry<ProductModel, int> a, MapEntry<ProductModel, int> b) =>
+            a.value.compareTo(b.value),
+      );
+
+    for (final MapEntry<ProductModel, int> fix in ordered) {
+      final int? productId = fix.key.productId ?? fix.key.id;
+      if (productId == null) continue;
+
+      final result = await _repo.updateCartProductQuantity(
+        productId,
+        fix.value,
+        cartItemId: fix.key.cartItemId,
+      );
+
+      if (!mounted) return null;
+
+      final String? error = result.fold((Failure failure) => failure.message, (
+        CartModel cart,
+      ) {
+        updateCartState(cart);
+        return null;
+      });
+      if (error != null) return error;
+    }
+    return null;
   }
 
   /// Drops the store [vendorId] from the loaded cart, after that single store

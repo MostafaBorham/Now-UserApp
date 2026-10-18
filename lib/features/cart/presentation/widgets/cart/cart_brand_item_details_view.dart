@@ -24,11 +24,15 @@ class CartBrandItemDetailsView extends StatelessWidget {
     required this.products,
     required this.pricing,
     required this.store,
+    this.stockFixes = const <ProductModel, int>{},
   });
 
   final List<ProductModel> products;
   final CartVendorPricingModel pricing;
   final StoreModel store;
+
+  /// The store's [CartVendorModel.stockFixes].
+  final Map<ProductModel, int> stockFixes;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +64,10 @@ class CartBrandItemDetailsView extends StatelessWidget {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) =>
-              CartProductItemView(product: products[index]),
+          itemBuilder: (context, index) => CartProductItemView(
+            product: products[index],
+            stockFix: stockFixes[products[index]],
+          ),
           // A rule, not just a gap: on the card's grey a bare 16 dp let one
           // line's stepper and delete button run into the next line's image.
           // neutral300, not neutral200, which barely shows on that grey.

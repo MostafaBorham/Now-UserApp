@@ -24,11 +24,15 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product
 /// One cart line inside an expanded store card: the product, its price, the
 /// quantity stepper and a delete button.
 class CartProductItemView extends ConsumerStatefulWidget {
-  const CartProductItemView({super.key, required this.product});
+  const CartProductItemView({super.key, required this.product, this.stockFix});
 
   /// The cart line this row renders. Cart lines carry the product id in
   /// `product_id`, which is what the update requests are keyed by.
   final ProductModel product;
+
+  /// What this line must drop to for the stock that is left (see
+  /// [CartVendorModel.stockFixes]); `null` when it fits, `0` when it must go.
+  final int? stockFix;
 
   @override
   ConsumerState<CartProductItemView> createState() =>
@@ -149,8 +153,13 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
     }
 
     final int quantity = _quantity;
+    final int? stockFix = widget.stockFix;
+    // Over stock, every step but the last one down is refused by the server,
+    // so the stepper waits and the reset (or delete) button does the fixing.
+    final bool canIncrement = stockFix == null && _canIncrement;
+    final bool canDecrement = stockFix == null && quantity > _minQuantity;
 
-    return Row(
+    final Widget row = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 12,
       children: [
@@ -253,7 +262,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: _canIncrement
+                            onTap: canIncrement
                                 ? () => _updateQuantity(quantity + 1)
                                 : null,
                             customBorder: const CircleBorder(),
@@ -268,7 +277,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                 Icons.add_rounded,
                                 size: 18,
                                 color: colors.black.withValues(
-                                  alpha: _canIncrement ? 1 : 0.3,
+                                  alpha: canIncrement ? 1 : 0.3,
                                 ),
                               ),
                             ),
@@ -294,7 +303,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                           // At the store's minimum the − goes inert; removing
                           // the line is the delete button's job.
                           InkWell(
-                            onTap: quantity > _minQuantity
+                            onTap: canDecrement
                                 ? () => _updateQuantity(quantity - 1)
                                 : null,
                             customBorder: const CircleBorder(),
@@ -310,11 +319,42 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                 Icons.remove_rounded,
                                 size: 18,
                                 color: colors.neutral500.withValues(
-                                  alpha: quantity > _minQuantity ? 1 : 0.3,
+                                  alpha: canDecrement ? 1 : 0.3,
                                 ),
                               ),
                             ),
                           ),
+                          // Sets this line alone. On a product split over
+                          // variant lines the server refuses it while a
+                          // sibling marked "remove" still holds the stock, and
+                          // its toast says so; the checkout sheet sends the
+                          // removals first and gets past that.
+                          if (stockFix != null && stockFix > 0)
+                            Semantics(
+                              button: true,
+                              label: LangKeys.quantityWillBeReducedToKey.tr(
+                                namedArgs: <String, String>{
+                                  'quantity': '$stockFix',
+                                },
+                              ),
+                              child: InkWell(
+                                onTap: () => _updateQuantity(stockFix),
+                                customBorder: const CircleBorder(),
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.refresh_rounded,
+                                    size: 18,
+                                    color: colors.errorContainer,
+                                  ),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -322,6 +362,31 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                 ],
               ),
             ],
+          ),
+        ),
+      ],
+    );
+
+    if (stockFix == null) return row;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        row,
+        Text(
+          stockFix == 0
+              ? LangKeys.notAvailableRemoveItKey.tr()
+              : LangKeys.onlyAvailableOfRequestedKey.tr(
+                  namedArgs: <String, String>{
+                    'available': '$stockFix',
+                    'requested': '$quantity',
+                  },
+                ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyles.style12Medium.copyWith(
+            color: colors.errorContainer,
           ),
         ),
       ],

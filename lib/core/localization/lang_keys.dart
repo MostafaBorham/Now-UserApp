@@ -494,4 +494,16 @@ abstract class LangKeys {
   static const String complaintPhotosReadFailedKey =
       'complaintPhotosReadFailed';
   static const String pageUnavailableKey = 'pageUnavailable';
+  static const String someItemsUnavailableKey = 'someItemsUnavailable';
+  static const String stockChangedForItemsKey = 'stockChangedForItems';
+  static const String notAvailableKey = 'notAvailable';
+  static const String notAvailableRemoveItKey = 'notAvailableRemoveIt';
+  static const String onlyAvailableOfRequestedKey = 'onlyAvailableOfRequested';
+  static const String willBeRemovedFromOrderKey = 'willBeRemovedFromOrder';
+  static const String quantityWillBeReducedToKey = 'quantityWillBeReducedTo';
+  static const String continueWithAvailableItemsKey =
+      'continueWithAvailableItems';
+  static const String backToCartKey = 'backToCart';
+  static const String reviewCartWithoutCheckoutKey =
+      'reviewCartWithoutCheckout';
 }

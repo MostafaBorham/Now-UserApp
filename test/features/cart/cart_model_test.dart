@@ -113,4 +113,69 @@ void main() {
     expect(line.options?['color'], '#9CA3AF');
     expect((line.options?['attributes'] as List).length, 1);
   });
+
+  /// Stock is held per product, so the fix is worked out over all of a
+  /// product's variant lines — fixing each line against `stock` on its own is
+  /// what the server refused.
+  group('stockFixes', () {
+    Map<int?, int> fixesOf(List<ProductModel> lines) => <int?, int>{
+      for (final MapEntry<ProductModel, int> fix in CartVendorModel(
+        products: lines,
+      ).stockFixes.entries)
+        fix.key.cartItemId: fix.value,
+    };
+
+    test('trims a line to the stock left and leaves the rest alone', () {
+      expect(
+        fixesOf(const <ProductModel>[
+          ProductModel(productId: 1, cartItemId: 10, quantity: 5, stock: 3),
+          ProductModel(productId: 2, cartItemId: 20, quantity: 2, stock: 2),
+          ProductModel(productId: 3, cartItemId: 30, quantity: 9),
+        ]),
+        <int, int>{10: 3},
+      );
+    });
+
+    test('removes a line with no stock left', () {
+      expect(
+        fixesOf(const <ProductModel>[
+          ProductModel(productId: 1, cartItemId: 10, quantity: 2, stock: 0),
+        ]),
+        <int, int>{10: 0},
+      );
+    });
+
+    test('removes a line when what is left is under the minimum', () {
+      expect(
+        fixesOf(const <ProductModel>[
+          ProductModel(
+            productId: 1,
+            cartItemId: 10,
+            quantity: 5,
+            stock: 2,
+            minOrderQuantity: 3,
+          ),
+        ]),
+        <int, int>{10: 0},
+      );
+    });
+
+    test('shares the stock across a product\'s variant lines', () {
+      // Each line alone fits; together they are one over.
+      expect(
+        fixesOf(const <ProductModel>[
+          ProductModel(productId: 1, cartItemId: 10, quantity: 2, stock: 3),
+          ProductModel(productId: 1, cartItemId: 11, quantity: 2, stock: 3),
+        ]),
+        <int, int>{11: 1},
+      );
+      expect(
+        fixesOf(const <ProductModel>[
+          ProductModel(productId: 1, cartItemId: 10, quantity: 4, stock: 3),
+          ProductModel(productId: 1, cartItemId: 11, quantity: 4, stock: 3),
+        ]),
+        <int, int>{10: 3, 11: 0},
+      );
+    });
+  });
 }

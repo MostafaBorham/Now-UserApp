@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
@@ -17,6 +18,7 @@ import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_empty_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_shimmer_view.dart';
+import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_not_ready_view.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/models/checkout_model.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
@@ -45,6 +47,9 @@ class CartView extends ConsumerStatefulWidget {
 
 class _CartViewState extends ConsumerState<CartView> {
   final ScrollController _scrollController = ScrollController();
+
+  /// Blocks the screen while [_fitToStock] trims the cart.
+  bool _isFittingToStock = false;
 
   @override
   void dispose() {
@@ -86,6 +91,8 @@ class _CartViewState extends ConsumerState<CartView> {
     // never reaches that redirect — the request just fails with a toast.
     if (redirectGuestToLogin(context)) return;
 
+    if (!await _fitToStock(vendorId) || !mounted) return;
+
     final CheckoutViewModel checkoutVm = ref.read(checkoutProvider.notifier);
 
     // Priced for the address checkout opens on (the default one), so the
@@ -110,6 +117,56 @@ class _CartViewState extends ConsumerState<CartView> {
     context.pushNamed(AppRoutes.checkoutScreen, extra: vendorId);
   }
 
+  /// Offers to trim the lines of the stores about to be checked out that hold
+  /// more than is left in stock, and says whether checkout can go on.
+  ///
+  /// It has to be caught here: the server never trims a line itself, and its
+  /// checkout preview does not check stock either — only placing the order
+  /// does, after the shopper has filled in the whole checkout.
+  Future<bool> _fitToStock(int? vendorId) async {
+    bool isCheckedOut(CartVendorModel v) =>
+        vendorId == null || v.vendor.id == vendorId;
+
+    final List<CartVendorModel> overStock = <CartVendorModel>[
+      for (final CartVendorModel v
+          in ref.read(getCartProvider).valueOrNull?.vendors ??
+              const <CartVendorModel>[])
+        if (isCheckedOut(v) && v.stockFixes.isNotEmpty) v,
+    ];
+    if (overStock.isEmpty) return true;
+
+    final bool? proceed = await showCartNotReadySheet(context, overStock);
+    if (proceed != true || !mounted) return false;
+
+    setState(() => _isFittingToStock = true);
+    final String? error = await ref.read(getCartProvider.notifier).fitToStock(
+      <ProductModel, int>{
+        for (final CartVendorModel v in overStock) ...v.stockFixes,
+      },
+    );
+    if (!mounted) return false;
+    setState(() => _isFittingToStock = false);
+
+    if (error != null) {
+      AppToast.showError(context, error.tr());
+      return false;
+    }
+
+    // Trimming can empty a store or take it under its minimum order. Its card
+    // then says so, and checkout waits for the shopper instead of drafting an
+    // order the server will refuse.
+    final List<CartVendorModel> remaining = <CartVendorModel>[
+      for (final CartVendorModel v
+          in ref.read(getCartProvider).valueOrNull?.vendors ??
+              const <CartVendorModel>[])
+        if (isCheckedOut(v)) v,
+    ];
+    return remaining.isNotEmpty &&
+        remaining.every(
+          (CartVendorModel v) => v.pricing.available && v.pricing.minOrderMet,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final AsyncValue<CartModel> cartState = ref.watch(getCartProvider);
@@ -123,7 +180,7 @@ class _CartViewState extends ConsumerState<CartView> {
     );
 
     return BlockingLoadingOverlay(
-      isLoading: isCheckingOut,
+      isLoading: isCheckingOut || _isFittingToStock,
       child: AppWavedView(
         appBarTitle: LangKeys.cartKey.tr(),
         canPop: widget.canPop,

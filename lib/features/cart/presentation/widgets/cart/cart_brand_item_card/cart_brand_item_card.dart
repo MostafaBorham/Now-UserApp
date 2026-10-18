@@ -59,6 +59,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                     products: widget.cartVendor.products,
                     pricing: pricing,
                     store: widget.cartVendor.vendor,
+                    stockFixes: widget.cartVendor.stockFixes,
                   )
                 : CartProductsImagesListView(
                     products: widget.cartVendor.products,

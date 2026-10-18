@@ -57,6 +57,59 @@ void main() {
     expect(vm.state.value!.quantityOf(7), 1);
     vm.dispose();
   });
+
+  test(
+    'fitting to stock removes lines before trimming, and stops at a refusal',
+    () async {
+      const ProductModel kept = ProductModel(productId: 1, cartItemId: 10);
+      const ProductModel removed = ProductModel(productId: 1, cartItemId: 11);
+      final Map<ProductModel, int> fixes = <ProductModel, int>{
+        kept: 3,
+        removed: 0,
+      };
+
+      final _RecordingCartRepo repo = _RecordingCartRepo();
+      final GetCartViewModel vm = GetCartViewModel(
+        AsyncValue<CartModel>.data(cartWith(1)),
+        repo: repo,
+      );
+      expect(await vm.fitToStock(fixes), isNull);
+      expect(repo.sent, <String>['11→0', '10→3']);
+      vm.dispose();
+
+      final _RecordingCartRepo refusing = _RecordingCartRepo(refuse: 11);
+      final GetCartViewModel refused = GetCartViewModel(
+        AsyncValue<CartModel>.data(cartWith(1)),
+        repo: refusing,
+      );
+      expect(await refused.fitToStock(fixes), 'Only 3 left');
+      expect(refusing.sent, <String>['11→0']);
+      refused.dispose();
+    },
+  );
+}
+
+/// Answers every quantity update with an empty cart, except [refuse]'s line.
+class _RecordingCartRepo extends Fake implements CartRepo {
+  _RecordingCartRepo({this.refuse});
+
+  final int? refuse;
+  final List<String> sent = <String>[];
+
+  @override
+  Future<Either<Failure, CartModel>> updateCartProductQuantity(
+    int productId,
+    int quantity, {
+    int? cartItemId,
+  }) async {
+    sent.add('$cartItemId→$quantity');
+    return cartItemId == refuse
+        ? const Left<Failure, CartModel>(Failure('Only 3 left'))
+        : const Right<Failure, CartModel>(CartModel());
+  }
+
+  @override
+  void cancelRequests() {}
 }
 
 class _PendingCartRepo extends Fake implements CartRepo {

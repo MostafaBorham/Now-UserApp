@@ -92,6 +92,46 @@ class CartVendorModel {
       ),
     );
   }
+
+  /// The quantity each line must drop to for this store to fit the stock it
+  /// has; lines that already fit are left out, and `0` means remove the line.
+  ///
+  /// The server never trims a line itself, so a cart can hold more than is
+  /// left once stock moves after the add (other orders, a vendor edit, a guest
+  /// cart merged at login). Stock is held per product: every variant line of a
+  /// product carries the same `stock`, and the server refuses a quantity that
+  /// takes the product's total past it or under the product's minimum. So the
+  /// lines keep their quantity while the stock lasts, the line it runs out on
+  /// gets what is left, the rest go to 0 — and all of them do when what is
+  /// left is under the minimum. A `null` stock (product gone) is not judged.
+  Map<ProductModel, int> get stockFixes {
+    final Map<int, List<ProductModel>> linesByProduct =
+        <int, List<ProductModel>>{};
+    for (final ProductModel line in products) {
+      final int? productId = line.productId ?? line.id;
+      if (productId == null || line.stock == null) continue;
+      (linesByProduct[productId] ??= <ProductModel>[]).add(line);
+    }
+
+    final Map<ProductModel, int> fixes = <ProductModel, int>{};
+    for (final List<ProductModel> lines in linesByProduct.values) {
+      final int stock = lines.first.stock!;
+      final int total = lines.fold<int>(
+        0,
+        (int sum, ProductModel line) => sum + (line.quantity ?? 0),
+      );
+      if (total <= stock) continue;
+
+      int left = stock < (lines.first.minOrderQuantity ?? 1) ? 0 : stock;
+      for (final ProductModel line in lines) {
+        final int quantity = line.quantity ?? 0;
+        final int fitted = quantity < left ? quantity : left;
+        left -= fitted;
+        if (fitted != quantity) fixes[line] = fitted;
+      }
+    }
+    return fixes;
+  }
 }
 
 class CartVendorPricingModel {
