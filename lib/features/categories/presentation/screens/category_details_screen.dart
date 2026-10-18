@@ -63,6 +63,7 @@ class CategoryDetailsScreen extends ConsumerWidget {
           ),
           appBarTitle: _title(context, ref),
           canPop: context.canPop(),
+          hasCartIcon: true,
         ),
       ),
     );
