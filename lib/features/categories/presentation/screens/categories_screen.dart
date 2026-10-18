@@ -72,6 +72,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       body: AppWavedView(
         appBarTitle: LangKeys.categoriesTitleKey.tr(),
         canPop: context.canPop(),
+        hasCartIcon: true,
         scrollController: _scrollController,
         body: SafeArea(
           child: PaginatedView<CategoryModel>(
