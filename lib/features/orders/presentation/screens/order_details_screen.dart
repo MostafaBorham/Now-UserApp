@@ -642,15 +642,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ],
                             ),
                           ),
-                          if (status.hasInvoice &&
-                              (order.invoicePdfUrl ?? '').isNotEmpty)
-                            PrimaryAppButton(
-                              title: LangKeys.printInvoiceKey.tr(),
-                              onTap: () => context.pushNamed(
-                                AppRoutes.invoiceViewerScreen,
-                                extra: order.invoicePdfUrl,
-                              ),
-                            ),
+                          // "Print invoice" is parked until the invoice is
+                          // reworked: it pushed AppRoutes.invoiceViewerScreen
+                          // with order.invoicePdfUrl when status.hasInvoice.
+                          // The viewer, route and download are kept for then.
                         ],
                       ),
                     ),
