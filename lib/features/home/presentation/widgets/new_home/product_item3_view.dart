@@ -114,7 +114,6 @@ class ProductItem3View extends StatelessWidget {
                                 backgroundColor: colors.white,
                               ),
                               CircularAppFavouriteIcon(
-                                size: con.maxWidth*0.08,
                                 favouriteType: FavouriteType.product,
                                 itemId: product.id,
                                 isFavourite: product.isFavorite ?? false,

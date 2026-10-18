@@ -119,7 +119,6 @@ class StoreCardView extends StatelessWidget {
                         end: 8,
                         top: 8,
                         child: CircularAppFavouriteIcon(
-                          size: w * 0.05,
                           favouriteType: FavouriteType.store,
                           itemId: store?.id,
                           isFavourite: store?.isFavorite ?? false,

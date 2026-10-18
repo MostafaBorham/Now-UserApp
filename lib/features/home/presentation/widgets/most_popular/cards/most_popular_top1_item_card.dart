@@ -102,7 +102,6 @@ class MostPopularTop1ItemCard extends StatelessWidget {
                               ),
                             ),
                             CircularAppFavouriteIcon(
-                                size: con.maxWidth*0.035,
                               onFavouriteChanged: (p0) {
 
                               },

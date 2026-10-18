@@ -28,7 +28,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.d
 class CircularAppFavouriteIcon extends ConsumerStatefulWidget {
   const CircularAppFavouriteIcon({
     super.key,
-    this.size = 20,
+    this.size = 14,
     this.isFavourite = false,
     this.favouriteType,
     this.itemId,
@@ -37,7 +37,10 @@ class CircularAppFavouriteIcon extends ConsumerStatefulWidget {
     this.backgroundColor,
   });
 
-  final double? size;
+  /// Radius of the circle; the heart is drawn a touch wider. The default is
+  /// the card size — pass one only off the cards, so every card's heart
+  /// matches.
+  final double size;
 
   /// Material elevation of the circular button.
   final double elevation;
@@ -128,7 +131,7 @@ class _CircularAppFavouriteIconState
                   .svg(
                     // A touch over the radius so the heart fills more of
                     // the circle without growing the button itself.
-                    width: (widget.size ?? 20) * 1.2,
+                    width: widget.size * 1.2,
                     colorMapper: SvgTint(
                       isFavourite ? colors.errorContainer : colors.neutral1200,
                     ),

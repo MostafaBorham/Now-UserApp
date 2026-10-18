@@ -99,7 +99,7 @@ class MostPopularTop3ItemCard extends StatelessWidget {
                     PositionedDirectional(
                       bottom: 9,
                       start: 9,
-                      child: CircularAppFavouriteIcon(size: con.maxWidth * 0.07,onFavouriteChanged: (p0) {
+                      child: CircularAppFavouriteIcon(onFavouriteChanged: (p0) {
 
                       },),
                     ),

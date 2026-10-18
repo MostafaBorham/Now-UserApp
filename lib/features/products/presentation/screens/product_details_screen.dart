@@ -138,6 +138,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   else
                                     const SizedBox.shrink(),
                                   CircularAppFavouriteIcon(
+                                    size: 20,
                                     favouriteType: FavouriteType.product,
                                     itemId: product.id,
                                     isFavourite: product.isFavorite ?? false,

@@ -152,7 +152,6 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
                                   end: 8.0,
                                 ),
                                 child: CircularAppFavouriteIcon(
-                                  size: con.maxWidth * 0.08,
                                   favouriteType: FavouriteType.product,
                                   itemId: widget.product?.id,
                                   isFavourite:

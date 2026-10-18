@@ -83,7 +83,6 @@ class GlassProductItemView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           CircularAppFavouriteIcon(
-                            size: con.maxWidth * 0.1,
                             favouriteType: FavouriteType.product,
                             itemId: product.id,
                             isFavourite: product.isFavorite ?? false,

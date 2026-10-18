@@ -116,7 +116,6 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: CircularAppFavouriteIcon(
-                                      size: con.maxWidth * 0.1,
                                       favouriteType: FavouriteType.product,
                                       itemId: product.id,
                                       isFavourite: product.isFavorite ?? false,
