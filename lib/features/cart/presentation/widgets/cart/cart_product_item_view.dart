@@ -36,9 +36,6 @@ class CartProductItemView extends ConsumerStatefulWidget {
 }
 
 class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
-  /// Around the 20 dp + and − circles: a 44 × 40 tap target each, with the
-  /// extra width on the outer side so the circles stay 4 dp from the count.
-
   /// The quantity the server last confirmed for this line.
   ///
   /// Read straight off the line rather than mirrored into local state: the
@@ -251,8 +248,6 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                   Expanded(
                     child: AbsorbPointer(
                       absorbing: isUpdating,
-                      // The circles stay 20 dp; padding grows their tap areas
-                      // (BUG-031).
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
