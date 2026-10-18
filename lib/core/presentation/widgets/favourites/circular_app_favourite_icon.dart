@@ -18,9 +18,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.d
 /// favourite viewmodel — [FavouriteType.product] watches
 /// `productFavouriteProvider`, [FavouriteType.store] watches
 /// `storeFavouriteProvider`, both seeded with [isFavourite]. Tapping then calls
-/// remove when the item is already favourited and add when it is not; the icon
-/// is replaced by a spinner while the request is in flight, and a failure only
-/// shows a snackbar — the displayed status stays where it was.
+/// remove when the item is already favourited and add when it is not. The heart
+/// flips at once and the request runs behind it; a failure flips it back and
+/// shows a toast. Taps are ignored while a request is in flight.
 ///
 /// With either of them left `null` the icon keeps its offline behaviour: it just
 /// flips locally and reports through [onFavouriteChanged] (used by the screens
@@ -66,9 +66,9 @@ class CircularAppFavouriteIcon extends ConsumerStatefulWidget {
 
 class _CircularAppFavouriteIconState
     extends ConsumerState<CircularAppFavouriteIcon> {
-  /// Last status the icon is allowed to show. Kept next to the provider because
-  /// `AsyncValue.loading()` / `AsyncValue.error()` carry no value, so this is
-  /// what the icon falls back to while a request runs or after it failed.
+  /// Last status the server confirmed. Kept next to the provider because
+  /// `AsyncValue.error()` carries no value, so this is what the icon falls back
+  /// to after a request failed — undoing the optimistic flip.
   late bool _isFavourite = widget.isFavourite ?? false;
 
   bool get _isIntegrated =>
@@ -103,7 +103,8 @@ class _CircularAppFavouriteIconState
       }
     }
 
-    // Loading and error hold no value, so both keep showing the last status.
+    // Loading carries the optimistic status; error holds no value, so it falls
+    // back to the last confirmed one.
     final bool isFavourite = state.valueOrNull ?? _isFavourite;
 
     return InkWell(
@@ -120,27 +121,18 @@ class _CircularAppFavouriteIconState
         child: CircleAvatar(
           radius: widget.size,
           backgroundColor: backgroundColor,
-          child: state.isLoading
-              ? SizedBox.square(
-                  dimension: widget.size,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: colors.errorContainer,
-                  ),
-                )
-              : (isFavourite
-                        ? Assets.media.images.svg.filledFavouriteIcon
-                        : Assets.media.images.svg.favouriteIcon)
-                    .svg(
-                      // A touch over the radius so the heart fills more of
-                      // the circle without growing the button itself.
-                      width: (widget.size ?? 20) * 1.2,
-                      colorMapper: SvgTint(
-                        isFavourite
-                            ? colors.errorContainer
-                            : colors.neutral1200,
-                      ),
+          child:
+              (isFavourite
+                      ? Assets.media.images.svg.filledFavouriteIcon
+                      : Assets.media.images.svg.favouriteIcon)
+                  .svg(
+                    // A touch over the radius so the heart fills more of
+                    // the circle without growing the button itself.
+                    width: (widget.size ?? 20) * 1.2,
+                    colorMapper: SvgTint(
+                      isFavourite ? colors.errorContainer : colors.neutral1200,
                     ),
+                  ),
         ),
       ),
     );

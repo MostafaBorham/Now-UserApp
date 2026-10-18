@@ -31,6 +31,13 @@ class StoreFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
   final int _storeId;
   final FavouritesRepo _repo = FavouritesRepo();
 
+  /// See `ProductFavouriteViewModel._optimistic`.
+  static AsyncValue<bool> _optimistic(bool isFavourite) =>
+      const AsyncLoading<bool>().copyWithPrevious(
+        AsyncData<bool>(isFavourite),
+        isRefresh: false,
+      );
+
   @override
   void dispose() {
     _repo.cancelRequests();
@@ -51,7 +58,7 @@ class StoreFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
   }
 
   Future<void> addToFavourites() async {
-    state = const AsyncValue.loading();
+    state = _optimistic(true);
 
     final result = await _repo.addStoreToFavourites(storeId: _storeId);
 
@@ -67,7 +74,7 @@ class StoreFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
   }
 
   Future<void> removeFromFavourites() async {
-    state = const AsyncValue.loading();
+    state = _optimistic(false);
 
     final result = await _repo.removeStoreFromFavourites(storeId: _storeId);
 

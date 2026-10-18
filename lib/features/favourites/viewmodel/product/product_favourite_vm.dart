@@ -27,10 +27,15 @@ final productFavouriteProvider = StateNotifierProvider.autoDispose.family<
 );
 
 class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
-  ProductFavouriteViewModel(super.initialState, this._productId);
+  /// [repo] is injectable for tests.
+  ProductFavouriteViewModel(
+    super.initialState,
+    this._productId, {
+    FavouritesRepo? repo,
+  }) : _repo = repo ?? FavouritesRepo();
 
   final int _productId;
-  final FavouritesRepo _repo = FavouritesRepo();
+  final FavouritesRepo _repo;
 
   @override
   void dispose() {
@@ -51,8 +56,18 @@ class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
     return true;
   }
 
+  /// Loading that already carries [isFavourite], so the heart flips on tap.
+  /// `isRefresh: false` keeps it a loading to listeners, so nothing treats it
+  /// as confirmed; a failure carries no value, so the icon falls back to the
+  /// last confirmed status.
+  static AsyncValue<bool> _optimistic(bool isFavourite) =>
+      const AsyncLoading<bool>().copyWithPrevious(
+        AsyncData<bool>(isFavourite),
+        isRefresh: false,
+      );
+
   Future<void> addToFavourites() async {
-    state = const AsyncValue.loading();
+    state = _optimistic(true);
 
     final result = await _repo.addProductToFavourites(productId: _productId);
 
@@ -68,7 +83,7 @@ class ProductFavouriteViewModel extends StateNotifier<AsyncValue<bool>> {
   }
 
   Future<void> removeFromFavourites() async {
-    state = const AsyncValue.loading();
+    state = _optimistic(false);
 
     final result =
         await _repo.removeProductFromFavourites(productId: _productId);
