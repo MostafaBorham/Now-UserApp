@@ -71,8 +71,10 @@ class _HomeViewState extends ConsumerState<HomeView>
 
   double? _anchor;
 
-  /// A session change waiting for the location re-check it started to settle,
-  /// so the two trigger one feed reload instead of two (BUG-003, QA V2).
+  /// A feed load waiting for the location pass in flight to settle: the first
+  /// load (the splash no longer waits for the launch pass), or a session change
+  /// and the re-check it started, so the two trigger one reload instead of two
+  /// (BUG-003, QA V2).
   bool _reloadAfterLocation = false;
 
   late final AppLifecycleListener _lifecycle;
@@ -91,7 +93,16 @@ class _HomeViewState extends ConsumerState<HomeView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (!ref.read(getHomeSectionsProvider).hasValue) _loadFeed();
+      if (!ref.read(getHomeSectionsProvider).hasValue) {
+        // Its nearby stores need the fresh fix: the feed holds its skeleton
+        // until then rather than loading twice.
+        if (ref.read(currentLocationProvider) ==
+            CurrentLocationStatus.resolving) {
+          _reloadAfterLocation = true;
+        } else {
+          _loadFeed();
+        }
+      }
       _onScroll();
     });
   }
@@ -243,7 +254,7 @@ class _HomeViewState extends ConsumerState<HomeView>
       }
     });
     // A location found after the feed loaded (on resume, or after a session
-    // change) moves the nearby stores to it.
+    // change) moves the nearby stores to it; a load waiting for it goes now.
     ref.listen<CurrentLocationStatus>(currentLocationProvider, (
       CurrentLocationStatus? previous,
       CurrentLocationStatus next,
@@ -252,9 +263,9 @@ class _HomeViewState extends ConsumerState<HomeView>
           next != CurrentLocationStatus.ready) {
         return;
       }
-      final bool sessionChanged = _reloadAfterLocation;
+      final bool waited = _reloadAfterLocation;
       _reloadAfterLocation = false;
-      if (sessionChanged ||
+      if (waited ||
           CurrentLocationCacheService().getCurrentLocation() != null) {
         _loadFeed();
       }

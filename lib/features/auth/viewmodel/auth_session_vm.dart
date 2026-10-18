@@ -68,10 +68,10 @@ final List<ProviderOrFamily> sessionScopedProviders = <ProviderOrFamily>[
 ///
 /// [idle] — nothing has been resolved yet (the VM was created but no one has
 /// called [AuthSessionViewModel.resolveSession] — this is the state until the
-/// splash triggers the first resolve). [loading] — a logged-in user's
-/// dependencies are being fetched. [ready] — resolution finished and there is
-/// nothing left to wait for (a user's dependencies all loaded, or a guest has
-/// none). The splash watches this to know when it may leave.
+/// splash triggers the first resolve). [loading] — a logged-in user's profile
+/// is being fetched. [ready] — nothing left for the splash to wait for (the
+/// profile settled, or a guest has nothing); the user's other dependencies may
+/// still be loading. The splash watches this to know when it may leave.
 enum AppDependenciesStatus { idle, loading, ready }
 
 /// The exposed state of the auth session: the current [SessionType] and how far
@@ -109,10 +109,10 @@ class AuthSessionState {
 /// Deliberately **not** `autoDispose`, and it does **not** resolve on creation:
 /// the instance is brought online at the app root ([resolveSession] is *not*
 /// called there), and stays idle until someone needs it. The first need is the
-/// splash — once its logo animation ends it calls [resolveSession], which reads
-/// the cached session and, for a logged-in user, fires the dependencies while
-/// the splash shows its loader; the splash then leaves as soon as
-/// [AppDependenciesStatus.ready] lands.
+/// splash — it calls [resolveSession] as its logo starts, which reads the
+/// cached session and, for a logged-in user, fires the dependencies while the
+/// logo plays; the splash then leaves once the logo is done and
+/// [AppDependenciesStatus.ready] has landed.
 ///
 /// The same [resolveSession] is replayed after any later login/logout, so the
 /// orchestrator reacts wherever the session changes — not only on the splash.
@@ -131,8 +131,8 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   final AuthRepo _repo = AuthRepo();
 
   /// Reads the cached session through the repo and applies it. This is the
-  /// on-demand entry point — called first by the splash when its animation
-  /// ends, and again after any login/logout so the orchestrator re-evaluates. A
+  /// on-demand entry point — called first by the splash as it opens, and again
+  /// after any login/logout so the orchestrator re-evaluates. A
   /// cache read failure collapses to [SessionType.guest] so callers never see
   /// an error state.
   ///
@@ -183,7 +183,7 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
   ///
   /// * [SessionType.user]  : mark the dependencies [AppDependenciesStatus.loading]
   ///   and kick off [_loadUserDependencies], which flips to
-  ///   [AppDependenciesStatus.ready] once every request settles.
+  ///   [AppDependenciesStatus.ready] once the profile settles.
   /// * [SessionType.guest] : settle straight to [AppDependenciesStatus.ready] —
   ///   a guest has nothing to wait for.
   ///
@@ -211,12 +211,23 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     }
   }
 
-  Future<void> _loadUserDependencies() async {
-    await Future.wait(<Future<void>>[
+  /// Settles [AppDependenciesStatus.ready] as soon as the profile has — the
+  /// only one the splash waits for, since it decides whether this launch goes
+  /// to the complete-profile screen. The rest keep loading behind the next
+  /// screen, which watches them. The returned future still covers every
+  /// request, for the login flow's `awaitDependencies`.
+  Future<void> _loadUserDependencies() {
+    return Future.wait(<Future<void>>[
+      _ref.read(getProfileProvider.notifier).getProfile().whenComplete(() {
+        if (mounted) {
+          state = state.copyWith(
+            dependenciesStatus: AppDependenciesStatus.ready,
+          );
+        }
+      }),
       _ref.read(getMyOrdersProvider.notifier).loadFirstPage(),
       _ref.read(getOrderToRateProvider.notifier).getOrderToRate(),
       _loadAddresses(),
-      _ref.read(getProfileProvider.notifier).getProfile(),
       // Saved cards are no longer fetched at boot: they are loaded fresh when
       // the wallet's "My Cards" / "Add Balance" buttons are tapped (see
       // WalletScreen). getMyCardsProvider stays session-scoped below so the
@@ -229,10 +240,6 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
       // invalidated cart would sit empty until a manual pull-to-refresh.
       _ref.read(getCartProvider.notifier).getCart(),
     ]);
-
-    if (!mounted) return;
-
-    state = state.copyWith(dependenciesStatus: AppDependenciesStatus.ready);
   }
 
   /// The address list, and the default only when the list can't tell it

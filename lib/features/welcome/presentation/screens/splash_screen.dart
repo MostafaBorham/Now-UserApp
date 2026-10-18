@@ -33,31 +33,34 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   _appCategoriesSub;
   ProviderSubscription<AsyncValue<CouponModel>>? _welcomeVoucherSub;
 
-  // Flipped once the logo animation ends; from then on the loader is shown
-  // continuously — whatever happens in the background — until the splash leaves.
-  bool _animationDone = false;
+  // Flipped once the logo animation ends. The splash never leaves before, so
+  // the branding is never cut short; the loader shows from then on only while
+  // something the splash waits for is still pending.
+  bool _logoDone = false;
 
-  // Latches once we navigate away, so a second listener firing (both the
-  // session and the location gates settle independently) can never push twice.
+  // Latches once we navigate away, so the logo ending and the session settling
+  // can never both push.
   bool _navigated = false;
 
-  // Latches on the first warm-up, since two things can now trigger it.
-  bool _warmedUp = false;
-
-  // The warm-up normally starts when the logo animation ends, so the branding
-  // is never cut short. But the controller's duration is only set inside
-  // Lottie's `onLoaded`, so if the asset never decodes the animation never
-  // starts, never completes, and the boot would never begin — the app would sit
-  // on the splash forever. This starts it anyway.
-  Timer? _warmUpFallback;
-  static const Duration _warmUpFallbackDelay = Duration(seconds: 3);
+  // The controller's duration is only set inside Lottie's `onLoaded`, so if the
+  // asset never decodes the animation never starts, never completes, and the
+  // app would sit on the splash forever. This ends the logo anyway. Cancelled
+  // once the asset loads — the animation (3 s) would otherwise lose its last
+  // frames to it.
+  Timer? _logoFallback;
+  static const Duration _logoFallbackDelay = Duration(seconds: 3);
 
   @override
   void initState() {
     super.initState();
     _logoController = AnimationController(vsync: this);
     _logoController.addStatusListener(_logoAnimationListener);
-    _warmUpFallback = Timer(_warmUpFallbackDelay, _warmUp);
+    _logoFallback = Timer(_logoFallbackDelay, _onLogoDone);
+
+    // The session — and, for a signed-in user, the profile the splash waits
+    // for — loads while the logo plays, so there is usually nothing left to
+    // wait for when it ends.
+    ref.read(authSessionProvider.notifier).resolveSession();
 
     // Always warm up the (kept-alive) application-information provider here so
     // the FAQ/privacy screens reuse the data instead of refetching. If the
@@ -121,18 +124,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
 
-    // Two independent gates must both settle before the splash may leave: the
-    // session orchestrator's dependencies, and the current-location pass.
+    // The one gate besides the logo: what the session orchestrator holds the
+    // splash for (see [AppDependenciesStatus.ready]).
     ref.listen(
       authSessionProvider.select((s) => s.dependenciesStatus),
       (AppDependenciesStatus? previous, AppDependenciesStatus next) =>
           _maybeLeaveSplash(),
     );
-    ref.listen(
-      currentLocationProvider,
-      (CurrentLocationStatus? previous, CurrentLocationStatus next) =>
-          _maybeLeaveSplash(),
-    );
+    final bool waiting =
+        _logoDone &&
+        ref.watch(authSessionProvider.select((s) => s.dependenciesStatus)) !=
+            AppDependenciesStatus.ready;
 
     return Scaffold(
       body: Container(
@@ -153,16 +155,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 repeat: false,
                 controller: _logoController,
                 onLoaded: (composition) {
+                  _logoFallback?.cancel();
                   _logoController
                     ..duration = composition.duration
                     ..forward();
                 },
               ),
             ),
-            // Once the logo settles, the loader spins continuously until the
-            // splash leaves — regardless of any background work (data, location,
-            // permissions).
-            if (_animationDone)
+            if (waiting)
               Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.sizeOf(context).width * 0.6,
@@ -181,7 +181,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
-    _warmUpFallback?.cancel();
+    _logoFallback?.cancel();
     _appInfoSub?.close();
     _appCategoriesSub?.close();
     _welcomeVoucherSub?.close();
@@ -191,43 +191,36 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void _logoAnimationListener(AnimationStatus status) {
-    if (status == AnimationStatus.completed && mounted) {
-      setState(() => _animationDone = true);
-      _warmUp();
-    }
+    if (status == AnimationStatus.completed) _onLogoDone();
   }
 
-  void _warmUp() {
-    // Reached from the animation finishing *or* from [_warmUpFallback],
-    // whichever comes first, so it has to be idempotent.
-    if (_warmedUp || !mounted) return;
-    _warmedUp = true;
-    _warmUpFallback?.cancel();
+  void _onLogoDone() {
+    // Reached from the animation finishing *or* from [_logoFallback], so it
+    // has to be idempotent.
+    if (_logoDone || !mounted) return;
+    _logoFallback?.cancel();
+    setState(() => _logoDone = true);
 
-    // Both bootstraps run in parallel; the splash leaves only once both settle
-    // (see [_maybeLeaveSplash]). Location resolution requests its own service
-    // prompt and permission as part of fetching the current fix.
+    // The splash does not wait for the location: Home holds its feed until
+    // this pass ends. Started only now so its service and permission prompts
+    // never cover the logo.
     ref.read(currentLocationProvider.notifier).resolve();
-    ref.read(authSessionProvider.notifier).resolveSession();
+    _maybeLeaveSplash();
   }
 
   void _maybeLeaveSplash() {
-    if (_navigated || !mounted) return;
-
-    final bool dependenciesReady =
-        ref.read(authSessionProvider).dependenciesStatus ==
-        AppDependenciesStatus.ready;
-    final bool locationReady =
-        ref.read(currentLocationProvider) == CurrentLocationStatus.ready;
-
-    if (dependenciesReady && locationReady) {
-      _navigated = true;
-      context.goNamed(
-        _needsProfileCompletion
-            ? AppRoutes.completeProfileScreen
-            : AppRoutes.onBoardingScreen,
-      );
+    if (_navigated || !_logoDone || !mounted) return;
+    if (ref.read(authSessionProvider).dependenciesStatus !=
+        AppDependenciesStatus.ready) {
+      return;
     }
+
+    _navigated = true;
+    context.goNamed(
+      _needsProfileCompletion
+          ? AppRoutes.completeProfileScreen
+          : AppRoutes.onBoardingScreen,
+    );
   }
 
   /// Whether this boot has to divert to the profile-completion screen.

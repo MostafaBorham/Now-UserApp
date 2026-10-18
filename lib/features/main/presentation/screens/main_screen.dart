@@ -58,19 +58,31 @@ class _MainScreenState extends ConsumerState<MainScreen>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _offerRating();
+      if (!mounted) return;
+      // The splash no longer waits for the launch fetch: if it is still on its
+      // way, offer once it lands.
+      if (ref.read(getOrderToRateProvider).isLoading) {
+        late final ProviderSubscription<AsyncValue<OrderModel?>> sub;
+        sub = ref.listenManual(getOrderToRateProvider, (_, next) {
+          if (next.isLoading) return;
+          sub.close();
+          _offerRating();
+        });
+      } else {
+        _offerRating();
+      }
     });
   }
 
   /// Offers to rate the last delivered order when it still needs one — once
   /// per order.
   ///
-  /// Checked only as the shell opens: at launch, or on the fresh shell a login
-  /// started from onboarding lands on. Both come after the user's dependencies
-  /// have loaded, so the answer is already here. Reacting to the fetch itself
-  /// would open the sheet over the OTP screen during a login started from
-  /// inside the shell, and that screen's own pops would close the sheet instead
-  /// of itself; such a login gets the prompt at the next launch.
+  /// Only for the fetch already settled or on its way as the shell opens: at
+  /// launch, or on the fresh shell a login started from onboarding lands on.
+  /// Reacting to any later fetch would open the sheet over the OTP screen
+  /// during a login started from inside the shell, and that screen's own pops
+  /// would close the sheet instead of itself; such a login gets the prompt at
+  /// the next launch.
   void _offerRating() {
     final OrderModel? order = ref.read(getOrderToRateProvider).valueOrNull;
     if (order == null) return;
