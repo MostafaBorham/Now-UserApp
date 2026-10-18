@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -38,15 +38,6 @@ class CartProductItemView extends ConsumerStatefulWidget {
 class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
   /// Around the 20 dp + and − circles: a 44 × 40 tap target each, with the
   /// extra width on the outer side so the circles stay 4 dp from the count.
-  static const EdgeInsetsDirectional _incTapPadding =
-      EdgeInsetsDirectional.fromSTEB(20, 10, 4, 10);
-  static const EdgeInsetsDirectional _decTapPadding =
-      EdgeInsetsDirectional.fromSTEB(4, 10, 20, 10);
-
-  /// Around the 28 dp delete circle: a 60 × 40 tap target, and the end inset
-  /// centres the circle over the − below it.
-  static const EdgeInsetsDirectional _deleteTapPadding =
-      EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6);
 
   /// The quantity the server last confirmed for this line.
   ///
@@ -209,20 +200,18 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       label: LangKeys.removeProductKey.tr(),
                       child: InkWell(
                         onTap: _confirmRemove,
-                        customBorder: const CircleBorder(),
-                        child: Padding(
-                          padding: _deleteTapPadding,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: colors.error.withValues(alpha: 0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Assets.media.images.svg.deleteIcon.svg(
-                              colorFilter: ColorFilter.mode(
-                                colors.onError,
-                                BlendMode.srcIn,
-                              ),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: colors.error.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Assets.media.images.svg.deleteIcon.svg(
+                            colorFilter: ColorFilter.mode(
+                              colors.onError,
+                              BlendMode.srcIn,
                             ),
                           ),
                         ),
@@ -232,7 +221,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                 ],
               ),
               CartVariantPills(options: product.options),
-              const SizedBox(height: 8),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -259,41 +248,37 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                       ],
                     ),
                   ),
-                  AbsorbPointer(
-                    absorbing: isUpdating,
-                    // The circles stay 20 dp; padding grows their tap areas
-                    // (BUG-031).
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        InkWell(
-                          onTap: _canIncrement
-                              ? () => _updateQuantity(quantity + 1)
-                              : null,
-                          customBorder: const CircleBorder(),
-                          child: Padding(
-                            padding: _incTapPadding,
+                  Expanded(
+                    child: AbsorbPointer(
+                      absorbing: isUpdating,
+                      // The circles stay 20 dp; padding grows their tap areas
+                      // (BUG-031).
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: _canIncrement
+                                ? () => _updateQuantity(quantity + 1)
+                                : null,
+                            customBorder: const CircleBorder(),
                             child: Container(
-                              width: 20,
-                              height: 20,
+                              height: 30,
+                              width: 30,
                               decoration: BoxDecoration(
                                 color: colors.white,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 Icons.add_rounded,
-                                size: 12,
+                                size: 18,
                                 color: colors.black.withValues(
                                   alpha: _canIncrement ? 1 : 0.3,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Center(
+                          Center(
                             child: isUpdating
                                 ? SizedBox(
                                     width: 12,
@@ -306,24 +291,21 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                                 : Text(
                                     quantity.toString(),
                                     textAlign: TextAlign.center,
-                                    style: AppTextStyles.style12Medium.copyWith(
+                                    style: AppTextStyles.style16Medium.copyWith(
                                       color: colors.tertiaryContainer,
                                     ),
                                   ),
                           ),
-                        ),
-                        // At the store's minimum the − goes inert; removing
-                        // the line is the delete button's job.
-                        InkWell(
-                          onTap: quantity > _minQuantity
-                              ? () => _updateQuantity(quantity - 1)
-                              : null,
-                          customBorder: const CircleBorder(),
-                          child: Padding(
-                            padding: _decTapPadding,
+                          // At the store's minimum the − goes inert; removing
+                          // the line is the delete button's job.
+                          InkWell(
+                            onTap: quantity > _minQuantity
+                                ? () => _updateQuantity(quantity - 1)
+                                : null,
+                            customBorder: const CircleBorder(),
                             child: Container(
-                              width: 20,
-                              height: 20,
+                              height: 30,
+                              width: 30,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: colors.white,
@@ -331,15 +313,15 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
                               ),
                               child: Icon(
                                 Icons.remove_rounded,
-                                size: 12,
+                                size: 18,
                                 color: colors.neutral500.withValues(
                                   alpha: quantity > _minQuantity ? 1 : 0.3,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
