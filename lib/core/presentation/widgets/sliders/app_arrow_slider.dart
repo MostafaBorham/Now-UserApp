@@ -31,7 +31,8 @@ class AppArrowSlider extends StatefulWidget {
   final double sliderSpace;
 
   // Each page is a column whose height can't be expressed as one aspect ratio,
-  // so it is fixed here; the image is the flexible member and absorbs the slack.
+  // so it is fixed here; the image is the flexible member and gives up height
+  // when the content above and below it is taller than this allows.
   final double itemHeight;
   final int itemCount;
 
@@ -67,41 +68,47 @@ class _AppArrowSliderState extends State<AppArrowSlider> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 20,
                   children: [
-                    if (widget.aboveImageBuilder != null) widget.aboveImageBuilder!(itemContext, index),
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: AlignmentDirectional.center,
-                      children: [
-                        // Inset so the image sits between the arrows while its
-                        // shadow still bleeds out under them.
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                            horizontal: 44,
-                          ),
-                          child: widget.sliderItemBuilder(itemContext, index),
-                        ),
-                        // A lone product has nowhere to page to, so the arrows
-                        // are dropped entirely — only the single image (and its
-                        // solitary dot below) remain.
-                        if (widget.itemCount > 1) ...[
-                          PositionedDirectional(
-                            start: 0,
-                            child: _SliderArrowButton(
-                              icon: Icons.chevron_left,
-                              onTap: () => _controller.previousPage(),
+                    if (widget.aboveImageBuilder != null)
+                      widget.aboveImageBuilder!(itemContext, index),
+                    // Flexible so a tall details card shortens the image
+                    // instead of overflowing the fixed page height.
+                    Flexible(
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: AlignmentDirectional.center,
+                        children: [
+                          // Inset so the image sits between the arrows while its
+                          // shadow still bleeds out under them.
+                          Padding(
+                            padding: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 44,
                             ),
+                            child: widget.sliderItemBuilder(itemContext, index),
                           ),
-                          PositionedDirectional(
-                            end: 0,
-                            child: _SliderArrowButton(
-                              icon: Icons.chevron_right,
-                              onTap: () => _controller.nextPage(),
+                          // A lone product has nowhere to page to, so the arrows
+                          // are dropped entirely — only the single image (and its
+                          // solitary dot below) remain.
+                          if (widget.itemCount > 1) ...[
+                            PositionedDirectional(
+                              start: 0,
+                              child: _SliderArrowButton(
+                                icon: Icons.chevron_left,
+                                onTap: () => _controller.previousPage(),
+                              ),
                             ),
-                          ),
+                            PositionedDirectional(
+                              end: 0,
+                              child: _SliderArrowButton(
+                                icon: Icons.chevron_right,
+                                onTap: () => _controller.nextPage(),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                    if (widget.belowImageBuilder != null) widget.belowImageBuilder!(itemContext, index),
+                    if (widget.belowImageBuilder != null)
+                      widget.belowImageBuilder!(itemContext, index),
                   ],
                 ),
               ),
