@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// A row of boxes that displays an OTP. A single transparent field overlaid on
 /// top captures all input (typing, backspace and paste); the boxes are
@@ -93,6 +94,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
         ),
         Positioned.fill(
           child: TextField(
+            contextMenuBuilder: appContextMenuBuilder,
             controller: widget.controller,
             focusNode: _focusNode,
             autofocus: true,

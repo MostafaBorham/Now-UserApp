@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// A labelled, editable field on the Edit Information screen.
 ///
@@ -141,6 +142,7 @@ class EditField extends StatelessWidget {
             builder:
                 (BuildContext context, TextDirection? typedDirection) =>
                     TextField(
+                      contextMenuBuilder: appContextMenuBuilder,
                       controller: controller,
                       keyboardType: keyboardType,
                       maxLength: maxLength,

@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// The saved-card entry fields (cardholder name, number, expiry, CVV), shared by
 /// every add-card surface.
@@ -313,6 +314,7 @@ class _CardInputField extends StatelessWidget {
       controller: controller,
       builder: (BuildContext context, TextDirection? typedDirection) =>
           TextFormField(
+            contextMenuBuilder: appContextMenuBuilder,
             controller: controller,
             validator: validator,
             autovalidateMode: AutovalidateMode.onUserInteraction,

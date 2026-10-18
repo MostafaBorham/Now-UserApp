@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// The tip picker. Nothing is preselected — there is no tip until the customer
 /// picks one — and tapping the selected pill again takes the tip back.
@@ -109,6 +110,7 @@ class _TipYourDriverViewState extends State<TipYourDriverView> {
               builder:
                   (BuildContext context, TextDirection? typedDirection) =>
                       TextField(
+                        contextMenuBuilder: appContextMenuBuilder,
                         controller: _otherTipController,
                         keyboardType: TextInputType.number,
                         textDirection: typedDirection,

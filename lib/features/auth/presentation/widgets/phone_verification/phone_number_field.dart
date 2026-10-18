@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.da
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
@@ -94,6 +95,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                     ),
                   ),
                   TextFormField(
+                    contextMenuBuilder: appContextMenuBuilder,
                     controller: widget.controller,
                     keyboardType: TextInputType.phone,
                     // The number always reads left-to-right so the "(05)" head

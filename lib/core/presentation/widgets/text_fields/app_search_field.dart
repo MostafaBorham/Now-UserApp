@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 class AppSearchField extends ConsumerStatefulWidget {
   const AppSearchField({
@@ -151,6 +152,7 @@ class _AppSearchFieldState extends ConsumerState<AppSearchField> {
                                       BuildContext context,
                                       TextDirection? typedDirection,
                                     ) => TextFormField(
+                                      contextMenuBuilder: appContextMenuBuilder,
                                       controller: _controller,
                                       onChanged: widget.onChanged,
                                       onFieldSubmitted: _onSubmitted,

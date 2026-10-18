@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
@@ -172,6 +173,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                                 BuildContext context,
                                 TextDirection? typedDirection,
                               ) => TextField(
+                                contextMenuBuilder: appContextMenuBuilder,
                                 controller: _controller,
                                 focusNode: _focusNode,
                                 onChanged: _onChanged,

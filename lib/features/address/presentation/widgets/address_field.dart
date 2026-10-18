@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/focus_ring.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// A single rounded input used on the Address Details form.
 ///
@@ -41,6 +42,7 @@ class AddressField extends StatelessWidget {
           controller: controller,
           builder: (BuildContext context, TextDirection? typedDirection) =>
               TextField(
+                contextMenuBuilder: appContextMenuBuilder,
                 controller: controller,
                 keyboardType: keyboardType,
                 inputFormatters: inputFormatters,

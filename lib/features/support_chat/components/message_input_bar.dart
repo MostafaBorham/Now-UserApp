@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// Bottom message composer: a rounded text field plus the green send button.
 ///
@@ -110,6 +111,7 @@ class _MessageInputBarState extends State<MessageInputBar> {
                         controller: widget.controller,
                         builder:
                             (context, typedDirection) => TextField(
+                              contextMenuBuilder: appContextMenuBuilder,
                               controller: widget.controller,
                               minLines: 1,
                               maxLines: lineCount,

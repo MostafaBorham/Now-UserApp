@@ -12,6 +12,7 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/providers/ch
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_discount_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 class ApplyDiscountCodeView extends ConsumerStatefulWidget {
   const ApplyDiscountCodeView({
@@ -205,6 +206,7 @@ class _ApplyDiscountCodeViewState
                 builder:
                     (BuildContext context, TextDirection? typedDirection) =>
                         TextField(
+                          contextMenuBuilder: appContextMenuBuilder,
                           controller: _controller,
                           textDirection: typedDirection,
                           style: AppTextStyles.style14Regular.copyWith(

@@ -3,6 +3,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// The compact, filled comment box the rating screen puts under every rateable
 /// row. It grows from one line up to four as the shopper types and takes its
@@ -39,6 +40,7 @@ class RatingCommentField extends StatelessWidget {
       controller: controller,
       builder: (BuildContext context, TextDirection? typedDirection) =>
           TextField(
+            contextMenuBuilder: appContextMenuBuilder,
             controller: controller,
             readOnly: readOnly,
             maxLength: readOnly ? null : maxLength,

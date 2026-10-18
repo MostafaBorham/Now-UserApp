@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// Picks a top-up amount, either from the server's suggested chips or as a
 /// typed custom amount.
@@ -224,6 +225,7 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                         controller: amountController,
                         builder:
                             (context, typedDirection) => TextField(
+                              contextMenuBuilder: appContextMenuBuilder,
                               controller: amountController,
                               // Decimal, because the server's amounts are
                               // two-place decimals — an integer pad would make

@@ -4,6 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 /// Rounded input that fills grey and turns white with a green border on focus.
 class RoundedField extends StatefulWidget {
@@ -61,6 +62,7 @@ class _RoundedFieldState extends State<RoundedField> {
       controller: widget.controller,
       builder: (BuildContext context, TextDirection? typedDirection) {
         return TextFormField(
+          contextMenuBuilder: appContextMenuBuilder,
           controller: widget.controller,
           focusNode: _focusNode,
           keyboardType: widget.keyboardType,
