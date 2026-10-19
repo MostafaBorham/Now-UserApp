@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/features/support_chat/data/models/support_chat_message_model.dart';
 
 class ChatMessage {
   const ChatMessage({
@@ -15,6 +17,7 @@ class ChatMessage {
     this.senderType,
     this.senderName,
     this.senderAvatarUrl,
+    this.attachments = const <SupportChatAttachmentModel>[],
   });
 
   final int? id;
@@ -25,6 +28,7 @@ class ChatMessage {
   final String? senderType;
   final String? senderName;
   final String? senderAvatarUrl;
+  final List<SupportChatAttachmentModel> attachments;
 }
 
 class ChatBubble extends StatelessWidget {
@@ -39,6 +43,9 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool agent = message.fromAgent;
+    final Color textColor = agent
+        ? context.colors.tertiaryContainer
+        : context.colors.white;
 
     final Widget bubble = Flexible(
       child: Column(
@@ -72,16 +79,48 @@ class ChatBubble extends StatelessWidget {
                   : context.colors.primary500Main,
               borderRadius: BorderRadius.circular(18),
             ),
-            child: Text(
-              message.text,
-              style: TextStyle(
-                fontSize: 16,
-                height: 1.3,
-                fontWeight: FontWeight.w400,
-                color: agent
-                    ? context.colors.tertiaryContainer
-                    : context.colors.white,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                for (final SupportChatAttachmentModel attachment
+                    in message.attachments)
+                  attachment.isImage
+                      ? _AttachmentImage(url: attachment.url)
+                      // ponytail: name only, no download; add one when
+                      // support starts sending PDFs.
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 6,
+                          children: [
+                            Icon(
+                              Icons.insert_drive_file_outlined,
+                              size: 18,
+                              color: textColor,
+                            ),
+                            Flexible(
+                              child: Text(
+                                attachment.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: textColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                if (message.text.isNotEmpty)
+                  Text(
+                    message.text,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.3,
+                      fontWeight: FontWeight.w400,
+                      color: textColor,
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
@@ -150,6 +189,32 @@ class _PersonAvatar extends StatelessWidget {
                 loadingPlaceholder: placeholder,
                 httpHeaders: <String, String>{'Authorization': 'Bearer $token'},
               ),
+      ),
+    );
+  }
+}
+
+/// A photo on a message: a square crop, loaded through the authenticated
+/// download route.
+class _AttachmentImage extends StatelessWidget {
+  const _AttachmentImage({required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final String token = TokenCacheService().getAccessToken() ?? '';
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 200),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: ClipRRect(
+          borderRadius: AppBorderRadius.brCircular12,
+          child: AppCachedNetworkImage(
+            imageUrl: url,
+            httpHeaders: <String, String>{'Authorization': 'Bearer $token'},
+          ),
+        ),
       ),
     );
   }

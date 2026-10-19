@@ -39,6 +39,37 @@ void main() {
       expect(message.senderAvatarUrl, '/api/v1/attachments/driver-avatar');
     });
 
+    test('parses a photo-only message and its attachments', () {
+      final SupportChatMessageModel message = SupportChatMessageModel.fromJson(
+        <String, dynamic>{
+          'id': 29,
+          'body': null,
+          'is_mine': true,
+          'created_at': '2026-10-14T17:22:00.000000Z',
+          'attachments': <dynamic>[
+            <String, dynamic>{
+              'original_name': 'receipt.jpg',
+              'mime_type': 'image/jpeg',
+              'download_url': 'https://api.test/attachments/1/download',
+            },
+            <String, dynamic>{
+              'original_name': 'invoice.pdf',
+              'mime_type': 'application/pdf',
+              'download_url': 'https://api.test/attachments/2/download',
+            },
+            // No link: skipped rather than failing the whole page.
+            <String, dynamic>{'mime_type': 'image/png', 'download_url': null},
+          ],
+        },
+      );
+
+      expect(message.body, isEmpty);
+      expect(message.attachments, hasLength(2));
+      expect(message.attachments.first.isImage, isTrue);
+      expect(message.attachments.last.isImage, isFalse);
+      expect(message.attachments.last.name, 'invoice.pdf');
+    });
+
     test('rejects a response missing required message fields', () {
       expect(
         () => SupportChatMessageModel.fromJson(<String, dynamic>{'id': 27}),

@@ -34,6 +34,9 @@ class SupportChatController extends ChangeNotifier {
   static const Duration _pollInterval = Duration(seconds: 15);
   static const Duration _realtimeFallbackInterval = Duration(seconds: 60);
 
+  /// The server's cap on attachments per message.
+  static const int maxPhotos = 10;
+
   final String? orderUuid;
   final String Function() localeCode;
   final void Function(String message) showError;
@@ -42,6 +45,9 @@ class SupportChatController extends ChangeNotifier {
   final IdempotencyKey _sendIdempotencyKey = IdempotencyKey();
   final TextEditingController input = TextEditingController();
   final ScrollController scroll = ScrollController();
+
+  /// Paths of the photos waiting to go with the next message.
+  final List<String> photos = <String>[];
 
   late final SupportChatRealtimeService _realtimeService;
   Timer? _pollTimer;
@@ -361,10 +367,21 @@ class SupportChatController extends ChangeNotifier {
     }
   }
 
+  void addPhotos(Iterable<String> paths) {
+    photos.addAll(paths.take(maxPhotos - photos.length));
+    notifyListeners();
+  }
+
+  void removePhoto(int index) {
+    photos.removeAt(index);
+    notifyListeners();
+  }
+
   Future<void> send() async {
     final String text = input.text.trim();
+    final List<String> sentPhotos = List<String>.of(photos);
     final int? conversationId = _conversationId;
-    if (text.isEmpty ||
+    if ((text.isEmpty && sentPhotos.isEmpty) ||
         conversationId == null ||
         isSending ||
         isConversationClosed) {
@@ -373,13 +390,17 @@ class SupportChatController extends ChangeNotifier {
 
     isSending = true;
     input.clear();
+    photos.clear();
     notifyListeners();
     bool messageSent = false;
     try {
-      final String clientMessageId = _sendIdempotencyKey.forRequest(text);
+      final String clientMessageId = _sendIdempotencyKey.forRequest(
+        <String>[text, ...sentPhotos].join('\n'),
+      );
       final result = await _repo.sendMessage(
         conversationId: conversationId,
         body: text,
+        imagePaths: sentPhotos,
         clientMessageId: clientMessageId,
       );
       if (_disposed) return;
@@ -401,6 +422,7 @@ class SupportChatController extends ChangeNotifier {
             selection: TextSelection.collapsed(offset: text.length),
           );
         }
+        if (!messageSent && photos.isEmpty) photos.addAll(sentPhotos);
         isSending = false;
         notifyListeners();
       }

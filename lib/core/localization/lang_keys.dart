@@ -149,6 +149,7 @@ abstract class LangKeys {
   static const String chatClosedMessageKey = 'chatClosedMessage';
   static const String supportTypingIndicatorKey = 'supportTypingIndicator';
   static const String supportMessageHintKey = 'supportMessageHint';
+  static const String attachPhotosKey = 'attachPhotos';
   static const String walletRecordKey = 'walletRecord';
   static const String nowCreditKey = 'nowCredit';
   static const String addBalanceKey = 'addBalance';

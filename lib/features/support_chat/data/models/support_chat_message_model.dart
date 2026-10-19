@@ -1,3 +1,32 @@
+/// A file on a message. [url] is the authenticated download route, so loading
+/// it needs the bearer token.
+class SupportChatAttachmentModel {
+  const SupportChatAttachmentModel({
+    required this.url,
+    required this.name,
+    required this.isImage,
+  });
+
+  final String url;
+  final String name;
+  final bool isImage;
+
+  /// Null for an entry without a download link: one unusable file mustn't
+  /// fail the whole page of messages.
+  static SupportChatAttachmentModel? fromJson(dynamic json) {
+    if (json is! Map<String, dynamic>) return null;
+    final dynamic url = json['download_url'];
+    if (url is! String || url.isEmpty) return null;
+    final dynamic name = json['original_name'];
+    final dynamic mimeType = json['mime_type'];
+    return SupportChatAttachmentModel(
+      url: url,
+      name: name is String ? name : '',
+      isImage: mimeType is String && mimeType.startsWith('image/'),
+    );
+  }
+}
+
 class SupportChatMessageModel {
   const SupportChatMessageModel({
     required this.id,
@@ -7,6 +36,7 @@ class SupportChatMessageModel {
     this.senderType,
     this.senderName,
     this.senderAvatarUrl,
+    this.attachments = const <SupportChatAttachmentModel>[],
   });
 
   final int id;
@@ -16,6 +46,7 @@ class SupportChatMessageModel {
   final String? senderType;
   final String? senderName;
   final String? senderAvatarUrl;
+  final List<SupportChatAttachmentModel> attachments;
 
   factory SupportChatMessageModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
@@ -28,11 +59,15 @@ class SupportChatMessageModel {
     final dynamic rawIsMine = json['is_mine'];
     final dynamic rawCreatedAt = json['created_at'];
     final dynamic rawSender = json['sender'];
+    final dynamic rawAttachments = json['attachments'];
     final DateTime? createdAt = rawCreatedAt is String
         ? DateTime.tryParse(rawCreatedAt)
         : null;
 
-    if (id == null || rawBody is! String || rawIsMine is! bool) {
+    // A photo-only message comes back with a null body.
+    if (id == null ||
+        (rawBody != null && rawBody is! String) ||
+        rawIsMine is! bool) {
       throw const FormatException(
         'Support chat message is missing required fields.',
       );
@@ -40,7 +75,7 @@ class SupportChatMessageModel {
 
     return SupportChatMessageModel(
       id: id,
-      body: rawBody,
+      body: rawBody is String ? rawBody : '',
       isMine: rawIsMine,
       createdAt: createdAt,
       senderType:
@@ -55,6 +90,12 @@ class SupportChatMessageModel {
           rawSender is Map<String, dynamic> && rawSender['avatar_url'] is String
           ? rawSender['avatar_url'] as String
           : null,
+      attachments: rawAttachments is List
+          ? rawAttachments
+                .map(SupportChatAttachmentModel.fromJson)
+                .whereType<SupportChatAttachmentModel>()
+                .toList()
+          : const <SupportChatAttachmentModel>[],
     );
   }
 }

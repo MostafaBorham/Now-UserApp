@@ -1,157 +1,200 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/app_box_shadows.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
-/// Bottom message composer: a rounded text field plus the green send button.
+/// Bottom message composer: the attach button, a text field that grows up to
+/// five lines, and the green send button, with the photos waiting to be sent
+/// above them.
 ///
 /// The send button is drawn straight from `send.svg` (which already includes
-/// its own green circle), so it is used as-is.
-class MessageInputBar extends StatefulWidget {
-  const MessageInputBar({super.key, this.controller, this.onSend});
+/// its own green circle), mirrored in right-to-left layouts.
+class MessageInputBar extends StatelessWidget {
+  const MessageInputBar({
+    super.key,
+    this.controller,
+    this.onSend,
+    this.onAttach,
+    this.photos = const <String>[],
+    this.onRemovePhoto,
+  });
 
   final TextEditingController? controller;
   final VoidCallback? onSend;
+  final VoidCallback? onAttach;
 
-  @override
-  State<MessageInputBar> createState() => _MessageInputBarState();
-}
-
-class _MessageInputBarState extends State<MessageInputBar> {
-  @override
-  void initState() {
-    super.initState();
-    widget.controller?.addListener(_handleTextChanged);
-  }
-
-  @override
-  void didUpdateWidget(covariant MessageInputBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller == widget.controller) return;
-    oldWidget.controller?.removeListener(_handleTextChanged);
-    widget.controller?.addListener(_handleTextChanged);
-  }
-
-  @override
-  void dispose() {
-    widget.controller?.removeListener(_handleTextChanged);
-    super.dispose();
-  }
-
-  void _handleTextChanged() {
-    if (mounted) setState(() {});
-  }
+  /// Paths of the picked photos waiting to be sent.
+  final List<String> photos;
+  final ValueChanged<int>? onRemovePhoto;
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = TextStyle(
-      fontSize: 15,
-      color: context.colors.tertiaryContainer,
+    final AppColorScheme colors = context.colors;
+    final OutlineInputBorder border = OutlineInputBorder(
+      borderRadius: AppBorderRadius.brCircular6,
+      borderSide: BorderSide(color: colors.neutral400),
     );
 
     return Container(
-      color: context.colors.white,
+      decoration: BoxDecoration(
+        color: colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+        boxShadow: AppBoxShadows.greyElevation2,
+      ),
       child: SafeArea(
         top: false,
+        minimum: const EdgeInsets.only(bottom: 12),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: Row(
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 12,
             children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // The growing height is measured with the same base
-                    // direction the field itself renders with, so a typed
-                    // message that flips the field doesn't wrap to a
-                    // different number of lines than it is measured at.
-                    final TextDirection measureDirection =
-                        resolveInputDirection(widget.controller?.text) ??
-                        Directionality.of(context);
-                    final int lineCount = _lineCount(
-                      context,
-                      widget.controller?.text ?? '',
-                      (constraints.maxWidth - 40).clamp(1, double.infinity),
-                      textStyle,
-                      measureDirection,
-                    );
-                    final TextPainter textPainter =
-                        TextPainter(
-                          text: TextSpan(
-                            text: widget.controller?.text ?? ' ',
-                            style: textStyle,
+              if (photos.isNotEmpty)
+                _PendingPhotos(photos: photos, onRemove: onRemovePhoto),
+              Row(
+                spacing: 12,
+                children: [
+                  Semantics(
+                    button: true,
+                    label: LangKeys.attachPhotosKey.tr(),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onAttach,
+                      // Taller hit area than the 24 px icon, same layout.
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Assets.media.images.svg.attach.svg(
+                          width: 24,
+                          height: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InputDirectionBuilder(
+                      controller: controller,
+                      builder: (context, typedDirection) => TextField(
+                        contextMenuBuilder: appContextMenuBuilder,
+                        controller: controller,
+                        minLines: 1,
+                        maxLines: 5,
+                        maxLength: 4000,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.send,
+                        textDirection: typedDirection,
+                        onSubmitted: (_) => onSend?.call(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: colors.tertiaryContainer,
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          // 62 px for one line, as designed: Figma's 16 px
+                          // padding sits around Cairo's 30 px line, the
+                          // theme's line is 24.
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 19,
                           ),
-                          textDirection: measureDirection,
-                          textScaler: MediaQuery.textScalerOf(context),
-                        )..layout(
-                          maxWidth: (constraints.maxWidth - 40).clamp(
-                            1,
-                            double.infinity,
+                          border: border,
+                          enabledBorder: border,
+                          focusedBorder: border,
+                          counterText: '',
+                          hintText: LangKeys.supportMessageHintKey.tr(),
+                          hintStyle: TextStyle(
+                            fontSize: 16,
+                            color: colors.neutral300,
                           ),
-                        );
-                    final double fieldHeight =
-                        (textPainter.preferredLineHeight * lineCount + 26)
-                            .clamp(52, 120)
-                            .toDouble();
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Part of the field for tap-outside, so sending keeps the
+                  // keyboard up for the next message.
+                  TextFieldTapRegion(
+                    child: GestureDetector(
+                      onTap: onSend,
+                      child: Assets.media.images.svg.send.svg(
+                        width: 56,
+                        height: 56,
+                        matchTextDirection: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      height: fieldHeight,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: context.colors.white,
-                        borderRadius: BorderRadius.circular(26),
-                        border: Border.all(color: context.colors.neutral200),
-                      ),
-                      child: InputDirectionBuilder(
-                        controller: widget.controller,
-                        builder:
-                            (context, typedDirection) => TextField(
-                              contextMenuBuilder: appContextMenuBuilder,
-                              controller: widget.controller,
-                              minLines: 1,
-                              maxLines: lineCount,
-                              maxLength: 4000,
-                              maxLengthEnforcement:
-                                  MaxLengthEnforcement.enforced,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.send,
-                              textDirection: typedDirection,
-                              onSubmitted: (_) => widget.onSend?.call(),
-                              textAlignVertical: TextAlignVertical.center,
-                              style: textStyle,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                border: InputBorder.none,
-                                counterText: '',
-                                hintText: LangKeys.supportMessageHintKey.tr(),
-                                hintStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: context.colors.neutral500,
-                                ),
-                              ),
-                            ),
-                      ),
-                    );
-                  },
+class _PendingPhotos extends StatelessWidget {
+  const _PendingPhotos({required this.photos, required this.onRemove});
+
+  final List<String> photos;
+  final ValueChanged<int>? onRemove;
+
+  static const double _size = 64;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return SizedBox(
+      // Room for the remove badge that pokes out above each photo.
+      height: _size + 6,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(top: 6),
+        clipBehavior: Clip.none,
+        itemCount: photos.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        itemBuilder: (context, index) => SizedBox.square(
+          dimension: _size,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClipRRect(
+                borderRadius: AppBorderRadius.brCircular6,
+                child: Image.file(
+                  File(photos[index]),
+                  width: _size,
+                  height: _size,
+                  cacheWidth: 192,
+                  fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 12),
-              // Part of the field for tap-outside, so sending keeps the
-              // keyboard up for the next message.
-              TextFieldTapRegion(
+              PositionedDirectional(
+                top: -6,
+                end: -6,
                 child: GestureDetector(
-                  onTap: widget.onSend,
-                  child: Assets.media.images.svg.send.svg(
-                    width: 52,
-                    height: 52,
+                  onTap: onRemove == null ? null : () => onRemove!(index),
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: colors.errorContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: colors.white,
+                      size: 14,
+                      semanticLabel: LangKeys.removePhotoKey.tr(),
+                    ),
                   ),
                 ),
               ),
@@ -160,24 +203,5 @@ class _MessageInputBarState extends State<MessageInputBar> {
         ),
       ),
     );
-  }
-
-  int _lineCount(
-    BuildContext context,
-    String text,
-    double maxWidth,
-    TextStyle style,
-    TextDirection textDirection,
-  ) {
-    if (text.isEmpty) return 1;
-
-    final TextPainter painter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: textDirection,
-      textScaler: MediaQuery.textScalerOf(context),
-      maxLines: 5,
-    )..layout(maxWidth: maxWidth);
-
-    return painter.computeLineMetrics().length.clamp(1, 5);
   }
 }

@@ -21,6 +21,7 @@ class SupportChatMessageStore {
     senderType: message.senderType,
     senderName: message.senderName,
     senderAvatarUrl: message.senderAvatarUrl,
+    attachments: message.attachments,
   );
 
   void merge({

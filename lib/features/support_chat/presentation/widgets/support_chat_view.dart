@@ -23,6 +23,9 @@ class SupportChatView extends StatelessWidget {
     required this.inputController,
     required this.isSending,
     required this.onSend,
+    required this.onAttach,
+    required this.photos,
+    required this.onRemovePhoto,
     this.userAvatarUrl,
   });
 
@@ -38,6 +41,9 @@ class SupportChatView extends StatelessWidget {
   final TextEditingController inputController;
   final bool isSending;
   final VoidCallback onSend;
+  final VoidCallback onAttach;
+  final List<String> photos;
+  final ValueChanged<int> onRemovePhoto;
   final String? userAvatarUrl;
 
   @override
@@ -155,6 +161,9 @@ class SupportChatView extends StatelessWidget {
               MessageInputBar(
                 controller: inputController,
                 onSend: isSending ? null : onSend,
+                onAttach: onAttach,
+                photos: photos,
+                onRemovePhoto: onRemovePhoto,
               ),
           ],
         ),

@@ -52,10 +52,12 @@ class SupportChatRepo {
     required int conversationId,
     required String body,
     required String clientMessageId,
+    List<String> imagePaths = const <String>[],
   }) => _guard(
     () => _api.sendMessage(
       conversationId: conversationId,
       body: body,
+      imagePaths: imagePaths,
       clientMessageId: clientMessageId,
     ),
     (Map<String, dynamic> data) => SupportChatMessageModel.fromJson(

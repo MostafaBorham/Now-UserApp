@@ -37,15 +37,42 @@ class SupportChatApiService {
         cancelToken: _canceller.token,
       );
 
+  /// Text only goes as JSON; with photos it's multipart, one `attachments[]`
+  /// part per photo.
   Future<Response<dynamic>> sendMessage({
     required int conversationId,
     required String body,
+    required List<String> imagePaths,
     required String clientMessageId,
-  }) => _dio.post<dynamic>(
-    SupportChatEndpoints.messages(conversationId),
-    data: <String, dynamic>{'body': body, 'client_message_id': clientMessageId},
-    cancelToken: _canceller.token,
-  );
+  }) async {
+    final Map<String, dynamic> fields = <String, dynamic>{
+      if (body.isNotEmpty) 'body': body,
+      'client_message_id': clientMessageId,
+    };
+    if (imagePaths.isEmpty) {
+      return _dio.post<dynamic>(
+        SupportChatEndpoints.messages(conversationId),
+        data: fields,
+        cancelToken: _canceller.token,
+      );
+    }
+
+    final FormData form = FormData.fromMap(fields)
+      ..files.addAll(<MapEntry<String, MultipartFile>>[
+        // Read off the UI isolate, as the avatar upload does.
+        for (final String path in imagePaths)
+          MapEntry<String, MultipartFile>(
+            'attachments[]',
+            await MultipartFile.fromFile(path),
+          ),
+      ]);
+    return _dio.post<dynamic>(
+      SupportChatEndpoints.messages(conversationId),
+      data: form,
+      options: Options(contentType: Headers.multipartFormDataContentType),
+      cancelToken: _canceller.token,
+    );
+  }
 
   Future<Response<dynamic>> syncMessages({
     required int conversationId,

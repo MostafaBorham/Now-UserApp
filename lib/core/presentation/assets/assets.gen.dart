@@ -233,6 +233,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get arrowRight =>
       const SvgGenImage('assets/media/images/svg/arrow-right.svg');
 
+  /// File path: assets/media/images/svg/attach.svg
+  SvgGenImage get attach =>
+      const SvgGenImage('assets/media/images/svg/attach.svg');
+
   /// File path: assets/media/images/svg/blue_circle.svg
   SvgGenImage get blueCircle =>
       const SvgGenImage('assets/media/images/svg/blue_circle.svg');
@@ -683,6 +687,7 @@ class $AssetsMediaImagesSvgGen {
     applePay,
     arrowBrokenIcon,
     arrowRight,
+    attach,
     blueCircle,
     borderdAccountIcon,
     borderdHomeIcon,
