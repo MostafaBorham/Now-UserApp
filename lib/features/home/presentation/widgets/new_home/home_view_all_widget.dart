@@ -6,7 +6,11 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 class HomeViewAllWidget extends StatelessWidget {
   const HomeViewAllWidget({
     super.key,
-    required this.size, required this.startBackgroundColor, this.endBackgroundColor, this.textColor, this.onTap,
+    required this.size,
+    required this.startBackgroundColor,
+    this.endBackgroundColor,
+    this.textColor,
+    this.onTap,
   });
 
   final double size;
@@ -26,14 +30,17 @@ class HomeViewAllWidget extends StatelessWidget {
           Positioned.fill(
             child: FractionallySizedBox(
               widthFactor: 0.8,
-              heightFactor: 0.6,
+              heightFactor: 0.5,
               alignment: AlignmentDirectional.bottomEnd,
               child: Container(
                 height: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadiusGeometry.circular(100),
                   gradient: LinearGradient(
-                    colors: [endBackgroundColor?? colors.white,startBackgroundColor],
+                    colors: [
+                      endBackgroundColor?.withAlpha(50) ?? colors.white,
+                      startBackgroundColor,
+                    ],
                     begin: AlignmentDirectional.centerStart,
                     end: AlignmentDirectional.centerEnd,
                   ),
@@ -45,7 +52,7 @@ class HomeViewAllWidget extends StatelessWidget {
             LangKeys.seeAllKey.tr(),
             style: TextStyle(
               fontSize: size,
-              color: textColor?? colors.black,
+              color: textColor ?? colors.black,
               fontWeight: FontWeight.w800,
             ),
           ),
