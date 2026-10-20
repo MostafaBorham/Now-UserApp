@@ -92,6 +92,21 @@ void main() {
     expect(OrderModel.fromJson(invoice(total: 118.5)).totalWithTip, 118.5);
   });
 
+  test(
+    'the invoice total leaves the tip out, wherever total_amount keeps it',
+    () {
+      expect(
+        OrderModel.fromJson(invoice(total: 118.5, tip: 5)).invoiceTotal,
+        118.5,
+      );
+      expect(
+        OrderModel.fromJson(invoice(total: 123.5, tip: 5)).invoiceTotal,
+        118.5,
+      );
+      expect(OrderModel.fromJson(invoice(total: 118.5)).invoiceTotal, 118.5);
+    },
+  );
+
   test('the voucher share is taken out of the discount row', () {
     final OrderModel order = OrderModel.fromJson(<String, dynamic>{
       'discount_amount': 15.3,

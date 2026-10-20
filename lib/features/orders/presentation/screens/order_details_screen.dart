@@ -18,13 +18,13 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/invoice_breakdown.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_details_shimmer.dart';
-import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_details/order_invoice_row.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_view.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details_vm.dart';
 
@@ -589,55 +589,22 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               color: colors.white,
                               borderRadius: AppBorderRadius.brCircular8,
                             ),
-                            child: Column(
-                              spacing: 10,
-                              children: [
-                                OrderInvoiceRow(
-                                  label: LangKeys.subtotalKey.tr(),
-                                  value: order.subtotal,
-                                  valueColor: colors.black,
+                            // The tip is the driver's, not the store's: it
+                            // stays out of this invoice, and the payment card
+                            // above shows the charged amount that holds it.
+                            child: InvoiceBreakdown(
+                              subtotal: order.subtotal,
+                              tax: order.tax,
+                              deliveryFee: order.deliveryFee,
+                              total: order.invoiceTotal,
+                              discounts: <(String, double)>[
+                                (
+                                  LangKeys.discountLabelKey.tr(),
+                                  order.couponDiscount,
                                 ),
-                                OrderInvoiceRow(
-                                  label: LangKeys.vatKey.tr(),
-                                  value: order.tax,
-                                  valueColor: colors.black,
-                                ),
-                                OrderInvoiceRow(
-                                  label: LangKeys.deliveryFeesKey.tr(),
-                                  value: order.deliveryFee,
-                                  valueColor: colors.black,
-                                ),
-                                // The tip is charged but untaxed, so it is no
-                                // part of the rows above; Total adds it.
-                                if (order.driverTip > 0)
-                                  OrderInvoiceRow(
-                                    label: LangKeys.driverTipKey.tr(),
-                                    value: order.driverTip,
-                                    valueColor: colors.black,
-                                  ),
-                                // Only surfaced when there is an actual discount.
-                                if (order.couponDiscount != 0)
-                                  OrderInvoiceRow(
-                                    label: LangKeys.discountLabelKey.tr(),
-                                    value: order.couponDiscount,
-                                    valueColor: colors.onError,
-                                  ),
-                                if (order.voucherDiscount > 0)
-                                  OrderInvoiceRow(
-                                    label:
-                                        '${LangKeys.purchaseVoucherKey.tr()} (${order.voucherCode ?? ''})',
-                                    value: order.voucherDiscount,
-                                    valueColor: colors.onError,
-                                  ),
-                                Divider(
-                                  color: colors.neutral400,
-                                  thickness: 0.5,
-                                ),
-                                OrderInvoiceRow(
-                                  label: LangKeys.totalKey.tr(),
-                                  value: order.totalWithTip,
-                                  valueColor: colors.primary500Main,
-                                  isTotal: true,
+                                (
+                                  '${LangKeys.purchaseVoucherKey.tr()} (${order.voucherCode ?? ''})',
+                                  order.voucherDiscount,
                                 ),
                               ],
                             ),

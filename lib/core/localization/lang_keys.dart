@@ -246,6 +246,9 @@ abstract class LangKeys {
   static const String deliveryFeesKey = 'deliveryFees';
   static const String discountLabelKey = 'discountLabel';
   static const String totalKey = 'total';
+  static const String freeKey = 'free';
+  static const String allPricesIncludeVatKey = 'allPricesIncludeVat';
+  static const String totalSavingsKey = 'totalSavings';
   static const String printInvoiceKey = 'printInvoice';
   static const String invoiceDownloadFailedKey = 'invoiceDownloadFailed';
 

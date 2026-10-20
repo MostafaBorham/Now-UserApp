@@ -162,6 +162,12 @@ class OrderModel {
     return (tipInside ? charged : charged + tip) / halalasPerSar;
   }
 
+  /// The store's invoice alone: [totalWithTip] less the [driverTip], whether
+  /// or not [total] holds the tip.
+  double get invoiceTotal =>
+      (sarDoubleToHalalas(totalWithTip) - sarDoubleToHalalas(driverTip)) /
+      halalasPerSar;
+
   const OrderModel({
     this.id,
     this.uuid,

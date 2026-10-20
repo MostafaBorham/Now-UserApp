@@ -60,7 +60,7 @@ class CheckoutBrandCardsShimmer extends StatelessWidget {
 }
 
 /// Skeleton placeholder for `InvoiceSummaryCard`: the title, its four price
-/// lines, the divider and the total row. Sized and coloured like the real card
+/// lines, the divider, the total row and its VAT note. Sized and coloured like the real card
 /// so the swap to live totals doesn't shift the layout.
 class InvoiceSummaryShimmer extends StatelessWidget {
   const InvoiceSummaryShimmer({super.key});
@@ -96,6 +96,7 @@ class InvoiceSummaryShimmer extends StatelessWidget {
               _SkeletonBox(width: 40, height: 14),
             ],
           ),
+          const _SkeletonBox(width: 140, height: 12),
         ],
       ),
     );
