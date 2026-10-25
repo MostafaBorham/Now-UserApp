@@ -48,8 +48,20 @@ class OrderModel {
   /// a translation map (`{'ar': ..., 'en': ...}`); when only the machine
   /// [status] string is present it is normalized into a map with both
   /// languages set to it, so the presentation layer always reads it through
-  /// [BuildContext.getLocalizedApiText].
+  /// [BuildContext.getLocalizedApiText]. The return states, which a raw key
+  /// would show badly, get their own labels instead ([_fallbackStatusLabels]).
   final Map<String, dynamic>? orderStatus;
+
+  /// Labels for statuses whose raw key must never reach the chip when the
+  /// payload carries no `order_status` map.
+  static const Map<String, Map<String, String>> _fallbackStatusLabels =
+      <String, Map<String, String>>{
+        'partially_returned': <String, String>{
+          'ar': 'مرتجع جزئيًا',
+          'en': 'Partially returned',
+        },
+        'returned': <String, String>{'ar': 'مرتجع', 'en': 'Returned'},
+      };
 
   /// Whether this order currently exposes live driver tracking (`is_tracking`).
   final bool isTracking;
@@ -255,6 +267,8 @@ class OrderModel {
       status: json['status']?.toString(),
       orderStatus: (json['order_status'] is Map)
           ? json['order_status'] as Map<String, dynamic>
+          : _fallbackStatusLabels.containsKey(json['status'])
+          ? Map<String, dynamic>.of(_fallbackStatusLabels[json['status']]!)
           : (json['status'] is String)
           ? {'ar': json['status'] as String, 'en': json['status'] as String}
           : null,
@@ -341,6 +355,7 @@ class OrderModel {
         'sku': item['product_sku'],
       },
       'quantity': item['quantity'],
+      'returned_quantity': item['returned_quantity'],
       'price': item['unit_price'] ?? product?['price'],
     });
   }

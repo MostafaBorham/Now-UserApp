@@ -75,6 +75,10 @@ class ProductModel {
 
   final ActiveDealModel? activeDeal;
   final int? quantity;
+
+  /// On an order line: how many of [quantity] came back after delivery
+  /// (`returned_quantity`). `null` off orders.
+  final int? returnedQuantity;
   final bool? isSelected;
   final int? cartQuantity;
   final bool? isFavorite;
@@ -137,6 +141,7 @@ class ProductModel {
     this.updatedAt,
     this.activeDeal,
     this.quantity,
+    this.returnedQuantity,
     this.isSelected,
 
     this.cartQuantity,
@@ -194,6 +199,7 @@ class ProductModel {
     String? updatedAt,
     ActiveDealModel? activeDeal,
     int? quantity,
+    int? returnedQuantity,
     bool? isSelected,
     int? cartQuantity,
     bool? isFavorite,
@@ -242,6 +248,7 @@ class ProductModel {
       updatedAt: updatedAt ?? this.updatedAt,
       activeDeal: activeDeal ?? this.activeDeal,
       quantity: quantity ?? this.quantity,
+      returnedQuantity: returnedQuantity ?? this.returnedQuantity,
       isSelected: isSelected ?? this.isSelected,
       cartQuantity: cartQuantity ?? this.cartQuantity,
       isFavorite: isFavorite ?? this.isFavorite,
@@ -316,6 +323,7 @@ class ProductModel {
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
       quantity: (json['quantity'] as num?)?.toInt(),
+      returnedQuantity: (json['returned_quantity'] as num?)?.toInt(),
       isSelected: json['is_selected'] as bool?,
       cartQuantity: (json['cart_quantity'] as num?)?.toInt(),
       cartItemId: (json['cart_item_id'] as num?)?.toInt(),
@@ -433,6 +441,7 @@ class ProductModel {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'quantity': quantity,
+      'returned_quantity': returnedQuantity,
       'is_selected': isSelected,
       'cart_quantity': cartQuantity,
       'is_favorite': isFavorite,

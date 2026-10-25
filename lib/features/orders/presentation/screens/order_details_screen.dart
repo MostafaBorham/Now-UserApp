@@ -707,6 +707,16 @@ class _OrderLineRow extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       price: (item.price ?? 0).toStringAsFixed(2),
                     ),
+                  // Units that came back after delivery (refunded).
+                  if ((item.returnedQuantity ?? 0) > 0)
+                    Text(
+                      LangKeys.returnedQuantityKey.tr(
+                        args: <String>['${item.returnedQuantity}'],
+                      ),
+                      style: AppTextStyles.style14Regular.copyWith(
+                        color: colors.deepOrange400,
+                      ),
+                    ),
                 ],
               ),
             ),

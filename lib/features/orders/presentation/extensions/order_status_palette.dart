@@ -27,7 +27,7 @@ extension OrderStatusPalette on OrderStatus {
           background: colors.onError.withValues(alpha: 0.15),
           foreground: colors.onError,
         ),
-        RefundedStatus() => (
+        RefundedStatus() || ReturnedStatus() => (
           background: colors.orange100,
           foreground: colors.deepOrange400,
         ),

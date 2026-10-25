@@ -329,6 +329,7 @@
   "resetFilter": "Reset Filter",
   "retry": "Retry",
   "returnToHomePage": "Return to Home Page",
+  "returnedQuantity": "Returned: {}",
   "reviewCartWithoutCheckout": "Review your cart without going to checkout.",
   "save": "Save",
   "saveAddress": "Save Address",

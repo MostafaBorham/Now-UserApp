@@ -136,6 +136,30 @@ void main() {
     expect(orderWithStatus('rejected').canContactSupport, isFalse);
   });
 
+  test('return states get a real label and lines carry returned units', () {
+    final OrderModel order = OrderModel.fromJson(<String, dynamic>{
+      'status': 'partially_returned',
+      'items': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'product_name': 'Milk',
+          'quantity': 3,
+          'returned_quantity': 1,
+          'unit_price': 5,
+        },
+      ],
+    });
+
+    expect(order.orderStatus, <String, dynamic>{
+      'ar': 'مرتجع جزئيًا',
+      'en': 'Partially returned',
+    });
+    expect(order.items.single.returnedQuantity, 1);
+    expect(
+      OrderModel.fromJson(<String, dynamic>{'status': 'returned'}).orderStatus,
+      <String, dynamic>{'ar': 'مرتجع', 'en': 'Returned'},
+    );
+  });
+
   test('an order with a complaint on file says so', () {
     final OrderModel order = OrderModel.fromJson(<String, dynamic>{
       'status': 'delivered',

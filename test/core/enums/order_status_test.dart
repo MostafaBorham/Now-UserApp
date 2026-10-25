@@ -28,4 +28,37 @@ void main() {
     expect(status, isA<CancelledStatus>());
     expect(status.isRateable, isFalse);
   });
+
+  test('a partially returned order is still a delivered one', () {
+    final OrderStatus status = OrderStatus.fromKey('partially_returned');
+
+    expect(status, isA<PartiallyReturnedStatus>());
+    expect(status, isA<DeliveredStatus>());
+    expect(status.apiKey, 'partially_returned');
+    expect(status.isRateable, isTrue);
+    expect(status.hasInvoice, isTrue);
+    expect(status.isTrackable, isFalse);
+    expect(status.isCancellable, isFalse);
+    for (int step = 0; step < 4; step++) {
+      expect(
+        status.stepStatusAt(step),
+        OrderStatus.fromKey('delivered').stepStatusAt(step),
+      );
+    }
+  });
+
+  test('a returned order is finished, not active and not delivered', () {
+    final OrderStatus status = OrderStatus.fromKey('returned');
+
+    expect(status, isA<ReturnedStatus>());
+    expect(status, isNot(isA<DeliveredStatus>()));
+    expect(status.isTrackable, isFalse);
+    expect(status.isCancellable, isFalse);
+    expect(status.isRateable, isFalse);
+  });
+
+  test('an unknown key does not throw', () {
+    expect(OrderStatus.fromKey('something_new'), isA<UnknownStatus>());
+    expect(OrderStatus.fromKey(null), isA<UnknownStatus>());
+  });
 }

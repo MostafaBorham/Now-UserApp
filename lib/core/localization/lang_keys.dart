@@ -277,6 +277,7 @@ abstract class LangKeys {
   static const String preparingYourOrderKey = 'preparingYourOrder';
   static const String orderOnTheWayKey = 'orderOnTheWay';
   static const String refundedOnKey = 'refundedOnKey';
+  static const String returnedQuantityKey = 'returnedQuantity';
   static const String cancelOrderKey = 'cancelOrder';
   static const String paymentNotCompletedKey = 'paymentNotCompleted';
   static const String paymentFailedSubtitleKey = 'paymentFailedSubtitle';

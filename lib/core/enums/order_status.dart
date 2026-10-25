@@ -27,12 +27,14 @@ sealed class OrderStatus {
   bool get isCancellable => false;
 
   /// Whether the order has reached a state the customer can rate — delivered
-  /// (which a delivered `closed` order maps onto) only. Lives here so the rule
-  /// is defined once instead of re-checked per screen.
+  /// (which a delivered `closed` order and a [PartiallyReturnedStatus] order
+  /// both count as) only. Lives here so the rule is defined once instead of
+  /// re-checked per screen.
   bool get isRateable => this is DeliveredStatus;
 
   /// Whether the order's invoice can be printed/downloaded — delivered (which a
-  /// delivered `closed` order maps onto) only.
+  /// delivered `closed` order and a [PartiallyReturnedStatus] order both count
+  /// as) only.
   bool get hasInvoice => this is DeliveredStatus;
 
   /// The milestone of the four-step delivery progress (accepted → preparing →
@@ -87,6 +89,8 @@ sealed class OrderStatus {
         'closed' =>
           wasDelivered ? const DeliveredStatus() : const CancelledStatus(),
         'cancelled' || 'rejected' => const CancelledStatus(),
+        'partially_returned' => const PartiallyReturnedStatus(),
+        'returned' => const ReturnedStatus(),
         'refunded' => const RefundedStatus(),
         _ => UnknownStatus(key ?? ''),
       };
@@ -139,8 +143,27 @@ final class OnTheWayStatus extends OrderStatus {
 }
 
 /// Delivered to the customer (terminal).
-final class DeliveredStatus extends OrderStatus {
+///
+/// Not `final`: [PartiallyReturnedStatus] is a delivered order too, so every
+/// `is DeliveredStatus` check and `DeliveredStatus()` pattern (rating, invoice,
+/// complaint, tracking step, colours) covers it without being repeated.
+class DeliveredStatus extends OrderStatus {
   const DeliveredStatus() : super('delivered');
+
+  const DeliveredStatus._withKey(super.apiKey);
+}
+
+/// Delivered, then part of it came back: the customer kept the rest and was
+/// refunded for the returned units (terminal). Behaves as [DeliveredStatus];
+/// only the label (the server's `order_status`) differs.
+final class PartiallyReturnedStatus extends DeliveredStatus {
+  const PartiallyReturnedStatus() : super._withKey('partially_returned');
+}
+
+/// Delivered, then the whole order came back (terminal, not trackable, not
+/// rateable).
+final class ReturnedStatus extends OrderStatus {
+  const ReturnedStatus() : super('returned');
 }
 
 /// Cancelled before delivery (terminal).

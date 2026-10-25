@@ -52,7 +52,7 @@ class OrderListItem extends ConsumerWidget {
       AcceptedStatus() => LangKeys.preparingYourOrderKey.tr(),
       OnTheWayStatus() => LangKeys.orderOnTheWayKey.tr(),
       DeliveredStatus() => '${LangKeys.deliveredOnKey.tr()} $deliveredDate',
-      CancelledStatus() => '',
+      CancelledStatus() || ReturnedStatus() => '',
       RefundedStatus() => '${LangKeys.refundedOnKey.tr()} $createdDate',
       PendingStatus() ||
       PreparingStatus() ||
