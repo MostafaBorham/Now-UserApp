@@ -14,12 +14,19 @@ class PrimaryAppButton extends StatelessWidget {
     this.postfixIcon,
     this.buttonColor,
     this.buttonRadius = 8,
+    this.compact = false,
   });
 
   /// The one height every full-width button in the app shares.
   static const double height = 54;
 
+  /// The height of a [compact] button: the paired actions inside a card.
+  static const double compactHeight = 40;
+
   final String title;
+
+  /// Uses [compactHeight] instead of [height].
+  final bool compact;
   final VoidCallback? onTap;
   final double buttonRadius;
 
@@ -64,7 +71,7 @@ class PrimaryAppButton extends StatelessWidget {
         ).style.merge(titleStyle ?? AppTextStyles.style18SemiBold),
         padding: const EdgeInsets.symmetric(horizontal: 14),
         minimumSize: const Size.fromHeight(0),
-        fixedSize: const Size.fromHeight(height),
+        fixedSize: Size.fromHeight(compact ? compactHeight : height),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(buttonRadius),

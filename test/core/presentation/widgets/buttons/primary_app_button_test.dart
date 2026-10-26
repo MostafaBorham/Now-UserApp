@@ -84,6 +84,24 @@ void main() {
     }
   });
 
+  testWidgets('a compact button is the compact height', (
+    WidgetTester tester,
+  ) async {
+    final List<Widget> buttons = <Widget>[
+      PrimaryAppButton(title: 'Details', compact: true, onTap: () {}),
+      UnPrimaryAppButton(title: 'Track', compact: true, onTap: () {}),
+    ];
+
+    for (final Widget button in buttons) {
+      await pumpCategoriesWidget(tester, Center(child: button));
+      expect(
+        tester.getSize(find.byWidget(button)).height,
+        PrimaryAppButton.compactHeight,
+        reason: '$button',
+      );
+    }
+  });
+
   testWidgets('the label keeps the theme font', (WidgetTester tester) async {
     // The button's Material replaces the ambient text style instead of
     // merging, so a style without a family would fall back to the system font.

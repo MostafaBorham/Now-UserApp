@@ -190,6 +190,7 @@ class OrderListItem extends ConsumerWidget {
                 Expanded(
                   child: PrimaryAppButton(
                     title: LangKeys.viewDetailsKey.tr(),
+                    compact: true,
                     onTap: () {
                       context.pushNamed(
                         AppRoutes.orderDetailsScreen,
@@ -203,6 +204,7 @@ class OrderListItem extends ConsumerWidget {
                   Expanded(
                     child: UnPrimaryAppButton(
                       title: LangKeys.trackOrderKey.tr(),
+                      compact: true,
                       side: BorderSide(
                         color: colors.neutral400.withValues(alpha: 0.5),
                       ),

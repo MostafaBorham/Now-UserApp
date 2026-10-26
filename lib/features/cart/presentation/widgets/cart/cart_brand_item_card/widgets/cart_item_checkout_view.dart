@@ -130,6 +130,7 @@ class CartItemCheckoutView extends StatelessWidget {
                       child: PrimaryAppButton(
                         titleStyle: AppTextStyles.style14Medium,
                         title: LangKeys.checkoutKey.tr(),
+                        compact: true,
                         onTap: reason == null ? onCheckout : null,
                         postfixIcon: ReverseWidget(
                           child: Assets.media.images.svg.rightArrowBrokenIcon
