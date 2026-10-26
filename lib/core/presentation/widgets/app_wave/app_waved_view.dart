@@ -29,6 +29,7 @@ class AppWavedView extends StatelessWidget {
     this.leading,
     this.actions,
     this.waveGap = 12,
+    this.flattenOnScroll = false,
   });
   final String appBarTitle;
   final bool loadAppBarTitle;
@@ -48,6 +49,11 @@ class AppWavedView extends StatelessWidget {
   /// Set when the body scrolls: its top spacing then belongs to the scroll
   /// view (so it scrolls up with the content) and is dropped here.
   final ScrollController? scrollController;
+
+  /// Trial (category details only, from dev-borham): the wave eases flat
+  /// while a vertical list in [body] is scrolled off its top, and back at the
+  /// top. Off everywhere else, where the wave stays put (BUG-009).
+  final bool flattenOnScroll;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +79,6 @@ class AppWavedView extends StatelessWidget {
     final EdgeInsets effectiveBodyPadding = scrollController != null
         ? insetBodyPadding.copyWith(top: 0)
         : insetBodyPadding;
-
-    const TopWaveClipper waveClipper = TopWaveClipper();
 
     final Widget leadingWidget =
         leading ??
@@ -207,33 +211,98 @@ class AppWavedView extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ClipPath(
-                clipper: waveClipper,
-                child: Container(
-                  color: colors.neutral500.withValues(alpha: 0.05),
-                  padding: const EdgeInsets.only(top: 5),
-                  child: ClipPath(
-                    clipper: waveClipper,
-                    child: Container(
-                      padding: effectiveBodyPadding,
-                      decoration: BoxDecoration(
-                        color: colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 20,
-                            spreadRadius: 0,
-                            offset: const Offset(0, -8),
-                          ),
-                        ],
-                      ),
-                      child: body,
-                    ),
-                  ),
-                ),
+              child: _WaveBody(
+                flattenOnScroll: flattenOnScroll,
+                padding: effectiveBodyPadding,
+                child: body,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The white body under the wave; owns the flattening animation.
+class _WaveBody extends StatefulWidget {
+  const _WaveBody({
+    required this.flattenOnScroll,
+    required this.padding,
+    required this.child,
+  });
+
+  final bool flattenOnScroll;
+  final EdgeInsets padding;
+  final Widget child;
+
+  @override
+  State<_WaveBody> createState() => _WaveBodyState();
+}
+
+class _WaveBodyState extends State<_WaveBody>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _flatten = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 450),
+  );
+  late final CurvedAnimation _curve = CurvedAnimation(
+    parent: _flatten,
+    curve: Curves.easeInOut,
+  );
+  late final TopWaveClipper _waveClipper = TopWaveClipper(flattening: _curve);
+  bool _isFlat = false;
+
+  @override
+  void dispose() {
+    _curve.dispose();
+    _flatten.dispose();
+    super.dispose();
+  }
+
+  // Notifications, not a controller: the body may hold several lists (one
+  // per tab), each with its own controller. ponytail: a tab switch sends
+  // none, so the wave keeps the last list's state until the new one scrolls.
+  bool _onScroll(ScrollNotification notification) {
+    if (!widget.flattenOnScroll || notification.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final bool flat = notification.metrics.pixels > 0;
+    if (flat != _isFlat) {
+      _isFlat = flat;
+      flat ? _flatten.forward() : _flatten.reverse();
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppColorScheme colors = context.colors;
+    return ClipPath(
+      clipper: _waveClipper,
+      child: Container(
+        color: colors.neutral500.withValues(alpha: 0.05),
+        padding: const EdgeInsets.only(top: 5),
+        child: ClipPath(
+          clipper: _waveClipper,
+          child: Container(
+            padding: widget.padding,
+            decoration: BoxDecoration(
+              color: colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, -8),
+                ),
+              ],
+            ),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onScroll,
+              child: widget.child,
+            ),
+          ),
         ),
       ),
     );

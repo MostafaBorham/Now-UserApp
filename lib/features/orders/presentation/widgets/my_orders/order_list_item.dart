@@ -1,20 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart' as loc;
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 
@@ -105,18 +105,20 @@ class OrderListItem extends ConsumerWidget {
                       spacing: 10,
                       children: [
                         Expanded(
+                          flex: 3,
                           child: AutoSizeText(
-                            textDirection: TextDirection.ltr,
                             orderModel.orderNumber ?? '',
                             style: AppTextStyles.style18SemiBold.copyWith(
                               color: colors.black,
                             ),
                           ),
                         ),
-                        NewPriceWidget(
-                          color: colors.primary500Main,
-                          price: orderModel.total.toStringAsFixed(2),
-                          size: 14,
+                        Expanded(
+                          child: NewPriceWidget(
+                            color: colors.primary500Main,
+                            price: orderModel.total.toStringAsFixed(2),
+                            size: 18,
+                          ),
                         ),
                       ],
                     ),
@@ -183,43 +185,40 @@ class OrderListItem extends ConsumerWidget {
               ),
             ],
           ),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
+          Row(
+            children: [
+              Expanded(
+                child: PrimaryAppButton(
+                  title: LangKeys.viewDetailsKey.tr(),
+                  compact: true,
+                  onTap: () {
+                    context.pushNamed(
+                      AppRoutes.orderDetailsScreen,
+                      extra: orderModel.uuid,
+                    );
+                  },
+                ),
+              ),
+              if (showTrackButton) ...[
+                12.wSpace,
                 Expanded(
-                  child: PrimaryAppButton(
-                    title: LangKeys.viewDetailsKey.tr(),
+                  child: UnPrimaryAppButton(
+                    title: LangKeys.trackOrderKey.tr(),
                     compact: true,
+                    side: BorderSide(
+                      color: colors.neutral400.withValues(alpha: 0.5),
+                    ),
+                    titleColor: colors.black,
                     onTap: () {
                       context.pushNamed(
-                        AppRoutes.orderDetailsScreen,
+                        AppRoutes.trackOrderScreen,
                         extra: orderModel.uuid,
                       );
                     },
                   ),
                 ),
-                if (showTrackButton) ...[
-                  12.wSpace,
-                  Expanded(
-                    child: UnPrimaryAppButton(
-                      title: LangKeys.trackOrderKey.tr(),
-                      compact: true,
-                      side: BorderSide(
-                        color: colors.neutral400.withValues(alpha: 0.5),
-                      ),
-                      titleColor: colors.black,
-                      onTap: () {
-                        context.pushNamed(
-                          AppRoutes.trackOrderScreen,
-                          extra: orderModel.uuid,
-                        );
-                      },
-                    ),
-                  ),
-                ],
               ],
-            ),
+            ],
           ),
         ],
       ),
