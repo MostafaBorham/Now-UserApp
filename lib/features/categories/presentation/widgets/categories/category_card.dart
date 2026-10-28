@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({super.key, required this.category, this.onTap});
@@ -68,7 +68,7 @@ class CategoryCard extends StatelessWidget {
           // shorter labels just leave the second line empty, keeping every
           // card's image the same height across the grid.
           SizedBox(
-            height: 36,
+            height: 45,
             child: Text(
               context.getLocalizedApiText(category.name),
               textAlign: TextAlign.center,
