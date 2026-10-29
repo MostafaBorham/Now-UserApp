@@ -1,5 +1,20 @@
 package com.nowdelivery.user.nowdelivery_user_app
 
+import android.content.Intent
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity()
+class MainActivity : FlutterActivity() {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, OrderTrackingNotifications.METHOD_CHANNEL)
+            .setMethodCallHandler(OrderTrackingNotifications(this))
+    }
+
+    // A tray card tapped while the app is running arrives here; keep it for Dart to take.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+}

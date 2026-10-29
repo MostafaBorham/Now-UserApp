@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A reached milestone on the card's stepper: a white check on green/500. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
+    <path
+        android:fillColor="#117456"
+        android:pathData="M10,0a10,10 0,1 1,0 20a10,10 0,1 1,0 -20z" />
+    <group
+        android:translateX="3.077"
+        android:translateY="3.077">
+        <path
+            android:fillColor="#FCFCFC"
+            android:pathData="M5.77192,8.7577L11.075,3.45405L11.8913,4.26981L5.77192,10.3892L2.10038,6.7177L2.91615,5.90193L5.77192,8.7577Z"
+            android:strokeWidth="2"
+            android:strokeColor="#FCFCFC" />
+    </group>
+</vector>

@@ -4,29 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/order_status.dart';
 import 'package:nowdelivery_user_app/core/enums/order_step_status.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/live_order_track_card.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/extensions/live_order_progress.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
-
-/// The four milestones every card draws, in [OrderStatus.stepStatusAt] order.
-const List<String> _liveOrderStepKeys = <String>[
-  LangKeys.orderAcceptedKey,
-  LangKeys.preparingKey,
-  LangKeys.onTheWayKey,
-  LangKeys.deliveredKey,
-];
-
-/// Minutes from now until [isoTimestamp] (never negative), or `null` when the
-/// order carries no parseable estimate.
-int? _minutesUntil(String? isoTimestamp) {
-  final DateTime? target = DateTime.tryParse(isoTimestamp ?? '');
-  if (target == null) return null;
-  final int minutes = target.difference(DateTime.now()).inMinutes;
-  return minutes < 0 ? 0 : minutes;
-}
 
 /// The signed-in user's in-flight orders, one card each; a tap opens Track
 /// Order. `HomeView` only mounts this while the orders are loading or at least
@@ -71,7 +54,7 @@ class HomeLiveOrdersSectionView extends ConsumerWidget {
                     child: LiveOrderTrackCard(
                       logoUrl: '',
                       steps: [
-                        for (final String labelKey in _liveOrderStepKeys)
+                        for (final String labelKey in liveOrderStepKeys)
                           (labelKey.tr(), OrderStepStatus.pending),
                       ],
                     ),
@@ -85,11 +68,11 @@ class HomeLiveOrdersSectionView extends ConsumerWidget {
               return SizedBox(
                 width: cardWidth,
                 child: LiveOrderTrackCard(
-                  remainingMinutes: _minutesUntil(order.estimatedDeliveryTime),
+                  remainingMinutes: minutesUntil(order.estimatedDeliveryTime),
                   logoUrl: order.vendor.logoUrl ?? '',
                   steps: [
                     for (final (int i, String labelKey)
-                        in _liveOrderStepKeys.indexed)
+                        in liveOrderStepKeys.indexed)
                       (labelKey.tr(), status.stepStatusAt(i)),
                   ],
                   onTap: uuid == null || uuid.isEmpty

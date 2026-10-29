@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The live-order card, collapsed. Figma only draws the expanded card, and a
+     collapsed notification has about 48dp, so this keeps its header: the
+     store's logo and the two lines. On the notification's own background, so
+     the first line takes the system's title colour (dark mode included). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/store_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/OrderCardText"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            style="@style/OrderCardText"
+            android:layout_marginTop="-4dp"
+            android:textColor="#4BB749"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

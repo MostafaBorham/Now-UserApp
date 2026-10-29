@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/selected_store_coupons_provider.dart';
 import 'package:nowdelivery_user_app/features/checkout/viewmodel/checkout_vm.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/notifications/order_tracking_notification.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_to_rate_vm.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
@@ -274,6 +275,9 @@ class AuthSessionViewModel extends StateNotifier<AuthSessionState> {
     // and wallet stay on disk and are served to the next user as the offline
     // fallback — see [CachePurger].
     await CachePurger.purgeUserData();
+
+    // The tray's live-order cards are the outgoing user's orders too.
+    await OrderTrackingNotification.cancelAll();
 
     // The current location can hold the previous user's saved address (the
     // delivery sheet writes the one it confirms there). Forget it, then look

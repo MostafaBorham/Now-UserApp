@@ -35,6 +35,8 @@ import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_never_miss_offers_section.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_special_offers_section_view.dart';
 import 'package:nowdelivery_user_app/features/home/viewmodel/get_home_sections_vm.dart';
+import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/notifications/order_tracking_notification.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_live_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
@@ -83,7 +85,10 @@ class _HomeViewState extends ConsumerState<HomeView>
   void initState() {
     super.initState();
     _lifecycle = AppLifecycleListener(
-      onResume: _recheckLocation,
+      onResume: () {
+        _recheckLocation();
+        _openTappedOrder();
+      },
       // Back from the background: pick up what the admin changed meanwhile
       // (sections, their order, offers, brands) without a restart (BUG-022).
       // The loaded feed stays on screen while it reloads.
@@ -104,7 +109,16 @@ class _HomeViewState extends ConsumerState<HomeView>
         }
       }
       _onScroll();
+      _openTappedOrder();
     });
+  }
+
+  /// Track Order for the tray card the app was opened from, if it was: here on
+  /// a cold start, on resume when the app was already running.
+  Future<void> _openTappedOrder() async {
+    final String? uuid = await OrderTrackingNotification.takeTappedOrder();
+    if (uuid == null || !mounted) return;
+    context.pushNamed(AppRoutes.trackOrderScreen, extra: uuid);
   }
 
   Future<void> _loadFeed() {
@@ -283,6 +297,18 @@ class _HomeViewState extends ConsumerState<HomeView>
             (s) => s.isLoading || (s.valueOrNull?.isNotEmpty ?? false),
           ),
         );
+    // The tray card follows the same poll as the strip, so it too moves only
+    // while the app is open. A failed refresh keeps the last value and is not
+    // passed on.
+    if (isUserSession) {
+      ref.listen<AsyncValue<List<OrderModel>>>(getLiveOrdersProvider, (
+        AsyncValue<List<OrderModel>>? previous,
+        AsyncValue<List<OrderModel>> next,
+      ) {
+        final List<OrderModel>? live = next.valueOrNull;
+        if (live != null) OrderTrackingNotification.sync(context, live);
+      });
+    }
     // Only cue when there is content to show (cached or live); with no cache the
     // feed errors and the full-size error covers it instead.
     final bool showSavedContentCue = !isConnected && feed.hasValue;

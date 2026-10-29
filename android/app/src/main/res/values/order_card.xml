@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared pieces of the live-order card (layout/order_card_*). Text is the
+     system font in bold: a notification ignores an app's own fonts, so Figma's
+     Cairo cannot reach it. -->
+<resources>
+    <!-- One milestone: its icon over its label. Each overlaps the line after
+         it by 16dp, as in Figma, so the lines meet the icons. -->
+    <style name="OrderCardStep">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">-16dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="OrderCardStepIcon">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="OrderCardStepLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">#030303</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- The line between two milestones; its colour is set per order. -->
+    <style name="OrderCardStepLine">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_marginEnd">-16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="OrderCardText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>
