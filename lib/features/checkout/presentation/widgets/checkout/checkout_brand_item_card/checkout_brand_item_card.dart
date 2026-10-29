@@ -1,4 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
+import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/checkout/presentation/widgets/checkout/checkout_brand_item_card/widgets/apply_discount_code_view.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -56,6 +60,32 @@ class _CheckoutBrandItemCardState extends State<CheckoutBrandItemCard> {
                 : CheckoutProductsImagesListView(
                     items: widget.order?.items,
                   ),
+
+            if (widget.order?.vendor.isBusy ?? false)
+              Row(
+                spacing: 6,
+                children: [
+                  Icon(
+                    Icons.schedule_rounded,
+                    size: 16,
+                    color: colors.orange900,
+                  ),
+                  Expanded(
+                    child: Text(
+                      LangKeys.checkoutStoreBusyKey.tr(
+                        namedArgs: <String, String>{
+                          'store': context.getLocalizedApiText(
+                            widget.order!.vendor.name,
+                          ),
+                        },
+                      ),
+                      style: AppTextStyles.style12Medium.copyWith(
+                        color: colors.orange900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
             ApplyDiscountCodeView(vendorId: widget.order?.vendorId),
           ],

@@ -11,6 +11,7 @@ class LogoTitleExpansionHeader extends StatelessWidget {
     required this.onToggle,
     this.storeName,
     this.logoUrl,
+    this.badge,
   });
 
   final bool isExpanded;
@@ -23,6 +24,9 @@ class LogoTitleExpansionHeader extends StatelessWidget {
   /// Store logo url. Falls back to a placeholder logo when null.
   final String? logoUrl;
 
+  /// Shown after the title, e.g. the store's status pill.
+  final Widget? badge;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -34,23 +38,30 @@ class LogoTitleExpansionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 12,
-            children: [
-              CircularBrandLogo(
-                radius: 24,
-                elevation: 1,
-                backgroundColor: colors.onTertiaryContainer,
-                logoUrl: logoUrl,
-              ),
-              Text(
-                title,
-                style: AppTextStyles.style16Medium.copyWith(
-                  color: colors.black,
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 12,
+              children: [
+                CircularBrandLogo(
+                  radius: 24,
+                  elevation: 1,
+                  backgroundColor: colors.onTertiaryContainer,
+                  logoUrl: logoUrl,
                 ),
-              ),
-            ],
+                Flexible(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.style16Medium.copyWith(
+                      color: colors.black,
+                    ),
+                  ),
+                ),
+                ?badge,
+              ],
+            ),
           ),
           Icon(
             isExpanded

@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circul
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_status_badge.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
 class StoreCardView extends StatelessWidget {
@@ -115,6 +116,12 @@ class StoreCardView extends StatelessWidget {
                           height: double.infinity,
                         ),
                       ),
+                      if (hasStore)
+                        PositionedDirectional(
+                          start: 8,
+                          top: 8,
+                          child: StoreStatusBadge(store: store!),
+                        ),
                       PositionedDirectional(
                         end: 8,
                         top: 8,

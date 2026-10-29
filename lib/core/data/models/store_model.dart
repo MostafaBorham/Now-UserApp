@@ -46,6 +46,15 @@ class StoreModel {
 
   final Color? storeColor;
 
+  /// The vendor switched the store off: shown, but it can't be checked out.
+  /// The backend's `closed` is `is_open: false`.
+  bool get isClosed => isOpen == false;
+
+  /// Open but slow: it still takes orders, which may arrive late. The
+  /// backend's `busy` is `is_open: true, accepting_orders: false`. A payload
+  /// missing either flag reads as neither closed nor busy.
+  bool get isBusy => isOpen == true && acceptingOrders == false;
+
   const StoreModel({
     this.id,
     this.name,

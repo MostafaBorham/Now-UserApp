@@ -259,6 +259,9 @@ class OrderModel {
         'id': vendor?['id'],
         'name': vendor?['name'],
         'logo_url': vendor?['logo_url'],
+        // Sent on checkout previews, for the busy note.
+        'is_open': vendor?['is_open'],
+        'accepting_orders': vendor?['accepting_orders'],
       }),
       user: OrderUserModel.fromJson(json['user'] as Map<String, dynamic>?),
       driver: json['driver'] is Map<String, dynamic>

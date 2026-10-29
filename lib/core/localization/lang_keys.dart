@@ -410,6 +410,13 @@ abstract class LangKeys {
   /// `{amount}` — how much short of the store's minimum the basket still is.
   static const String cartMinOrderNotMetKey = 'cartMinOrderNotMet';
   static const String cartStoreUnavailableKey = 'cartStoreUnavailable';
+  static const String cartStoreClosedKey = 'cartStoreClosed';
+
+  /// Store status pills (store cards, store details, cart), and the checkout
+  /// note for a busy store. `checkoutStoreBusy` takes a `{store}` name.
+  static const String storeClosedKey = 'storeClosed';
+  static const String storeBusyKey = 'storeBusy';
+  static const String checkoutStoreBusyKey = 'checkoutStoreBusy';
 
   static const String removeItemFromCartKey = 'removeItemFromCart';
   static const String removeItemFromCartConfirmationKey =

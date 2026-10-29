@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/car
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/widgets/cart_item_checkout_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/expansions/logo_title_expansion_header.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_status_badge.dart';
 
 class CartBrandItemCard extends StatefulWidget {
   const CartBrandItemCard({
@@ -52,6 +53,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
                   setState(() => _isExpanded = expanded),
               storeName: widget.cartVendor.vendor.name,
               logoUrl: widget.cartVendor.vendor.logoUrl,
+              badge: StoreStatusBadge(store: widget.cartVendor.vendor),
             ),
 
             _isExpanded
@@ -70,6 +72,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
             // Total + checkout pill (shared between both states)
             CartItemCheckoutView(
               pricing: pricing,
+              storeClosed: widget.cartVendor.vendor.isClosed,
               onCheckout: widget.onCheckout,
             ),
           ],

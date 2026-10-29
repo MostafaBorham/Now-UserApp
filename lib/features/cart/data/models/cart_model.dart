@@ -81,6 +81,8 @@ class CartVendorModel {
         'id': vendor?['id'],
         'name': vendor?['name'],
         'logo_url': vendor?['logo_url'],
+        'is_open': vendor?['is_open'],
+        'accepting_orders': vendor?['accepting_orders'],
       }),
       products:
           (json['products'] as List?)

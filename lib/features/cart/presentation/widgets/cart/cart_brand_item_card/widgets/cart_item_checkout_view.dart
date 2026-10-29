@@ -19,10 +19,15 @@ class CartItemCheckoutView extends StatelessWidget {
   const CartItemCheckoutView({
     super.key,
     required this.pricing,
+    this.storeClosed = false,
     this.onCheckout,
   });
 
   final CartVendorPricingModel pricing;
+
+  /// The vendor closed the store. The server already reports it unavailable;
+  /// this only picks the wording.
+  final bool storeClosed;
 
   /// Reported to the parent, which drafts the order group for this store and
   /// navigates only once the request succeeded. Ignored while
@@ -36,6 +41,7 @@ class CartItemCheckoutView extends StatelessWidget {
   /// leaves the pill shut rather than letting a draft through to fail
   /// server-side.
   String? get blockedReason {
+    if (storeClosed) return LangKeys.cartStoreClosedKey.tr();
     if (!pricing.available) return LangKeys.cartStoreUnavailableKey.tr();
 
     if (!pricing.minOrderMet) {
