@@ -55,9 +55,16 @@ class HomeHeaderView extends ConsumerWidget {
     return line.isNotEmpty ? line : context.getLocalizedApiText(address.label);
   }
 
+  // home_header_background.svg is 390 wide; the shape is 457 tall and the
+  // viewBox adds 60 of headroom above it.
+  static const double _artWidth = 390;
+  static const double _artHeight = 457;
+  static const double _artHeadroom = 60;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
+    final double statusBar = MediaQuery.paddingOf(context).top;
     // The delivery address the home page shows: the user's default saved
     // address (else the current location), or whatever they last confirmed in
     // the sheet.
@@ -68,15 +75,30 @@ class HomeHeaderView extends ConsumerWidget {
     final bool hasAddress = displayedAddress.isNotEmpty;
     return LayoutBuilder(
       builder: (context, con) {
+        final double artScale = con.maxWidth / _artWidth;
+        // The logo row sits under the status bar but the shape scales with the
+        // width alone, so a status bar taller than 24 dp (notch, camera hole)
+        // put the logo on the shape's bottom edge (realme C35). The shape
+        // moves down by the difference, uncovering the SVG's headroom.
+        final double artDrop = (statusBar - 24).clamp(
+          0.0,
+          _artHeadroom * artScale,
+        );
         return Stack(
           children: [
             ReverseWidget(
               applyReverse: !context.isRTL,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 15),
-                child: Assets.media.images.svg.homeHeaderBackground.svg(
-                  fit: BoxFit.cover,
+                // Sized from outside: given both, SvgPicture drops the width
+                // and keeps the art's aspect ratio from the height.
+                child: SizedBox(
                   width: con.maxWidth,
+                  height: _artHeight * artScale + artDrop,
+                  child: Assets.media.images.svg.homeHeaderBackground.svg(
+                    fit: BoxFit.fitWidth,
+                    alignment: Alignment.bottomCenter,
+                  ),
                 ),
               ),
             ),
