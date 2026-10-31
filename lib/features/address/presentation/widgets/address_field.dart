@@ -20,6 +20,7 @@ class AddressField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.textDirection,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -27,6 +28,10 @@ class AddressField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final TextDirection? textDirection;
+
+  /// Above 1, the field starts one line tall and wraps, growing up to this
+  /// many lines before it scrolls inside, instead of scrolling sideways.
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,8 @@ class AddressField extends StatelessWidget {
                 controller: controller,
                 keyboardType: keyboardType,
                 inputFormatters: inputFormatters,
+                minLines: 1,
+                maxLines: maxLines,
                 textDirection: textDirection ?? typedDirection,
                 textAlign: textDirection == null
                     ? TextAlign.start

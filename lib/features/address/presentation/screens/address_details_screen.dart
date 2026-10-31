@@ -439,6 +439,9 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                       ? TextInputType.number
                       : null,
                   inputFormatters: _numericLimits[hints[0]] ?? _columnLimit,
+                  // Work's company name is 50 characters of text, like the
+                  // building below.
+                  maxLines: _numericLimits.containsKey(hints[0]) ? 1 : 2,
                 ),
                 AddressField(
                   label: hints[1].tr(),
@@ -452,11 +455,16 @@ class _AddressDetailsScreenState extends ConsumerState<AddressDetailsScreen> {
                   label: LangKeys.building.tr(),
                   controller: _buildingNameController,
                   inputFormatters: _columnLimit,
+                  // 50 characters overflow one line on a phone.
+                  maxLines: 2,
                 ),
                 AddressField(
                   label: LangKeys.instructions.tr(),
                   controller: _instructionsController,
                   inputFormatters: _notesLimit,
+                  // Up to 1000 characters: wrap them rather than scroll one
+                  // line sideways.
+                  maxLines: 4,
                 ),
                 AddressField(
                   label: LangKeys.phoneNumberOptional.tr(),

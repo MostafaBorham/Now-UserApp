@@ -52,6 +52,31 @@ void main() {
     expect(field.textAlign, TextAlign.right);
   });
 
+  testWidgets('a multi-line field wraps long text instead of scrolling it', (
+    WidgetTester tester,
+  ) async {
+    final TextEditingController controller = TextEditingController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      _host(
+        AddressField(
+          label: 'Instructions',
+          controller: controller,
+          maxLines: 4,
+        ),
+      ),
+    );
+    final double emptyHeight = tester.getSize(find.byType(AddressField)).height;
+
+    await tester.enterText(find.byType(TextField), 'ring the bell ' * 100);
+    await tester.pump();
+    final double fullHeight = tester.getSize(find.byType(AddressField)).height;
+
+    expect(fullHeight, greaterThan(emptyHeight));
+    // Grows to four lines, then scrolls inside rather than taking the screen.
+    expect(fullHeight, lessThan(emptyHeight * 4));
+  });
+
   testWidgets('field without a text direction follows the locale', (
     WidgetTester tester,
   ) async {
