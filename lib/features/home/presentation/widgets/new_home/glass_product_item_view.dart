@@ -185,6 +185,7 @@ class GlassProductItemView extends StatelessWidget {
                     productSlug: product.slug,
                     productQuantity: product.cartQuantity ?? 0,
                     stock: product.stock,
+                    minOrderQuantity: product.minOrderQuantity,
                   ),
                 ),
                 // Diagonal discount badge wrapping the top-start corner, with

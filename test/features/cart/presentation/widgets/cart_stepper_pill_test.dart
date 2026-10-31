@@ -9,7 +9,11 @@ import '../../../../helpers/categories_test_harness.dart';
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  Future<List<String>> tapEach(WidgetTester tester, int counter) async {
+  Future<List<String>> tapEach(
+    WidgetTester tester,
+    int counter, {
+    int minQuantity = 1,
+  }) async {
     final List<String> taps = <String>[];
     await pumpCategoriesWidget(
       tester,
@@ -18,6 +22,7 @@ void main() {
         child: CartStepperPill(
           expanded: true,
           counter: counter,
+          minQuantity: minQuantity,
           onInc: () => taps.add('inc'),
           onDec: () => taps.add('dec'),
           onDelete: () => taps.add('delete'),
@@ -40,6 +45,13 @@ void main() {
 
   testWidgets('two units: add, nothing, minus', (WidgetTester tester) async {
     expect(await tapEach(tester, 2), <String>['inc', 'dec']);
+  });
+
+  testWidgets('at a minimum of 3: delete, not minus', (
+    WidgetTester tester,
+  ) async {
+    expect(await tapEach(tester, 3, minQuantity: 3), <String>['inc', 'delete']);
+    expect(await tapEach(tester, 4, minQuantity: 3), <String>['inc', 'dec']);
   });
 
   testWidgets('collapsed, the whole box opens it', (WidgetTester tester) async {

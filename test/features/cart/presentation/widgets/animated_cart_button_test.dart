@@ -7,6 +7,7 @@ import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/features/cart/viewmodel/get_cart_vm.dart';
+import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product_vm.dart';
 
 import '../../../../helpers/categories_test_harness.dart';
 
@@ -72,4 +73,50 @@ void main() {
     // Let the counter's idle collapse timer run out.
     await tester.pump(const Duration(seconds: 3));
   });
+
+  // The card's first add sent 1 whatever the product's minimum, which the
+  // server refuses; the product page already started at the minimum.
+  testWidgets('first add sends the minimum order quantity', (tester) async {
+    final List<int> sent = <int>[];
+    await pumpCategoriesScreen(
+      tester,
+      const Scaffold(
+        body: Center(
+          child: AnimatedCartButton(
+            productId: 7,
+            stock: 10,
+            minOrderQuantity: 3,
+          ),
+        ),
+      ),
+      overrides: <Override>[
+        getCartProvider.overrideWith(
+          (Ref ref) =>
+              GetCartViewModel(const AsyncValue<CartModel>.data(CartModel())),
+        ),
+        updateCartProductProvider.overrideWith(
+          (Ref ref, int laneId) => _RecordingCartVm(ref, laneId, sent),
+        ),
+      ],
+    );
+
+    await tester.tap(find.byType(AnimatedCartButton));
+    await tester.pumpAndSettle();
+
+    expect(sent, <int>[3]);
+  });
+}
+
+class _RecordingCartVm extends UpdateCartProductViewModel {
+  _RecordingCartVm(super.ref, super.laneId, this.sent);
+
+  final List<int> sent;
+
+  @override
+  Future<void> updateCartProductQuantity(
+    int productQuantity, {
+    required int productId,
+    int? cartItemId,
+    int? seededQuantity,
+  }) async => sent.add(productQuantity);
 }

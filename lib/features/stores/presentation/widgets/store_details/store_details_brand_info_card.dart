@@ -191,9 +191,14 @@ class StoreDetailsBrandInfoCard extends ConsumerWidget {
                     isLoading: isAddingToCart,
                     onTap: () {
                       if (product.id == null) return;
+                      // An add tops up the line, so the minimum goes in only
+                      // the first time; after that it is one unit a tap.
                       ref
                           .read(updateCartProductProvider(productId).notifier)
-                          .addToCart(1, seededQuantity: product.cartQuantity);
+                          .addToCart(
+                            inCart > 0 ? 1 : product.minOrderQuantity ?? 1,
+                            seededQuantity: product.cartQuantity,
+                          );
                     },
                     title: LangKeys.addToCartKey.tr(),
                     buttonColor: colors.secondaryFixedDim,

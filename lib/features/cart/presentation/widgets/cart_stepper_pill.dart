@@ -10,9 +10,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 ///
 /// Collapsed: a 28 dp green circle with a square bottom-start corner and a
 /// white "+" (or the quantity already in the cart). [expanded] grows it, toward
-/// the start, into an 86 × 28 pill — add, the count, then trash at one unit or
-/// minus from two up — while the "+" fades out and the square corner rounds
-/// into the pill's.
+/// the start, into an 86 × 28 pill — add, the count, then trash at
+/// [minQuantity] or minus above it — while the "+" fades out and the square
+/// corner rounds into the pill's.
 ///
 /// The visuals keep Figma's size; the control's box reaches [reach] further on
 /// its top and start sides — the sides facing into the card — so each tap
@@ -24,6 +24,7 @@ class CartStepperPill extends StatelessWidget {
     required this.counter,
     this.isLoading = false,
     this.canIncrement = true,
+    this.minQuantity = 1,
     this.onTap,
     this.onInc,
     this.onDec,
@@ -40,13 +41,17 @@ class CartStepperPill extends StatelessWidget {
 
   final bool canIncrement;
 
+  /// The product's minimum order quantity: the count can't go below it, so
+  /// trash takes minus's place once it is reached.
+  final int minQuantity;
+
   /// The collapsed button's tap.
   final VoidCallback? onTap;
 
   final VoidCallback? onInc;
   final VoidCallback? onDec;
 
-  /// The trash icon, shown in place of minus while a single unit is left.
+  /// The trash icon, shown in place of minus at [minQuantity].
   final VoidCallback? onDelete;
 
   /// Fires when an expand or collapse animation settles.
@@ -176,7 +181,7 @@ class CartStepperPill extends StatelessWidget {
                     ),
             ),
           ),
-          counter < 2
+          counter <= minQuantity
               ? Assets.media.images.svg.cardCartTrashBulk.svg(
                   width: 20,
                   height: 20,
@@ -203,7 +208,7 @@ class CartStepperPill extends StatelessWidget {
       children: <Widget>[
         Expanded(child: target(canIncrement ? onInc : null)),
         Expanded(child: target(null)),
-        Expanded(child: target(counter < 2 ? onDelete : onDec)),
+        Expanded(child: target(counter <= minQuantity ? onDelete : onDec)),
       ],
     );
   }

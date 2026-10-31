@@ -139,6 +139,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                     productSlug: product.slug,
                     productQuantity: product.cartQuantity ?? 0,
                     stock: product.stock,
+                    minOrderQuantity: product.minOrderQuantity,
                   ),
                 ),
               ],

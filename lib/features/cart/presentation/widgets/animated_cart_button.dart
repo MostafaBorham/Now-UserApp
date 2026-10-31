@@ -21,11 +21,11 @@ import 'package:nowdelivery_user_app/features/cart/viewmodel/update_cart_product
 /// Pass [productId] together with [productQuantity] to wire the counter to
 /// `updateCartProductProvider(productId)`. Exactly three interactions reach the
 /// server: the add-to-cart button **while the product is not in the cart yet**
-/// (it sends the first unit; with units already in the cart it only opens the
-/// counter), and the counter's own increment / decrement and delete icons.
-/// Decrement floors at 1, so the only way down to 0 is the delete icon (which the
-/// counter view shows in place of the decrement icon while a single unit is
-/// left). The three response states then drive the view:
+/// (it sends the product's minimum order quantity; with units already in the
+/// cart it only opens the counter), and the counter's own increment / decrement
+/// and delete icons. Decrement floors at that minimum, so the only way down to 0
+/// is the delete icon (which the counter view shows in place of the decrement
+/// icon at the minimum). The three response states then drive the view:
 /// - **loading** — the counter view stays open, its number is replaced by a
 ///   spinner and all three icons stop responding,
 /// - **error** — the number keeps the last quantity the server confirmed and the
@@ -56,6 +56,7 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
     this.productSlug,
     this.productQuantity = 0,
     this.stock,
+    this.minOrderQuantity,
   });
 
   /// Product this control manages in the cart. `null` disables backend
@@ -72,6 +73,10 @@ class AnimatedCartButton extends ConsumerStatefulWidget {
   /// Available stock for this product — the counter never climbs past it. `null`
   /// leaves the counter uncapped (used by cards still on placeholder data).
   final int? stock;
+
+  /// The fewest units the product can be in the cart with — the first add
+  /// sends this many. `null` means a single unit.
+  final int? minOrderQuantity;
 
   @override
   ConsumerState<AnimatedCartButton> createState() => _AnimatedCartButtonState();
@@ -91,6 +96,8 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
   Timer? _collapseTimer;
 
   bool get _isIntegrated => widget.productId != null;
+
+  int get _minQuantity => widget.minOrderQuantity ?? 1;
 
   /// The quantity to display.
   ///
@@ -149,8 +156,10 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
         _showCounterView && (isUpdating || counter > 0);
 
     // The counter never climbs past the available stock; a null stock leaves it
-    // uncapped.
-    final bool canIncrement = widget.stock == null || counter < widget.stock!;
+    // uncapped. The first add is the whole minimum, so a stock under it leaves
+    // nothing to add.
+    final int next = counter < 1 ? _minQuantity : counter + 1;
+    final bool canIncrement = widget.stock == null || next <= widget.stock!;
 
     // The pill grows toward the start from the card's corner; the card only
     // has to anchor it there.
@@ -159,6 +168,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       counter: counter,
       isLoading: isUpdating,
       canIncrement: canIncrement,
+      minQuantity: _minQuantity,
       onTap: () {
         if (_hasSeveralLines()) {
           _openProduct();
@@ -189,7 +199,7 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
     }
 
     if (canIncrement) {
-      _updateQuantity(1);
+      _updateQuantity(_minQuantity);
       return;
     }
 
@@ -217,11 +227,12 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
     context.pushNamed(AppRoutes.productDetailsScreen, extra: slug);
   }
 
-  /// One unit less than [counter], floored at 1 — dropping the last unit is the
-  /// delete icon's job. The counter view only offers this icon from 2 upwards
-  /// anyway, so the floor is just a safety net.
-  void _decrement(int counter) =>
-      _updateQuantity(counter > 1 ? counter - 1 : 1);
+  /// One unit less than [counter], floored at the minimum — dropping below it
+  /// is the delete icon's job. The counter view only offers this icon above the
+  /// minimum anyway, so the floor is just a safety net.
+  void _decrement(int counter) => _updateQuantity(
+    counter > _minQuantity ? counter - 1 : _minQuantity,
+  );
 
   /// Asks before dropping the last unit, matching the cart screen's own
   /// stepper — a removal is not something to do on a mistaken tap.
