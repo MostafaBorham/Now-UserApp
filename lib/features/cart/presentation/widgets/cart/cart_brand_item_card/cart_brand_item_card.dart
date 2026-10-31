@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_products_images_list_view.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
@@ -31,6 +33,7 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final CartVendorPricingModel pricing = widget.cartVendor.pricing;
+    final int? vendorId = widget.cartVendor.vendor.id;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -54,6 +57,13 @@ class _CartBrandItemCardState extends State<CartBrandItemCard> {
               storeName: widget.cartVendor.vendor.name,
               logoUrl: widget.cartVendor.vendor.logoUrl,
               badge: StoreStatusBadge(store: widget.cartVendor.vendor),
+              onStoreTap: vendorId == null
+                  ? null
+                  : () => context.pushNamed(
+                      AppRoutes.storeDetailsScreen,
+                      pathParameters: <String, String>{'id': '$vendorId'},
+                      extra: widget.cartVendor.vendor.name,
+                    ),
             ),
 
             _isExpanded

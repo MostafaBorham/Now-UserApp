@@ -12,6 +12,7 @@ class LogoTitleExpansionHeader extends StatelessWidget {
     this.storeName,
     this.logoUrl,
     this.badge,
+    this.onStoreTap,
   });
 
   final bool isExpanded;
@@ -26,6 +27,11 @@ class LogoTitleExpansionHeader extends StatelessWidget {
 
   /// Shown after the title, e.g. the store's status pill.
   final Widget? badge;
+
+  /// Fired by a tap on the logo or name, which then no longer toggles; the
+  /// rest of the row, arrow included, still does. `null` leaves the whole row
+  /// toggling.
+  final VoidCallback? onStoreTap;
 
   @override
   Widget build(BuildContext context) {
@@ -43,19 +49,32 @@ class LogoTitleExpansionHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 12,
               children: [
-                CircularBrandLogo(
-                  radius: 24,
-                  elevation: 1,
-                  backgroundColor: colors.onTertiaryContainer,
-                  logoUrl: logoUrl,
-                ),
                 Flexible(
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.style16Medium.copyWith(
-                      color: colors.black,
+                  // An InkWell with no onTap claims no taps, so a null
+                  // onStoreTap falls through to the row's toggle.
+                  child: InkWell(
+                    onTap: onStoreTap,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 12,
+                      children: [
+                        CircularBrandLogo(
+                          radius: 24,
+                          elevation: 1,
+                          backgroundColor: colors.onTertiaryContainer,
+                          logoUrl: logoUrl,
+                        ),
+                        Flexible(
+                          child: Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.style16Medium.copyWith(
+                              color: colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

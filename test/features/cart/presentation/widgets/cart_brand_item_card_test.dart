@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_card/cart_brand_item_card.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_brand_item_details_view.dart';
@@ -69,8 +71,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Expand the *second* store.
-    await tester.tap(find.text('Othaim'));
+    // Expand the *second* store. By its arrow: the name opens the store.
+    await tester.tap(
+      find.descendant(
+        of: find.ancestor(
+          of: find.text('Othaim'),
+          matching: find.byType(CartBrandItemCard),
+        ),
+        matching: find.byIcon(Icons.keyboard_arrow_down_rounded),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(isExpanded(tester, 'Othaim'), isTrue);
@@ -84,6 +94,30 @@ void main() {
     // With a key it keeps its own expansion; without one it would inherit.
     expect(find.text('Panda'), findsNothing);
     expect(isExpanded(tester, 'Othaim'), isTrue);
+  });
+
+  testWidgets('tapping the store name opens the store, not the card', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesScreen(
+      tester,
+      Scaffold(body: CartBrandItemCard(cartVendor: vendorOf(7, 'Panda'))),
+      destinationRoutes: <RouteBase>[
+        GoRoute(
+          name: AppRoutes.storeDetailsScreen,
+          path: '/${AppRoutes.storeDetailsScreen}/:id',
+          builder: (BuildContext context, GoRouterState state) => Scaffold(
+            body: Text('__store ${state.pathParameters['id']}__'),
+          ),
+        ),
+      ],
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Panda'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('__store 7__'), findsOneWidget);
   });
 
   testWidgets('a store under its minimum cannot be checked out', (
