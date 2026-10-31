@@ -63,7 +63,7 @@ class StoreDetailsBanner extends ConsumerWidget {
         child: AppCachedNetworkImage(
           imageUrl: imageUrl,
           width: double.infinity,
-          fit: BoxFit.fill,
+          fit: BoxFit.contain,
         ),
       ),
     );
