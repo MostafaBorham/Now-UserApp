@@ -22,10 +22,12 @@ final editAddressProvider =
     >((Ref ref) => EditAddressViewModel(const AsyncValue.data(null), ref));
 
 class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
-  EditAddressViewModel(super.initialState, this._ref);
+  /// [repo] is injectable for tests only, like [AddressRepo]'s own seams.
+  EditAddressViewModel(super.initialState, this._ref, {AddressRepo? repo})
+    : _repo = repo ?? AddressRepo();
 
   final Ref _ref;
-  final AddressRepo _repo = AddressRepo();
+  final AddressRepo _repo;
 
   @override
   void dispose() {
@@ -56,9 +58,15 @@ class EditAddressViewModel extends StateNotifier<AsyncValue<AddressModel?>> {
       (Failure failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
       (AddressModel updated) {
-        _ref
-            .read(getMyAddressesProvider.notifier)
-            .updateAddress(address: updated);
+        final GetMyAddressesViewModel addresses = _ref.read(
+          getMyAddressesProvider.notifier,
+        )..updateAddress(address: updated);
+        // Ticking "set as default" on an edit makes the server demote the old
+        // default. Patching only this row left both cards reading "default",
+        // and the checkout kept the old one (the first flagged row wins).
+        if (updated.isDefault ?? false) {
+          addresses.updateDefaultInMyAddress(address: updated);
+        }
         _ref
             .read(defaultAddressProvider.notifier)
             .syncEditedAddress(address: updated);
