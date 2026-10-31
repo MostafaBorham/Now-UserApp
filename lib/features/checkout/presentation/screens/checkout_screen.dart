@@ -88,7 +88,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     // the default). Untick it and the picked saved card pays: the backend
     // requires a `payment_method_id` for the `card` method and prohibits one
     // for wallet/cod, so the id rides along only in the card case. Selection
-    // defaults to the preview's default card. There is no split payment: a
+    // defaults to the default card. There is no split payment: a
     // short wallet disables the button, and its note says why.
     final WalletUse walletUse = ref.read(walletUseProvider);
     final String paymentMethod;
@@ -99,7 +99,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       paymentMethodId = null;
     } else {
       final int? selectedCardId = CheckoutModel.payingCard(
-        checkout.paymentCards,
+        ref.read(checkoutCardsProvider),
         ref.read(selectedPaymentCardProvider),
       )?.id;
       if (selectedCardId == null) {

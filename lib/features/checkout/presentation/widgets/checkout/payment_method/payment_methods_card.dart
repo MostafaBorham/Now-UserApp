@@ -12,9 +12,9 @@ import 'package:nowdelivery_user_app/features/checkout/presentation/providers/ch
 import 'package:nowdelivery_user_app/features/checkout/presentation/providers/checkout/wallet_payment_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 
-/// A soft grey card that lists the customer's saved cards (from the checkout
-/// preview) with a single (radio-style) selection, followed by an "Add New
-/// Card" outlined button.
+/// A soft grey card that lists the customer's saved cards (see
+/// [checkoutCardsProvider]) with a single (radio-style) selection, followed by
+/// an "Add New Card" outlined button.
 ///
 /// This is the populated half of the payment section — [CheckoutPaymentSection]
 /// swaps it for the red "choose a method" prompt when the customer has no card.

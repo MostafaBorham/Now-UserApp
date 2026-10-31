@@ -16,9 +16,9 @@ class CheckoutModel {
   final OrderGroupModel orderGroup;
 
   /// The customer's saved payment cards, carried by the preview under
-  /// `checkout.payment_cards` (same shape as the wallet's cards). Empty when the
-  /// customer has none — the checkout payment section then shows the add-card
-  /// prompt instead of the card list.
+  /// `checkout.payment_cards` (same shape as the wallet's cards). Checkout
+  /// offers the wallet's own list first and this copy only while that one
+  /// reloads (see `checkoutCardsProvider`).
   final List<CardPaymentModel> paymentCards;
 
   const CheckoutModel({

@@ -15,7 +15,7 @@ final checkoutProvider =
 
 /// The checkout's pricing, straight from the server.
 ///
-/// [checkout] opens a checkout; [reprice] and [refresh] then price it again as
+/// [checkout] opens a checkout; [reprice] then prices it again as
 /// the customer changes what the server charges for — address, coupons,
 /// voucher — so the invoice shows what placing the order will charge. The tip
 /// is never priced here: `tippedCheckoutProvider` adds it on top. A
@@ -81,13 +81,6 @@ class CheckoutViewModel extends StateNotifier<AsyncValue<CheckoutModel?>> {
     );
     if (jsonEncode(body) == jsonEncode(_body)) return;
     _body = body;
-    refresh();
-  }
-
-  /// Prices the open checkout again with unchanged choices — for what the
-  /// preview carries besides the price, like the saved cards after one is
-  /// added.
-  void refresh() {
     _debounce?.cancel();
     // Loading from now, not from when the request leaves, so confirm is held
     // back through the debounce too — never placed against a stale total.
