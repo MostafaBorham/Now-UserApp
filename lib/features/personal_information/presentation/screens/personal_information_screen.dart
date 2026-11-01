@@ -93,7 +93,13 @@ class _ProfileBody extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24),
-          ProfileAvatar(size: 140, imageUrl: avatarUrl),
+          GestureDetector(
+            // The placeholder has nothing to show bigger.
+            onTap: (avatarUrl?.isNotEmpty ?? false)
+                ? () => showProfileAvatarFullScreen(context, avatarUrl!)
+                : null,
+            child: ProfileAvatar(size: 140, imageUrl: avatarUrl),
+          ),
           const SizedBox(height: 28),
           Material(
             color: context.colors.onTertiaryContainer,

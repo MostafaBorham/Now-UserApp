@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -87,7 +88,6 @@ class ProfileAvatar extends StatelessWidget {
 
     final String? url = imageUrl;
     if (url != null && url.isNotEmpty) {
-      final String token = TokenCacheService().getAccessToken() ?? '';
       return AppCachedNetworkImage(
         imageUrl: url,
         width: size,
@@ -96,7 +96,7 @@ class ProfileAvatar extends StatelessWidget {
         // Shimmer (not a spinner) while the picture downloads; the app-wide
         // no-image placeholder shows if the request fails.
         placeholderType: LoadingViewTypes.shimmer,
-        httpHeaders: {'Authorization': 'Bearer $token'},
+        httpHeaders: _authHeaders(),
       );
     }
 
@@ -105,4 +105,51 @@ class ProfileAvatar extends StatelessWidget {
 
   Widget _placeholder() => Assets.media.images.png.userAvatarPlaceholderImg
       .image(fit: BoxFit.cover, width: size, height: size);
+}
+
+Map<String, String> _authHeaders() => {
+  'Authorization': 'Bearer ${TokenCacheService().getAccessToken() ?? ''}',
+};
+
+/// Shows the remote avatar at [imageUrl] full screen on black, pinch-to-zoom.
+/// A tap anywhere, the close button or back dismisses it.
+Future<void> showProfileAvatarFullScreen(
+  BuildContext context,
+  String imageUrl,
+) {
+  return showDialog<void>(
+    context: context,
+    useSafeArea: false,
+    barrierColor: context.colors.black,
+    builder: (BuildContext dialogContext) => Stack(
+      children: [
+        Positioned.fill(
+          child: GestureDetector(
+            onTap: dialogContext.pop,
+            child: InteractiveViewer(
+              maxScale: 4,
+              child: AppCachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.contain,
+                // A full-screen shimmer would flash white over the black.
+                placeholderType: LoadingViewTypes.circular,
+                circularProgressSize: 32,
+                errorBackgroundColor: Colors.transparent,
+                httpHeaders: _authHeaders(),
+              ),
+            ),
+          ),
+        ),
+        PositionedDirectional(
+          top: MediaQuery.paddingOf(dialogContext).top + 8,
+          end: 8,
+          child: IconButton(
+            onPressed: dialogContext.pop,
+            tooltip: MaterialLocalizations.of(dialogContext).closeButtonTooltip,
+            icon: Icon(Icons.close, color: dialogContext.colors.white),
+          ),
+        ),
+      ],
+    ),
+  );
 }
