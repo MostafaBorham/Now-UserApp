@@ -5,6 +5,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:image_picker/image_picker.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/full_screen_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/image_source_sheet.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -178,29 +179,39 @@ class _PickedImageTile extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          ClipRRect(
-            borderRadius: AppBorderRadius.brCircular6,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.file(
-                  imageFile,
-                  width: _size,
-                  height: _size,
-                  fit: BoxFit.cover,
-                ),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => showFullScreenImage(
+              context,
+              Image.file(imageFile, fit: BoxFit.contain),
+            ),
+            child: ClipRRect(
+              borderRadius: AppBorderRadius.brCircular6,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.file(
+                    imageFile,
+                    width: _size,
+                    height: _size,
+                    fit: BoxFit.cover,
+                  ),
 
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: const [0.6, 1],
-                      colors: [colors.white.withValues(alpha: 0), colors.white],
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.6, 1],
+                        colors: [
+                          colors.white.withValues(alpha: 0),
+                          colors.white,
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           PositionedDirectional(

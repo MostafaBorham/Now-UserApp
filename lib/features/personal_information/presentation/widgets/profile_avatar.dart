@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/full_screen_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 
@@ -129,45 +129,21 @@ Map<String, String> _authHeaders() => {
   'Authorization': 'Bearer ${TokenCacheService().getAccessToken() ?? ''}',
 };
 
-/// Shows the remote avatar at [imageUrl] full screen on black, pinch-to-zoom.
-/// A tap anywhere, the close button or back dismisses it.
+/// Shows the remote avatar at [imageUrl] with [showFullScreenImage].
 Future<void> showProfileAvatarFullScreen(
   BuildContext context,
   String imageUrl,
 ) {
-  return showDialog<void>(
-    context: context,
-    useSafeArea: false,
-    barrierColor: context.colors.black,
-    builder: (BuildContext dialogContext) => Stack(
-      children: [
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: dialogContext.pop,
-            child: InteractiveViewer(
-              maxScale: 4,
-              child: AppCachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.contain,
-                // A full-screen shimmer would flash white over the black.
-                placeholderType: LoadingViewTypes.circular,
-                circularProgressSize: 32,
-                errorBackgroundColor: Colors.transparent,
-                httpHeaders: _authHeaders(),
-              ),
-            ),
-          ),
-        ),
-        PositionedDirectional(
-          top: MediaQuery.paddingOf(dialogContext).top + 8,
-          end: 8,
-          child: IconButton(
-            onPressed: dialogContext.pop,
-            tooltip: MaterialLocalizations.of(dialogContext).closeButtonTooltip,
-            icon: Icon(Icons.close, color: dialogContext.colors.white),
-          ),
-        ),
-      ],
+  return showFullScreenImage(
+    context,
+    AppCachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.contain,
+      // A full-screen shimmer would flash white over the black.
+      placeholderType: LoadingViewTypes.circular,
+      circularProgressSize: 32,
+      errorBackgroundColor: Colors.transparent,
+      httpHeaders: _authHeaders(),
     ),
   );
 }
