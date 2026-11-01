@@ -6,25 +6,36 @@ import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet
 
 import '../../helpers/categories_test_harness.dart';
 
-/// Editing a card shows its default flag but can't change it either way: the
-/// default is changed from the cards list.
+/// Editing a card can make it the default, but the current default stays
+/// locked on: the server refuses to leave the customer with no default.
 void main() {
   setUpAll(initCategoriesTestLocalization);
 
-  for (final bool isDefault in <bool>[true, false]) {
-    testWidgets('edit mode locks the default checkbox (isDefault: $isDefault)', (
-      WidgetTester tester,
-    ) async {
-      await pumpCategoriesWidget(
-        tester,
-        AddCardView(card: CardPaymentModel(id: 1, isDefault: isDefault)),
-      );
+  testWidgets('edit mode locks the default checkbox on the default card', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      AddCardView(card: CardPaymentModel(id: 1, isDefault: true)),
+    );
 
-      final Checkbox box = tester.widget<Checkbox>(find.byType(Checkbox));
-      expect(box.value, isDefault);
-      expect(box.onChanged, isNull);
-    });
-  }
+    final Checkbox box = tester.widget<Checkbox>(find.byType(Checkbox));
+    expect(box.value, isTrue);
+    expect(box.onChanged, isNull);
+  });
+
+  testWidgets('edit mode lets a non-default card be made the default', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      AddCardView(card: CardPaymentModel(id: 1, isDefault: false)),
+    );
+
+    await tester.tap(find.byType(Checkbox));
+    await tester.pump();
+    expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isTrue);
+  });
 
   testWidgets('add mode leaves the default checkbox editable', (
     WidgetTester tester,

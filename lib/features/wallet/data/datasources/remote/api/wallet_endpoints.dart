@@ -57,19 +57,23 @@ abstract class WalletEndpoints {
   /// the fields present are changed. [cardholderName] and the expiry are always
   /// sent (the edit form prefills them); [cardNumber]/[cvc] are sent only when
   /// re-entered, since a saved card never returns the full number or CVC to
-  /// prefill. `token` is never sent in this mode.
+  /// prefill. `token` is never sent in this mode. `set_default` goes only when
+  /// [setDefault] is on: a `false` on the default card is refused
+  /// (`default_required`).
   static Map<String, dynamic> updatePaymentCardBody({
     required String cardholderName,
     required int expiryMonth,
     required int expiryYear,
     String? cardNumber,
     String? cvc,
+    bool setDefault = false,
   }) => <String, dynamic>{
     'cardholder_name': cardholderName,
     'expiry_month': expiryMonth,
     'expiry_year': expiryYear,
     if (cardNumber != null && cardNumber.isNotEmpty) 'card_number': cardNumber,
     if (cvc != null && cvc.isNotEmpty) 'cvc': cvc,
+    if (setDefault) 'set_default': true,
   };
 
   /// Deletes the saved card identified by [id].

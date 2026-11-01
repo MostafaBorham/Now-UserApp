@@ -70,6 +70,20 @@ void main() {
       expect(body.containsKey('card_number'), isFalse);
       expect(body.containsKey('cvc'), isFalse);
     });
+
+    test('set_default is sent only to promote, never as false', () {
+      Map<String, dynamic> body(bool setDefault) =>
+          WalletEndpoints.updatePaymentCardBody(
+            cardholderName: 'A',
+            expiryMonth: 6,
+            expiryYear: 2030,
+            setDefault: setDefault,
+          );
+
+      expect(body(true)['set_default'], isTrue);
+      // A false on the default card is refused (default_required).
+      expect(body(false).containsKey('set_default'), isFalse);
+    });
   });
 
   group('parseExpiry', () {

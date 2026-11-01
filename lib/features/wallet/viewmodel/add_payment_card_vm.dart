@@ -74,15 +74,16 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
   /// Updates the existing card [cardId]. A partial update: [cardNumber]/[cvc]
   /// are optional and sent only when re-entered (a saved card never exposes the
   /// full number or CVC to prefill). [cardholderName] and [expiry] are always
-  /// sent (the edit form prefills them). The default is never changed here —
-  /// that is the cards list's set-default. Returns `null` on success, else the
-  /// error message.
+  /// sent (the edit form prefills them). [setAsDefault] can only promote the
+  /// card, in the same request; it never un-defaults one (the server refuses).
+  /// Returns `null` on success, else the error message.
   Future<String?> updatePaymentCard({
     required int cardId,
     required String cardholderName,
     required String expiry,
     String? cardNumber,
     String? cvc,
+    bool setAsDefault = false,
   }) async {
     final ({int month, int year}) parsed = parseExpiry(expiry);
     final String number = (cardNumber ?? '').replaceAll(RegExp(r'\D'), '');
@@ -101,6 +102,7 @@ class AddPaymentCardViewModel extends StateNotifier<AsyncValue<void>> {
       expiryYear: parsed.year,
       cardNumber: number.isEmpty ? null : number,
       cvc: cvcValue.isEmpty ? null : cvcValue,
+      setDefault: setAsDefault,
     );
 
     if (!mounted) return null;

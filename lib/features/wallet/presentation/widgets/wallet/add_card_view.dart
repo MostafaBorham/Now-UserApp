@@ -16,9 +16,10 @@ import 'package:nowdelivery_user_app/features/wallet/viewmodel/add_payment_card_
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 
 /// The add-or-edit card bottom sheet. Passing [card] puts it in edit mode:
-/// the cardholder name and expiry are prefilled, the default flag is shown but
-/// locked, the number and CVC start blank (a saved card never returns them),
-/// and submitting updates the card instead of creating one.
+/// the cardholder name and expiry are prefilled, the default flag can only be
+/// turned on (the server refuses to leave the customer with no default), the
+/// number and CVC start blank (a saved card never returns them), and
+/// submitting updates the card instead of creating one.
 class AddCardView extends ConsumerStatefulWidget {
   const AddCardView({super.key, this.card});
 
@@ -106,6 +107,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
             expiry: _expiryController.text,
             cardNumber: _numberController.text,
             cvc: _cvvController.text,
+            setAsDefault: _setAsDefault,
           )
         : await notifier.addPaymentCard(
             cardholderName: _nameController.text.trim(),
@@ -181,12 +183,12 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                   ],
                 ),
                 form,
-                // Edit mode only shows the card's state: the default is changed
-                // by tapping a card in the list, and the server refuses to
-                // leave the customer with no default anyway.
+                // The current default stays locked on: the server refuses to
+                // leave the customer with no default. Another card is moved
+                // off by making this one the default.
                 SetAsDefaultCheckbox(
                   value: _setAsDefault,
-                  onChanged: isSubmitting || _isEditing
+                  onChanged: isSubmitting || (widget.card?.isDefault ?? false)
                       ? null
                       : (bool v) => setState(() => _setAsDefault = v),
                 ),

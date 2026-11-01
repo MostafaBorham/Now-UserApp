@@ -6,7 +6,8 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 
 /// "Set as default card" toggle shown on the add-card forms. When left on, the
 /// new card is saved as the default in the same request (the backend
-/// auto-defaults only the very first card). The edit sheet shows it locked.
+/// auto-defaults only the very first card). The edit sheet locks it on the
+/// card that is already the default.
 class SetAsDefaultCheckbox extends StatelessWidget {
   const SetAsDefaultCheckbox({
     super.key,

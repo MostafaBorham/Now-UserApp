@@ -347,7 +347,8 @@ class WalletRepo {
   ///
   /// A partial update: [cardNumber]/[cvc] are optional — sent only when the
   /// customer re-entered them (a saved card never exposes the full number or CVC
-  /// to prefill). [expiryYear] is the full year.
+  /// to prefill). [expiryYear] is the full year. [setDefault] makes the card
+  /// the default in the same request.
   Future<Either<Failure, CardPaymentModel>> updatePaymentCard({
     required int id,
     required String cardholderName,
@@ -355,6 +356,7 @@ class WalletRepo {
     required int expiryYear,
     String? cardNumber,
     String? cvc,
+    bool setDefault = false,
   }) {
     return _guard(
       () => _walletApiService.updatePaymentCard(
@@ -364,6 +366,7 @@ class WalletRepo {
         expiryYear: expiryYear,
         cardNumber: cardNumber,
         cvc: cvc,
+        setDefault: setDefault,
       ),
       (Map<String, dynamic> data) =>
           CardPaymentModel.fromJson(data[_defaultCardKey] as Map<String, dynamic>),

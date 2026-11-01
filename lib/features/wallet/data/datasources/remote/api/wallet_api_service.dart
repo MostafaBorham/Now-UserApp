@@ -61,6 +61,7 @@ class WalletApiService {
     required int expiryYear,
     String? cardNumber,
     String? cvc,
+    bool setDefault = false,
   }) {
     return _dio.put(
       WalletEndpoints.updatePaymentCard(id),
@@ -70,6 +71,7 @@ class WalletApiService {
         expiryYear: expiryYear,
         cardNumber: cardNumber,
         cvc: cvc,
+        setDefault: setDefault,
       ),
       cancelToken: _canceller.token,
     );
