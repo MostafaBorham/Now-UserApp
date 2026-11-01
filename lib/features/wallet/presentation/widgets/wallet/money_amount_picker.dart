@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -235,6 +236,11 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
                                     decimal: true,
                                   ),
                               textDirection: typedDirection,
+                              inputFormatters: <TextInputFormatter>[
+                                AmountInputFormatter(
+                                  widget.maxAmountHalalas,
+                                ),
+                              ],
                               style: AppTextStyles.style14Regular.copyWith(
                                 color: hasFieldError
                                     ? colors.error
@@ -291,6 +297,28 @@ class _MoneyAmountPickerState extends State<MoneyAmountPicker> {
         ),
       ],
     );
+  }
+}
+
+/// Keeps the custom amount a plain number no larger than [maxHalalas]: digits,
+/// then at most one point and two decimals. Any other keystroke (a letter, a
+/// space, a comma, a minus, a second point) or one past the maximum is refused.
+class AmountInputFormatter extends TextInputFormatter {
+  AmountInputFormatter(this.maxHalalas);
+
+  final int maxHalalas;
+
+  /// What the field may hold mid-typing: empty, `5`, `5.` or `5.25`.
+  static final RegExp _partialAmount = RegExp(r'^(\d+(\.\d{0,2})?)?$');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!_partialAmount.hasMatch(newValue.text)) return oldValue;
+    final int? halalas = parseSarToHalalas(newValue.text);
+    return halalas != null && halalas > maxHalalas ? oldValue : newValue;
   }
 }
 

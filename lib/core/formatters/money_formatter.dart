@@ -11,15 +11,17 @@ library;
 const int halalasPerSar = 100;
 
 /// Matches a plain positive decimal with at most two fraction digits — the only
-/// shape the top-up endpoint accepts.
-final RegExp _sarAmountPattern = RegExp(r'^(\d+)(?:\.(\d{1,2}))?$');
+/// shape the top-up endpoint accepts. The whole part is capped at 15 digits so
+/// it fits an `int` in halalas; a longer one would throw or overflow.
+final RegExp _sarAmountPattern = RegExp(r'^(\d{1,15})(?:\.(\d{1,2}))?$');
 
 /// Parses a customer-typed SAR [amount] into whole halalas.
 ///
 /// Returns `null` for anything that is not a plain positive decimal with at most
 /// two fraction digits: an empty field, a minus sign, a thousands separator, an
-/// exponent, a stray comma, or a third decimal place. Callers treat `null` as
-/// "not a submittable amount" and keep the button disabled.
+/// exponent, a stray comma, a third decimal place, or more than 15 whole
+/// digits. Callers treat `null` as "not a submittable amount" and keep the
+/// button disabled.
 ///
 /// Only ASCII digits are recognised, which matches every other numeric field in
 /// the app.

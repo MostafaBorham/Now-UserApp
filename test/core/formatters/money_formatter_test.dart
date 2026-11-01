@@ -41,6 +41,11 @@ void main() {
         expect(parseSarToHalalas(input), isNull, reason: 'input: "$input"');
       }
     });
+
+    test('returns null rather than throwing on a huge number', () {
+      expect(parseSarToHalalas('1' * 40), isNull);
+      expect(parseSarToHalalas('9' * 15), 99999999999999900);
+    });
   });
 
   group('formatHalalasAsSar', () {
