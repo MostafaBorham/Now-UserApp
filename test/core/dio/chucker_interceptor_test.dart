@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+// Only the package's settings show where its toast lands; nothing public does.
+// ignore: implementation_imports
+import 'package:chucker_flutter/src/view/helper/chucker_ui_helper.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,5 +78,16 @@ void main() {
 
     expect(startedAt.keys, unorderedEquals(<String>['/a', '/b']));
     expect(startedAt['/a'], isNot(startedAt['/b']));
+  });
+
+  test('the toast drops in from the top', () {
+    // setUp hands `configure` its offsets reversed, because 1.9.2 swaps them.
+    // If this fails after a chucker upgrade, the swap was fixed upstream:
+    // un-reverse the two offsets in setUp.
+    ChuckerInterceptor.setUp();
+
+    expect(ChuckerUiHelper.settings.notificationAlignment, Alignment.topCenter);
+    expect(ChuckerUiHelper.settings.offsetBegin, const Offset(0, -1.5));
+    expect(ChuckerUiHelper.settings.offsetEnd, Offset.zero);
   });
 }

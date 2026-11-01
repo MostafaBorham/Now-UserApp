@@ -1,4 +1,3 @@
-import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +45,7 @@ void main() {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    // Chucker otherwise records in debug mode only; QA builds are release.
-    ChuckerFlutter.showOnRelease = ChuckerInterceptor.enabled;
+    ChuckerInterceptor.setUp();
     runApp(
       DevicePreview(
         enabled: false,

@@ -1,5 +1,6 @@
 import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/painting.dart';
 
 /// Records every request for chucker_flutter's in-app network inspector, so QA
 /// can see what the app sent and what came back.
@@ -23,6 +24,22 @@ import 'package:dio/dio.dart';
 /// thresholds" in Chucker's settings; replace the package if that's not enough.
 class ChuckerInterceptor extends Interceptor {
   static const bool enabled = bool.fromEnvironment('CHUCKER');
+
+  /// Applies the app's Chucker settings; called once from `main`.
+  ///
+  /// Chucker records in debug mode only unless told otherwise, and QA builds
+  /// are release builds. Its toast drops in from the top rather than rising
+  /// over the bottom bar and the checkout buttons.
+  ///
+  /// `configure` (1.9.2) swaps the two offsets it is handed, hence the reversed
+  /// names: the toast slides from (0, -1.5), just above the screen, to its
+  /// place. A test pins the result, so an upstream fix will show up there.
+  static void setUp() => ChuckerFlutter.configure(
+        showOnRelease: enabled,
+        notificationAlignment: Alignment.topCenter,
+        offsetBegin: Offset.zero,
+        offsetEnd: const Offset(0, -1.5),
+      );
 
   static final Expando<ChuckerDioInterceptor> _byRequest =
       Expando<ChuckerDioInterceptor>();
