@@ -19,7 +19,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 /// the edit screen), tappable via [onCameraTap].
 ///
 /// When [fullScreenOnTap] is true, tapping a remote picture opens it with
-/// [showProfileAvatarFullScreen]; the placeholder stays inert.
+/// [showFullScreenNetworkImage]; the placeholder stays inert.
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     super.key,
@@ -45,7 +45,11 @@ class ProfileAvatar extends StatelessWidget {
       return GestureDetector(
         // The loading shimmer doesn't hit-test; the whole circle should.
         behavior: HitTestBehavior.opaque,
-        onTap: () => showProfileAvatarFullScreen(context, url),
+        onTap: () => showFullScreenNetworkImage(
+          context,
+          url,
+          httpHeaders: _authHeaders(),
+        ),
         child: _avatar(context),
       );
     }
@@ -128,22 +132,3 @@ class ProfileAvatar extends StatelessWidget {
 Map<String, String> _authHeaders() => {
   'Authorization': 'Bearer ${TokenCacheService().getAccessToken() ?? ''}',
 };
-
-/// Shows the remote avatar at [imageUrl] with [showFullScreenImage].
-Future<void> showProfileAvatarFullScreen(
-  BuildContext context,
-  String imageUrl,
-) {
-  return showFullScreenImage(
-    context,
-    AppCachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.contain,
-      // A full-screen shimmer would flash white over the black.
-      placeholderType: LoadingViewTypes.circular,
-      circularProgressSize: 32,
-      errorBackgroundColor: Colors.transparent,
-      httpHeaders: _authHeaders(),
-    ),
-  );
-}

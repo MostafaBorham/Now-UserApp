@@ -1,6 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+
+/// [showFullScreenImage] for the remote image at [imageUrl].
+Future<void> showFullScreenNetworkImage(
+  BuildContext context,
+  String imageUrl, {
+  Map<String, String>? httpHeaders,
+}) {
+  return showFullScreenImage(
+    context,
+    AppCachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.contain,
+      // A full-screen shimmer would flash white over the black.
+      placeholderType: LoadingViewTypes.circular,
+      circularProgressSize: 32,
+      errorBackgroundColor: Colors.transparent,
+      httpHeaders: httpHeaders,
+    ),
+  );
+}
 
 /// Shows [image] full screen on black, pinch-to-zoom. A tap anywhere, the
 /// close button or back dismisses it. [image] should fit itself

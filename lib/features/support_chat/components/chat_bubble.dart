@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
+import 'package:nowdelivery_user_app/core/presentation/components/full_screen_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -46,6 +49,10 @@ class ChatBubble extends StatelessWidget {
     final Color textColor = agent
         ? context.colors.tertiaryContainer
         : context.colors.white;
+    final List<String> imageUrls = <String>[
+      for (final SupportChatAttachmentModel attachment in message.attachments)
+        if (attachment.isImage) attachment.url,
+    ];
 
     final Widget bubble = Flexible(
       child: Column(
@@ -84,32 +91,29 @@ class ChatBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
               children: [
+                if (imageUrls.isNotEmpty) _AttachmentGrid(urls: imageUrls),
                 for (final SupportChatAttachmentModel attachment
                     in message.attachments)
-                  attachment.isImage
-                      ? _AttachmentImage(url: attachment.url)
-                      // ponytail: name only, no download; add one when
-                      // support starts sending PDFs.
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 6,
-                          children: [
-                            Icon(
-                              Icons.insert_drive_file_outlined,
-                              size: 18,
-                              color: textColor,
-                            ),
-                            Flexible(
-                              child: Text(
-                                attachment.name,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: textColor,
-                                ),
-                              ),
-                            ),
-                          ],
+                  if (!attachment.isImage)
+                    // ponytail: name only, no download; add one when
+                    // support starts sending PDFs.
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 6,
+                      children: [
+                        Icon(
+                          Icons.insert_drive_file_outlined,
+                          size: 18,
+                          color: textColor,
                         ),
+                        Flexible(
+                          child: Text(
+                            attachment.name,
+                            style: TextStyle(fontSize: 14, color: textColor),
+                          ),
+                        ),
+                      ],
+                    ),
                 if (message.text.isNotEmpty)
                   Text(
                     message.text,
@@ -194,28 +198,69 @@ class _PersonAvatar extends StatelessWidget {
   }
 }
 
-/// A photo on a message: a square crop, loaded through the authenticated
-/// download route.
-class _AttachmentImage extends StatelessWidget {
-  const _AttachmentImage({required this.url});
+/// A message's photos, loaded through the authenticated download route. One
+/// alone is a square up to 200 px; more sit two to a row as squares, an odd
+/// last one spanning the row. A tap opens that photo full screen.
+class _AttachmentGrid extends StatelessWidget {
+  const _AttachmentGrid({required this.urls});
 
-  final String url;
+  final List<String> urls;
+
+  static const double _maxWidth = 200;
+  static const double _gap = 4;
 
   @override
   Widget build(BuildContext context) {
-    final String token = TokenCacheService().getAccessToken() ?? '';
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 200),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: ClipRRect(
-          borderRadius: AppBorderRadius.brCircular12,
-          child: AppCachedNetworkImage(
-            imageUrl: url,
-            httpHeaders: <String, String>{'Authorization': 'Bearer $token'},
+    final Map<String, String> headers = <String, String>{
+      'Authorization': 'Bearer ${TokenCacheService().getAccessToken() ?? ''}',
+    };
+    final int count = urls.length;
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        // Whole pixels, so two halves plus the gap never overshoot the row
+        // and wrap.
+        final double width = math
+            .min(_maxWidth, constraints.maxWidth)
+            .floorToDouble();
+        final double half = (width - _gap) / 2;
+        final double height = count == 1 ? width : half;
+        return SizedBox(
+          width: width,
+          child: Wrap(
+            spacing: _gap,
+            runSpacing: _gap,
+            children: [
+              for (int i = 0; i < count; i++)
+                // Held to its size: once loaded, AppCachedNetworkImage
+                // centres itself in all the width it's offered and would fill
+                // the row alone.
+                SizedBox(
+                  width: count.isOdd && i == count - 1 ? width : half,
+                  height: height,
+                  child: GestureDetector(
+                    // The loading shimmer doesn't hit-test; the whole tile
+                    // should.
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => showFullScreenNetworkImage(
+                      context,
+                      urls[i],
+                      httpHeaders: headers,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: AppBorderRadius.brCircular12,
+                      child: AppCachedNetworkImage(
+                        imageUrl: urls[i],
+                        width: count.isOdd && i == count - 1 ? width : half,
+                        height: height,
+                        httpHeaders: headers,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
