@@ -60,4 +60,64 @@ void main() {
     await tester.pump();
     expect(barTop(), 200);
   });
+
+  // A category tab with fewer stores shortens the list under the pinned bar.
+  // At the end of the page that pulls the scroll offset back without telling
+  // scroll listeners, and the bar kept the old translation: it floated down
+  // over the stores, mid-screen.
+  testWidgets('stays at pinTop when the list under it shrinks', (
+    WidgetTester tester,
+  ) async {
+    final ValueNotifier<double> list = ValueNotifier<double>(3000);
+    final ValueNotifier<double> pinTop = ValueNotifier<double>(50);
+    final ScrollController controller = ScrollController();
+    addTearDown(list.dispose);
+    addTearDown(pinTop.dispose);
+    addTearDown(controller.dispose);
+
+    // Laid out like the All stores section: the list starts under the bar,
+    // and the section is the last thing on the page.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CustomScrollView(
+          controller: controller,
+          slivers: <Widget>[
+            const SliverToBoxAdapter(child: SizedBox(height: 200)),
+            SliverToBoxAdapter(
+              child: Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: list,
+                      builder: (_, double h, _) => SizedBox(height: h),
+                    ),
+                  ),
+                  StickyOnScroll(
+                    pinTop: pinTop,
+                    background: Colors.white,
+                    child: const SizedBox(height: 40, child: Text('bar')),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    double barTop() =>
+        tester.getTopLeft(find.text('bar', skipOffstage: false)).dy;
+
+    controller.jumpTo(2300);
+    await tester.pump();
+    expect(barTop(), 50);
+
+    // The page is now 2640 tall, so the 600 tall screen can scroll to 2040.
+    list.value = 2400;
+    await tester.pump();
+    await tester.pump();
+    expect(controller.offset, 2040);
+    expect(barTop(), 50);
+  });
 }

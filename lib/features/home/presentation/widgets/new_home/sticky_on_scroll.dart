@@ -42,6 +42,7 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
   final ValueNotifier<double> _translation = ValueNotifier<double>(0);
 
   ScrollPosition? _position;
+  bool _recheckScheduled = false;
 
   @override
   void initState() {
@@ -92,6 +93,21 @@ class _StickyOnScrollState extends State<StickyOnScroll> {
     // child stays parked at [pinTop]; before it, ride along with the page.
     final double dy = (position.pixels - threshold).clamp(0.0, double.infinity);
     if (dy != _translation.value) _translation.value = dy;
+    if (dy > 0) _recheckAfterFrame();
+  }
+
+  /// While pinned, measured again after every frame. Layout can move the page
+  /// with no scroll event: a tab with fewer stores shortens the list, and at
+  /// the end of the page that pulls the scroll offset back without telling
+  /// listeners, which left the bar at the old translation, floating mid-screen
+  /// over the stores. Never asks for a frame itself.
+  void _recheckAfterFrame() {
+    if (_recheckScheduled) return;
+    _recheckScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _recheckScheduled = false;
+      if (mounted) _onScroll();
+    });
   }
 
   @override
