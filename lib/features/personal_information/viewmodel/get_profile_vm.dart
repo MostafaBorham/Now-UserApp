@@ -13,10 +13,11 @@ import 'package:nowdelivery_user_app/features/personal_information/data/repo/pro
 /// `ref.watch(getProfileProvider)` and render the [AsyncValue]; retry (e.g. the
 /// Personal Information error state) with
 /// `ref.read(getProfileProvider.notifier).getProfile()`.
-final getProfileProvider = StateNotifierProvider<GetProfileViewModel,
-    AsyncValue<PersonalInformationData>>(
-  (Ref ref) => GetProfileViewModel(),
-);
+final getProfileProvider =
+    StateNotifierProvider<
+      GetProfileViewModel,
+      AsyncValue<PersonalInformationData>
+    >((Ref ref) => GetProfileViewModel());
 
 class GetProfileViewModel
     extends StateNotifier<AsyncValue<PersonalInformationData>> {

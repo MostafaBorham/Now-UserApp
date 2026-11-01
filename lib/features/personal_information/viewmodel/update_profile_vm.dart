@@ -19,8 +19,8 @@ import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get
 /// without a refetch.
 final updateProfileProvider =
     StateNotifierProvider.autoDispose<UpdateProfileViewModel, AsyncValue<void>>(
-  (Ref ref) => UpdateProfileViewModel(ref),
-);
+      (Ref ref) => UpdateProfileViewModel(ref),
+    );
 
 class UpdateProfileViewModel extends StateNotifier<AsyncValue<void>> {
   UpdateProfileViewModel(this._ref) : super(const AsyncValue.data(null));

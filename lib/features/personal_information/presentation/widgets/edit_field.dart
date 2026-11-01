@@ -139,37 +139,36 @@ class EditField extends StatelessWidget {
         Expanded(
           child: InputDirectionBuilder(
             controller: controller,
-            builder:
-                (BuildContext context, TextDirection? typedDirection) =>
-                    TextField(
-                      contextMenuBuilder: appContextMenuBuilder,
-                      controller: controller,
-                      keyboardType: keyboardType,
-                      maxLength: maxLength,
-                      inputFormatters: inputFormatters,
-                      textDirection: textDirection ?? typedDirection,
-                      buildCounter:
-                          (
-                            BuildContext context, {
-                            required int currentLength,
-                            required int? maxLength,
-                            required bool isFocused,
-                          }) => null,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: context.colors.tertiaryContainer,
-                      ),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        hintText: hintText,
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          color: context.colors.neutral500,
-                        ),
-                      ),
+            builder: (BuildContext context, TextDirection? typedDirection) =>
+                TextField(
+                  contextMenuBuilder: appContextMenuBuilder,
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  maxLength: maxLength,
+                  inputFormatters: inputFormatters,
+                  textDirection: textDirection ?? typedDirection,
+                  buildCounter:
+                      (
+                        BuildContext context, {
+                        required int currentLength,
+                        required int? maxLength,
+                        required bool isFocused,
+                      }) => null,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: context.colors.tertiaryContainer,
+                  ),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                    border: InputBorder.none,
+                    hintText: hintText,
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      color: context.colors.neutral500,
                     ),
+                  ),
+                ),
           ),
         ),
       );

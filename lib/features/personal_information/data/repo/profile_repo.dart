@@ -40,8 +40,9 @@ class ProfileRepo {
   /// a cached profile there hides a session that has actually ended, and leaves
   /// the user looking at a record they may no longer own.
   Future<Either<Failure, PersonalInformationData>> getProfile() async {
-    final Either<Failure, Map<String, dynamic>> serverResult =
-        await _fetch(_api.getProfile);
+    final Either<Failure, Map<String, dynamic>> serverResult = await _fetch(
+      _api.getProfile,
+    );
 
     return serverResult.fold(
       (Failure serverFailure) => _isUnreachable(serverFailure)
@@ -112,10 +113,9 @@ class ProfileRepo {
 
     try {
       final Response response = await request();
-      return readApiResponse(response).map(
-        (Map<String, dynamic> body) =>
-            responseData(body),
-      );
+      return readApiResponse(
+        response,
+      ).map((Map<String, dynamic> body) => responseData(body));
     } on DioException catch (exception) {
       // No response at all comes back as `serverConnectionFailed`, the one
       // server failure that may fall back to the cache ([_isUnreachable]).
