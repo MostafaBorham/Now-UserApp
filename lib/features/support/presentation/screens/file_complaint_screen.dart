@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/formatters/free_text_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -82,6 +83,13 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
     final String description = _descriptionController.text.trim();
     if (description.isEmpty) {
       AppToast.showError(context, LangKeys.complaintDescriptionRequiredKey.tr());
+      return;
+    }
+    if (!isReadableText(description)) {
+      AppToast.showError(
+        context,
+        LangKeys.complaintDescriptionUnreadableKey.tr(),
+      );
       return;
     }
 
@@ -170,8 +178,10 @@ class _FileComplaintScreenState extends ConsumerState<FileComplaintScreen> {
                       AppDescriptionField(
                         hintTxt: LangKeys.tellUsMoreKey.tr(),
                         controller: _descriptionController,
-                        // The backend's limit for a ticket's description.
-                        maxLength: 10000,
+                        // The product's limit; the backend itself accepts up
+                        // to 10,000.
+                        maxLength: 1000,
+                        inputFormatters: freeTextInputFormatters,
                       ),
                     ],
                   ),

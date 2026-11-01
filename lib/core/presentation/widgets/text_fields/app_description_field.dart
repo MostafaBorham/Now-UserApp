@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/field_input_borders.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -11,12 +12,14 @@ class AppDescriptionField extends StatelessWidget {
     required this.hintTxt,
     this.controller,
     this.maxLength,
+    this.inputFormatters,
   });
   final String hintTxt;
   final TextEditingController? controller;
 
-  /// Stops typing at this many characters, without showing a counter.
+  /// Stops typing at this many characters and counts them underneath.
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -31,10 +34,10 @@ class AppDescriptionField extends StatelessWidget {
             controller: controller,
             maxLines: 4,
             maxLength: maxLength,
+            inputFormatters: inputFormatters,
             textDirection: typedDirection,
             style: AppTextStyles.style14Regular.copyWith(color: colors.black),
             decoration: InputDecoration(
-              counterText: '',
               filled: true,
               fillColor: colors.onPrimaryContainer,
               hintText: hintTxt,

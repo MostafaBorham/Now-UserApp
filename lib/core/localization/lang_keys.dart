@@ -304,6 +304,8 @@ abstract class LangKeys {
   static const String complaintPhotosKey = 'complaintPhotos';
   static const String complaintDescriptionRequiredKey =
       'complaintDescriptionRequired';
+  static const String complaintDescriptionUnreadableKey =
+      'complaintDescriptionUnreadable';
   static const String complaintSubmittedSuccessfullyKey =
       'complaintSubmittedSuccessfully';
   static const String complaintAlreadySubmittedKey =

@@ -76,6 +76,7 @@
   "color": "اللون",
   "complaintAlreadySubmitted": "تم تقديم شكوى لهذا الطلب",
   "complaintDescriptionRequired": "يرجى إخبارنا بالمزيد عن شكواك",
+  "complaintDescriptionUnreadable": "اكتب تفاصيل شكواك بكلمات واضحة، بدون رموز أو أحرف مكررة",
   "complaintPhotos": "صور الشكوى",
   "complaintPhotosReadFailed": "تعذّر إرفاق الصور. احذفها ثم حاول مرة أخرى.",
   "complaintSubmittedSuccessfully": "تم إرسال شكواك بنجاح",

@@ -76,6 +76,7 @@
   "color": "Color",
   "complaintAlreadySubmitted": "Complaint already submitted",
   "complaintDescriptionRequired": "Please tell us more about your complaint",
+  "complaintDescriptionUnreadable": "Describe your complaint in words, without symbols or repeated characters",
   "complaintPhotos": "Complaint Photos",
   "complaintPhotosReadFailed": "Couldn't attach your photos. Remove them and try again.",
   "complaintSubmittedSuccessfully": "Your complaint has been submitted successfully",
