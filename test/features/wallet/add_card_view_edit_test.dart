@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
 import 'package:nowdelivery_user_app/features/wallet/data/models/card_payment_model.dart';
 import 'package:nowdelivery_user_app/features/wallet/presentation/widgets/wallet/add_card_view.dart';
 
@@ -31,5 +32,31 @@ void main() {
     await pumpCategoriesWidget(tester, const AddCardView());
 
     expect(tester.widget<Checkbox>(find.byType(Checkbox)).onChanged, isNotNull);
+  });
+
+  testWidgets('the add button stays disabled until every field is valid', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(tester, const AddCardView());
+    bool disabled() => tester
+        .widget<PrimaryAppButton>(find.byType(PrimaryAppButton))
+        .isDisabled;
+    final Finder fields = find.byType(TextFormField);
+
+    expect(disabled(), isTrue);
+
+    await tester.enterText(fields.at(0), 'Jane Doe');
+    await tester.enterText(fields.at(1), '4242424242424242');
+    await tester.enterText(fields.at(2), '1240');
+    await tester.pump();
+    expect(disabled(), isTrue, reason: 'CVV still empty');
+
+    await tester.enterText(fields.at(3), '123');
+    await tester.pump();
+    expect(disabled(), isFalse);
+
+    await tester.enterText(fields.at(1), '4242424242424241'); // fails Luhn
+    await tester.pump();
+    expect(disabled(), isTrue);
   });
 }

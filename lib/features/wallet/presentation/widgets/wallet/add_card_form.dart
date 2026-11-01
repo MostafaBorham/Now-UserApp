@@ -128,6 +128,14 @@ class AddCardForm extends StatelessWidget {
     return sum % 10 == 0;
   }
 
+  /// Whether the controllers' text passes every validator, without showing any
+  /// error — the add-card sheet keeps its submit button disabled until it does.
+  bool get isComplete =>
+      _required(nameController?.text) == null &&
+      _cardNumber(numberController?.text) == null &&
+      _expiry(expiryController?.text) == null &&
+      _cvv(cvvController?.text) == null;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

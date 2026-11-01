@@ -51,6 +51,12 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
+  late final Listenable _fields = Listenable.merge(<Listenable>[
+    _nameController,
+    _numberController,
+    _expiryController,
+    _cvvController,
+  ]);
   bool _setAsDefault = false;
 
   bool get _isEditing => widget.card != null;
@@ -129,6 +135,13 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final bool isSubmitting = ref.watch(addPaymentCardProvider).isLoading;
+    final AddCardForm form = AddCardForm(
+      nameController: _nameController,
+      numberController: _numberController,
+      expiryController: _expiryController,
+      cvvController: _cvvController,
+      optionalSecrets: _isEditing,
+    );
 
     // Block dismissal while the save is in flight, so the sheet can't be closed
     // out from under a request that is about to refetch the cards list.
@@ -167,13 +180,7 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                     ),
                   ],
                 ),
-                AddCardForm(
-                  nameController: _nameController,
-                  numberController: _numberController,
-                  expiryController: _expiryController,
-                  cvvController: _cvvController,
-                  optionalSecrets: _isEditing,
-                ),
+                form,
                 // Edit mode only shows the card's state: the default is changed
                 // by tapping a card in the list, and the server refuses to
                 // leave the customer with no default anyway.
@@ -184,11 +191,16 @@ class _AddCardViewState extends ConsumerState<AddCardView> {
                       : (bool v) => setState(() => _setAsDefault = v),
                 ),
                 2.hSpace,
-                PrimaryAppButton(
-                  title: (_isEditing ? LangKeys.saveKey : LangKeys.addNewCardKey)
-                      .tr(),
-                  isLoading: isSubmitting,
-                  onTap: _submit,
+                ListenableBuilder(
+                  listenable: _fields,
+                  builder: (BuildContext context, _) => PrimaryAppButton(
+                    title:
+                        (_isEditing ? LangKeys.saveKey : LangKeys.addNewCardKey)
+                            .tr(),
+                    isLoading: isSubmitting,
+                    isDisabled: !form.isComplete,
+                    onTap: _submit,
+                  ),
                 ),
               ],
             ),
