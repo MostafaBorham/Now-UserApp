@@ -12,20 +12,14 @@ void main() {
     await SharedPrefManager.init();
   });
 
-  testWidgets('the avatar opens full screen and the close button dismisses it', (
-    WidgetTester tester,
-  ) async {
+  Future<void> pumpAvatar(WidgetTester tester, String? imageUrl) async {
     final GoRouter router = GoRouter(
       routes: <RouteBase>[
         GoRoute(
           path: '/',
           builder: (BuildContext context, _) => Scaffold(
-            body: TextButton(
-              onPressed: () => showProfileAvatarFullScreen(
-                context,
-                'https://example.com/avatar.png',
-              ),
-              child: const Text('open'),
+            body: Center(
+              child: ProfileAvatar(imageUrl: imageUrl, fullScreenOnTap: true),
             ),
           ),
         ),
@@ -38,16 +32,33 @@ void main() {
         routerConfig: router,
       ),
     );
+  }
 
-    await tester.tap(find.text('open'));
+  Future<void> tapAndSettle(WidgetTester tester, Finder finder) async {
+    await tester.tap(finder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(InteractiveViewer), findsOneWidget);
+  }
 
-    await tester.tap(find.byIcon(Icons.close));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
+  testWidgets(
+    'the avatar opens full screen and the close button dismisses it',
+    (WidgetTester tester) async {
+      await pumpAvatar(tester, 'https://example.com/avatar.png');
+
+      await tapAndSettle(tester, find.byType(ProfileAvatar));
+      expect(find.byType(InteractiveViewer), findsOneWidget);
+
+      await tapAndSettle(tester, find.byIcon(Icons.close));
+      expect(find.byType(InteractiveViewer), findsNothing);
+    },
+  );
+
+  testWidgets('the placeholder avatar does not open', (
+    WidgetTester tester,
+  ) async {
+    await pumpAvatar(tester, null);
+
+    await tapAndSettle(tester, find.byType(ProfileAvatar));
     expect(find.byType(InteractiveViewer), findsNothing);
-    expect(find.text('open'), findsOneWidget);
   });
 }

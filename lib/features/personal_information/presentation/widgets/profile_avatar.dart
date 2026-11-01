@@ -17,6 +17,9 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 /// When [showCameraOverlay] is true a translucent strip with a camera icon is
 /// drawn over the lower part of the circle (the "change photo" affordance on
 /// the edit screen), tappable via [onCameraTap].
+///
+/// When [fullScreenOnTap] is true, tapping a remote picture opens it with
+/// [showProfileAvatarFullScreen]; the placeholder stays inert.
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     super.key,
@@ -25,6 +28,7 @@ class ProfileAvatar extends StatelessWidget {
     this.imageFile,
     this.showCameraOverlay = false,
     this.onCameraTap,
+    this.fullScreenOnTap = false,
   });
 
   final double size;
@@ -32,9 +36,23 @@ class ProfileAvatar extends StatelessWidget {
   final File? imageFile;
   final bool showCameraOverlay;
   final VoidCallback? onCameraTap;
+  final bool fullScreenOnTap;
 
   @override
   Widget build(BuildContext context) {
+    final String? url = imageUrl;
+    if (fullScreenOnTap && imageFile == null && url != null && url.isNotEmpty) {
+      return GestureDetector(
+        // The loading shimmer doesn't hit-test; the whole circle should.
+        behavior: HitTestBehavior.opaque,
+        onTap: () => showProfileAvatarFullScreen(context, url),
+        child: _avatar(context),
+      );
+    }
+    return _avatar(context);
+  }
+
+  Widget _avatar(BuildContext context) {
     return SizedBox(
       width: size,
       height: size,
