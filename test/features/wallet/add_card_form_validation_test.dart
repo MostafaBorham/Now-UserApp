@@ -204,6 +204,22 @@ void main() {
     expect(find.text('invalidExpiryDate'), findsOneWidget);
   });
 
+  testWidgets('an expiry more than 30 years away is invalid', (tester) async {
+    await pumpForm(tester);
+    final int yy = (DateTime.now().year + 30) % 100;
+    name.text = 'Jane Doe';
+    number.text = '4242424242424242';
+    cvv.text = '123';
+
+    expiry.text = '12/$yy';
+    expect(formKey.currentState!.validate(), isTrue);
+
+    expiry.text = '01/${yy + 1}';
+    expect(formKey.currentState!.validate(), isFalse);
+    await tester.pump();
+    expect(find.text('invalidExpiryDate'), findsOneWidget);
+  });
+
   testWidgets('a too-short CVV is rejected', (tester) async {
     await pumpForm(tester);
     name.text = 'Jane Doe';

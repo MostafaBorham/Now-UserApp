@@ -69,8 +69,12 @@ class AddCardForm extends StatelessWidget {
     return null;
   }
 
-  /// Expiry: present, an MM/YY with a real month, and not already past (a card
-  /// is valid through the last day of its expiry month).
+  /// No card is issued for longer than this, so a later expiry is a typo.
+  static const int _maxYearsAhead = 30;
+
+  /// Expiry: present, an MM/YY with a real month, not already past (a card
+  /// is valid through the last day of its expiry month) and at most
+  /// [_maxYearsAhead] years away.
   String? _expiry(String? value) {
     final String text = (value ?? '').trim();
     if (text.isEmpty) return LangKeys.requiredFieldKey.tr();
@@ -84,6 +88,9 @@ class AddCardForm extends StatelessWidget {
     if (month < 1 || month > 12) return LangKeys.invalidExpiryDateKey.tr();
 
     final DateTime now = DateTime.now();
+    if (year > now.year + _maxYearsAhead) {
+      return LangKeys.invalidExpiryDateKey.tr();
+    }
     // Day 0 of the next month is the last day of the expiry month.
     final DateTime endOfExpiryMonth = DateTime(year, month + 1, 0);
     if (endOfExpiryMonth.isBefore(DateTime(now.year, now.month, now.day))) {
