@@ -11,17 +11,22 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_a
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_rating_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/rate_order_request_model.dart';
+import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating/rating_comment_field.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating_section.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/rate_order_vm.dart';
 
 /// Why the rating can't be sent yet, as a [LangKeys] key — or null when it can.
 ///
-/// Every target is optional, but at least one needs stars. A comment needs its
-/// own target's stars: the backend takes no comment without a `rate`, so one
-/// left on an unstarred target would be dropped without a word.
+/// Every target is optional, but at least one needs stars. A comment must read
+/// as words ([RatingCommentField.isReadable]) and needs its own target's
+/// stars: the backend takes no comment without a `rate`, so one left on an
+/// unstarred target would be dropped without a word.
 ///
 /// [targets] are the rows on screen, each with its stars and comment.
 String? ratingSubmitBlocker(List<({int rating, String comment})> targets) {
+  if (!targets.every((t) => RatingCommentField.isReadable(t.comment))) {
+    return LangKeys.ratingCommentUnreadableKey;
+  }
   if (targets.any((t) => t.rating < 1 && t.comment.trim().isNotEmpty)) {
     return LangKeys.ratingCommentNeedsStarsKey;
   }

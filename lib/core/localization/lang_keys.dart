@@ -322,6 +322,7 @@ abstract class LangKeys {
   static const String thanksForRatingKey = 'thanksForRating';
   static const String ratingRequiredKey = 'ratingRequired';
   static const String ratingCommentNeedsStarsKey = 'ratingCommentNeedsStars';
+  static const String ratingCommentUnreadableKey = 'ratingCommentUnreadable';
 
   // Errors & states
   static const String noItemsYetKey = 'noItemsYet';

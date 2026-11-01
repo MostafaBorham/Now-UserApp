@@ -318,6 +318,7 @@
   "rateOrder": "تقيّم الطلب",
   "rateProducts": "تقييم المنتجات",
   "ratingCommentNeedsStars": "أضف تقييمًا بالنجوم للعناصر التي علّقت عليها",
+  "ratingCommentUnreadable": "اكتب تعليقاتك بكلمات واضحة، بدون رموز أو أحرف مكررة",
   "ratingRequired": "من فضلك قيّم عنصرًا واحدًا على الأقل قبل الإرسال",
   "ratings": "التقييمات",
   "readRecentSearchesFailed": "فشل تحميل عمليات البحث الأخيرة، يرجى المحاولة مرة أخرى.",

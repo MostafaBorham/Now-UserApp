@@ -315,6 +315,7 @@
   "rateOrder": "Rate order",
   "rateProducts": "Rate Products",
   "ratingCommentNeedsStars": "Add stars to the items you commented on",
+  "ratingCommentUnreadable": "Write your comments in words, without symbols or repeated characters",
   "ratingRequired": "Please rate at least one item before submitting",
   "ratings": "Ratings",
   "readRecentSearchesFailed": "Failed to load recent searches, please try again.",
