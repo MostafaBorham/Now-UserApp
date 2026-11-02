@@ -305,6 +305,9 @@ class HomeOfferModel extends Equatable {
   final String? productSlug;
   final String? categorySlug;
 
+  /// The web address an `external` offer opens in the browser.
+  final String? url;
+
   const HomeOfferModel({
     this.title,
     this.imageUrl,
@@ -312,6 +315,7 @@ class HomeOfferModel extends Equatable {
     this.storeId,
     this.productSlug,
     this.categorySlug,
+    this.url,
   });
 
   factory HomeOfferModel.fromJson(Map<String, dynamic> json) {
@@ -335,6 +339,7 @@ class HomeOfferModel extends Equatable {
       categorySlug:
           link['category_slug']?.toString() ??
           (category is String ? category : null),
+      url: link['url']?.toString(),
     );
   }
 
@@ -346,5 +351,6 @@ class HomeOfferModel extends Equatable {
     storeId,
     productSlug,
     categorySlug,
+    url,
   ];
 }

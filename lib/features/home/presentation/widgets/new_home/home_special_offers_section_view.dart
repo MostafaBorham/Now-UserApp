@@ -10,6 +10,7 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/core/utils/web_link_launcher.dart';
 import 'package:nowdelivery_user_app/features/home/data/models/home_section_model.dart';
 import 'package:nowdelivery_user_app/features/home/presentation/widgets/new_home/home_top_banner_section_view.dart';
 
@@ -115,8 +116,9 @@ class HomeSpecialOffersSectionView extends StatelessWidget {
 }
 
 /// Routes an offer tap by its `kind`. `store` opens store details by id;
-/// `product` and `category` open their details screen by slug. Any other
-/// kind — or a missing target — is inert.
+/// `product` and `category` open their details screen by slug; `external`
+/// opens its web address in the browser. Any other kind — or a missing
+/// target — is inert.
 void _onOfferTap(BuildContext context, HomeOfferModel offer) {
   switch (offer.kind) {
     case 'store':
@@ -143,6 +145,9 @@ void _onOfferTap(BuildContext context, HomeOfferModel offer) {
           pathParameters: <String, String>{'slug': categorySlug},
         );
       }
+      break;
+    case 'external':
+      launchWebLink(offer.url);
       break;
   }
 }
