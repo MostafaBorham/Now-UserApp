@@ -11,6 +11,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indic
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/invoice_breakdown.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/utils/phone_launcher.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
@@ -24,6 +25,7 @@ import '../components/delivery_details_section.dart';
 import '../components/item_information_section.dart';
 import '../components/order_timeline_section.dart';
 import '../components/track_order_number_header.dart';
+import '../components/tracking_section_card.dart';
 
 /// Track Order screen: order summary, item & delivery details, the courier
 /// contact card and the live delivery timeline, with a cancel action.
@@ -109,7 +111,29 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
                       store: store,
                       itemsCount: order.itemsQuantity,
                       paymentMethod: order.paymentMethodLabel,
-                      amount: formatMoney(order.totalWithTip),
+                    ),
+                    // Same breakdown as Order Details; the tip stays out of
+                    // the invoice.
+                    TrackingSectionCard(
+                      title: LangKeys.invoiceSummaryKey.tr(),
+                      children: [
+                        InvoiceBreakdown(
+                          subtotal: order.subtotal,
+                          tax: order.tax,
+                          deliveryFee: order.deliveryFee,
+                          total: order.invoiceTotal,
+                          discounts: <(String, double)>[
+                            (
+                              LangKeys.discountLabelKey.tr(),
+                              order.couponDiscount,
+                            ),
+                            (
+                              '${LangKeys.purchaseVoucherKey.tr()} (${order.voucherCode ?? ''})',
+                              order.voucherDiscount,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     // The card shows once a courier is assigned — which can be
                     // well before the order leaves the store — for as long as

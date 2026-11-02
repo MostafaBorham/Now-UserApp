@@ -263,7 +263,6 @@ abstract class LangKeys {
   static const String storeUnavailableKey = 'storeUnavailable';
   static const String numberOfItemsKey = 'numberOfItems';
   static const String paymentKey = 'payment';
-  static const String payKey = 'pay';
   static const String courierKey = 'courier';
   static const String estimatedDeliveryTimeKey = 'estimatedDeliveryTime';
   static const String orderAcceptedKey = 'orderAccepted';

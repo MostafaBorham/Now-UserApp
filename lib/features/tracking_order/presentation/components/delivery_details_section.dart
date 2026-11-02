@@ -1,14 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 
 import 'labeled_detail_row.dart';
 import 'tracking_section_card.dart';
 
 /// "Delivery Details" section: receiver, address, contact, store, item count,
-/// the chosen payment method and the amount to pay.
+/// and the chosen payment method. The amounts sit in the invoice card below.
 class DeliveryDetailsSection extends StatelessWidget {
   const DeliveryDetailsSection({
     super.key,
@@ -18,7 +16,6 @@ class DeliveryDetailsSection extends StatelessWidget {
     required this.store,
     required this.itemsCount,
     required this.paymentMethod,
-    required this.amount,
   });
 
   final String receiver;
@@ -27,11 +24,9 @@ class DeliveryDetailsSection extends StatelessWidget {
   final String store;
   final int itemsCount;
   final String paymentMethod;
-  final String amount;
 
   @override
   Widget build(BuildContext context) {
-    final AppColorScheme colors = context.colors;
     return TrackingSectionCard(
       title: LangKeys.deliveryDetailsKey.tr(),
       children: [
@@ -49,15 +44,6 @@ class DeliveryDetailsSection extends StatelessWidget {
             LabeledDetailRow(
               label: LangKeys.paymentKey.tr(),
               value: paymentMethod,
-            ),
-            LabeledDetailRow(
-              label: LangKeys.payKey.tr(),
-              trailing: NewPriceWidget(
-                color: colors.black,
-                size: 14,
-                fontWeight: FontWeight.w600,
-                price: amount,
-              ),
             ),
           ],
         ),
