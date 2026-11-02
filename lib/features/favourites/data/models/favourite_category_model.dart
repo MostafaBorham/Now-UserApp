@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nowdelivery_user_app/core/extensions/json_parsing.dart';
 
 /// A single category chip on the favourites screen, from
 /// `GET /api/v1/favorites/categories`.
@@ -21,7 +22,7 @@ class FavouriteCategoryModel extends Equatable {
   factory FavouriteCategoryModel.fromJson(Map<String, dynamic> json) {
     return FavouriteCategoryModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
-      name: json['name'] as Map<String, dynamic>?,
+      name: json.localizedLabel('name'),
       favoritablesCount: (json['favoritables_count'] as num?)?.toInt() ?? 0,
     );
   }

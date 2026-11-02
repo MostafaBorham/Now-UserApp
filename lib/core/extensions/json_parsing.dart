@@ -15,6 +15,16 @@ extension JsonParsing on Map<String, dynamic> {
         : value as Map<String, dynamic>?;
   }
 
+  /// [localized], for text shown on one line (a category name): any run of
+  /// whitespace becomes a single space. Admin text pasted from a document can
+  /// carry a line separator (U+2028), which split a store-page chip in two.
+  Map<String, dynamic>? localizedLabel(String key) => localized(key)?.map(
+    (String locale, dynamic text) => MapEntry(
+      locale,
+      text is String ? text.replaceAll(RegExp(r'\s+'), ' ').trim() : text,
+    ),
+  );
+
   /// A colour at [key], sent as a `#RRGGBB` (or `#AARRGGBB`) hex string — the
   /// home feed themes its sections this way. Null when absent or malformed, so
   /// callers fall back to a theme colour instead of rendering a broken one.

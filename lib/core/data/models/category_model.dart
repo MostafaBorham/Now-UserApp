@@ -67,7 +67,7 @@ class CategoryModel extends Equatable {
 
     return CategoryModel(
       id: (json['id'] as num?)?.toInt(),
-      name: json.localized('name'),
+      name: json.localizedLabel('name'),
       description: json['description']?.toString(),
       slug: json['slug']?.toString(),
       parentId: (json['parent_id'] as num?)?.toInt(),

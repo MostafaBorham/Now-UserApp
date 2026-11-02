@@ -24,6 +24,20 @@ void main() {
       expect(model.name, {'ar': 'طعام', 'en': 'Food'});
     });
 
+    test('a line separator in the name becomes a space', () {
+      // Category 14 on staging: one chip on the store page broke in two.
+      final model = CategoryModel.fromJson({
+        'name': {
+          'ar': 'العناية بالأم\u2028و الطفل',
+          'en': ' Mother\nand  Baby ',
+        },
+      });
+      expect(model.name, {
+        'ar': 'العناية بالأم و الطفل',
+        'en': 'Mother and Baby',
+      });
+    });
+
     test('image is read from the nested download_url', () {
       final model = CategoryModel.fromJson({
         'image': {'download_url': 'https://cdn/x.png'},
