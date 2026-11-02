@@ -470,8 +470,9 @@ class _EditInformationScreenState extends ConsumerState<EditInformationScreen> {
                         activeColor: context.colors.primary500Main,
                         activeFontColor: context.colors.white,
                         inactiveFontColor: context.colors.tertiaryContainer,
-                        onTaptab: (currentTab) =>
-                            _gender = currentTab == 1 ? 'female' : 'male',
+                        onTaptab: (currentTab) => setState(
+                          () => _gender = currentTab == 1 ? 'female' : 'male',
+                        ),
                         radius: 100,
                         tapRadius: 100,
                       ),

@@ -69,6 +69,17 @@ void main() {
     await tester.pump();
     ignoreOverflow(tester);
     expect(saveDisabled(), isTrue);
+
+    // The gender toggle isn't a text field; it has to rebuild the form too.
+    await tester.tap(find.text(LangKeys.maleKey));
+    await tester.pump();
+    ignoreOverflow(tester);
+    expect(saveDisabled(), isFalse);
+
+    await tester.tap(find.text(LangKeys.femaleKey));
+    await tester.pump();
+    ignoreOverflow(tester);
+    expect(saveDisabled(), isTrue);
   });
 
   testWidgets('rating: Submit waits for the first star', (
