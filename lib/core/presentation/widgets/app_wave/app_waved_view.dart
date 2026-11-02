@@ -18,6 +18,7 @@ class AppWavedView extends StatelessWidget {
     super.key,
     required this.body,
     required this.appBarTitle,
+    this.titleBadge,
     this.loadAppBarTitle = false,
     this.hasCartIcon = false,
     this.hasSupportIcon = false,
@@ -32,6 +33,9 @@ class AppWavedView extends StatelessWidget {
     this.flattenOnScroll = false,
   });
   final String appBarTitle;
+
+  /// Shown after the title, centred with it (e.g. a store's status pill).
+  final Widget? titleBadge;
   final bool loadAppBarTitle;
   final bool hasCartIcon;
   final bool hasSupportIcon;
@@ -130,6 +134,16 @@ class AppWavedView extends StatelessWidget {
           )
         : const SizedBox.shrink();
 
+    final Widget title = Text(
+      appBarTitle,
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.visible,
+      style: AppTextStyles.style24SemiBold.copyWith(
+        color: colors.black,
+        fontSize: screenSize.width * 0.05,
+      ),
+    );
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 5),
@@ -183,14 +197,15 @@ class AppWavedView extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : Text(
-                              appBarTitle,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.visible,
-                              style: AppTextStyles.style24SemiBold.copyWith(
-                                color: colors.black,
-                                fontSize: screenSize.width * 0.05,
-                              ),
+                          : titleBadge == null
+                          ? title
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 8,
+                              children: [
+                                Flexible(child: title),
+                                titleBadge!,
+                              ],
                             ),
                     ),
                   ),

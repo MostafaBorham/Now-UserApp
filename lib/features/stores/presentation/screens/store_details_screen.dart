@@ -20,6 +20,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circul
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/pagination/pagination_scroll_listener.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_status_badge.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_details/store_category_circles_list.dart';
@@ -93,8 +94,9 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
     final AsyncValue<StoreModel> storeDetailsState = ref.watch(
       getStoreDetailsProvider(storeId),
     );
+    final StoreModel? loadedStore = storeDetailsState.valueOrNull;
     final Map<String, dynamic>? displayName =
-        storeDetailsState.valueOrNull?.name ?? widget.storeName;
+        loadedStore?.name ?? widget.storeName;
     return Scaffold(
       body: AppWavedView(
         scrollController: _scrollController,
@@ -252,6 +254,12 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
         appBarTitle: displayName == null
             ? LangKeys.storeKey.tr()
             : context.getLocalizedApiText(displayName),
+        // Only a closed or busy store gets a pill, so an open store's name
+        // stays centred on its own.
+        titleBadge:
+            loadedStore != null && (loadedStore.isClosed || loadedStore.isBusy)
+            ? StoreStatusBadge(store: loadedStore)
+            : null,
         hasCartIcon: true,
         actions: [
           storeDetailsState.when(

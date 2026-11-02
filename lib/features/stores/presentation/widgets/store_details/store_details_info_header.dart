@@ -9,7 +9,6 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/stores/store_status_badge.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/providers/store_details/store_model_provider.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/widgets/store_info_row.dart';
 
@@ -44,30 +43,21 @@ class StoreDetailsInfoHeader extends ConsumerWidget {
                   height: double.infinity,
                 ),
               ),
-              // The status pill sits just above the logo; an open store's pill
-              // is empty, so the logo stays where it always was.
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 6,
-                children: [
-                  StoreStatusBadge(store: store),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: colors.white,
-                      border: Border.all(color: colors.neutral200),
-                    ),
-                    // Fills the circle: at 1.9 × contain a solid-background
-                    // logo showed as a rounded square inside it (BUG-025).
-                    child: CircularBrandLogo(
-                      radius: 35,
-                      logoScale: 2,
-                      fit: BoxFit.cover,
-                      logoUrl: store.logoUrl ?? '',
-                    ),
-                  ),
-                ],
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colors.white,
+                  border: Border.all(color: colors.neutral200),
+                ),
+                // Fills the circle: at 1.9 × contain a solid-background logo
+                // showed as a rounded square inside it (BUG-025).
+                child: CircularBrandLogo(
+                  radius: 35,
+                  logoScale: 2,
+                  fit: BoxFit.cover,
+                  logoUrl: store.logoUrl ?? '',
+                ),
               ),
             ],
           ),
