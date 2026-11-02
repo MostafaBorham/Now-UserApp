@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/enums/wallet_transaction_status.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
@@ -47,9 +49,20 @@ class WalletHistoryItem extends StatelessWidget {
     final String lastFour = transaction.paymentCard?.lastFour ?? '';
     if (lastFour.isEmpty) return '';
     final String? brand = displayCardBrand(transaction.paymentCard?.brand);
-    final String holder = (transaction.paymentCard?.cardholderName ?? '').trim();
+    final String holder = (transaction.paymentCard?.cardholderName ?? '')
+        .trim();
     return '${brand == null ? '' : '$brand '}•••• $lastFour'
         '${holder.isEmpty ? '' : ' · $holder'}';
+  }
+
+  /// The order this row is about, or null. Refunds and returns point at their
+  /// order. A wallet payment points at its checkout's order group, whose uuid
+  /// and `GRP-` number the customer never sees, until the backend sends the
+  /// group's only order instead (semi-final §8).
+  WalletTransactionReference? get _order {
+    final WalletTransactionReference? reference = transaction.reference;
+    final String uuid = reference?.uuid ?? '';
+    return reference?.type == 'order' && uuid.isNotEmpty ? reference : null;
   }
 
   @override
@@ -59,6 +72,8 @@ class WalletHistoryItem extends StatelessWidget {
     final String logoUrl = merchant?.logoUrl ?? '';
     final String title = _rowTitle(context);
     final String card = _cardLabel();
+    final WalletTransactionReference? order = _order;
+    final String orderNumber = order?.number ?? '';
     // The status drives the chip's colors and the amount color, mapped through
     // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
     final WalletTransactionStatus status = transaction.status;
@@ -87,112 +102,136 @@ class WalletHistoryItem extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, con) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-          decoration: BoxDecoration(
-            color: colors.neutral500.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(con.maxWidth * 0.1),
-          ),
-          child: Row(
-            spacing: 15,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Merchant logo + name — the name wraps onto new lines and is
-              // never truncated, taking whatever width the status chip and
-              // amount leave behind.
-              Expanded(
-                child: Row(
-                  spacing: 12,
-                  children: [
-                    CircularBrandLogo(
-                      radius: con.maxWidth * 0.07,
-                      logoUrl: logoUrl,
-                      backgroundColor: colors.white,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            softWrap: true,
-                            // The shared text style bakes in `overflow:
-                            // ellipsis`; override it so the merchant name wraps
-                            // in full instead of being truncated.
-                            overflow: TextOverflow.visible,
-                            style: AppTextStyles.style14SemiBold.copyWith(
-                              color: colors.black,
-                              fontSize: con.maxWidth * 0.04,
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                          // Which card paid a top-up (BUG-013, QA V2), digits
-                          // left-to-right in Arabic too.
-                          if (card.isNotEmpty)
+        // An order row opens that order; any other row ignores taps.
+        return GestureDetector(
+          onTap: order == null
+              ? null
+              : () => context.pushNamed(
+                  AppRoutes.orderDetailsScreen,
+                  extra: order.uuid,
+                ),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+            decoration: BoxDecoration(
+              color: colors.neutral500.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(con.maxWidth * 0.1),
+            ),
+            child: Row(
+              spacing: 15,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Merchant logo + name — the name wraps onto new lines and is
+                // never truncated, taking whatever width the status chip and
+                // amount leave behind.
+                Expanded(
+                  child: Row(
+                    spacing: 12,
+                    children: [
+                      CircularBrandLogo(
+                        radius: con.maxWidth * 0.07,
+                        logoUrl: logoUrl,
+                        backgroundColor: colors.white,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              card,
-                              textDirection: TextDirection.ltr,
-                              style: AppTextStyles.style12Regular.copyWith(
-                                color: colors.onPrimaryFixed.withValues(
-                                  alpha: 0.7,
-                                ),
-                                fontSize: con.maxWidth * 0.03,
-                              ),
-                            ),
-                          // The date sits under the merchant name; hidden when
-                          // the server omits it, and shown in full (no ellipsis)
-                          // just like the merchant name.
-                          if (date.isNotEmpty)
-                            Text(
-                              date,
+                              title,
                               softWrap: true,
+                              // The shared text style bakes in `overflow:
+                              // ellipsis`; override it so the merchant name wraps
+                              // in full instead of being truncated.
                               overflow: TextOverflow.visible,
-                              style: AppTextStyles.style12Regular.copyWith(
-                                color: colors.onPrimaryFixed.withValues(
-                                  alpha: 0.7,
-                                ),
-                                fontSize: con.maxWidth * 0.03,
+                              style: AppTextStyles.style14SemiBold.copyWith(
+                                color: colors.black,
+                                fontSize: con.maxWidth * 0.04,
                                 overflow: TextOverflow.visible,
                               ),
                             ),
-                        ],
+                            // The order's number, in full like the name, so it
+                            // matches the one in My Orders.
+                            if (orderNumber.isNotEmpty)
+                              Text(
+                                orderNumber,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                style: AppTextStyles.style12Regular.copyWith(
+                                  color: colors.onPrimaryFixed.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                  fontSize: con.maxWidth * 0.03,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
+                            // Which card paid a top-up (BUG-013, QA V2), digits
+                            // left-to-right in Arabic too.
+                            if (card.isNotEmpty)
+                              Text(
+                                card,
+                                textDirection: TextDirection.ltr,
+                                style: AppTextStyles.style12Regular.copyWith(
+                                  color: colors.onPrimaryFixed.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                  fontSize: con.maxWidth * 0.03,
+                                ),
+                              ),
+                            // The date sits under the merchant name; hidden when
+                            // the server omits it, and shown in full (no ellipsis)
+                            // just like the merchant name.
+                            if (date.isNotEmpty)
+                              Text(
+                                date,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                style: AppTextStyles.style12Regular.copyWith(
+                                  color: colors.onPrimaryFixed.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                  fontSize: con.maxWidth * 0.03,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Status chip — hugs its text, but never grows past a capped
+                // width; a longer status is scaled down to fit inside that cap.
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: con.maxWidth * 0.3),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: status.statusColor(colors),
+                      borderRadius: AppBorderRadius.brCircular30,
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        statusLabel,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.style12Medium.copyWith(
+                          color: status.statusTextColor(colors),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              // Status chip — hugs its text, but never grows past a capped
-              // width; a longer status is scaled down to fit inside that cap.
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: con.maxWidth * 0.3),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: status.statusColor(colors),
-                    borderRadius: AppBorderRadius.brCircular30,
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      statusLabel,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.style12Medium.copyWith(
-                        color: status.statusTextColor(colors),
-                      ),
-                    ),
                   ),
                 ),
-              ),
 
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: NewPriceWidget(
-                  color: status.priceColor(colors),
-                  price: price,
-                  size: con.maxWidth * 0.04,
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: NewPriceWidget(
+                    color: status.priceColor(colors),
+                    price: price,
+                    size: con.maxWidth * 0.04,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
