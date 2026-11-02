@@ -14,6 +14,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/wave_pinned_header_sliver.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
@@ -210,28 +211,26 @@ class _StoreDetailsScreenState extends ConsumerState<StoreDetailsScreen> {
                             ],
                           ),
                         ),
-                        // The tab row stays at the top while the products
-                        // scroll under it, so it must be opaque.
-                        PinnedHeaderSliver(
-                          child: ColoredBox(
-                            color: colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                              child: CustomButtonTabBar(
-                                tabs: ProductFilters.values
-                                    .map(
-                                      (ProductFilters filter) => filter.label,
-                                    )
-                                    .toList(),
-                                selectedIndex: _filter.index,
-                                onTap: (int index) => setState(
-                                  () => _filter = ProductFilters.values[index],
-                                ),
-                                unSelectedTabColor: colors.neutral400
-                                    .withValues(alpha: 0.2),
-                                selectedLabelColor: colors.white,
-                                unSelectedLabelColor: colors.black,
+                        // The tab row stays just below the wave while the
+                        // products scroll under it; at the viewport top the
+                        // wave covered half of it.
+                        WavePinnedHeaderSliver(
+                          color: colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            child: CustomButtonTabBar(
+                              tabs: ProductFilters.values
+                                  .map((ProductFilters filter) => filter.label)
+                                  .toList(),
+                              selectedIndex: _filter.index,
+                              onTap: (int index) => setState(
+                                () => _filter = ProductFilters.values[index],
                               ),
+                              unSelectedTabColor: colors.neutral400.withValues(
+                                alpha: 0.2,
+                              ),
+                              selectedLabelColor: colors.white,
+                              unSelectedLabelColor: colors.black,
                             ),
                           ),
                         ),

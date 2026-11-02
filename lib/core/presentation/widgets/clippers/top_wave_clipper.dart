@@ -19,6 +19,10 @@ class TopWaveClipper extends CustomClipper<Path> {
   /// Artboard width the wave coordinates were authored against.
   static const double _designWidth = 402.29;
 
+  /// How far the unflattened wave reaches into a [width]-wide body: its
+  /// lowest point, the start of the path at the left edge.
+  static double depthFor(double width) => 40 * width / _designWidth;
+
   @override
   Path getClip(Size size) {
     final double s = size.width / _designWidth;

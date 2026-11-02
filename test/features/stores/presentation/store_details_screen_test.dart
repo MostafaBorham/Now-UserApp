@@ -8,6 +8,7 @@ import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/errors/failures/failure.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/clippers/top_wave_clipper.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/tab_bars/custom_button_tab_bar.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_store_category_products_vm.dart';
@@ -127,10 +128,12 @@ void main() {
     final _FakeProducts products = await pumpStore(tester, 40);
     expect(products.pages, <int>[1]);
 
+    // Pinned below the wave, not at the scroll view's top under it.
     await scrollTo(tester, 800);
+    final Rect page = tester.getRect(find.byType(CustomScrollView));
     expect(
       tester.getTopLeft(find.byType(CustomButtonTabBar)).dy,
-      moreOrLessEquals(tester.getTopLeft(find.byType(CustomScrollView)).dy),
+      moreOrLessEquals(page.top + TopWaveClipper.depthFor(page.width)),
     );
 
     await scrollTo(tester, pagePosition(tester).maxScrollExtent);
