@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:nowdelivery_user_app/core/dio/deduping_dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/dio/request_canceller.dart';
 import 'package:nowdelivery_user_app/features/checkout/data/datasources/remote/api/checkout_endpoints.dart';
@@ -21,6 +22,9 @@ class CheckoutApiService {
 
   /// Prices the checkout of [vendorId] (`null` = the whole cart) with the
   /// choices in [body] (see [CheckoutEndpoints.pricingBody]).
+  ///
+  /// A read sent as a `POST`, so it is marked as one: reopening checkout fast
+  /// spent the `checkout` rate limit that placing the order shares.
   Future<Response> preview({
     int? vendorId,
     Map<String, dynamic> body = const <String, dynamic>{},
@@ -29,6 +33,9 @@ class CheckoutApiService {
       CheckoutEndpoints.preview(vendorId),
       data: body,
       cancelToken: _canceller.token,
+      options: Options(
+        extra: const <String, dynamic>{DedupingDio.readOnlyFlag: true},
+      ),
     );
   }
 

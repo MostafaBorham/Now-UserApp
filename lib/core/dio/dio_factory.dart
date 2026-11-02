@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:nowdelivery_user_app/core/dio/deduping_dio.dart';
 import 'package:nowdelivery_user_app/core/dio/dio_constants.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/auth_token_interceptor.dart';
 import 'package:nowdelivery_user_app/core/dio/interceptors/chucker_interceptor.dart';
@@ -11,7 +12,7 @@ class DioFactory {
 
 
 
-  static final Dio _dio = _createAndConfigureDio();
+  static final DedupingDio _dio = _createAndConfigureDio();
 
 
 
@@ -28,8 +29,12 @@ class DioFactory {
 
   static Dio getPlacesDio() => _placesDio;
 
-  static Dio _createAndConfigureDio() {
-    final Dio dio = Dio(
+  /// A pull-to-refresh wants what the server has now, not a read answered a
+  /// moment ago, so it drops those first (see `AppRefreshIndicator`).
+  static void forgetRecentReads() => _dio.forgetAnswers();
+
+  static DedupingDio _createAndConfigureDio() {
+    final DedupingDio dio = DedupingDio(
       BaseOptions(
         baseUrl: DioConstants.baseUrl,
         connectTimeout: DioConstants.timeout,

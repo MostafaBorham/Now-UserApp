@@ -1,7 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/dio/deduping_dio.dart';
+import 'package:nowdelivery_user_app/core/dio/dio_factory.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 
-class AppRefreshIndicator extends StatelessWidget {
+/// The app's pull-to-refresh.
+///
+/// A pull always reaches the server: reads answered from memory a moment ago
+/// (see [DedupingDio]) are forgotten first. Once a refresh ends, pulling does
+/// nothing — no spinner — for [DedupingDio.reuseWindow], so dragging again and
+/// again can't push the screen's reads into the server's rate limit.
+class AppRefreshIndicator extends StatefulWidget {
   const AppRefreshIndicator({
     super.key,
     required this.child,
@@ -20,15 +30,44 @@ class AppRefreshIndicator extends StatelessWidget {
   final ScrollNotificationPredicate? notificationPredicate;
 
   @override
+  State<AppRefreshIndicator> createState() => _AppRefreshIndicatorState();
+}
+
+class _AppRefreshIndicatorState extends State<AppRefreshIndicator> {
+  /// Runs for [DedupingDio.reuseWindow] after a refresh ends; pulls are
+  /// ignored while it does.
+  Timer? _cooldown;
+
+  @override
+  void dispose() {
+    _cooldown?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    DioFactory.forgetRecentReads();
+    try {
+      await widget.onRefresh();
+    } finally {
+      if (mounted) _cooldown = Timer(DedupingDio.reuseWindow, () {});
+    }
+  }
+
+  bool _acceptsPull(ScrollNotification notification) =>
+      !(_cooldown?.isActive ?? false) &&
+      (widget.notificationPredicate ?? defaultScrollNotificationPredicate)(
+        notification,
+      );
+
+  @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: _refresh,
       color: colors.primary500Main,
       backgroundColor: colors.white,
-      notificationPredicate:
-          notificationPredicate ?? defaultScrollNotificationPredicate,
-      child: child,
+      notificationPredicate: _acceptsPull,
+      child: widget.child,
     );
   }
 }

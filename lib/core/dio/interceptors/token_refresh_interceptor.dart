@@ -40,7 +40,7 @@ enum _RefreshOutcome {
 ///    `401` is surfaced on the request that triggered it.
 ///
 /// Two guards keep this from misbehaving under load:
-/// * [_retriedFlag] — a replayed request that `401`s again is not refreshed a
+/// * [retriedFlag] — a replayed request that `401`s again is not refreshed a
 ///   second time (no infinite loop).
 /// * [_refreshGate] — concurrent `401`s share the single in-flight refresh
 ///   instead of each spending the (single-use) refresh token; a straggler that
@@ -83,7 +83,7 @@ class TokenRefreshInterceptor extends Interceptor {
 
   /// Marks a request that has already been replayed once, so a second `401`
   /// fails instead of looping forever.
-  static const String _retriedFlag = 'token_refresh_retried';
+  static const String retriedFlag = 'token_refresh_retried';
 
   /// Bare Dio dedicated to the refresh call: no auth interceptor (it must carry
   /// the refresh token, not the access token) and no refresh interceptor (it
@@ -125,7 +125,7 @@ class TokenRefreshInterceptor extends Interceptor {
     // again is passed straight through (the refresh call itself runs on a
     // separate Dio, so its `401` never reaches here).
     if (err.response?.statusCode != 401 ||
-        request.extra[_retriedFlag] == true) {
+        request.extra[retriedFlag] == true) {
       return handler.next(err);
     }
 
@@ -265,7 +265,7 @@ class TokenRefreshInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
     DioException originalError,
   ) async {
-    request.extra[_retriedFlag] = true;
+    request.extra[retriedFlag] = true;
     // AuthTokenInterceptor re-attaches the header on replay; set it here too so
     // the token is correct even without that interceptor in the chain.
     request.headers['Authorization'] =
