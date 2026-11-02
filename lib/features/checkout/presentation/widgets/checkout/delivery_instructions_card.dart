@@ -12,8 +12,12 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_c
 /// the parent owns the [controller] so it can read that value on confirm.
 ///
 /// The field starts three lines tall on its own white box, so it reads as a
-/// place to write (BUG-043), and grows to five lines before it scrolls.
+/// place to write (BUG-043), and grows to five lines before it scrolls. It
+/// takes at most [maxLength] characters and counts them underneath.
 class DeliveryInstructionsCard extends StatelessWidget {
+  /// The product's limit; the backend itself accepts up to 500.
+  static const int maxLength = 250;
+
   const DeliveryInstructionsCard({super.key, required this.controller});
 
   final TextEditingController controller;
@@ -54,6 +58,7 @@ class DeliveryInstructionsCard extends StatelessWidget {
                   TextField(
                     contextMenuBuilder: appContextMenuBuilder,
                     controller: controller,
+                    maxLength: maxLength,
                     minLines: 3,
                     maxLines: 5,
                     keyboardType: TextInputType.multiline,
