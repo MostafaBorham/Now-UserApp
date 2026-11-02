@@ -43,6 +43,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/screens/prod
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
+import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
@@ -494,7 +495,9 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.supportFaqsScreen,
         path: '/${AppRoutes.supportFaqsScreen}',
-        builder: (context, state) => const SupportFaqsScreen(),
+        builder: (context, state) => SupportFaqsScreen(
+          faqs: state.extra as List<FaqModel>? ?? const <FaqModel>[],
+        ),
       ),
       GoRoute(
         name: AppRoutes.privacyPolicyScreen,

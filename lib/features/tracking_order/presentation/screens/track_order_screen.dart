@@ -13,6 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_b
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/server_connection_error_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/invoice_breakdown.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
 import 'package:nowdelivery_user_app/core/utils/phone_launcher.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
@@ -66,7 +67,7 @@ class _TrackOrderScreenState extends ConsumerState<TrackOrderScreen> {
         canPop: true,
         hasSupportIcon: orderState.valueOrNull?.canContactSupport ?? false,
         scrollController: _scrollController,
-        onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
+        onSupportTap: () => SupportFaqsScreen.open(context),
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
           error: (Object error, StackTrace stackTrace) =>

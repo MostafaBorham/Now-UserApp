@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -39,7 +40,9 @@ class AppWavedView extends StatelessWidget {
   final bool loadAppBarTitle;
   final bool hasCartIcon;
   final bool hasSupportIcon;
-  final VoidCallback? onSupportTap;
+
+  /// The support icon spins until the returned future completes.
+  final AsyncCallback? onSupportTap;
   final VoidCallback? onCartTap;
   final bool? canPop;
   final Widget body;
@@ -117,7 +120,7 @@ class AppWavedView extends StatelessWidget {
                   size: screenSize.width * 0.05,
                   onTap:
                       onSupportTap ??
-                      () {
+                      () async {
                         context.pushNamed(AppRoutes.supportScreen);
                       },
                 ),

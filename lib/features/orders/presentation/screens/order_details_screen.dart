@@ -21,6 +21,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/invoice_breakdown.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
+import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/order_status_palette.dart';
 import 'package:nowdelivery_user_app/features/orders/presentation/extensions/payment_method_label.dart';
@@ -69,7 +70,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         appBarTitle: LangKeys.orderDetailsKey.tr(),
         canPop: true,
         hasSupportIcon: orderState.valueOrNull?.canContactSupport ?? false,
-        onSupportTap: () => context.pushNamed(AppRoutes.supportFaqsScreen),
+        onSupportTap: () => SupportFaqsScreen.open(context),
         scrollController: _scrollController,
         body: orderState.when(
           loading: () => const OrderDetailsShimmer(),
