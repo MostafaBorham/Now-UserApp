@@ -115,6 +115,25 @@ void main() {
     expect(searchedStores, <String?>['tvs']);
   });
 
+  // Results replacing the recents used to rebuild the text field from scratch,
+  // which closed the keyboard mid-typing.
+  testWidgets('the keyboard stays open as results come and go', (
+    WidgetTester tester,
+  ) async {
+    await pumpSearch(tester);
+    await tester.showKeyboard(find.byType(TextField));
+    final EditableTextState field = tester.state(find.byType(EditableText));
+
+    await type(tester, 'tvs');
+    expect(find.byType(SearchResultsView), findsOneWidget);
+    await type(tester, '');
+    expect(find.byType(SearchResultsView), findsNothing);
+
+    expect(tester.state(find.byType(EditableText)), same(field));
+    expect(field.widget.focusNode.hasFocus, isTrue);
+    expect(tester.testTextInput.isVisible, isTrue);
+  });
+
   testWidgets('shortening a term below three clears its results', (
     WidgetTester tester,
   ) async {

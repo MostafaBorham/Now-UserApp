@@ -87,6 +87,11 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   final FocusNode _focusNode = FocusNode();
   Timer? _debounce;
 
+  /// Toggling [PrimarySearchField.enableRecentKeywords] moves the field in or
+  /// out of the recents column; the key carries the live text field across, so
+  /// the keyboard stays open instead of the field being rebuilt from scratch.
+  final GlobalKey _fieldKey = GlobalKey();
+
   bool get _isEditable => widget.onTap == null;
 
   @override
@@ -145,6 +150,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     );
 
     Widget child = GestureDetector(
+      key: _fieldKey,
       behavior: HitTestBehavior.opaque,
       onTap: _isEditable ? null : widget.onTap,
       child: LayoutBuilder(
