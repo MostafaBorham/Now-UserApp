@@ -79,9 +79,12 @@ class PaymentMethodsRadioGroup extends StatelessWidget {
                             color: colors.tertiaryContainer,
                           ),
                         ),
+                        // The subtitle is a masked card number: "•••• 4242"
+                        // stays in that order in Arabic too.
                         if (method.subtitle != null)
                           Text(
                             method.subtitle!,
+                            textDirection: TextDirection.ltr,
                             style: AppTextStyles.style14Regular.copyWith(
                               color: colors.neutral500,
                             ),

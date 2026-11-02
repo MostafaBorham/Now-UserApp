@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/enums/online_card_types.dart';
@@ -90,8 +90,10 @@ class OnlineCardRadioSelectorItem extends StatelessWidget {
                         spacing: 8,
                         children: [
                           Flexible(
+                            // "•••• 4242" stays in that order in Arabic too.
                             child: Text(
                               cardItem.cardNumber,
+                              textDirection: TextDirection.ltr,
                               maxLines: 1,
                               style: AppTextStyles.style14Regular.copyWith(
                                 color: colors.neutral500,

@@ -57,8 +57,11 @@ class PaymentOptionTile extends StatelessWidget {
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
+                    // A masked card number: "•••• 4827" stays in that order
+                    // in Arabic too.
                     Text(
                       subtitle!,
+                      textDirection: TextDirection.ltr,
                       style: AppTextStyles.style14Regular.copyWith(
                         color: colors.neutral500,
                       ),

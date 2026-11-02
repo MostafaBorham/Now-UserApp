@@ -46,4 +46,26 @@ void main() {
     expect(logo('master-logo.svg'), findsOneWidget);
     expect(find.byIcon(Icons.credit_card), findsOneWidget);
   });
+
+  // In Arabic an RTL paragraph flipped "•••• 4242" into "4242 ••••".
+  testWidgets('the masked number reads left-to-right', (
+    WidgetTester tester,
+  ) async {
+    await pumpCategoriesWidget(
+      tester,
+      const MyCardsView(),
+      overrides: <Override>[
+        getMyCardsProvider.overrideWith(
+          (Ref ref) => _FakeMyCardsViewModel(const <CardPaymentModel>[
+            CardPaymentModel(id: 1, brand: 'visa', maskedNumber: '•••• 4242'),
+          ]),
+        ),
+      ],
+    );
+
+    expect(
+      tester.widget<Text>(find.text('•••• 4242')).textDirection,
+      TextDirection.ltr,
+    );
+  });
 }
