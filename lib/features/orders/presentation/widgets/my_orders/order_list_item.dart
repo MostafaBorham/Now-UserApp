@@ -101,11 +101,12 @@ class OrderListItem extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // The price can't shrink, so it takes its full width at the
+                    // row's end and the order number gets what is left.
                     Row(
                       spacing: 10,
                       children: [
                         Expanded(
-                          flex: 3,
                           child: AutoSizeText(
                             orderModel.orderNumber ?? '',
                             style: AppTextStyles.style18SemiBold.copyWith(
@@ -113,12 +114,10 @@ class OrderListItem extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: NewPriceWidget(
-                            color: colors.primary500Main,
-                            price: orderModel.total.toStringAsFixed(2),
-                            size: 18,
-                          ),
+                        NewPriceWidget(
+                          color: colors.primary500Main,
+                          price: orderModel.total.toStringAsFixed(2),
+                          size: 18,
                         ),
                       ],
                     ),
