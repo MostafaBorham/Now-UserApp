@@ -6,6 +6,7 @@ import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/app_refresh_indicator.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/app_wave/app_waved_view.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/effects/app_shimmer.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
@@ -28,10 +29,26 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    // The provider is kept alive (preloaded on the splash), so without this the
+    // screen would show that first copy forever. Refetch on every visit; loaded
+    // content stays up while it reloads. Skipped when the first watch has just
+    // started a load, so it never fires twice.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || ref.read(getAppInfoProvider).isLoading) return;
+      _loadAppInfo();
+    });
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
+
+  Future<void> _loadAppInfo() =>
+      ref.read(getAppInfoProvider.notifier).getAppInfo();
 
   String _parseHtml(String text) =>
       html_parser.parse(text).body?.text.trim() ?? '';
@@ -39,9 +56,6 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
     final AsyncValue<AppInfoModel> appInfoState = ref.watch(getAppInfoProvider);
-
-    Future<void> loadAppInfo() =>
-        ref.read(getAppInfoProvider.notifier).getAppInfo();
 
     return Scaffold(
       backgroundColor: context.colors.white,
@@ -69,7 +83,7 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
           ),
           error: (Object error, _) => ServerConnectionErrorWidget(
             message: error.toString(),
-            onRetry: loadAppInfo,
+            onRetry: _loadAppInfo,
           ),
           data: (AppInfoModel appInfo) {
             final PrivacyModel? content = appInfo.content;
@@ -92,69 +106,72 @@ class _PrivacyPolicyScreenState extends ConsumerState<PrivacyPolicyScreen> {
               apiDateTimeStamp: content?.privacyUpdatedAt,
             );
 
-            return isEmpty
-                ? NoResultsWidget(
-                    isScrollable: true,
-                    emptyMessage: LangKeys.contentUnavailableKey.tr(),
-                  )
-                : SingleChildScrollView(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    // Owns the top spacing AppWavedView drops when a scroll
-                    // controller is wired in, so it scrolls up with the content.
-                    padding: const EdgeInsets.only(top: 57),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 24,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (updatedAt.isNotEmpty) ...[
+            return AppRefreshIndicator(
+              onRefresh: _loadAppInfo,
+              child: isEmpty
+                  ? NoResultsWidget(
+                      isScrollable: true,
+                      emptyMessage: LangKeys.contentUnavailableKey.tr(),
+                    )
+                  : SingleChildScrollView(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      // Owns the top spacing AppWavedView drops when a scroll
+                      // controller is wired in, so it scrolls up with the content.
+                      padding: const EdgeInsets.only(top: 57),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 24,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (updatedAt.isNotEmpty) ...[
+                                Text(
+                                  '${LangKeys.privacyEffectiveDate.tr()}: '
+                                  '$updatedAt',
+                                  textAlign: TextAlign.center,
+                                  style: AppTextStyles.style18Medium.copyWith(
+                                    color: context.colors.tertiaryContainer,
+                                    height: 1.55,
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                              ],
                               Text(
-                                '${LangKeys.privacyEffectiveDate.tr()}: '
-                                '$updatedAt',
+                                LangKeys.privacyIntro.tr(),
                                 textAlign: TextAlign.center,
-                                style: AppTextStyles.style18Medium.copyWith(
-                                  color: context.colors.tertiaryContainer,
-                                  height: 1.55,
+                                style: AppTextStyles.style14Regular.copyWith(
+                                  color: context.colors.outline,
+                                  height: 1.43,
                                   overflow: TextOverflow.visible,
                                 ),
                               ),
-                              const SizedBox(height: 2),
                             ],
-                            Text(
-                              LangKeys.privacyIntro.tr(),
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.style14Regular.copyWith(
-                                color: context.colors.outline,
-                                height: 1.43,
-                                overflow: TextOverflow.visible,
-                              ),
+                          ),
+                          if (terms.isNotEmpty)
+                            PrivacySection(
+                              title: LangKeys.appTerms.tr(),
+                              body: terms,
+                              titleStyle: titleStyle,
                             ),
-                          ],
-                        ),
-                        if (terms.isNotEmpty)
-                          PrivacySection(
-                            title: LangKeys.appTerms.tr(),
-                            body: terms,
-                            titleStyle: titleStyle,
-                          ),
-                        if (privacy.isNotEmpty)
-                          PrivacySection(
-                            title: LangKeys.appPrivacy.tr(),
-                            body: privacy,
-                            titleStyle: titleStyle,
-                          ),
-                        if (about.isNotEmpty)
-                          PrivacySection(
-                            title: LangKeys.appAbout.tr(),
-                            body: about,
-                            titleStyle: titleStyle,
-                          ),
-                      ],
+                          if (privacy.isNotEmpty)
+                            PrivacySection(
+                              title: LangKeys.appPrivacy.tr(),
+                              body: privacy,
+                              titleStyle: titleStyle,
+                            ),
+                          if (about.isNotEmpty)
+                            PrivacySection(
+                              title: LangKeys.appAbout.tr(),
+                              body: about,
+                              titleStyle: titleStyle,
+                            ),
+                        ],
+                      ),
                     ),
-                  );
+            );
           },
         ),
       ),
