@@ -230,11 +230,21 @@ class WalletTransactionReference extends Equatable {
   final String? uuid;
   final String? number;
 
+  /// Set only on an entry of [orders]: the store's name in the `lang` header's
+  /// language.
+  final String? storeName;
+
+  /// A multi-store checkout's orders, on an `order_group` reference (each
+  /// entry `{id, uuid, number, store_name}`). Empty otherwise.
+  final List<WalletTransactionReference> orders;
+
   const WalletTransactionReference({
     this.type,
     this.id,
     this.uuid,
     this.number,
+    this.storeName,
+    this.orders = const <WalletTransactionReference>[],
   });
 
   factory WalletTransactionReference.fromJson(Map<String, dynamic> json) {
@@ -243,6 +253,12 @@ class WalletTransactionReference extends Equatable {
       id: (json['id'] as num?)?.toInt(),
       uuid: json['uuid']?.toString(),
       number: json['number']?.toString(),
+      storeName: json['store_name']?.toString(),
+      orders: <WalletTransactionReference>[
+        for (final Object? order in json['orders'] as List<dynamic>? ?? [])
+          if (order is Map<String, dynamic>)
+            WalletTransactionReference.fromJson(order),
+      ],
     );
   }
 
@@ -252,9 +268,11 @@ class WalletTransactionReference extends Equatable {
       'id': id,
       'uuid': uuid,
       'number': number,
+      'store_name': storeName,
+      'orders': [for (final order in orders) order.toJson()],
     };
   }
 
   @override
-  List<Object?> get props => [type, id, uuid, number];
+  List<Object?> get props => [type, id, uuid, number, storeName, orders];
 }

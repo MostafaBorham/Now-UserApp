@@ -520,4 +520,9 @@ abstract class LangKeys {
   static const String backToCartKey = 'backToCart';
   static const String reviewCartWithoutCheckoutKey =
       'reviewCartWithoutCheckout';
+  static const String walletOrderPaymentKey = 'walletOrderPayment';
+  static const String walletRefundKey = 'walletRefund';
+
+  /// Plural (`'…'.plural(n)`): "2 orders" / "طلبان".
+  static const String ordersCountKey = 'ordersCount';
 }

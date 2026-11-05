@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/enums/wallet_transaction_status.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -65,6 +67,54 @@ class WalletHistoryItem extends StatelessWidget {
     return reference?.type == 'order' && uuid.isNotEmpty ? reference : null;
   }
 
+  /// A multi-store checkout's orders, which a wallet payment for it lists on
+  /// its `order_group` reference. Empty for any other row.
+  List<WalletTransactionReference> get _groupOrders {
+    final WalletTransactionReference? reference = transaction.reference;
+    if (reference?.type != 'order_group') return const [];
+    return reference!.orders
+        .where((WalletTransactionReference o) => (o.uuid ?? '').isNotEmpty)
+        .toList();
+  }
+
+  /// "Order payment · RUH-ORD-…": what happened, then [orders] (an order number
+  /// or "2 orders"). A store-backed row is titled by the store, so the backend
+  /// drops its source label; any other row is already titled by that label and
+  /// adds nothing here.
+  String _subtitle(String orders) {
+    final String sourceKey = transaction.merchant?.type != 'vendor'
+        ? ''
+        : switch (transaction.source) {
+            'order_payment' => LangKeys.walletOrderPaymentKey,
+            'refund' => LangKeys.walletRefundKey,
+            _ => '',
+          };
+    return <String>[
+      if (sourceKey.isNotEmpty) sourceKey.tr(),
+      orders,
+    ].where((String part) => part.isNotEmpty).join(' · ');
+  }
+
+  /// Opens the order the row is about, or lets the customer pick one of a
+  /// multi-store checkout's orders. Null (row ignores taps) when neither.
+  VoidCallback? _onTap(
+    BuildContext context,
+    WalletTransactionReference? order,
+    List<WalletTransactionReference> groupOrders,
+  ) {
+    if (order != null) {
+      return () =>
+          context.pushNamed(AppRoutes.orderDetailsScreen, extra: order.uuid);
+    }
+    if (groupOrders.isEmpty) return null;
+    return () async {
+      final String? uuid = await _showOrdersSheet(context, groupOrders);
+      if (uuid != null && context.mounted) {
+        context.pushNamed(AppRoutes.orderDetailsScreen, extra: uuid);
+      }
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
@@ -73,7 +123,13 @@ class WalletHistoryItem extends StatelessWidget {
     final String title = _rowTitle(context);
     final String card = _cardLabel();
     final WalletTransactionReference? order = _order;
-    final String orderNumber = order?.number ?? '';
+    final List<WalletTransactionReference> groupOrders = _groupOrders;
+    final String subtitle = _subtitle(
+      order?.number ??
+          (groupOrders.isEmpty
+              ? ''
+              : LangKeys.ordersCountKey.plural(groupOrders.length)),
+    );
     // The status drives the chip's colors and the amount color, mapped through
     // [WalletTransactionStatus] so the colors aren't re-hardcoded here.
     final WalletTransactionStatus status = transaction.status;
@@ -102,14 +158,8 @@ class WalletHistoryItem extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, con) {
-        // An order row opens that order; any other row ignores taps.
         return GestureDetector(
-          onTap: order == null
-              ? null
-              : () => context.pushNamed(
-                  AppRoutes.orderDetailsScreen,
-                  extra: order.uuid,
-                ),
+          onTap: _onTap(context, order, groupOrders),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
             decoration: BoxDecoration(
@@ -149,11 +199,11 @@ class WalletHistoryItem extends StatelessWidget {
                                 overflow: TextOverflow.visible,
                               ),
                             ),
-                            // The order's number, in full like the name, so it
-                            // matches the one in My Orders.
-                            if (orderNumber.isNotEmpty)
+                            // What the row is + the order's number, in full like
+                            // the name, so the number matches My Orders.
+                            if (subtitle.isNotEmpty)
                               Text(
-                                orderNumber,
+                                subtitle,
                                 softWrap: true,
                                 overflow: TextOverflow.visible,
                                 style: AppTextStyles.style12Regular.copyWith(
@@ -237,4 +287,68 @@ class WalletHistoryItem extends StatelessWidget {
       },
     );
   }
+}
+
+/// Lists a multi-store checkout's [orders] (store + number) and resolves to the
+/// uuid of the one tapped, or null when dismissed.
+Future<String?> _showOrdersSheet(
+  BuildContext context,
+  List<WalletTransactionReference> orders,
+) {
+  final AppColorScheme colors = context.colors;
+  return showModalBottomSheet<String>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+    builder: (BuildContext sheetContext) => SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: colors.neutral500,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              LangKeys.ordersKey.tr(),
+              style: AppTextStyles.style16SemiBold.copyWith(
+                color: colors.black,
+              ),
+            ),
+            const SizedBox(height: 8),
+            for (final WalletTransactionReference order in orders)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  order.storeName ?? '',
+                  style: AppTextStyles.style14SemiBold.copyWith(
+                    color: colors.black,
+                  ),
+                ),
+                subtitle: Text(
+                  order.number ?? '',
+                  style: AppTextStyles.style12Regular.copyWith(
+                    color: colors.onPrimaryFixed.withValues(alpha: 0.7),
+                  ),
+                ),
+                trailing: Icon(Icons.chevron_right, color: colors.black),
+                onTap: () => sheetContext.pop(order.uuid),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
