@@ -176,7 +176,7 @@
   "invalidCvv": "رمز التحقق غير صالح",
   "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
   "invalidExpiryDate": "تاريخ الانتهاء غير صالح",
-  "invoiceDownloadFailed": "تعذّر فتح الفاتورة، يرجى المحاولة مرة أخرى",
+  "fileOpenFailed": "تعذّر فتح الملف، يرجى المحاولة مرة أخرى",
   "invoiceSummary": "ملخص الفاتورة",
   "itemInformation": "معلومات العنصر",
   "itemsCount": {

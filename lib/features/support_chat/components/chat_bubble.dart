@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/token_cache_service.dart';
 import 'package:nowdelivery_user_app/core/enums/loading_view_types.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -8,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/components/full_screen_im
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/support_chat/data/models/support_chat_message_model.dart';
 
 class ChatMessage {
@@ -95,24 +97,39 @@ class ChatBubble extends StatelessWidget {
                 for (final SupportChatAttachmentModel attachment
                     in message.attachments)
                   if (!attachment.isImage)
-                    // ponytail: name only, no download; add one when
-                    // support starts sending PDFs.
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 6,
-                      children: [
-                        Icon(
-                          Icons.insert_drive_file_outlined,
-                          size: 18,
-                          color: textColor,
+                    // The backend only accepts images and PDFs, so anything
+                    // else is a PDF: opened in the app's viewer.
+                    Semantics(
+                      button: true,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => context.pushNamed(
+                          AppRoutes.pdfViewerScreen,
+                          extra: (url: attachment.url, title: attachment.name),
                         ),
-                        Flexible(
-                          child: Text(
-                            attachment.name,
-                            style: TextStyle(fontSize: 14, color: textColor),
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 6,
+                          children: [
+                            Icon(
+                              Icons.insert_drive_file_outlined,
+                              size: 18,
+                              color: textColor,
+                            ),
+                            Flexible(
+                              child: Text(
+                                attachment.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: textColor,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: textColor,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                 if (message.text.isNotEmpty)
                   Text(

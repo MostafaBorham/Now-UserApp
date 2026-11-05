@@ -176,7 +176,7 @@
   "invalidCvv": "Invalid CVV",
   "invalidEmail": "Please enter a valid email address",
   "invalidExpiryDate": "Invalid expiry date",
-  "invoiceDownloadFailed": "Couldn't open the invoice, please try again",
+  "fileOpenFailed": "Couldn't open the file, please try again",
   "invoiceSummary": "Invoice Summary",
   "itemInformation": "Item Information",
   "itemsCount": {

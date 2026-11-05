@@ -250,7 +250,7 @@ abstract class LangKeys {
   static const String allPricesIncludeVatKey = 'allPricesIncludeVat';
   static const String totalSavingsKey = 'totalSavings';
   static const String printInvoiceKey = 'printInvoice';
-  static const String invoiceDownloadFailedKey = 'invoiceDownloadFailed';
+  static const String fileOpenFailedKey = 'fileOpenFailed';
 
   // Order tracking (Order Confirmed / Track Order / Payment Failed)
   static const String orderConfirmedTitleKey = 'orderConfirmedTitle';

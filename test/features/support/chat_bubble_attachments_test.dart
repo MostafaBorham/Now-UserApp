@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/caching/shared_pref_manager.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_themes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
+import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/support_chat/components/chat_bubble.dart';
 import 'package:nowdelivery_user_app/features/support_chat/data/models/support_chat_message_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,10 +21,14 @@ void main() {
     isImage: true,
   );
 
+  // What the PDF viewer route was pushed with, if it was.
+  Object? pdfViewerExtra;
+
   Future<void> pumpBubble(
     WidgetTester tester,
     List<SupportChatAttachmentModel> attachments,
   ) async {
+    pdfViewerExtra = null;
     final GoRouter router = GoRouter(
       routes: <RouteBase>[
         GoRoute(
@@ -37,6 +42,14 @@ void main() {
               ),
             ),
           ),
+        ),
+        GoRoute(
+          name: AppRoutes.pdfViewerScreen,
+          path: '/${AppRoutes.pdfViewerScreen}',
+          builder: (BuildContext context, GoRouterState state) {
+            pdfViewerExtra = state.extra;
+            return const SizedBox();
+          },
         ),
       ],
     );
@@ -108,6 +121,26 @@ void main() {
 
     expect(find.byType(AppCachedNetworkImage), findsOneWidget);
     expect(find.text('receipt.pdf'), findsOneWidget);
+  });
+
+  testWidgets('tapping a file opens it in the PDF viewer', (
+    WidgetTester tester,
+  ) async {
+    await pumpBubble(tester, <SupportChatAttachmentModel>[
+      const SupportChatAttachmentModel(
+        url: 'https://example.com/receipt.pdf',
+        name: 'receipt.pdf',
+        isImage: false,
+      ),
+    ]);
+
+    await tester.tap(find.text('receipt.pdf'));
+    await tester.pumpAndSettle();
+
+    expect(pdfViewerExtra, (
+      url: 'https://example.com/receipt.pdf',
+      title: 'receipt.pdf',
+    ));
   });
 
   testWidgets('tapping a photo opens it full screen', (

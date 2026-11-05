@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nowdelivery_user_app/core/connection/connection_checker.dart';
@@ -12,7 +10,6 @@ import 'package:nowdelivery_user_app/features/orders/data/datasources/local/rate
 import 'package:nowdelivery_user_app/features/orders/data/datasources/remote/api/orders_api_service.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/order_model.dart';
 import 'package:nowdelivery_user_app/features/orders/data/models/rate_order_request_model.dart';
-import 'package:path_provider/path_provider.dart';
 
 class OrdersRepo {
   final OrdersApiService _ordersApiService = OrdersApiService();
@@ -112,34 +109,6 @@ class OrdersRepo {
       );
     } catch (_) {
       return const Left(Failure(LangKeys.somethingWentWrongKey));
-    }
-  }
-
-  /// Downloads the invoice PDF at [url] into the temp directory and returns the
-  /// file's path, for the in-app viewer. Every failure is the viewer's one
-  /// message: the server's are English-only, about states the button is never
-  /// offered in.
-  Future<Either<Failure, String>> downloadInvoice({required String url}) async {
-    if (!await ConnectionChecker.isConnected) {
-      return const Left(Failure(LangKeys.noInternetConnectionKey));
-    }
-
-    try {
-      final Response<List<int>> response = await _ordersApiService
-          .downloadInvoice(url: url);
-      final List<int>? bytes = response.data;
-      if (bytes == null || bytes.isEmpty) {
-        return const Left(Failure(LangKeys.invoiceDownloadFailedKey));
-      }
-
-      final Directory directory = await getTemporaryDirectory();
-      // One file, overwritten by the next invoice opened, so they don't pile up.
-      final File file = await File(
-        '${directory.path}/invoice.pdf',
-      ).writeAsBytes(bytes, flush: true);
-      return Right(file.path);
-    } catch (_) {
-      return const Left(Failure(LangKeys.invoiceDownloadFailedKey));
     }
   }
 

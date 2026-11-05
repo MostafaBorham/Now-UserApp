@@ -611,9 +611,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                             ),
                           ),
                           // "Print invoice" is parked until the invoice is
-                          // reworked: it pushed AppRoutes.invoiceViewerScreen
-                          // with order.invoicePdfUrl when status.hasInvoice.
-                          // The viewer, route and download are kept for then.
+                          // reworked: it pushed AppRoutes.pdfViewerScreen with
+                          // (url: order.invoicePdfUrl, title: printInvoiceKey)
+                          // when status.hasInvoice.
                         ],
                       ),
                     ),

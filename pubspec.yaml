@@ -39,7 +39,7 @@ dependencies:
   html: ^0.15.6
   flutter_cached_pdfview: ^0.4.2
   # Already bundled through flutter_cached_pdfview; declared for the temp
-  # directory the invoice is downloaded into.
+  # directory the in-app PDF viewer downloads into.
   path_provider: ^2.1.5
 
   vector_graphics: any
