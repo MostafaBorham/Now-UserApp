@@ -83,6 +83,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
       alignment: Alignment.center,
       children: [
         Row(
+          textDirection: TextDirection.ltr,
           spacing: 8,
           children: List.generate(widget.length, (index) {
             final bool isActive = hasFocus && index == code.length;
@@ -94,6 +95,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
         ),
         Positioned.fill(
           child: TextField(
+            textDirection: TextDirection.ltr,
             contextMenuBuilder: appContextMenuBuilder,
             controller: widget.controller,
             focusNode: _focusNode,
