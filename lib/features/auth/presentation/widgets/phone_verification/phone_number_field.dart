@@ -13,7 +13,7 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_c
 /// White, shadowed field with a leading mobile icon, a small "Mobile Number"
 /// label and a phone-number input.
 ///
-/// Valid once exactly 8 digits follow the `(05)` head
+/// Valid once exactly 8 digits follow the `(05)` prefix
 /// ([SaudiPhoneInputFormatter.isComplete]); the result is reported via
 /// [onValidChanged] whenever the validity flips. Parents don't need to know the
 /// rule — they only receive a `bool` to drive their button state.
@@ -79,59 +79,75 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
           border: Border.all(color: context.colors.neutral200),
           boxShadow: AppBoxShadows.greyElevation2,
         ),
-        child: Row(
-          children: [
-            Assets.media.images.svg.mobile.svg(width: 24, height: 24),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    LangKeys.mobileNumberKey.tr(),
-                    style: AppTextStyles.style14Regular.copyWith(
-                      color: context.colors.neutral500,
-                    ),
-                  ),
-                  TextFormField(
-                    contextMenuBuilder: appContextMenuBuilder,
-                    controller: widget.controller,
-                    keyboardType: TextInputType.phone,
-                    // The number always reads left-to-right so the "(05)" head
-                    // stays on the correct side of the digits, but the field
-                    // aligns to the locale's start edge: left in English, right
-                    // in Arabic.
-                    textDirection: TextDirection.ltr,
-                    textAlign: Directionality.of(context) == TextDirection.rtl
-                        ? TextAlign.right
-                        : TextAlign.left,
-                    inputFormatters: const [SaudiPhoneInputFormatter()],
-                    style: AppTextStyles.style16Medium.copyWith(
-                      color: context.colors.tertiaryContainer,
-                    ),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      counterText: "",
-                      isCollapsed: true,
-                      hintText: widget.hint ?? '(05) 1111-2222',
-                      // Keep the hint reading left-to-right so the "(05)" head
-                      // stays on the left in Arabic too — matching the order of
-                      // the digits the user will actually type.
-                      hintTextDirection: TextDirection.ltr,
-                      hintStyle: AppTextStyles.style16Medium.copyWith(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              Assets.media.images.svg.mobile.svg(width: 24, height: 24),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      LangKeys.mobileNumberKey.tr(),
+                      style: AppTextStyles.style14Regular.copyWith(
                         color: context.colors.neutral500,
                       ),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.only(top: 4),
                     ),
-                  ),
-                ],
+                    TextFormField(
+                      contextMenuBuilder: appContextMenuBuilder,
+                      controller: widget.controller,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: const [
+                        SaudiPhoneInputFormatter(groupDigits: false),
+                      ],
+                      style: AppTextStyles.style16Medium.copyWith(
+                        color: context.colors.tertiaryContainer,
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        counterText: "",
+                        isCollapsed: true,
+                        hintText: widget.hint ?? '(05) 11111111',
+                        prefixIconConstraints: const BoxConstraints(),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '+966',
+                                style: AppTextStyles.style16Medium.copyWith(
+                                  color: context.colors.tertiaryContainer,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 16,
+                                child: VerticalDivider(
+                                  width: 16,
+                                  thickness: 1,
+                                  color: context.colors.outline,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        hintStyle: AppTextStyles.style16Medium.copyWith(
+                          color: context.colors.neutral500,
+                        ),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.only(top: 4),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

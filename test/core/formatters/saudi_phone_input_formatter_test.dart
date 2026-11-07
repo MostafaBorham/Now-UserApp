@@ -39,5 +39,26 @@ void main() {
       expect(SaudiPhoneInputFormatter.isComplete('(05) 1234-567'), isFalse);
       expect(SaudiPhoneInputFormatter.isComplete(''), isFalse);
     });
+
+    test(
+      'login shows an ungrouped number and clears the prefix when empty',
+      () {
+        const formatter = SaudiPhoneInputFormatter(groupDigits: false);
+
+        String edit(String text) => formatter
+            .formatEditUpdate(
+              TextEditingValue.empty,
+              TextEditingValue(text: text),
+            )
+            .text;
+
+        expect(edit('1'), '(05) 1');
+        expect(edit('(05) 12345678'), '(05) 12345678');
+        expect(edit('+966512345678'), '(05) 12345678');
+        expect(edit('(05) '), '');
+        expect(SaudiPhoneInputFormatter.isComplete('(05) 1234567'), isFalse);
+        expect(SaudiPhoneInputFormatter.isComplete('(05) 12345678'), isTrue);
+      },
+    );
   });
 }

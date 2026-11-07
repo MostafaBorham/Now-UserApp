@@ -10,38 +10,36 @@ import 'package:nowdelivery_user_app/core/utils/app_validator.dart';
 /// (seven typed digits) as a complete `0` + `51234567` and the code went to
 /// someone else's number.
 String phoneFieldSignificantDigits(String text) {
-  final String digits = text.replaceAll(RegExp(r'\D'), '');
-  return text.startsWith(SaudiPhoneInputFormatter.prefix) &&
-          digits.startsWith('05')
-      ? digits.substring(2)
-      : digits;
+  const String prefix = SaudiPhoneInputFormatter.prefix;
+  final String significant = text.startsWith(prefix)
+      ? text.substring(prefix.length)
+      : text;
+  return significant.replaceAll(RegExp(r'\D'), '');
 }
 
 /// Keeps a Saudi mobile field showing a fixed `(05) ` head in front of whatever
 /// the user types: the prefix appears with the first digit and disappears again
-/// once every typed digit is deleted, so the placeholder can show through. The
-/// 8 significant digits are grouped `XXXX-XXXX`, so a dash slides in after the
-/// fourth typed digit — matching the `(05) 1111-2222` hint.
+/// once every typed digit is deleted, so the placeholder can show through.
 ///
-/// Shared by the login phone field and the address form, so both show a number
-/// the same way. The stored text stays human-readable (`(05) 1234-5678`);
-/// callers turn it into the backend's shape themselves.
+/// By default the digits are grouped as `XXXX-XXXX`.
 class SaudiPhoneInputFormatter extends TextInputFormatter {
-  const SaudiPhoneInputFormatter();
+  const SaudiPhoneInputFormatter({this.groupDigits = true});
 
   static const String prefix = '(05) ';
+
+  final bool groupDigits;
 
   /// [text] in the field's own `(05) XXXX-XXXX` shape, from anything a user
   /// types or pastes (a full `05…` / `+966…` number keeps only its 8-digit
   /// tail) or a stored tail being prefilled. Empty when there are no digits.
-  static String format(String? text) {
+  static String format(String? text, {bool groupDigits = true}) {
     final String digits = phoneFieldSignificantDigits(text ?? '');
     final String? tail = AppValidator.saudiLocalPhoneTail(digits);
     final String significant =
         tail ?? (digits.length > 8 ? digits.substring(0, 8) : digits);
     if (significant.isEmpty) return '';
 
-    final String grouped = significant.length > 4
+    final String grouped = groupDigits && significant.length > 4
         ? '${significant.substring(0, 4)}-${significant.substring(4)}'
         : significant;
     return '$prefix$grouped';
@@ -56,7 +54,7 @@ class SaudiPhoneInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final String text = format(newValue.text);
+    final String text = format(newValue.text, groupDigits: groupDigits);
     if (text.isEmpty) return TextEditingValue.empty;
     return TextEditingValue(
       text: text,
