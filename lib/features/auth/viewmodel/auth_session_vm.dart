@@ -19,6 +19,8 @@ import 'package:nowdelivery_user_app/features/orders/presentation/notifications/
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_my_orders_vm.dart';
 import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_to_rate_vm.dart';
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
+import 'package:nowdelivery_user_app/features/products/viewmodel/get_products_vm.dart';
+import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_featured_stores_vm.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/default_payment_card_provider.dart';
 import 'package:nowdelivery_user_app/features/wallet/viewmodel/get_my_cards_vm.dart';
@@ -63,6 +65,9 @@ final List<ProviderOrFamily> sessionScopedProviders = <ProviderOrFamily>[
   // `is_favourite` for the user who fetched it.
   getHomeSectionsProvider,
   getFeaturedStoresProvider,
+  // Cancel active searches before clearing their cached results.
+  getProductsProvider,
+  getAllStoresProvider,
 ];
 
 /// Where the app's session-dependent dependencies stand.

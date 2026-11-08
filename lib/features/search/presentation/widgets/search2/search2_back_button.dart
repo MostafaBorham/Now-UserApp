@@ -5,7 +5,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
 
 class Search2BackButton extends StatelessWidget {
-  const Search2BackButton({super.key});
+  const Search2BackButton({super.key, this.onPressed});
+
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class Search2BackButton extends StatelessWidget {
 
     return InkWell(
       customBorder: const CircleBorder(),
-      onTap: () => context.pop(),
+      onTap: onPressed ?? () => context.pop(),
       child: ReverseWidget(
         child: Container(
           width: size,

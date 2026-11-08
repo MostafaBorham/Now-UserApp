@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_back_button.dart';
 
 class SearchResultAppBar extends StatelessWidget {
-  const SearchResultAppBar({super.key, required this.searchField});
+  const SearchResultAppBar({
+    super.key,
+    required this.searchField,
+    required this.onBack,
+  });
 
   final Widget searchField;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class SearchResultAppBar extends StatelessWidget {
           child: Row(
             spacing: 8,
             children: [
-              if (context.canPop()) const Search2BackButton(),
+              Search2BackButton(onPressed: onBack),
               Expanded(child: searchField),
             ],
           ),

@@ -7,6 +7,9 @@ abstract class HiveKeys {
   /// recent search keywords (most-recent first).
   static const String recentSearchKeywords = 'keywords';
 
+  /// The latest Search 2 product and store cards in the recent searches box.
+  static const String lastSearchResults = 'last_search_results';
+
   /// Key inside [HiveBoxes.recentAddressSearches] holding the `List<String>` of
   /// recent address search keywords (most-recent first).
   static const String recentAddressSearchKeywords = 'address_keywords';

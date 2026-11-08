@@ -13,42 +13,56 @@ class Search2Screen extends StatefulWidget {
 }
 
 class _Search2ScreenState extends State<Search2Screen> {
+  static const int _minSearchLength = 3;
+
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   final GlobalKey _searchFieldKey = GlobalKey();
-  bool _showResults = false;
   String _searchedTerm = '';
+  bool _showResults = false;
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_onSearchTextChange);
+    _searchFocusNode.addListener(_onSearchFocusChanged);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchTextChange);
+    _searchFocusNode.removeListener(_onSearchFocusChanged);
+    _searchFocusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchTextChange() {
-    final String term = _searchController.text.trim();
-    final bool showResults = term.isNotEmpty;
-    if (showResults == _showResults) return;
+  void _onSearchFocusChanged() {
+    if (_searchFocusNode.hasFocus && !_showResults) {
+      setState(() => _showResults = true);
+    }
+  }
+
+  void _backToLanding() {
+    _searchFocusNode.unfocus();
+    _searchController.clear();
     setState(() {
-      _showResults = showResults;
-      if (showResults) _searchedTerm = term;
+      _showResults = false;
+      _searchedTerm = '';
     });
+  }
+
+  void _onChanged(String value) {
+    if (value.trim().isEmpty) _onSearch(value);
   }
 
   void _onSearch(String value) {
     final String term = value.trim();
-    if (!_showResults ||
-        term != _searchController.text.trim() ||
-        term == _searchedTerm) {
-      return;
-    }
-    setState(() => _searchedTerm = term);
+    if (term != _searchController.text.trim()) return;
+    final String nextTerm = term.length >= _minSearchLength ? term : '';
+    if (nextTerm == _searchedTerm) return;
+    setState(() {
+      _searchedTerm = nextTerm;
+      if (nextTerm.isNotEmpty) _showResults = true;
+    });
   }
 
   void _onMostSearchedSelect(String tag) {
@@ -56,6 +70,7 @@ class _Search2ScreenState extends State<Search2Screen> {
       text: tag,
       selection: TextSelection.collapsed(offset: tag.length),
     );
+    _onSearch(tag);
   }
 
   @override
@@ -63,13 +78,15 @@ class _Search2ScreenState extends State<Search2Screen> {
     final Widget searchField = PrimarySearchField(
       key: _searchFieldKey,
       controller: _searchController,
+      focusNode: _searchFocusNode,
       textDirection: _showResults && context.locale.languageCode == 'ar'
           ? TextDirection.rtl
           : null,
+      onChanged: _onChanged,
       onSearch: _onSearch,
       onSubmitted: _onSearch,
     );
-    return Scaffold(
+    final Widget scaffold = Scaffold(
       backgroundColor: context.colors.white,
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
@@ -91,12 +108,20 @@ class _Search2ScreenState extends State<Search2Screen> {
             ? SearchResultsView(
                 searchField: searchField,
                 searchedTerm: _searchedTerm,
+                onBack: _backToLanding,
               )
             : SearchPlaceholderView(
                 searchField: searchField,
                 onMostSearchedSelect: _onMostSearchedSelect,
               ),
       ),
+    );
+    return PopScope<Object?>(
+      canPop: !_showResults,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _showResults) _backToLanding();
+      },
+      child: scaffold,
     );
   }
 }

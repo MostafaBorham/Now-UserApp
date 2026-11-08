@@ -65,7 +65,7 @@ class Search2AppBar extends StatelessWidget {
                             horizontal: backButtonSize + 8,
                           ),
                           child: Text(
-                            LangKeys.searchKey.tr(),
+                            LangKeys.search2TitleKey.tr(),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

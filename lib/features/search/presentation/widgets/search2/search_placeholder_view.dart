@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/features/search/data/last_search_results_cache.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_app_bar.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_banners_slider.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_most_searched_section.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_recent_search_section.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search2/search2_top_brands_section.dart';
 
-class SearchPlaceholderView extends StatelessWidget {
+class SearchPlaceholderView extends ConsumerWidget {
   const SearchPlaceholderView({
     super.key,
     required this.searchField,
@@ -16,7 +18,14 @@ class SearchPlaceholderView extends StatelessWidget {
   final ValueChanged<String> onMostSearchedSelect;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cached = ref.watch(lastSearchResultsProvider);
+    final results = cached.valueOrNull;
+    final bool showShimmer = cached.isLoading && results == null;
+    final bool hasResults =
+        results != null &&
+        (results.products.isNotEmpty || results.stores.isNotEmpty);
+
     return Column(
       children: [
         Search2AppBar(searchField: searchField),
@@ -32,7 +41,12 @@ class SearchPlaceholderView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 16,
               children: [
-                const Search2RecentSearchSection(),
+                if (showShimmer || hasResults)
+                  Search2RecentSearchSection(
+                    products: results?.products ?? const [],
+                    stores: results?.stores ?? const [],
+                    isLoading: showShimmer,
+                  ),
                 Search2MostSearchedSection(onSelect: onMostSearchedSelect),
                 const Search2TopBrandsSection(),
                 const Search2BannersSlider(),
