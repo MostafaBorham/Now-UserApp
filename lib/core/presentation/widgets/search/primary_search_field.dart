@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/recent_search_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/svg_tint.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 
 class PrimarySearchField extends StatefulWidget {
@@ -20,7 +20,11 @@ class PrimarySearchField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.controller,
+    this.focusNode,
+    this.textDirection,
     this.isAnimated = true,
+    this.hintText,
+    this.autofocus = false,
     this.enableRecentKeywords = false,
     this.recentKeywords,
     this.onRecentSelect,
@@ -51,10 +55,24 @@ class PrimarySearchField extends StatefulWidget {
   /// omitted the field owns and disposes its own.
   final TextEditingController? controller;
 
+  /// Optional externally owned focus node for editable mode.
+  final FocusNode? focusNode;
+
+  /// Overrides the editable field's automatic text direction.
+  final TextDirection? textDirection;
+
   /// When `true` (default) the read-only hint cycles through [_hints] with a
   /// rising animation. When `false` no animation is created at all — the hint
   /// is a plain static line showing only the first hint.
   final bool isAnimated;
+
+  /// Already-translated placeholder replacing [_hints]. When set the hint is a
+  /// single static line — the read-only animation is skipped too.
+  final String? hintText;
+
+  /// Focuses the field (and opens the keyboard) as soon as it is shown.
+  /// Editable mode only.
+  final bool autofocus;
 
   /// Recent keywords shown under the field while it is focused (editable mode).
   /// Pass an empty list to hide them — e.g. once the user starts typing. The
@@ -84,12 +102,10 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   /// Falls back to an internally owned controller when the parent supplies none.
   late final TextEditingController _controller =
       widget.controller ?? TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
   Timer? _debounce;
 
-  /// Toggling [PrimarySearchField.enableRecentKeywords] moves the field in or
-  /// out of the recents column; the key carries the live text field across, so
-  /// the keyboard stays open instead of the field being rebuilt from scratch.
+  /// Carries the live field across the recents layout change.
   final GlobalKey _fieldKey = GlobalKey();
 
   bool get _isEditable => widget.onTap == null;
@@ -135,7 +151,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   void dispose() {
     _debounce?.cancel();
     _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
+    if (widget.focusNode == null) _focusNode.dispose();
     // Only dispose the controller we created ourselves.
     if (widget.controller == null) _controller.dispose();
     super.dispose();
@@ -145,6 +161,7 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     const List<String> hints = PrimarySearchField._hints;
+    final String staticHint = widget.hintText ?? hints.first.tr();
     final TextStyle hintStyle = AppTextStyles.style16Regular.copyWith(
       color: colors.onPrimaryFixed,
     );
@@ -182,10 +199,12 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                                 contextMenuBuilder: appContextMenuBuilder,
                                 controller: _controller,
                                 focusNode: _focusNode,
+                                autofocus: widget.autofocus,
                                 onChanged: _onChanged,
                                 onSubmitted: _onSubmitted,
                                 textInputAction: TextInputAction.search,
-                                textDirection: typedDirection,
+                                textDirection:
+                                    widget.textDirection ?? typedDirection,
                                 style: AppTextStyles.style16Regular.copyWith(
                                   color: colors.black,
                                 ),
@@ -193,15 +212,15 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
                                   isDense: true,
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.zero,
-                                  hintText: hints.first.tr(),
+                                  hintText: staticHint,
                                   hintStyle: hintStyle,
                                 ),
                               ),
                         )
-                      : widget.isAnimated
+                      : widget.isAnimated && widget.hintText == null
                       ? _AnimatedSearchHint(hints: hints, style: hintStyle)
                       : Text(
-                          hints.first.tr(),
+                          staticHint,
                           maxLines: 1,
                           textAlign: TextAlign.start,
                           style: hintStyle,
@@ -263,8 +282,6 @@ class _PrimarySearchFieldState extends State<PrimarySearchField> {
     }
 
     if (_isEditable) {
-      // Taps on the recents panel count as inside the field, so the app-wide
-      // tap-outside unfocus leaves it open.
       child = TextFieldTapRegion(child: child);
     }
 

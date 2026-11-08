@@ -22,6 +22,7 @@ abstract class AppRoutes {
   static const String homeNeverMissOffersScreen = 'home-never-miss-offers';
   static const String notificationsScreen = 'notifications';
   static const String searchScreen = 'search';
+  static const String search2Screen = 'search2';
   static const String allStoresScreen = 'all-stores';
   static const String viewStoreCategoryProductsScreen =
       'store-category-products';

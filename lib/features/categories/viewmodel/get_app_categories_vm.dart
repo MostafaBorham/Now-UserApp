@@ -21,17 +21,31 @@ import 'package:nowdelivery_user_app/features/categories/data/repo/categories_re
 /// This is the unfiltered, app-wide list, shared by the home carousel, the
 /// categories screen and the search screen's top-categories strip.
 final getAppCategoriesProvider =
-    StateNotifierProvider<GetAppCategoriesViewModel,
-        AsyncValue<PaginationModel<CategoryModel>>>(
-  (Ref ref) => GetAppCategoriesViewModel()..loadFirstPage(),
-);
+    StateNotifierProvider<
+      GetAppCategoriesViewModel,
+      AsyncValue<PaginationModel<CategoryModel>>
+    >((Ref ref) => GetAppCategoriesViewModel()..loadFirstPage());
+
+/// Each term has independent results and cancels its requests when unused.
+final searchAppCategoriesProvider = StateNotifierProvider.autoDispose
+    .family<
+      GetAppCategoriesViewModel,
+      AsyncValue<PaginationModel<CategoryModel>>,
+      String
+    >(
+      (Ref ref, String term) =>
+          GetAppCategoriesViewModel(searchTerm: term)..loadFirstPage(),
+    );
 
 class GetAppCategoriesViewModel extends PaginatedViewModel<CategoryModel> {
+  GetAppCategoriesViewModel({this.searchTerm});
+
+  final String? searchTerm;
   final CategoriesRepo _repo = CategoriesRepo();
 
   @override
   Future<Either<Failure, PaginationModel<CategoryModel>>> fetchPage(int page) {
-    return _repo.getAppCategories(page: page);
+    return _repo.getAppCategories(page: page, search: searchTerm);
   }
 
   @override

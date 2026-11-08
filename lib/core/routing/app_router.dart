@@ -42,6 +42,7 @@ import 'package:nowdelivery_user_app/features/personal_information/presentation/
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
+import 'package:nowdelivery_user_app/features/search/presentation/screens/search2_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
@@ -281,6 +282,11 @@ abstract class AppRouter {
         name: AppRoutes.searchScreen,
         path: '/${AppRoutes.searchScreen}',
         builder: (context, state) => const SearchScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.search2Screen,
+        path: '/${AppRoutes.search2Screen}',
+        builder: (context, state) => const Search2Screen(),
       ),
       GoRoute(
         name: AppRoutes.allStoresScreen,

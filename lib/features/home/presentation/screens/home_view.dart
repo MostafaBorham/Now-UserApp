@@ -489,7 +489,7 @@ class _HomeViewState extends ConsumerState<HomeView>
             },
             child: PrimarySearchField(
               key: _overlayFieldKey,
-              onTap: () => context.pushNamed(AppRoutes.searchScreen),
+              onTap: () => context.pushNamed(AppRoutes.search2Screen),
             ),
           ),
         ),

@@ -351,6 +351,9 @@ abstract class LangKeys {
 
   // Search
   static const String searchKey = 'search';
+  static const String mostSearchedKey = 'mostSearched';
+  static const String lastThingYouSearchedForKey = 'lastThingYouSearchedFor';
+  static const String doneKey = 'done';
   static const String recentKey = 'recent';
   static const String oldestKey = 'oldest';
   static const String clearKey = 'clear';

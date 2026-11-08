@@ -46,6 +46,7 @@ class AppColorScheme {
   Color get primary100 => _scheme.onSurfaceVariant;
   Color get surfaceContainerLowest => _scheme.surfaceContainerLowest;
   Color get neutral200 => _scheme.surfaceContainerLow;
+  Color get dividerLight => const Color(0xffF0F0F0);
   Color get surfaceContainerHigh => _scheme.surfaceContainerHigh;
   Color get surfaceContainerHighest => _scheme.surfaceContainerHighest;
 
