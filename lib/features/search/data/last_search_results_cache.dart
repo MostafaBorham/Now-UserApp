@@ -12,28 +12,26 @@ typedef LastSearchCard = ({
   String? en,
   String? ar,
   String imageUrl,
-  String? routeId,
-});
-typedef LastSearchResults = ({
-  List<LastSearchCard> products,
-  List<LastSearchCard> stores,
+  String routeId,
+  bool isProduct,
 });
 
 final lastSearchResultsCacheProvider = Provider.autoDispose(
   (ref) => const LastSearchResultsCache(),
 );
 
-final lastSearchResultsProvider = StreamProvider.autoDispose<LastSearchResults>(
-  (ref) => ref.watch(lastSearchResultsCacheProvider).watch(),
-);
+final lastSearchResultsProvider =
+    StreamProvider.autoDispose<List<LastSearchCard>>(
+      (ref) => ref.watch(lastSearchResultsCacheProvider).watch(),
+    );
 
 class LastSearchResultsCache {
   const LastSearchResultsCache();
 
   static const _key = HiveKeys.lastSearchResults;
-  static const _maxCardsPerType = 5;
+  static const _maxCards = 10;
 
-  Stream<LastSearchResults> watch() => Stream.multi((controller) {
+  Stream<List<LastSearchCard>> watch() => Stream.multi((controller) {
     try {
       final box = HiveManager.box(HiveBoxes.recentSearches);
       void emit() {
@@ -53,115 +51,97 @@ class LastSearchResultsCache {
     }
   });
 
-  Future<void> save(
-    List<ProductModel> products,
-    List<StoreModel> stores,
-  ) async {
-    if (products.isEmpty && stores.isEmpty) return;
-
-    LastSearchResults cached = (products: [], stores: []);
-    try {
-      cached = _decode(HiveManager.box(HiveBoxes.recentSearches).get(_key));
-    } catch (_) {
-      // A successful search can replace a damaged snapshot.
-    }
-    await _write((
-      products: _prepend(
-        products.map(
-          (product) =>
-              _card(product.name, product.images?.firstOrNull, product.slug),
-        ),
-        cached.products,
-      ),
-      stores: _prepend(
-        stores.map(
-          (store) => _card(
-            store.name,
-            store.logoUrl ?? store.coverUrl,
-            store.id?.toString(),
-          ),
-        ),
-        cached.stores,
-      ),
-    ));
+  Future<void> saveProduct(ProductModel product) async {
+    final slug = product.slug;
+    if (slug == null || slug.isEmpty) return;
+    await _save(
+      _card(product.name, product.images?.firstOrNull, slug, isProduct: true),
+    );
   }
 
-  static List<LastSearchCard> _prepend(
-    Iterable<LastSearchCard> newest,
-    List<LastSearchCard> cached,
-  ) {
-    final seenIds = <String>{};
-    final seenCards = <(String?, String?, String)>{};
-    return newest
-        .followedBy(cached)
-        .where((card) {
-          final newAppearance = seenCards.add((
-            card.en,
-            card.ar,
-            card.imageUrl,
-          ));
-          final id = card.routeId;
-          return id == null ? newAppearance : seenIds.add(id);
-        })
-        .take(_maxCardsPerType)
-        .toList();
+  Future<void> saveStore(StoreModel store) async {
+    final id = store.id;
+    if (id == null) return;
+    await _save(
+      _card(
+        store.name,
+        store.logoUrl ?? store.coverUrl,
+        id.toString(),
+        isProduct: false,
+      ),
+    );
   }
 
-  Future<void> remove(LastSearchCard card, {required bool isProduct}) async {
+  Future<void> _save(LastSearchCard card) async {
     try {
       final box = HiveManager.box(HiveBoxes.recentSearches);
-      final results = _decode(box.get(_key));
-      final items = isProduct ? results.products : results.stores;
-      if (items.remove(card)) await _write(results);
-    } catch (_) {
-      // Keep the last readable snapshot if the cache cannot be edited.
-    }
-  }
-
-  Future<void> _write(LastSearchResults results) async {
-    try {
-      final box = HiveManager.box(HiveBoxes.recentSearches);
-      await box.put(
-        _key,
-        jsonEncode({
-          'products': results.products.map(_encodeCard).toList(),
-          'stores': results.stores.map(_encodeCard).toList(),
-        }),
-      );
+      List<LastSearchCard> cached = [];
+      try {
+        cached = _decode(box.get(_key));
+      } catch (_) {
+        // A new selection can replace a damaged snapshot.
+      }
+      final results = [
+        card,
+        ...cached.where((item) => !_sameResult(item, card)),
+      ].take(_maxCards);
+      await box.put(_key, _encode(results));
     } catch (_) {
       // Search results remain available even when local storage fails.
     }
   }
 
+  Future<void> remove(LastSearchCard card) async {
+    try {
+      final box = HiveManager.box(HiveBoxes.recentSearches);
+      final cached = _decode(box.get(_key));
+      cached.removeWhere((item) => _sameResult(item, card));
+      await box.put(_key, _encode(cached));
+    } catch (_) {
+      // Keep the last readable snapshot if the cache cannot be edited.
+    }
+  }
+
+  static bool _sameResult(LastSearchCard a, LastSearchCard b) =>
+      a.isProduct == b.isProduct && a.routeId == b.routeId;
+
   static LastSearchCard _card(
     Map<String, dynamic>? name,
     String? imageUrl,
-    String? routeId,
-  ) => (
+    String routeId, {
+    required bool isProduct,
+  }) => (
     en: name?['en']?.toString(),
     ar: name?['ar']?.toString(),
     imageUrl: imageUrl ?? '',
-    routeId: routeId?.isNotEmpty == true ? routeId : null,
+    routeId: routeId,
+    isProduct: isProduct,
   );
 
-  static Map<String, dynamic> _encodeCard(LastSearchCard card) => {
-    'en': card.en,
-    'ar': card.ar,
-    'imageUrl': card.imageUrl,
-    'routeId': card.routeId,
-  };
+  static String _encode(Iterable<LastSearchCard> cards) => jsonEncode([
+    for (final card in cards)
+      {
+        'en': card.en,
+        'ar': card.ar,
+        'imageUrl': card.imageUrl,
+        'routeId': card.routeId,
+        'isProduct': card.isProduct,
+      },
+  ]);
 
-  static LastSearchResults _decode(dynamic payload) {
-    if (payload == null) return (products: [], stores: []);
-    final json = jsonDecode(payload as String) as Map<String, dynamic>;
-    List<LastSearchCard> decodeList(String key) => [
-      for (final item in (json[key] as List<dynamic>).take(_maxCardsPerType))
+  static List<LastSearchCard> _decode(dynamic payload) {
+    if (payload == null) return [];
+    final json = jsonDecode(payload as String);
+    // Older snapshots stored automatically fetched results.
+    if (json is Map<String, dynamic>) return [];
+    return [
+      for (final item in (json as List<dynamic>).take(_maxCards))
         _card(
           item as Map<String, dynamic>,
           item['imageUrl'] as String?,
-          item['routeId'] as String?,
+          item['routeId'] as String,
+          isProduct: item['isProduct'] as bool,
         ),
     ];
-    return (products: decodeList('products'), stores: decodeList('stores'));
   }
 }

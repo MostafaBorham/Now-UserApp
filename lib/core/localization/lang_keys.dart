@@ -483,6 +483,7 @@ abstract class LangKeys {
   static const String serverUnavailableKey = 'serverUnavailable';
   static const String loadMoreFailedTitleKey = 'loadMoreFailedTitle';
   static const String pricesNotUpdatedTitleKey = 'pricesNotUpdatedTitle';
+  static const String noResultsKey = 'noResults';
   static const String noSearchMatchesKey = 'noSearchMatches';
   static const String noOrdersYetKey = 'noOrdersYet';
   static const String noTransactionsYetKey = 'noTransactionsYet';

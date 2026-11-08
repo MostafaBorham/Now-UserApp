@@ -60,36 +60,42 @@ void main() {
     ).delete(HiveKeys.lastSearchResults),
   );
 
-  test('keeps the five newest unique cards of each type', () async {
+  test('keeps the ten most recently tapped unique results together', () async {
     const cache = LastSearchResultsCache();
-    await cache.save(
-      [for (var id = 1; id <= 5; id++) sampleProduct(id: id)],
-      [for (var id = 1; id <= 5; id++) sampleStore(id: id)],
-    );
-    await cache.save(
-      [sampleProduct(id: 6), sampleProduct(id: 3, en: 'Updated product')],
-      [sampleStore(id: 6), sampleStore(id: 4, en: 'Updated store')],
-    );
-    await cache.save([sampleProduct(id: 7)], []);
-    await cache.save([], []);
+    for (var id = 1; id <= 8; id++) {
+      await cache.saveProduct(sampleProduct(id: id));
+    }
+    await cache.saveStore(sampleStore());
+    await cache.saveProduct(sampleProduct(id: 2, en: 'Updated product'));
+    await cache.saveProduct(const ProductModel(slug: '1'));
+    await cache.saveStore(sampleStore(id: 2));
 
     final results = await cache.watch().first;
-    expect(results.products.map((card) => card.routeId), [
-      'p7',
-      'p6',
-      'p3',
-      'p1',
-      'p2',
+    expect(results.map((card) => (card.isProduct, card.routeId)), [
+      (false, '2'),
+      (true, '1'),
+      (true, 'p2'),
+      (false, '1'),
+      (true, 'p8'),
+      (true, 'p7'),
+      (true, 'p6'),
+      (true, 'p5'),
+      (true, 'p4'),
+      (true, 'p3'),
     ]);
-    expect(results.stores.map((card) => card.routeId), [
-      '6',
-      '4',
-      '1',
-      '2',
-      '3',
-    ]);
-    expect(results.products[2].en, 'Updated product');
-    expect(results.stores[1].en, 'Updated store');
+    expect(results[2].en, 'Updated product');
+  });
+
+  test('ignores legacy results saved automatically', () async {
+    final box = HiveManager.box(HiveBoxes.recentSearches);
+    await box.put(
+      HiveKeys.lastSearchResults,
+      '{"products":[{"routeId":"p1","en":"Product"}],"stores":[]}',
+    );
+    const cache = LastSearchResultsCache();
+    expect(await cache.watch().first, isEmpty);
+    await cache.saveStore(sampleStore());
+    expect((await cache.watch().first).single.isProduct, isFalse);
   });
 
   testWidgets('shows one list of product and store rows with the old shimmer', (
@@ -168,6 +174,24 @@ void main() {
     expect(find.text(LangKeys.productsKey), findsNothing);
     expect(find.text(LangKeys.storesKey), findsNothing);
     expect(find.byType(NoResultsWidget), findsNothing);
+    final box = HiveManager.box(HiveBoxes.recentSearches);
+    expect(box.containsKey(HiveKeys.lastSearchResults), isFalse);
+
+    final router = GoRouter.of(tester.element(find.byType(SearchResultsView)));
+    await tester.tap(find.text('Product'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Product details p1'), findsOneWidget);
+    router.pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.tap(find.text('Store'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Store details 1'), findsOneWidget);
+    router.pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     await tester.enterText(find.byType(TextField), 'loading');
     await tester.pump(const Duration(seconds: 1));
@@ -184,11 +208,8 @@ void main() {
     expect(tester.testTextInput.isVisible, isFalse);
     expect(find.text(LangKeys.lastThingYouSearchedForKey), findsOneWidget);
     expect(
-      tester.getTopLeft(find.text('Product')).dx,
-      lessThan(tester.getTopLeft(find.text('Store')).dx),
-    );
-    final router = GoRouter.of(
-      tester.element(find.byType(SearchPlaceholderView)),
+      tester.getTopLeft(find.text('Store')).dx,
+      lessThan(tester.getTopLeft(find.text('Product')).dx),
     );
     await tester.tap(find.text('Product'));
     await tester.pump();
@@ -207,7 +228,14 @@ void main() {
 
     await tester.tap(find.text(LangKeys.editKey));
     await tester.pump();
-    await tester.tap(find.byIcon(Icons.close_rounded).first);
+    await tester.tap(
+      find
+          .descendant(
+            of: find.byType(Search2RecentSearchSection),
+            matching: find.byIcon(Icons.close_rounded),
+          )
+          .last,
+    );
     await tester.pump();
     expect(find.text('Product'), findsNothing);
     expect(find.text('Store'), findsOneWidget);
@@ -227,7 +255,7 @@ void main() {
     expect(productTerms, ['Laptop', 'loading', 'missing']);
     expect(storeTerms, ['Laptop', 'loading', 'missing']);
     expect(find.byType(NoResultsWidget), findsOneWidget);
-    expect(find.text(LangKeys.noSearchMatchesKey), findsOneWidget);
+    expect(find.text(LangKeys.noResultsKey), findsOneWidget);
 
     await tester.binding.handlePopRoute();
     await tester.pump();
@@ -245,7 +273,7 @@ void main() {
   testWidgets('shows a shimmer while reading and hides on a cache error', (
     tester,
   ) async {
-    final cache = StreamController<LastSearchResults>();
+    final cache = StreamController<List<LastSearchCard>>();
     await pumpCategoriesScreen(
       tester,
       const Search2Screen(),

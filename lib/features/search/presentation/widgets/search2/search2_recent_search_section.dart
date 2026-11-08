@@ -14,13 +14,11 @@ import 'package:nowdelivery_user_app/features/search/data/last_search_results_ca
 class Search2RecentSearchSection extends ConsumerStatefulWidget {
   const Search2RecentSearchSection({
     super.key,
-    required this.products,
-    required this.stores,
+    required this.cards,
     required this.isLoading,
   });
 
-  final List<LastSearchCard> products;
-  final List<LastSearchCard> stores;
+  final List<LastSearchCard> cards;
   final bool isLoading;
 
   @override
@@ -32,10 +30,9 @@ class _Search2RecentSearchSectionState
     extends ConsumerState<Search2RecentSearchSection> {
   bool _isEditing = false;
 
-  void _openResult(LastSearchCard card, {required bool isProduct}) {
-    final String? id = card.routeId;
-    if (id == null) return;
-    if (isProduct) {
+  void _openResult(LastSearchCard card) {
+    final String id = card.routeId;
+    if (card.isProduct) {
       context.pushNamed(AppRoutes.productDetailsScreen, extra: id);
     } else {
       context.pushNamed(
@@ -51,7 +48,7 @@ class _Search2RecentSearchSectionState
     final AppColorScheme colors = context.colors;
     final cards = widget.isLoading
         ? List<LastSearchCard?>.filled(5, null)
-        : <LastSearchCard?>[...widget.products, ...widget.stores];
+        : widget.cards;
 
     return LayoutBuilder(
       builder: (context, con) {
@@ -102,18 +99,14 @@ class _Search2RecentSearchSectionState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: cardSize * 0.11 - badgeOverflow,
                   children: [
-                    for (final (int index, LastSearchCard? card)
-                        in cards.indexed)
+                    for (final card in cards)
                       Stack(
                         children: [
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: _isEditing || card?.routeId == null
+                            onTap: _isEditing || card == null
                                 ? null
-                                : () => _openResult(
-                                    card!,
-                                    isProduct: index < widget.products.length,
-                                  ),
+                                : () => _openResult(card),
                             child: Container(
                               width: cardSize,
                               margin: EdgeInsetsDirectional.only(
@@ -141,7 +134,7 @@ class _Search2RecentSearchSectionState
                                             imageUrl: card.imageUrl,
                                             width: cardSize,
                                             height: cardSize,
-                                            fit: BoxFit.contain,
+                                            fit: BoxFit.cover,
                                           ),
                                   ),
                                   if (card == null)
@@ -180,10 +173,7 @@ class _Search2RecentSearchSectionState
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () => ref
                                     .read(lastSearchResultsCacheProvider)
-                                    .remove(
-                                      card,
-                                      isProduct: index < widget.products.length,
-                                    ),
+                                    .remove(card),
                                 child: Container(
                                   width: badgeSize,
                                   height: badgeSize,

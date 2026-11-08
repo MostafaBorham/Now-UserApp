@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,45 +24,17 @@ import 'package:nowdelivery_user_app/features/search/data/last_search_results_ca
 import 'package:nowdelivery_user_app/features/search/presentation/widgets/search_results_view.dart';
 import 'package:nowdelivery_user_app/features/stores/viewmodel/get_all_stores_vm.dart';
 
-class SearchResultList extends ConsumerStatefulWidget {
+class SearchResultList extends ConsumerWidget {
   const SearchResultList({super.key, required this.searchTerm});
 
   final String searchTerm;
 
   @override
-  ConsumerState<SearchResultList> createState() => _SearchResultListState();
-}
-
-class _SearchResultListState extends ConsumerState<SearchResultList> {
-  late final productsProvider = getProductsProvider(widget.searchTerm);
-  late final storesProvider = getAllStoresProvider(
-    SearchResultsView.storesArgsOf(widget.searchTerm),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    ref.listenManual(productsProvider, (_, _) => _saveResults());
-    ref.listenManual(
-      storesProvider,
-      (_, _) => _saveResults(),
-      fireImmediately: true,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productsProvider = getProductsProvider(searchTerm);
+    final storesProvider = getAllStoresProvider(
+      SearchResultsView.storesArgsOf(searchTerm),
     );
-  }
-
-  void _saveResults() {
-    final products = ref.read(productsProvider);
-    final stores = ref.read(storesProvider);
-    if (products.isLoading || stores.isLoading) return;
-    final productPage = products.valueOrNull;
-    final storePage = stores.valueOrNull;
-    ref
-        .read(lastSearchResultsCacheProvider)
-        .save(productPage?.data ?? const [], storePage?.data ?? const []);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final products = PaginationStatus.from(ref.watch(productsProvider));
     final stores = PaginationStatus.from(ref.watch(storesProvider));
     final productsVm = ref.read(productsProvider.notifier);
@@ -79,7 +53,7 @@ class _SearchResultListState extends ConsumerState<SearchResultList> {
         child: error == null
             ? NoResultsWidget(
                 isScrollable: true,
-                emptyMessage: LangKeys.noSearchMatchesKey.tr(),
+                emptyMessage: LangKeys.noResultsKey.tr(),
               )
             : ServerConnectionErrorWidget(
                 isScrollable: true,
@@ -126,16 +100,24 @@ class _SearchResultListState extends ConsumerState<SearchResultList> {
               }
               if (index < products.items.length) {
                 final ProductModel product = products.items[index];
+                final slug = product.slug;
                 return _ResultRow(
                   width: width,
                   name: context.getLocalizedApiText(product.name),
                   imageUrl: product.images?.firstOrNull ?? '',
-                  onTap: product.slug?.isNotEmpty == true
-                      ? () => context.pushNamed(
-                          AppRoutes.productDetailsScreen,
-                          extra: product.slug,
-                        )
-                      : null,
+                  onTap: slug == null || slug.isEmpty
+                      ? null
+                      : () {
+                          unawaited(
+                            ref
+                                .read(lastSearchResultsCacheProvider)
+                                .saveProduct(product),
+                          );
+                          context.pushNamed(
+                            AppRoutes.productDetailsScreen,
+                            extra: slug,
+                          );
+                        },
                 );
               }
               final StoreModel store =
@@ -146,11 +128,18 @@ class _SearchResultListState extends ConsumerState<SearchResultList> {
                 imageUrl: store.logoUrl ?? '',
                 onTap: store.id == null
                     ? null
-                    : () => context.pushNamed(
-                        AppRoutes.storeDetailsScreen,
-                        pathParameters: {'id': '${store.id}'},
-                        extra: store.name,
-                      ),
+                    : () {
+                        unawaited(
+                          ref
+                              .read(lastSearchResultsCacheProvider)
+                              .saveStore(store),
+                        );
+                        context.pushNamed(
+                          AppRoutes.storeDetailsScreen,
+                          pathParameters: {'id': '${store.id}'},
+                          extra: store.name,
+                        );
+                      },
               );
             },
           ),
@@ -208,6 +197,7 @@ class _ResultRow extends StatelessWidget {
                       imageUrl: imageUrl,
                       width: imageSize,
                       height: imageSize,
+                      fit: BoxFit.cover,
                       errorBackgroundColor: Colors.transparent,
                     ),
             ),

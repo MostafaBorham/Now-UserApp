@@ -22,9 +22,7 @@ class SearchPlaceholderView extends ConsumerWidget {
     final cached = ref.watch(lastSearchResultsProvider);
     final results = cached.valueOrNull;
     final bool showShimmer = cached.isLoading && results == null;
-    final bool hasResults =
-        results != null &&
-        (results.products.isNotEmpty || results.stores.isNotEmpty);
+    final bool hasResults = results?.isNotEmpty == true;
 
     return Column(
       children: [
@@ -43,8 +41,7 @@ class SearchPlaceholderView extends ConsumerWidget {
               children: [
                 if (showShimmer || hasResults)
                   Search2RecentSearchSection(
-                    products: results?.products ?? const [],
-                    stores: results?.stores ?? const [],
+                    cards: results ?? const [],
                     isLoading: showShimmer,
                   ),
                 Search2MostSearchedSection(onSelect: onMostSearchedSelect),
