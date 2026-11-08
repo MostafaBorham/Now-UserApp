@@ -279,6 +279,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/card.svg
   SvgGenImage get card => const SvgGenImage('assets/media/images/svg/card.svg');
 
+  /// File path: assets/media/images/svg/chat-typing-icon.svg
+  SvgGenImage get chatTypingIcon =>
+      const SvgGenImage('assets/media/images/svg/chat-typing-icon.svg');
+
   /// File path: assets/media/images/svg/chat.svg
   SvgGenImage get chat => const SvgGenImage('assets/media/images/svg/chat.svg');
 
@@ -488,6 +492,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get myAddress =>
       const SvgGenImage('assets/media/images/svg/my_address.svg');
 
+  /// File path: assets/media/images/svg/my_addresses.svg
+  SvgGenImage get myAddresses =>
+      const SvgGenImage('assets/media/images/svg/my_addresses.svg');
+
   /// File path: assets/media/images/svg/no-complaint-tickets-placholder.svg
   SvgGenImage get noComplaintTicketsPlacholder => const SvgGenImage(
     'assets/media/images/svg/no-complaint-tickets-placholder.svg',
@@ -571,6 +579,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get privacy =>
       const SvgGenImage('assets/media/images/svg/privacy.svg');
 
+  /// File path: assets/media/images/svg/promotion-icon.svg
+  SvgGenImage get promotionIcon =>
+      const SvgGenImage('assets/media/images/svg/promotion-icon.svg');
+
   /// File path: assets/media/images/svg/rank-icon.svg
   SvgGenImage get rankIcon =>
       const SvgGenImage('assets/media/images/svg/rank-icon.svg');
@@ -582,6 +594,10 @@ class $AssetsMediaImagesSvgGen {
   /// File path: assets/media/images/svg/retry-icon.svg
   SvgGenImage get retryIcon =>
       const SvgGenImage('assets/media/images/svg/retry-icon.svg');
+
+  /// File path: assets/media/images/svg/reward-points-icon.svg
+  SvgGenImage get rewardPointsIcon =>
+      const SvgGenImage('assets/media/images/svg/reward-points-icon.svg');
 
   /// File path: assets/media/images/svg/right-arrow-broken-icon.svg
   SvgGenImage get rightArrowBrokenIcon =>
@@ -704,6 +720,7 @@ class $AssetsMediaImagesSvgGen {
     cardCartMinusBulk,
     cardCartTrashBulk,
     card,
+    chatTypingIcon,
     chat,
     circleAddMoreBrokenIcon,
     clipboard,
@@ -756,6 +773,7 @@ class $AssetsMediaImagesSvgGen {
     masterCardCircle,
     mobile,
     myAddress,
+    myAddresses,
     noComplaintTicketsPlacholder,
     noProductsIcon,
     noSearchResultIcon,
@@ -777,9 +795,11 @@ class $AssetsMediaImagesSvgGen {
     personalInfo,
     pin,
     privacy,
+    promotionIcon,
     rankIcon,
     realSaudiCurrency,
     retryIcon,
+    rewardPointsIcon,
     rightArrowBrokenIcon,
     searchIcon,
     searchNormalIcon,

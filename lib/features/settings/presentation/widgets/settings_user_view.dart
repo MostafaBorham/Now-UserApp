@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
-import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
-import 'package:nowdelivery_user_app/core/presentation/responsive/spacing_extension.dart';
+import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
+import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/auth/viewmodel/logout_vm.dart';
@@ -13,52 +13,29 @@ import 'package:nowdelivery_user_app/features/personal_information/data/models/p
 import 'package:nowdelivery_user_app/features/personal_information/viewmodel/get_profile_vm.dart';
 
 import 'language_bottom_sheet.dart';
-import 'logout_button.dart';
 import 'profile_info.dart';
 import 'profile_info_shimmer.dart';
 import 'settings_section.dart';
 import 'settings_tile.dart';
-import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
+import 'wallet_and_promotion_summary_widget.dart';
 
-/// Logged-in variant of the settings screen body: profile header followed by
-/// the full set of setting groups and the logout action.
-///
-/// Only rendered for [SessionType.user], so it reads `/user/profile` directly
-/// and owns the logout listener (which resets the stack to onboarding on
-/// success). Scrolling is owned by the enclosing `SettingsScreen`.
+/// Signed-in settings with a profile header, balance summary and grouped rows.
 class SettingsUserView extends ConsumerWidget {
   const SettingsUserView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<dynamic>>(logoutProvider, (
-      AsyncValue<dynamic>? previous,
-      AsyncValue<dynamic> next,
-    ) {
-      next.whenOrNull(
-        // Logged out: reset the stack so onboarding is the only screen left.
-        data: (dynamic value) {
-          if (value != null) {
-            context.goNamed(AppRoutes.onBoardingScreen);
-          }
-        },
-        error: (Object error, StackTrace stackTrace) =>
-            AppToast.showError(context, error.toString()),
-      );
-    });
-
-    final bool isLoggingOut = ref.watch(logoutProvider).isLoading;
+    final bool isLoggingOut = ref.watch(
+      logoutProvider.select((state) => state.isLoading),
+    );
     // Fetched once when the session resolves and shared with the Personal
     // Information screen.
-    final AsyncValue<PersonalInformationData> profile =
-        ref.watch(getProfileProvider);
+    final AsyncValue<PersonalInformationData> profile = ref.watch(
+      getProfileProvider,
+    );
 
     return Column(
       children: [
-        // Top spacing lives inside the scroll view so it scrolls up with the
-        // content.
-        const SizedBox(height: 57),
         // While loading, show a same-size shimmer avatar + name bar instead of
         // the default placeholder, then swap in the real picture and name.
         profile.when(
@@ -88,7 +65,9 @@ class SettingsUserView extends ConsumerWidget {
             avatarUrl: data.avatarUrl,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 16),
+        const WalletAndPromotionSummaryWidget(),
+        const SizedBox(height: 24),
         SettingsSection(
           title: LangKeys.general.tr(),
           items: [
@@ -99,8 +78,8 @@ class SettingsUserView extends ConsumerWidget {
                   context.pushNamed(AppRoutes.personalInformationScreen),
             ),
             SettingsItem(
-              iconAsset: Assets.media.images.svg.myAddress.path,
-              label: LangKeys.myAddress.tr(),
+              iconAsset: Assets.media.images.svg.myAddresses.path,
+              label: LangKeys.myAddressesKey.tr(),
               onTap: () => context.pushNamed(AppRoutes.myAddressScreen),
             ),
             SettingsItem(
@@ -120,6 +99,11 @@ class SettingsUserView extends ConsumerWidget {
               onTap: () => context.pushNamed(AppRoutes.discountCodeScreen),
             ),
             SettingsItem(
+              iconAsset: Assets.media.images.svg.rewardPointsIcon.path,
+              iconColor: context.colors.tertiaryContainer,
+              label: LangKeys.rewardPointsKey.tr(),
+            ),
+            SettingsItem(
               iconAsset: Assets.media.images.svg.wallet.path,
               label: LangKeys.myWallet.tr(),
               onTap: () => context.pushNamed(AppRoutes.walletScreen),
@@ -131,7 +115,7 @@ class SettingsUserView extends ConsumerWidget {
           title: LangKeys.supportLabel.tr(),
           items: [
             SettingsItem(
-              iconAsset: Assets.media.images.svg.support.path,
+              iconAsset: Assets.media.images.svg.chatTypingIcon.path,
               label: LangKeys.supportAndComplaintsKey.tr(),
               onTap: () =>
                   context.pushNamed(AppRoutes.supportAndComplaintsScreen),
@@ -153,24 +137,33 @@ class SettingsUserView extends ConsumerWidget {
             ),
           ],
         ),
-        15.hSpace,
-        LogoutButton(
-          isLoading: isLoggingOut,
-          // Confirm first; the dialog closes as soon as the user confirms and
-          // the request's progress is shown on the button itself (the listener
-          // above handles success / failure).
-          onPressed: () => AppCustomAlertDialog.show(
-            context,
-            (BuildContext dialogContext) => AppCustomAlertDialog(
-              title: LangKeys.logout.tr(),
-              message: LangKeys.logoutConfirmationKey.tr(),
-              confirmLabel: LangKeys.logout.tr(),
-              onConfirm: () {
-                Navigator.of(dialogContext).pop();
-                ref.read(logoutProvider.notifier).logout();
-              },
+        const SizedBox(height: 24),
+        SettingsSection(
+          title: LangKeys.dangerZoneKey.tr(),
+          isDanger: true,
+          items: [
+            SettingsItem(
+              iconAsset: Assets.media.images.svg.logout.path,
+              label: LangKeys.logout.tr(),
+              isLoading: isLoggingOut,
+              onTap: () => AppCustomAlertDialog.show(
+                context,
+                (BuildContext dialogContext) => AppCustomAlertDialog(
+                  title: LangKeys.logout.tr(),
+                  message: LangKeys.logoutConfirmationKey.tr(),
+                  confirmLabel: LangKeys.logout.tr(),
+                  onConfirm: () {
+                    dialogContext.pop();
+                    ref.read(logoutProvider.notifier).logout();
+                  },
+                ),
+              ),
             ),
-          ),
+            SettingsItem(
+              iconAsset: Assets.media.images.svg.deleteIcon.path,
+              label: LangKeys.deleteAccountKey.tr(),
+            ),
+          ],
         ),
       ],
     );

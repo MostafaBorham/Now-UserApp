@@ -43,6 +43,7 @@ abstract class LangKeys {
   static const String cartKey = 'cart';
   static const String checkoutKey = 'checkout';
   static const String myAddress = 'myAddress';
+  static const String myAddressesKey = 'myAddresses';
   static const String proActivity = 'promotionalActivity';
   static const String discount = 'discountCode';
   static const String discountCodes = 'discountCodes';
@@ -60,6 +61,11 @@ abstract class LangKeys {
   static const String faqs = 'faqs';
   static const String privacyPolicy = 'privacyPolicy';
   static const String logout = 'logout';
+  static const String rewardPointsKey = 'rewardPoints';
+  static const String rewardPointsBalanceKey = 'rewardPointsBalance';
+  static const String walletBalanceKey = 'walletBalance';
+  static const String dangerZoneKey = 'dangerZone';
+  static const String deleteAccountKey = 'deleteAccount';
 
   // Privacy screen header (static labels; the date comes from the backend)
   static const String privacyEffectiveDate = 'privacyEffectiveDate';

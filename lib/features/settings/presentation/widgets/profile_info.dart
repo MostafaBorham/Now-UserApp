@@ -17,7 +17,7 @@ class ProfileInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ProfileAvatar(size: 140, imageUrl: avatarUrl, fullScreenOnTap: true),
+        ProfileAvatar(size: 120, imageUrl: avatarUrl, fullScreenOnTap: true),
         const SizedBox(height: 14),
         Text(
           name,
