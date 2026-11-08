@@ -9,6 +9,7 @@ class AppTabBar extends StatelessWidget {
     required this.views,
     required this.selectedTabColor,
     this.tabIcons,
+    this.isScrollable = false,
   }) : assert(
          tabIcons == null || tabIcons.length == tabs.length,
          'tabIcons must be null or the same length as tabs',
@@ -17,6 +18,7 @@ class AppTabBar extends StatelessWidget {
   final List<String> tabs;
   final List<Widget> views;
   final Color selectedTabColor;
+  final bool isScrollable;
 
   /// Optional prefix icon for each tab. Pass `null` at an index to omit that
   /// tab's icon while keeping icons on others. Must match `tabs.length` when
@@ -32,6 +34,7 @@ class AppTabBar extends StatelessWidget {
         spacing: 16,
         children: [
           Container(
+            width: double.infinity,
             height: 49,
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -39,6 +42,8 @@ class AppTabBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(29),
             ),
             child: TabBar(
+              isScrollable: isScrollable,
+              tabAlignment: isScrollable ? TabAlignment.start : null,
               dividerColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
               overlayColor: WidgetStatePropertyAll(Colors.transparent),
@@ -76,7 +81,7 @@ class AppTabBar extends StatelessWidget {
                         ),
                       Text(
                         tabs[i],
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

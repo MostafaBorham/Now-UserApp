@@ -391,6 +391,34 @@
   "subtotal": "Subtotal",
   "successTitle": "Success",
   "support": "Support",
+  "supportAndComplaints": "Support and Complaints",
+  "noComplaintTickets": "No tickets yet",
+  "complaintProcessing": "Processing",
+  "complaintUnderReview": "Under review",
+  "complaintClosed": "Closed",
+  "complaintRejected": "Rejected",
+  "complaintDemoTickets": {
+    "TK-10234": {
+      "title": "Order delivery is running late",
+      "reply": "Support team: Your order will arrive before 6 PM today.",
+      "time": "2 hours ago"
+    },
+    "TK-10229": {
+      "title": "Update the order delivery address",
+      "reply": "You: I'd like to change the building number to 12.",
+      "time": "3 hours ago"
+    },
+    "TK-10218": {
+      "title": "Refund a duplicate payment",
+      "reply": "Support team: We're reviewing the payment with the bank.",
+      "time": "Yesterday"
+    },
+    "TK-10186": {
+      "title": "Unable to update the phone number",
+      "reply": "Support team: Your number has been updated.",
+      "time": "Nov 5"
+    }
+  },
   "supportMessageHint": "Write Your Message Here..",
   "attachPhotos": "Attach photos",
   "supportTitle": "Support",

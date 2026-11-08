@@ -397,6 +397,34 @@
   "subtotal": "المجموع الفرعي",
   "successTitle": "تم بنجاح",
   "support": "الدعم",
+  "supportAndComplaints": "الدعم و الشكاوى",
+  "noComplaintTickets": "لا توجد تذاكر بعد",
+  "complaintProcessing": "قيد المعالجة",
+  "complaintUnderReview": "قيد المراجعة",
+  "complaintClosed": "مغلقة",
+  "complaintRejected": "مرفوضة",
+  "complaintDemoTickets": {
+    "TK-10234": {
+      "title": "تأخر توصيل الطلب عن الموعد المحدد",
+      "reply": "فريق الدعم: سيصلك طلبك اليوم قبل ٦ مساءً.",
+      "time": "منذ ساعتين"
+    },
+    "TK-10229": {
+      "title": "تحديث عنوان توصيل الطلب",
+      "reply": "أنتِ: أود تعديل رقم المبنى إلى ١٢.",
+      "time": "منذ ٣ ساعات"
+    },
+    "TK-10218": {
+      "title": "استرداد مبلغ عملية دفع مكررة",
+      "reply": "فريق الدعم: جارٍ مراجعة العملية مع البنك.",
+      "time": "أمس"
+    },
+    "TK-10186": {
+      "title": "تعذّر تحديث رقم الهاتف",
+      "reply": "فريق الدعم: تم تحديث رقمك بنجاح.",
+      "time": "٥ نوفمبر"
+    }
+  },
   "supportMessageHint": "اكتب رسالتك هنا..",
   "attachPhotos": "إرفاق صور",
   "supportTitle": "خدمة العملاء",

@@ -49,6 +49,13 @@ abstract class LangKeys {
   static const String descriptionKey = 'description';
   static const String myWallet = 'myWallet';
   static const String supportLabel = 'support';
+  static const String supportAndComplaintsKey = 'supportAndComplaints';
+  static const String noComplaintTicketsKey = 'noComplaintTickets';
+  static const String complaintProcessingKey = 'complaintProcessing';
+  static const String complaintUnderReviewKey = 'complaintUnderReview';
+  static const String complaintClosedKey = 'complaintClosed';
+  static const String complaintRejectedKey = 'complaintRejected';
+  static const String complaintDemoTicketsKey = 'complaintDemoTickets';
   static const String liveChat = 'liveChat';
   static const String faqs = 'faqs';
   static const String privacyPolicy = 'privacyPolicy';

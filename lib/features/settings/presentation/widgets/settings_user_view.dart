@@ -131,6 +131,12 @@ class SettingsUserView extends ConsumerWidget {
           title: LangKeys.supportLabel.tr(),
           items: [
             SettingsItem(
+              iconAsset: Assets.media.images.svg.support.path,
+              label: LangKeys.supportAndComplaintsKey.tr(),
+              onTap: () =>
+                  context.pushNamed(AppRoutes.supportAndComplaintsScreen),
+            ),
+            SettingsItem(
               iconAsset: Assets.media.images.svg.liveChat.path,
               label: LangKeys.liveChat.tr(),
               onTap: () => context.pushNamed(AppRoutes.supportScreen),
