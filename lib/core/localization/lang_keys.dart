@@ -304,6 +304,13 @@ abstract class LangKeys {
   static const String cancelOrderWarningKey = 'cancelOrderWarning';
   static const String yesCancelOrderKey = 'yesCancelOrder';
   static const String keepOrderKey = 'keepOrder';
+  static const String chooseCancelReasonKey = 'chooseCancelReason';
+  static const String cancelReasonNoLongerNeededKey = 'cancelReasonNoLongerNeeded';
+  static const String cancelReasonBetterPriceKey = 'cancelReasonBetterPrice';
+  static const String cancelReasonOrderedByMistakeKey =
+      'cancelReasonOrderedByMistake';
+  static const String cancelReasonChangeItemsKey = 'cancelReasonChangeItems';
+  static const String cancelReasonOtherHintKey = 'cancelReasonOtherHint';
   static const String orderCanceledTitleKey = 'orderCanceledTitle';
   static const String orderCanceledSubtitleKey = 'orderCanceledSubtitle';
   static const String continueShoppingKey = 'continueShopping';

@@ -4,26 +4,9 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
 
-/// Success state shown inside the Cancel Order bottom sheet once the order is
-/// canceled: confirms it and offers to keep shopping or review orders.
-/// It renders only the sheet's body — the hosting [CancelSheetScaffold]
-/// supplies the drag handle, title and close button — so the flow swaps this in
-/// place of the confirmation view without opening a second sheet.
 class OrderCanceledView extends StatelessWidget {
-  const OrderCanceledView({
-    super.key,
-    required this.onContinueShopping,
-    required this.onViewOrders,
-  });
-
-  /// Dismisses the sheet, returning to the (now cancelled) order.
-  final VoidCallback onContinueShopping;
-
-  /// Resets the navigation stack to the Main screen on the My Orders tab.
-  final VoidCallback onViewOrders;
+  const OrderCanceledView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +15,11 @@ class OrderCanceledView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 8),
         Center(child: Assets.media.images.svg.orderDone.svg()),
         const SizedBox(height: 24),
         Text(
           LangKeys.orderCanceledTitleKey.tr(),
           textAlign: TextAlign.center,
-          maxLines: 2,
           style: AppTextStyles.style20Bold.copyWith(
             color: colors.black,
             fontSize: 22,
@@ -48,24 +29,11 @@ class OrderCanceledView extends StatelessWidget {
         Text(
           LangKeys.orderCanceledSubtitleKey.tr(),
           textAlign: TextAlign.center,
-          maxLines: 2,
+          overflow: TextOverflow.visible,
           style: AppTextStyles.style14Regular.copyWith(
             color: const Color(0xFF666666),
           ),
         ),
-        const SizedBox(height: 32),
-        PrimaryAppButton(
-          title: LangKeys.continueShoppingKey.tr(),
-          onTap: onContinueShopping,
-        ),
-        const SizedBox(height: 12),
-        UnPrimaryAppButton(
-          title: LangKeys.viewOrdersKey.tr(),
-          side: BorderSide(color: colors.neutral200),
-          titleColor: colors.black,
-          onTap: onViewOrders,
-        ),
-        const SizedBox(height: 8),
       ],
     );
   }

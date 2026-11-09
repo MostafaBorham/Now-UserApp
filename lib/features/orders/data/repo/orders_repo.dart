@@ -86,6 +86,7 @@ class OrdersRepo {
 
   Future<Either<Failure, Unit>> cancelOrder({
     required String orderUuid,
+    required String reason,
   }) async {
     if (!await ConnectionChecker.isConnected) {
       return const Left(Failure(LangKeys.noInternetConnectionKey));
@@ -94,6 +95,7 @@ class OrdersRepo {
     try {
       final Response response = await _ordersApiService.cancelOrder(
         orderUuid: orderUuid,
+        reason: reason,
       );
 
       return readApiResponse(response).map((_) => unit);

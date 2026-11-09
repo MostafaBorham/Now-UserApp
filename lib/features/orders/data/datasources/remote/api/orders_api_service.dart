@@ -39,9 +39,13 @@ class OrdersApiService {
     );
   }
 
-  Future<Response> cancelOrder({required String orderUuid}) {
+  Future<Response> cancelOrder({
+    required String orderUuid,
+    required String reason,
+  }) {
     return _dio.put(
       OrdersEndpoints.cancelOrder(orderUuid),
+      data: <String, String>{'reason': reason},
       cancelToken: _canceller.token,
     );
   }

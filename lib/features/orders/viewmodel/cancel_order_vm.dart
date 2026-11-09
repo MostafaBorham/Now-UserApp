@@ -9,7 +9,7 @@ import 'package:nowdelivery_user_app/features/orders/viewmodel/get_order_details
 /// Nothing is requested when first watched — cancelling is a user action — so
 /// the notifier starts idle (`AsyncValue.data(null)`) and the Cancel Order sheet
 /// triggers it with
-/// `ref.read(cancelOrderProvider(uuid).notifier).cancelOrder()`, watching the
+/// `ref.read(cancelOrderProvider(uuid).notifier).cancelOrder(reason: reason)`, watching the
 /// loading slice to drive the button spinner.
 ///
 /// On success the order details (this uuid's family entry) are refetched, and
@@ -42,11 +42,12 @@ class CancelOrderViewModel extends StateNotifier<AsyncValue<void>> {
     super.dispose();
   }
 
-  Future<String?> cancelOrder() async {
+  Future<String?> cancelOrder({required String reason}) async {
     state = const AsyncValue<void>.loading();
 
     final Either<Failure, Unit> result = await _repo.cancelOrder(
       orderUuid: orderUuid,
+      reason: reason,
     );
 
     if (!mounted) return null;

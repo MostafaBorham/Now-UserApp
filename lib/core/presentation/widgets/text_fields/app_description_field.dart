@@ -11,11 +11,13 @@ class AppDescriptionField extends StatelessWidget {
     super.key,
     required this.hintTxt,
     this.controller,
+    this.focusNode,
     this.maxLength,
     this.inputFormatters,
   });
   final String hintTxt;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   /// Stops typing at this many characters and counts them underneath.
   final int? maxLength;
@@ -32,6 +34,7 @@ class AppDescriptionField extends StatelessWidget {
           TextFormField(
             contextMenuBuilder: appContextMenuBuilder,
             controller: controller,
+            focusNode: focusNode,
             maxLines: 4,
             maxLength: maxLength,
             inputFormatters: inputFormatters,
