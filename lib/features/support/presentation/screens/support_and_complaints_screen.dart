@@ -197,76 +197,90 @@ class _TicketCard extends StatelessWidget {
       color: _mutedText,
     );
 
-    return Container(
-      padding: const EdgeInsets.all(9),
-      decoration: BoxDecoration(
-        color: colors.primaryFixed,
-        border: Border.all(color: colors.neutral200),
+    return Material(
+      color: colors.primaryFixed,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: colors.neutral200),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4,
-        children: [
-          Row(
+      child: InkWell(
+        onTap: () => context.pushNamed(AppRoutes.complaintTicketDetailsScreen),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 4,
             children: [
-              Expanded(
-                child: Text(
-                  number.isEmpty || number.startsWith('#')
-                      ? number
-                      : '#$number',
-                  textDirection: TextDirection.ltr,
-                  textAlign: Directionality.of(context) == TextDirection.rtl
-                      ? TextAlign.right
-                      : TextAlign.left,
-                  maxLines: 1,
-                  style: AppTextStyles.style12SemiBold.copyWith(
-                    height: 22 / 12,
-                    color: _mutedText,
-                  ),
-                ),
-              ),
-              DecoratedBox(
-                decoration: ShapeDecoration(
-                  color: (status.tint ?? status.color).withValues(alpha: 0.1),
-                  shape: const StadiumBorder(),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
-                  child: Text(
-                    status.label.tr(),
-                    style: AppTextStyles.style12SemiBold.copyWith(
-                      height: 22 / 12,
-                      color: status.color,
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      number.isEmpty || number.startsWith('#')
+                          ? number
+                          : '#$number',
+                      textDirection: TextDirection.ltr,
+                      textAlign: Directionality.of(context) == TextDirection.rtl
+                          ? TextAlign.right
+                          : TextAlign.left,
+                      maxLines: 1,
+                      style: AppTextStyles.style12SemiBold.copyWith(
+                        height: 22 / 12,
+                        color: _mutedText,
+                      ),
                     ),
                   ),
-                ),
+                  DecoratedBox(
+                    decoration: ShapeDecoration(
+                      color: (status.tint ?? status.color).withValues(
+                        alpha: 0.1,
+                      ),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
+                      child: Text(
+                        status.label.tr(),
+                        style: AppTextStyles.style12SemiBold.copyWith(
+                          height: 22 / 12,
+                          color: status.color,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                ticket.title,
+                maxLines: 2,
+                style:
+                    (status == ComplaintTicketStatus.processing
+                            ? AppTextStyles.style14Bold
+                            : AppTextStyles.style14Regular)
+                        .copyWith(height: 26 / 14, color: colors.neutral1200),
+              ),
+              Row(
+                spacing: 6,
+                children: [
+                  Expanded(
+                    child: Text(ticket.reply, maxLines: 1, style: caption),
+                  ),
+                  if (ticket.timeLabel.isNotEmpty) ...[
+                    const Icon(
+                      Icons.schedule_rounded,
+                      size: 14,
+                      color: _mutedText,
+                    ),
+                    Text(ticket.timeLabel, style: caption),
+                  ],
+                ],
               ),
             ],
           ),
-          Text(
-            ticket.title,
-            maxLines: 2,
-            style:
-                (status == ComplaintTicketStatus.processing
-                        ? AppTextStyles.style14Bold
-                        : AppTextStyles.style14Regular)
-                    .copyWith(height: 26 / 14, color: colors.neutral1200),
-          ),
-          Row(
-            spacing: 6,
-            children: [
-              Expanded(child: Text(ticket.reply, maxLines: 1, style: caption)),
-              if (ticket.timeLabel.isNotEmpty) ...[
-                const Icon(Icons.schedule_rounded, size: 14, color: _mutedText),
-                Text(ticket.timeLabel, style: caption),
-              ],
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

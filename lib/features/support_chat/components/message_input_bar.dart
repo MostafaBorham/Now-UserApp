@@ -11,9 +11,8 @@ import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.da
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/input_direction.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/text_fields/app_context_menu.dart';
 
-/// Bottom message composer: the attach button, a text field that grows up to
-/// five lines, and the green send button, with the photos waiting to be sent
-/// above them.
+/// Bottom message composer with an attachment picker, photo previews, and a
+/// text field.
 ///
 /// The send button is drawn straight from `send.svg` (which already includes
 /// its own green circle), mirrored in right-to-left layouts.
@@ -25,6 +24,7 @@ class MessageInputBar extends StatelessWidget {
     this.onAttach,
     this.photos = const <String>[],
     this.onRemovePhoto,
+    this.inlinePhotos = false,
   });
 
   final TextEditingController? controller;
@@ -35,12 +35,51 @@ class MessageInputBar extends StatelessWidget {
   final List<String> photos;
   final ValueChanged<int>? onRemovePhoto;
 
+  /// Show photos inside the input border above a single line of text.
+  final bool inlinePhotos;
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     final OutlineInputBorder border = OutlineInputBorder(
       borderRadius: AppBorderRadius.brCircular6,
       borderSide: BorderSide(color: colors.neutral400),
+    );
+    final fieldBorder = inlinePhotos ? InputBorder.none : border;
+    final pendingPhotos = photos.isEmpty
+        ? null
+        : _PendingPhotos(photos: photos, onRemove: onRemovePhoto);
+    final messageField = InputDirectionBuilder(
+      controller: controller,
+      builder: (context, typedDirection) => TextField(
+        contextMenuBuilder: appContextMenuBuilder,
+        controller: controller,
+        minLines: 1,
+        maxLines: inlinePhotos ? 1 : 5,
+        maxLength: 4000,
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+        keyboardType: inlinePhotos
+            ? TextInputType.text
+            : TextInputType.multiline,
+        textInputAction: TextInputAction.send,
+        textDirection: typedDirection,
+        onSubmitted: (_) => onSend?.call(),
+        style: TextStyle(fontSize: 16, color: colors.tertiaryContainer),
+        decoration: InputDecoration(
+          isDense: true,
+          // A 24 px line with 19 px of padding on both sides.
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 19,
+          ),
+          border: fieldBorder,
+          enabledBorder: fieldBorder,
+          focusedBorder: fieldBorder,
+          counterText: '',
+          hintText: LangKeys.supportMessageHintKey.tr(),
+          hintStyle: TextStyle(fontSize: 16, color: colors.neutral300),
+        ),
+      ),
     );
 
     return Container(
@@ -58,8 +97,7 @@ class MessageInputBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 12,
             children: [
-              if (photos.isNotEmpty)
-                _PendingPhotos(photos: photos, onRemove: onRemovePhoto),
+              if (!inlinePhotos && pendingPhotos != null) pendingPhotos,
               Row(
                 spacing: 12,
                 children: [
@@ -80,44 +118,31 @@ class MessageInputBar extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: InputDirectionBuilder(
-                      controller: controller,
-                      builder: (context, typedDirection) => TextField(
-                        contextMenuBuilder: appContextMenuBuilder,
-                        controller: controller,
-                        minLines: 1,
-                        maxLines: 5,
-                        maxLength: 4000,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.send,
-                        textDirection: typedDirection,
-                        onSubmitted: (_) => onSend?.call(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: colors.tertiaryContainer,
-                        ),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          // 62 px for one line, as designed: Figma's 16 px
-                          // padding sits around Cairo's 30 px line, the
-                          // theme's line is 24.
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 19,
-                          ),
-                          border: border,
-                          enabledBorder: border,
-                          focusedBorder: border,
-                          counterText: '',
-                          hintText: LangKeys.supportMessageHintKey.tr(),
-                          hintStyle: TextStyle(
-                            fontSize: 16,
-                            color: colors.neutral300,
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: inlinePhotos
+                        ? DecoratedBox(
+                            decoration: ShapeDecoration(shape: border),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (pendingPhotos != null)
+                                  TextFieldTapRegion(
+                                    child: ClipRect(
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          8,
+                                          12,
+                                          0,
+                                        ),
+                                        child: pendingPhotos,
+                                      ),
+                                    ),
+                                  ),
+                                messageField,
+                              ],
+                            ),
+                          )
+                        : messageField,
                   ),
                   // Part of the field for tap-outside, so sending keeps the
                   // keyboard up for the next message.

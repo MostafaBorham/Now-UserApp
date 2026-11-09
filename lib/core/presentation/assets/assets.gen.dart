@@ -299,6 +299,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get closeSquareIcon =>
       const SvgGenImage('assets/media/images/svg/close-square-icon.svg');
 
+  /// File path: assets/media/images/svg/complaint-ticket-info.svg
+  SvgGenImage get complaintTicketInfo =>
+      const SvgGenImage('assets/media/images/svg/complaint-ticket-info.svg');
+
   /// File path: assets/media/images/svg/copy.svg
   SvgGenImage get copy => const SvgGenImage('assets/media/images/svg/copy.svg');
 
@@ -725,6 +729,7 @@ class $AssetsMediaImagesSvgGen {
     circleAddMoreBrokenIcon,
     clipboard,
     closeSquareIcon,
+    complaintTicketInfo,
     copy,
     currentLocationIcon,
     date,

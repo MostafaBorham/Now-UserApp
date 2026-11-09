@@ -47,6 +47,7 @@ import 'package:nowdelivery_user_app/features/settings/presentation/screens/faq_
 import 'package:nowdelivery_user_app/features/settings/data/models/faq_model.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/support_faqs_screen.dart';
 import 'package:nowdelivery_user_app/features/support/presentation/screens/support_and_complaints_screen.dart';
+import 'package:nowdelivery_user_app/features/support/presentation/screens/complaint_ticket_details_screen.dart';
 import 'package:nowdelivery_user_app/features/settings/presentation/screens/privacy_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/all_stores_screen.dart';
 import 'package:nowdelivery_user_app/features/stores/presentation/screens/store_details_screen.dart';
@@ -499,6 +500,13 @@ abstract class AppRouter {
         path: '/${AppRoutes.supportAndComplaintsScreen}',
         redirect: _redirectToLogin,
         builder: (context, state) => const SupportAndComplaintsScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoutes.complaintTicketDetailsScreen,
+            path: AppRoutes.complaintTicketDetailsScreen,
+            builder: (context, state) => const ComplaintTicketDetailsScreen(),
+          ),
+        ],
       ),
       GoRoute(
         name: AppRoutes.faqScreen,
