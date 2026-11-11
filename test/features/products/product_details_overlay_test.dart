@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cards/product_item_card1.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/primary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/buttons/unprimary_app_button.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/sliders/app_slider.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/routing/app_router.dart';
 import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
@@ -21,6 +24,8 @@ import 'package:nowdelivery_user_app/features/products/presentation/providers/pr
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_overlay.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_body.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_header.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_slider.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
 
 import '../../helpers/categories_test_harness.dart';
@@ -42,12 +47,13 @@ const _products = [
 ];
 
 class _DetailsVm extends GetProductDetailsViewModel {
-  _DetailsVm(String slug, {bool longDetails = false})
+  _DetailsVm(String slug, {bool longDetails = false, bool withGallery = false})
     : super(
         AsyncData(
           _products
               .firstWhere((product) => product.slug == slug)
               .copyWith(
+                images: withGallery ? ['', ''] : null,
                 mainFeatures: longDetails
                     ? List.generate(
                         30,
@@ -74,13 +80,18 @@ void main() {
     WidgetTester tester,
     Widget source, {
     bool longDetails = false,
+    bool withGallery = false,
   }) async {
     await pumpCategoriesScreen(
       tester,
       Scaffold(body: source),
       overrides: [
         getProductDetailsProvider.overrideWith(
-          (ref, slug) => _DetailsVm(slug, longDetails: longDetails),
+          (ref, slug) => _DetailsVm(
+            slug,
+            longDetails: longDetails,
+            withGallery: withGallery,
+          ),
         ),
         getCartProvider.overrideWith(
           (ref) => GetCartViewModel(const AsyncData(CartModel())),
@@ -118,6 +129,120 @@ void main() {
         listen: false,
       );
 
+  ScrollController detailsScroll(WidgetTester tester) => tester
+      .widget<CustomScrollView>(
+        find.descendant(
+          of: page('two'),
+          matching: find.byType(CustomScrollView),
+        ),
+      )
+      .controller!;
+
+  testWidgets('scroll grows the card before moving or fading its content', (
+    tester,
+  ) async {
+    await pumpSource(tester, openButton(), longDetails: true);
+    await tester.tap(find.text('Open second'));
+    await tester.pumpAndSettle();
+    final surface = find.byKey(const ValueKey('product-details-surface-1'));
+    final header = find.descendant(
+      of: page('two'),
+      matching: find.byType(ProductImagesHeader),
+    );
+    final original = tester.getRect(surface);
+    final extent = 844 - original.height;
+    final scroll = detailsScroll(tester);
+
+    for (final offset in [extent / 2, extent]) {
+      scroll.jumpTo(offset);
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(surface).height,
+        closeTo(original.height + offset, 0.01),
+      );
+      expect(
+        tester.getTopLeft(header).dy,
+        closeTo(tester.getTopLeft(surface).dy, 0.01),
+      );
+      expect(tester.widget<ProductImagesHeader>(header).fadeProgress.value, 0);
+    }
+
+    scroll.jumpTo(extent + 40);
+    await tester.pumpAndSettle();
+    expect(tester.getSize(surface).height, 844);
+    expect(tester.getTopLeft(header).dy, closeTo(-40, 0.01));
+    expect(
+      tester.widget<ProductImagesHeader>(header).fadeProgress.value,
+      greaterThan(0),
+    );
+    scroll.jumpTo(extent / 2);
+    await tester.pumpAndSettle();
+    expect(tester.widget<ProductImagesHeader>(header).fadeProgress.value, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'resizing preserves the gallery and scales action button heights',
+    (tester) async {
+      await pumpSource(tester, openButton(), withGallery: true);
+      await tester.tap(find.text('Open second'));
+      await tester.pumpAndSettle();
+      final gallery = find.descendant(
+        of: find.descendant(
+          of: page('two'),
+          matching: find.byType(ProductImagesSlider),
+        ),
+        matching: find.byType(AppSlider),
+      );
+      final galleryState = tester.state(gallery);
+      final galleryWidget = tester.widget(gallery);
+      final gallerySize = tester.getSize(gallery);
+      final carousel = tester
+          .widget<PageView>(
+            find.descendant(of: gallery, matching: find.byType(PageView)),
+          )
+          .controller!;
+      carousel.jumpToPage(carousel.page!.round() + 1);
+      await tester.pumpAndSettle();
+      final imagePage = carousel.page;
+      final addButton = find.descendant(
+        of: page('two'),
+        matching: find.byType(PrimaryAppButton),
+      );
+      final buyButton = find.descendant(
+        of: page('two'),
+        matching: find.byType(UnPrimaryAppButton),
+      );
+      final addSize = tester.getSize(addButton);
+      final buySize = tester.getSize(buyButton);
+      final scroll = detailsScroll(tester);
+      final surface = find.byKey(const ValueKey('product-details-surface-1'));
+      final extent = 844 - tester.getSize(surface).height;
+
+      for (final offset in [extent / 2, extent]) {
+        scroll.jumpTo(offset);
+        await tester.pumpAndSettle();
+        expect(tester.state(gallery), same(galleryState));
+        expect(tester.widget(gallery), same(galleryWidget));
+        expect(tester.getSize(gallery), gallerySize);
+        expect(carousel.page, imagePage);
+        final resizedAdd = tester.getSize(addButton);
+        final resizedBuy = tester.getSize(buyButton);
+        expect(resizedAdd.height, greaterThan(addSize.height));
+        expect(resizedAdd.height, closeTo(resizedBuy.height, 0.01));
+        expect(
+          resizedAdd.width / resizedAdd.height,
+          closeTo(addSize.width / addSize.height, 0.01),
+        );
+        expect(
+          resizedBuy.width / resizedBuy.height,
+          closeTo(buySize.width / buySize.height, 0.01),
+        );
+      }
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'scroll expands to full screen and reverses at the same offsets',
     (tester) async {
@@ -129,10 +254,10 @@ void main() {
       final surface = find.byKey(const ValueKey('product-details-surface-1'));
       final original = tester.getRect(surface);
       final scroll = tester
-          .widgetList<SingleChildScrollView>(
+          .widgetList<CustomScrollView>(
             find.descendant(
               of: page('two'),
-              matching: find.byType(SingleChildScrollView),
+              matching: find.byType(CustomScrollView),
             ),
           )
           .singleWhere((view) => view.controller != null)
@@ -231,10 +356,7 @@ void main() {
     final surface = find.byKey(const ValueKey('product-details-surface-1'));
     final original = tester.getRect(surface);
     final scroll = find
-        .descendant(
-          of: page('two'),
-          matching: find.byType(SingleChildScrollView),
-        )
+        .descendant(of: page('two'), matching: find.byType(CustomScrollView))
         .first;
     await tester.drag(scroll, const Offset(0, -300));
     await tester.pumpAndSettle();

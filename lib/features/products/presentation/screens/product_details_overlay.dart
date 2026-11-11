@@ -26,8 +26,6 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
     viewportFraction: 0.9,
   );
 
-  // The first 160 logical pixels of each product's scroll expand the card.
-  static const double _expansionScrollExtent = 160;
   final Map<int, double> _scrollOffsets = {};
   final Map<int, double> _scrollProgress = {};
   final ValueNotifier<int> _scrollRevision = ValueNotifier(0);
@@ -50,7 +48,11 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
         (_scrollProgress[end] ?? 0) * fraction;
   }
 
-  bool _onDetailsScroll(int index, ScrollNotification notification) {
+  bool _onDetailsScroll(
+    int index,
+    double expansionExtent,
+    ScrollNotification notification,
+  ) {
     if (notification.depth != 0 ||
         notification.metrics.axis != Axis.vertical ||
         (notification is! ScrollUpdateNotification &&
@@ -62,13 +64,12 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
     final delta = notification is ScrollUpdateNotification
         ? notification.scrollDelta ?? 0
         : (notification as OverscrollNotification).overscroll;
-    final maxOffset =
-        notification.metrics.maxScrollExtent > _expansionScrollExtent
+    final maxOffset = notification.metrics.maxScrollExtent > expansionExtent
         ? notification.metrics.maxScrollExtent
-        : _expansionScrollExtent;
+        : expansionExtent;
     final offset = ((_scrollOffsets[index] ?? 0) + delta).clamp(0.0, maxOffset);
     _scrollOffsets[index] = offset;
-    final progress = (offset / _expansionScrollExtent).clamp(0.0, 1.0);
+    final progress = (offset / expansionExtent).clamp(0.0, 1.0);
     if (_scrollProgress[index] != progress) {
       _scrollProgress[index] = progress;
       _scrollRevision.value++;
@@ -87,67 +88,75 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
   Widget build(BuildContext context) {
     final insets = MediaQuery.viewPaddingOf(context);
     return LayoutBuilder(
-      builder: (context, constraints) => AnimatedBuilder(
-        animation: _geometry,
-        builder: (context, child) {
-          final progress = _expansion;
-          // Keep the same PageController and page states while widening its
-          // viewport. At full expansion the 0.9 page fills the screen exactly.
-          final width = constraints.maxWidth * (1 + (1 / 0.9 - 1) * progress);
-          return ClipRect(
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: (insets.top + 16) * (1 - progress),
-                bottom: (insets.bottom + 16) * (1 - progress),
-              ),
-              child: OverflowBox(
-                minWidth: width,
-                maxWidth: width,
-                child: child,
-              ),
-            ),
-          );
-        },
-        child: PageView.builder(
-          controller: _controller,
-          itemCount: widget.productSlugs.length,
-          itemBuilder: (context, index) => AnimatedBuilder(
-            animation: _geometry,
-            builder: (context, child) {
-              final progress = _expansion;
-              final distance = (_page - index).abs().clamp(0.0, 1.0);
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 4 * (1 - progress),
-                  vertical: 24 * distance,
+      builder: (context, constraints) {
+        // One pixel of scroll adds one pixel of height until the card fills
+        // the screen. The body reserves this travel before scrolling content.
+        final expansionExtent = insets.vertical + 32;
+        return AnimatedBuilder(
+          animation: _geometry,
+          builder: (context, child) {
+            final progress = _expansion;
+            // Keep the same PageController and page states while widening its
+            // viewport. At full expansion the 0.9 page fills the screen exactly.
+            final width = constraints.maxWidth * (1 + (1 / 0.9 - 1) * progress);
+            return ClipRect(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: (insets.top + 16) * (1 - progress),
+                  bottom: (insets.bottom + 16) * (1 - progress),
                 ),
-                child: Material(
-                  key: ValueKey('product-details-surface-$index'),
-                  color: context.colors.white,
-                  borderRadius: BorderRadius.circular(24 * (1 - progress)),
-                  clipBehavior: Clip.antiAlias,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: insets.top * progress,
-                      bottom: insets.bottom * progress,
-                    ),
-                    child: child,
+                child: OverflowBox(
+                  minWidth: width,
+                  maxWidth: width,
+                  child: child,
+                ),
+              ),
+            );
+          },
+          child: PageView.builder(
+            key: const ValueKey('product-details-pager'),
+            controller: _controller,
+            itemCount: widget.productSlugs.length,
+            itemBuilder: (context, index) => AnimatedBuilder(
+              animation: _geometry,
+              builder: (context, child) {
+                final progress = _expansion;
+                final distance = (_page - index).abs().clamp(0.0, 1.0);
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4 * (1 - progress),
+                    vertical: 24 * distance,
                   ),
+                  child: Material(
+                    key: ValueKey('product-details-surface-$index'),
+                    color: context.colors.white,
+                    borderRadius: BorderRadius.circular(24 * (1 - progress)),
+                    clipBehavior: Clip.antiAlias,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: insets.top * progress,
+                        bottom: insets.bottom * progress,
+                      ),
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) =>
+                    _onDetailsScroll(index, expansionExtent, notification),
+                child: ProductDetailsBody(
+                  key: ValueKey(widget.productSlugs[index]),
+                  productSlug: widget.productSlugs[index],
+                  showCloseButton: true,
+                  expansionScrollExtent: expansionExtent,
+                  imageViewportSize: constraints.biggest,
                 ),
-              );
-            },
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (notification) =>
-                  _onDetailsScroll(index, notification),
-              child: ProductDetailsBody(
-                key: ValueKey(widget.productSlugs[index]),
-                productSlug: widget.productSlugs[index],
-                showCloseButton: true,
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

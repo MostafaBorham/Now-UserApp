@@ -95,36 +95,48 @@ class ProductActionButtons extends ConsumerWidget {
       );
     });
 
-    final Widget buttons = Row(
-      spacing: 10,
-      children: [
-        Expanded(
-          flex: 2,
-          child: PrimaryAppButton(
-            titleStyle: AppTextStyles.style14Medium,
-            isLoading: isAddingToCart,
-            isDisabled: cartIsFull,
-            onTap: () => add(buyNow: false),
-            title: LangKeys.addToCartKey.tr(),
-            buttonRadius: 8,
-            prefixIcon: ReverseWidget(
-              child: Assets.media.images.svg.shoppingCartIcon.svg(
-                width: 20,
-                colorFilter: ColorFilter.mode(colors.white, BlendMode.srcIn),
+    final Widget buttons = LayoutBuilder(
+      builder: (context, constraints) {
+        // The 2:1 button widths share a height, scaled from the 390px design.
+        // At that width the row is 358px, including its 10px gap.
+        final height = (constraints.maxWidth - 10) * 54 / 348;
+        return Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              flex: 2,
+              child: PrimaryAppButton(
+                buttonHeight: height,
+                titleStyle: AppTextStyles.style14Medium,
+                isLoading: isAddingToCart,
+                isDisabled: cartIsFull,
+                onTap: () => add(buyNow: false),
+                title: LangKeys.addToCartKey.tr(),
+                buttonRadius: 8,
+                prefixIcon: ReverseWidget(
+                  child: Assets.media.images.svg.shoppingCartIcon.svg(
+                    width: 20,
+                    colorFilter: ColorFilter.mode(
+                      colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        Expanded(
-          child: UnPrimaryAppButton(
-            isLoading: isBuyNowLoading,
-            title: LangKeys.buyNowKey.tr(),
-            titleColor: cartIsFull ? colors.neutral500 : null,
-            side: cartIsFull ? BorderSide(color: colors.neutral200) : null,
-            onTap: cartIsFull ? null : () => add(buyNow: true),
-          ),
-        ),
-      ],
+            Expanded(
+              child: UnPrimaryAppButton(
+                buttonHeight: height,
+                isLoading: isBuyNowLoading,
+                title: LangKeys.buyNowKey.tr(),
+                titleColor: cartIsFull ? colors.neutral500 : null,
+                side: cartIsFull ? BorderSide(color: colors.neutral200) : null,
+                onTap: cartIsFull ? null : () => add(buyNow: true),
+              ),
+            ),
+          ],
+        );
+      },
     );
 
     return Padding(

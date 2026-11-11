@@ -15,6 +15,7 @@ class PrimaryAppButton extends StatelessWidget {
     this.buttonColor,
     this.buttonRadius = 8,
     this.compact = false,
+    this.buttonHeight,
   });
 
   /// The one height every full-width button in the app shares.
@@ -27,6 +28,7 @@ class PrimaryAppButton extends StatelessWidget {
 
   /// Uses [compactHeight] instead of [height].
   final bool compact;
+  final double? buttonHeight;
   final VoidCallback? onTap;
   final double buttonRadius;
 
@@ -71,7 +73,9 @@ class PrimaryAppButton extends StatelessWidget {
         ).style.merge(titleStyle ?? AppTextStyles.style18SemiBold),
         padding: const EdgeInsets.symmetric(horizontal: 14),
         minimumSize: const Size.fromHeight(0),
-        fixedSize: Size.fromHeight(compact ? compactHeight : height),
+        fixedSize: Size.fromHeight(
+          buttonHeight ?? (compact ? compactHeight : height),
+        ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(buttonRadius),

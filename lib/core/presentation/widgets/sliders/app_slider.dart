@@ -40,13 +40,19 @@ class AppSlider extends StatefulWidget {
 }
 
 class _AppSliderState extends State<AppSlider> {
-  int _index = 0;
+  final ValueNotifier<int> _index = ValueNotifier(0);
 
   @override
   void didUpdateWidget(covariant AppSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
     // A shorter list can leave the index past its end.
-    if (_index >= widget.sliderItems.length) _index = 0;
+    if (_index.value >= widget.sliderItems.length) _index.value = 0;
+  }
+
+  @override
+  void dispose() {
+    _index.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,19 +99,25 @@ class _AppSliderState extends State<AppSlider> {
                 viewportFraction: isSingleItem ? 1 : 0.9,
                 onPageChanged: isSingleItem
                     ? null
-                    : (index, _) => setState(() => _index = index),
+                    : (index, _) => _index.value = index,
               ),
             ),
           ),
           if (!isSingleItem && widget.showIndicator)
-            AnimatedSmoothIndicator(
-              activeIndex: _index,
-              count: widget.sliderItems.length,
-              effect: WormEffect(
-                dotHeight: 10,
-                dotWidth: 10,
-                activeDotColor: widget.activeDotColor ?? colors.primary500Main,
-                dotColor: widget.dotColor ?? colors.onTertiary,
+            ValueListenableBuilder<int>(
+              valueListenable: _index,
+              // Updating the dots must not rebuild CarouselSlider: its
+              // didUpdateWidget replaces the internal PageController.
+              builder: (context, index, _) => AnimatedSmoothIndicator(
+                activeIndex: index,
+                count: widget.sliderItems.length,
+                effect: WormEffect(
+                  dotHeight: 10,
+                  dotWidth: 10,
+                  activeDotColor:
+                      widget.activeDotColor ?? colors.primary500Main,
+                  dotColor: widget.dotColor ?? colors.onTertiary,
+                ),
               ),
             ),
         ],

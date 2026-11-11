@@ -19,6 +19,7 @@ class ProductDetailsShimmer extends StatelessWidget {
         spacing: 16,
         children: [
           ProductImagesHeader(
+            viewportSize: MediaQuery.sizeOf(context),
             topPadding: topPadding,
             fadeProgress: const AlwaysStoppedAnimation<double>(0),
             child: const SizedBox.shrink(),

@@ -6,11 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_name.dart';
 
 class ProductDetailsController {
-  ProductDetailsController({required TickerProvider vsync})
-    : _titleAnimation = AnimationController(
-        vsync: vsync,
-        duration: const Duration(milliseconds: 300),
-      ) {
+  ProductDetailsController({
+    required TickerProvider vsync,
+    this.expansionScrollExtent = 0,
+  }) : _titleAnimation = AnimationController(
+         vsync: vsync,
+         duration: const Duration(milliseconds: 300),
+       ) {
     titleProgress = CurvedAnimation(
       parent: _titleAnimation,
       curve: Curves.easeInOut,
@@ -19,6 +21,7 @@ class ProductDetailsController {
   }
 
   static const double _productNameUnpinTolerance = 8;
+  double expansionScrollExtent;
 
   final AnimationController _titleAnimation;
   late final CurvedAnimation titleProgress;
@@ -47,6 +50,12 @@ class ProductDetailsController {
       return;
     }
     final double offset = scrollController.offset;
+    if (offset <= expansionScrollExtent) {
+      productNameShift.value = 0;
+      pinProgress.value = 0;
+      _setProductNamePinned(false);
+      return;
+    }
     final double pinOffset =
         RenderAbstractViewport.of(
           productName,
@@ -60,9 +69,11 @@ class ProductDetailsController {
         kToolbarHeight / 2;
     final double shift = pinOffset - offset;
     productNameShift.value = math.max(0.0, shift);
-    pinProgress.value = pinOffset <= 0
+    final double contentOffset = offset - expansionScrollExtent;
+    final double contentPinOffset = pinOffset - expansionScrollExtent;
+    pinProgress.value = contentPinOffset <= 0
         ? 1
-        : clampDouble(offset / pinOffset, 0, 1);
+        : clampDouble(contentOffset / contentPinOffset, 0, 1);
     final double pinTolerance = isProductNamePinned.value
         ? _productNameUnpinTolerance
         : 0;

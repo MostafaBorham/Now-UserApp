@@ -15,6 +15,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_top_bar/product_details_top_bar.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_header.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_slider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_expansion_sliver.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
@@ -33,10 +34,14 @@ class ProductDetailsBody extends StatelessWidget {
     required this.productSlug,
     this.topPadding = 16,
     this.showCloseButton = false,
+    this.expansionScrollExtent = 0,
+    this.imageViewportSize,
   });
   final String productSlug;
   final double topPadding;
   final bool showCloseButton;
+  final double expansionScrollExtent;
+  final Size? imageViewportSize;
 
   @override
   Widget build(BuildContext context) => ProviderScope(
@@ -51,6 +56,8 @@ class ProductDetailsBody extends StatelessWidget {
     child: _ProductDetailsContent(
       productSlug: productSlug,
       showCloseButton: showCloseButton,
+      expansionScrollExtent: expansionScrollExtent,
+      imageViewportSize: imageViewportSize,
     ),
   );
 }
@@ -59,9 +66,13 @@ class _ProductDetailsContent extends ConsumerStatefulWidget {
   const _ProductDetailsContent({
     required this.productSlug,
     required this.showCloseButton,
+    required this.expansionScrollExtent,
+    required this.imageViewportSize,
   });
   final bool showCloseButton;
   final String productSlug;
+  final double expansionScrollExtent;
+  final Size? imageViewportSize;
 
   @override
   ConsumerState<_ProductDetailsContent> createState() =>
@@ -77,7 +88,16 @@ class _ProductDetailsContentState extends ConsumerState<_ProductDetailsContent>
   @override
   void initState() {
     super.initState();
-    _controller = ProductDetailsController(vsync: this);
+    _controller = ProductDetailsController(
+      vsync: this,
+      expansionScrollExtent: widget.expansionScrollExtent,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _ProductDetailsContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.expansionScrollExtent = widget.expansionScrollExtent;
   }
 
   @override
@@ -97,6 +117,8 @@ class _ProductDetailsContentState extends ConsumerState<_ProductDetailsContent>
     super.build(context);
     final EdgeInsets safePadding = MediaQuery.paddingOf(context);
     final double topBarHeight = safePadding.top + kToolbarHeight;
+    final Size imageViewportSize =
+        widget.imageViewportSize ?? MediaQuery.sizeOf(context);
     final productDetailsState = ref.watch(
       getProductDetailsProvider(widget.productSlug),
     );
@@ -149,135 +171,160 @@ class _ProductDetailsContentState extends ConsumerState<_ProductDetailsContent>
                           onRefresh: () async => _fetchProductDetails(),
                           child: NotificationListener<ScrollMetricsNotification>(
                             onNotification: _controller.onScrollMetricsChanged,
-                            child: SingleChildScrollView(
+                            child: CustomScrollView(
                               controller: _controller.scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: Column(
-                                spacing: 16,
-                                children: [
-                                  ProductImagesHeader(
-                                    topPadding: topBarHeight,
-                                    fadeProgress: _controller.pinProgress,
-                                    child: ProductImagesSlider(
-                                      images: product.images,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0,
-                                    ),
+                              slivers: [
+                                ProductExpansionSliver(
+                                  extent: widget.expansionScrollExtent,
+                                ),
+                                SliverPadding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  sliver: SliverToBoxAdapter(
                                     child: Column(
                                       spacing: 16,
                                       children: [
-                                        ProductMainInfoCard(
-                                          productNameKey:
-                                              _controller.productNameKey,
-                                          titleProgress:
-                                              _controller.titleProgress,
-                                        ),
-                                        if (product.colors?.isNotEmpty ?? false)
-                                          Align(
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
-                                            child: ProductColorsSelector(
-                                              colors: product.colors!,
-                                              onColorSelected: productId == null
-                                                  ? null
-                                                  : (color) => ref
-                                                        .read(
-                                                          productOptionsProvider(
-                                                            productId,
-                                                          ).notifier,
-                                                        )
-                                                        .selectColor(color.hex),
-                                            ),
+                                        ProductImagesHeader(
+                                          viewportSize: imageViewportSize,
+                                          topPadding: topBarHeight,
+                                          fadeProgress: _controller.pinProgress,
+                                          child: ProductImagesSlider(
+                                            images: product.images,
                                           ),
-                                        ...(product.attributes ?? [])
-                                            .where(
-                                              (attribute) =>
-                                                  attribute
-                                                      .values
-                                                      ?.isNotEmpty ??
-                                                  false,
-                                            )
-                                            .map(
-                                              (attribute) => Align(
-                                                alignment: AlignmentDirectional
-                                                    .centerStart,
-                                                child: ProductSizeSelector(
-                                                  attribute: attribute,
-                                                  onValueSelected:
-                                                      (productId == null ||
-                                                          attribute
-                                                                  .attributeId ==
-                                                              null)
-                                                      ? null
-                                                      : (value) {
-                                                          if (value.id ==
-                                                              null) {
-                                                            return;
-                                                          }
-                                                          ref
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0,
+                                          ),
+                                          child: Column(
+                                            spacing: 16,
+                                            children: [
+                                              ProductMainInfoCard(
+                                                productNameKey:
+                                                    _controller.productNameKey,
+                                                titleProgress:
+                                                    _controller.titleProgress,
+                                              ),
+                                              if (product.colors?.isNotEmpty ??
+                                                  false)
+                                                Align(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .centerStart,
+                                                  child: ProductColorsSelector(
+                                                    colors: product.colors!,
+                                                    onColorSelected:
+                                                        productId == null
+                                                        ? null
+                                                        : (color) => ref
                                                               .read(
                                                                 productOptionsProvider(
                                                                   productId,
                                                                 ).notifier,
                                                               )
-                                                              .selectAttributeValue(
-                                                                attribute
-                                                                    .attributeId!,
-                                                                value.id!,
-                                                              );
-                                                        },
-                                                ),
-                                              ),
-                                            ),
-                                        if (keyFeatures.isNotEmpty)
-                                          Align(
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
-                                            child: ProductKeyFeaturesView(
-                                              productFeatures: keyFeatures,
-                                            ),
-                                          ),
-                                        if (specifications.isNotEmpty)
-                                          Align(
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
-                                            child:
-                                                ProductBasicSpecificationsView(
-                                                  specifications:
-                                                      specifications,
-                                                ),
-                                          ),
-                                        if (product.vendor != null)
-                                          ProductStoreInfoView(
-                                            store: product.vendor!,
-                                            onTap: product.vendor!.id == null
-                                                ? null
-                                                : () => context.pushNamed(
-                                                    AppRoutes
-                                                        .storeDetailsScreen,
-                                                    pathParameters:
-                                                        <String, String>{
-                                                          'id':
-                                                              '${product.vendor!.id}',
-                                                        },
-                                                    extra: product.vendor!.name,
+                                                              .selectColor(
+                                                                color.hex,
+                                                              ),
                                                   ),
-                                          ),
-                                        ProductReviewsView(
-                                          onViewAllTap: () => context.pushNamed(
-                                            AppRoutes.productReviewsScreen,
+                                                ),
+                                              ...(product.attributes ?? [])
+                                                  .where(
+                                                    (attribute) =>
+                                                        attribute
+                                                            .values
+                                                            ?.isNotEmpty ??
+                                                        false,
+                                                  )
+                                                  .map(
+                                                    (attribute) => Align(
+                                                      alignment:
+                                                          AlignmentDirectional
+                                                              .centerStart,
+                                                      child: ProductSizeSelector(
+                                                        attribute: attribute,
+                                                        onValueSelected:
+                                                            (productId ==
+                                                                    null ||
+                                                                attribute
+                                                                        .attributeId ==
+                                                                    null)
+                                                            ? null
+                                                            : (value) {
+                                                                if (value.id ==
+                                                                    null) {
+                                                                  return;
+                                                                }
+                                                                ref
+                                                                    .read(
+                                                                      productOptionsProvider(
+                                                                        productId,
+                                                                      ).notifier,
+                                                                    )
+                                                                    .selectAttributeValue(
+                                                                      attribute
+                                                                          .attributeId!,
+                                                                      value.id!,
+                                                                    );
+                                                              },
+                                                      ),
+                                                    ),
+                                                  ),
+                                              if (keyFeatures.isNotEmpty)
+                                                Align(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .centerStart,
+                                                  child: ProductKeyFeaturesView(
+                                                    productFeatures:
+                                                        keyFeatures,
+                                                  ),
+                                                ),
+                                              if (specifications.isNotEmpty)
+                                                Align(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .centerStart,
+                                                  child:
+                                                      ProductBasicSpecificationsView(
+                                                        specifications:
+                                                            specifications,
+                                                      ),
+                                                ),
+                                              if (product.vendor != null)
+                                                ProductStoreInfoView(
+                                                  store: product.vendor!,
+                                                  onTap:
+                                                      product.vendor!.id == null
+                                                      ? null
+                                                      : () => context.pushNamed(
+                                                          AppRoutes
+                                                              .storeDetailsScreen,
+                                                          pathParameters:
+                                                              <String, String>{
+                                                                'id':
+                                                                    '${product.vendor!.id}',
+                                                              },
+                                                          extra: product
+                                                              .vendor!
+                                                              .name,
+                                                        ),
+                                                ),
+                                              ProductReviewsView(
+                                                onViewAllTap: () =>
+                                                    context.pushNamed(
+                                                      AppRoutes
+                                                          .productReviewsScreen,
+                                                    ),
+                                              ),
+                                            ],
                                           ),
                                         ),
+                                        const MostLikelyProductsSection(),
                                       ],
                                     ),
                                   ),
-                                  const MostLikelyProductsSection(),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

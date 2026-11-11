@@ -14,12 +14,14 @@ class UnPrimaryAppButton extends StatelessWidget {
     this.titleColor,
     this.backgroundColor,
     this.compact = false,
+    this.buttonHeight,
   });
 
   final String title;
 
   /// Uses [PrimaryAppButton.compactHeight] instead of the standard height.
   final bool compact;
+  final double? buttonHeight;
   final VoidCallback? onTap;
 
   /// Replaces the title with a circular indicator and disables taps.
@@ -57,7 +59,10 @@ class UnPrimaryAppButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14),
         minimumSize: const Size.fromHeight(0),
         fixedSize: Size.fromHeight(
-          compact ? PrimaryAppButton.compactHeight : PrimaryAppButton.height,
+          buttonHeight ??
+              (compact
+                  ? PrimaryAppButton.compactHeight
+                  : PrimaryAppButton.height),
         ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
