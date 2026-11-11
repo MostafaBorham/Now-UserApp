@@ -132,13 +132,9 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
                     color: context.colors.white,
                     borderRadius: BorderRadius.circular(24 * (1 - progress)),
                     clipBehavior: Clip.antiAlias,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: insets.top * progress,
-                        bottom: insets.bottom * progress,
-                      ),
-                      child: child,
-                    ),
+                    // The body paints to the card edges. Its header and
+                    // footer already keep their controls inside system insets.
+                    child: child,
                   ),
                 );
               },

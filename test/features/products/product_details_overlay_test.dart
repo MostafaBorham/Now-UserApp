@@ -26,6 +26,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_header.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_slider.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_bottom_bar.dart';
 import 'package:nowdelivery_user_app/features/products/viewmodel/get_product_details_vm.dart';
 
 import '../../helpers/categories_test_harness.dart';
@@ -138,6 +139,53 @@ void main() {
       )
       .controller!;
 
+  testWidgets('content fills the expanding surface with system insets', (
+    tester,
+  ) async {
+    const insets = FakeViewPadding(top: 32, bottom: 24);
+    tester.view.padding = insets;
+    tester.view.viewPadding = insets;
+    addTearDown(tester.view.resetPadding);
+    addTearDown(tester.view.resetViewPadding);
+    await pumpSource(tester, openButton(), longDetails: true);
+    await tester.tap(find.text('Open second'));
+    await tester.pumpAndSettle();
+    final surface = find.byKey(const ValueKey('product-details-surface-1'));
+    final header = find.descendant(
+      of: page('two'),
+      matching: find.byType(ProductImagesHeader),
+    );
+    final footer = find.descendant(
+      of: page('two'),
+      matching: find.byType(ProductDetailsBottomBar),
+    );
+    final scroll = detailsScroll(tester);
+    final extent = 844 - tester.getSize(surface).height;
+
+    for (final offset in [0.0, extent / 2, extent, extent / 2, 0.0]) {
+      scroll.jumpTo(offset);
+      await tester.pumpAndSettle();
+      final bounds = tester.getRect(surface);
+      expect(tester.getRect(page('two')), bounds);
+      expect(tester.getTopLeft(header).dy, closeTo(bounds.top, 0.01));
+      expect(tester.getSize(header).width, closeTo(bounds.width, 0.01));
+      expect(tester.getBottomLeft(footer).dy, closeTo(bounds.bottom, 0.01));
+    }
+
+    scroll.jumpTo(extent + 40);
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(page('two')),
+      rectMoreOrLessEquals(const Rect.fromLTWH(0, 0, 390, 844), epsilon: 0.01),
+    );
+    expect(tester.getTopLeft(header).dy, closeTo(-40, 0.01));
+    expect(
+      tester.getTopLeft(find.byType(CloseButton).hitTestable().first).dy,
+      greaterThanOrEqualTo(32),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('scroll grows the card before moving or fading its content', (
     tester,
   ) async {
@@ -246,7 +294,9 @@ void main() {
   testWidgets(
     'scroll expands to full screen and reverses at the same offsets',
     (tester) async {
+      tester.view.padding = const FakeViewPadding(top: 30, bottom: 20);
       tester.view.viewPadding = const FakeViewPadding(top: 30, bottom: 20);
+      addTearDown(tester.view.resetPadding);
       addTearDown(tester.view.resetViewPadding);
       await pumpSource(tester, openButton(), longDetails: true);
       await tester.tap(find.text('Open second'));
