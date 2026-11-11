@@ -12,6 +12,7 @@ class CircularBrandLogo extends StatelessWidget {
     this.elevation = 0,
     this.logoScale = 1.1,
     this.fit = BoxFit.contain,
+    this.borderSide = BorderSide.none,
   });
 
   final double radius;
@@ -24,6 +25,7 @@ class CircularBrandLogo extends StatelessWidget {
   final double logoScale;
 
   final BoxFit fit;
+  final BorderSide borderSide;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class CircularBrandLogo extends StatelessWidget {
     final double logoSize = radius * logoScale;
     return Material(
       elevation: elevation!,
-      shape: CircleBorder(),
+      shape: CircleBorder(side: borderSide),
       clipBehavior: Clip.antiAlias,
       child: CircleAvatar(
         radius: radius,

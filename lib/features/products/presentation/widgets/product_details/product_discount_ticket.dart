@@ -22,26 +22,30 @@ class ProductDiscountTicket extends StatelessWidget {
     final String value = isPercentage
         ? '${formatDouble(deal.discountValue?.toDouble())}'
         : formatMoney(deal.discountValue?.toDouble());
-    const double ticketWidth = 70;
-    const double ticketHeight = 35;
-    const double fontSize = ticketWidth * 0.17;
-    const double angle = -65 * math.pi / 180;
+    const double ticketWidth = 34;
+    const double ticketHeight = 20.3;
+    const double fontSize = ticketWidth * 0.31;
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    final double angle = (isRtl ? -23.6 : 23.6) * math.pi / 180;
     return Transform.rotate(
       angle: angle,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Assets.media.images.svg.discountTicketIcon.svg(
-            height: ticketHeight,
-            width: ticketWidth,
+          Transform.flip(
+            flipX: !isRtl,
+            child: Assets.media.images.svg.discountTicketIcon.svg(
+              height: ticketHeight,
+              width: ticketWidth,
+            ),
           ),
           Container(
             width: ticketWidth,
             height: ticketHeight,
-            padding: const EdgeInsets.only(left: ticketWidth * 0.23),
+            padding: const EdgeInsetsDirectional.only(end: ticketWidth * 0.1),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerEnd,
               child: isPercentage
                   ? Text(
                       '$value%',

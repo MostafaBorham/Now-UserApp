@@ -17,9 +17,11 @@ class AppRefreshIndicator extends StatefulWidget {
     required this.child,
     required this.onRefresh,
     this.notificationPredicate,
+    this.edgeOffset = 0,
   });
   final Widget child;
   final RefreshCallback onRefresh;
+  final double edgeOffset;
 
   /// Which scroll notifications the pull-to-refresh reacts to. Defaults to the
   /// standard `notification.depth == 0`, which is right for a plain scroll view.
@@ -63,6 +65,7 @@ class _AppRefreshIndicatorState extends State<AppRefreshIndicator> {
   Widget build(BuildContext context) {
     final AppColorScheme colors = context.colors;
     return RefreshIndicator(
+      edgeOffset: widget.edgeOffset,
       onRefresh: _refresh,
       color: colors.primary500Main,
       backgroundColor: colors.white,

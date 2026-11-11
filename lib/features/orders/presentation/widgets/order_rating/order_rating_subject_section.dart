@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/selectable_rating_stars.dart';
-import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating/rating_comment_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/rate/rating_comment_field.dart';
 
 /// A single rateable subject that isn't a product — the courier or the store.
 /// Shows the [title] beside a tappable star row, then a grey comment box. The

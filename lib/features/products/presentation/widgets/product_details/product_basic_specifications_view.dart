@@ -25,9 +25,7 @@ class ProductBasicSpecificationsView extends StatelessWidget {
       children: [
         Text(
           LangKeys.basicSpecificationsKey.tr(),
-          style: AppTextStyles.style16Bold.copyWith(
-            color: colors.black,
-          ),
+          style: AppTextStyles.style16Bold.copyWith(color: colors.black),
         ),
         Container(
           width: double.infinity,
@@ -41,13 +39,14 @@ class ProductBasicSpecificationsView extends StatelessWidget {
             children: [
               for (int i = 0; i < specifications.length; i++)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     border: i == specifications.length - 1
                         ? null
-                        : Border(
-                            bottom: BorderSide(color: colors.neutral200),
-                          ),
+                        : Border(bottom: BorderSide(color: colors.neutral200)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

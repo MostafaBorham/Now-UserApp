@@ -54,44 +54,39 @@ class AppColorScheme {
   Color get outlineVariant => _scheme.outlineVariant;
   Color get scrim => _scheme.scrim;
 
-
-
-
-
-
   Color get sky500 => const Color(0xff0EA5E9);
   Color get orange500 => const Color(0xffF59E0B);
   Color get orange100 => const Color(0xffFFEDD4);
   Color get deepOrange400 => const Color(0xffFF7043);
 
-
-
-
-
   Color get red400 => const Color(0xffB91828);
 
-
-
-
-
-
-
   Color get red300Main => const Color(0xffE32B3D);
-
 
   Color get green300Main => const Color(0xff1ED29C);
 
   Color get green500 => const Color(0xff117456);
 
-
-
-
-
-
   Color get orange900 => const Color(0xff923E0E);
 
   Color get purple200 => const Color(0xffBAB3FF);
   Color get purple800 => const Color(0xff43368E);
+  Color get neutral100 => _scheme.onPrimaryContainer;
+  Color get saudiMainColor => const Color(0xff006C35);
+  Color get purple400 => const Color(0xff8375FF);
+  Color get purple950 => const Color(0xff2F1866);
+  Color get lightBlue100 => const Color(0xffC3E2F0);
+  Color get lightBlue900 => const Color(0xff00557B);
+  Color get lightBlueA400 => const Color(0xff00B0FF);
+  Color get neutral1000 => const Color(0xff303030);
+  Color get neutral1100 => const Color(0xff1A1A1A);
+  Color get red500 => const Color(0xff83111C);
+  Color get redAlpha10 => const Color(0x1AE32B3D);
+  Color get yellowAlpha10 => const Color(0x1AFFD008);
+  Color get yellowDarkText => const Color(0xff806400);
+  Color get greyText => const Color(0xff686868);
+  Color get greyMutedText => const Color(0xff888888);
+  Color get ratingBar => const Color(0xffF5A523);
 }
 
 extension BuildContextColors on BuildContext {

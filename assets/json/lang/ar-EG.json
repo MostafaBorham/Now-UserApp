@@ -483,5 +483,29 @@
   "workAddressSelector": "العمل",
   "writeYourCommentHere": "اكتب تعليقك هنا",
   "yesCancelOrder": "نعم، إلغاء الطلب",
-  "yesterday": "أمس"
+  "yesterday": "أمس",
+  "colorBlack": "أسود",
+  "productOptions": "خيارات المنتج",
+  "confirmSelection": "تأكيد الاختيار",
+  "seller": "البائع",
+  "reviews": "المراجعات",
+  "viewAllReviews": "عرض جميع المراجعات",
+  "youMayLikeIt": "قد يعجبك أيضاً",
+  "writeReview": "اكتب مراجعة",
+  "starsCount": {
+    "one": "{} نجمة",
+    "other": "{} نجوم"
+  },
+  "fromReviewsCount": "من {count} مراجعة",
+  "latest": "الأحدث",
+  "ratingsHighestFirst": "التقييمات: الأعلى أولاً",
+  "ratingsLowestFirst": "التقييمات: الأقل أولاً",
+  "chooseColor": "اختر اللون",
+  "size": "المقاس",
+  "size16Inch": "16 بوصة",
+  "allStockAddedToCart": "تمت إضافة كل المخزون إلى السلة",
+  "sortBy": "ترتيب حسب",
+  "ratingSampleComment": "المنتج كان جيدًا جدًا، التوصيل سريع، وخدمة العملاء ممتازة. شكرًا",
+  "reset": "إعادة تعيين",
+  "filter": "تصفية"
 }

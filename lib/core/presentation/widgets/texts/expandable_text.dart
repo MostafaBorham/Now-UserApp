@@ -48,10 +48,11 @@ class _ExpandableTextState extends State<ExpandableText> {
                 },
                 child: Text(
                   widget.seeMoreText,
-                  style: TextStyle(
-                    color: colors.primary500Main,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: (widget.style ?? DefaultTextStyle.of(context).style)
+                      .copyWith(
+                        color: colors.primary500Main,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ),
             ),

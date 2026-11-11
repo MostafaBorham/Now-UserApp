@@ -23,12 +23,14 @@ class RatingCommentField extends StatelessWidget {
     this.controller,
     this.fillColor,
     this.readOnly = false,
+    this.enabled = true,
   });
 
   final String hint;
   final TextEditingController? controller;
   final Color? fillColor;
   final bool readOnly;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class RatingCommentField extends StatelessWidget {
       controller: controller,
       builder: (BuildContext context, TextDirection? typedDirection) =>
           TextField(
+            enabled: enabled,
             contextMenuBuilder: appContextMenuBuilder,
             controller: controller,
             readOnly: readOnly,

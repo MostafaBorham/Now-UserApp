@@ -304,4 +304,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
     overflow: TextOverflow.ellipsis,
   );
+  static TextStyle get style13Regular => style14Regular.copyWith(fontSize: 13);
+  static TextStyle get style13Bold => style14Bold.copyWith(fontSize: 13);
 }

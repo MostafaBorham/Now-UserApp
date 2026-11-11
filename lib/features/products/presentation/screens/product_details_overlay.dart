@@ -1,11 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:nowdelivery_user_app/core/presentation/widgets/cart/circular_cart_button.dart';
-import 'package:nowdelivery_user_app/features/main/presentation/controllers/main_tab_index_provider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_body.dart';
 
 /// Full-screen modal pager above the product's source list.
@@ -88,14 +83,6 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
     super.dispose();
   }
 
-  void _openCart() {
-    ref.read(mainTabIndexProvider.notifier).state = 2;
-    final router = GoRouter.of(context);
-    while (router.canPop()) {
-      router.pop();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final insets = MediaQuery.viewPaddingOf(context);
@@ -149,47 +136,14 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
                 ),
               );
             },
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
-                  child: Row(
-                    children: [
-                      Material(
-                        color: context.colors.white,
-                        elevation: 3,
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.antiAlias,
-                        child: SizedBox.square(
-                          dimension: 40,
-                          child: CloseButton(
-                            color: context.colors.black,
-                            onPressed: () => context.pop(),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          LangKeys.productDetailsKey.tr(),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                      CircularCartButton(size: 20, onTap: _openCart),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (notification) =>
-                        _onDetailsScroll(index, notification),
-                    child: ProductDetailsBody(
-                      key: ValueKey(widget.productSlugs[index]),
-                      productSlug: widget.productSlugs[index],
-                    ),
-                  ),
-                ),
-              ],
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) =>
+                  _onDetailsScroll(index, notification),
+              child: ProductDetailsBody(
+                key: ValueKey(widget.productSlugs[index]),
+                productSlug: widget.productSlugs[index],
+                showCloseButton: true,
+              ),
             ),
           ),
         ),

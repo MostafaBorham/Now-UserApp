@@ -4,7 +4,7 @@ import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/selectable_rating_stars.dart';
-import 'package:nowdelivery_user_app/features/orders/presentation/widgets/order_rating/rating_comment_field.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/rate/rating_comment_field.dart';
 
 /// One product's rating block inside the products card: its thumbnail and name
 /// alongside a tappable star row, with a comment box underneath. The committed

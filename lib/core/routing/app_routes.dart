@@ -28,6 +28,7 @@ abstract class AppRoutes {
       'store-category-products';
   static const String storeDetailsScreen = 'store-details';
   static const String productDetailsScreen = 'product-details';
+  static const String productReviewsScreen = 'product-reviews';
   static const String checkoutScreen = 'checkout';
   static const String addPaymentCard = 'add-payment-card';
   static const String paymentMethodsScreen = 'payment-methods';

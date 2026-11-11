@@ -40,6 +40,7 @@ import 'package:nowdelivery_user_app/features/payment_methods/presentation/payme
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_overlay.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/screens/product_reviews_screen.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search2_screen.dart';
@@ -395,6 +396,11 @@ abstract class AppRouter {
                     ),
           );
         },
+      ),
+      GoRoute(
+        name: AppRoutes.productReviewsScreen,
+        path: '/${AppRoutes.productReviewsScreen}',
+        builder: (context, state) => const ProductReviewsScreen(),
       ),
       GoRoute(
         name: AppRoutes.addPaymentCard,

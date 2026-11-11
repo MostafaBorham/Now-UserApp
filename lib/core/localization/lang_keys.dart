@@ -305,7 +305,8 @@ abstract class LangKeys {
   static const String yesCancelOrderKey = 'yesCancelOrder';
   static const String keepOrderKey = 'keepOrder';
   static const String chooseCancelReasonKey = 'chooseCancelReason';
-  static const String cancelReasonNoLongerNeededKey = 'cancelReasonNoLongerNeeded';
+  static const String cancelReasonNoLongerNeededKey =
+      'cancelReasonNoLongerNeeded';
   static const String cancelReasonBetterPriceKey = 'cancelReasonBetterPrice';
   static const String cancelReasonOrderedByMistakeKey =
       'cancelReasonOrderedByMistake';
@@ -392,6 +393,9 @@ abstract class LangKeys {
   static const String priceLowestToHighestKey = 'priceLowestToHighest';
   static const String minimumLimitKey = 'minimumLimit';
   static const String noResultFoundKey = 'noResultFound';
+  static const String latestKey = 'latest';
+  static const String ratingsHighestFirstKey = 'ratingsHighestFirst';
+  static const String ratingsLowestFirstKey = 'ratingsLowestFirst';
 
   // Checkout
   static const String applyKey = 'apply';
@@ -456,6 +460,7 @@ abstract class LangKeys {
   // Product details
   static const String buyNowKey = 'buyNow';
   static const String basicSpecificationsKey = 'basicSpecifications';
+  static const String sellerKey = 'seller';
   static const String keyFeaturesKey = 'keyFeatures';
   static const String colorKey = 'color';
   static const String selectRequiredKey = 'selectRequired';
@@ -550,4 +555,21 @@ abstract class LangKeys {
 
   /// Plural (`'…'.plural(n)`): "2 orders" / "طلبان".
   static const String ordersCountKey = 'ordersCount';
+  static const String productOptionsKey = 'productOptions';
+  static const String confirmSelectionKey = 'confirmSelection';
+  static const String colorBlackKey = 'colorBlack';
+  static const String reviewsKey = 'reviews';
+  static const String viewAllReviewsKey = 'viewAllReviews';
+  static const String youMayLikeItKey = 'youMayLikeIt';
+  static const String writeReviewKey = 'writeReview';
+  static const String starsCountKey = 'starsCount';
+  static const String fromReviewsCountKey = 'fromReviewsCount';
+  static const String chooseColorKey = 'chooseColor';
+  static const String sizeKey = 'size';
+  static const String size16InchKey = 'size16Inch';
+  static const String allStockAddedToCartKey = 'allStockAddedToCart';
+  static const String sortByKey = 'sortBy';
+  static const String ratingSampleCommentKey = 'ratingSampleComment';
+  static const String resetKey = 'reset';
+  static const String filterKey = 'filter';
 }

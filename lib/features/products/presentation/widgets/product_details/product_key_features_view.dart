@@ -40,9 +40,7 @@ class _ProductKeyFeaturesViewState extends State<ProductKeyFeaturesView> {
       children: [
         Text(
           LangKeys.keyFeaturesKey.tr(),
-          style: AppTextStyles.style16Bold.copyWith(
-            color: colors.black,
-          ),
+          style: AppTextStyles.style16Bold.copyWith(color: colors.black),
         ),
         Container(
           width: double.infinity,
@@ -60,7 +58,7 @@ class _ProductKeyFeaturesViewState extends State<ProductKeyFeaturesView> {
               height: 1.5,
             ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -21,6 +21,7 @@ class AppSlider extends StatefulWidget {
     this.sliderSpace = 8,
     this.itemAspectRatio = 1,
     this.showIndicator = true,
+    this.fillHeight = false,
   });
 
   final Color? activeDotColor;
@@ -32,6 +33,7 @@ class AppSlider extends StatefulWidget {
   /// Whether to show the page-dots indicator under the carousel (only ever
   /// shown for multi-item sliders). Off for the home top banner.
   final bool showIndicator;
+  final bool fillHeight;
 
   @override
   State<AppSlider> createState() => _AppSliderState();
@@ -53,55 +55,61 @@ class _AppSliderState extends State<AppSlider> {
     final bool isSingleItem = widget.sliderItems.length == 1;
     if (widget.sliderItems.isEmpty) return const SizedBox.shrink();
 
-    return Column(
-      spacing: 20,
-      children: [
-        CarouselHold(
-          builder: (CarouselSliderController controller) => CarouselSlider.builder(
-            carouselController: controller,
-            itemCount: widget.sliderItems.length,
-            itemBuilder: (_, index, _) {
-              return Padding(
-                padding: EdgeInsets.all(widget.sliderSpace!),
-                child: widget.sliderItems.elementAt(index),
-              );
-            },
-            options: CarouselOptions(
-              enlargeCenterPage: false,
-              autoPlay: !isSingleItem,
-              autoPlayInterval: const Duration(seconds: 5),
-              pauseAutoPlayOnTouch: false,
-              // App-wide motion rule: anything that moves on its own travels
-              // with the locale's reading sweep — right-to-left in Arabic,
-              // left-to-right in English (the same rule the delivery-man
-              // animation follows via `ReverseWidget`). A `PageView` lays its
-              // pages out in index order, which drifts the opposite way in both
-              // locales, so `reverse` flips it: the next item enters from the
-              // leading edge and the current one leaves by the trailing edge.
-              reverse: true,
-              scrollPhysics: isSingleItem
-                  ? const NeverScrollableScrollPhysics()
-                  : null,
-              aspectRatio: widget.itemAspectRatio!,
-              viewportFraction: isSingleItem ? 1 : 0.9,
-              onPageChanged: isSingleItem
-                  ? null
-                  : (index, _) => setState(() => _index = index),
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        spacing: 20,
+        children: [
+          CarouselHold(
+            builder: (CarouselSliderController controller) => CarouselSlider.builder(
+              carouselController: controller,
+              itemCount: widget.sliderItems.length,
+              itemBuilder: (_, index, _) {
+                return Padding(
+                  padding: EdgeInsets.all(widget.sliderSpace!),
+                  child: widget.sliderItems.elementAt(index),
+                );
+              },
+              options: CarouselOptions(
+                height: widget.fillHeight
+                    ? constraints.maxHeight -
+                          (!isSingleItem && widget.showIndicator ? 30 : 0)
+                    : null,
+                enlargeCenterPage: false,
+                autoPlay: !isSingleItem,
+                autoPlayInterval: const Duration(seconds: 5),
+                pauseAutoPlayOnTouch: false,
+                // App-wide motion rule: anything that moves on its own travels
+                // with the locale's reading sweep — right-to-left in Arabic,
+                // left-to-right in English (the same rule the delivery-man
+                // animation follows via `ReverseWidget`). A `PageView` lays its
+                // pages out in index order, which drifts the opposite way in both
+                // locales, so `reverse` flips it: the next item enters from the
+                // leading edge and the current one leaves by the trailing edge.
+                reverse: true,
+                scrollPhysics: isSingleItem
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+                aspectRatio: widget.itemAspectRatio!,
+                viewportFraction: isSingleItem ? 1 : 0.9,
+                onPageChanged: isSingleItem
+                    ? null
+                    : (index, _) => setState(() => _index = index),
+              ),
             ),
           ),
-        ),
-        if (!isSingleItem && widget.showIndicator)
-          AnimatedSmoothIndicator(
-            activeIndex: _index,
-            count: widget.sliderItems.length,
-            effect: WormEffect(
-              dotHeight: 10,
-              dotWidth: 10,
-              activeDotColor: widget.activeDotColor ?? colors.primary500Main,
-              dotColor: widget.dotColor ?? colors.onTertiary,
+          if (!isSingleItem && widget.showIndicator)
+            AnimatedSmoothIndicator(
+              activeIndex: _index,
+              count: widget.sliderItems.length,
+              effect: WormEffect(
+                dotHeight: 10,
+                dotWidth: 10,
+                activeDotColor: widget.activeDotColor ?? colors.primary500Main,
+                dotColor: widget.dotColor ?? colors.onTertiary,
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

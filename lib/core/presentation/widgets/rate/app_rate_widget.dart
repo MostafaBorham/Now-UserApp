@@ -10,27 +10,33 @@ class AppRateWidget extends StatelessWidget {
     required this.rateRatio,
     this.rateCount,
     this.size = 10,
+    this.starSize,
+    this.fontWeight = FontWeight.w600,
+    this.spacing = 5,
   });
   final Color starColor;
   final Color? rateColor;
   final String rateRatio;
   final String? rateCount;
   final double? size;
+  final double? starSize;
+  final FontWeight fontWeight;
+  final double spacing;
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 5,
+      spacing: spacing,
       children: [
         Assets.media.images.svg.starIcon.svg(
-          width: size,
-          height: size,
+          width: starSize ?? size,
+          height: starSize ?? size,
           colorMapper: SvgTint(starColor),
         ),
         Text(
           '$rateRatio ${rateCount != null ? '($rateCount)' : ''}',
           style: TextStyle(
             color: rateColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: fontWeight,
             fontSize: size,
           ),
         ),

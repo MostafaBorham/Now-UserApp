@@ -401,6 +401,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get filterIcon =>
       const SvgGenImage('assets/media/images/svg/filter-icon.svg');
 
+  /// File path: assets/media/images/svg/filter1-icon.svg
+  SvgGenImage get filter1Icon =>
+      const SvgGenImage('assets/media/images/svg/filter1-icon.svg');
+
   /// File path: assets/media/images/svg/guest-welcome-discount-img.svg
   SvgGenImage get guestWelcomeDiscountImg => const SvgGenImage(
     'assets/media/images/svg/guest-welcome-discount-img.svg',
@@ -619,6 +623,10 @@ class $AssetsMediaImagesSvgGen {
   SvgGenImage get search =>
       const SvgGenImage('assets/media/images/svg/search.svg');
 
+  /// File path: assets/media/images/svg/see-all-arrow-icon.svg
+  SvgGenImage get seeAllArrowIcon =>
+      const SvgGenImage('assets/media/images/svg/see-all-arrow-icon.svg');
+
   /// File path: assets/media/images/svg/send.svg
   SvgGenImage get send => const SvgGenImage('assets/media/images/svg/send.svg');
 
@@ -755,6 +763,7 @@ class $AssetsMediaImagesSvgGen {
     filledHomeIcon,
     filledOrdersIcon,
     filterIcon,
+    filter1Icon,
     guestWelcomeDiscountImg,
     homeLocationIcon,
     homeNeverMissOffersBackground,
@@ -809,6 +818,7 @@ class $AssetsMediaImagesSvgGen {
     searchIcon,
     searchNormalIcon,
     search,
+    seeAllArrowIcon,
     send,
     serverFailIcon,
     shippingIcon,
