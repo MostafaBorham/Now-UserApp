@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/offer_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -22,64 +23,74 @@ class UniqueStoreProductsSlider extends ConsumerWidget {
     final List<ProductModel> products = offer?.products ?? const [];
     if (products.isEmpty) return const SizedBox.shrink();
 
-    return AppArrowSlider(
-      itemCount: products.length,
-      aboveImageBuilder: (BuildContext context, int index) => ShaderMask(
-        blendMode: BlendMode.srcIn,
-        shaderCallback: (Rect bounds) => LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0.0, 0.9],
-          colors: [
-            colors.secondaryFixedDim.withValues(alpha: 0.2),
-            colors.secondaryFixedDim,
-          ],
-        ).createShader(bounds),
-        child: Align(
-          alignment: AlignmentDirectional.center,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              context.getLocalizedApiText(products[index].name).toUpperCase(),
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 65,
-                height: 0,
-                color: colors.secondaryFixedDim,
+    return ProductDetailsListScope(
+      productSlugs: () => products.map((product) => product.slug),
+      child: AppArrowSlider(
+        itemCount: products.length,
+        aboveImageBuilder: (BuildContext context, int index) => ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (Rect bounds) => LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: const [0.0, 0.9],
+            colors: [
+              colors.secondaryFixedDim.withValues(alpha: 0.2),
+              colors.secondaryFixedDim,
+            ],
+          ).createShader(bounds),
+          child: Align(
+            alignment: AlignmentDirectional.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                context.getLocalizedApiText(products[index].name).toUpperCase(),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 65,
+                  height: 0,
+                  color: colors.secondaryFixedDim,
+                ),
               ),
             ),
           ),
         ),
-      ),
-      sliderItemBuilder: (BuildContext context, int index) => Container(
-        width: double.infinity,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadiusGeometry.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: colors.secondaryFixedDim.withValues(alpha: 0.4),
-              offset: Offset(0, 20),
-              blurRadius: 100,
+        sliderItemBuilder: (BuildContext context, int index) => InkWell(
+          onTap: () =>
+              ProductDetailsListScope.open(context, products[index].slug),
+          child: Container(
+            width: double.infinity,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadiusGeometry.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.secondaryFixedDim.withValues(alpha: 0.4),
+                  offset: Offset(0, 20),
+                  blurRadius: 100,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: AspectRatio(
-          aspectRatio: 1.3,
-          child: AppCachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: (products[index].images?.isNotEmpty ?? false)
-                ? products[index].images!.first
-                : '',
+            child: AspectRatio(
+              aspectRatio: 1.3,
+              child: AppCachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: (products[index].images?.isNotEmpty ?? false)
+                    ? products[index].images!.first
+                    : '',
+              ),
+            ),
           ),
         ),
+        belowImageBuilder: (BuildContext context, int index) => InkWell(
+          onTap: () =>
+              ProductDetailsListScope.open(context, products[index].slug),
+          child: StoreDetailsBrandInfoCard(product: products[index]),
+        ),
+        sliderSpace: 0,
+        itemHeight: 600,
+        activeDotColor: colors.secondaryFixedDim,
+        dotColor: colors.neutral200,
       ),
-      belowImageBuilder: (BuildContext context, int index) =>
-          StoreDetailsBrandInfoCard(product: products[index]),
-      sliderSpace: 0,
-      itemHeight: 600,
-      activeDotColor: colors.secondaryFixedDim,
-      dotColor: colors.neutral200,
     );
   }
 }

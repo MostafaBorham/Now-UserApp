@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -253,11 +254,14 @@ class _HomeNeverMissOffersScreenState
                                   padding: const EdgeInsets.all(16),
                                   child: error == null
                                       ? NoResultsWidget(
-                                          image: Assets.media.images.svg
+                                          image: Assets
+                                              .media
+                                              .images
+                                              .svg
                                               .noProductsIcon
                                               .svg(),
-                                          emptyMessage:
-                                              LangKeys.noOffersNowKey.tr(),
+                                          emptyMessage: LangKeys.noOffersNowKey
+                                              .tr(),
                                         )
                                       : ServerConnectionErrorWidget(
                                           message: error is String
@@ -273,50 +277,54 @@ class _HomeNeverMissOffersScreenState
                                 );
                               }
 
-                              return GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  0,
-                                  16,
-                                  16,
-                                ),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 16,
-                                      mainAxisSpacing: 16,
-                                      childAspectRatio: 0.64,
-                                    ),
-                                itemCount: isLoading
-                                    ? _shimmerItemsCount
-                                    : products.length,
-                                itemBuilder: (context, index) => isLoading
-                                    ? AppShimmer(
-                                        baseColor: colors.purple800,
-                                        highlightColor: Color.lerp(
-                                          colors.purple800,
-                                          colors.white,
-                                          0.4,
-                                        )!,
-                                        child: const HomeNeverMissOffersItem(
-                                          product: ProductModel(),
-                                        ),
-                                      )
-                                    : HomeNeverMissOffersItem(
-                                        product: products[index],
-                                        onFavouriteChanged:
-                                            (bool isFavourite) => ref
-                                                .read(
-                                                  getHomeSectionsProvider
-                                                      .notifier,
-                                                )
-                                                .updateProductFavourite(
-                                                  products[index].id,
-                                                  isFavourite,
-                                                ),
+                              return ProductDetailsListScope(
+                                productSlugs: () =>
+                                    products.map((product) => product.slug),
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    0,
+                                    16,
+                                    16,
+                                  ),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 16,
+                                        mainAxisSpacing: 16,
+                                        childAspectRatio: 0.64,
                                       ),
+                                  itemCount: isLoading
+                                      ? _shimmerItemsCount
+                                      : products.length,
+                                  itemBuilder: (context, index) => isLoading
+                                      ? AppShimmer(
+                                          baseColor: colors.purple800,
+                                          highlightColor: Color.lerp(
+                                            colors.purple800,
+                                            colors.white,
+                                            0.4,
+                                          )!,
+                                          child: const HomeNeverMissOffersItem(
+                                            product: ProductModel(),
+                                          ),
+                                        )
+                                      : HomeNeverMissOffersItem(
+                                          product: products[index],
+                                          onFavouriteChanged:
+                                              (bool isFavourite) => ref
+                                                  .read(
+                                                    getHomeSectionsProvider
+                                                        .notifier,
+                                                  )
+                                                  .updateProductFavourite(
+                                                    products[index].id,
+                                                    isFavourite,
+                                                  ),
+                                        ),
+                                ),
                               );
                             },
                           ),

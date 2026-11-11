@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
@@ -15,7 +15,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/logos/circular_brand_logo.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 class HomeNeverMissOffersItem extends StatelessWidget {
@@ -51,10 +50,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
     return InkWell(
       onTap: product.slug == null
           ? null
-          : () => context.pushNamed(
-              AppRoutes.productDetailsScreen,
-              extra: product.slug,
-            ),
+          : () => ProductDetailsListScope.open(context, product.slug),
       child: Column(
         spacing: 5,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,8 +204,7 @@ class HomeNeverMissOffersItem extends StatelessWidget {
                               if ((product.rating?.average ?? 0) > 0)
                                 Wrap(
                                   spacing: 7,
-                                  crossAxisAlignment:
-                                      WrapCrossAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     Assets.media.images.svg.starRate.svg(
                                       width: 20,

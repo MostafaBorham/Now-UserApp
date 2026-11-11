@@ -3,7 +3,7 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
 import 'package:nowdelivery_user_app/core/formatters/double_formatter.dart';
@@ -17,7 +17,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/reverse_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 
 /// Product tile with a frosted-glass info panel, used by the featured-stores
@@ -50,10 +49,7 @@ class GlassProductItemView extends StatelessWidget {
     return InkWell(
       onTap: product.slug == null
           ? null
-          : () => context.pushNamed(
-              AppRoutes.productDetailsScreen,
-              extra: product.slug,
-            ),
+          : () => ProductDetailsListScope.open(context, product.slug),
       child: LayoutBuilder(
         builder: (context, con) {
           return Container(

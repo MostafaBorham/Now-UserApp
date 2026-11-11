@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -74,46 +75,55 @@ class SearchResultsView extends ConsumerWidget {
 
     final double spacing = MediaQuery.sizeOf(context).width * 0.03;
 
-    return AppRefreshIndicator(
-      onRefresh: refresh,
-      child: PaginationScrollListener(
-        canLoadNextPage: products.canRequestNextPage,
-        onLoadNextPage: productsVm.loadNextPage,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: <Widget>[
-            SliverToBoxAdapter(child: _SearchStoresStrip(args: storesArgs)),
-            if (products.hasLoadedPage && !products.isEmpty)
-              SliverToBoxAdapter(
-                child: _SectionTitle(LangKeys.productsKey.tr()),
-              ),
-            PaginatedView<ProductModel>(
-              provider: getProductsProvider(searchTerm),
-              onRefresh: productsVm.loadFirstPage,
-              onLoadNextPage: productsVm.loadNextPage,
-              asSliver: true,
-              emptyBuilder: (BuildContext context) => const SizedBox.shrink(),
-              layout: PaginatedGridLayout(
-                padding: const EdgeInsets.all(2),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: spacing,
-                  mainAxisSpacing: spacing,
-                  childAspectRatio: 0.7,
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(getProductsProvider(searchTerm))
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: AppRefreshIndicator(
+        onRefresh: refresh,
+        child: PaginationScrollListener(
+          canLoadNextPage: products.canRequestNextPage,
+          onLoadNextPage: productsVm.loadNextPage,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: <Widget>[
+              SliverToBoxAdapter(child: _SearchStoresStrip(args: storesArgs)),
+              if (products.hasLoadedPage && !products.isEmpty)
+                SliverToBoxAdapter(
+                  child: _SectionTitle(LangKeys.productsKey.tr()),
                 ),
+              PaginatedView<ProductModel>(
+                provider: getProductsProvider(searchTerm),
+                onRefresh: productsVm.loadFirstPage,
+                onLoadNextPage: productsVm.loadNextPage,
+                asSliver: true,
+                emptyBuilder: (BuildContext context) => const SizedBox.shrink(),
+                layout: PaginatedGridLayout(
+                  padding: const EdgeInsets.all(2),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: spacing,
+                    mainAxisSpacing: spacing,
+                    childAspectRatio: 0.7,
+                  ),
+                ),
+                nextPagePlaceholdersCount: 2,
+                placeholderBuilder: (BuildContext context) =>
+                    const AppShimmer(child: ProductItem3View()),
+                itemBuilder:
+                    (BuildContext context, ProductModel product, int index) =>
+                        ProductItem3View(
+                          product: product,
+                          onFavouriteChanged: (bool isFavourite) => productsVm
+                              .updateProductFavourite(product.id, isFavourite),
+                        ),
               ),
-              nextPagePlaceholdersCount: 2,
-              placeholderBuilder: (BuildContext context) =>
-                  const AppShimmer(child: ProductItem3View()),
-              itemBuilder:
-                  (BuildContext context, ProductModel product, int index) =>
-                      ProductItem3View(
-                        product: product,
-                        onFavouriteChanged: (bool isFavourite) => productsVm
-                            .updateProductFavourite(product.id, isFavourite),
-                      ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

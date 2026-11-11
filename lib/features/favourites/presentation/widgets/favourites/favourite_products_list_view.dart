@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/errors/no_results_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -29,16 +30,17 @@ class FavouriteProductsListView extends ConsumerWidget {
 
   static const SliverGridDelegate _gridDelegate =
       SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 16,
-    mainAxisSpacing: 20,
-    childAspectRatio: 0.7,
-  );
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 20,
+        childAspectRatio: 0.7,
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final FavouritesFilter filter =
-        ref.watch(favouritesFilterProvider('product'));
+    final FavouritesFilter filter = ref.watch(
+      favouritesFilterProvider('product'),
+    );
 
     final bool isSelected = filter.categoryId == categoryId;
     if (!isSelected) {
@@ -55,52 +57,62 @@ class FavouriteProductsListView extends ConsumerWidget {
       categoryId: categoryId,
       searchKey: filter.search.isEmpty ? null : filter.search,
     );
-    final GetFavouriteProductsViewModel viewModel =
-        ref.read(getFavouriteProductsProvider(args).notifier);
+    final GetFavouriteProductsViewModel viewModel = ref.read(
+      getFavouriteProductsProvider(args).notifier,
+    );
 
-    return PaginatedView<ProductModel>(
-      provider: getFavouriteProductsProvider(args),
-      onRefresh: viewModel.loadFirstPage,
-      onLoadNextPage: viewModel.loadNextPage,
-      layout: PaginatedGridLayout(
-        gridDelegate: _gridDelegate,
-        padding: const EdgeInsets.all(4).copyWith(
-          bottom: 4 + MediaQuery.paddingOf(context).bottom,
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(getFavouriteProductsProvider(args))
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: PaginatedView<ProductModel>(
+        provider: getFavouriteProductsProvider(args),
+        onRefresh: viewModel.loadFirstPage,
+        onLoadNextPage: viewModel.loadNextPage,
+        layout: PaginatedGridLayout(
+          gridDelegate: _gridDelegate,
+          padding: const EdgeInsets.all(
+            4,
+          ).copyWith(bottom: 4 + MediaQuery.paddingOf(context).bottom),
         ),
-      ),
-      placeholderBuilder: (BuildContext context) =>
-          const AppShimmer(child: ProductItem3View()),
-      // Near the top: centred, it sat low, under the header, tabs and search,
-      // and behind the floating nav bar.
-      emptyBuilder: (BuildContext context) => NoResultsWidget(
-        isScrollable: true,
-        alignTop: true,
-        image: Assets.media.images.svg.emptyFavourite.svg(),
-        emptyMessage: (args.searchKey == null
-                ? LangKeys.noFavouriteProductsKey
-                : LangKeys.noSearchMatchesKey)
-            .tr(),
-      ),
-      itemBuilder: (BuildContext context, ProductModel product, int index) =>
-          ProductItem3View(
-        product: product,
-        // Unfavouriting drops just this card in place — scroll position and the
-        // already-loaded pages are kept. removeItemsWhere reloads the first page
-        // itself only if the visible page empties out with more still on the
-        // server.
-        onFavouriteChanged: (bool isFavourite) {
-          if (!isFavourite) {
-            viewModel.removeItemsWhere(
-              (ProductModel item) => item.id == product.id,
-            );
-            // Refresh the category chips so one with no remaining favourites
-            // drops out (BUG-038). FavouritesTabView then falls the tab back to
-            // "All" when the selected category disappears.
-            ref
-                .read(favouriteCategoriesProvider('product').notifier)
-                .refresh();
-          }
-        },
+        placeholderBuilder: (BuildContext context) =>
+            const AppShimmer(child: ProductItem3View()),
+        // Near the top: centred, it sat low, under the header, tabs and search,
+        // and behind the floating nav bar.
+        emptyBuilder: (BuildContext context) => NoResultsWidget(
+          isScrollable: true,
+          alignTop: true,
+          image: Assets.media.images.svg.emptyFavourite.svg(),
+          emptyMessage:
+              (args.searchKey == null
+                      ? LangKeys.noFavouriteProductsKey
+                      : LangKeys.noSearchMatchesKey)
+                  .tr(),
+        ),
+        itemBuilder: (BuildContext context, ProductModel product, int index) => ProductItem3View(
+          product: product,
+          // Unfavouriting drops just this card in place — scroll position and the
+          // already-loaded pages are kept. removeItemsWhere reloads the first page
+          // itself only if the visible page empties out with more still on the
+          // server.
+          onFavouriteChanged: (bool isFavourite) {
+            if (!isFavourite) {
+              viewModel.removeItemsWhere(
+                (ProductModel item) => item.id == product.id,
+              );
+              // Refresh the category chips so one with no remaining favourites
+              // drops out (BUG-038). FavouritesTabView then falls the tab back to
+              // "All" when the selected category disappears.
+              ref
+                  .read(favouriteCategoriesProvider('product').notifier)
+                  .refresh();
+            }
+          },
+        ),
       ),
     );
   }

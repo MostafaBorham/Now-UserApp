@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -37,100 +38,108 @@ class HomeNeverMissOffersSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColorScheme colors = context.colors;
     final Color background = backgroundColor ?? colors.inverseSurface;
-    final Color viewAllUnderline = viewAllUnderlineColor ?? colors.inverseSurface;
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [background.withValues(alpha: 0.9), colors.white],
-                stops: [0, 0.7],
+    final Color viewAllUnderline =
+        viewAllUnderlineColor ?? colors.inverseSurface;
+    return ProductDetailsListScope(
+      productSlugs: () => products.map((product) => product.slug),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [background.withValues(alpha: 0.9), colors.white],
+                  stops: [0, 0.7],
+                ),
+              ),
+              child: Assets.media.images.svg.homeNeverMissOffersBackground.svg(
+                fit: BoxFit.contain,
+                alignment: Alignment.topCenter,
               ),
             ),
-            child: Assets.media.images.svg.homeNeverMissOffersBackground.svg(
-              fit: BoxFit.contain,
-              alignment: Alignment.topCenter,
-            ),
           ),
-        ),
-        Positioned.fill(
-          child: LayoutBuilder(
-            builder: (context,con) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 5,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Spacer(),
-                        context.isRTL? Assets.media.images.png.homeNeverMissOffersLogo.image(
-                          width: con.maxWidth*0.35,
-                        ) : Assets.media.images.png.englishOffersCannotMissLogo.image(
-                          width: con.maxWidth*0.35,
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: HomeViewAllWidget(
-                              size: 16,
-                              startBackgroundColor: viewAllUnderline,
-                              endBackgroundColor: viewAllUnderline.withValues(
-                                alpha: 0.7,
-                              ),
-                              textColor: viewAllTextColor ?? colors.white,
-                              onTap: () => context.pushNamed(
-                                AppRoutes.homeNeverMissOffersScreen,
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, con) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 5,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          context.isRTL
+                              ? Assets.media.images.png.homeNeverMissOffersLogo
+                                    .image(width: con.maxWidth * 0.35)
+                              : Assets
+                                    .media
+                                    .images
+                                    .png
+                                    .englishOffersCannotMissLogo
+                                    .image(width: con.maxWidth * 0.35),
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: HomeViewAllWidget(
+                                size: 16,
+                                startBackgroundColor: viewAllUnderline,
+                                endBackgroundColor: viewAllUnderline.withValues(
+                                  alpha: 0.7,
+                                ),
+                                textColor: viewAllTextColor ?? colors.white,
+                                onTap: () => context.pushNamed(
+                                  AppRoutes.homeNeverMissOffersScreen,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, listCon) {
-                        final double itemHeight = listCon.maxHeight - 4;
-                        return InfiniteAutoScrollList(
-                          itemCount: products.length,
-                          itemWidth: itemHeight * 0.55,
-                          separatorWidth: 10,
-                          // The same inset as the All stores cards (the section's
-                          // 16 + the list's 5), so the first card no longer
-                          // touches the screen edge.
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                            21,
-                            0,
-                            21,
-                            4,
-                          ),
-                          itemBuilder: (context, index) =>
-                              HomeNeverMissOffersItem(
-                                product: products[index],
-                                onFavouriteChanged: (bool isFavourite) => ref
-                                    .read(getHomeSectionsProvider.notifier)
-                                    .updateProductFavourite(
-                                      products[index].id,
-                                      isFavourite,
-                                    ),
-                              ),
-                        );
-                      },
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, listCon) {
+                          final double itemHeight = listCon.maxHeight - 4;
+                          return InfiniteAutoScrollList(
+                            itemCount: products.length,
+                            itemWidth: itemHeight * 0.55,
+                            separatorWidth: 10,
+                            // The same inset as the All stores cards (the section's
+                            // 16 + the list's 5), so the first card no longer
+                            // touches the screen edge.
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                              21,
+                              0,
+                              21,
+                              4,
+                            ),
+                            itemBuilder: (context, index) =>
+                                HomeNeverMissOffersItem(
+                                  product: products[index],
+                                  onFavouriteChanged: (bool isFavourite) => ref
+                                      .read(getHomeSectionsProvider.notifier)
+                                      .updateProductFavourite(
+                                        products[index].id,
+                                        isFavourite,
+                                      ),
+                                ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              );
-            }
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

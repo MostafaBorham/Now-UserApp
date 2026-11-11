@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -39,84 +40,84 @@ class CartBrandItemDetailsView extends StatelessWidget {
     final AppColorScheme colors = context.colors;
     final int? vendorId = store.id;
 
-    return Column(
-      spacing: 16,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: InkWell(
-            onTap: vendorId == null
-                ? null
-                : () => _confirmDeleteStore(context, vendorId),
-            child: Text(
-              LangKeys.deleteAllKey.tr(),
-              style: AppTextStyles.style14Bold.copyWith(
-                color: colors.errorContainer,
+    return ProductDetailsListScope(
+      productSlugs: () => products.map((product) => product.slug),
+      child: Column(
+        spacing: 16,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: InkWell(
+              onTap: vendorId == null
+                  ? null
+                  : () => _confirmDeleteStore(context, vendorId),
+              child: Text(
+                LangKeys.deleteAllKey.tr(),
+                style: AppTextStyles.style14Bold.copyWith(
+                  color: colors.errorContainer,
+                ),
               ),
             ),
           ),
-        ),
 
-        ListView.separated(
-          // A null padding takes the screen's insets — under the main shell
-          // that includes the nav bar — as a gap under the items (BUG-038).
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => CartProductItemView(
-            product: products[index],
-            stockFix: stockFixes[products[index]],
-          ),
-          // A rule, not just a gap: on the card's grey a bare 16 dp let one
-          // line's stepper and delete button run into the next line's image.
-          // neutral300, not neutral200, which barely shows on that grey.
-          separatorBuilder: (context, index) => Divider(
-            height: 33,
-            thickness: 1,
-            color: colors.neutral300,
-          ),
-          itemCount: products.length,
-        ),
-
-        InkWell(
-          onTap: vendorId == null
-              ? null
-              : () => context.pushNamed(
-                  AppRoutes.storeDetailsScreen,
-                  pathParameters: <String, String>{'id': '$vendorId'},
-                  extra: store.name,
-                ),
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: colors.white,
-              borderRadius: BorderRadius.circular(8),
+          ListView.separated(
+            // A null padding takes the screen's insets — under the main shell
+            // that includes the nav bar — as a gap under the items (BUG-038).
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => CartProductItemView(
+              product: products[index],
+              stockFix: stockFixes[products[index]],
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 10,
-              children: [
-                Assets.media.images.svg.circleAddMoreBrokenIcon.svg(),
-                Text(
-                  LangKeys.addMoreItemsKey.tr(),
-                  style: AppTextStyles.style14Medium.copyWith(
-                    color: colors.neutral1200,
+            // A rule, not just a gap: on the card's grey a bare 16 dp let one
+            // line's stepper and delete button run into the next line's image.
+            // neutral300, not neutral200, which barely shows on that grey.
+            separatorBuilder: (context, index) =>
+                Divider(height: 33, thickness: 1, color: colors.neutral300),
+            itemCount: products.length,
+          ),
+
+          InkWell(
+            onTap: vendorId == null
+                ? null
+                : () => context.pushNamed(
+                    AppRoutes.storeDetailsScreen,
+                    pathParameters: <String, String>{'id': '$vendorId'},
+                    extra: store.name,
                   ),
-                ),
-              ],
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 10,
+                children: [
+                  Assets.media.images.svg.circleAddMoreBrokenIcon.svg(),
+                  Text(
+                    LangKeys.addMoreItemsKey.tr(),
+                    style: AppTextStyles.style14Medium.copyWith(
+                      color: colors.neutral1200,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        StoreInvoiceSummaryCard(
-          subtotal: pricing.subtotal,
-          tax: pricing.tax,
-          deliveryFee: pricing.deliveryFee,
-          discount: pricing.discount,
-        ),
-      ],
+          StoreInvoiceSummaryCard(
+            subtotal: pricing.subtotal,
+            tax: pricing.tax,
+            deliveryFee: pricing.deliveryFee,
+            discount: pricing.discount,
+          ),
+        ],
+      ),
     );
   }
 

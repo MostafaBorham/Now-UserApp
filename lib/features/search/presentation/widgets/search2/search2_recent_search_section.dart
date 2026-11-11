@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
@@ -33,7 +34,13 @@ class _Search2RecentSearchSectionState
   void _openResult(LastSearchCard card) {
     final String id = card.routeId;
     if (card.isProduct) {
-      context.pushNamed(AppRoutes.productDetailsScreen, extra: id);
+      ProductDetailsListScope.open(
+        context,
+        id,
+        productSlugs: widget.cards
+            .where((item) => item.isProduct)
+            .map((item) => item.routeId),
+      );
     } else {
       context.pushNamed(
         AppRoutes.storeDetailsScreen,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/arabic_kashida_formatter.dart';
@@ -56,121 +57,124 @@ class HomeAppCategoryWithLogoSectionView extends ConsumerWidget {
     final Color accent = primaryColor ?? colors.error;
     final Color titleColor = textColor ?? colors.white;
     final String image = imageUrl ?? '';
-    return LayoutBuilder(
-      builder: (context, con) {
-        final double s = con.maxWidth / _designWidth;
-        final double waveTop = 24 * s;
-        return Stack(
-          children: [
-            Positioned(
-              left: 0,
-              right: 0,
-              top: waveTop,
-              bottom: 0,
-              child: ReverseWidget(
-                applyReverse: !context.isRTL,
-                child: HomeCategoryWave(
-                  wave: HomeCategoryWave.twoWave,
-                  viewBox: HomeCategoryWave.twoWaveViewBox,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.0, 0.80],
-                    colors: [accent.withAlpha(120), colors.white],
+    return ProductDetailsListScope(
+      productSlugs: () => productModels.map((product) => product.slug),
+      child: LayoutBuilder(
+        builder: (context, con) {
+          final double s = con.maxWidth / _designWidth;
+          final double waveTop = 24 * s;
+          return Stack(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                top: waveTop,
+                bottom: 0,
+                child: ReverseWidget(
+                  applyReverse: !context.isRTL,
+                  child: HomeCategoryWave(
+                    wave: HomeCategoryWave.twoWave,
+                    viewBox: HomeCategoryWave.twoWaveViewBox,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.0, 0.80],
+                      colors: [accent.withAlpha(120), colors.white],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8 * s),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            top: waveTop + 20 * s,
-                          ),
-                          child: Text(
-                            formatArabicKashida(
-                              context.getLocalizedApiText(categoryModel.name),
-                              count: 20,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8 * s),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              top: waveTop + 20 * s,
                             ),
-                            textAlign: TextAlign.start,
-                            softWrap: true,
-                            style: TextStyle(
-                              fontSize: 17.486 * s,
-                              fontWeight: FontWeight.w600,
-                              height: 1.35,
-                              color: titleColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (image.isNotEmpty) ...[
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          height: 96 * s,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (con.maxWidth - 32) / 2,
-                            ),
-                            child: FittedBox(
-                              // FittedBox lays its child out unbounded, so the
-                              // image needs its own (design 164×96) box.
-                              child: AppCachedNetworkImage(
-                                imageUrl: image,
-                                width: 75,
-                                height: 96 * s,
-                                fit: BoxFit.contain,
+                            child: Text(
+                              formatArabicKashida(
+                                context.getLocalizedApiText(categoryModel.name),
+                                count: 20,
+                              ),
+                              textAlign: TextAlign.start,
+                              softWrap: true,
+                              style: TextStyle(
+                                fontSize: 17.486 * s,
+                                fontWeight: FontWeight.w600,
+                                height: 1.35,
+                                color: titleColor,
                               ),
                             ),
                           ),
                         ),
-                      ],
-                      if (showViewAll) ...[
-                        SizedBox(width: image.isNotEmpty ? 12 : 8),
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(top: waveTop),
-                          child: HomeViewAllWidget(
-                            onTap: onViewAllTap,
-                            size: con.maxWidth * 0.04,
-                            textColor: titleColor,
-                            startBackgroundColor: colors.white,
-                            endBackgroundColor: accent.withValues(alpha: 0.5),
+                        if (image.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            height: 96 * s,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (con.maxWidth - 32) / 2,
+                              ),
+                              child: FittedBox(
+                                // FittedBox lays its child out unbounded, so the
+                                // image needs its own (design 164×96) box.
+                                child: AppCachedNetworkImage(
+                                  imageUrl: image,
+                                  width: 75,
+                                  height: 96 * s,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 245 * s,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: productModels.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 8),
-                    itemBuilder: (context, index) => ProductItem3View(
-                      product: productModels[index],
-                      onFavouriteChanged: (bool isFavourite) => ref
-                          .read(getHomeSectionsProvider.notifier)
-                          .updateProductFavourite(
-                            productModels[index].id,
-                            isFavourite,
+                        ],
+                        if (showViewAll) ...[
+                          SizedBox(width: image.isNotEmpty ? 12 : 8),
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(top: waveTop),
+                            child: HomeViewAllWidget(
+                              onTap: onViewAllTap,
+                              size: con.maxWidth * 0.04,
+                              textColor: titleColor,
+                              startBackgroundColor: colors.white,
+                              endBackgroundColor: accent.withValues(alpha: 0.5),
+                            ),
                           ),
+                        ],
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+                  SizedBox(
+                    height: 245 * s,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: productModels.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 8),
+                      itemBuilder: (context, index) => ProductItem3View(
+                        product: productModels[index],
+                        onFavouriteChanged: (bool isFavourite) => ref
+                            .read(getHomeSectionsProvider.notifier)
+                            .updateProductFavourite(
+                              productModels[index].id,
+                              isFavourite,
+                            ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

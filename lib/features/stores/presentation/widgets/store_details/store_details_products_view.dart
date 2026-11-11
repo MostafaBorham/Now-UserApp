@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -54,38 +55,48 @@ class StoreDetailsProductsView extends ConsumerWidget {
       getStoreCategoryProductsProvider(args).notifier,
     );
 
-    return PaginatedView<ProductModel>(
-      provider: getStoreCategoryProductsProvider(args),
-      onRefresh: viewModel.loadFirstPage,
-      onLoadNextPage: viewModel.loadNextPage,
-      // A sliver under the store header and the pinned tabs, so the page ends
-      // at the last product (BUG-017). The screen pages it from its own scroll
-      // and owns the pull that reloads the whole store.
-      asSliver: true,
-      layout: const PaginatedGridLayout(
-        gridDelegate: _gridDelegate,
-        padding: EdgeInsets.symmetric(vertical: 5),
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(getStoreCategoryProductsProvider(args))
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: PaginatedView<ProductModel>(
+        provider: getStoreCategoryProductsProvider(args),
+        onRefresh: viewModel.loadFirstPage,
+        onLoadNextPage: viewModel.loadNextPage,
+        // A sliver under the store header and the pinned tabs, so the page ends
+        // at the last product (BUG-017). The screen pages it from its own scroll
+        // and owns the pull that reloads the whole store.
+        asSliver: true,
+        layout: const PaginatedGridLayout(
+          gridDelegate: _gridDelegate,
+          padding: EdgeInsets.symmetric(vertical: 5),
+        ),
+        // Fills the grid while the first page loads and trails it while the next
+        // one does, so the skeleton always matches the real cards.
+        placeholderBuilder: (BuildContext context) =>
+            const AppShimmer(child: ProductItemCard1()),
+        // Near the top of the grid: centred, it landed at the bottom of the
+        // screen, under the tall store header.
+        emptyBuilder: (BuildContext context) => NoResultsWidget(
+          alignTop: true,
+          image: Assets.media.images.svg.noProductsIcon.svg(),
+          emptyMessage:
+              (filter == ProductFilters.offer
+                      ? LangKeys.noOffersNowKey
+                      : LangKeys.noProductsYetKey)
+                  .tr(),
+        ),
+        itemBuilder: (BuildContext context, ProductModel product, int index) =>
+            ProductItemCard1(
+              product: product,
+              onFavouriteChanged: (bool isFavourite) =>
+                  viewModel.updateProductFavourite(product.id, isFavourite),
+            ),
       ),
-      // Fills the grid while the first page loads and trails it while the next
-      // one does, so the skeleton always matches the real cards.
-      placeholderBuilder: (BuildContext context) =>
-          const AppShimmer(child: ProductItemCard1()),
-      // Near the top of the grid: centred, it landed at the bottom of the
-      // screen, under the tall store header.
-      emptyBuilder: (BuildContext context) => NoResultsWidget(
-        alignTop: true,
-        image: Assets.media.images.svg.noProductsIcon.svg(),
-        emptyMessage: (filter == ProductFilters.offer
-                ? LangKeys.noOffersNowKey
-                : LangKeys.noProductsYetKey)
-            .tr(),
-      ),
-      itemBuilder: (BuildContext context, ProductModel product, int index) =>
-          ProductItemCard1(
-            product: product,
-            onFavouriteChanged: (bool isFavourite) =>
-                viewModel.updateProductFavourite(product.id, isFavourite),
-          ),
     );
   }
 }

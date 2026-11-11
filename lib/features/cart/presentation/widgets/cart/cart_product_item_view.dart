@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/formatters/money_formatter.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -15,7 +16,6 @@ import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custo
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/new_price_widget.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/price/old_price_widget.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart/cart_variant_pills.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
@@ -164,10 +164,7 @@ class _CartProductItemViewState extends ConsumerState<CartProductItemView> {
       spacing: 12,
       children: [
         InkWell(
-          onTap: () => context.pushNamed(
-            AppRoutes.productDetailsScreen,
-            extra: product.slug,
-          ),
+          onTap: () => ProductDetailsListScope.open(context, product.slug),
           child: Container(
             width: 70,
             height: 70,

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/enums/product_filters.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -97,54 +98,67 @@ class _ViewStoreCategoryProductsScreenState
       getStoreCategoryProductsProvider(args).notifier,
     );
 
-    return Scaffold(
-      body: AppWavedView(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 16,
-          children: <Widget>[
-            // The field debounces internally and hands back the settled term;
-            // storing it re-queries the grid as a new family member with its
-            // own pagination state.
-            PrimarySearchField(
-              isAnimated: false,
-              onSearch: (String query) {
-                if (query == _search) return;
-                setState(() => _search = query);
-              },
-            ),
-            Expanded(
-              child: PaginatedView<ProductModel>(
-                provider: getStoreCategoryProductsProvider(args),
-                onRefresh: viewModel.loadFirstPage,
-                onLoadNextPage: viewModel.loadNextPage,
-                layout: const PaginatedGridLayout(
-                  gridDelegate: _gridDelegate,
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                ),
-                placeholderBuilder: (BuildContext context) =>
-                    const AppShimmer(child: ProductItemCard1()),
-                emptyBuilder: (BuildContext context) => NoResultsWidget(
-                  isScrollable: true,
-                  image: Assets.media.images.svg.noProductsIcon.svg(),
-                  emptyMessage: (_search.isEmpty
-                          ? LangKeys.noProductsYetKey
-                          : LangKeys.noSearchMatchesKey)
-                      .tr(),
-                ),
-                itemBuilder:
-                    (BuildContext context, ProductModel product, int index) =>
-                        ProductItemCard1(
-                          product: product,
-                          onFavouriteChanged: (bool isFavourite) => viewModel
-                              .updateProductFavourite(product.id, isFavourite),
-                        ),
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(getStoreCategoryProductsProvider(args))
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: Scaffold(
+        body: AppWavedView(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: <Widget>[
+              // The field debounces internally and hands back the settled term;
+              // storing it re-queries the grid as a new family member with its
+              // own pagination state.
+              PrimarySearchField(
+                isAnimated: false,
+                onSearch: (String query) {
+                  if (query == _search) return;
+                  setState(() => _search = query);
+                },
               ),
-            ),
-          ],
+              Expanded(
+                child: PaginatedView<ProductModel>(
+                  provider: getStoreCategoryProductsProvider(args),
+                  onRefresh: viewModel.loadFirstPage,
+                  onLoadNextPage: viewModel.loadNextPage,
+                  layout: const PaginatedGridLayout(
+                    gridDelegate: _gridDelegate,
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                  ),
+                  placeholderBuilder: (BuildContext context) =>
+                      const AppShimmer(child: ProductItemCard1()),
+                  emptyBuilder: (BuildContext context) => NoResultsWidget(
+                    isScrollable: true,
+                    image: Assets.media.images.svg.noProductsIcon.svg(),
+                    emptyMessage:
+                        (_search.isEmpty
+                                ? LangKeys.noProductsYetKey
+                                : LangKeys.noSearchMatchesKey)
+                            .tr(),
+                  ),
+                  itemBuilder:
+                      (BuildContext context, ProductModel product, int index) =>
+                          ProductItemCard1(
+                            product: product,
+                            onFavouriteChanged: (bool isFavourite) =>
+                                viewModel.updateProductFavourite(
+                                  product.id,
+                                  isFavourite,
+                                ),
+                          ),
+                ),
+              ),
+            ],
+          ),
+          appBarTitle: title,
+          canPop: context.canPop(),
         ),
-        appBarTitle: title,
-        canPop: context.canPop(),
       ),
     );
   }

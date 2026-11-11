@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/store_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
@@ -70,78 +71,84 @@ class SearchResultList extends ConsumerWidget {
               stores.isNextPageLoading
         ? 2
         : 0;
-    return AppRefreshIndicator(
-      onRefresh: refresh,
-      child: PaginationScrollListener(
-        canLoadNextPage:
-            products.canRequestNextPage || stores.canRequestNextPage,
-        onLoadNextPage: () {
-          if (products.canRequestNextPage) productsVm.loadNextPage();
-          if (stores.canRequestNextPage) storesVm.loadNextPage();
-        },
-        child: LayoutBuilder(
-          builder: (context, constraints) => ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.paddingOf(context).bottom + 16,
-            ),
-            itemCount: resultCount + placeholders,
-            separatorBuilder: (_, _) => Divider(
-              height: 1,
-              thickness: 1,
-              color: context.colors.dividerLight,
-            ),
-            itemBuilder: (context, index) {
-              final double width = constraints.maxWidth;
-              if (index >= resultCount) {
-                return AppShimmer(
-                  child: _ResultRow(width: width, isPlaceholder: true),
-                );
-              }
-              if (index < products.items.length) {
-                final ProductModel product = products.items[index];
-                final slug = product.slug;
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(productsProvider)
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: AppRefreshIndicator(
+        onRefresh: refresh,
+        child: PaginationScrollListener(
+          canLoadNextPage:
+              products.canRequestNextPage || stores.canRequestNextPage,
+          onLoadNextPage: () {
+            if (products.canRequestNextPage) productsVm.loadNextPage();
+            if (stores.canRequestNextPage) storesVm.loadNextPage();
+          },
+          child: LayoutBuilder(
+            builder: (context, constraints) => ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.paddingOf(context).bottom + 16,
+              ),
+              itemCount: resultCount + placeholders,
+              separatorBuilder: (_, _) => Divider(
+                height: 1,
+                thickness: 1,
+                color: context.colors.dividerLight,
+              ),
+              itemBuilder: (context, index) {
+                final double width = constraints.maxWidth;
+                if (index >= resultCount) {
+                  return AppShimmer(
+                    child: _ResultRow(width: width, isPlaceholder: true),
+                  );
+                }
+                if (index < products.items.length) {
+                  final ProductModel product = products.items[index];
+                  final slug = product.slug;
+                  return _ResultRow(
+                    width: width,
+                    name: context.getLocalizedApiText(product.name),
+                    imageUrl: product.images?.firstOrNull ?? '',
+                    onTap: slug == null || slug.isEmpty
+                        ? null
+                        : () {
+                            unawaited(
+                              ref
+                                  .read(lastSearchResultsCacheProvider)
+                                  .saveProduct(product),
+                            );
+                            ProductDetailsListScope.open(context, slug);
+                          },
+                  );
+                }
+                final StoreModel store =
+                    stores.items[index - products.items.length];
                 return _ResultRow(
                   width: width,
-                  name: context.getLocalizedApiText(product.name),
-                  imageUrl: product.images?.firstOrNull ?? '',
-                  onTap: slug == null || slug.isEmpty
+                  name: context.getLocalizedApiText(store.name),
+                  imageUrl: store.logoUrl ?? '',
+                  onTap: store.id == null
                       ? null
                       : () {
                           unawaited(
                             ref
                                 .read(lastSearchResultsCacheProvider)
-                                .saveProduct(product),
+                                .saveStore(store),
                           );
                           context.pushNamed(
-                            AppRoutes.productDetailsScreen,
-                            extra: slug,
+                            AppRoutes.storeDetailsScreen,
+                            pathParameters: {'id': '${store.id}'},
+                            extra: store.name,
                           );
                         },
                 );
-              }
-              final StoreModel store =
-                  stores.items[index - products.items.length];
-              return _ResultRow(
-                width: width,
-                name: context.getLocalizedApiText(store.name),
-                imageUrl: store.logoUrl ?? '',
-                onTap: store.id == null
-                    ? null
-                    : () {
-                        unawaited(
-                          ref
-                              .read(lastSearchResultsCacheProvider)
-                              .saveStore(store),
-                        );
-                        context.pushNamed(
-                          AppRoutes.storeDetailsScreen,
-                          pathParameters: {'id': '${store.id}'},
-                          extra: store.name,
-                        );
-                      },
-              );
-            },
+              },
+            ),
           ),
         ),
       ),

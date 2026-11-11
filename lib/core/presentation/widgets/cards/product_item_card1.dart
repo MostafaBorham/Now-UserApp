@@ -2,15 +2,14 @@
 // decoupling means relocating the cart viewmodel too — do that when cart is
 // refactored, not before.
 import 'package:flutter/material.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/texts/out_of_stock_label.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/app_border_radius.dart';
 import 'package:nowdelivery_user_app/core/presentation/styles/text_styles.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/rate/app_rate_widget.dart';
 import 'package:nowdelivery_user_app/core/enums/favourite_type.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/favourites/circular_app_favourite_icon.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/animated_cart_button.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/images/app_cached_network_image.dart';
@@ -46,13 +45,11 @@ class _ProductItemCard1State extends State<ProductItemCard1> {
     // The live price is the deal-adjusted discountPrice; the base price is only
     // struck through when a deal actually lowers it (see ProductModel.hasDeal).
     final bool hasDeal = widget.product?.hasDeal ?? false;
-    final double? sellingPrice =
-        hasDeal ? widget.product?.discountPrice : price;
+    final double? sellingPrice = hasDeal
+        ? widget.product?.discountPrice
+        : price;
     return InkWell(
-      onTap: () => context.pushNamed(
-        AppRoutes.productDetailsScreen,
-        extra: widget.product?.slug,
-      ),
+      onTap: () => ProductDetailsListScope.open(context, widget.product?.slug),
       child: LayoutBuilder(
         builder: (context, con) {
           return Card(

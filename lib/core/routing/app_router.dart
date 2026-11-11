@@ -39,7 +39,7 @@ import 'package:nowdelivery_user_app/features/payment_methods/presentation/add_p
 import 'package:nowdelivery_user_app/features/payment_methods/presentation/payment_methods_screen.dart';
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/personal_information_screen.dart';
-import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_screen.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_overlay.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search2_screen.dart';
@@ -334,12 +334,66 @@ abstract class AppRouter {
       GoRoute(
         name: AppRoutes.productDetailsScreen,
         path: '/${AppRoutes.productDetailsScreen}',
-        builder: (context, state) {
-          final productSlug = state.extra as String?;
-          if (productSlug == null || productSlug.isEmpty) {
-            return const RouteErrorScreen();
+        pageBuilder: (context, state) {
+          final extra = state.extra;
+          final List<String> slugs;
+          final int initialIndex;
+          if (extra is String && extra.trim().isNotEmpty) {
+            slugs = [extra];
+            initialIndex = 0;
+          } else if (extra is Map && extra['productSlugs'] is List) {
+            slugs = (extra['productSlugs'] as List)
+                .whereType<String>()
+                .toList();
+            initialIndex = extra['initialIndex'] is int
+                ? extra['initialIndex'] as int
+                : 0;
+          } else {
+            return MaterialPage(
+              key: state.pageKey,
+              child: const RouteErrorScreen(),
+            );
           }
-          return ProductDetailsScreen(productSlug: productSlug);
+          if (slugs.isEmpty ||
+              slugs.any((slug) => slug.trim().isEmpty) ||
+              initialIndex < 0 ||
+              initialIndex >= slugs.length) {
+            return MaterialPage(
+              key: state.pageKey,
+              child: const RouteErrorScreen(),
+            );
+          }
+          return CustomTransitionPage<void>(
+            key: state.pageKey,
+            transitionDuration: const Duration(milliseconds: 600),
+            reverseTransitionDuration: const Duration(milliseconds: 600),
+            opaque: false,
+            barrierDismissible: true,
+            barrierColor: Colors.black54,
+            barrierLabel: MaterialLocalizations.of(
+              context,
+            ).modalBarrierDismissLabel,
+            child: ProductDetailsOverlay(
+              productSlugs: slugs,
+              initialIndex: initialIndex,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    SlideTransition(
+                      position:
+                          Tween<Offset>(
+                            begin: const Offset(0, 1),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOutCubic,
+                              reverseCurve: Curves.easeInCubic,
+                            ),
+                          ),
+                      child: child,
+                    ),
+          );
         },
       ),
       GoRoute(

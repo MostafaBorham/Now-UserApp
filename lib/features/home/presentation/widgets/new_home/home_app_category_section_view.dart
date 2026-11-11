@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/category_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/local_controller.dart';
@@ -36,87 +37,90 @@ class HomeAppCategorySectionView extends ConsumerWidget {
     final AppColorScheme colors = context.colors;
     final Color accent = primaryColor ?? colors.onInverseSurface;
     final Color titleColor = textColor ?? colors.black;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double productRowHeight = constraints.maxWidth * 245 / 390;
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: ReverseWidget(
-                applyReverse: !context.isRTL,
-                child: HomeCategoryWave(
-                  wave: HomeCategoryWave.oneWave,
-                  viewBox: HomeCategoryWave.oneWaveViewBox,
-                  gradient: LinearGradient(
-                    begin: Alignment.centerRight,
-                    end: Alignment.centerLeft,
-                    stops: [0.0, 0.80],
-                    colors: [accent.withAlpha(120), colors.white],
+    return ProductDetailsListScope(
+      productSlugs: () => productModels.map((product) => product.slug),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double productRowHeight = constraints.maxWidth * 245 / 390;
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: ReverseWidget(
+                  applyReverse: !context.isRTL,
+                  child: HomeCategoryWave(
+                    wave: HomeCategoryWave.oneWave,
+                    viewBox: HomeCategoryWave.oneWaveViewBox,
+                    gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      stops: [0.0, 0.80],
+                      colors: [accent.withAlpha(120), colors.white],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 20,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                  ).copyWith(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          context.getLocalizedApiText(categoryModel.name),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: titleColor,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 20,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ).copyWith(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            context.getLocalizedApiText(categoryModel.name),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: titleColor,
+                            ),
                           ),
                         ),
-                      ),
 
-                      if (showViewAll)
-                        HomeViewAllWidget(
-                          onTap: onViewAllTap,
-                          size: 15,
-                          textColor: titleColor,
-                          startBackgroundColor: colors.white,
-                          endBackgroundColor: accent.withValues(alpha: 0.5),
-                        ),
-                    ],
+                        if (showViewAll)
+                          HomeViewAllWidget(
+                            onTap: onViewAllTap,
+                            size: 15,
+                            textColor: titleColor,
+                            startBackgroundColor: colors.white,
+                            endBackgroundColor: accent.withValues(alpha: 0.5),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: productRowHeight,
-                  child: ListView.separated(
-                    padding: EdgeInsetsDirectional.only(start: 16),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ProductItem3View(
-                        product: productModels[index],
-                        onFavouriteChanged: (bool isFavourite) => ref
-                            .read(getHomeSectionsProvider.notifier)
-                            .updateProductFavourite(
-                              productModels[index].id,
-                              isFavourite,
-                            ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => 4.wSpace,
-                    itemCount: productModels.length,
+                  SizedBox(
+                    height: productRowHeight,
+                    child: ListView.separated(
+                      padding: EdgeInsetsDirectional.only(start: 16),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return ProductItem3View(
+                          product: productModels[index],
+                          onFavouriteChanged: (bool isFavourite) => ref
+                              .read(getHomeSectionsProvider.notifier)
+                              .updateProductFavourite(
+                                productModels[index].id,
+                                isFavourite,
+                              ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => 4.wSpace,
+                      itemCount: productModels.length,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

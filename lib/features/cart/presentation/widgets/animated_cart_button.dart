@@ -4,11 +4,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/localization/lang_keys.dart';
 import 'package:nowdelivery_user_app/core/presentation/components/app_toast/app_toast.dart';
 import 'package:nowdelivery_user_app/core/presentation/widgets/dialogs/app_custom_alert_dialog.dart';
-import 'package:nowdelivery_user_app/core/routing/app_routes.dart';
 import 'package:nowdelivery_user_app/features/cart/data/models/cart_model.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_stepper_pill.dart';
 import 'package:nowdelivery_user_app/features/cart/presentation/widgets/cart_update_feedback.dart';
@@ -224,15 +224,14 @@ class _AnimatedCartButtonState extends ConsumerState<AnimatedCartButton> {
       openMainCartTab(context, ref);
       return;
     }
-    context.pushNamed(AppRoutes.productDetailsScreen, extra: slug);
+    ProductDetailsListScope.open(context, slug);
   }
 
   /// One unit less than [counter], floored at the minimum — dropping below it
   /// is the delete icon's job. The counter view only offers this icon above the
   /// minimum anyway, so the floor is just a safety net.
-  void _decrement(int counter) => _updateQuantity(
-    counter > _minQuantity ? counter - 1 : _minQuantity,
-  );
+  void _decrement(int counter) =>
+      _updateQuantity(counter > _minQuantity ? counter - 1 : _minQuantity);
 
   /// Asks before dropping the last unit, matching the cart screen's own
   /// stepper — a removal is not something to do on a mistaken tap.

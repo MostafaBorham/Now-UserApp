@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nowdelivery_user_app/core/presentation/widgets/products/product_details_list_scope.dart';
 import 'package:nowdelivery_user_app/core/data/models/pagination_model.dart';
 import 'package:nowdelivery_user_app/core/data/models/product_model.dart';
 import 'package:nowdelivery_user_app/core/presentation/assets/assets.gen.dart';
@@ -69,8 +70,9 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
       searchKey: search.isEmpty ? null : search,
     );
 
-    final GetCategoryProductsViewModel viewModel =
-        ref.read(getCategoryProductsProvider(_args).notifier);
+    final GetCategoryProductsViewModel viewModel = ref.read(
+      getCategoryProductsProvider(_args).notifier,
+    );
 
     // Surface a failed next-page load without disturbing the grid.
     ref.listen<String?>(
@@ -90,19 +92,20 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
       String? firstPageError,
       bool isNextPageLoading,
       int length,
-    }) view = ref.watch(
-      getCategoryProductsProvider(_args).select(
-        (AsyncValue<PaginationModel<ProductModel>> state) {
-          final PaginationStatus<ProductModel> status =
-              PaginationStatus<ProductModel>.from(state);
-          return (
-            isFirstPageLoading: status.isFirstPageLoading,
-            firstPageError: status.firstPageError,
-            isNextPageLoading: status.isNextPageLoading,
-            length: status.items.length,
-          );
-        },
-      ),
+    })
+    view = ref.watch(
+      getCategoryProductsProvider(_args).select((
+        AsyncValue<PaginationModel<ProductModel>> state,
+      ) {
+        final PaginationStatus<ProductModel> status =
+            PaginationStatus<ProductModel>.from(state);
+        return (
+          isFirstPageLoading: status.isFirstPageLoading,
+          firstPageError: status.firstPageError,
+          isNextPageLoading: status.isNextPageLoading,
+          length: status.items.length,
+        );
+      }),
     );
 
     if (view.isFirstPageLoading) return const CategoryProductsViewShimmer();
@@ -115,43 +118,53 @@ class _CategoryProductsViewState extends ConsumerState<CategoryProductsView> {
 
     final int loadingItemsCount = view.isNextPageLoading ? 2 : 0;
 
-    return AppRefreshIndicator(
-      onRefresh: viewModel.loadFirstPage,
-      child: view.length == 0
-          ? NoResultsWidget(
-              isScrollable: true,
-              alignTop: true,
-              image: Assets.media.images.svg.noProductsIcon.svg(),
-              emptyMessage: (search.isEmpty
-                      ? LangKeys.noProductsYetKey
-                      : LangKeys.noSearchMatchesKey)
-                  .tr(),
-            )
-          : LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints con) =>
-                  GridView.builder(
-                    controller: _scrollController,
-                    addRepaintBoundaries: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(2),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: con.maxWidth * 0.03,
-                      mainAxisSpacing: con.maxWidth * 0.03,
-                      childAspectRatio: 0.7,
+    return ProductDetailsListScope(
+      productSlugs: () =>
+          ref
+              .read(getCategoryProductsProvider(_args))
+              .valueOrNull
+              ?.data
+              .map((product) => product.slug) ??
+          const <String>[],
+      child: AppRefreshIndicator(
+        onRefresh: viewModel.loadFirstPage,
+        child: view.length == 0
+            ? NoResultsWidget(
+                isScrollable: true,
+                alignTop: true,
+                image: Assets.media.images.svg.noProductsIcon.svg(),
+                emptyMessage:
+                    (search.isEmpty
+                            ? LangKeys.noProductsYetKey
+                            : LangKeys.noSearchMatchesKey)
+                        .tr(),
+              )
+            : LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints con) =>
+                    GridView.builder(
+                      controller: _scrollController,
+                      addRepaintBoundaries: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(2),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: con.maxWidth * 0.03,
+                        mainAxisSpacing: con.maxWidth * 0.03,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: view.length + loadingItemsCount,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index >= view.length) {
+                          return const AppShimmer(child: ProductItem3View());
+                        }
+                        return _CategoryProductGridItem(
+                          args: _args,
+                          index: index,
+                        );
+                      },
                     ),
-                    itemCount: view.length + loadingItemsCount,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index >= view.length) {
-                        return const AppShimmer(child: ProductItem3View());
-                      }
-                      return _CategoryProductGridItem(
-                        args: _args,
-                        index: index,
-                      );
-                    },
-                  ),
-            ),
+              ),
+      ),
     );
   }
 }
