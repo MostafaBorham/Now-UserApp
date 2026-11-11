@@ -19,29 +19,31 @@ class ProductDetailsBottomBar extends ConsumerWidget {
     if (product.id == null || ref.watch(productMaxQuantityProvider) < 1) {
       return const SizedBox.shrink();
     }
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.paddingOf(context).bottom + 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 16,
-        children: [
-          Container(
-            color: colors.neutral500.withValues(alpha: 0.3),
-            width: double.infinity,
-            height: 1,
-          ),
-          ProductActionButtons(
-            onQuantityRejected: onQuantityRejected,
-            productId: product.id!,
-            productName: context.getLocalizedApiText(product.name),
-            productImageUrl: (product.images?.isNotEmpty ?? false)
-                ? product.images!.first
-                : '',
-          ),
-        ],
+    return RepaintBoundary(
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(context).bottom + 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 16,
+          children: [
+            Container(
+              color: colors.neutral500.withValues(alpha: 0.3),
+              width: double.infinity,
+              height: 1,
+            ),
+            ProductActionButtons(
+              onQuantityRejected: onQuantityRejected,
+              productId: product.id!,
+              productName: context.getLocalizedApiText(product.name),
+              productImageUrl: (product.images?.isNotEmpty ?? false)
+                  ? product.images!.first
+                  : '',
+            ),
+          ],
+        ),
       ),
     );
   }

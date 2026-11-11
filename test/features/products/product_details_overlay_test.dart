@@ -166,9 +166,12 @@ void main() {
       scroll.jumpTo(offset);
       await tester.pumpAndSettle();
       final bounds = tester.getRect(surface);
-      expect(tester.getRect(page('two')), bounds);
+      expect(
+        tester.getRect(page('two')),
+        rectMoreOrLessEquals(bounds, epsilon: 0.01),
+      );
       expect(tester.getTopLeft(header).dy, closeTo(bounds.top, 0.01));
-      expect(tester.getSize(header).width, closeTo(bounds.width, 0.01));
+      expect(tester.getRect(header).width, closeTo(bounds.width, 0.01));
       expect(tester.getBottomLeft(footer).dy, closeTo(bounds.bottom, 0.01));
     }
 
@@ -261,8 +264,8 @@ void main() {
         of: page('two'),
         matching: find.byType(UnPrimaryAppButton),
       );
-      final addSize = tester.getSize(addButton);
-      final buySize = tester.getSize(buyButton);
+      final addSize = tester.getRect(addButton).size;
+      final buySize = tester.getRect(buyButton).size;
       final scroll = detailsScroll(tester);
       final surface = find.byKey(const ValueKey('product-details-surface-1'));
       final extent = 844 - tester.getSize(surface).height;
@@ -274,8 +277,8 @@ void main() {
         expect(tester.widget(gallery), same(galleryWidget));
         expect(tester.getSize(gallery), gallerySize);
         expect(carousel.page, imagePage);
-        final resizedAdd = tester.getSize(addButton);
-        final resizedBuy = tester.getSize(buyButton);
+        final resizedAdd = tester.getRect(addButton).size;
+        final resizedBuy = tester.getRect(buyButton).size;
         expect(resizedAdd.height, greaterThan(addSize.height));
         expect(resizedAdd.height, closeTo(resizedBuy.height, 0.01));
         expect(

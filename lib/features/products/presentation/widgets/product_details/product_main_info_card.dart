@@ -46,273 +46,276 @@ class ProductMainInfoCard extends ConsumerWidget {
         productQuantityController.state = next < 1 ? 1 : next;
       }
     });
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: AppBoxShadows.greyElevation3,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 16,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              ValueListenableBuilder<double>(
-                valueListenable: titleProgress,
-                builder: (_, double progress, Widget? child) => Visibility(
-                  visible: progress == 0,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: child!,
+    return RepaintBoundary(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: AppBoxShadows.greyElevation3,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 16,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                ValueListenableBuilder<double>(
+                  valueListenable: titleProgress,
+                  builder: (_, double progress, Widget? child) => Visibility(
+                    visible: progress == 0,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: child!,
+                  ),
+                  child: ProductDetailsName(
+                    key: productNameKey,
+                    name: context.getLocalizedApiText(product.name),
+                  ),
                 ),
-                child: ProductDetailsName(
-                  key: productNameKey,
-                  name: context.getLocalizedApiText(product.name),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 8,
-                children: [
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 8,
+                  children: [
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.primary100.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Assets.media.images.svg.trustIcon.svg(
+                                colorFilter: ColorFilter.mode(
+                                  colors.primary500Main,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              Text(
+                                LangKeys.trustedProductKey.tr(),
+                                style: AppTextStyles.style12SemiBold.copyWith(
+                                  color: colors.primary700,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                      ),
+                    ),
+                    if ((product.stock ?? 1) < 1)
+                      const Flexible(
+                        child: OutOfStockLabel(fontSize: 15, wrapText: true),
+                      )
+                    else if (maxQuantity < 1)
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.primary100,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 6,
+                            children: [
+                              Assets.media.images.svg.tickCircle.svg(
+                                width: 18,
+                                height: 18,
+                                colorFilter: ColorFilter.mode(
+                                  colors.primary500Main,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(
+                                  LangKeys.allStockAddedToCartKey.tr(),
+                                  style: AppTextStyles.style12SemiBold.copyWith(
+                                    color: colors.primary500Main,
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: colors.primary100.withValues(alpha: 0.6),
+                          color: colors.onPrimaryContainer,
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 4,
+                          children: [
+                            InkWell(
+                              onTap: productQuantity < maxQuantity
+                                  ? () {
+                                      productQuantityController.state++;
+                                    }
+                                  : null,
+                              customBorder: const CircleBorder(),
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: productQuantity < maxQuantity
+                                      ? colors.tertiaryContainer
+                                      : colors.neutral200,
+                                  shape: BoxShape.circle,
+                                  boxShadow: AppBoxShadows.blackBottomShadow2,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 14,
+                                    color: colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 28,
+                              child: Text(
+                                productQuantity.toString(),
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.style16Bold.copyWith(
+                                  color: colors.black,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: productQuantity > minQuantity
+                                  ? () {
+                                      productQuantityController.state--;
+                                    }
+                                  : null,
+                              customBorder: const CircleBorder(),
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: productQuantity > minQuantity
+                                      ? colors.white
+                                      : colors.neutral200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.remove,
+                                    size: 14,
+                                    color: colors.neutral400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                LayoutBuilder(
+                  builder: (context, con) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
                           children: [
-                            Assets.media.images.svg.trustIcon.svg(
-                              colorFilter: ColorFilter.mode(
-                                colors.primary500Main,
-                                BlendMode.srcIn,
-                              ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: 4,
+                              children: [
+                                NewPriceWidget(
+                                  size: con.maxWidth * 0.11,
+                                  symbolSize: con.maxWidth * 0.07,
+                                  color: colors.neutral1200,
+                                  price: formatTrimmedPrice(
+                                    product.discountPrice ?? product.price,
+                                  ),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                if (product.hasDeal)
+                                  OldPriceWidget(
+                                    color: colors.neutral500,
+                                    size: con.maxWidth * 0.043,
+                                    price: formatTrimmedPrice(product.price),
+                                  ),
+                              ],
                             ),
-                            Text(
-                              LangKeys.trustedProductKey.tr(),
-                              style: AppTextStyles.style12SemiBold.copyWith(
-                                color: colors.primary700,
-                              ),
-                            ),
+                            if (product.activeDeal != null &&
+                                (product.activeDeal!.discountValue ?? 0) > 0)
+                              ProductDiscountTicket(deal: product.activeDeal!),
                           ],
                         ),
-                      ),
-                    ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colors.tertiaryFixed,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: AppRateWidget(
+                            starColor: colors.surface,
+                            rateColor: colors.tertiaryContainer,
+                            rateRatio:
+                                '${formatDouble(product.rating?.average)}',
+                            rateCount: '${product.rating?.total ?? 0}',
+                            size: 12,
+                            starSize: 16,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                Text(
+                  LangKeys.descriptionKey.tr(),
+                  style: AppTextStyles.style16Bold.copyWith(
+                    color: colors.black,
+                    fontSize: 15,
                   ),
-                  if ((product.stock ?? 1) < 1)
-                    const Flexible(
-                      child: OutOfStockLabel(fontSize: 15, wrapText: true),
-                    )
-                  else if (maxQuantity < 1)
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colors.primary100,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 6,
-                          children: [
-                            Assets.media.images.svg.tickCircle.svg(
-                              width: 18,
-                              height: 18,
-                              colorFilter: ColorFilter.mode(
-                                colors.primary500Main,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                LangKeys.allStockAddedToCartKey.tr(),
-                                style: AppTextStyles.style12SemiBold.copyWith(
-                                  color: colors.primary500Main,
-                                  overflow: TextOverflow.visible,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: colors.onPrimaryContainer,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 4,
-                        children: [
-                          InkWell(
-                            onTap: productQuantity < maxQuantity
-                                ? () {
-                                    productQuantityController.state++;
-                                  }
-                                : null,
-                            customBorder: const CircleBorder(),
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: productQuantity < maxQuantity
-                                    ? colors.tertiaryContainer
-                                    : colors.neutral200,
-                                shape: BoxShape.circle,
-                                boxShadow: AppBoxShadows.blackBottomShadow2,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.add,
-                                  size: 14,
-                                  color: colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 28,
-                            child: Text(
-                              productQuantity.toString(),
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.style16Bold.copyWith(
-                                color: colors.black,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: productQuantity > minQuantity
-                                ? () {
-                                    productQuantityController.state--;
-                                  }
-                                : null,
-                            customBorder: const CircleBorder(),
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: productQuantity > minQuantity
-                                    ? colors.white
-                                    : colors.neutral200,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.remove,
-                                  size: 14,
-                                  color: colors.neutral400,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              LayoutBuilder(
-                builder: (context, con) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 8,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 4,
-                            children: [
-                              NewPriceWidget(
-                                size: con.maxWidth * 0.11,
-                                symbolSize: con.maxWidth * 0.07,
-                                color: colors.neutral1200,
-                                price: formatTrimmedPrice(
-                                  product.discountPrice ?? product.price,
-                                ),
-                                fontWeight: FontWeight.bold,
-                              ),
-                              if (product.hasDeal)
-                                OldPriceWidget(
-                                  color: colors.neutral500,
-                                  size: con.maxWidth * 0.043,
-                                  price: formatTrimmedPrice(product.price),
-                                ),
-                            ],
-                          ),
-                          if (product.activeDeal != null &&
-                              (product.activeDeal!.discountValue ?? 0) > 0)
-                            ProductDiscountTicket(deal: product.activeDeal!),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colors.tertiaryFixed,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: AppRateWidget(
-                          starColor: colors.surface,
-                          rateColor: colors.tertiaryContainer,
-                          rateRatio: '${formatDouble(product.rating?.average)}',
-                          rateCount: '${product.rating?.total ?? 0}',
-                          size: 12,
-                          starSize: 16,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              Text(
-                LangKeys.descriptionKey.tr(),
-                style: AppTextStyles.style16Bold.copyWith(
-                  color: colors.black,
-                  fontSize: 15,
                 ),
-              ),
-              ExpandableText(
-                text: context.getLocalizedApiText(product.description),
-                style: AppTextStyles.style13Regular.copyWith(
-                  color: colors.greyText,
-                  height: 1.8,
+                ExpandableText(
+                  text: context.getLocalizedApiText(product.description),
+                  style: AppTextStyles.style13Regular.copyWith(
+                    color: colors.greyText,
+                    height: 1.8,
+                  ),
+                  maxCharacters: 150,
+                  seeMoreText: LangKeys.seeMoreKey.tr(),
                 ),
-                maxCharacters: 150,
-                seeMoreText: LangKeys.seeMoreKey.tr(),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

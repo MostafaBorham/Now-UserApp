@@ -16,6 +16,7 @@ import 'package:nowdelivery_user_app/features/products/presentation/widgets/prod
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_header.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_images_slider.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_expansion_sliver.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_viewport.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_key_features_view.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_colors_selector.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_main_info_card.dart';
@@ -173,7 +174,12 @@ class _ProductDetailsContentState extends ConsumerState<_ProductDetailsContent>
                             onNotification: _controller.onScrollMetricsChanged,
                             child: CustomScrollView(
                               controller: _controller.scrollController,
-                              physics: const AlwaysScrollableScrollPhysics(),
+                              physics: ProductDetailsScrollPhysics(
+                                viewportScale: ProductDetailsViewport.scaleOf(
+                                  context,
+                                ),
+                                parent: const AlwaysScrollableScrollPhysics(),
+                              ),
                               slivers: [
                                 ProductExpansionSliver(
                                   extent: widget.expansionScrollExtent,

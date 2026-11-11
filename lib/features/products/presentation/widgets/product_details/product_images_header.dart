@@ -31,30 +31,32 @@ class ProductImagesHeader extends StatelessWidget {
           child: child,
         ),
       ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ClipPath(
-            clipper: const BottomConcaveArcClipper(),
-            child: ColoredBox(color: colors.neutral200),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: topPadding),
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SizedBox(
-                width: viewportSize.width,
-                height: viewportSize.height * 0.4 - topPadding,
-                child: RepaintBoundary(
-                  child: MediaQuery(
-                    data: MediaQuery.of(context).copyWith(size: viewportSize),
-                    child: child,
+      child: RepaintBoundary(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipPath(
+              clipper: const BottomConcaveArcClipper(),
+              child: ColoredBox(color: colors.neutral200),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: topPadding),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: viewportSize.width,
+                  height: viewportSize.height * 0.4 - topPadding,
+                  child: RepaintBoundary(
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(size: viewportSize),
+                      child: child,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -40,6 +40,7 @@ import 'package:nowdelivery_user_app/features/payment_methods/presentation/payme
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/edit_information_screen.dart';
 import 'package:nowdelivery_user_app/features/personal_information/presentation/screens/personal_information_screen.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_details_overlay.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_transition.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/screens/product_reviews_screen.dart';
 import 'package:nowdelivery_user_app/features/promotion/presentation/screens/discount_code_screen.dart';
 import 'package:nowdelivery_user_app/features/search/presentation/screens/search_screen.dart';
@@ -366,8 +367,8 @@ abstract class AppRouter {
           }
           return CustomTransitionPage<void>(
             key: state.pageKey,
-            transitionDuration: const Duration(milliseconds: 600),
-            reverseTransitionDuration: const Duration(milliseconds: 600),
+            transitionDuration: ProductDetailsTransition.enterDuration,
+            reverseTransitionDuration: ProductDetailsTransition.exitDuration,
             opaque: false,
             barrierDismissible: true,
             barrierColor: Colors.black54,
@@ -380,18 +381,8 @@ abstract class AppRouter {
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
-                    SlideTransition(
-                      position:
-                          Tween<Offset>(
-                            begin: const Offset(0, 1),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOutCubic,
-                              reverseCurve: Curves.easeInCubic,
-                            ),
-                          ),
+                    ProductDetailsTransition(
+                      animation: animation,
                       child: child,
                     ),
           );

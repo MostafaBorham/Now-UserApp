@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nowdelivery_user_app/core/presentation/theme/app_color_scheme.dart';
 import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_body.dart';
+import 'package:nowdelivery_user_app/features/products/presentation/widgets/product_details/product_details_viewport.dart';
 
 /// Full-screen modal pager above the product's source list.
 class ProductDetailsOverlay extends ConsumerStatefulWidget {
@@ -141,12 +142,15 @@ class _ProductDetailsOverlayState extends ConsumerState<ProductDetailsOverlay> {
               child: NotificationListener<ScrollNotification>(
                 onNotification: (notification) =>
                     _onDetailsScroll(index, expansionExtent, notification),
-                child: ProductDetailsBody(
-                  key: ValueKey(widget.productSlugs[index]),
-                  productSlug: widget.productSlugs[index],
-                  showCloseButton: true,
-                  expansionScrollExtent: expansionExtent,
-                  imageViewportSize: constraints.biggest,
+                child: ProductDetailsViewport(
+                  contentWidth: constraints.maxWidth,
+                  child: ProductDetailsBody(
+                    key: ValueKey(widget.productSlugs[index]),
+                    productSlug: widget.productSlugs[index],
+                    showCloseButton: true,
+                    expansionScrollExtent: expansionExtent,
+                    imageViewportSize: constraints.biggest,
+                  ),
                 ),
               ),
             ),
